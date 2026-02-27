@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Salmon's Journey: Understanding Compound Interest Through Migration</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ocean:#0A3A5A;--ocean-dark:#052030;--ocean-mid:#1A5A7A;--ocean-light:#4A8AAA;--ocean-pale:#8ABACC;
+  --river:#2A5A4A;--river-dark:#1A3A2A;--river-mid:#3A7A5A;--river-light:#6AAA8A;--river-pale:#AADDBA;
+  --gold:#D4A020;--gold-glow:#F0C040;--gold-pale:#F8E8A0;--gold-soft:rgba(212,160,32,0.08);
+  --coral:#E07850;--coral-dark:#C05830;--coral-light:#F0A890;--coral-pale:#F8D0C0;
+  --sky:#7AAACC;--sky-light:#AAD0E8;--sky-pale:#D8F0FF;
+  --foam:#FDFCFA;--foam-warm:#FAF8F0;--foam-deep:#F2F0E8;
+  --stone:#6A7080;--stone-light:#A0A8B0;
+  --text:#1A2A3A;--text-light:#3A4A5A;--text-muted:#6A7A8A;
+  --white:#FFFFFF;--radius:18px;
+  --shadow-soft:0 3px 18px rgba(10,58,90,0.08);
+  --shadow-mid:0 5px 30px rgba(10,58,90,0.12);
+  --glow-ocean:rgba(10,58,90,0.15);
+  --glow-gold:rgba(212,160,32,0.2);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--foam);line-height:1.85;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
+.page{max-width:740px;margin:0 auto;padding:0 26px}
+.section{padding:52px 0}
+.prose p{margin-bottom:24px;font-size:1.02rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--ocean);font-weight:700}
+.prose em{color:var(--gold);font-style:normal;font-weight:600}
+.prose h2{font-size:1.45rem;color:var(--ocean);margin:44px 0 18px;letter-spacing:-0.01em;display:flex;align-items:center;gap:12px}
+
+/* ===== COVER ===== */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;
+  background:linear-gradient(175deg,#021018 0%,#052038 20%,#0A3050 45%,#1A4A68 70%,#0A3548 100%);
+  position:relative;overflow:hidden}
+.wave{position:absolute;width:100%;height:120px;background:linear-gradient(90deg,transparent,rgba(74,138,170,0.1),transparent);
+  animation:wave-flow 8s ease-in-out infinite;opacity:0.3}
+.wave:nth-child(1){bottom:0;animation-delay:0s}
+.wave:nth-child(2){bottom:40px;animation-delay:-2s;opacity:0.2}
+.wave:nth-child(3){bottom:80px;animation-delay:-4s;opacity:0.1}
+@keyframes wave-flow{
+  0%,100%{transform:translateX(-100%) scaleY(1)}
+  50%{transform:translateX(100%) scaleY(1.2)}
+}
+.bubble{position:absolute;width:6px;height:6px;border-radius:50%;background:rgba(138,186,204,0.4);
+  animation:bubble-rise linear infinite;pointer-events:none}
+.bubble:nth-child(4){left:15%;animation-duration:12s;animation-delay:0s}
+.bubble:nth-child(5){left:35%;animation-duration:15s;animation-delay:-4s}
+.bubble:nth-child(6){left:55%;animation-duration:10s;animation-delay:-8s}
+.bubble:nth-child(7){left:75%;animation-duration:13s;animation-delay:-2s}
+.bubble:nth-child(8){left:90%;animation-duration:11s;animation-delay:-6s}
+@keyframes bubble-rise{
+  0%{transform:translateY(100vh) scale(0.5);opacity:0}
+  10%{opacity:0.6}
+  90%{opacity:0.3}
+  100%{transform:translateY(-100px) scale(1);opacity:0}
+}
+.ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.015;mix-blend-mode:overlay;pointer-events:none}
+.cover-content{position:relative;z-index:2;padding:52px 26px}
+.cover-badge{display:inline-block;padding:7px 24px;border:1px solid rgba(212,160,32,0.35);border-radius:50px;
+  font-family:'Nunito',sans-serif;font-size:0.56rem;font-weight:800;letter-spacing:4.5px;text-transform:uppercase;
+  color:var(--gold-glow);margin-bottom:38px}
+.cover-icon{font-size:4rem;margin-bottom:18px;display:block;animation:swim-float 4s ease-in-out infinite}
+@keyframes swim-float{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-12px) rotate(2deg)}}
+.cover h1{font-family:'Nunito',sans-serif;font-size:clamp(2.3rem,6.5vw,4rem);font-weight:900;color:var(--white);
+  line-height:1.06;margin-bottom:6px}
+.cover h1 strong{font-weight:900;color:var(--gold-glow);display:block;font-size:clamp(2.8rem,7.5vw,4.6rem)}
+.cover-tagline{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:rgba(255,255,255,0.52);
+  margin-top:26px;line-height:1.8}
+.cover-tagline em{color:var(--gold-pale);font-style:normal;font-weight:600}
+.cover-sub{font-family:'Nunito',sans-serif;font-size:0.74rem;font-weight:700;letter-spacing:2.2px;
+  text-transform:uppercase;color:rgba(255,255,255,0.27);margin-top:14px}
+
+/* ===== CHAPTER HEADS ===== */
+.ch-head{background:linear-gradient(170deg,var(--ocean-dark),var(--ocean));padding:76px 26px 56px;position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%238ABACC' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.ch-badge{display:inline-block;padding:5px 18px;background:rgba(212,160,32,0.12);border:1px solid rgba(212,160,32,0.28);
+  border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.54rem;font-weight:800;letter-spacing:3.8px;
+  text-transform:uppercase;color:var(--gold-pale);margin-bottom:22px}
+.ch-num{font-family:'Nunito',sans-serif;font-size:6rem;font-weight:900;line-height:0.88;
+  color:rgba(212,160,32,0.18);margin-bottom:-12px}
+.ch-title{font-family:'Nunito',sans-serif;font-size:2.2rem;font-weight:900;color:var(--white);
+  line-height:1.14;letter-spacing:-0.02em;margin-bottom:12px}
+.ch-sub{font-family:'Lora',serif;font-size:0.98rem;font-style:italic;color:rgba(255,255,255,0.42);line-height:1.65}
+
+/* Character cards */
+.char-grid{display:grid;gap:26px;margin:44px 0}
+@media(min-width:650px){.char-grid{grid-template-columns:1fr 1fr}}
+.char-card{background:var(--white);border:2px solid var(--foam-deep);border-radius:var(--radius);overflow:hidden;
+  box-shadow:var(--shadow-soft);transition:all 0.35s ease}
+.char-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-mid)}
+.char-head{background:linear-gradient(135deg,var(--gold-soft),rgba(212,160,32,0.03));padding:20px 22px;
+  border-bottom:1px solid var(--foam-deep);display:flex;align-items:center;gap:15px}
+.char-emoji{font-size:2.2rem;line-height:1}
+.char-info{flex:1}
+.char-name{font-family:'Nunito',sans-serif;font-size:1.08rem;font-weight:800;color:var(--ocean);line-height:1.28}
+.char-title{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:1.6px;
+  text-transform:uppercase;color:var(--text-muted);margin-top:3px}
+.char-body{padding:22px}
+.char-body p{font-size:0.94rem;color:var(--text-light);line-height:1.78;margin:0}
+
+/* Math boxes */
+.math-box{background:linear-gradient(135deg,#F8F0E0,#FFF8F0);border:2px solid var(--gold);border-radius:var(--radius);
+  padding:30px;margin:36px 0;box-shadow:var(--shadow-soft)}
+.math-label{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:800;letter-spacing:2.8px;
+  text-transform:uppercase;color:var(--gold);margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.math-box h4{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:800;color:var(--ocean-dark);
+  margin-bottom:16px;line-height:1.32}
+.math-formula{background:var(--white);border:2px dashed var(--gold);border-radius:12px;padding:20px;
+  margin:18px 0;font-family:'Fira Code',monospace;font-size:1.05rem;text-align:center;color:var(--ocean);font-weight:600}
+.math-breakdown{font-size:0.92rem;color:var(--text);line-height:1.85;margin-top:14px}
+
+/* Timeline */
+.timeline{margin:40px 0;position:relative;padding-left:40px}
+.timeline::before{content:'';position:absolute;left:12px;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,var(--gold),var(--gold-pale));border-radius:2px}
+.timeline-item{position:relative;margin-bottom:32px}
+.timeline-dot{position:absolute;left:-40px;width:24px;height:24px;background:var(--gold-glow);
+  border:3px solid var(--white);border-radius:50%;box-shadow:0 0 0 3px var(--gold-soft)}
+.timeline-year{font-family:'Nunito',sans-serif;font-size:0.8rem;font-weight:800;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.timeline-content{background:var(--white);border:1px solid var(--foam-deep);border-radius:12px;padding:20px;
+  box-shadow:var(--shadow-soft)}
+.timeline-content h4{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;color:var(--ocean);
+  margin-bottom:10px}
+.timeline-content p{font-size:0.92rem;color:var(--text-light);line-height:1.75;margin:0}
+
+/* Scenarios */
+.scene{background:linear-gradient(135deg,var(--foam-warm),var(--foam));border:1px solid var(--foam-deep);
+  border-radius:var(--radius);padding:30px;margin:36px 0;box-shadow:var(--shadow-soft)}
+.scene-label{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:800;letter-spacing:2.8px;
+  text-transform:uppercase;color:var(--coral);margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.scene h4{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:800;color:var(--ocean-dark);
+  margin-bottom:16px;line-height:1.35}
+.scene p{font-size:0.97rem;color:var(--text);line-height:1.82;margin-bottom:14px}
+.scene p:last-child{margin-bottom:0}
+
+/* Visualizations */
+.viz{background:linear-gradient(135deg,var(--ocean-dark),var(--ocean));border-radius:var(--radius);padding:3px;
+  margin:52px 0;box-shadow:var(--shadow-mid);position:relative;overflow:hidden}
+.viz-glow{position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,var(--glow-gold),transparent 70%);
+  pointer-events:none}
+.viz-inner{background:linear-gradient(165deg,#0A2838,#1A3848);border-radius:calc(var(--radius) - 3px);
+  padding:36px;position:relative}
+.viz-top{display:flex;align-items:center;gap:20px;margin-bottom:26px;padding-bottom:22px;
+  border-bottom:1px solid rgba(138,186,204,0.2)}
+.viz-icon-wrap{font-size:2.6rem;line-height:1}
+.viz-meta{flex:1}
+.viz-label{font-family:'Nunito',sans-serif;font-size:0.68rem;font-weight:800;letter-spacing:3.2px;
+  text-transform:uppercase;color:var(--gold-glow);margin-bottom:7px}
+.viz-meta h4{font-family:'Nunito',sans-serif;font-size:1.35rem;font-weight:800;color:var(--white);line-height:1.28}
+.viz-body p{font-size:0.97rem;color:rgba(255,255,255,0.78);line-height:1.88;margin-bottom:20px}
+.viz-body p:last-of-type{margin-bottom:0}
+.viz-lesson{background:rgba(212,160,32,0.1);border:1px solid rgba(212,160,32,0.25);border-radius:14px;
+  padding:22px;margin-top:26px;font-size:0.97rem;font-style:italic;color:var(--gold-pale);line-height:1.82}
+
+/* Comparison boxes */
+.compare{display:grid;gap:22px;margin:38px 0}
+@media(min-width:650px){.compare{grid-template-columns:1fr 1fr}}
+.compare-box{border-radius:var(--radius);padding:26px;box-shadow:var(--shadow-soft)}
+.compare-poor{background:#FFF5F0;border:2px solid #E07850}
+.compare-rich{background:#F0FFF8;border:2px solid #40B870}
+.compare-label{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:800;letter-spacing:2.2px;
+  text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.compare-poor .compare-label{color:#C05830}
+.compare-rich .compare-label{color:#2A8050}
+.compare-box p{font-size:0.94rem;line-height:1.78;margin:0}
+.compare-poor p{color:#8A3820}
+.compare-rich p{color:#2A6A40}
+.compare-box .amount{font-family:'Nunito',sans-serif;font-size:1.8rem;font-weight:900;display:block;
+  margin:12px 0 8px 0}
+
+/* Grand quotes */
+.gq{background:linear-gradient(135deg,var(--river-dark),var(--river-mid));border-radius:var(--radius);
+  padding:44px 36px;margin:52px 0;box-shadow:var(--shadow-mid);position:relative;overflow:hidden}
+.gq::before{content:'"';position:absolute;top:-24px;left:12px;font-size:14rem;font-family:Georgia,serif;
+  color:rgba(255,255,255,0.04);line-height:1;pointer-events:none}
+.gq p{font-family:'Lora',serif;font-size:1.18rem;font-style:italic;color:var(--white);line-height:1.88;
+  position:relative;margin:0}
+
+/* Thinking prompts */
+.think{background:var(--foam-warm);border:2px dashed var(--coral);border-radius:var(--radius);padding:36px;margin:44px 0}
+.think-label{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:800;letter-spacing:2.8px;
+  text-transform:uppercase;color:var(--coral);margin-bottom:10px}
+.think h4{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:800;color:var(--ocean);margin-bottom:24px}
+.q-start{font-family:'Nunito',sans-serif;font-size:0.97rem;font-weight:700;color:var(--ocean-mid);
+  margin-bottom:12px;line-height:1.55}
+.think-line{height:2px;background:var(--foam-deep);margin-bottom:24px;border-radius:2px}
+
+/* Finale */
+.finale{background:linear-gradient(165deg,var(--ocean-dark),var(--river-dark));text-align:center;padding:88px 26px;
+  color:var(--white)}
+.finale-emoji{font-size:4rem;display:block;margin-bottom:28px;animation:gentle-pulse 5s ease-in-out infinite}
+@keyframes gentle-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.finale h2{font-family:'Nunito',sans-serif;font-size:1.9rem;font-weight:800;color:var(--white);line-height:1.42;
+  margin-bottom:28px}
+.finale h2 span{display:block;color:var(--gold-glow);font-size:2.1rem;margin-top:10px}
+.finale p{font-family:'Lora',serif;font-size:1.08rem;color:rgba(255,255,255,0.72);line-height:1.88;
+  max-width:620px;margin:0 auto}
+
+/* Footer */
+footer{background:linear-gradient(165deg,#020A10,#0A1418);padding:64px 26px 44px;text-align:center;
+  color:rgba(255,255,255,0.32);border-top:1px solid rgba(212,160,32,0.1)}
+footer p{font-family:'Lora',serif;font-size:0.97rem;font-style:italic;margin-bottom:26px;line-height:1.75}
+.brand{font-family:'Nunito',sans-serif;font-size:1.15rem;font-weight:900;letter-spacing:1.2px;color:var(--gold-glow)}
+
+/* Growth chart */
+.growth-chart{background:var(--white);border:2px solid var(--foam-deep);border-radius:var(--radius);padding:30px;
+  margin:36px 0;box-shadow:var(--shadow-soft)}
+.growth-title{font-family:'Nunito',sans-serif;font-size:0.76rem;font-weight:800;letter-spacing:2.5px;
+  text-transform:uppercase;color:var(--gold);margin-bottom:24px;text-align:center}
+.growth-bars{display:grid;gap:18px}
+.growth-bar-wrap{position:relative}
+.growth-bar-label{font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:700;color:var(--ocean);
+  margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.growth-bar-bg{height:32px;background:var(--foam-deep);border-radius:8px;overflow:hidden;position:relative}
+.growth-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-glow));
+  border-radius:8px;display:flex;align-items:center;justify-content:flex-end;padding-right:12px;
+  font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:800;color:var(--white)}
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="bubble"></div>
+  <div class="bubble"></div>
+  <div class="bubble"></div>
+  <div class="bubble"></div>
+  <div class="bubble"></div>
+  <div class="ghost-noise"></div>
+  <div class="cover-content">
+    <div class="cover-badge">A Wealth Building Parable</div>
+    <span class="cover-icon">🐟</span>
+    <h1>The Salmon's Journey<br><strong>How Compound Interest Actually Works</strong></h1>
+    <p class="cover-tagline">Why a fish that swims upstream for years <em>always beats</em> the fish that waits at the river's mouth. This is the story of exponential growth, time value of money, and the single most powerful force in personal finance.</p>
+    <p class="cover-sub">Understanding Wealth Through Nature's Mathematics</p>
+  </div>
+</div>
+
+<div class="page">
+<section class="section">
+  <div class="prose">
+    <p>In the cold waters of the Pacific Northwest, two young salmon named <strong>Steady</strong> and <strong>Flash</strong> faced the same choice every salmon faces: <strong>How do you prepare for the long journey upstream?</strong></p>
+    <p>Steady started small. Every day, she swam just a little bit farther than the day before. She built muscle slowly, consistently, letting her strength compound week after week. <em>Boring. Patient. Relentless.</em></p>
+    <p>Flash waited. He conserved energy. Then, at the last minute, he swam hard, trying to make up for lost time with one massive sprint. <em>Exciting. Dramatic. Doomed.</em></p>
+    <p><strong>Only one of them made it to the spawning grounds.</strong></p>
+    <p>This is not a story about fish. This is a story about <em>compound interest</em> the mathematical force that builds wealth for those who understand it, and destroys dreams for those who do not. It is why the middle-class family that saves $500/month for 30 years retires wealthier than the doctor who makes $300K but saves nothing. It is why starting early matters more than starting big.</p>
+    <p>If you finish this story, you will understand exponential growth, time value of money, opportunity cost, and the Rule of 72 better than 90% of college graduates. You will see why Einstein allegedly called compound interest "the eighth wonder of the world." And you will never look at your bank account the same way again.</p>
+    <p>Ready? Let's swim upstream. 🐟⬆️</p>
+  </div>
+</section>
+</div>
+
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-badge">Chapter One</div>
+    <div class="ch-num">01</div>
+    <h1 class="ch-title">The Two Paths</h1>
+    <p class="ch-sub">Why small daily gains beat big one-time wins</p>
+  </div>
+</div>
+
+<div class="page">
+<section class="section prose">
+  <h2><span>🐟</span> Meet Steady and Flash</h2>
+  <p>Steady and Flash hatched in the same stream on the same day. Both dreamed of making the Great Migration swimming from the ocean back upstream to spawn and continue their lineage. But they approached preparation very differently.</p>
+
+  <div class="char-grid">
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">🐟</span><div class="char-info"><div class="char-name">Steady the Salmon</div><div class="char-title">The Compound Saver</div></div></div>
+      <div class="char-body"><p><strong>Strategy:</strong> Swim 1% farther every day. Build strength gradually. Let small gains stack on top of each other. <em>Start early. Stay consistent. Trust the process.</em> 📈</p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">⚡</span><div class="char-info"><div class="char-name">Flash the Salmon</div><div class="char-title">The Speculative Sprinter</div></div></div>
+      <div class="char-body"><p><strong>Strategy:</strong> Wait until migration time. Rest and conserve. Then make one massive sprint upstream using raw power. <em>Work smarter, not harder. Big moves only.</em> 🚀</p></div>
+    </div>
+  </div>
+
+  <h2><span>📊</span> Day 1: The Beginning</h2>
+  <p>On the first day of training, Steady swam 1 mile. Flash rested. "Why waste energy now?" Flash thought. "I will swim 30 miles in one day when it matters." ⚡</p>
+
+  <div class="scene">
+    <div class="scene-label">📅 TRAINING LOG: MONTH 1</div>
+    <h4>The Compounding Begins</h4>
+    
+    <p><strong>Steady's approach:</strong> Swim 1% farther every single day.<br>
+    <em>Day 1:</em> 1.00 miles<br>
+    <em>Day 2:</em> 1.01 miles (1% more than yesterday)<br>
+    <em>Day 3:</em> 1.02 miles (1% more than yesterday)<br>
+    <em>Day 7:</em> 1.07 miles<br>
+    <em>Day 30:</em> 1.35 miles</p>
+
+    <p>"That is it?" Flash laughed. "After a whole month you are only swimming 35% farther? I could do 35 miles in one burst!" ⚡</p>
+
+    <p>Steady said nothing. She just kept swimming. 🐟</p>
+  </div>
+
+  <h2><span>🔢</span> The Math of Daily Compounding</h2>
+  <p>What Steady understood and Flash did not was this: <strong>Growth that builds on itself accelerates over time.</strong></p>
+
+  <div class="math-box">
+    <div class="math-label">📐 THE COMPOUND GROWTH FORMULA</div>
+    <h4>How 1% Daily Adds Up</h4>
+    <div class="math-formula">Future Value = Starting Value × (1 + Growth Rate)^Time</div>
+    <div class="math-breakdown">
+      <p><strong>Steady's calculation:</strong><br>
+      Start: 1 mile<br>
+      Daily growth: 1% (or 1.01 as a multiplier)<br>
+      Time: 365 days</p>
+
+      <p><strong>Result after 1 year:</strong><br>
+      1 × (1.01)^365 = 37.8 miles per day</p>
+
+      <p>🤯 <strong>From 1 mile to 38 miles in one year, just by improving 1% every day!</strong></p>
+
+      <p><em>This is compound interest. Each day's gain becomes the foundation for tomorrow's gain. 1% of a bigger number is a bigger gain.</em></p>
+    </div>
+  </div>
+
+  <h2><span>⏰</span> Month 6: The Gap Widens</h2>
+  <p>Flash still rested. He occasionally did short sprints to test his power. He could burst at incredible speed. "See?" he told Steady. "I am still faster than you in a sprint. When migration day comes, I will leave you behind." ⚡</p>
+
+  <p>But Steady was now swimming 6.1 miles per day. And her endurance was building. She could maintain her pace for hours. Flash could only sprint for minutes before exhaustion hit. 🐟</p>
+
+  <div class="growth-chart">
+    <div class="growth-title">📊 STEADY'S DAILY DISTANCE (1% DAILY GROWTH)</div>
+    <div class="growth-bars">
+      <div class="growth-bar-wrap">
+        <div class="growth-bar-label"><span>Day 1</span><span>1.0 mile</span></div>
+        <div class="growth-bar-bg"><div class="growth-bar-fill" style="width:2.6%">1.0</div></div>
+      </div>
+      <div class="growth-bar-wrap">
+        <div class="growth-bar-label"><span>Month 1</span><span>1.35 miles</span></div>
+        <div class="growth-bar-bg"><div class="growth-bar-fill" style="width:3.6%">1.35</div></div>
+      </div>
+      <div class="growth-bar-wrap">
+        <div class="growth-bar-label"><span>Month 3</span><span>2.43 miles</span></div>
+        <div class="growth-bar-bg"><div class="growth-bar-fill" style="width:6.4%">2.43</div></div>
+      </div>
+      <div class="growth-bar-wrap">
+        <div class="growth-bar-label"><span>Month 6</span><span>6.07 miles</span></div>
+        <div class="growth-bar-bg"><div class="growth-bar-fill" style="width:16%">6.07</div></div>
+      </div>
+      <div class="growth-bar-wrap">
+        <div class="growth-bar-label"><span>Month 9</span><span>15.12 miles</span></div>
+        <div class="growth-bar-bg"><div class="growth-bar-fill" style="width:40%">15.12</div></div>
+      </div>
+      <div class="growth-bar-wrap">
+        <div class="growth-bar-label"><span>Year 1</span><span>37.8 miles</span></div>
+        <div class="growth-bar-bg"><div class="growth-bar-fill" style="width:100%">37.8</div></div>
+      </div>
+    </div>
+  </div>
+
+  <p>"Notice the curve," an old wise salmon named Elder Finn explained to the young fish. "For the first few months, it looks like Steady is barely improving. <strong>This is when most salmon quit.</strong> They do not see dramatic results, so they assume it is not working. But exponential growth ALWAYS starts slow. The magic happens in the back half." 🧙</p>
+
+  <h2><span>🚀</span> Year 1: The Crossover Point</h2>
+  <p>Migration day arrived. Steady was now swimming 37.8 miles per day comfortably. Flash, who had rested all year, could sprint 40 miles in a single burst but then needed days to recover. 💥</p>
+
+  <div class="scene">
+    <div class="scene-label">🎬 THE MIGRATION BEGINS</div>
+    <h4>Who Reaches the Spawning Grounds?</h4>
+    
+    <p><strong>The Challenge:</strong> 800 miles upstream. Swift currents. Predators. Waterfalls. No stopping. 🌊</p>
+
+    <p><strong>Steady's strategy:</strong> 37.8 miles every day. Consistent pace. Sustainable effort. Arrives in 21 days. ✅</p>
+
+    <p><strong>Flash's strategy:</strong><br>
+    Day 1: Sprint 45 miles! (Exhausted)<br>
+    Day 2-3: Rest (too tired to swim)<br>
+    Day 4: Sprint 40 miles! (Exhausted again)<br>
+    Day 5-7: Rest (muscles cramping)<br>
+    Day 8: Sprint 35 miles (weaker now)<br>
+    Day 9-12: Rest (critical energy depletion)<br>
+    By Day 15, Flash had covered only 200 miles. <strong>He never made it. Predators caught him during one of his rest periods.</strong> 💀</p>
+
+    <p><strong>Steady swam right past Flash's remains on Day 8, never slowing down.</strong> 🐟</p>
+  </div>
+
+  <div class="gq"><p>"Flash thought compound growth was boring because it starts slow. He wanted the thrill of one big move. But one big move cannot beat thousands of small moves that stack. <em>Slow is smooth. Smooth is fast. Compound is forever.</em>" 🐟</p></div>
+</section>
+
+<div class="think">
+  <div class="think-label">💭 Think About This</div>
+  <h4>Why do humans act like Flash, not Steady?</h4>
+  <p class="q-start">🤔 If compound growth is so powerful, why do most people chase quick wins instead of patient accumulation?</p>
+  <div class="think-line"></div>
+  <p style="font-size:0.94rem;color:var(--text-light);line-height:1.78"><strong>Because our brains did not evolve for exponential thinking.</strong> We evolved in a linear world where effort = immediate result. Hunt animal = get food today. Plant seed = harvest in one season. But compound interest is EXPONENTIAL. It rewards waiting. It hides its power in the early stages. <strong>Flash's mistake is the most human mistake: impatience with a process that requires faith in math.</strong> 🧠</p>
+</div>
+</div>
+
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-badge">Chapter Two</div>
+    <div class="ch-num">02</div>
+    <h1 class="ch-title">The Rule of 72</h1>
+    <p class="ch-sub">The simple trick that reveals when your money doubles</p>
+  </div>
+</div>
+
+<div class="page">
+<section class="section prose">
+  <h2><span>🔮</span> Elder Finn's Wisdom</h2>
+  <p>After Steady successfully completed her migration, Elder Finn shared an ancient secret with the young salmon. "There is a simple formula," he said, "that tells you exactly how long it takes for anything to DOUBLE when it grows at a steady rate." 🧙</p>
+
+  <div class="math-box">
+    <div class="math-label">📐 THE RULE OF 72</div>
+    <h4>Predicting Doubling Time</h4>
+    <div class="math-formula">Years to Double = 72 ÷ Annual Interest Rate</div>
+    <div class="math-breakdown">
+      <p><strong>Examples:</strong></p>
+
+      <p>💰 <strong>7% annual return:</strong> 72 ÷ 7 = 10.3 years to double<br>
+      Invest $1,000 → becomes $2,000 in ~10 years</p>
+
+      <p>💰 <strong>10% annual return:</strong> 72 ÷ 10 = 7.2 years to double<br>
+      Invest $1,000 → becomes $2,000 in ~7 years</p>
+
+      <p>💰 <strong>3% annual return:</strong> 72 ÷ 3 = 24 years to double<br>
+      Invest $1,000 → becomes $2,000 in 24 years</p>
+
+      <p><em><strong>The higher your growth rate, the faster you double. But even slow growth ALWAYS doubles eventually.</strong> That is the power of exponential math.</em> 📈</p>
+    </div>
+  </div>
+
+  <h2><span>🐟</span> Steady's Descendants: A Multi-Generation Story</h2>
+  <p>Steady taught the Rule of 72 to her offspring. "Watch what happens," she said, "when you let compounding run for multiple generations." 🐟</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">Generation 1: Steady</div>
+      <div class="timeline-content">
+        <h4>Starting Strength: 100 units</h4>
+        <p>Steady trains at 7% annual improvement. By the Rule of 72: doubles every ~10 years. After 30 years of life: <strong>100 → 200 → 400 → 800 units of strength.</strong> Dies at 8x her starting strength. 🐟</p>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">Generation 2: Steady's Children</div>
+      <div class="timeline-content">
+        <h4>Starting Strength: 800 units (inherited from mom)</h4>
+        <p>They continue the 7% tradition. After 30 years: <strong>800 → 1,600 → 3,200 → 6,400 units.</strong> Each child is 6.4x stronger than Steady ever was, and 64x stronger than where Steady started! 🐟🐟</p>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">Generation 3: Steady's Grandchildren</div>
+      <div class="timeline-content">
+        <h4>Starting Strength: 6,400 units</h4>
+        <p>Still doing 7% annually. After 30 years: <strong>6,400 → 12,800 → 25,600 → 51,200 units.</strong> They are 512x stronger than Steady's starting point. <em>Same strategy. Just more time.</em> 🐟🐟🐟</p>
+      </div>
+    </div>
+  </div>
+
+  <p>"This," Elder Finn explained, "is why generational wealth is real. It is not magic. It is not luck. <strong>It is compound interest plus time plus passing the strategy to the next generation.</strong>" 💰</p>
+
+  <h2><span>🎯</span> Real Numbers: Human Application</h2>
+  <p>Meanwhile, in the human world, two friends Sarah and Mike faced the same choice Steady and Flash did.</p>
+
+  <div class="compare">
+    <div class="compare-box compare-poor">
+      <div class="compare-label">⚡ MIKE'S APPROACH: Wait for the Big Win</div>
+      <p><strong>Age 25:</strong> "I will invest when I am making more money."<br>
+      <strong>Age 35:</strong> "I will invest when I pay off my car."<br>
+      <strong>Age 45:</strong> Finally invests $50,000 in one lump sum<br>
+      <strong>Age 65:</strong> At 7% annual return for 20 years...</p>
+      <p class="amount">$193,484</p>
+      <p>Not bad! But wait until you see Sarah... 👀</p>
+    </div>
+
+    <div class="compare-box compare-rich">
+      <div class="compare-label">🐟 SARAH'S APPROACH: Start Small, Start Early</div>
+      <p><strong>Age 25:</strong> Invests $200/month ($2,400/year)<br>
+      <strong>Ages 25-65:</strong> Never increases contribution. Just $200/month for 40 years.<br>
+      <strong>Total invested:</strong> $96,000 (less than Mike's $50,000!)<br>
+      <strong>Age 65:</strong> At 7% annual return for 40 years...</p>
+      <p class="amount">$525,104</p>
+      <p><strong>Sarah invested LESS but ended with 2.7x MORE than Mike.</strong> Why? <em>Time in the market beats timing the market.</em> ⏰</p>
+    </div>
+  </div>
+
+  <div class="viz"><div class="viz-glow"></div><div class="viz-inner">
+    <div class="viz-top"><div class="viz-icon-wrap">⏰</div><div class="viz-meta"><div class="viz-label">The Time Advantage</div><h4>Why Starting Early Crushes Starting Big</h4></div></div>
+    <div class="viz-body">
+      <p><strong>Mike's money:</strong> $50,000 grows for 20 years<br>
+      Doubles 2 times (Rule of 72: 72÷7=10 years per double)<br>
+      $50K → $100K → $200K (approximately)</p>
+
+      <p><strong>Sarah's money:</strong> $96,000 invested over time, grows for up to 40 years<br>
+      Early contributions double 4 times!<br>
+      First $2,400: $2.4K → $4.8K → $9.6K → $19.2K → $38.4K<br>
+      <em>That first year turned into $38K alone!</em></p>
+
+      <div class="viz-lesson">Mike thought he was smart by waiting until he had a big lump sum. But he gave up 20 years of compounding time. <strong>Sarah's early dollars had 40 years to compound. Mike's dollars only had 20 years.</strong> In exponential growth, time is worth more than amount. This is why financial advisors scream "START NOW EVEN IF IT IS SMALL." They understand the math that most people miss. 📊</div>
+    </div>
+  </div></div>
+
+  <h2><span>🎓</span> The Three Levers of Wealth</h2>
+  <p>Elder Finn taught the young salmon that wealth building has exactly three levers:</p>
+
+  <div class="char-grid">
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">💵</span><div class="char-info"><div class="char-name">Lever 1: Amount</div><div class="char-title">How Much You Invest</div></div></div>
+      <div class="char-body"><p>Double your monthly contribution, double your end result (all else equal). <strong>Linear impact.</strong> More is better, but it is the weakest lever. 📊</p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">📈</span><div class="char-info"><div class="char-name">Lever 2: Rate of Return</div><div class="char-title">How Fast It Grows</div></div></div>
+      <div class="char-body"><p>Going from 5% to 10% annual return is HUGE over decades. But you cannot fully control this markets decide. <strong>Moderate impact, low control.</strong> 🎲</p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">⏰</span><div class="char-info"><div class="char-name">Lever 3: Time</div><div class="char-title">How Long It Compounds</div></div></div>
+      <div class="char-body"><p>This is the EXPONENTIAL lever. Add 10 years? Your money might 4x. <strong>Massive impact. Full control. Cannot buy it back.</strong> This is why age 25 beats age 35 every time. ⏳</p></div>
+    </div>
+  </div>
+
+  <div class="gq"><p>"You cannot control the market's return rate. You cannot always control how much you save. But you can ALWAYS control when you start. <em>The best time to plant a tree was 20 years ago. The second best time is today.</em>" 🌳</p></div>
+</section>
+</div>
+
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-badge">Chapter Three</div>
+    <div class="ch-num">03</div>
+    <h1 class="ch-title">The Dark Side</h1>
+    <p class="ch-sub">How compound interest destroys those who borrow</p>
+  </div>
+</div>
+
+<div class="page">
+<section class="section prose">
+  <h2><span>⚫</span> Compound Interest Works Both Ways</h2>
+  <p>There was another salmon in the stream named <strong>Debtor</strong>. He did not save. He did not invest. Instead, he borrowed energy from the River Bank to enjoy life NOW. "Why wait?" he reasoned. "I will pay it back later." 💳</p>
+
+  <p>What Debtor did not understand: <strong>The same exponential force that builds wealth when you save DESTROYS wealth when you borrow.</strong> ⚫</p>
+
+  <div class="scene">
+    <div class="scene-label">💳 THE DEBT TRAP</div>
+    <h4>Debtor's Downward Spiral</h4>
+    
+    <p><strong>Year 1:</strong> Debtor borrows 1,000 energy units at 20% annual interest to buy extra food now.<br>
+    "I will pay this back next year," he promises. 💳</p>
+
+    <p><strong>Year 2:</strong> He owes 1,200 energy units (original 1,000 + 20% interest = 200).<br>
+    He cannot pay it all. He pays 200 units (just the interest). Principal stays at 1,000.<br>
+    <em>"Treading water..."</em> 😰</p>
+
+    <p><strong>Year 3:</strong> Still owes 1,000. Plus another 200 in interest. Now he can only pay 100.<br>
+    The unpaid 100 interest gets added to principal. <strong>New balance: 1,100.</strong><br>
+    <em>"Wait, my debt just GREW?"</em> 😱</p>
+
+    <p><strong>Year 5:</strong> Debt has compounded to 1,488 energy units.<br>
+    He is paying interest on interest on interest.<br>
+    <strong>Every year he does not fully pay, the hole gets deeper.</strong> 🕳️</p>
+
+    <p><strong>Year 10:</strong> Original 1,000 energy debt is now 6,192 energy units.<br>
+    <em>He will never escape. The River Bank owns him.</em> ⚫</p>
+  </div>
+
+  <div class="math-box">
+    <div class="math-label">📐 THE DEBT COMPOUND FORMULA</div>
+    <h4>How Debt Grows Exponentially</h4>
+    <div class="math-formula">Debt After Time = Principal × (1 + Interest Rate)^Time</div>
+    <div class="math-breakdown">
+      <p><strong>Debtor's math:</strong><br>
+      Principal: 1,000 energy units<br>
+      Interest: 20% per year (0.20)<br>
+      Time: 10 years<br>
+      <strong>Result:</strong> 1,000 × (1.20)^10 = 6,192 energy units</p>
+
+      <p>🚨 <strong>His debt grew 6x in 10 years just from compound interest!</strong></p>
+
+      <p><em>This is why credit card debt at 18-25% APR is a financial death spiral. The same exponential math that makes Steady rich makes Debtor poor.</em> ⚫</p>
+    </div>
+  </div>
+
+  <h2><span>💡</span> The Two Sides of the Same Coin</h2>
+  <p>Elder Finn explained: "Compound interest is NEUTRAL. It is pure math. It does not care about you. <strong>If you are on the EARNING side, it makes you wealthy. If you are on the PAYING side, it destroys you.</strong>" 💡</p>
+
+  <div class="compare">
+    <div class="compare-box compare-rich">
+      <div class="compare-label">✅ EARNING COMPOUND INTEREST</div>
+      <p><strong>You invest $10,000 at 8% annual return</strong></p>
+      <p>10 years: $21,589<br>
+      20 years: $46,610<br>
+      30 years: $100,627<br>
+      40 years: $217,245</p>
+      <p><strong>Exponential growth working FOR you. Wealth builds while you sleep.</strong> 💰</p>
+    </div>
+
+    <div class="compare-box compare-poor">
+      <div class="compare-label">❌ PAYING COMPOUND INTEREST</div>
+      <p><strong>You owe $10,000 at 20% annual interest (typical credit card)</strong></p>
+      <p>10 years: $61,917<br>
+      20 years: $383,376<br>
+      30 years: $2,373,763<br>
+      40 years: $14,697,716</p>
+      <p><strong>Exponential growth working AGAINST you. Debt compounds while you sleep.</strong> 💀</p>
+    </div>
+  </div>
+
+  <h2><span>🎯</span> Real-World Example: Student Loans</h2>
+  <p>Two human friends, Jessica and Tom, both graduated with $50,000 in student loans at 6% interest.</p>
+
+  <div class="scene">
+    <div class="scene-label">🎓 TWO STRATEGIES, TWO OUTCOMES</div>
+    <h4>The Cost of Minimum Payments</h4>
+    
+    <p><strong>Jessica's strategy:</strong> Pay minimum ($333/month for 25 years)<br>
+    <strong>Total paid:</strong> $99,825<br>
+    <strong>Interest paid:</strong> $49,825 (she paid almost double!) 😰</p>
+
+    <p><strong>Tom's strategy:</strong> Pay $600/month (aggressive)<br>
+    <strong>Total paid:</strong> $62,400<br>
+    <strong>Paid off in:</strong> 9 years<br>
+    <strong>Interest paid:</strong> $12,400 📉</p>
+
+    <p><strong>The difference?</strong> Tom paid $267/month MORE than Jessica. But he saved $37,425 in total and was debt-free 16 years earlier. <em>Why? He did not let compound interest run wild against him.</em> 💡</p>
+  </div>
+
+  <h2><span>⚖️</span> The Hierarchy of Financial Decisions</h2>
+  <p>Elder Finn taught a simple priority system:</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">Priority 1</div>
+      <div class="timeline-content">
+        <h4>Kill High-Interest Debt FIRST</h4>
+        <p>If you have credit card debt at 20%, paying that off gives you a GUARANTEED 20% return. <strong>No investment beats that risk-free.</strong> Attack debt before investing. 🎯</p>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">Priority 2</div>
+      <div class="timeline-content">
+        <h4>Build Emergency Fund</h4>
+        <p>3-6 months expenses in cash. This prevents you from going INTO debt when emergencies hit. <strong>Defense before offense.</strong> 🛡️</p>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">Priority 3</div>
+      <div class="timeline-content">
+        <h4>Max Employer 401k Match</h4>
+        <p>If employer matches 50% of contributions, that is an instant 50% return! <strong>Free money. Always take it.</strong> 💰</p>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">Priority 4</div>
+      <div class="timeline-content">
+        <h4>Index Fund Investing</h4>
+        <p>Now you can invest for compound growth. S&P 500 historically averages 10% annually. <strong>Let time do the work.</strong> 📈</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="gq"><p>"There are only two positions in life: you are either lending money and earning compound interest, or you are borrowing money and paying compound interest. <em>Every financial decision moves you toward one side or the other. Choose wisely.</em>" ⚖️</p></div>
+</section>
+
+<div class="think">
+  <div class="think-label">💭 Think About This</div>
+  <h4>Why do credit card companies offer "minimum payments"?</h4>
+  <p class="q-start">💳 If paying only the minimum keeps you in debt for decades, why do credit card companies make it so easy?</p>
+  <div class="think-line"></div>
+  <p style="font-size:0.94rem;color:var(--text-light);line-height:1.78"><strong>Because they understand compound interest better than you do.</strong> Minimum payments are designed to keep you paying interest for as long as possible. The credit card company is betting on exponential math. They WANT you to pay slowly. Every extra year you take to pay off debt is another year they earn 20% on your money. <strong>The house always wins when the house controls the exponential curve.</strong> This is why financial literacy matters it is literally the difference between being the house or being the gambler. 🧠</p>
+</div>
+</div>
+
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-badge">Chapter Four</div>
+    <div class="ch-num">04</div>
+    <h1 class="ch-title">The Millionaire Math</h1>
+    <p class="ch-sub">Exact numbers: how normal people become wealthy</p>
+  </div>
+</div>
+
+<div class="page">
+<section class="section prose">
+  <h2><span>🎯</span> The $1 Million Question</h2>
+  <p>"How does a normal person with a normal job become a millionaire?" asked a young salmon. Elder Finn smiled. "It is not magic. It is simple math that most fish refuse to do." 🧙</p>
+
+  <div class="math-box">
+    <div class="math-label">📐 PATH TO $1 MILLION</div>
+    <h4>Three Real Scenarios</h4>
+    <div class="math-breakdown">
+      <p><strong>Scenario 1: Start at 25</strong><br>
+      Monthly investment: $400<br>
+      Annual return: 8%<br>
+      Time: 40 years (retire at 65)<br>
+      <strong>Result: $1,398,905</strong> ✅<br>
+      <em>Total invested: $192,000 → Growth: $1.2 million</em></p>
+
+      <p><strong>Scenario 2: Start at 35</strong><br>
+      Monthly investment: $800 (double!)<br>
+      Annual return: 8%<br>
+      Time: 30 years (retire at 65)<br>
+      <strong>Result: $1,132,832</strong> ✅<br>
+      <em>Total invested: $288,000 → Growth: $844K</em></p>
+
+      <p><strong>Scenario 3: Start at 45</strong><br>
+      Monthly investment: $2,000 (five times!)<br>
+      Annual return: 8%<br>
+      Time: 20 years (retire at 65)<br>
+      <strong>Result: $1,146,063</strong> ✅<br>
+      <em>Total invested: $480,000 → Growth: $666K</em></p>
+    </div>
+  </div>
+
+  <div class="viz"><div class="viz-glow"></div><div class="viz-inner">
+    <div class="viz-top"><div class="viz-icon-wrap">💰</div><div class="viz-meta"><div class="viz-label">The Cost of Waiting</div><h4>All Three Hit $1M, But Look at the Effort</h4></div></div>
+    <div class="viz-body">
+      <p><strong>Starting at 25:</strong> $400/month = achievable on middle-class salary<br>
+      <strong>Starting at 35:</strong> $800/month = tight budget, possible with discipline<br>
+      <strong>Starting at 45:</strong> $2,000/month = requires serious income, cuts into lifestyle</p>
+
+      <div class="viz-lesson">Notice the pattern: <strong>Waiting 10 years doubles the required monthly contribution.</strong> The 25-year-old invests $400/month for 40 years and barely feels it. The 45-year-old must invest $2,000/month for 20 years and feels it constantly. Same end number. Wildly different effort. <em>This is the time penalty of procrastination.</em> ⏰</div>
+    </div>
+  </div></div>
+
+  <h2><span>💼</span> Real Careers, Real Numbers</h2>
+  <p>Elder Finn showed the young salmon what different professions can realistically save:</p>
+
+  <div class="char-grid">
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">👨‍🏫</span><div class="char-info"><div class="char-name">Teacher: $55K/year</div><div class="char-title">Saves 10% = $458/month</div></div></div>
+      <div class="char-body"><p>Starts at 25, invests until 65 at 8% return:<br><strong>Final portfolio: $1,600,715</strong><br><em>A public school teacher becomes a millionaire through consistent saving.</em> 🎓</p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">👨‍⚕️</span><div class="char-info"><div class="char-name">Doctor: $250K/year</div><div class="char-title">Saves 5% = $1,042/month</div></div></div>
+      <div class="char-body"><p>Starts at 35 (after med school debt), invests until 65 at 8%:<br><strong>Final portfolio: $1,523,908</strong><br><em>Doctor makes 5x teacher salary but retires with LESS because started 10 years late!</em> 🩺</p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">🔧</span><div class="char-info"><div class="char-name">Plumber: $65K/year</div><div class="char-title">Saves 15% = $812/month</div></div></div>
+      <div class="char-body"><p>Starts at 20 (no college debt!), invests until 60 at 8%:<br><strong>Final portfolio: $3,219,889</strong><br><em>The plumber who started earliest retires with MORE than the doctor!</em> 🔧</p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">💻</span><div class="char-info"><div class="char-name">Tech Worker: $120K/year</div><div class="char-title">Saves 20% = $2,000/month</div></div></div>
+      <div class="char-body"><p>Starts at 25, burns out at 45 (stops contributing), coast until 65 at 8%:<br><strong>Final portfolio: $2,847,458</strong><br><em>Even stopping contributions at 45, compound growth carries them to $2.8M!</em> 💻</p></div>
+    </div>
+  </div>
+
+  <h2><span>🚀</span> The Coast FIRE Concept</h2>
+  <p>One of the young salmon asked: "Wait, the tech worker STOPPED contributing at 45 but still ended up a multi-millionaire? How?" 🤔</p>
+
+  <p>Elder Finn explained: "This is called <strong>Coast FIRE</strong> (Financial Independence, Retire Early). Once you have saved enough early, compound interest does all the work for you. You can literally stop contributing and just let it grow." 🚀</p>
+
+  <div class="scene">
+    <div class="scene-label">🎯 COAST FIRE CALCULATION</div>
+    <h4>How Much Do You Need to Never Save Again?</h4>
+    
+    <p><strong>Goal:</strong> $1 million by age 65<br>
+    <strong>Assumption:</strong> 8% annual return</p>
+
+    <p><strong>If you are 25:</strong> Need $46,319 saved TODAY → coast to $1M by 65 (40 years growth)<br>
+    <strong>If you are 35:</strong> Need $100,627 saved TODAY → coast to $1M by 65 (30 years growth)<br>
+    <strong>If you are 45:</strong> Need $215,892 saved TODAY → coast to $1M by 65 (20 years growth)</p>
+
+    <p><em>Translation: A 25-year-old who saves $50K and never adds another dollar will still retire a millionaire. <strong>Time is THAT powerful.</strong></em> ⏰</p>
+  </div>
+
+  <h2><span>📊</span> Compound Frequency Matters</h2>
+  <p>"One more thing," Elder Finn added. "HOW OFTEN compound interest calculates also matters. Daily compounding beats monthly compounding beats annual compounding." 📅</p>
+
+  <div class="growth-chart">
+    <div class="growth-title">📊 $10,000 INVESTED FOR 30 YEARS AT 8% ANNUAL RETURN</div>
+    <div class="growth-bars">
+      <div class="growth-bar-wrap">
+        <div class="growth-bar-label"><span>Annual Compounding</span><span>$100,627</span></div>
+        <div class="growth-bar-bg"><div class="growth-bar-fill" style="width:91%">$100,627</div></div>
+      </div>
+      <div class="growth-bar-wrap">
+        <div class="growth-bar-label"><span>Monthly Compounding</span><span>$109,357</span></div>
+        <div class="growth-bar-bg"><div class="growth-bar-fill" style="width:99%">$109,357</div></div>
+      </div>
+      <div class="growth-bar-wrap">
+        <div class="growth-bar-label"><span>Daily Compounding</span><span>$110,231</span></div>
+        <div class="growth-bar-bg"><div class="growth-bar-fill" style="width:100%">$110,231</div></div>
+      </div>
+    </div>
+    <p style="font-size:0.9rem;color:var(--text-muted);margin-top:16px;text-align:center"><em>Daily compounding earns $9,604 more than annual compounding on the same investment. Free money just from math frequency.</em> 💰</p>
+  </div>
+
+  <div class="gq"><p>"Becoming a millionaire is not about luck, inheritance, or genius. It is about math. Save consistently. Start early. Let compound interest do the heavy lifting. <em>The river flows to the ocean whether you believe in it or not. Ride the current.</em>" 🌊</p></div>
+</section>
+</div>
+
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-badge">Chapter Five</div>
+    <div class="ch-num">05</div>
+    <h1 class="ch-title">The Final Wisdom</h1>
+    <p class="ch-sub">Putting it all together into a life strategy</p>
+  </div>
+</div>
+
+<div class="page">
+<section class="section prose">
+  <h2><span>🧙</span> Elder Finn's Last Lesson</h2>
+  <p>As Elder Finn prepared for his final migration, he gathered all the young salmon for one last teaching. "I have shown you the math. Now let me give you the SYSTEM." 🧙</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">Ages 18-25: Foundation Phase</div>
+      <div class="timeline-content">
+        <h4>Goal: Build the Habit, Even If Amount is Tiny</h4>
+        <p><strong>Action:</strong> Save $50-200/month minimum. Open Roth IRA. Set up automatic transfers.<br>
+        <strong>Why:</strong> You are buying TIME, the most valuable asset. Even $100/month from 20-65 = $565,000 at 8%.<br>
+        <strong>Psychology:</strong> Build the muscle of delayed gratification BEFORE lifestyle inflation hits. 🏋️</p>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">Ages 25-35: Acceleration Phase</div>
+      <div class="timeline-content">
+        <h4>Goal: Increase Contribution Rate with Every Raise</h4>
+        <p><strong>Action:</strong> Save 15-20% of gross income. Max 401k employer match. Kill high-interest debt.<br>
+        <strong>Why:</strong> You are still pre-kids, pre-mortgage. Your expenses are low. ATTACK savings now.<br>
+        <strong>Strategy:</strong> When you get a raise, increase savings FIRST before increasing lifestyle. 📈</p>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">Ages 35-50: Momentum Phase</div>
+      <div class="timeline-content">
+        <h4>Goal: Maximize Contributions, Ride Compound Wave</h4>
+        <p><strong>Action:</strong> Max out retirement accounts ($23,000/year 401k + $7,000/year IRA). Consider taxable brokerage.<br>
+        <strong>Why:</strong> Peak earning years. Kids still young. Compound interest enters explosive phase.<br>
+        <strong>Trap to avoid:</strong> Lifestyle inflation. Just because you CAN afford the luxury car does not mean you SHOULD. 🚗</p>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">Ages 50-65: Coast Phase</div>
+      <div class="timeline-content">
+        <h4>Goal: Protect Capital, Let It Grow</h4>
+        <p><strong>Action:</strong> Shift to more conservative investments. Avoid major risks. Keep contributing but growth is mostly automatic now.<br>
+        <strong>Why:</strong> At 50 with $500K saved, it will become $2.2M by 65 at 8% even with ZERO new contributions.<br>
+        <strong>Psychology:</strong> Do not panic sell during market dips. You have weathered storms before. Stay the course. 🛡️</p>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">Ages 65+: Harvest Phase</div>
+      <div class="timeline-content">
+        <h4>Goal: Live Off 4% Annual Withdrawal</h4>
+        <p><strong>Action:</strong> Withdraw 4% of portfolio each year. Portfolio continues growing at ~6% after inflation.<br>
+        <strong>Math:</strong> $1M portfolio → $40K/year income forever without touching principal.<br>
+        <strong>Legacy:</strong> If you only spend 4%, your wealth KEEPS GROWING. You die wealthier than you retired. Pass it to next generation. 🌳</p>
+      </div>
+    </div>
+  </timeline>
+
+  <h2><span>🎯</span> The Five Principles</h2>
+  <p>Elder Finn distilled everything into five core principles:</p>
+
+  <div class="char-grid">
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">⏰</span><div class="char-info"><div class="char-name">Principle 1: Time Beats Timing</div><div class="char-title">Start Early, Stay In</div></div></div>
+      <div class="char-body"><p>Do not try to time the market. Just BE in the market for as long as possible. 40 years of mediocre returns beats 10 years of great returns. <strong>Calendar time > perfect timing.</strong> 📅</p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">🔁</span><div class="char-info"><div class="char-name">Principle 2: Automate Everything</div><div class="char-title">Remove Willpower from Equation</div></div></div>
+      <div class="char-body"><p>Automatic transfers from paycheck to investment account. You cannot spend what you never see. <strong>Discipline through systems, not willpower.</strong> 🤖</p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">📉</span><div class="char-info"><div class="char-name">Principle 3: Market Crashes Are Sales</div><div class="char-title">Buy When Others Panic</div></div></div>
+      <div class="char-body"><p>2008 crash? 2020 pandemic? 2022 inflation? All buying opportunities for those with cash. <strong>Be greedy when others are fearful.</strong> 💰</p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">🎯</span><div class="char-info"><div class="char-name">Principle 4: Avoid Debt Like Poison</div><div class="char-title">Compound Interest in Reverse Kills</div></div></div>
+      <div class="char-body"><p>Mortgage? Okay (appreciating asset). Student loans? Maybe (income boost). Credit cards at 20%? NEVER. <strong>Do not let compound interest work against you.</strong> ⚫</p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">🧘</span><div class="char-info"><div class="char-name">Principle 5: Boring Wins</div><div class="char-title">Slow and Steady Beat Flashy</div></div></div>
+      <div class="char-body"><p>Index funds. Dollar-cost averaging. Holding for decades. <strong>This is not sexy. It is not exciting. It just works.</strong> Every. Single. Time. 📈</p></div>
+    </div>
+  </div>
+
+  <h2><span>🌊</span> The Ocean Awaits</h2>
+  <p>Elder Finn looked at the young salmon with pride. "You now understand what 90% of humans never learn: <strong>wealth is not about income it is about what you DO with income.</strong>" 🧙</p>
+
+  <div class="scene">
+    <div class="scene-label">📜 THE FINAL TEACHING</div>
+    <h4>One Number to Rule Them All</h4>
+    
+    <p><strong>Your Financial Independence Number:</strong><br>
+    Annual Expenses × 25 = Amount Needed to Retire</p>
+
+    <p><strong>Example:</strong><br>
+    You spend $40,000/year → Need $1,000,000 saved<br>
+    You spend $80,000/year → Need $2,000,000 saved</p>
+
+    <p><strong>Why 25?</strong><br>
+    Because 1/25 = 4%. If you withdraw 4% per year, your portfolio grows at ~6-8% and lasts forever. <em>This is the 4% rule.</em> 📊</p>
+
+    <p><strong>The breakthrough insight:</strong><br>
+    <em>You do not need to become ultra-rich. You just need to save 25x your expenses.</em><br>
+    <strong>Live on $40K? $1M is freedom.<br>
+    Live on $200K? You need $5M.</strong></p>
+
+    <p>💡 <strong>The frugal person with $1M is more financially free than the spender with $3M.</strong></p>
+  </div>
+
+  <div class="viz"><div class="viz-glow"></div><div class="viz-inner">
+    <div class="viz-top"><div class="viz-icon-wrap">🌟</div><div class="viz-meta"><div class="viz-label">The Complete Picture</div><h4>Wealth Building in One Diagram</h4></div></div>
+    <div class="viz-body">
+      <p><strong>Step 1:</strong> Earn income 💼<br>
+      <strong>Step 2:</strong> Live BELOW your means (spend less than you earn) 🏠<br>
+      <strong>Step 3:</strong> Invest the difference automatically 🔁<br>
+      <strong>Step 4:</strong> Compound interest grows it exponentially 📈<br>
+      <strong>Step 5:</strong> Time does the heavy lifting ⏰<br>
+      <strong>Step 6:</strong> Reach 25x annual expenses 🎯<br>
+      <strong>Step 7:</strong> Financial independence (work is optional) 🌊</p>
+
+      <div class="viz-lesson">This is not get-rich-quick. It is get-rich-certain. <strong>The difference between the wealthy and the broke is not income it is what happens to money AFTER it arrives.</strong> One group spends it. One group compounds it. The math does the rest. 🧠</div>
+    </div>
+  </div></div>
+</section>
+
+<div class="think">
+  <div class="think-label">The Final Test 🧠</div>
+  <h4>Can you answer these without looking back?</h4>
+  <p class="q-start">🔢 What is the Rule of 72 and how do you use it?</p><div class="think-line"></div>
+  <p class="q-start">⏰ Why does starting at 25 beat starting at 35 even if you invest less total?</p><div class="think-line"></div>
+  <p class="q-start">⚫ Explain how compound interest works AGAINST you when you carry credit card debt:</p><div class="think-line"></div>
+  <p class="q-start">💰 What is the 4% rule and why does 25x annual expenses = financial independence?</p><div class="think-line"></div>
+  <p class="q-start">🎯 List the three levers of wealth building and which one you have most control over:</p><div class="think-line"></div>
+  <p style="font-weight:800;color:var(--gold);margin-top:14px;font-family:'Nunito',sans-serif;font-size:0.95rem">If you can answer all five, you understand personal finance better than 85% of adults. 🎓</p>
+</div>
+</div>
+
+<section class="finale">
+  <span class="finale-emoji">🐟</span>
+  <h2>The salmon that swims upstream<br><span>does not fight the current forever.</span></h2>
+  <p>Eventually, compound interest becomes the current. It carries you. The first 10 years you swim hard. The next 10 years you swim steady. The final 20 years the river does the work for you. Start early. Stay consistent. Trust exponential math. The ocean of financial freedom awaits.</p>
+  <p style="margin-top:24px;font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:700">🌊 The best time to start was yesterday. The second best time is now. 🌊</p>
+</section>
+
+<footer>
+  <p>"The plans of the diligent lead surely to abundance, but everyone who is hasty comes only to poverty." Proverbs 21:5</p>
+  <div class="brand">Kingdom Builders AI</div>
+  <p style="margin-top:14px;font-family:'Nunito',sans-serif;font-weight:700">Teaching Timeless Wealth Through Timeless Stories</p>
+</footer>
+
+<div style="text-align:center;padding:20px 24px 32px;background:#020A10;border-top:1px solid rgba(212,160,32,0.08);font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:700;color:rgba(255,255,255,0.2);line-height:1.6">
+  To save as PDF: Open this file in your browser → File → Print → "Save as PDF"<br>
+  Works on desktop, iPhone, iPad, and Android.
+</div>
+
+</body>
+</html>

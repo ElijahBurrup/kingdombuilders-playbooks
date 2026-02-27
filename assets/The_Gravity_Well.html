@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Gravity Well — Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#D4A843;--gold-glow:#E8C96A;--gold-pale:#F5E6B8;--gold-soft:rgba(212,168,67,0.06);--purple-deep:#1A0A2E;--purple-dark:#2D1B4E;--purple-mid:#4A2D7A;--purple-accent:#7B4FBF;--purple-light:#B89FDE;--purple-soft:rgba(123,79,191,0.05);--cream:#FDFAF3;--cream-warm:#FAF4E8;--text:#2A1A3E;--text-light:#5A4A6E;--text-muted:#8A7A9E;--white:#FFFFFF;--radius:12px;--shadow-soft:0 2px 12px rgba(26,10,46,0.05);--shadow-mid:0 4px 24px rgba(26,10,46,0.08);--soil:#3E2A1A;--soil-light:#FAF3E8;--soil-warm:#F3E4CE;--soil-border:#C4A67A;--before-bg:#FFF8F6;--before-border:#E8B0A0;--before-text:#6A3A2A;--after-bg:#F6FFF8;--after-border:#A0D8A8;--after-text:#2A4A30}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--cream);line-height:1.78;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Poppins',sans-serif;line-height:1.2}
+.page{max-width:700px;margin:0 auto;padding:0 24px}
+.section{padding:44px 0}
+.prose p{margin-bottom:20px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--purple-deep);font-weight:600}
+.prose h2{font-size:1.35rem;color:var(--purple-deep);margin:36px 0 14px;letter-spacing:-0.01em;display:flex;align-items:center}
+
+/* === COVER with animated gravity rings === */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(165deg,#0E0618 0%,var(--purple-deep) 30%,var(--purple-dark) 70%,#1A0A2E 100%);position:relative;overflow:hidden}
+.gravity-ring{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1px solid rgba(212,168,67,0.06);animation:gravity-pulse 6s ease-in-out infinite}
+.gravity-ring:nth-child(1){width:600px;height:600px;animation-delay:0s;border-color:rgba(212,168,67,0.03)}
+.gravity-ring:nth-child(2){width:440px;height:440px;animation-delay:1s;border-color:rgba(212,168,67,0.05)}
+.gravity-ring:nth-child(3){width:280px;height:280px;animation-delay:2s;border-color:rgba(212,168,67,0.07)}
+.gravity-ring:nth-child(4){width:140px;height:140px;animation-delay:3s;border-color:rgba(212,168,67,0.1)}
+.gravity-core{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);width:20px;height:20px;border-radius:50%;background:radial-gradient(circle,var(--gold) 0%,rgba(212,168,67,0.4) 50%,transparent 100%);box-shadow:0 0 40px rgba(212,168,67,0.15),0 0 80px rgba(212,168,67,0.06);animation:core-glow 4s ease-in-out infinite}
+@keyframes gravity-pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.4}50%{transform:translate(-50%,-50%) scale(1.08);opacity:0.15}}
+@keyframes core-glow{0%,100%{box-shadow:0 0 40px rgba(212,168,67,0.15),0 0 80px rgba(212,168,67,0.06)}50%{box-shadow:0 0 60px rgba(212,168,67,0.25),0 0 120px rgba(212,168,67,0.1)}}
+/* Orbiting particles */
+.orbit-particle{position:absolute;width:4px;height:4px;border-radius:50%;background:var(--gold);opacity:0.4}
+.orbit-particle:nth-child(6){top:40%;left:50%;animation:orbit-1 8s linear infinite}
+.orbit-particle:nth-child(7){top:40%;left:50%;animation:orbit-2 12s linear infinite}
+.orbit-particle:nth-child(8){top:40%;left:50%;animation:orbit-3 6s linear infinite;opacity:0.25}
+@keyframes orbit-1{0%{transform:translate(-50%,-50%) rotate(0deg) translateX(220px) rotate(0deg)}100%{transform:translate(-50%,-50%) rotate(360deg) translateX(220px) rotate(-360deg)}}
+@keyframes orbit-2{0%{transform:translate(-50%,-50%) rotate(45deg) translateX(160px) rotate(-45deg)}100%{transform:translate(-50%,-50%) rotate(405deg) translateX(160px) rotate(-405deg)}}
+@keyframes orbit-3{0%{transform:translate(-50%,-50%) rotate(180deg) translateX(100px) rotate(-180deg)}100%{transform:translate(-50%,-50%) rotate(540deg) translateX(100px) rotate(-540deg)}}
+
+.cover-content{position:relative;z-index:2;padding:40px 24px}
+.cover-badge{display:inline-block;padding:6px 20px;border:1px solid rgba(212,168,67,0.2);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:44px}
+.cover h1{font-family:'Poppins',sans-serif;font-size:clamp(2.4rem,7vw,4.2rem);font-weight:300;color:var(--white);line-height:1.05;margin-bottom:4px}
+.cover h1 strong{font-weight:700;color:var(--gold);display:block}
+.cover-tagline{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:rgba(255,255,255,0.4);margin-top:28px;line-height:1.7}
+.cover-tagline em{color:var(--gold-glow);font-style:normal}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.6rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-top:52px}
+
+.ch-head{background:linear-gradient(170deg,var(--purple-deep),var(--purple-dark));padding:80px 24px 56px;position:relative;overflow:hidden}
+.ch-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 5%,var(--gold) 50%,transparent 95%)}
+.ch-head .page{position:relative;z-index:2}
+.ch-num{font-family:'Poppins',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:6px;text-transform:uppercase;color:var(--gold);opacity:0.8}
+.ch-title{font-family:'Poppins',sans-serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:700;color:var(--white);margin:10px 0 6px;letter-spacing:-0.01em}
+.ch-sub{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:var(--gold-glow);opacity:0.7}
+
+.ribbon{text-align:center;padding:20px 24px;background:linear-gradient(135deg,var(--gold-soft),rgba(212,168,67,0.06));border-top:1.5px solid rgba(212,168,67,0.15);border-bottom:1.5px solid rgba(212,168,67,0.15)}
+.ribbon p{font-family:'Lora',serif;font-size:0.82rem;font-style:italic;color:var(--text-muted);max-width:480px;margin:0 auto}
+
+.mission{text-align:center;padding:44px 36px;margin:36px 0;background:linear-gradient(140deg,var(--purple-deep),var(--purple-dark));border-radius:14px;position:relative;overflow:hidden;border:3px solid rgba(212,168,67,0.3);box-shadow:0 0 0 1px rgba(212,168,67,0.08),0 4px 12px rgba(74,45,122,0.2),0 16px 40px rgba(26,10,46,0.16)}
+.mission::before{content:'';position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:280px;height:280px;background:radial-gradient(circle,rgba(212,168,67,0.08) 0%,transparent 70%);border-radius:50%}
+.mission-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;position:relative}
+.mission p{font-family:'Poppins',sans-serif;font-size:clamp(1.05rem,2.8vw,1.4rem);font-weight:600;color:var(--white);line-height:1.45;position:relative}
+.mission p em{color:var(--gold-glow);font-style:normal}
+
+.id-card{margin:32px 0;border-radius:14px;overflow:hidden;border:4px solid var(--gold);box-shadow:0 2px 6px rgba(212,168,67,0.2),0 8px 24px rgba(212,168,67,0.12),0 20px 48px rgba(26,10,46,0.1)}
+.id-card-head{padding:14px 24px;background:linear-gradient(90deg,var(--gold),var(--gold-glow));font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--purple-deep)}
+.id-card-body{padding:28px;background:var(--white)}
+.id-card-body h3{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--purple-deep);margin-bottom:14px}
+.id-old{font-size:0.88rem;color:var(--text-muted);text-decoration:line-through;text-decoration-color:rgba(138,122,158,0.4);margin-bottom:10px;line-height:1.5}
+.id-new{font-size:1rem;font-weight:500;color:var(--purple-deep);font-style:italic;line-height:1.5}
+
+.viz{margin:48px 0 36px;padding:0;position:relative;border-radius:16px;overflow:hidden;border:2.5px solid var(--purple-accent);box-shadow:0 2px 4px rgba(123,79,191,0.12),0 8px 24px rgba(123,79,191,0.1),0 24px 56px rgba(26,10,46,0.12)}
+.viz-inner{border-radius:13px;overflow:hidden;position:relative}
+.viz-top{background:rgba(123,79,191,0.12);padding:22px 28px 20px;display:flex;align-items:center;gap:16px;border-bottom:1.5px solid rgba(123,79,191,0.12)}
+.viz-icon-wrap{width:56px;height:56px;border-radius:50%;border:2px solid rgba(123,79,191,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(145deg,#fff,rgba(245,230,255,0.5));box-shadow:0 3px 12px rgba(123,79,191,0.1);position:relative;z-index:1}
+.viz-icon-wrap svg{width:28px;height:28px}
+.viz-meta{flex:1;position:relative;z-index:1}
+.viz-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--purple-accent);margin-bottom:2px}
+.viz h4{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:var(--purple-deep)}
+.viz-body{padding:28px 28px 24px;background:linear-gradient(170deg,#FEFBFF 0%,#FFFCF7 40%,#FAF6FF 100%)}
+.viz-body p{font-size:0.95rem;color:var(--text-light);line-height:1.72;margin-bottom:14px}
+.viz-body p:last-child{margin-bottom:0}
+.viz-trigger{margin-top:20px;padding:16px 20px;background:linear-gradient(135deg,rgba(212,168,67,0.06),rgba(212,168,67,0.1));border:1.5px solid rgba(212,168,67,0.18);border-radius:10px;font-family:'Poppins',sans-serif;font-size:0.78rem;font-weight:700;color:var(--text);text-align:center;line-height:1.5}
+.viz-glow{position:absolute;top:-8px;left:-8px;right:-8px;bottom:-8px;border-radius:20px;background:linear-gradient(135deg,rgba(123,79,191,0.06),transparent,rgba(123,79,191,0.04));z-index:-1;pointer-events:none}
+
+.ba-pair{margin:32px 0;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:640px){.ba-pair{grid-template-columns:1fr}}
+.ba-card{border-radius:12px;overflow:hidden;border:none}
+.ba-head{padding:12px 20px;font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.ba-before{background:linear-gradient(170deg,#FFF6F4 0%,#FFF0EC 100%)}
+.ba-before .ba-head{background:linear-gradient(90deg,rgba(160,56,40,0.12),rgba(160,56,40,0.06));color:var(--before-text)}
+.ba-after{background:linear-gradient(170deg,#F2FFF6 0%,#EDFFF2 100%)}
+.ba-after .ba-head{background:linear-gradient(90deg,rgba(42,128,64,0.12),rgba(42,128,64,0.06));color:var(--after-text)}
+.ba-dot{width:8px;height:8px;border-radius:50%}
+.ba-before .ba-dot{background:var(--before-border)}
+.ba-after .ba-dot{background:var(--after-border)}
+.ba-body{padding:18px 20px;font-size:0.88rem;line-height:1.65}
+.ba-before .ba-body{color:var(--before-text)}
+.ba-after .ba-body{color:var(--after-text)}
+
+.adventure{margin:36px 0;border-radius:16px;overflow:hidden;box-shadow:0 4px 16px rgba(74,45,122,0.08),0 12px 32px rgba(26,10,46,0.08);background:var(--white)}
+.adv-head{padding:20px 28px;background:linear-gradient(135deg,var(--purple-deep) 0%,var(--purple-dark) 50%,rgba(74,45,122,0.95) 100%);display:flex;align-items:center;gap:16px;position:relative;overflow:hidden}
+.adv-head::before{content:'';position:absolute;top:-30%;right:-10%;width:180px;height:180px;background:radial-gradient(circle,rgba(212,168,67,0.1) 0%,transparent 70%);border-radius:50%}
+.adv-head-icon{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-glow));display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 12px rgba(212,168,67,0.35)}
+.adv-head-icon svg{width:22px;height:22px;color:var(--purple-deep)}
+.adv-head-text{flex:1;position:relative;z-index:1}
+.adv-head-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);opacity:0.7}
+.adv-head-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#fff;margin-top:2px}
+.adv-step{padding:22px 28px;display:grid;grid-template-columns:48px 1fr;gap:18px;align-items:start}
+.adv-step:nth-child(odd){background:var(--white)}
+.adv-step:nth-child(even){background:rgba(123,79,191,0.03)}
+.step-n{width:44px;height:44px;border-radius:50%;background:linear-gradient(145deg,var(--purple-deep),var(--purple-mid));display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-size:0.8rem;font-weight:700;color:var(--gold);box-shadow:0 3px 10px rgba(26,10,46,0.15);margin-top:2px}
+.step-c p{font-size:0.92rem;line-height:1.72;margin:0 0 8px;color:var(--text)}
+.step-c p:last-child{margin-bottom:0}
+.step-c em{color:var(--text-light)}
+.step-c .tag-you{font-family:'Poppins',sans-serif;font-weight:700;color:var(--purple-deep);font-size:0.8rem;display:inline-block;padding:2px 10px;background:rgba(123,79,191,0.08);border-radius:4px;margin-bottom:4px}
+.step-c .tag-result{font-family:'Poppins',sans-serif;font-weight:700;color:var(--gold);font-size:0.8rem;display:inline-block;padding:2px 10px;background:rgba(212,168,67,0.1);border-radius:4px;margin-bottom:4px}
+.adv-step:last-child{background:linear-gradient(135deg,rgba(212,168,67,0.04),rgba(212,168,67,0.08))}
+
+.think{margin:36px 0;padding:32px;background:linear-gradient(145deg,var(--cream-warm),rgba(212,168,67,0.04));border:2.5px dashed var(--gold);border-radius:14px;position:relative;box-shadow:0 2px 6px rgba(212,168,67,0.1),0 8px 20px rgba(212,168,67,0.06)}
+.think::before{content:'\2726';position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--cream);padding:0 14px;font-size:1rem;color:var(--gold)}
+.think-label{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);text-align:center;margin-bottom:10px}
+.think h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--purple-deep);text-align:center;margin-bottom:12px}
+.think p{font-size:0.88rem;text-align:center;color:var(--text-light);margin-bottom:8px}
+.think-line{border-bottom:1px solid rgba(212,168,67,0.25);height:30px}
+
+.insight{margin:32px 0;padding:28px 32px;background:linear-gradient(140deg,var(--purple-deep),var(--purple-dark));border-radius:14px;border:2px solid rgba(212,168,67,0.25);border-left:5px solid var(--gold);position:relative;overflow:hidden;box-shadow:0 2px 6px rgba(74,45,122,0.15),0 10px 28px rgba(26,10,46,0.18)}
+.insight::before{content:'';position:absolute;top:-50%;right:-20%;width:200px;height:200px;background:radial-gradient(circle,rgba(212,168,67,0.06) 0%,transparent 70%);border-radius:50%}
+.insight p{font-family:'Lora',serif;font-size:1.02rem;font-style:italic;color:var(--white);line-height:1.72;position:relative;z-index:2}
+.insight em{color:var(--gold-glow);font-style:normal;font-weight:600}
+
+.gq{margin:32px 0;text-align:center;padding:32px 24px;position:relative;background:linear-gradient(160deg,rgba(212,168,67,0.02),rgba(212,168,67,0.05));border-radius:14px;border:1.5px solid rgba(212,168,67,0.12)}
+.gq::before,.gq::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:48px;height:1.5px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.gq::before{top:0}.gq::after{bottom:0}
+.gq p{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:var(--purple-mid);line-height:1.6;max-width:480px;margin:0 auto}
+
+.inst{margin:28px 0;padding:18px 24px;background:linear-gradient(90deg,var(--purple-soft),var(--gold-soft));border-left:3px solid var(--purple-accent);border-radius:0 var(--radius) var(--radius) 0;box-shadow:var(--shadow-soft)}
+.inst p{font-family:'Poppins',sans-serif;font-size:0.78rem;color:var(--purple-mid);line-height:1.55;margin:0}
+.inst strong{color:var(--purple-deep)}
+
+.h2-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--purple-mid),var(--purple-accent));margin-right:10px;vertical-align:middle;box-shadow:0 2px 6px rgba(74,45,122,0.15)}
+.h2-icon svg{width:14px;height:14px;color:var(--gold)}
+
+.dd{margin:28px 0;padding:24px 28px;border-radius:12px;border:none;border-left:4px solid var(--purple-accent);box-shadow:none}
+.dd:nth-child(odd){background:rgba(123,79,191,0.04)}
+.dd:nth-child(even){background:var(--white)}
+.dd h4{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--purple-deep);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.dd h4 svg{width:16px;height:16px;color:var(--purple-accent);flex-shrink:0}
+.dd .sub{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:500;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px}
+.dd p{font-size:0.9rem;color:var(--text-light);line-height:1.68;margin-bottom:8px}
+.dd p:last-child{margin-bottom:0}
+
+/* === BREATHE BREAK === */
+.breathe{margin:48px 0;text-align:center;padding:56px 24px;position:relative;background:linear-gradient(160deg,rgba(123,79,191,0.04),rgba(212,168,67,0.03));border-radius:16px;border:2px solid rgba(123,79,191,0.08)}
+.breathe-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1.5px solid rgba(212,168,67,0.1)}
+.breathe-ring:nth-child(1){width:160px;height:160px;animation:breathe-pulse 6s ease-in-out infinite}
+.breathe-ring:nth-child(2){width:110px;height:110px;animation:breathe-pulse 6s ease-in-out infinite 1.5s}
+.breathe-ring:nth-child(3){width:60px;height:60px;animation:breathe-pulse 6s ease-in-out infinite 3s}
+@keyframes breathe-pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.35}50%{transform:translate(-50%,-50%) scale(1.2);opacity:0.08}}
+.breathe-content{position:relative;z-index:2}
+.breathe-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--purple-accent);opacity:0.5;margin-bottom:8px}
+.breathe h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--purple-deep);margin-bottom:8px}
+.breathe p{font-family:'Lora',serif;font-size:0.88rem;font-style:italic;color:var(--text-muted);max-width:400px;margin:0 auto;line-height:1.6}
+
+/* === ANIMATED WELL DIAGRAM === */
+.well-diagram{margin:40px 0;padding:48px 24px;background:var(--purple-deep);border-radius:16px;position:relative;overflow:hidden;min-height:260px;display:flex;align-items:center;justify-content:center}
+.well-svg{width:100%;max-width:500px;height:200px}
+.well-curve{fill:none;stroke:var(--gold);stroke-width:2;opacity:0.6}
+.well-dot{fill:var(--gold);animation:fall-in 3s ease-in infinite}
+@keyframes fall-in{0%{transform:translateY(0);opacity:1}50%{transform:translateY(60px);opacity:0.8}100%{transform:translateY(0);opacity:1}}
+.well-label{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;fill:rgba(255,255,255,0.3)}
+
+/* === ORBIT MAP === */
+.orbit-map{margin:36px 0;padding:32px;background:var(--purple-deep);border-radius:16px;overflow:hidden}
+.orbit-title{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);opacity:0.6;text-align:center;margin-bottom:20px}
+.orbit-row{display:grid;grid-template-columns:1fr 120px;align-items:center;gap:16px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.orbit-row:last-child{border-bottom:none}
+.orbit-name{font-family:'Poppins',sans-serif;font-size:0.82rem;font-weight:600;color:var(--white)}
+.orbit-sub{font-family:'Lora',serif;font-size:0.72rem;font-style:italic;color:rgba(255,255,255,0.3);margin-top:2px}
+.orbit-bar-bg{height:10px;border-radius:5px;background:rgba(255,255,255,0.06);overflow:hidden}
+.orbit-bar-fill{height:100%;border-radius:5px;transition:width 0.5s}
+
+.prompt{margin:32px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(212,168,67,0.2);box-shadow:0 2px 6px rgba(26,10,46,0.2),0 10px 28px rgba(26,10,46,0.18)}
+.prompt-head{padding:12px 20px;background:linear-gradient(90deg,var(--purple-deep),var(--purple-dark));font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--gold)}
+.prompt-body{padding:22px 24px;background:#160D26;color:#C0B0D8;font-family:'Lora',serif;font-size:0.88rem;line-height:1.72}
+.prompt-body strong{color:var(--gold-glow)}
+
+.finale{text-align:center;padding:80px 24px;background:linear-gradient(170deg,var(--purple-deep),#0E0618);position:relative;overflow:hidden}
+.finale h2{font-family:'Poppins',sans-serif;font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;color:var(--white);margin-bottom:8px}
+.finale h2 span{color:var(--gold)}
+.finale p{font-family:'Lora',serif;font-size:0.95rem;color:rgba(255,255,255,0.35);max-width:460px;margin:16px auto;line-height:1.6}
+footer{text-align:center;padding:36px 24px;background:#080410}
+footer p{font-family:'Lora',serif;font-size:0.78rem;font-style:italic;color:rgba(212,168,67,0.2);margin-bottom:14px}
+footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:normal;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.1)}
+
+@media print{
+  @page{margin:18mm 16mm 22mm 16mm;@bottom-center{content:counter(page);font-family:'Poppins',Helvetica,sans-serif;font-size:8pt;color:#8A7A9E}}
+  body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .cover{min-height:auto;padding:100px 24px;break-after:page}
+  .ch-head{break-before:page;padding:60px 24px 44px}
+  .think,.adventure,.viz,.ba-pair,.id-card,.mission,.insight,.dd,.breathe,.orbit-map,.well-diagram,.prompt{break-inside:avoid}
+  .gravity-ring,.gravity-core,.orbit-particle,.breathe-ring{animation:none!important}
+  .section{padding:40px 0}
+}
+</style>
+</head>
+<body>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="ico-well" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.2" fill="none"/><circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1" fill="none" opacity="0.5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3" stroke="currentColor" stroke-width="0.7" opacity="0.25"/></symbol>
+  <symbol id="ico-orbit" viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="9" ry="5" stroke="currentColor" stroke-width="1.2" fill="none" transform="rotate(-20 12 12)"/><circle cx="12" cy="12" r="2" fill="currentColor" opacity="0.4"/><circle cx="18" cy="9" r="1.2" fill="currentColor" opacity="0.7"/></symbol>
+  <symbol id="ico-anchor" viewBox="0 0 24 24"><circle cx="12" cy="6" r="3" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M12 9v11M8 20c0-2 4-3 4-3s4 1 4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/></symbol>
+  <symbol id="ico-depth" viewBox="0 0 24 24"><path d="M12 3v18M8 7l4-4 4 4M8 17l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+  <symbol id="ico-shield" viewBox="0 0 24 24"><path d="M12 3L4 7v5c0 5 3.5 9 8 11 4.5-2 8-6 8-11V7z" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M12 8v5M12 16h0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="ico-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5" fill="none"/></symbol>
+  <symbol id="ico-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M16 8l-5.5 2.5L8 16l5.5-2.5z" stroke="currentColor" stroke-width="1.2" fill="none"/><circle cx="12" cy="12" r="1" fill="currentColor"/></symbol>
+  <symbol id="ico-flame" viewBox="0 0 24 24"><path d="M12 3c-1 3-3 5-3 8a3 3 0 006 0c0-3-2-5-3-8z" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M8 20h8M10 17v3M14 17v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="ico-magnet" viewBox="0 0 24 24"><path d="M4 8h4v8a4 4 0 008 0V8h4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 8h4M16 8h4" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.3"/></symbol>
+  <symbol id="ico-noise" viewBox="0 0 24 24"><path d="M4 12h2l2-4 2 8 2-6 2 4 2-2 2 3h2" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="ico-spiral" viewBox="0 0 24 24"><path d="M12 12a1 1 0 012 0 3 3 0 01-6 0 5 5 0 0110 0 7 7 0 01-14 0 9 9 0 0118 0" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round"/></symbol>
+  <symbol id="ico-mountain" viewBox="0 0 24 24"><path d="M4 20l6-14 3 6 3-4 4 12z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/></symbol>
+  <symbol id="ico-drop" viewBox="0 0 24 24"><path d="M12 3c-2 4-6 7-6 11a6 6 0 0012 0c0-4-4-7-6-11z" stroke="currentColor" stroke-width="1.5" fill="none"/></symbol>
+</svg>
+
+<!-- ===== COVER ===== -->
+<section class="cover">
+  <div class="gravity-ring"></div>
+  <div class="gravity-ring"></div>
+  <div class="gravity-ring"></div>
+  <div class="gravity-ring"></div>
+  <div class="gravity-core"></div>
+  <div class="orbit-particle"></div>
+  <div class="orbit-particle"></div>
+  <div class="orbit-particle"></div>
+  <div class="cover-content">
+    <div class="cover-badge">Kingdom Builders AI</div>
+    <h1>The Gravity<strong>Well</strong></h1>
+    <p class="cover-tagline">Why your attention goes where it goes.<br>And how to bend it toward what <em>actually matters.</em></p>
+    <p class="cover-author">By Elijah AI</p>
+  </div>
+</section>
+
+<!-- ===== INTRODUCTION ===== -->
+<div class="ch-head"><div class="page">
+  <div class="ch-num">Before We Begin</div>
+  <h2 class="ch-title">A Warning</h2>
+  <p class="ch-sub">This is not something you finish. This is something you enter.</p>
+</div></div>
+
+<div class="page prose section">
+  <p>Every productivity system you have ever tried has the same fatal flaw: it assumes you are in control of your own attention. You are not.</p>
+  <p>Right now, invisible forces are pulling your focus in directions you did not choose. Your inbox has a gravitational field. Social media has a gravitational field. Other people's urgency has a gravitational field. Each one is pulling you into its orbit, and you are orbiting their priorities instead of your own. You feel busy. You feel productive. But at midnight, when the noise goes quiet, you cannot name the thing you built today that will still matter in a year.</p>
+  <p>This is not a discipline problem. It is a <strong>physics</strong> problem.</p>
+
+  <div class="insight"><p>Every self-help book tells you to <em>focus harder.</em> That is like telling someone caught in a current to <em>swim harder.</em> The problem is not your effort. The problem is the gravitational field you are swimming inside. Change the field, and the effort takes care of itself.</p></div>
+
+  <p>What you are about to experience is not a productivity system. It is a model of the invisible forces that control where your attention, energy, and life actually go — and a set of practices for building a gravity well so deep inside yourself that the external pulls lose their power.</p>
+
+  <div class="breathe">
+    <div class="breathe-ring"></div>
+    <div class="breathe-ring"></div>
+    <div class="breathe-ring"></div>
+    <div class="breathe-content">
+      <div class="breathe-label">Pause Here</div>
+      <h4>This is not a race.</h4>
+      <p>Put away everything else. If you cannot give this thirty uninterrupted minutes, close it and come back when you can. Depth requires arrival.</p>
+    </div>
+  </div>
+
+  <div class="inst"><p><strong>How to use this guide:</strong> Read slowly. When you reach a visualization, stop reading and let the image form. When you reach an exercise, do it — do not skip ahead. When you reach a breathing break, actually breathe. This guide practices what it teaches: depth over speed. If you rush through it, you have already proved its thesis.</p></div>
+</div>
+
+<!-- ===== CHAPTER 1: THE INVISIBLE FORCE ===== -->
+<div class="ch-head"><div class="page">
+  <div class="ch-num">Chapter One</div>
+  <h2 class="ch-title">The Invisible Force</h2>
+  <p class="ch-sub">Everything in your life has a gravitational field. Including the things you did not choose.</p>
+</div></div>
+
+<div class="ribbon"><p>"Above all else, guard your heart, for everything you do flows from it." — Proverbs 4:23</p></div>
+
+<div class="page prose section">
+
+  <div class="mission"><div class="mission-label">The Thesis</div><p>Your attention does not go where you <em>decide.</em><br>It goes where the <em>gravity</em> is strongest.</p></div>
+
+  <p>In physics, gravity is simple: the more mass an object has, the more it pulls other objects toward it. The sun does not chase the planets. The planets orbit the sun because the sun has more mass than anything else in the system. It does not try. It does not earn their attention. It simply has enough density to bend the space around it.</p>
+  <p>Your life works the same way. Every person, obligation, app, fear, and ambition in your life has a gravitational field. The ones with the most mass — the most emotional weight, the most urgency, the most repetition — pull your attention toward them automatically. You do not decide to check your phone forty times a day. Your phone has more gravitational mass than whatever you were working on. So you orbit it.</p>
+
+  <div class="id-card">
+    <div class="id-card-head">YOUR NEW IDENTITY</div>
+    <div class="id-card-body">
+      <h3>Who you were versus who you are now:</h3>
+      <p class="id-old">"I need more discipline to focus on what matters."</p>
+      <p class="id-new">"I am not lacking discipline. I am orbiting the wrong things. The solution is not willpower. It is building a gravity well so deep inside my purpose that everything else loses its pull."</p>
+    </div>
+  </div>
+
+  <div class="ba-pair">
+    <div class="ba-card ba-before">
+      <div class="ba-head"><div class="ba-dot"></div> Before: The Orbiter</div>
+      <div class="ba-body">Wakes up and immediately checks the phone. Spends the morning responding to other people's gravity. Busy all day. At midnight, cannot name one thing they chose to build. Feels like running on a hamster wheel that someone else is spinning.</div>
+    </div>
+    <div class="ba-card ba-after">
+      <div class="ba-head"><div class="ba-dot"></div> After: The Well</div>
+      <div class="ba-body">Wakes up and feels the pull of their own center. Moves toward it before anything else gets a chance to claim them. External noise orbits them. At midnight, can name exactly what they deepened today. Feels like gravity, not effort.</div>
+    </div>
+  </div>
+
+  <div class="viz"><div class="viz-glow"></div><div class="viz-inner">
+    <div class="viz-top">
+      <div class="viz-icon-wrap"><svg style="color:var(--gold)"><use href="#ico-well"/></svg></div>
+      <div class="viz-meta"><div class="viz-label">Visualization</div><h4>The Orbit Map</h4></div>
+    </div>
+    <div class="viz-body">
+      <p>Picture yourself floating in space. Around you, objects orbit in concentric rings. Each object is something that pulls your attention: your phone, your inbox, your boss's latest request, social media, the news, a half-finished project, a worry about money.</p>
+      <p>Now look down. <strong>Where is your center?</strong> Is there a core — a dense, bright, unmistakable point of purpose — that everything else orbits around? Or are you just another object, drifting between other objects' gravitational fields, bouncing from one orbit to the next?</p>
+      <p>Most people, when they are honest, realize they have no center. They are a satellite with no home planet. The inbox pulls them in the morning. Social media grabs them at noon. Someone else's emergency hijacks the afternoon. They orbit everything and nothing.</p>
+      <div class="viz-trigger">Close your eyes. See the objects orbiting you. Name each one. Then look for your center. Is it there?</div>
+    </div>
+  </div></div>
+
+  <div class="think">
+    <div class="think-label">Your Turn: Map Your Orbits</div>
+    <h4>What is pulling you right now?</h4>
+    <p>Write down everything that has claimed your attention in the last 24 hours. Not what you wanted to focus on. What actually pulled you.</p>
+    <div class="think-line"></div><div class="think-line"></div><div class="think-line"></div><div class="think-line"></div>
+    <p>Now circle the ones you chose. Cross out the ones that chose you.</p>
+    <p style="font-weight:500;color:var(--gold);margin-top:10px;">The ratio tells the truth your calendar will not.</p>
+  </div>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-orbit"/></svg></span>The Three Types of Gravity</h2>
+  <p>Not all pulls are the same. Understanding what kind of gravity is acting on you is the first step to breaking free of the orbits you did not choose.</p>
+
+  <div class="dd"><h4><svg><use href="#ico-noise"/></svg>Noise Gravity</h4><div class="sub">High frequency, zero depth</div><p>Notifications. News cycles. Group chats where nothing is decided. Noise gravity feels urgent but leaves no residue. It is the gravitational equivalent of static: loud, constant, meaningless. You can orbit noise gravity for years and have nothing to show for it except exhaustion and the vague sense that you were always busy but never building.</p></div>
+  <div class="dd"><h4><svg><use href="#ico-magnet"/></svg>Obligation Gravity</h4><div class="sub">Other people's mass, not yours</div><p>Your boss's priority list. Your mother-in-law's expectations. The committee you volunteered for two years ago and never left. Obligation gravity is real mass — but it is <em>someone else's</em> mass. You orbit it not because it matters to you, but because breaking orbit feels like failure. The guilt is the gravity.</p></div>
+  <div class="dd"><h4><svg><use href="#ico-flame"/></svg>Core Gravity</h4><div class="sub">Deep, slow, permanent</div><p>The thing you were made to build. The skill you are developing. The relationship that makes you more than you are alone. The faith that grounds everything. Core gravity does not shout. It hums. It is quieter than noise gravity and less urgent than obligation gravity. And that is why it loses — not because it lacks mass, but because it lacks <strong>volume.</strong> The task of this entire guide is to turn up the volume on your core until it drowns out everything else.</p></div>
+
+  <div class="breathe">
+    <div class="breathe-ring"></div>
+    <div class="breathe-ring"></div>
+    <div class="breathe-ring"></div>
+    <div class="breathe-content">
+      <div class="breathe-label">Pause Here</div>
+      <h4>Let that settle.</h4>
+      <p>You just read three categories. Your brain is already sorting your life into them. Let it. Do not rush past this moment. The sorting is the work.</p>
+    </div>
+  </div>
+
+  <div class="think">
+    <div class="think-label">Your Turn: Name the Pull</div>
+    <h4>Categorize your orbits</h4>
+    <p>From the list you made above, sort each one:</p>
+    <p style="text-align:left;font-weight:600;color:var(--text-muted);margin-top:8px;">Noise Gravity (loud, no depth):</p><div class="think-line"></div><div class="think-line"></div>
+    <p style="text-align:left;font-weight:600;color:var(--purple-accent);">Obligation Gravity (real but not yours):</p><div class="think-line"></div><div class="think-line"></div>
+    <p style="text-align:left;font-weight:600;color:var(--gold);">Core Gravity (quiet, deep, yours):</p><div class="think-line"></div><div class="think-line"></div>
+    <p style="font-weight:500;color:var(--gold);margin-top:10px;">If your core list is the shortest, you now understand the problem.</p>
+  </div>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-eye"/></svg></span>See It In Action</h2>
+
+  <div class="adventure">
+    <div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-well"/></svg></div><div class="adv-head-text"><div class="adv-head-label">See It In Action</div><div class="adv-head-title">The Morning That Changed</div></div></div>
+    <div class="adv-body">
+      <div class="adv-step"><div class="step-n">◆</div><div class="step-c"><p>6:15 AM. The alarm goes off. The old version of you reaches for the phone on the nightstand. Fourteen notifications. Two emails marked urgent. A news headline that triggers a spike of cortisol. Within ninety seconds of waking up, you are already orbiting other people's gravity. Your day has been claimed before your feet touch the floor.</p></div></div>
+      <div class="adv-step"><div class="step-n">1</div><div class="step-c"><p class="tag-you">YOU see the orbit map.</p><p>Before your hand touches the phone, you pause. You picture the concentric rings. The notifications are out there — small, bright, noisy, orbiting fast. But at the center, your core is glowing. The thing you are building. The person you are becoming. It hums. It has been waiting all night for you to return.</p></div></div>
+      <div class="adv-step"><div class="step-n">2</div><div class="step-c"><p class="tag-you">YOU feed the core first.</p><p>Thirty minutes. Not on the phone. Not on email. On the one thing that has the deepest gravitational mass in your life. Maybe it is writing. Maybe it is prayer. Maybe it is building the business that will change everything. Whatever it is, you give it the first and best thirty minutes of your day — before the noise has a chance to claim you.</p></div></div>
+      <div class="adv-step"><div class="step-n">3</div><div class="step-c"><p>When you finally open the phone at 6:50, something is different. The notifications are still there. But they feel lighter. Less urgent. Less gravitational. Because you already fed the core. The densest object in your system has been strengthened, and now everything else orbits <em>it</em> instead of the other way around.</p></div></div>
+      <div class="adv-step"><div class="step-n">✦</div><div class="step-c"><p class="tag-result">By 9 PM, you can name it.</p><p>The thing you built today. The thirty minutes that turned into an hour because once you entered the well, you did not want to leave. The noise was still there all day. But it orbited you. For the first time in months, you did not orbit it.</p></div></div>
+    </div>
+  </div>
+
+  <div class="gq"><p>"You do not need more willpower. You need more mass. Build something so dense inside yourself that the noise cannot compete."</p></div>
+</div>
+
+<!-- ===== CHAPTER 2: BUILDING THE WELL ===== -->
+<div class="ch-head"><div class="page">
+  <div class="ch-num">Chapter Two</div>
+  <h2 class="ch-title">Building the Well</h2>
+  <p class="ch-sub">Depth is not achieved by effort. It is achieved by returning.</p>
+</div></div>
+
+<div class="ribbon"><p>"Let your eyes look directly forward, and your gaze be straight before you." — Proverbs 4:25</p></div>
+
+<div class="page prose section">
+
+  <div class="mission"><div class="mission-label">The Thesis</div><p>A gravity well is not built in a day.<br>It is built by <em>returning to the same place</em> until the ground gives way.</p></div>
+
+  <p>In physics, a gravity well is a depression in spacetime created by mass. The more mass you concentrate in one place, the deeper the well becomes, and the harder it is for anything nearby to escape its pull. A shallow well loses objects easily. A deep well holds everything.</p>
+  <p>Your purpose works the same way. Every time you return to the thing that matters most — the project, the practice, the relationship, the craft — you add mass. The well deepens. The first few times, it is shallow. Distractions escape easily. You lose focus after ten minutes. But if you keep returning, the well gets deeper. Twenty minutes. Then forty. Then you look up and two hours have passed and you did not notice because the well was so deep that nothing else could reach you.</p>
+  <p>This is not discipline. This is <strong>geology.</strong></p>
+
+  <div class="viz"><div class="viz-glow"></div><div class="viz-inner">
+    <div class="viz-top">
+      <div class="viz-icon-wrap"><svg style="color:var(--gold)"><use href="#ico-depth"/></svg></div>
+      <div class="viz-meta"><div class="viz-label">Visualization</div><h4>The Deepening</h4></div>
+    </div>
+    <div class="viz-body">
+      <p>Picture a landscape. Flat, dry, hard-packed earth. Nothing stays here. Rain falls and runs off. Wind blows and moves everything sideways. This is your attention before the well: flat, reactive, scattered.</p>
+      <p>Now picture yourself standing in one place. Every day, you dig. Not dramatically. Not heroically. You just push a shovel into the earth and remove a scoop of dirt. Day one: a shallow impression. Day seven: a noticeable dip. Day thirty: a hole deep enough to sit in. Day ninety: a well. Water collects in it now — naturally, without effort. Ideas flow toward it. Energy pools. Focus gathers. Not because you forced it. Because <strong>the ground is shaped to hold it.</strong></p>
+      <p>This is what it feels like to have a gravity well. Things stop running off. They stop scattering. They collect in the place you built for them.</p>
+      <div class="viz-trigger">Return to the same place → Dig one scoop → The well deepens → Focus collects naturally.</div>
+    </div>
+  </div></div>
+
+  <div class="breathe">
+    <div class="breathe-ring"></div>
+    <div class="breathe-ring"></div>
+    <div class="breathe-ring"></div>
+    <div class="breathe-content">
+      <div class="breathe-label">Pause Here</div>
+      <h4>You are halfway through.</h4>
+      <p>Stand up. Walk to a window. Look at something far away for thirty seconds. When you come back, you will read with fresh eyes. The well does not reward speed. It rewards presence.</p>
+    </div>
+  </div>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-anchor"/></svg></span>The Four Laws of the Well</h2>
+  <p>These are not suggestions. They are physics. Violate them and the well stays shallow no matter how hard you work.</p>
+
+  <div class="dd"><h4><svg><use href="#ico-drop"/></svg>Law 1: Mass Comes from Returning</h4><div class="sub">Not from intensity</div><p>One hour every day for thirty days creates more gravitational mass than thirty hours in a single weekend. The well does not care about your sprints. It cares about your consistency. Each return adds a layer. Each layer makes the next return easier. Miss a day and the edges erode. Miss a week and you are starting over. The compound interest of attention is the most powerful force in personal development, and almost nobody uses it because it looks boring from the outside.</p></div>
+  <div class="dd"><h4><svg><use href="#ico-shield"/></svg>Law 2: Depth Requires Borders</h4><div class="sub">A well without walls is just a puddle</div><p>You cannot dig a well if every passing stream floods it with silt. The borders of your well are the things you say no to. Every no deepens the walls. Every yes to noise widens the mouth until it is too shallow to hold anything. This is why the most focused people you know also seem to be the most boring. They are not boring. They have walls. And inside those walls, the water is deep enough to dive in.</p></div>
+  <div class="dd"><h4><svg><use href="#ico-spiral"/></svg>Law 3: The Well Pulls Harder as It Deepens</h4><div class="sub">Momentum is gravitational</div><p>The first week is the hardest. You sit down and the well is shallow and every distraction has more pull than your work. But if you survive the first week — if you keep showing up and digging — something shifts around day eight or nine. The well has enough mass to start pulling <em>you</em> toward it. You wake up thinking about it. You find yourself drawn to it during idle moments. This is not obsession. It is gravity. You built something dense enough to pull you toward itself.</p></div>
+  <div class="dd"><h4><svg><use href="#ico-mountain"/></svg>Law 4: One Well Beats Ten Puddles</h4><div class="sub">Scattered effort creates no gravity</div><p>Ten shallow interests create no gravitational field. One deep well bends spacetime around it. This is the hardest law because it requires choosing. Most people keep ten puddles because choosing one well means admitting the other nine are not the center. But physics does not negotiate. Gravity comes from density, and density comes from concentration. Pick one. Go deep. Let the others orbit.</p></div>
+
+  <div class="think">
+    <div class="think-label">Your Turn: Name Your Well</div>
+    <h4>What is the one thing?</h4>
+    <p>If you could only deepen one area of your life for the next ninety days — one skill, one project, one relationship, one calling — what would it be?</p>
+    <div class="think-line"></div>
+    <p>Why this one?</p>
+    <div class="think-line"></div><div class="think-line"></div>
+    <p>What does it look like after ninety days of daily returning?</p>
+    <div class="think-line"></div><div class="think-line"></div>
+    <p style="font-weight:500;color:var(--gold);margin-top:10px;">Write the answer on something you will see every morning. The well starts when you do.</p>
+  </div>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-eye"/></svg></span>See It In Action</h2>
+
+  <div class="adventure">
+    <div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-depth"/></svg></div><div class="adv-head-text"><div class="adv-head-label">See It In Action</div><div class="adv-head-title">The Writer Who Stopped Starting Over</div></div></div>
+    <div class="adv-body">
+      <div class="adv-step"><div class="step-n">◆</div><div class="step-c"><p>She had fourteen unfinished projects on her hard drive. A novel abandoned at chapter four. A blog that lasted six posts. A course outline that never became a course. Each one started with fire and ended with fog. She was not lazy. She was scattered. Fourteen puddles. Zero wells.</p></div></div>
+      <div class="adv-step"><div class="step-n">1</div><div class="step-c"><p class="tag-you">She chose one.</p><p>The novel. Not because it was the best idea. Because it was the one that kept humming in the back of her mind even when she tried to ignore it. That hum was gravitational mass. She had been ignoring it because the other projects were louder. But louder is not heavier.</p></div></div>
+      <div class="adv-step"><div class="step-n">2</div><div class="step-c"><p class="tag-you">She returned every morning. 5:30 AM. Same chair. Same file.</p><p>Day one: 200 words before the distractions won. Day four: 400 words. Day nine: she did not want to stop at 600. The well was pulling. Day twenty: she woke up at 5:15 without an alarm because her brain was already writing.</p></div></div>
+      <div class="adv-step"><div class="step-n">3</div><div class="step-c"><p>The other thirteen projects did not disappear. They just stopped mattering. They orbited the novel now instead of competing with it. Some of them fed it — a character from the abandoned blog, a structure from the course outline. The well had become deep enough to attract everything useful and repel everything that was not.</p></div></div>
+      <div class="adv-step"><div class="step-n">✦</div><div class="step-c"><p class="tag-result">Day ninety: 38,000 words.</p><p>Not finished. But <em>real.</em> More real than anything she had built in three years of starting over. Not because she suddenly found discipline. Because she dug a well deep enough that the water stopped running off. The well did the holding. She just kept showing up.</p></div></div>
+    </div>
+  </div>
+
+  <div class="viz"><div class="viz-glow"></div><div class="viz-inner">
+    <div class="viz-top">
+      <div class="viz-icon-wrap"><svg style="color:var(--gold)"><use href="#ico-compass"/></svg></div>
+      <div class="viz-meta"><div class="viz-label">Visualization</div><h4>The Morning Descent</h4></div>
+    </div>
+    <div class="viz-body">
+      <p>Every morning, you walk to the edge of your well. It is dark down there. Quiet. The noise of the world is above you — still audible, but distant. You lower yourself in. The first few feet are easy. Below that, the walls narrow and the light dims and the noise fades. By the time you reach the bottom, there is nothing but you and the work. The world cannot reach you here. Not because you blocked it out, but because the well is too deep for its gravity to penetrate.</p>
+      <p><strong>Every morning, you descend.</strong> Every descent makes the well deeper. Every deeper well makes the next descent easier. This is the cycle that replaces discipline with physics.</p>
+      <div class="viz-trigger">Morning → Walk to the edge → Descend → The noise fades → The work appears → Emerge sharper.</div>
+    </div>
+  </div></div>
+
+  <div class="gq"><p>"Discipline is the tax you pay when your gravity well is shallow. Build it deep enough and focus becomes free."</p></div>
+</div>
+
+<!-- ===== CHAPTER 3: DEFENDING THE WELL ===== -->
+<div class="ch-head"><div class="page">
+  <div class="ch-num">Chapter Three</div>
+  <h2 class="ch-title">Defending the Well</h2>
+  <p class="ch-sub">Everything in the universe is trying to fill your well with noise. The well survives only if you guard it.</p>
+</div></div>
+
+<div class="ribbon"><p>"The prudent see danger and take refuge, but the simple keep going and pay the penalty." — Proverbs 27:12</p></div>
+
+<div class="page prose section">
+
+  <div class="mission"><div class="mission-label">The Thesis</div><p>Building the well is the first battle.<br><em>Defending</em> it is the war.</p></div>
+
+  <p>You will build the well. You will feel the pull. You will experience a week, maybe two, of focus so deep it changes how you see yourself. And then something will try to fill it with silt. A new opportunity. A crisis at work. A shiny new project that excites you more than the current one. A relationship that demands all your emotional mass.</p>
+  <p>This is not failure. This is gravity working as designed. Other objects sense your mass now. They orbit closer. Some of them try to crash into you. The well must be defended not against laziness — that was never the real enemy — but against <strong>everything that wants to be more important than the thing you chose.</strong></p>
+
+  <div class="breathe">
+    <div class="breathe-ring"></div>
+    <div class="breathe-ring"></div>
+    <div class="breathe-ring"></div>
+    <div class="breathe-content">
+      <div class="breathe-label">Pause Here</div>
+      <h4>This chapter asks something hard.</h4>
+      <p>It asks you to identify the specific things that will try to destroy what you are building. Take a breath before you continue. Honesty requires stillness.</p>
+    </div>
+  </div>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-shield"/></svg></span>The Three Attacks</h2>
+  <p>Every well faces the same three threats. Learning to recognize them by name is how you stop them before they flood the work.</p>
+
+  <div class="viz"><div class="viz-glow"></div><div class="viz-inner">
+    <div class="viz-top">
+      <div class="viz-icon-wrap"><svg style="color:var(--gold)"><use href="#ico-shield"/></svg></div>
+      <div class="viz-meta"><div class="viz-label">Visualization</div><h4>The Three Floods</h4></div>
+    </div>
+    <div class="viz-body">
+      <p>Your well is deep. The water is clear. Then three rivers appear at the rim, each one carrying a different kind of silt:</p>
+      <p><strong>The Shiny River</strong> — a new idea, a new project, a new possibility that glitters so brightly it makes your current work look dull. This river does not attack your discipline. It attacks your <em>commitment.</em> It whispers: <em>this other thing might be the real thing.</em></p>
+      <p><strong>The Urgent River</strong> — someone else's crisis that demands your attention right now. This river does not ask permission. It floods. And by the time the flood recedes, your well is full of their silt and your water is gone.</p>
+      <p><strong>The Comfort River</strong> — the slow, warm current of distraction that does not feel like an attack because it feels like rest. Scrolling. Browsing. Half-watching something while half-thinking about something else. This river fills the well so gradually you do not notice until the water is muddy and you cannot see the bottom anymore.</p>
+      <div class="viz-trigger">Shiny → attacks commitment. Urgent → attacks boundaries. Comfort → attacks depth. Name the river, stop the flood.</div>
+    </div>
+  </div></div>
+
+  <div class="think">
+    <div class="think-label">Your Turn: Name Your Rivers</div>
+    <h4>What specific things flood your well?</h4>
+    <p>Be ruthlessly specific. Not "distractions." Name them.</p>
+    <p style="text-align:left;font-weight:600;color:var(--gold);margin-top:8px;">My Shiny River (the new idea that tempts me away):</p><div class="think-line"></div>
+    <p style="text-align:left;font-weight:600;color:var(--before-text);">My Urgent River (the crisis that hijacks me):</p><div class="think-line"></div>
+    <p style="text-align:left;font-weight:600;color:var(--text-muted);">My Comfort River (the slow distraction I barely notice):</p><div class="think-line"></div>
+    <p style="font-weight:500;color:var(--gold);margin-top:10px;">Naming the river is the dam. You cannot stop what you cannot see.</p>
+  </div>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-eye"/></svg></span>See It In Action</h2>
+
+  <div class="adventure">
+    <div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-shield"/></svg></div><div class="adv-head-text"><div class="adv-head-label">See It In Action</div><div class="adv-head-title">The Day the Shiny River Came</div></div></div>
+    <div class="adv-body">
+      <div class="adv-step"><div class="step-n">◆</div><div class="step-c"><p>Day twenty-two of your well. You are deep in the project. The water is clear. Progress is visible. And then a friend texts you about a business opportunity that sounds incredible. A partnership. Quick money. Exciting. Your pulse quickens. The Shiny River is at the rim.</p></div></div>
+      <div class="adv-step"><div class="step-n">1</div><div class="step-c"><p class="tag-you">YOU see the river.</p><p>Before the old you would have said yes, or at least spent three days researching it and losing focus on the well, the new you pauses. You name it: <em>this is the Shiny River.</em> It glitters. It promises. But you know what it actually does — it fills your well with silt and by week two the glitter is gone and you are standing in a puddle again.</p></div></div>
+      <div class="adv-step"><div class="step-n">2</div><div class="step-c"><p class="tag-you">YOU apply the test:</p><p><em>Does this deepen my well or does it dig a new hole?</em> If the answer is a new hole, the answer is no. Not "not right now." No. The opportunity might be real. But you are not available for real opportunities that are not <em>your</em> well. Not for the next sixty-eight days.</p></div></div>
+      <div class="adv-step"><div class="step-n">✦</div><div class="step-c"><p class="tag-result">You text back: "Sounds amazing. I am not available for this right now."</p><p>It stings for about forty minutes. By the next morning, the water in your well is clear again. The Shiny River has moved on to find someone with shallower walls. And you are deeper than you were yesterday.</p></div></div>
+    </div>
+  </div>
+
+  <div class="prompt">
+    <div class="prompt-head">THE GRAVITY WELL PROMPT</div>
+    <div class="prompt-body"><strong>Here is what I am building:</strong> [one sentence].<br><br><strong>Here is what is trying to pull me off course:</strong><br>• [the shiny thing]<br>• [the urgent thing]<br>• [the comfortable thing]<br><br><strong>Help me see which of these, if any, actually deepens my well versus floods it.</strong> Be honest. I would rather hear the truth now than discover it in three wasted weeks.</div>
+  </div>
+
+  <div class="gq"><p>"The well does not need you to be strong. It needs you to be honest about what is trying to fill it."</p></div>
+</div>
+
+<!-- ===== CHAPTER 4: THE PRACTICE ===== -->
+<div class="ch-head"><div class="page">
+  <div class="ch-num">Chapter Four</div>
+  <h2 class="ch-title">The Daily Practice</h2>
+  <p class="ch-sub">Thirty days of descent. One well. No shortcuts.</p>
+</div></div>
+
+<div class="ribbon"><p>"Whoever works his land will have plenty of bread, but he who follows worthless pursuits lacks sense." — Proverbs 12:11</p></div>
+
+<div class="page prose section">
+  <p>You now understand the physics. Gravity is not willpower. The well deepens by returning. The well is defended by naming. What remains is the daily practice — the shovel, the descent, the defense — repeated until the well is deep enough to hold your entire life.</p>
+
+  <div class="viz"><div class="viz-glow"></div><div class="viz-inner">
+    <div class="viz-top">
+      <div class="viz-icon-wrap"><svg style="color:var(--gold)"><use href="#ico-well"/></svg></div>
+      <div class="viz-meta"><div class="viz-label">Visualization</div><h4>The Daily Descent</h4></div>
+    </div>
+    <div class="viz-body">
+      <p>Every morning is the same ritual. You wake up. Before the phone, before the email, before the world gets a chance to claim you, you walk to the edge of the well. You look down. It is deeper than yesterday. You lower yourself in. The noise fades with every foot of depth. At the bottom, there is only the work. You stay as long as you can. When you climb out, the world is still there — but it orbits you now. It does not own you.</p>
+      <p><strong>The descent is not dramatic.</strong> It is not a battle cry or a motivational speech. It is a quiet walk to the same spot, a quiet lowering, a quiet arrival at the bottom. The quietness is the power. Noise cannot follow you into silence.</p>
+      <div class="viz-trigger">Wake → Walk to the edge → Descend before the world claims you → Stay → Emerge → The noise orbits you now.</div>
+    </div>
+  </div></div>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-compass"/></svg></span>The Thirty-Day Map</h2>
+  <p>Do not try to do all of this at once. One week at a time. Each week deepens what the last week started.</p>
+
+  <div class="dd"><h4><svg><use href="#ico-drop"/></svg>Week 1: Find the Edge</h4><div class="sub">Days 1 through 7</div><p>Choose your well. Set a time — the same time every day — and sit with it for a minimum of twenty minutes. Do not worry about output. Worry about showing up. Track whether you returned. Nothing else matters this week. At the end of day seven, you should be able to say: I returned every day. That is the only measure of success.</p></div>
+  <div class="dd"><h4><svg><use href="#ico-depth"/></svg>Week 2: Feel the Pull</h4><div class="sub">Days 8 through 14</div><p>Extend to thirty minutes. Start noticing when the well pulls you toward it — a thought in the shower, an idea during a commute, a desire to skip the scrolling and get back to the work. These pulls are the well developing mass. Write down every pull you notice. By day fourteen, you should feel the pull at least twice a day outside your session.</p></div>
+  <div class="dd"><h4><svg><use href="#ico-shield"/></svg>Week 3: Name the Rivers</h4><div class="sub">Days 15 through 21</div><p>Extend to forty minutes. This is the week the rivers come. A new idea. A crisis. A comfortable drift. Name each one when it arrives. Write it down. Ask the question: does this deepen my well or dig a new hole? By day twenty-one, you should be able to name the river in under five seconds and return to the descent.</p></div>
+  <div class="dd"><h4><svg><use href="#ico-flame"/></svg>Week 4: The Well Holds</h4><div class="sub">Days 22 through 30</div><p>You will know when you arrive here because the practice will feel different. Not forced. Not disciplined. Gravitational. You will walk to the edge not because you should but because the well is calling. The water is deep and clear and you want to be in it. Your minimum is now forty-five minutes, but do not be surprised when an hour passes without you noticing. That is depth. That is the well working.</p></div>
+
+  <div class="breathe">
+    <div class="breathe-ring"></div>
+    <div class="breathe-ring"></div>
+    <div class="breathe-ring"></div>
+    <div class="breathe-content">
+      <div class="breathe-label">You Made It</div>
+      <h4>This is the end of the guide. Not the end of the work.</h4>
+      <p>The guide is a map. The well is real. Close this and go dig the first scoop. Do not wait for tomorrow. The well starts the moment you choose it.</p>
+    </div>
+  </div>
+
+  <div class="think">
+    <div class="think-label">Your Commitment</div>
+    <h4>The well I am building</h4>
+    <p>Write the name of your well and the date you begin:</p>
+    <div class="think-line"></div>
+    <p>My daily descent time:</p>
+    <div class="think-line"></div>
+    <p>The first river I expect to face:</p>
+    <div class="think-line"></div>
+    <p style="font-weight:500;color:var(--gold);margin-top:10px;">Day 1 starts now. The ground is waiting.</p>
+  </div>
+
+  <div class="insight"><p>This guide is a living tool. Feed it into your AI with this prompt and let it hold you accountable. The well you build in the next thirty days will change how you see every day after.</p></div>
+
+  <div class="prompt">
+    <div class="prompt-head">THE FULL INSTALLATION PROMPT</div>
+    <div class="prompt-body"><strong>I just read The Gravity Well.</strong> The model: attention follows gravity, not willpower. I am building a gravity well by returning to the same deep work daily, defending it against the Shiny River, the Urgent River, and the Comfort River.<br><br><strong>My well:</strong> [name it].<br><strong>My daily descent time:</strong> [time].<br><strong>My biggest river:</strong> [name it].<br><br>Step me through the thirty-day practice. Check in daily. Ask me if I descended. Ask me if any rivers came. Help me see the well deepening. <strong>Do not let me abandon this well for a shinier one.</strong><br><br>Let us begin.</div>
+  </div>
+
+  <div class="gq"><p>"You were never lacking discipline. You were lacking depth. Now you know how to dig. The rest is just showing up."</p></div>
+</div>
+
+<section class="finale">
+  <h2>The well is dug.<br><span>Now descend.</span></h2>
+  <p>One well. Daily descent. Thirty days.<br>The noise orbits you now. Not the other way around.</p>
+</section>
+
+<footer>
+  <p>"Whatever your hand finds to do, do it with all your might." — Ecclesiastes 9:10</p>
+  <div class="brand">Kingdom Builders AI</div>
+  <p style="margin-top:14px">kingdombuilders.ai</p>
+</footer>
+
+<div style="text-align:center;padding:20px 24px 32px;background:#080410;border-top:1px solid rgba(212,168,67,0.08);font-family:'Poppins',sans-serif;font-size:0.65rem;color:rgba(255,255,255,0.25);line-height:1.6" class="no-print">
+  To save as PDF: Open this file in your browser → File → Print → "Save as PDF"<br>
+  Works on desktop, iPhone, iPad, and Android. All formatting and page numbers are preserved automatically.
+</div>
+<style>.no-print{display:block}@media print{.no-print{display:none!important}}</style>
+
+</body>
+</html>

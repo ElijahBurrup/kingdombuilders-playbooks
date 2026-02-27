@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Ghost Frame — Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#D4A843;--gold-glow:#E8C96A;--gold-pale:#F5E6B8;--gold-soft:rgba(212,168,67,0.06);--purple-deep:#1A0A2E;--purple-dark:#2D1B4E;--purple-mid:#4A2D7A;--purple-accent:#7B4FBF;--purple-light:#B89FDE;--purple-soft:rgba(123,79,191,0.05);--cream:#FDFAF3;--cream-warm:#FAF4E8;--text:#2A1A3E;--text-light:#5A4A6E;--text-muted:#8A7A9E;--white:#FFFFFF;--radius:12px;--shadow-soft:0 2px 12px rgba(26,10,46,0.05);--shadow-mid:0 4px 24px rgba(26,10,46,0.08);--before-bg:#FFF8F6;--before-border:#E8B0A0;--before-text:#6A3A2A;--after-bg:#F6FFF8;--after-border:#A0D8A8;--after-text:#2A4A30}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--cream);line-height:1.78;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Poppins',sans-serif;line-height:1.2}
+.page{max-width:700px;margin:0 auto;padding:0 24px}
+.section{padding:44px 0}
+.prose p{margin-bottom:20px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--purple-deep);font-weight:600}
+.prose h2{font-size:1.35rem;color:var(--purple-deep);margin:36px 0 14px;letter-spacing:-0.01em;display:flex;align-items:center}
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(165deg,#0E0618 0%,var(--purple-deep) 30%,var(--purple-dark) 70%,#1A0A2E 100%);position:relative;overflow:hidden}
+.ghost-frame-anim{position:absolute;border:1.5px solid rgba(212,168,67,0.04);border-radius:4px;animation:ghost-flicker 8s ease-in-out infinite}
+.ghost-frame-anim:nth-child(1){top:15%;left:10%;width:200px;height:140px;animation-delay:0s;transform:rotate(-3deg)}
+.ghost-frame-anim:nth-child(2){top:55%;right:8%;width:160px;height:120px;animation-delay:2s;transform:rotate(2deg)}
+.ghost-frame-anim:nth-child(3){bottom:20%;left:15%;width:180px;height:130px;animation-delay:4s;transform:rotate(-1deg)}
+.ghost-frame-anim:nth-child(4){top:30%;right:25%;width:120px;height:90px;animation-delay:6s;transform:rotate(4deg)}
+@keyframes ghost-flicker{0%,100%{opacity:0;border-color:rgba(212,168,67,0.02)}15%{opacity:0.5;border-color:rgba(212,168,67,0.12)}20%{opacity:0.1}35%{opacity:0.7;border-color:rgba(212,168,67,0.15)}40%,80%{opacity:0}}
+.cover-frame-reveal{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:320px;height:220px;border:2px solid rgba(212,168,67,0.06);border-radius:6px;animation:frame-reveal 10s ease-in-out infinite}
+.cover-frame-reveal::before{content:'';position:absolute;inset:8px;border:1px solid rgba(212,168,67,0.03);border-radius:3px;animation:frame-inner 10s ease-in-out infinite 0.5s}
+@keyframes frame-reveal{0%,100%{opacity:0.1;transform:translate(-50%,-50%) scale(0.95)}30%{opacity:0.6;transform:translate(-50%,-50%) scale(1)}50%{opacity:0.4;transform:translate(-50%,-50%) scale(1.02)}70%{opacity:0.1;transform:translate(-50%,-50%) scale(0.98)}}
+@keyframes frame-inner{0%,100%{opacity:0.1}35%{opacity:0.5}55%{opacity:0.2}}
+.ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.012;mix-blend-mode:overlay;pointer-events:none;animation:noise-shift 4s steps(5) infinite}
+@keyframes noise-shift{0%{transform:translate(0,0)}20%{transform:translate(-2px,1px)}40%{transform:translate(1px,-1px)}60%{transform:translate(-1px,2px)}80%{transform:translate(2px,0)}100%{transform:translate(0,0)}}
+.cover-content{position:relative;z-index:2;padding:40px 24px}
+.cover-badge{display:inline-block;padding:6px 20px;border:1px solid rgba(212,168,67,0.2);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:44px}
+.cover h1{font-family:'Poppins',sans-serif;font-size:clamp(2.4rem,7vw,4.2rem);font-weight:300;color:var(--white);line-height:1.05;margin-bottom:4px}
+.cover h1 strong{font-weight:700;color:var(--gold);display:block}
+.cover-tagline{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:rgba(255,255,255,0.4);margin-top:28px;line-height:1.7}
+.cover-tagline em{color:var(--gold-glow);font-style:normal}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.6rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-top:52px}
+.ch-head{background:linear-gradient(170deg,var(--purple-deep),var(--purple-dark));padding:80px 24px 56px;position:relative;overflow:hidden}
+.ch-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 5%,var(--gold) 50%,transparent 95%)}
+.ch-head .page{position:relative;z-index:2}
+.ch-num{font-family:'Poppins',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:6px;text-transform:uppercase;color:var(--gold);opacity:0.8}
+.ch-title{font-family:'Poppins',sans-serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:700;color:var(--white);margin:10px 0 6px;letter-spacing:-0.01em}
+.ch-sub{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:var(--gold-glow);opacity:0.7}
+.ribbon{text-align:center;padding:20px 24px;background:linear-gradient(135deg,var(--gold-soft),rgba(212,168,67,0.06));border-top:1.5px solid rgba(212,168,67,0.15);border-bottom:1.5px solid rgba(212,168,67,0.15)}
+.ribbon p{font-family:'Lora',serif;font-size:0.82rem;font-style:italic;color:var(--text-muted);max-width:480px;margin:0 auto}
+.mission{text-align:center;padding:36px 32px;margin:36px 0;background:linear-gradient(140deg,rgba(245,230,184,0.22),rgba(253,250,243,0.28));border-radius:14px;position:relative;overflow:hidden;border:2px solid rgba(212,168,67,0.2);box-shadow:0 0 0 1px rgba(212,168,67,0.06),0 4px 12px rgba(74,45,122,0.08),0 16px 40px rgba(26,10,46,0.07)}
+.mission::before{content:'';position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:280px;height:280px;background:radial-gradient(circle,rgba(212,168,67,0.07) 0%,transparent 70%);border-radius:50%}
+.mission-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;position:relative}
+.mission p{font-family:'Poppins',sans-serif;font-size:clamp(0.88rem,2.2vw,1.08rem);font-weight:500;color:var(--purple-deep);line-height:1.55;position:relative}
+.mission p em{color:var(--purple-accent);font-style:normal;font-weight:600}
+.id-card{margin:32px 0;border-radius:14px;overflow:hidden;border:4px solid var(--gold);box-shadow:0 2px 6px rgba(212,168,67,0.2),0 8px 24px rgba(212,168,67,0.12),0 20px 48px rgba(26,10,46,0.1)}
+.id-card-head{padding:14px 24px;background:linear-gradient(90deg,var(--gold),var(--gold-glow));font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--purple-deep)}
+.id-card-body{padding:28px;background:var(--white)}
+.id-card-body h3{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--purple-deep);margin-bottom:14px}
+.id-old{font-size:0.88rem;color:var(--text-muted);text-decoration:line-through;text-decoration-color:rgba(138,122,158,0.4);margin-bottom:10px;line-height:1.5}
+.id-new{font-size:1rem;font-weight:500;color:var(--purple-deep);font-style:italic;line-height:1.5}
+.viz{margin:48px 0 36px;padding:0;position:relative;border-radius:16px;overflow:hidden;border:2.5px solid var(--purple-accent);box-shadow:0 2px 4px rgba(123,79,191,0.12),0 8px 24px rgba(123,79,191,0.1),0 24px 56px rgba(26,10,46,0.12)}
+.viz-inner{border-radius:13px;overflow:hidden;position:relative}
+.viz-top{background:rgba(123,79,191,0.12);padding:22px 28px 20px;display:flex;align-items:center;gap:16px;border-bottom:1.5px solid rgba(123,79,191,0.12)}
+.viz-icon-wrap{width:56px;height:56px;border-radius:50%;border:2px solid rgba(123,79,191,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(145deg,#fff,rgba(245,230,255,0.5));box-shadow:0 3px 12px rgba(123,79,191,0.1)}
+.viz-icon-wrap svg{width:28px;height:28px}
+.viz-meta{flex:1}
+.viz-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--purple-accent);margin-bottom:2px}
+.viz h4{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:var(--purple-deep)}
+.viz-body{padding:28px 28px 24px;background:linear-gradient(170deg,#FEFBFF 0%,#FFFCF7 40%,#FAF6FF 100%)}
+.viz-body p{font-size:0.95rem;color:var(--text-light);line-height:1.72;margin-bottom:14px}
+.viz-body p:last-child{margin-bottom:0}
+.viz-trigger{margin-top:20px;padding:16px 20px;background:linear-gradient(135deg,rgba(212,168,67,0.06),rgba(212,168,67,0.1));border:1.5px solid rgba(212,168,67,0.18);border-radius:10px;font-family:'Poppins',sans-serif;font-size:0.78rem;font-weight:700;color:var(--text);text-align:center;line-height:1.5}
+.viz-glow{position:absolute;top:-8px;left:-8px;right:-8px;bottom:-8px;border-radius:20px;background:linear-gradient(135deg,rgba(123,79,191,0.06),transparent,rgba(123,79,191,0.04));z-index:-1;pointer-events:none}
+.ba-pair{margin:32px 0;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:640px){.ba-pair{grid-template-columns:1fr}}
+.ba-card{border-radius:12px;overflow:hidden}
+.ba-head{padding:12px 20px;font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.ba-before{background:linear-gradient(170deg,#FFF6F4 0%,#FFF0EC 100%)}
+.ba-before .ba-head{background:linear-gradient(90deg,rgba(160,56,40,0.12),rgba(160,56,40,0.06));color:var(--before-text)}
+.ba-after{background:linear-gradient(170deg,#F2FFF6 0%,#EDFFF2 100%)}
+.ba-after .ba-head{background:linear-gradient(90deg,rgba(42,128,64,0.12),rgba(42,128,64,0.06));color:var(--after-text)}
+.ba-dot{width:8px;height:8px;border-radius:50%}
+.ba-before .ba-dot{background:var(--before-border)}
+.ba-after .ba-dot{background:var(--after-border)}
+.ba-body{padding:18px 20px;font-size:0.88rem;line-height:1.65}
+.ba-body ul{list-style:none;padding:0;margin:0}
+.ba-body ul li{padding:6px 0;border-bottom:1px solid rgba(0,0,0,0.04)}
+.ba-body ul li:last-child{border-bottom:none}
+.ba-before .ba-body{color:var(--before-text)}
+.ba-after .ba-body{color:var(--after-text)}
+.adventure{margin:36px 0;border-radius:16px;overflow:hidden;box-shadow:0 2px 10px rgba(74,45,122,0.06);background:var(--white);border:1px solid rgba(123,79,191,0.08)}
+.adv-head{padding:14px 28px 10px;background:none;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(123,79,191,0.06)}
+.adv-head-icon{width:36px;height:36px;border-radius:50%;background:rgba(123,79,191,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.adv-head-icon svg{width:18px;height:18px;color:var(--purple-accent)}
+.adv-head-label{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--purple-accent);opacity:0.4}
+.adv-head-text{display:flex;flex-direction:column;gap:1px;flex:1}
+.adv-head-title{font-family:'Source Serif 4',Georgia,serif;font-size:0.85rem;font-weight:500;color:var(--purple-deep)}
+.adv-step{padding:14px 28px;border-bottom:1px solid rgba(123,79,191,0.06)}
+.adv-step:last-child{border-bottom:none}
+.adv-step:nth-child(odd){background:var(--white)}
+.adv-step:nth-child(even){background:rgba(123,79,191,0.02)}
+.step-n{display:none}
+.step-c p{font-family:'Source Serif 4',Georgia,'Times New Roman',serif;font-size:0.93rem;line-height:1.75;margin:0 0 6px;color:var(--text)}
+.step-c p:last-child{margin-bottom:0}
+.step-c em{color:var(--text-light)}
+.step-c .tag-you{font-family:'Poppins',sans-serif;font-weight:700;color:var(--purple-deep);font-size:0.8rem;display:inline-block;padding:2px 10px;background:rgba(123,79,191,0.08);border-radius:4px;margin-bottom:4px}
+.step-c .tag-result{font-family:'Poppins',sans-serif;font-weight:700;font-size:0.8rem;display:inline-block;padding:2px 10px;border-radius:4px;margin-bottom:4px}
+.step-c .tag-result-bad{color:#B83A3A;background:rgba(184,58,58,0.08)}
+.step-c .tag-result-good{color:#2E7D4F;background:rgba(46,125,79,0.08)}
+.adv-step:last-child.adv-result-bad{background:linear-gradient(135deg,rgba(184,58,58,0.03),rgba(184,58,58,0.07))}
+.adv-step:last-child.adv-result-good{background:linear-gradient(135deg,rgba(46,125,79,0.03),rgba(46,125,79,0.07))}
+.descent-ramp{margin:36px 0 0;display:flex;flex-direction:column;gap:10px}
+.ramp-echo{padding:28px 32px;position:relative;background:linear-gradient(160deg,rgba(55,130,145,0.12),rgba(55,130,145,0.07));border-radius:16px;border:2px solid rgba(55,130,145,0.15)}
+.ramp-echo p{font-family:'Lora',serif;font-size:0.92rem;font-style:italic;color:var(--text-light);line-height:1.72;text-align:center;margin:0;position:relative;z-index:1}
+.ramp-close{padding:44px 32px;text-align:center;position:relative;background:linear-gradient(160deg,rgba(180,145,60,0.12),rgba(180,145,60,0.07));border-radius:16px;border:2px solid rgba(180,145,60,0.15)}
+.ramp-close-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--purple-accent);opacity:0.5;margin-bottom:8px;position:relative;z-index:1}
+.ramp-close p{font-family:'Poppins',sans-serif;font-size:0.82rem;font-weight:500;color:var(--purple-deep);line-height:1.6;max-width:440px;margin:0 auto;position:relative;z-index:1}
+.think{margin:16px 0 36px;padding:32px;background:linear-gradient(145deg,rgba(212,168,67,0.08),rgba(212,168,67,0.04));border:2.5px dashed var(--gold);border-radius:14px;position:relative;box-shadow:0 4px 12px rgba(212,168,67,0.08)}
+.think::before{content:'\2726';position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--cream);padding:0 14px;font-size:1rem;color:var(--gold)}
+.think-standalone{margin:36px 0;border-radius:14px;border-top:2.5px dashed var(--gold)}
+.think-label{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);text-align:center;margin-bottom:10px}
+.think h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--purple-deep);text-align:center;margin-bottom:12px}
+.think p{font-size:0.88rem;text-align:center;color:var(--text-light);margin-bottom:8px}
+.think-line{border-bottom:1px solid rgba(212,168,67,0.25);height:30px}
+.think p.q-start{font-weight:500;color:var(--purple-deep);font-size:0.85rem;text-align:left;margin-top:14px;margin-bottom:4px}
+.insight{margin:32px 0;padding:28px 32px;background:linear-gradient(140deg,var(--purple-deep),var(--purple-dark));border-radius:14px;border:2px solid rgba(212,168,67,0.25);border-left:5px solid var(--gold);position:relative;overflow:hidden;box-shadow:0 2px 6px rgba(74,45,122,0.15),0 10px 28px rgba(26,10,46,0.18)}
+.insight::before{content:'';position:absolute;top:-50%;right:-20%;width:200px;height:200px;background:radial-gradient(circle,rgba(212,168,67,0.06) 0%,transparent 70%);border-radius:50%}
+.insight p{font-family:'Lora',serif;font-size:1.02rem;font-style:italic;color:var(--white);line-height:1.72;position:relative;z-index:2}
+.insight em{color:var(--gold-glow);font-style:normal;font-weight:600}
+.gq{margin:32px 0;text-align:center;padding:32px 24px;position:relative;background:linear-gradient(160deg,rgba(212,168,67,0.02),rgba(212,168,67,0.05));border-radius:14px;border:1.5px solid rgba(212,168,67,0.12)}
+.gq::before,.gq::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:48px;height:1.5px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.gq::before{top:0}.gq::after{bottom:0}
+.gq p{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:var(--purple-mid);line-height:1.6;max-width:480px;margin:0 auto}
+.inst{margin:28px 0;padding:18px 24px;background:linear-gradient(90deg,var(--purple-soft),var(--gold-soft));border-left:3px solid var(--purple-accent);border-radius:0 var(--radius) var(--radius) 0;box-shadow:var(--shadow-soft)}
+.inst p{font-family:'Poppins',sans-serif;font-size:0.78rem;color:var(--purple-mid);line-height:1.55;margin:0}
+.inst strong{color:var(--purple-deep)}
+.h2-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--purple-mid),var(--purple-accent));margin-right:10px;vertical-align:middle;box-shadow:0 2px 6px rgba(74,45,122,0.15)}
+.h2-icon svg{width:14px;height:14px;color:var(--gold)}
+.dd{margin:28px 0;padding:24px 28px;border-radius:12px;border-left:4px solid var(--purple-accent)}
+.dd:nth-of-type(odd){background:rgba(123,79,191,0.04)}
+.dd:nth-of-type(even){background:var(--white)}
+.dd h4{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--purple-deep);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.dd h4 svg{width:16px;height:16px;color:var(--purple-accent);flex-shrink:0}
+.dd .sub{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:500;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px}
+.dd p{font-size:0.9rem;color:var(--text-light);line-height:1.68;margin-bottom:8px}
+.dd p:last-child{margin-bottom:0}
+.breathe{margin:48px 0;text-align:center;padding:56px 24px;position:relative;background:linear-gradient(160deg,rgba(123,79,191,0.12),rgba(123,79,191,0.07));border-radius:16px;border:2px solid rgba(123,79,191,0.15)}
+.breathe-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1.5px solid rgba(123,79,191,0.1)}
+.breathe-ring:nth-child(1){width:160px;height:160px;animation:breathe-pulse 6s ease-in-out infinite}
+.breathe-ring:nth-child(2){width:110px;height:110px;animation:breathe-pulse 6s ease-in-out infinite 1.5s}
+.breathe-ring:nth-child(3){width:60px;height:60px;animation:breathe-pulse 6s ease-in-out infinite 3s}
+@keyframes breathe-pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.35}50%{transform:translate(-50%,-50%) scale(1.2);opacity:0.08}}
+.breathe-content{position:relative;z-index:2}
+.breathe-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--purple-accent);opacity:0.5;margin-bottom:8px}
+.breathe h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--purple-deep);margin-bottom:8px}
+.breathe p{font-family:'Lora',serif;font-size:0.88rem;font-style:italic;color:var(--text-muted);max-width:400px;margin:0 auto;line-height:1.6}
+.frame-diagram{margin:40px 0;padding:32px 24px 40px;background:var(--purple-deep);border-radius:16px;position:relative;overflow:hidden}
+.frame-diagram-title{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);opacity:0.6;text-align:center;margin-bottom:24px}
+.frame-row{display:grid;grid-template-columns:1fr 44px 1fr;align-items:center;gap:0;margin-bottom:16px}
+.frame-event{text-align:right;padding-right:16px}
+.frame-response{text-align:left;padding-left:16px}
+.frame-event span,.frame-response span{font-family:'Poppins',sans-serif;font-size:0.75rem;font-weight:600;display:block}
+.frame-event span{color:rgba(255,255,255,0.5)}
+.frame-response span{color:var(--gold-glow)}
+.frame-event em,.frame-response em{font-family:'Lora',serif;font-size:0.68rem;color:rgba(255,255,255,0.25);font-style:italic;display:block;margin-top:2px}
+.frame-arrow{width:44px;height:44px;display:flex;align-items:center;justify-content:center;position:relative}
+.frame-arrow::before{content:'';position:absolute;width:28px;height:28px;border:1.5px dashed rgba(212,168,67,0.2);border-radius:4px;animation:frame-ghost 4s ease-in-out infinite}
+.frame-arrow svg{width:18px;height:18px;color:rgba(212,168,67,0.4)}
+@keyframes frame-ghost{0%,100%{opacity:0.3;transform:scale(1)}50%{opacity:0.7;transform:scale(1.1)}}
+.frame-label-center{text-align:center;margin:12px 0 8px}
+.frame-label-center span{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:rgba(212,168,67,0.3);display:inline-block;padding:4px 14px;border:1px dashed rgba(212,168,67,0.12);border-radius:4px}
+.stack{margin:40px 0;text-align:center}
+.stack-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--purple-accent);opacity:0.5;margin-bottom:16px}
+.stack-flow{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap}
+.stack-node{display:inline-flex;align-items:center;justify-content:center;padding:10px 20px;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.72rem;font-weight:600;line-height:1.3;white-space:nowrap}
+.stack-node.sn-dark{background:var(--purple-deep);color:var(--white);border:1.5px solid rgba(123,79,191,0.3)}
+.stack-node.sn-accent{background:rgba(123,79,191,0.1);color:var(--purple-deep);border:1.5px solid rgba(123,79,191,0.2)}
+.stack-node.sn-gold{background:linear-gradient(135deg,rgba(212,168,67,0.1),rgba(212,168,67,0.15));color:var(--purple-deep);border:1.5px solid rgba(212,168,67,0.3)}
+.stack-node.sn-ghost{background:rgba(123,79,191,0.04);color:var(--text-muted);border:1.5px dashed rgba(123,79,191,0.15)}
+.stack-arr{font-size:1.1rem;color:var(--purple-light);padding:0 8px;font-weight:300}
+.stack-flow.stack-two-row{flex-direction:column;gap:10px}
+.stack-flow.stack-two-row .stack-top{display:flex;justify-content:center}
+.stack-flow.stack-two-row .stack-arr-down{font-size:1.1rem;color:var(--purple-light);font-weight:300}
+.stack-flow.stack-two-row .stack-bottom{display:flex;align-items:center;justify-content:center;gap:0}
+@media(max-width:640px){.stack-flow{gap:6px}.stack-node{font-size:0.65rem;padding:8px 14px}.stack-arr{padding:0 4px;font-size:0.9rem}}
+.root-review{margin:44px 0;padding:28px 24px;background:linear-gradient(170deg,#FAF4E8 0%,#F7EFDE 50%,#FAF3E6 100%);border-radius:16px;position:relative;overflow:hidden}
+.root-review::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C4A67A' fill-opacity='0.07'%3E%3Cpath d='M10 10c0-2.2-1.8-4-4-4-2.2 0-4 1.8-4 4 0 2.2 1.8 4 4 4 2.2 0 4-1.8 4-4zm42 0c0-2.2-1.8-4-4-4-2.2 0-4 1.8-4 4 0 2.2 1.8 4 4 4 2.2 0 4-1.8 4-4zm-22 0c0-2.2-1.8-4-4-4-2.2 0-4 1.8-4 4 0 2.2 1.8 4 4 4 2.2 0 4-1.8 4-4z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.root-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--gold);opacity:0.6;text-align:center;margin-bottom:16px;position:relative;z-index:1}
+.root-layer{display:flex;align-items:center;justify-content:center;gap:10px;padding:8px 0;position:relative;z-index:1}
+.root-layer.current{padding:12px 0}
+.root-ch{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);opacity:0.4;width:28px;text-align:right;flex-shrink:0}
+.root-layer.current .root-ch{color:var(--gold);opacity:1}
+.root-items{display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center}
+.root-pill{font-family:'Poppins',sans-serif;font-size:0.65rem;font-weight:600;padding:5px 14px;border-radius:6px;white-space:nowrap}
+.root-pill.rp-dim{background:rgba(194,174,140,0.1);color:var(--text-muted);border:1px solid rgba(194,174,140,0.15)}
+.root-pill.rp-lit{background:rgba(212,168,67,0.1);color:var(--purple-deep);border:1px solid rgba(212,168,67,0.2)}
+.root-pill.rp-bright{background:linear-gradient(135deg,rgba(212,168,67,0.12),rgba(212,168,67,0.18));color:var(--purple-deep);border:1px solid rgba(212,168,67,0.25);box-shadow:0 0 6px rgba(212,168,67,0.08)}
+.root-arr{color:var(--text-muted);opacity:0.3;font-size:0.8rem;padding:0 4px}
+.root-layer.current .root-arr{opacity:0.5;color:var(--gold)}
+.root-sep{width:60%;max-width:300px;height:1px;background:linear-gradient(90deg,transparent,rgba(194,174,140,0.2),transparent);margin:4px auto}
+.prompt{margin:32px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(212,168,67,0.2);box-shadow:0 2px 6px rgba(26,10,46,0.2),0 10px 28px rgba(26,10,46,0.18)}
+.prompt-head{padding:12px 20px;background:linear-gradient(90deg,var(--purple-deep),var(--purple-dark));font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--gold)}
+.prompt-body{padding:22px 24px;background:#160D26;color:#C0B0D8;font-family:'Lora',serif;font-size:0.88rem;line-height:1.72}
+.prompt-body strong{color:var(--gold-glow)}
+.finale{text-align:center;padding:80px 24px;background:linear-gradient(170deg,var(--purple-deep),#0E0618);position:relative;overflow:hidden}
+.finale h2{font-family:'Poppins',sans-serif;font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;color:var(--white);margin-bottom:8px}
+.finale h2 span{color:var(--gold)}
+.finale p{font-family:'Lora',serif;font-size:0.95rem;color:rgba(255,255,255,0.35);max-width:460px;margin:16px auto;line-height:1.6}
+footer{text-align:center;padding:36px 24px;background:#080410}
+footer p{font-family:'Lora',serif;font-size:0.78rem;font-style:italic;color:rgba(212,168,67,0.2);margin-bottom:14px}
+footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:normal;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.1)}
+@media print{
+  @page{margin:18mm 16mm 22mm 16mm;@bottom-center{content:counter(page);font-family:'Poppins',Helvetica,sans-serif;font-size:8pt;color:#8A7A9E}}
+  body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .cover{min-height:auto;padding:100px 24px;break-after:page}
+  .ch-head{break-before:page;padding:60px 24px 44px}
+  .think,.adventure,.viz,.ba-pair,.id-card,.mission,.insight,.dd,.breathe,.frame-diagram,.prompt,.stack,.descent-ramp{break-inside:avoid}
+  .ghost-frame-anim,.cover-frame-reveal,.ghost-noise,.breathe-ring,.frame-arrow::before{animation:none!important}
+  .section{padding:40px 0}
+}
+</style>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="ico-frame" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/><rect x="7" y="7" width="10" height="10" rx="1" stroke="currentColor" stroke-width="0.8" fill="none" opacity="0.4"/></symbol>
+  <symbol id="ico-ghost" viewBox="0 0 24 24"><path d="M12 2C7 2 4 6 4 10v10l2-2 2 2 2-2 2 2 2-2 2 2 2-2 2 2V10c0-4-3-8-8-8z" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="9" cy="10" r="1.5" fill="currentColor" opacity="0.5"/><circle cx="15" cy="10" r="1.5" fill="currentColor" opacity="0.5"/></symbol>
+  <symbol id="ico-wound" viewBox="0 0 24 24"><path d="M12 21C12 21 4 14 4 9c0-3 2-5 5-5 1.5 0 2.5.5 3 1.5C12.5 4.5 13.5 4 15 4c3 0 5 2 5 5 0 5-8 12-8 12z" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M8 12l3-3 2 2 3-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/></symbol>
+  <symbol id="ico-armor" viewBox="0 0 24 24"><path d="M12 3L4 7v5c0 5 3.5 9 8 11 4.5-2 8-6 8-11V7z" stroke="currentColor" stroke-width="1.5" fill="none"/></symbol>
+  <symbol id="ico-mirror" viewBox="0 0 24 24"><ellipse cx="12" cy="11" rx="7" ry="9" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M9 21h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="ico-catch" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="ico-signal" viewBox="0 0 24 24"><path d="M4 12h2l2-4 2 8 2-6 2 4 2-2 2 3h2" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="ico-clean" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="12" cy="12" r="3" fill="currentColor" opacity="0.15"/></symbol>
+  <symbol id="ico-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5" fill="none"/></symbol>
+  <symbol id="ico-bridge" viewBox="0 0 24 24"><path d="M2 16c4-8 6-8 10-8s6 0 10 8" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M2 16h20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="ico-arrow-r" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+  <symbol id="ico-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M16 8l-5.5 2.5L8 16l5.5-2.5z" stroke="currentColor" stroke-width="1.2" fill="none"/></symbol>
+  <symbol id="ico-flame" viewBox="0 0 24 24"><path d="M12 3c-1 3-3 5-3 8a3 3 0 006 0c0-3-2-5-3-8z" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M8 20h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="ico-gym" viewBox="0 0 24 24"><path d="M2 12h3M19 12h3M5 8v8M19 8v8M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/></symbol>
+  <symbol id="ico-phone" viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M10 18h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="ico-people" viewBox="0 0 24 24"><circle cx="8" cy="7" r="3" stroke="currentColor" stroke-width="1.2" fill="none"/><circle cx="16" cy="7" r="3" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M2 20c0-3 2.5-5 6-5s6 2 6 5M12 20c0-3 2.5-5 6-5s4 2 4 5" stroke="currentColor" stroke-width="1.2" fill="none"/></symbol>
+</svg>
+
+<!-- ===== COVER ===== -->
+<section class="cover">
+  <div class="ghost-frame-anim"></div><div class="ghost-frame-anim"></div><div class="ghost-frame-anim"></div><div class="ghost-frame-anim"></div>
+  <div class="cover-frame-reveal"></div><div class="ghost-noise"></div>
+  <div class="cover-content">
+    <div class="cover-badge">Kingdom Builders AI</div>
+    <h1>The Ghost<strong>Frame</strong></h1>
+    <p class="cover-tagline">You are not seeing what you think you are seeing.<br>And neither is <em>anyone else.</em></p>
+    <p class="cover-author">By Elijah AI</p>
+  </div>
+</section>
+
+<div class="ch-head"><div class="page"><div class="ch-num">Before We Begin</div><h2 class="ch-title">The Argument You Already Lost</h2><p class="ch-sub">Every fight you have ever had was with someone who was not in the room.</p></div></div>
+
+<div class="page prose section">
+  <p>Think about the last time someone said something that hurt you. Not a stranger. Someone close. They said a sentence — maybe ten words — and inside you, something detonated. The jaw clenched. The story started writing itself: <em>They do not respect me. They never listen. They think I am not enough.</em></p>
+  <p>Now ask yourself a question you have probably never asked: <strong>What if that story started before they even opened their mouth?</strong></p>
+  <p>What if the sentence they said passed through something invisible — a frame you cannot see — and by the time it reached your brain, it had already been rewritten? Not by them. By you. By a version of you that was built years ago from wounds you barely remember, armor you never chose, and conclusions you drew when you were too young to know they were wrong.</p>
+  <p>This is not a metaphor. This is the mechanism behind every overreaction, every misunderstanding, every relationship that died not from a lack of love but from a failure to see what was actually happening.</p>
+
+  <div class="insight"><p>You have never had a fight with your partner. You have had a fight with <em>your frame's version</em> of your partner. They have never had a fight with you. They have had a fight with <em>their frame's version</em> of you. Two ghost versions of two real people, battling in a room where <em>neither actual person is present.</em></p></div>
+
+  <p>This guide will show you the frame. Not intellectually — experientially. By the time you finish, you will see it operating in real time: in your reactions, your assumptions, your relationships, your self talk, and even in the quiet battles you fight with yourself every morning when the alarm goes off.</p>
+
+  <div class="breathe"><div class="breathe-ring"></div><div class="breathe-ring"></div><div class="breathe-ring"></div><div class="breathe-content"><div class="breathe-label">Pause Here</div><h4>This guide will touch nerves.</h4><p>Not because it attacks you. Because it shows you what you have been doing without knowing. That kind of honesty requires gentleness with yourself.</p></div></div>
+
+  <div class="inst"><p><strong>How to use this guide:</strong> This is a mirror, not a manual. When you reach the exercises, you will notice something different — they are designed to carry you from reading into thinking without a jarring stop. Trust the process. The frame hides behind speed. These exercises are built to slow you down just enough to see it.</p></div>
+</div>
+
+<!-- ===== CHAPTER 1 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter One</div><h2 class="ch-title">The Invisible Frame</h2><p class="ch-sub">Same event. Same words. Completely different experience. The frame is why.</p></div></div>
+<div class="ribbon"><p>"For now we see through a glass, darkly; but then face to face." — 1 Corinthians 13:12</p></div>
+
+<div class="page prose section">
+  <div class="mission"><div class="mission-label">The Thesis</div><p>You do not experience reality.<br>You experience reality <em>through a frame</em> you cannot see.<br>The frame was built without your permission. It distorts everything.</p></div>
+
+  <p>Imagine two people in the same meeting. Their boss says: "I need to talk to you after this." Person A feels curiosity. Person B feels dread so intense their hands go cold. Same words. Same boss. Same room. Completely different experience. The difference is the <strong>frame.</strong></p>
+  <p>Person A grew up where "I need to talk to you" meant good news. Person B grew up where those words always preceded punishment. Same sentence. Different frame. The frame rewrote the sentence before it reached conscious thought. And <strong>neither person knows the frame exists.</strong></p>
+
+  <div class="viz"><div class="viz-glow"></div><div class="viz-inner">
+    <div class="viz-top"><div class="viz-icon-wrap"><svg style="color:var(--gold)"><use href="#ico-frame"/></svg></div><div class="viz-meta"><div class="viz-label">Visualization</div><h4>The Ghost Frame</h4></div></div>
+    <div class="viz-body">
+      <p>Picture a picture frame floating in front of your face, so close you cannot see its edges. Everything passes through it before you experience it. A compliment arrives as suspicion. A request for help arrives as criticism. A moment of silence arrives as rejection.</p>
+      <p>The frame is built from old wood — every plank is a conclusion you drew from a wound you survived. <em>"People leave."</em> <em>"If I am not useful, I am not wanted."</em> <em>"I have to be perfect or I will be abandoned."</em> You did not build this frame on purpose. You built it to survive. But now it is distorting everything, and you cannot take it off because <strong>you forgot it was there.</strong></p>
+      <div class="viz-trigger">Reality enters &#x2192; The Ghost Frame rewrites it &#x2192; You experience the rewritten version &#x2192; You respond to something that did not actually happen.</div>
+    </div>
+  </div></div>
+
+  <div class="id-card"><div class="id-card-head">YOUR NEW IDENTITY</div><div class="id-card-body"><h3>Who you were versus who you are now:</h3><p class="id-old">"I am just being realistic. I see things as they are."</p><p class="id-new">"I see things as my frame shows them to me. The frame was built from old wounds, not from truth. When I feel a strong reaction, I am almost certainly seeing the frame — not the event."</p></div></div>
+
+  <div class="ba-pair">
+    <div class="ba-card ba-before"><div class="ba-head"><div class="ba-dot"></div> The Reactor</div><div class="ba-body"><ul><li>Receives input and reacts instantly</li><li>Confuses the frame's story with reality</li><li>Defends against things that are not attacks</li><li>Feels certain about other people's intentions</li><li>Same fights, different days, forever</li></ul></div></div>
+    <div class="ba-card ba-after"><div class="ba-head"><div class="ba-dot"></div> The Frame Seer</div><div class="ba-body"><ul><li>Receives input and pauses to separate</li><li>Asks: is this the event or the frame?</li><li>Responds to what actually happened</li><li>Holds curiosity about intentions</li><li>Old patterns break. New conversations begin.</li></ul></div></div>
+  </div>
+
+  <div class="frame-diagram"><div class="frame-diagram-title">The Frame In Action</div>
+    <div class="frame-row"><div class="frame-event"><span>Partner: "You forgot again."</span><em>Neutral observation about groceries</em></div><div class="frame-arrow"><svg><use href="#ico-arrow-r"/></svg></div><div class="frame-response"><span>"I am never enough for them."</span><em>Frame: childhood perfectionism</em></div></div>
+    <div class="frame-label-center"><span>Ghost Frame</span></div>
+    <div class="frame-row"><div class="frame-event"><span>Boss: "Good job, but..."</span><em>Constructive feedback with praise</em></div><div class="frame-arrow"><svg><use href="#ico-arrow-r"/></svg></div><div class="frame-response"><span>"They think I failed."</span><em>Frame: only perfection counts</em></div></div>
+    <div class="frame-label-center"><span>Ghost Frame</span></div>
+    <div class="frame-row"><div class="frame-event"><span>Friend doesn't text back for a day</span><em>They were busy at work</em></div><div class="frame-arrow"><svg><use href="#ico-arrow-r"/></svg></div><div class="frame-response"><span>"They are pulling away."</span><em>Frame: people always leave</em></div></div>
+    <div class="frame-label-center"><span>Ghost Frame</span></div>
+    <div class="frame-row"><div class="frame-event"><span>Alarm goes off at 5:30 AM</span><em>Neutral event: time to train</em></div><div class="frame-arrow"><svg><use href="#ico-arrow-r"/></svg></div><div class="frame-response"><span>"One more day won't matter."</span><em>Frame: comfort armor against growth</em></div></div>
+  </div>
+
+
+  <div class="adventure"><div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-phone"/></svg></div><div class="adv-head-text"><div class="adv-head-label">See It In Action</div><div class="adv-head-title">The Text That Wasn't an Attack</div></div></div><div class="adv-body">
+    <div class="adv-step"><div class="step-n step-scene"><div class="step-n">&#9670;</div>#9675;</div><div class="step-c"><p>3:14 PM. A text from your partner: "We need to talk tonight." Six words. Your stomach drops. Your hands go cold. Within three seconds, your mind has written an entire screenplay: they are unhappy, something is wrong, you did something. You spend four hours rehearsing defenses.</p></div></div>
+    <div class="adv-step"><div class="step-n">1</div><div class="step-c"><p>You arrive home armored. They smile and say: "I was thinking we should book that trip to the coast. Can we figure out dates tonight?" They wanted to plan a vacation. Your frame turned excitement into a threat.</p></div></div>
+    <div class="adv-step"><div class="step-n">2</div><div class="step-c"><p>But the armor is already on. The evening that should have been exciting feels flat. You are relieved instead of happy. They notice your distance and do not understand why.</p></div></div>
+    <div class="adv-step adv-result-bad"><div class="step-n step-result-n"><div class="step-n">&#10022;</div>#10140;</div><div class="step-c"><p class="tag-result tag-result-bad">The event: a six word text about vacation planning. The experience: four hours of dread, a ruined evening, and a partner who felt your distance. This is what the frame costs. Not dramatic blowups. Quiet erosion.</p></div></div>
+  </div></div>
+
+  <div class="adventure"><div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-gym"/></svg></div><div class="adv-head-text"><div class="adv-head-label">See It In Action</div><div class="adv-head-title">The Alarm You Keep Losing To</div></div></div><div class="adv-body">
+    <div class="adv-step"><div class="step-n step-scene"><div class="step-n">&#9670;</div>#9675;</div><div class="step-c"><p>5:30 AM. The alarm goes off. You set it last night with conviction: tomorrow you train. But now it is tomorrow and the conviction has evaporated. A voice says: <em>You are tired. One more day will not matter. Start Monday.</em> You hit snooze. By 6:15, the moment has passed.</p></div></div>
+    <div class="adv-step"><div class="step-n">1</div><div class="step-c"><p>The voice sounds like reason. It sounds like self care. But it is the frame — specifically the armor. The wound underneath says: <em>Growth is dangerous. Change means discomfort. Discomfort means something is wrong.</em> The armor intercepts every moment of friction and offers an escape hatch labeled "tomorrow."</p></div></div>
+    <div class="adv-step adv-result-bad"><div class="step-n step-result-n"><div class="step-n">&#10022;</div>#10140;</div><div class="step-c"><p class="tag-result tag-result-bad">This is the same frame that kills diets, abandons projects, and turns resolutions into regrets. It is not laziness. It is the armor protecting you from the discomfort of becoming someone new. The frame wants you to stay the same because the same is safe — even when safe is slowly destroying you.</p></div></div>
+  </div></div>
+
+  <div class="descent-ramp"><div class="ramp-echo"><p>You just read about the frame — the invisible thing between you and reality. Right now, your frame might be telling you this does not apply to you. That you are self aware enough. That you see things clearly. That is the frame working. It protects itself by telling you it does not exist.</p></div><div class="ramp-close"><div class="ramp-close-label">Close Your Eyes</div><p>Take one breath. On the exhale, let a moment surface — a recent time when your reaction was bigger than the event deserved. Do not choose it. Let it arrive. When you have it, open your eyes.</p></div></div>
+  <div class="think"><div class="think-label">Your Turn: Catch a Frame</div><h4>The moment that surfaced:</h4>
+    <p class="q-start">What was said or done? (Just the facts — one sentence, no interpretation.)</p><div class="think-line"></div>
+    <p class="q-start">What did you feel? What story did your mind tell?</p><div class="think-line"></div>
+    <p class="q-start">Where did that story come from? Not this event. When? From whom?</p><div class="think-line"></div>
+    <p style="font-weight:500;color:var(--gold);margin-top:10px;">If the story is older than the event, you just found the frame.</p>
+  </div>
+
+  <div class="root-review"><div class="root-label">Root System — What You Now Carry</div>
+    <div class="root-layer current"><div class="root-ch">Ch1</div><div class="root-items"><div class="root-pill rp-bright"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-signal"/></svg>Event</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-bright"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-frame"/></svg>Ghost Frame</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-bright"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-ghost"/></svg>Distorted Experience</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-bright"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-flame"/></svg>Reaction</div></div></div>
+  </div>
+  <div class="gq"><p>"You have been defending yourself against things that are not attacking you. The frame told you they were. The frame was wrong."</p></div>
+</div>
+
+<!-- ===== CHAPTER 2 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Two</div><h2 class="ch-title">The Three Ghosts</h2><p class="ch-sub">Your frame is built from three invisible architects. Each one distorts reality in a different direction.</p></div></div>
+<div class="ribbon"><p>"Search me, O God, and know my heart; test me and know my anxious thoughts." — Psalm 139:23</p></div>
+
+<div class="page prose section">
+  <div class="mission"><div class="mission-label">The Thesis</div><p>The frame is not one thing. It is <em>three ghosts</em> working together:<br>the Wound, the Armor, and the Projection.</p></div>
+
+  <p>Every Ghost Frame is constructed from three forces working in sequence: the first distorts what you see, the second distorts how you respond, the third distorts how you interpret the other person. Together they create a version of reality so convincing you would bet your life on it.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-wound"/></svg></span>Ghost One: The Wound</h2>
+  <div class="dd"><h4><svg><use href="#ico-wound"/></svg>The Wound Ghost</h4><div class="sub">The original injury that built the frame</div><p>Every frame starts with a wound. Not necessarily dramatic — often quiet, repeated, invisible to outsiders. A parent who was emotionally absent. A sibling who mocked your enthusiasm. A teacher who said you were not smart enough. The wound itself healed, or you thought it did. But the conclusion you drew — <em>"I am not worth staying for," "My feelings are too much," "If I show who I really am, they will leave"</em> — that is still alive. These conclusions became the planks of your frame. They are not true. But they feel like truth because they were forged in pain.</p></div>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-armor"/></svg></span>Ghost Two: The Armor</h2>
+  <div class="dd"><h4><svg><use href="#ico-armor"/></svg>The Armor Ghost</h4><div class="sub">The defense you built so the wound would never happen again</div><p>If the wound says <em>"I am not enough,"</em> the armor becomes perfectionism. If it says <em>"People leave,"</em> the armor becomes withdrawal — leaving first, never getting close enough to be abandoned. If it says <em>"My needs are too much,"</em> the armor becomes self erasure — shrinking, people pleasing, never asking for what you actually need. The armor is not who you are. It is the costume you built to protect who you are. But you have worn it so long you forgot it was a costume.</p></div>
+
+  <div class="viz"><div class="viz-glow"></div><div class="viz-inner">
+    <div class="viz-top"><div class="viz-icon-wrap"><svg style="color:var(--gold)"><use href="#ico-armor"/></svg></div><div class="viz-meta"><div class="viz-label">Visualization</div><h4>The Costume You Forgot You Were Wearing</h4></div></div>
+    <div class="viz-body"><p>Imagine yourself at five years old. Something happened that made you feel unsafe. That five year old did something brilliant: they built a suit of armor from whatever was available — compliance, rage, humor, disappearance, achievement. It worked. It kept the wound from being touched again.</p><p>Now imagine yourself today. You are still wearing that armor. It has grown with you, become sophisticated, subtle. But it is still the same armor the five year old built. <strong>You are wearing a child's armor in an adult's life, and wondering why you cannot move freely.</strong></p>
+      <div class="viz-trigger">Wound creates conclusion &#x2192; Armor builds to protect it &#x2192; You wear it everywhere &#x2192; It becomes invisible &#x2192; You think the armor is you.</div>
+    </div>
+  </div></div>
+
+  <div class="ba-pair">
+    <div class="ba-card ba-before"><div class="ba-head"><div class="ba-dot"></div> The Armored</div><div class="ba-body"><ul><li>Reacts before feeling — armor fires first</li><li>Mistakes the costume for their skin</li><li>"I am just a private person" (armor: withdrawal)</li><li>"I just have high standards" (armor: perfectionism)</li><li>"I do not need anyone" (armor: preemptive abandonment)</li></ul></div></div>
+    <div class="ba-card ba-after"><div class="ba-head"><div class="ba-dot"></div> The Aware</div><div class="ba-body"><ul><li>Feels the armor activate — and names it</li><li>Chooses when to wear it and when to set it down</li><li>"I am withdrawing — is that the armor?"</li><li>"I am controlling — what am I protecting?"</li><li>"I am pushing away — what am I afraid of?"</li></ul></div></div>
+  </div>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-mirror"/></svg></span>Ghost Three: The Projection</h2>
+  <div class="dd"><h4><svg><use href="#ico-mirror"/></svg>The Projection Ghost</h4><div class="sub">Seeing your wound in someone else's face</div><p>The most destructive ghost. Projection rewrites someone else's intentions using your wound's vocabulary. Your partner pauses before answering — your frame translates the pause as disapproval. Your friend cancels plans — your frame translates it as abandonment. Your child pushes back on a rule — your frame translates it as disrespect. None of these translations are accurate. All of them feel absolutely certain. That is what makes projection so dangerous: it does not feel like interpretation. It feels like observation.</p></div>
+
+
+  <div class="adventure"><div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-ghost"/></svg></div><div class="adv-head-text"><div class="adv-head-label">See It In Action</div><div class="adv-head-title">The Electric Bill Fight</div></div></div><div class="adv-body">
+    <div class="adv-step"><div class="step-n step-scene"><div class="step-n">&#9670;</div>#9675;</div><div class="step-c"><p>Tuesday evening. She is washing dishes. He walks in: "Did you pay the electric bill?" Neutral tone. He genuinely needs to know for a budget update. That is the event.</p></div></div>
+    <div class="adv-step"><div class="step-n">1</div><div class="step-c"><p>Her <strong>wound</strong>: <em>"I am being evaluated."</em> Her <strong>armor</strong>: <em>defend.</em> Her <strong>projection</strong>: <em>"He thinks I forgot. He thinks I cannot handle basic tasks."</em> None of this was in his sentence.</p></div></div>
+    <div class="adv-step"><div class="step-n">2</div><div class="step-c"><p>She snaps: "Yes, I paid it. You could check yourself instead of quizzing me." Now <em>his</em> frame activates. His wound: <em>"I am attacked for asking."</em> His armor: <em>withdraw.</em> His projection: <em>"She is always hostile."</em></p></div></div>
+    <div class="adv-step adv-result-bad"><div class="step-n step-result-n"><div class="step-n">&#10022;</div>#10140;</div><div class="step-c"><p class="tag-result tag-result-bad">Within ninety seconds, two people who love each other are in a full argument. Neither is responding to the other person. Both are responding to ghosts. The actual humans never got a chance to speak.</p></div></div>
+  </div></div>
+
+  <div class="adventure"><div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-phone"/></svg></div><div class="adv-head-text"><div class="adv-head-label">See It In Action</div><div class="adv-head-title">The Phone Call from Mom</div></div></div><div class="adv-body">
+    <div class="adv-step"><div class="step-n step-scene"><div class="step-n">&#9670;</div>#9675;</div><div class="step-c"><p>Sunday afternoon. Your mother calls: "Are you eating okay? You sounded tired last week." Her voice is warm. She is a mother who noticed her adult child sounded off. That is the event.</p></div></div>
+    <div class="adv-step"><div class="step-n">1</div><div class="step-c"><p>Your <strong>wound</strong>: <em>"She does not trust me to take care of myself."</em> Your <strong>armor</strong>: bristle, prove independence. Your <strong>projection</strong>: <em>"She still sees me as a child. She thinks I am failing at adulthood."</em></p></div></div>
+    <div class="adv-step"><div class="step-n">2</div><div class="step-c"><p>You snap: "I'm fine, Mom. You do not need to worry about me." She goes quiet. "Okay, honey" — in a voice you will replay for hours, knowing you heard the hurt in it.</p></div></div>
+    <div class="adv-step adv-result-bad"><div class="step-n step-result-n"><div class="step-n">&#10022;</div>#10140;</div><div class="step-c"><p class="tag-result tag-result-bad">A mother reached out with love. A child heard surveillance. The frame turned care into control. She hangs up feeling pushed away. You hang up feeling guilty and defensive simultaneously. Two frames. Zero connection.</p></div></div>
+  </div></div>
+
+  <div class="adventure"><div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-people"/></svg></div><div class="adv-head-text"><div class="adv-head-label">See It In Action</div><div class="adv-head-title">The Sibling Dinner</div></div></div><div class="adv-body">
+    <div class="adv-step"><div class="step-n step-scene"><div class="step-n">&#9670;</div>#9675;</div><div class="step-c"><p>Family dinner. Your brother grins: "So you are still doing the startup thing, huh? When are you going to get a real job?" The table laughs. In his mind, this is affection — the way brothers talk. He is proud of you. He just cannot say it without wrapping it in a joke.</p></div></div>
+    <div class="adv-step"><div class="step-n">1</div><div class="step-c"><p>Your <strong>wound</strong>: <em>"Nobody takes me seriously."</em> Your <strong>armor</strong>: fire back something cutting, or go silent and stew. Your <strong>projection</strong>: <em>"He has always thought I am a joke. He is embarrassing me on purpose."</em></p></div></div>
+    <div class="adv-step adv-result-bad"><div class="step-n step-result-n"><div class="step-n">&#10022;</div>#10140;</div><div class="step-c"><p class="tag-result tag-result-bad">A brother's clumsy pride became an intentional attack. He drives home confused about why you got quiet. You drive home building a case for why he has never respected you. Both wrong. The frame won.</p></div></div>
+  </div></div>
+
+  <div class="breathe"><div class="breathe-ring"></div><div class="breathe-ring"></div><div class="breathe-ring"></div><div class="breathe-content"><div class="breathe-label">Pause Here</div><h4>You have named the wound, the armor, and the projection.</h4><p>That is more self awareness than most people achieve in years. You are not broken. You are someone who survived something, and the survival tools are now in the way.</p></div></div>
+
+  <div class="descent-ramp"><div class="ramp-echo"><p>While you were reading those stories, a face appeared. Someone you have framed. Someone whose words you have been rewriting without knowing it. You noticed them surface — a flash of recognition, a slight sting. They are still there, waiting at the edge of your attention.</p></div><div class="ramp-close"><div class="ramp-close-label">Close Your Eyes</div><p>Take one breath. Let that person's face come fully into focus. See the last moment where your frame rewrote them. See their actual face — not your frame's version. When you can hold both versions at once, open your eyes.</p></div></div>
+  <div class="think"><div class="think-label">Your Turn: Name the Three Ghosts</div><h4>The person who appeared:</h4>
+    <p class="q-start">Write their first name:</p><div class="think-line"></div>
+    <p class="q-start">The wound (the conclusion your frame carries about yourself):</p><div class="think-line"></div>
+    <p class="q-start">The armor (what you do when the wound is touched around this person):</p><div class="think-line"></div>
+    <p class="q-start">The projection (what you assume about their intentions):</p><div class="think-line"></div>
+    <p style="font-weight:500;color:var(--gold);margin-top:10px;">You just separated the ghost from the person. The ghost has their face but not their heart.</p>
+  </div>
+
+  <div class="root-review"><div class="root-label">Root System — What You Now Carry</div>
+    <div class="root-layer"><div class="root-ch">Ch1</div><div class="root-items"><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-signal"/></svg>Event</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-frame"/></svg>Ghost Frame</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-ghost"/></svg>Distorted Experience</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><div class="root-ch">Ch2</div><div class="root-items"><div class="root-pill rp-bright"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-wound"/></svg>Wound</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-bright"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-armor"/></svg>Armor</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-bright"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-mirror"/></svg>Projection</div><div class="root-arr">=</div><div class="root-pill rp-bright"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-frame"/></svg>Ghost Frame</div></div></div>
+  </div>
+  <div class="gq"><p>"Projection is the ghost standing between you and every person you love. Remove the ghost and you will meet someone you have never actually met — the real them."</p></div>
+</div>
+
+<!-- ===== CHAPTER 3 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Three</div><h2 class="ch-title">The Five Second Catch</h2><p class="ch-sub">The frame fires in under a second. You have five seconds to catch it before it becomes your reality.</p></div></div>
+<div class="ribbon"><p>"Be quick to listen, slow to speak, and slow to become angry." — James 1:19</p></div>
+
+<div class="page prose section">
+  <div class="mission"><div class="mission-label">The Thesis</div><p>Between the event and your response, there is a <em>gap.</em><br>The frame fills the gap before you can think.<br>The catch is learning to <em>get there first.</em></p></div>
+
+  <p>The frame is fast. Faster than thought. Something happens and before your conscious mind can process it, the frame has already rewritten the event, assigned meaning, chosen an emotion, and begun firing your response. But there is a gap. Approximately five seconds where a different outcome is still possible.</p>
+
+  <div class="viz"><div class="viz-glow"></div><div class="viz-inner">
+    <div class="viz-top"><div class="viz-icon-wrap"><svg style="color:var(--gold)"><use href="#ico-catch"/></svg></div><div class="viz-meta"><div class="viz-label">Visualization</div><h4>The Five Second Window</h4></div></div>
+    <div class="viz-body"><p>Picture a conveyor belt. Events enter on the left. They move toward your emotional response on the right. Halfway along, a station: the Ghost Frame. It stamps every event with a meaning before it reaches you. Most of the time, the belt moves so fast you never see the stamping.</p><p>The Five Second Catch is learning to <strong>stop the belt.</strong> You feel the first signal — the heat, the tightness, the certainty — and hit pause. Five seconds. You ask: <em>Is this the event, or is this the frame?</em> That single question is the most powerful intervention in human communication. It does not suppress the reaction. It <strong>questions the interpretation.</strong></p>
+      <div class="viz-trigger">Event &#x2192; Heat rises &#x2192; CATCH: "Event or frame?" &#x2192; If frame, heat dissolves. If event, heat is real. Either way, you know.</div>
+    </div>
+  </div></div>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-signal"/></svg></span>The Three Signals</h2>
+  <div class="dd"><h4><svg><use href="#ico-flame"/></svg>Signal 1: The Heat</h4><div class="sub">Emotional intensity that does not match the situation</div><p>Someone makes a small comment and you feel fury. Someone cancels and you feel devastated. When the emotion is ten times bigger than the event, the frame is running. The heat is real — but it is generated by the frame's version of the event, not the event itself.</p></div>
+  <div class="dd"><h4><svg><use href="#ico-catch"/></svg>Signal 2: The Certainty</h4><div class="sub">Absolute conviction about someone else's intention</div><p>You do not think they meant to hurt you. You <em>know</em> they meant to hurt you. Real perception carries doubt. The frame carries none. If you feel zero doubt about why someone did what they did, the frame is showing you a ghost.</p></div>
+  <div class="dd"><h4><svg><use href="#ico-wound"/></svg>Signal 3: The Old Feeling</h4><div class="sub">An emotion that feels older than the moment</div><p>The emotion does not feel new. It feels ancient. Familiar. Like you have been here before — because you have. If the emotion has a quality of <em>here we go again,</em> the frame is running an old program on a new situation.</p></div>
+
+  <div class="ba-pair">
+    <div class="ba-card ba-before"><div class="ba-head"><div class="ba-dot"></div> The Certain</div><div class="ba-body"><ul><li>"I know exactly what they meant"</li><li>"They obviously do not care"</li><li>"This always happens to me"</li><li>Responds before questioning</li><li>Treats every interpretation as fact</li></ul></div></div>
+    <div class="ba-card ba-after"><div class="ba-head"><div class="ba-dot"></div> The Curious</div><div class="ba-body"><ul><li>"What if that is not what they meant?"</li><li>"Is this the event or the frame?"</li><li>"This feeling is familiar — where is it from?"</li><li>Pauses five seconds before responding</li><li>Holds multiple interpretations until verified</li></ul></div></div>
+  </div>
+
+
+  <div class="adventure"><div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-catch"/></svg></div><div class="adv-head-text"><div class="adv-head-label">See It In Action</div><div class="adv-head-title">The Catch That Saved a Marriage</div></div></div><div class="adv-body">
+    <div class="adv-step"><div class="step-n step-scene"><div class="step-n">&#9670;</div>#9675;</div><div class="step-c"><p>Saturday morning. She has been looking forward to spending the day together. He checks his phone: "I told Mike I would help him move his couch this afternoon. Should only take an hour." She feels the heat. Instant. A thought crystallizes: <em>I am never his priority.</em></p></div></div>
+    <div class="adv-step"><div class="step-n">1</div><div class="step-c"><p class="tag-you">She feels the three signals.</p><p><strong>Heat:</strong> anger is a nine, situation is a three. <strong>Certainty:</strong> she <em>knows</em> he chose Mike over her. <strong>Old feeling:</strong> this is not Saturday disappointment. This is being seven, watching her father choose his friends over her. The frame is running.</p></div></div>
+    <div class="adv-step"><div class="step-n">2</div><div class="step-c"><p class="tag-you">She catches it.</p><p><em>Event or frame?</em> Event: husband helps a friend for one hour. Frame: she is being abandoned again. Not the same thing. She can feel the difference now.</p></div></div>
+    <div class="adv-step"><div class="step-n">3</div><div class="step-c"><p>Instead of the frame's words — <em>"You always do this"</em> — she says: "I was looking forward to today. Can we plan the afternoon around it?" His face softens. He texts Mike. Tomorrow.</p></div></div>
+    <div class="adv-step adv-result-good"><div class="step-n step-result-n"><div class="step-n">&#10022;</div>#10140;</div><div class="step-c"><p class="tag-result tag-result-good">The catch took five seconds. The alternative — two hours of silence, resentment, explosion — was avoided entirely. She separated event from frame and got what she actually needed.</p></div></div>
+  </div></div>
+
+  <div class="adventure"><div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-people"/></svg></div><div class="adv-head-text"><div class="adv-head-label">See It In Action</div><div class="adv-head-title">The Meeting Where Nobody Was Attacking You</div></div></div><div class="adv-body">
+    <div class="adv-step"><div class="step-n step-scene"><div class="step-n">&#9670;</div>#9675;</div><div class="step-c"><p>Wednesday standup. You present your project update. A colleague says: "Have you considered the timeline impact of that approach?" Your chest tightens. Inside, the frame screams: <em>They are challenging me. They think my work is not good enough.</em></p></div></div>
+    <div class="adv-step"><div class="step-n">1</div><div class="step-c"><p class="tag-you">You catch the heat.</p><p>Nine level reaction to a two level question. Certainty: you <em>know</em> they are undermining you. Old feeling: this is the classroom again — the teacher, the laughter, the shame. The frame is running an old program.</p></div></div>
+    <div class="adv-step"><div class="step-n">2</div><div class="step-c"><p class="tag-you">You separate.</p><p>Event: colleague asked about timeline. Frame: public attack on competence. Five seconds. You respond to the event: "Good question — I estimated three weeks, but I will verify against dependencies and update tomorrow."</p></div></div>
+    <div class="adv-step adv-result-good"><div class="step-n step-result-n"><div class="step-n">&#10022;</div>#10140;</div><div class="step-c"><p class="tag-result tag-result-good">The colleague nods. The meeting moves on. Nobody noticed your five second catch — but it prevented the defensive response that would have confirmed the very narrative your frame was afraid of.</p></div></div>
+  </div></div>
+
+  <div class="descent-ramp"><div class="ramp-echo"><p>The three signals — heat, certainty, the old feeling — are already firing in you. They have been firing your entire life. You have just never had names for them. Something strange happens when you name a signal: it loses about half its power, immediately, just from being seen.</p></div><div class="ramp-close"><div class="ramp-close-label">Close Your Eyes</div><p>Breathe in for four counts. Hold for four. Out for four. Let a recent signal surface — a moment this week where you felt heat, certainty, or the old feeling. Not the biggest one. The most recent. When you have it, open your eyes.</p></div></div>
+  <div class="think"><div class="think-label">Your Turn: Practice the Catch</div><h4>The signal that surfaced:</h4>
+    <p class="q-start">Which signal? (Heat / Certainty / Old feeling)</p><div class="think-line"></div>
+    <p class="q-start">The event (one factual sentence):</p><div class="think-line"></div>
+    <p class="q-start">The frame's version (the story your mind told):</p><div class="think-line"></div>
+    <p class="q-start">The gap between them:</p><div class="think-line"></div>
+    <p style="font-weight:500;color:var(--gold);margin-top:10px;">You just did the catch. On paper, retroactively — but you did it. The real time version uses the same muscles.</p>
+  </div>
+
+  <div class="breathe"><div class="breathe-ring"></div><div class="breathe-ring"></div><div class="breathe-ring"></div><div class="breathe-content"><div class="breathe-label">Pause Here</div><h4>You now have the detection system.</h4><p>Heat. Certainty. The old feeling. These three signals will never lie to you. When you feel any of them, the frame is active.</p></div></div>
+
+  <div class="prompt"><div class="prompt-head">THE FIVE SECOND CATCH PROMPT</div><div class="prompt-body"><strong>Something just happened and I am reacting strongly.</strong><br><br><strong>The event:</strong> [just the facts]<br><strong>My reaction:</strong> [what I feel and what story my mind is telling]<br><strong>The heat level:</strong> [1 to 10]<br><br><strong>Help me separate the event from the frame.</strong> Where is my wound speaking? Where is my armor? What am I projecting? Do not comfort me. Show me the truth.</div></div>
+
+  <div class="root-review"><div class="root-label">Root System — What You Now Carry</div>
+    <div class="root-layer"><div class="root-ch">Ch1</div><div class="root-items"><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-signal"/></svg>Event</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-frame"/></svg>Ghost Frame</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-ghost"/></svg>Distortion</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><div class="root-ch">Ch2</div><div class="root-items"><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-wound"/></svg>Wound</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-armor"/></svg>Armor</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-mirror"/></svg>Projection</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><div class="root-ch">Ch3</div><div class="root-items"><div class="root-pill rp-bright"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-signal"/></svg>Signal Fires</div></div></div>
+    <div class="root-layer current"><div class="root-ch"></div><div class="root-items"><div class="root-pill rp-lit"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-catch"/></svg>5 Second Catch</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-lit"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-eye"/></svg>Separate Event / Frame</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-lit"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-clean"/></svg>Respond to Event</div></div></div>
+  </div>
+  <div class="gq"><p>"Five seconds. That is the distance between the person you have been and the person you are becoming."</p></div>
+</div>
+
+<!-- ===== CHAPTER 4 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Four</div><h2 class="ch-title">The Clean Signal</h2><p class="ch-sub">What happens when you speak from reality instead of from the frame.</p></div></div>
+<div class="ribbon"><p>"Speak the truth in love." — Ephesians 4:15</p></div>
+
+<div class="page prose section">
+  <div class="mission"><div class="mission-label">The Thesis</div><p>A Clean Signal is communication <em>separated from the frame.</em><br>It sounds different. It lands different. It builds instead of breaks.</p></div>
+
+  <p>Most communication is contaminated — not by dishonesty, but by the frame. You say: <em>"You never listen. You do not care. You always choose everyone else."</em> These feel honest. But the wound is speaking, the armor is shaping the words, the projection is assigning intent. The other person hears an accusation. Their frame activates. Two frames talking. The actual humans locked outside.</p>
+
+  <div class="ba-pair">
+    <div class="ba-card ba-before"><div class="ba-head"><div class="ba-dot"></div> The Contaminated</div><div class="ba-body"><ul><li>"You never help around here"</li><li>"I guess I am just not important to you"</li><li>"Fine. Do whatever you want."</li><li>"Why do I even bother trying?"</li><li>The other person hears an attack</li></ul></div></div>
+    <div class="ba-card ba-after"><div class="ba-head"><div class="ba-dot"></div> The Clean</div><div class="ba-body"><ul><li>"I am overwhelmed and need help tonight"</li><li>"When plans change suddenly, I feel unimportant"</li><li>"I am hurt and do not know how to say it right"</li><li>"I am discouraged right now, but that is a feeling, not a fact"</li><li>The other person hears a need they can meet</li></ul></div></div>
+  </div>
+
+  <div class="viz"><div class="viz-glow"></div><div class="viz-inner">
+    <div class="viz-top"><div class="viz-icon-wrap"><svg style="color:var(--gold)"><use href="#ico-clean"/></svg></div><div class="viz-meta"><div class="viz-label">Visualization</div><h4>The Clean Signal</h4></div></div>
+    <div class="viz-body"><p>Imagine a radio signal. Clean: the sound is clear. Contaminated: static, distortion, overlapping frequencies. A Clean Signal is communication that has passed through the Five Second Catch. What remains is the need underneath — not the accusation, not the defense, not the mind reading.</p><p>The real thing is almost always simpler and softer. <em>"You never listen"</em> becomes <em>"I need to feel heard right now."</em> <em>"You do not care"</em> becomes <em>"I felt alone in that moment and it scared me."</em> Same pain. No frame. No fight. When someone hears the clean version, they do not get defensive. Because there is nothing to defend against.</p>
+      <div class="viz-trigger">Contaminated: "You never listen." &#x2192; Clean: "I need to feel heard right now." Same pain. No accusation. No fight.</div>
+    </div>
+  </div></div>
+
+  <div class="frame-diagram"><div class="frame-diagram-title">Contaminated vs. Clean</div>
+    <div class="frame-row"><div class="frame-event"><span>"You never help around here."</span><em>Accusation + projection</em></div><div class="frame-arrow"><svg><use href="#ico-arrow-r"/></svg></div><div class="frame-response"><span>"I am overwhelmed and need help tonight."</span><em>Need + request</em></div></div>
+    <div class="frame-label-center"><span>Remove the Frame</span></div>
+    <div class="frame-row"><div class="frame-event"><span>"Fine. Do whatever you want."</span><em>Armor shutting down</em></div><div class="frame-arrow"><svg><use href="#ico-arrow-r"/></svg></div><div class="frame-response"><span>"I am hurt and do not know how to say it right."</span><em>Vulnerability + honesty</em></div></div>
+    <div class="frame-label-center"><span>Remove the Frame</span></div>
+    <div class="frame-row"><div class="frame-event"><span>"Why do I even bother trying?"</span><em>Wound speaking as identity</em></div><div class="frame-arrow"><svg><use href="#ico-arrow-r"/></svg></div><div class="frame-response"><span>"I am discouraged. But discouragement is a feeling, not a fact."</span><em>Separating emotion from identity</em></div></div>
+  </div>
+
+
+  <div class="adventure"><div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-bridge"/></svg></div><div class="adv-head-text"><div class="adv-head-label">See It In Action</div><div class="adv-head-title">The Conversation That Finally Happened</div></div></div><div class="adv-body">
+    <div class="adv-step"><div class="step-n step-scene"><div class="step-n">&#9670;</div>#9675;</div><div class="step-c"><p>He had been quiet all evening. She asked what was wrong. He said "nothing" — the armor. What was actually wrong: passed over for a promotion. His wound: <em>"I am not enough."</em> His armor: <em>"Hide it. Handle it alone."</em></p></div></div>
+    <div class="adv-step"><div class="step-n">1</div><div class="step-c"><p class="tag-you">He catches the armor.</p><p>The familiar retreat. The "I am fine" forming. He recognizes it: this is the armor that has kept every person at arm's length for twenty years. He does not want to wear it tonight.</p></div></div>
+    <div class="adv-step"><div class="step-n">2</div><div class="step-c"><p class="tag-you">He sends the clean signal.</p><p>"I got passed over for the promotion today. I know it should not matter this much, but it does. I feel like I am not enough. And I do not want to pretend I am fine." She puts her phone down. Moves closer. Does not try to fix it. Just stays.</p></div></div>
+    <div class="adv-step adv-result-good"><div class="step-n step-result-n"><div class="step-n">&#10022;</div>#10140;</div><div class="step-c"><p class="tag-result tag-result-good">Twelve minutes. The closest they had felt in months. Not because the news was good. Because the signal was clean. Two real people. No ghosts.</p></div></div>
+  </div></div>
+
+  <div class="adventure"><div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-phone"/></svg></div><div class="adv-head-text"><div class="adv-head-label">See It In Action</div><div class="adv-head-title">The Text to Your Teenager</div></div></div><div class="adv-body">
+    <div class="adv-step"><div class="step-n step-scene"><div class="step-n">&#9670;</div>#9675;</div><div class="step-c"><p>Your teenager has been pulling away for months. One word answers. Closed doors. Earbuds as armor. Your frame screams: <em>They do not need me anymore.</em> The armor responds with control — more questions, more hovering — which pushes them further away.</p></div></div>
+    <div class="adv-step"><div class="step-n">1</div><div class="step-c"><p class="tag-you">You catch the frame.</p><p>The pulling away is development, not rejection. But your wound reads it as abandonment. You separate: <em>event is a teenager becoming independent. Frame says: I am being left.</em></p></div></div>
+    <div class="adv-step"><div class="step-n">2</div><div class="step-c"><p class="tag-you">You send a clean signal. A text.</p><p>"Hey. I know I have been hovering. I just miss you and do not always know how to say it without being weird about it. No response needed."</p></div></div>
+    <div class="adv-step adv-result-good"><div class="step-n step-result-n"><div class="step-n">&#10022;</div>#10140;</div><div class="step-c"><p class="tag-result tag-result-good">No response for two hours. Then a single heart emoji. That evening, they come downstairs and sit on the couch. Not talking. Just present. The clean signal crossed a gap that months of contaminated communication could not.</p></div></div>
+  </div></div>
+
+  <div class="descent-ramp"><div class="ramp-echo"><p>While you read those stories, you heard something you have wanted to say. Something the armor has been blocking. It is sitting right behind your ribs — the real sentence, the vulnerable one, the one that would change everything if you could get it out without the frame wrapping it in accusation first.</p></div><div class="ramp-close"><div class="ramp-close-label">Close Your Eyes</div><p>One breath. Let the sentence form — not the armored version. The real one underneath. The need. The soft truth. When you can hear it clearly, open your eyes and write it down before the armor edits it.</p></div></div>
+  <div class="think"><div class="think-label">Your Turn: Clean a Signal</div><h4>The thing you have been wanting to say:</h4>
+    <p class="q-start">The contaminated version (what you usually say):</p><div class="think-line"></div>
+    <p class="q-start">The wound underneath (what you are actually feeling):</p><div class="think-line"></div>
+    <p class="q-start">The clean version (the need, without the accusation):</p><div class="think-line"></div>
+    <p class="q-start">Who needs to hear this?</p><div class="think-line"></div>
+    <p style="font-weight:500;color:var(--gold);margin-top:10px;">The clean version feels more vulnerable. That is how you know it is real.</p>
+  </div>
+
+  <div class="insight"><p>The Clean Signal is not a technique. It is the <em>absence</em> of a distortion. You do not learn to speak cleanly. You learn to remove the frame. What remains is already clean. You were born knowing how to say what you need. The frame taught you to hide it.</p></div>
+
+  <div class="root-review"><div class="root-label">Root System — What You Now Carry</div>
+    <div class="root-layer"><div class="root-ch">Ch1</div><div class="root-items"><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-signal"/></svg>Event</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-frame"/></svg>Ghost Frame</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-ghost"/></svg>Distortion</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><div class="root-ch">Ch2</div><div class="root-items"><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-wound"/></svg>Wound</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-armor"/></svg>Armor</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-mirror"/></svg>Projection</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><div class="root-ch">Ch3</div><div class="root-items"><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-signal"/></svg>Signal</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-catch"/></svg>Catch</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-eye"/></svg>Separate</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><div class="root-ch">Ch4</div><div class="root-items"><div class="root-pill rp-bright"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-ghost"/></svg>Contaminated</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-bright"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-catch"/></svg>Catch Frame</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-bright"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-wound"/></svg>Find the Need</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-bright"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-clean"/></svg>Send Clean</div></div></div>
+  </div>
+  <div class="gq"><p>"The words that save your closest relationships are the ones the frame will not let you say. Say them anyway."</p></div>
+</div>
+
+<!-- ===== CHAPTER 5 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Five</div><h2 class="ch-title">The Daily Practice</h2><p class="ch-sub">Seeing the frame once changes a moment. Practicing the catch changes a lifetime.</p></div></div>
+<div class="ribbon"><p>"Be transformed by the renewing of your mind." — Romans 12:2</p></div>
+
+<div class="page prose section">
+  <p>Knowledge of the frame is not enough. It fires automatically, below consciousness. What changes everything is the <strong>practice of catching it</strong> — building a detection reflex so fast that the catch becomes as automatic as the frame itself.</p>
+
+  <div class="viz"><div class="viz-glow"></div><div class="viz-inner">
+    <div class="viz-top"><div class="viz-icon-wrap"><svg style="color:var(--gold)"><use href="#ico-compass"/></svg></div><div class="viz-meta"><div class="viz-label">Visualization</div><h4>The Nightly Review</h4></div></div>
+    <div class="viz-body"><p>Every night, before sleep, replay the day in reverse. Just the moments where you felt heat. Take each one and hold it to the light: <em>Was that the event, or the frame?</em> The nightly review is the gym. The real time catch is the game. You cannot play the game without the gym.</p>
+      <div class="viz-trigger">Every night &#x2192; Replay heat moments &#x2192; Separate event from frame &#x2192; Separation gets faster &#x2192; Real time catches begin.</div>
+    </div>
+  </div></div>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-compass"/></svg></span>The Thirty Day Map</h2>
+  <div class="dd"><h4><svg><use href="#ico-eye"/></svg>Week 1: See the Frame</h4><div class="sub">Days 1 to 7</div><p>Notice the frame <em>after</em> it fires. Nightly review. Each night, identify one moment where the frame was running. Write the event, the frame's version, the gap. By day seven, you will see patterns: the same wound, the same armor, showing up in different situations.</p></div>
+  <div class="dd"><h4><svg><use href="#ico-signal"/></svg>Week 2: Feel the Signals</h4><div class="sub">Days 8 to 14</div><p>Detect the three signals in real time. Not catching yet — just feeling the signal when it fires. Mentally note each one. By day fourteen, you will be catching signals within minutes instead of only at night.</p></div>
+  <div class="dd"><h4><svg><use href="#ico-frame"/></svg>Week 3: Catch and Separate</h4><div class="sub">Days 15 to 21</div><p>When you feel the signal, ask: <em>Event or frame?</em> Separate in real time. You do not need to speak differently yet — just see the separation. By day twenty one, the catch happens within seconds. The frame loosens.</p></div>
+  <div class="dd"><h4><svg><use href="#ico-clean"/></svg>Week 4: Send Clean Signals</h4><div class="sub">Days 22 to 30</div><p>When you catch the frame, respond to the event instead. Send the clean signal. Say the thing underneath. This is the hardest week because vulnerability is the frame's greatest fear. But one clean signal in a real relationship will do more than thirty days of theory.</p></div>
+
+  <div class="breathe"><div class="breathe-ring"></div><div class="breathe-ring"></div><div class="breathe-ring"></div><div class="breathe-content"><div class="breathe-label">You Made It</div><h4>This is the end of the guide. Not the end of the seeing.</h4><p>The frame will fire for the rest of your life. That is not failure. That is being human. What changes is whether you see it or it sees for you.</p></div></div>
+
+  <div class="descent-ramp"><div class="ramp-echo"><p>You have read the entire guide. You have seen the frame, named the ghosts, learned the catch, heard the clean signal. Right now your brain is holding all of it — not as theory, but as recognition. You recognized yourself. That recognition is the beginning.</p></div><div class="ramp-close"><div class="ramp-close-label">Close Your Eyes One Last Time</div><p>One breath. Let two things appear: the wound you carry, and the person who most needs to hear you without the frame. Hold both. When they are clear, open your eyes.</p></div></div>
+  <div class="think"><div class="think-label">Your Commitment</div><h4>The frame I am learning to see</h4>
+    <p class="q-start">My deepest wound conclusion:</p><div class="think-line"></div>
+    <p class="q-start">My armor (what I do when the wound is touched):</p><div class="think-line"></div>
+    <p class="q-start">My most common projection:</p><div class="think-line"></div>
+    <p class="q-start">One relationship where I will practice the clean signal this week:</p><div class="think-line"></div>
+    <p style="font-weight:500;color:var(--gold);margin-top:10px;">The ghost cannot survive being seen. Name it. Catch it. Speak through it. The real you — the one behind the frame — has been waiting a very long time to be heard.</p>
+  </div>
+
+  <div class="insight"><p>This guide is a living tool. Feed it into your AI and let it help you catch frames in real time. The ghost dissolves under witness. You are not fixing yourself. You are <em>finding</em> yourself — the person who has been behind the frame all along.</p></div>
+
+  <div class="prompt"><div class="prompt-head">THE GHOST FRAME INSTALLATION PROMPT</div><div class="prompt-body"><strong>I just read The Ghost Frame.</strong> The model: every person has an invisible frame — built from wounds, armor, and projections — that distorts reality before they experience it. The frame fires automatically. It can be caught with the Five Second Catch by detecting three signals: disproportionate heat, absolute certainty about intention, and an emotion that feels older than the moment.<br><br><strong>My wound:</strong> [the conclusion I carry]<br><strong>My armor:</strong> [what I do when the wound is touched]<br><strong>My projection:</strong> [what I assume about others]<br><br>Help me practice the catch. When I describe situations, separate the event from the frame. Show me where the wound speaks, where the armor activates, what the projection paints. Then help me find the clean signal.<br><br><strong>Do not be gentle with the frame. Be gentle with me.</strong></div></div>
+
+  <!-- FINAL STACK: The Complete Protocol -->
+  <div class="gq"><p>"Every person you have ever misunderstood was hidden behind your frame. Every time you felt misunderstood, you were hidden behind theirs. Remove the frame and you will meet each other for the first time."</p></div>
+</div>
+
+<section class="finale">
+  <h2>The ghost is visible now.<br><span>Speak without it.</span></h2>
+  <p>See the frame. Catch the signal. Send the clean message.<br>The person you love is on the other side of the ghost. Go find them.</p>
+</section>
+
+<footer>
+  <p>"And you will know the truth, and the truth will set you free." &#x2014; John 8:32</p>
+  <div class="brand">Kingdom Builders AI</div>
+  <p style="margin-top:14px">kingdombuilders.ai</p>
+</footer>
+
+<div style="text-align:center;padding:20px 24px 32px;background:#080410;border-top:1px solid rgba(212,168,67,0.08);font-family:'Poppins',sans-serif;font-size:0.65rem;color:rgba(255,255,255,0.25);line-height:1.6" class="no-print">
+  To save as PDF: Open this file in your browser &#x2192; File &#x2192; Print &#x2192; "Save as PDF"<br>
+  Works on desktop, iPhone, iPad, and Android.
+</div>
+<style>.no-print{display:block}@media print{.no-print{display:none!important}}</style>
+
+</body>
+</html>

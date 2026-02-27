@@ -49,6 +49,14 @@ CREATE INDEX IF NOT EXISTS idx_purchases_session ON purchases(stripe_session_id)
 CREATE INDEX IF NOT EXISTS idx_purchases_email ON purchases(customer_email);
 CREATE INDEX IF NOT EXISTS idx_download_logs_purchase ON download_logs(purchase_id);
 CREATE INDEX IF NOT EXISTS idx_email_log_purchase ON email_log(purchase_id);
+
+CREATE TABLE IF NOT EXISTS subscribers (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    email      TEXT NOT NULL UNIQUE,
+    source     TEXT NOT NULL DEFAULT 'salmon-journey-ch1',
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_subscribers_email ON subscribers(email);
 """
 
 
@@ -145,3 +153,24 @@ def log_email(purchase_id, email_type, resend_id=None):
         (purchase_id, email_type, resend_id)
     )
     conn.commit()
+
+
+# --- Subscriber Queries ---
+
+def create_subscriber(email, source="salmon-journey-ch1"):
+    """Insert a new subscriber (idempotent — ignores duplicates)."""
+    conn = get_connection()
+    conn.execute(
+        "INSERT OR IGNORE INTO subscribers (email, source) VALUES (?, ?)",
+        (email, source)
+    )
+    conn.commit()
+
+
+def get_subscriber_by_email(email):
+    """Look up a subscriber by email."""
+    conn = get_connection()
+    return conn.execute(
+        "SELECT * FROM subscribers WHERE email = ?",
+        (email,)
+    ).fetchone()

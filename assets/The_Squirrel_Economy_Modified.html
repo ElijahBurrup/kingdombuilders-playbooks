@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Squirrel Forest Economy   Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --oak:#5C3A1E;--oak-dark:#3D2210;--oak-mid:#7A5230;--oak-light:#A07848;--oak-pale:#C8A870;
+  --moss:#2D5A3D;--moss-dark:#1A3828;--moss-mid:#4A8060;--moss-light:#7AB890;--moss-pale:#B8E0C8;
+  --acorn:#C87820;--acorn-glow:#F0A840;--acorn-pale:#F8E0A0;--acorn-soft:rgba(200,120,32,0.08);
+  --sky:#4A7AA0;--sky-light:#78A8C8;--sky-pale:#C8E0F0;
+  --cream:#FDFAF2;--cream-warm:#FAF4E0;--cream-deep:#F2E8CC;
+  --bark:#8A6848;--bark-light:#C0A880;
+  --text:#2A1A08;--text-light:#5A3A18;--text-muted:#8A6838;
+  --white:#FFFFFF;--radius:16px;
+  --shadow-soft:0 2px 16px rgba(92,58,30,0.08);
+  --shadow-mid:0 4px 28px rgba(92,58,30,0.12);
+  --before-bg:#FFF5EE;--before-border:#E09060;--before-text:#6A2800;
+  --after-bg:#EEF8F2;--after-border:#70B888;--after-text:#1A4A28;
+  --blood:#8B0000;--blood-dark:#5A0000;--blood-pale:#CD5C5C
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--cream);line-height:1.82;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
+.page{max-width:720px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--oak);font-weight:700}
+.prose h2{font-size:1.4rem;color:var(--oak);margin:40px 0 16px;letter-spacing:-0.01em;display:flex;align-items:center;gap:10px}
+
+/* ===== COVER ===== */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;
+  background:linear-gradient(175deg,#0A1F12 0%,#142E18 20%,#1A3820 45%,#224228 70%,#0E2016 100%);
+  position:relative;overflow:hidden}
+/* Animated falling leaves/acorns */
+.leaf{position:absolute;font-size:1.4rem;animation:leaf-fall linear infinite;pointer-events:none;opacity:0}
+.leaf:nth-child(1){left:8%;animation-duration:12s;animation-delay:0s;font-size:1.2rem}
+.leaf:nth-child(2){left:22%;animation-duration:15s;animation-delay:-4s}
+.leaf:nth-child(3){left:38%;animation-duration:10s;animation-delay:-8s;font-size:1rem}
+.leaf:nth-child(4){left:55%;animation-duration:13s;animation-delay:-2s}
+.leaf:nth-child(5){left:70%;animation-duration:11s;animation-delay:-6s;font-size:1.1rem}
+.leaf:nth-child(6){left:85%;animation-duration:14s;animation-delay:-10s;font-size:0.9rem}
+.leaf:nth-child(7){left:15%;animation-duration:16s;animation-delay:-3s;font-size:0.8rem}
+.leaf:nth-child(8){left:48%;animation-duration:9s;animation-delay:-7s}
+.leaf:nth-child(9){left:92%;animation-duration:12s;animation-delay:-1s;font-size:1.3rem}
+.leaf:nth-child(10){left:3%;animation-duration:14s;animation-delay:-9s}
+@keyframes leaf-fall{
+  0%{transform:translateY(-60px) rotate(0deg);opacity:0}
+  5%{opacity:0.7}
+  90%{opacity:0.5}
+  100%{transform:translateY(105vh) rotate(360deg);opacity:0}
+}
+/* Firefly dots */
+.firefly{position:absolute;width:4px;height:4px;border-radius:50%;background:rgba(240,168,64,0.8);animation:firefly-drift ease-in-out infinite;pointer-events:none}
+.firefly:nth-child(11){top:20%;left:15%;animation-duration:5s;animation-delay:0s}
+.firefly:nth-child(12){top:40%;right:20%;animation-duration:7s;animation-delay:-2s}
+.firefly:nth-child(13){top:65%;left:35%;animation-duration:6s;animation-delay:-4s}
+.firefly:nth-child(14){top:30%;right:40%;animation-duration:8s;animation-delay:-1s}
+.firefly:nth-child(15){top:75%;right:12%;animation-duration:5.5s;animation-delay:-3s}
+@keyframes firefly-drift{0%,100%{transform:translate(0,0);opacity:0.2}25%{transform:translate(20px,-15px);opacity:1}50%{transform:translate(-10px,10px);opacity:0.3}75%{transform:translate(15px,5px);opacity:0.9}}
+.ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.015;mix-blend-mode:overlay;pointer-events:none}
+.cover-content{position:relative;z-index:2;padding:48px 24px}
+.cover-badge{display:inline-block;padding:6px 22px;border:1px solid rgba(200,120,32,0.3);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--acorn-glow);margin-bottom:36px}
+.cover-acorn{font-size:3.5rem;margin-bottom:16px;display:block;animation:acorn-bob 3s ease-in-out infinite}
+@keyframes acorn-bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-10px) rotate(3deg)}}
+.cover h1{font-family:'Nunito',sans-serif;font-size:clamp(2.2rem,6vw,3.8rem);font-weight:900;color:var(--white);line-height:1.08;margin-bottom:4px}
+.cover h1 strong{font-weight:900;color:var(--acorn-glow);display:block;font-size:clamp(2.6rem,7vw,4.4rem)}
+.cover-tagline{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.5);margin-top:24px;line-height:1.75}
+.cover-tagline em{color:var(--acorn-pale);font-style:normal;font-weight:600}
+.cover-sub{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-top:12px}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.58rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,0.15);margin-top:48px}
+
+/* ===== CHAPTER HEADS ===== */
+.ch-head{background:linear-gradient(170deg,var(--oak-dark),var(--oak));padding:72px 24px 52px;position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C8A870' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.ch-badge{display:inline-block;padding:4px 16px;background:rgba(200,120,32,0.1);border:1px solid rgba(200,120,32,0.25);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;color:var(--acorn-pale);margin-bottom:20px}
+.ch-num{font-family:'Nunito',sans-serif;font-size:5.5rem;font-weight:900;line-height:0.9;color:rgba(200,120,32,0.2);margin-bottom:-10px}
+.ch-title{font-family:'Nunito',sans-serif;font-size:2.1rem;font-weight:900;color:var(--white);line-height:1.15;letter-spacing:-0.02em;margin-bottom:10px}
+.ch-sub{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.4);line-height:1.6}
+
+/* Character cards */
+.char-grid{display:grid;gap:24px;margin:40px 0}
+@media(min-width:640px){.char-grid{grid-template-columns:1fr 1fr}}
+.char-card{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft);transition:all 0.3s ease}
+.char-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-mid)}
+.char-head{background:linear-gradient(135deg,var(--acorn-soft),rgba(200,120,32,0.03));padding:18px 20px;border-bottom:1px solid var(--cream-deep);display:flex;align-items:center;gap:14px}
+.char-emoji{font-size:2rem;line-height:1}
+.char-name{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;color:var(--oak);line-height:1.25}
+.char-title{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-top:2px}
+.char-body{padding:20px}
+.char-body p{font-size:0.92rem;color:var(--text-light);line-height:1.75;margin:0}
+
+/* Scenarios */
+.scene{background:linear-gradient(135deg,var(--cream-warm),var(--cream));border:1px solid var(--cream-deep);border-radius:var(--radius);padding:28px;margin:32px 0;box-shadow:var(--shadow-soft)}
+.scene-label{font-family:'Nunito',sans-serif;font-size:0.68rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--acorn);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.scene h4{font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:800;color:var(--oak-dark);margin-bottom:14px;line-height:1.3}
+.scene p{font-size:0.95rem;color:var(--text);line-height:1.8}
+
+/* Before/After blocks */
+.ba{display:grid;gap:20px;margin:36px 0}
+@media(min-width:640px){.ba{grid-template-columns:1fr 1fr}}
+.ba-box{border-radius:var(--radius);padding:24px;box-shadow:var(--shadow-soft)}
+.ba-before{background:var(--before-bg);border:2px solid var(--before-border)}
+.ba-after{background:var(--after-bg);border:2px solid var(--after-border)}
+.ba-label{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.ba-before .ba-label{color:var(--before-text)}
+.ba-after .ba-label{color:var(--after-text)}
+.ba-box p{font-size:0.92rem;line-height:1.75;margin:0}
+.ba-before p{color:var(--before-text)}
+.ba-after p{color:var(--after-text)}
+
+/* Visualizations */
+.viz{background:linear-gradient(135deg,#0A1F12,#1A3820);border-radius:var(--radius);padding:2px;margin:48px 0;box-shadow:var(--shadow-mid);position:relative;overflow:hidden}
+.viz-glow{position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(200,120,32,0.15),transparent 70%);pointer-events:none}
+.viz-inner{background:linear-gradient(165deg,#0E2418,#1C3828);border-radius:calc(var(--radius) - 2px);padding:32px;position:relative}
+.viz-top{display:flex;align-items:center;gap:18px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid rgba(200,120,32,0.15)}
+.viz-icon-wrap{font-size:2.4rem;line-height:1}
+.viz-meta{flex:1}
+.viz-label{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--acorn-glow);margin-bottom:6px}
+.viz-meta h4{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:800;color:var(--white);line-height:1.25}
+.viz-body p{font-size:0.95rem;color:rgba(255,255,255,0.75);line-height:1.85;margin-bottom:18px}
+.viz-body p:last-of-type{margin-bottom:0}
+.viz-lesson{background:rgba(200,120,32,0.08);border:1px solid rgba(200,120,32,0.2);border-radius:12px;padding:20px;margin-top:24px;font-size:0.95rem;font-style:italic;color:var(--acorn-pale);line-height:1.8}
+
+/* Grand quotes */
+.gq{background:linear-gradient(135deg,var(--moss-dark),var(--moss));border-radius:var(--radius);padding:40px 32px;margin:48px 0;box-shadow:var(--shadow-mid);position:relative;overflow:hidden}
+.gq::before{content:'"';position:absolute;top:-20px;left:10px;font-size:12rem;font-family:Georgia,serif;color:rgba(255,255,255,0.04);line-height:1;pointer-events:none}
+.gq p{font-family:'Lora',serif;font-size:1.15rem;font-style:italic;color:var(--white);line-height:1.85;position:relative;margin:0}
+
+/* Thinking prompts */
+.think{background:var(--cream-warm);border:2px dashed var(--acorn);border-radius:var(--radius);padding:32px;margin:40px 0}
+.think-label{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--acorn);margin-bottom:8px}
+.think h4{font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:800;color:var(--oak);margin-bottom:22px}
+.q-start{font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:700;color:var(--oak-mid);margin-bottom:10px;line-height:1.5}
+.think-line{height:2px;background:var(--cream-deep);margin-bottom:22px;border-radius:2px}
+
+/* Root review */
+.root-review{background:linear-gradient(135deg,#FDFAF2,#F2E8CC);border:2px solid var(--acorn);border-radius:var(--radius);padding:32px;margin:48px 0;box-shadow:var(--shadow-mid)}
+.root-label{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--acorn);margin-bottom:28px;text-align:center}
+.root-layer{display:flex;align-items:center;gap:16px;padding:16px 0}
+.root-layer.current{background:rgba(200,120,32,0.08);border-radius:12px;padding:20px 16px;margin:8px 0}
+.root-ch{font-family:'Nunito',sans-serif;font-size:0.75rem;font-weight:800;color:var(--oak);min-width:42px;text-align:center;background:var(--cream-deep);border-radius:8px;padding:6px 8px}
+.root-items{display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex:1}
+.root-pill{font-family:'Nunito',sans-serif;font-size:0.8rem;font-weight:700;padding:6px 14px;border-radius:20px;white-space:nowrap}
+.root-pill.rp-dim{background:rgba(92,58,30,0.08);color:var(--oak-mid)}
+.root-pill.rp-bright{background:var(--acorn-glow);color:var(--white)}
+.root-arr{font-size:1rem;color:var(--oak-light)}
+.root-sep{height:1px;background:var(--cream-deep);margin:8px 0}
+
+/* Prompts */
+.prompt{background:linear-gradient(135deg,var(--acorn),var(--acorn-glow));border-radius:var(--radius);padding:3px;margin:48px 0;box-shadow:var(--shadow-mid)}
+.prompt-inner{background:var(--white);border-radius:calc(var(--radius) - 3px)}
+.prompt-head{font-family:'Nunito',sans-serif;font-size:0.75rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--white);background:linear-gradient(135deg,var(--acorn),var(--acorn-glow));padding:14px 24px;border-radius:calc(var(--radius) - 3px) calc(var(--radius) - 3px) 0 0}
+.prompt-body{padding:28px 24px;font-size:0.95rem;color:var(--text);line-height:1.85}
+
+/* Finale section */
+.finale{background:linear-gradient(165deg,#0A1F12,#1C3828);text-align:center;padding:80px 24px;color:var(--white)}
+.finale-emoji{font-size:3.5rem;display:block;margin-bottom:24px;animation:gentle-pulse 4s ease-in-out infinite}
+@keyframes gentle-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.finale h2{font-family:'Nunito',sans-serif;font-size:1.8rem;font-weight:800;color:var(--white);line-height:1.4;margin-bottom:24px}
+.finale h2 span{display:block;color:var(--acorn-glow);font-size:2rem;margin-top:8px}
+.finale p{font-family:'Lora',serif;font-size:1.05rem;color:rgba(255,255,255,0.7);line-height:1.85;max-width:600px;margin:0 auto}
+
+/* Footer */
+footer{background:linear-gradient(165deg,#060C04,#0E1408);padding:60px 24px 40px;text-align:center;color:rgba(255,255,255,0.3);border-top:1px solid rgba(200,120,32,0.1)}
+footer p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;margin-bottom:24px;line-height:1.7}
+.brand{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;letter-spacing:1px;color:var(--acorn-glow)}
+
+/* War/Conquest styling */
+.war-head{background:linear-gradient(170deg,var(--blood-dark),var(--blood));padding:72px 24px 52px;position:relative;overflow:hidden}
+.war-head .ch-badge{background:rgba(139,0,0,0.2);border-color:rgba(205,92,92,0.4);color:var(--blood-pale)}
+.war-scene{background:linear-gradient(135deg,#2A0000,#3D0000);border:2px solid var(--blood-dark);border-radius:var(--radius);padding:28px;margin:32px 0;box-shadow:var(--shadow-mid)}
+.war-scene-label{font-family:'Nunito',sans-serif;font-size:0.68rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--blood-pale);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.war-scene h4{font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:800;color:var(--white);margin-bottom:14px;line-height:1.3}
+.war-scene p{font-size:0.95rem;color:rgba(255,255,255,0.85);line-height:1.8}
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="leaf">🍂</div>
+  <div class="leaf">🌰</div>
+  <div class="leaf">🍁</div>
+  <div class="leaf">🌰</div>
+  <div class="leaf">🍂</div>
+  <div class="leaf">🌰</div>
+  <div class="leaf">🍁</div>
+  <div class="leaf">🌰</div>
+  <div class="leaf">🍂</div>
+  <div class="leaf">🌰</div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="ghost-noise"></div>
+  <div class="cover-content">
+    <div class="cover-badge">A Kingdom Builders Parable</div>
+    <span class="cover-acorn">🌰</span>
+    <h1>The Acorn Economy<br><strong>How Squirrels Saved the Forest</strong></h1>
+    <p class="cover-tagline">An economics parable where <em>every squirrel decision</em> ripples through the whole economy   from the savers to the spenders, the careful to the reckless, the boom to the crash, and back again.</p>
+    <p class="cover-sub">Learn Real Economics Through Forest Creatures</p>
+    <p class="cover-author">Kingdom Builders AI</p>
+  </div>
+</div>
+
+<div class="page">
+<section class="section">
+  <div class="prose">
+    <p>In the ancient forest of Mosswood, squirrels didn't use dollars or coins. They used <strong>acorns</strong>. If you had acorns, you could trade for anything   walnuts, berries, mushrooms, or even a cozy winter burrow. <strong>Acorns were money.</strong></p>
+    <p>But this story isn't about acorns. It's about <em>what squirrels did with them</em>   and how those choices built an economy that thrived, crashed, nearly died, and learned to survive. This is the story of <strong>credit, interest, bubbles, recessions,</strong> and <strong>recovery</strong>   told by creatures who just wanted to make it through winter.</p>
+    <p>If you finish this story, you will understand more about how money works than most adults ever learn. You will see <strong>why banks exist, what interest rates actually do, how crashes happen, and why your grandmother was right about saving.</strong></p>
+    <p>You'll also never look at the news the same way again. Because once you see the squirrels, you see them everywhere.</p>
+  </div>
+</section>
+</div>
+
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-badge">Chapter One</div>
+    <div class="ch-num">01</div>
+    <h1 class="ch-title">The Saver and the Builder</h1>
+    <p class="ch-sub">How one squirrel's savings became another squirrel's future   and why that changed everything</p>
+  </div>
+</div>
+
+<div class="page">
+<section class="section prose">
+  <h2><span>😊</span> Meet Hazel</h2>
+  <p>Hazel was a careful squirrel. Every autumn, she gathered more acorns than she needed and stored them in a hollow oak tree. By winter, Hazel had <strong>100 extra acorns</strong>   more than enough to survive the cold months.</p>
+  <p>But Hazel had a problem. She couldn't eat 100 acorns before they went bad. And leaving them in a tree meant other squirrels   or worse, <em>crows</em>   might steal them. <strong>Saved acorns were only useful if they stayed safe.</strong></p>
+
+  <h2><span>🏦</span> The Oak Vault Opens</h2>
+  <p>One day, a wise old squirrel named <strong>Penny</strong> opened the <strong>Oak Vault</strong>   Mosswood's first bank. Penny's pitch was simple:</p>
+  <div class="gq"><p>Give me your acorns. I'll keep them safe in the vault. And at the end of the year, I'll give you back <em>more</em> acorns than you started with. 😌</p></div>
+  <p>Hazel was skeptical. "Why would you give me <em>more</em> acorns just for holding mine?"</p>
+  <p>Penny smiled. "Because I'm going to <strong>lend</strong> your acorns to someone who needs them <em>now</em>   and they'll pay me back <em>more later</em>. Everyone wins. 🤝"</p>
+
+  <div class="char-grid">
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">😊</span><div><div class="char-name">Hazel the Saver</div><div class="char-title">The Careful One</div></div></div>
+      <div class="char-body"><p>Hazel represents <strong>savers</strong>   people who delay gratification and store wealth for the future. Her safety allows others to borrow and build.</p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">🏦</span><div><div class="char-name">Penny the Banker</div><div class="char-title">The Connector</div></div></div>
+      <div class="char-body"><p>Penny is the <strong>financial intermediary</strong> who connects savers to borrowers. She doesn't create acorns   she moves them to where they're most useful.</p></div>
+    </div>
+  </div>
+
+  <h2><span>😄</span> Meet Chester</h2>
+  <p>Chester was a builder. He had a brilliant idea: open a <strong>nut market</strong> where squirrels could trade acorns, walnuts, berries, and hazelnuts in one place. But Chester had a problem. He had <em>zero</em> acorns to build it.</p>
+  <p>So Chester walked into the Oak Vault and asked Penny for a loan.</p>
+
+  <div class="scene">
+    <div class="scene-label">🎬 Scene: The Loan Meeting</div>
+    <h4>Chester's Big Ask</h4>
+    <p><strong>Chester:</strong> "I need 80 acorns to build a trading market. I'll pay you back 88 acorns in one year   that's a 10% return. 😄"</p>
+    <p><strong>Penny:</strong> "Why should I trust you'll pay me back?"</p>
+    <p><strong>Chester:</strong> "Because if the market works, I'll earn 120 acorns in the first year. Plenty to pay you and keep the rest. 💰"</p>
+    <p>Penny thought about it. She had Hazel's 100 acorns sitting in the vault doing nothing. If she lent 80 to Chester and he succeeded, she could pay Hazel <strong>5 extra acorns</strong> as interest and keep <strong>3 acorns</strong> as profit.</p>
+    <p><strong>Everyone would win. 🎯</strong></p>
+  </div>
+
+  <p>Penny gave Chester the loan. Chester built the market. Squirrels loved it. Chester made 120 acorns in his first year   paid Penny back 88, and kept 32 as profit.</p>
+
+  <div class="ba">
+    <div class="ba-box ba-before">
+      <div class="ba-label">⏮️ Before the Loan</div>
+      <p><strong>Hazel:</strong> 100 acorns sitting idle 😐<br><strong>Chester:</strong> Great idea, zero capital 😞<br><strong>Market:</strong> Doesn't exist ❌</p>
+    </div>
+    <div class="ba-box ba-after">
+      <div class="ba-label">⏭️ After the Loan</div>
+      <p><strong>Hazel:</strong> 105 acorns (earned interest!) 😊<br><strong>Chester:</strong> Built a thriving business 😄<br><strong>Market:</strong> Exists, creates jobs, helps everyone 🎉</p>
+    </div>
+  </div>
+
+  <p><strong>This is the magic of credit.</strong> Hazel's patience became Chester's opportunity. Chester's work created value for everyone. And Penny connected the two, making the whole forest wealthier. 🌳</p>
+</section>
+
+<div class="think">
+  <div class="think-label">💭 Think About This</div>
+  <h4>Why did Hazel earn interest?</h4>
+  <p class="q-start">🌰 Was it because Penny was generous?</p>
+  <div class="think-line"></div>
+  <p style="font-size:0.9rem;color:var(--text-light);line-height:1.75"><strong>No.</strong> Hazel earned interest because she <em>gave up control</em> of her acorns for a year. She took a risk that Chester might fail. <strong>Interest is the reward for patience and risk.</strong> Without it, no one would ever save   and without saving, there's nothing to lend. The whole economy stops. 🛑</p>
+</div>
+</div>
+
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-badge">Chapter Two</div>
+    <div class="ch-num">02</div>
+    <h1 class="ch-title">The Credit Boom</h1>
+    <p class="ch-sub">When borrowing is easy, everyone feels rich   until they're not</p>
+  </div>
+</div>
+
+<div class="page">
+<section class="section prose">
+  <h2><span>📈</span> The News Spreads</h2>
+  <p>Word of Chester's success spread fast. Soon, squirrels all over Mosswood were lining up at the Oak Vault asking for loans:</p>
+  <ul style="font-size:0.95rem;margin:20px 0;padding-left:28px;line-height:1.85">
+    <li><strong>Maple</strong> wanted to expand her berry farm. 🫐</li>
+    <li><strong>Rusty</strong> wanted to open a winter coat shop. 🧥</li>
+    <li><strong>Chip</strong> wanted to build rental burrows. 🏠</li>
+  </ul>
+  <p>Penny reviewed each request carefully. She only approved <strong>safe loans</strong>   borrowers with solid plans and realistic repayment schedules. The Oak Vault thrived. Mosswood's economy grew.</p>
+
+  <h2><span>🦉</span> Elder Oaksworth Steps In</h2>
+  <p>But then something changed. Elder Oaksworth, the <strong>Central Banker</strong> of Mosswood (basically the forest's financial wise owl 🦉), noticed that economic growth was slowing down. Fewer squirrels were borrowing. Fewer businesses were opening.</p>
+  <p>Oaksworth had an idea: <strong>lower interest rates.</strong></p>
+
+  <div class="scene">
+    <div class="scene-label">💡 The Rate Cut Decision</div>
+    <h4>Oaksworth's Announcement</h4>
+    <p>"Effective immediately, I am lowering the <strong>base acorn rate</strong> from 10% to 5%. This means loans are now cheaper. Go build! Go grow! Make Mosswood wealthy! 🚀"</p>
+  </div>
+
+  <p>And it worked   sort of.</p>
+
+  <div class="ba">
+    <div class="ba-box ba-before">
+      <div class="ba-label">⏮️ High Interest Rates (10%)</div>
+      <p>Borrowers think twice before taking loans 🤔<br>Only <strong>serious projects</strong> get funded 🎯<br>Growth is slow but stable 📊</p>
+    </div>
+    <div class="ba-box ba-after">
+      <div class="ba-label">⏭️ Low Interest Rates (5%)</div>
+      <p>Borrowing is cheap and easy! 🎉<br>Everyone wants a loan 💰<br>Growth explodes... for now 🚀</p>
+    </div>
+  </div>
+
+  <h2><span>😬</span> The Bushy Tail Brothers Arrive</h2>
+  <p>Enter the <strong>Bushy Tail Brothers</strong>   two aggressive, overconfident squirrels who saw an opportunity.</p>
+  <p>"Land prices are rising," they said. "Let's borrow acorns, buy land, and flip it for profit. Easy money! 😎"</p>
+  <p>They borrowed <strong>500 acorns</strong> at the new low 5% rate and bought prime forest land near the river. A month later, they sold it for <strong>600 acorns</strong>. They repaid their loan, pocketed the profit, and did it again. And again. And again.</p>
+
+  <div class="scene">
+    <div class="scene-label">⚠️ The Bubble Inflates</div>
+    <h4>What Happened Next</h4>
+    <p>Other squirrels saw the Bushy Tails getting rich and thought: <em>"If they can do it, so can I!"</em> 😬</p>
+    <p>Soon, <strong>everyone</strong> was borrowing acorns to buy land   not to live on, not to farm, but to <strong>flip for profit</strong>. Land prices skyrocketed. A burrow site that cost 50 acorns last year now cost 200.</p>
+    <p><strong>The bubble had begun. 🎈</strong></p>
+  </div>
+
+  <div class="char-grid">
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">🦉</span><div><div class="char-name">Elder Oaksworth</div><div class="char-title">The Central Banker</div></div></div>
+      <div class="char-body"><p>Oaksworth controls <strong>interest rates</strong> to manage the economy. Lower rates = more borrowing. Higher rates = less borrowing. He's trying to balance growth with stability   but it's harder than it looks.</p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">😎</span><div><div class="char-name">The Bushy Tails</div><div class="char-title">The Speculators</div></div></div>
+      <div class="char-body"><p>These brothers represent <strong>speculators</strong>   traders who borrow to bet on rising prices. When they win, they get rich. When they lose, <em>everyone</em> loses.</p></div>
+    </div>
+  </div>
+
+  <p>Penny started to worry. More and more squirrels were asking for loans to buy land they couldn't afford. But she kept approving them   because land prices kept rising, and rising prices made the loans look "safe."</p>
+  <p><strong>No one wanted to be the squirrel who said the party was over. 🎊</strong></p>
+</section>
+
+<div class="think">
+  <div class="think-label">💭 Think About This</div>
+  <h4>Why do bubbles happen?</h4>
+  <p class="q-start">🎈 Is it greed? Stupidity? Bad luck?</p>
+  <div class="think-line"></div>
+  <p style="font-size:0.9rem;color:var(--text-light);line-height:1.75"><strong>It's psychology.</strong> When prices rise, people assume they'll keep rising. When borrowing is cheap, people assume it will stay cheap. When everyone around you is getting rich, you feel foolish for not joining in. <strong>Bubbles aren't caused by evil people   they're caused by normal people making normal decisions in abnormal conditions.</strong> 🧠</p>
+</div>
+</div>
+
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-badge">Chapter Three</div>
+    <div class="ch-num">03</div>
+    <h1 class="ch-title">The Crash</h1>
+    <p class="ch-sub">When the music stops, someone is always left without a chair</p>
+  </div>
+</div>
+
+<div class="page">
+<section class="section prose">
+  <h2><span>💥</span> The Tower Falls</h2>
+  <p>It happened on a Tuesday.</p>
+  <p>A young squirrel named <strong>Pip</strong> bought a burrow site for 300 acorns   all borrowed. He planned to flip it in a month for 350. But when he listed it for sale, no one came. Not a single buyer.</p>
+  <p>Pip panicked. He dropped his price to 280. Then 250. Then 200. Still nothing. <strong>The market had frozen. ❄️</strong></p>
+
+  <div class="scene">
+    <div class="scene-label">🚨 The First Default</div>
+    <h4>Pip Can't Pay</h4>
+    <p>Pip owed Penny 300 acorns plus interest   but his land was now worth only 150 acorns. Even if he sold it, he couldn't repay the loan. <strong>Pip defaulted. 😰</strong></p>
+    <p>Penny seized the land, but she could only sell it for 150 acorns. <strong>The Oak Vault just lost 150 acorns.</strong> And Pip lost everything.</p>
+  </div>
+
+  <p>Word spread fast. If Pip's land wasn't worth what he paid, maybe <em>no one's</em> land was. Squirrels rushed to sell before prices fell further. But with everyone selling and no one buying, <strong>prices collapsed.</strong> 📉</p>
+
+  <h2><span>😱</span> The Bank Run</h2>
+  <p>Hazel heard the news and rushed to the Oak Vault. "I want my acorns back. <em>Now.</em> 😱"</p>
+  <p>Penny tried to stay calm. "Hazel, your acorns are safe. They're just... <em>lent out</em>. I'll have them for you at the end of the quarter. 😅"</p>
+  <p>But Hazel didn't want promises   she wanted acorns. And she wasn't alone. By noon, <strong>fifty squirrels</strong> were outside the vault demanding their money.</p>
+
+  <div class="ba">
+    <div class="ba-box ba-before">
+      <div class="ba-label">⏮️ Normal Times</div>
+      <p>Savers trust the bank 🏦<br>Borrowers repay on time ✅<br>Bank has enough acorns for withdrawals 😌</p>
+    </div>
+    <div class="ba-box ba-after">
+      <div class="ba-label">⏭️ Bank Run</div>
+      <p>Savers panic and withdraw everything 😱<br>Borrowers can't repay yet ⏳<br>Bank runs out of acorns 🚨</p>
+    </div>
+  </div>
+
+  <p>Penny opened the vault. She had <strong>80 acorns</strong> on hand. But she owed depositors <strong>500 acorns.</strong> The math didn't work. <strong>The Oak Vault was insolvent. 💔</strong></p>
+
+  <h2><span>❄️</span> The Recession Begins</h2>
+  <p>With the bank closed, no one could get loans. Chester's market shut down. Maple's berry farm went unharvested. Rusty's coat shop closed. <strong>Unemployment spiked.</strong> Squirrels who had jobs lost them. Squirrels who had savings lost access to them.</p>
+  <p>The forest entered a <strong>recession</strong>   a period where economic activity contracts, businesses fail, and everyone suffers. 😔</p>
+
+  <div class="viz"><div class="viz-glow"></div><div class="viz-inner">
+    <div class="viz-top"><div class="viz-icon-wrap">📊</div><div class="viz-meta"><div class="viz-label">The Crash Timeline</div><h4>How One Default Became a Forest-Wide Crisis</h4></div></div>
+    <div class="viz-body">
+      <p><strong>Week 1:</strong> Pip defaults on his loan 💥<br><strong>Week 2:</strong> Land prices collapse 📉<br><strong>Week 3:</strong> More defaults cascade 💔<br><strong>Week 4:</strong> Bank run empties the vault 🏦❌<br><strong>Week 5:</strong> Credit freezes, businesses close ❄️<br><strong>Week 6:</strong> Recession spreads across Mosswood 😔</p>
+      <div class="viz-lesson">This is why crashes hurt everyone   even squirrels who never borrowed, never speculated, and did everything "right." In an interconnected economy, <strong>your safety depends on other squirrels' decisions.</strong> 🌐</div>
+    </div>
+  </div></div>
+</section>
+
+<div class="think">
+  <div class="think-label">💭 Think About This</div>
+  <h4>Who caused the crash?</h4>
+  <p class="q-start">😎 The Bushy Tails for speculating?<br>🏦 Penny for lending too much?<br>🦉 Oaksworth for lowering rates?<br>😊 Hazel for withdrawing her acorns?</p>
+  <div class="think-line"></div>
+  <p style="font-size:0.9rem;color:var(--text-light);line-height:1.75"><strong>All of them. And none of them.</strong> Crashes aren't caused by one villain   they're caused by <em>systemic fragility</em>. When everyone makes reasonable decisions based on incomplete information, the system itself can break. <strong>That's why crashes are so hard to prevent.</strong> 🧩</p>
+</div>
+</div>
+
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-badge">Chapter Four</div>
+    <div class="ch-num">04</div>
+    <h1 class="ch-title">The Recovery</h1>
+    <p class="ch-sub">How Mosswood rebuilt trust, one careful acorn at a time</p>
+  </div>
+</div>
+
+<div class="page">
+<section class="section prose">
+  <h2><span>🛠️</span> The Emergency Council Meets</h2>
+  <p>Elder Oaksworth called an emergency meeting of the Mosswood Council. The question: <strong>How do we save the forest?</strong> 🦉</p>
+
+  <div class="scene">
+    <div class="scene-label">🎬 Scene: The Council Chamber</div>
+    <h4>Three Proposals</h4>
+    <p><strong>Option 1   Do Nothing:</strong> "Let the market fix itself. Weak squirrels fail, strong ones survive. 😐"<br><em>Risk:</em> Mass starvation, violence, total collapse.</p>
+    <p><strong>Option 2   Print Acorns:</strong> "Give everyone free acorns! No one starves! 🌰💰"<br><em>Risk:</em> Hyperinflation. If everyone has twice as many acorns but there's the same amount of food, prices just double.</p>
+    <p><strong>Option 3   Strategic Intervention:</strong> "Inject emergency acorns, stabilize the bank, create new rules, and rebuild slowly. 🛠️"<br><em>Risk:</em> Expensive, imperfect, and takes years. But it might work.</p>
+  </div>
+
+  <p>They chose <strong>Option 3.</strong></p>
+
+  <h2><span>💰</span> The Emergency Acorn Fund</h2>
+  <p>The Council created an <strong>Emergency Acorn Fund</strong>   essentially printing new currency to inject into the economy. They used it to:</p>
+  <ul style="font-size:0.95rem;margin:20px 0;padding-left:28px;line-height:1.85">
+    <li><strong>Stabilize the Oak Vault:</strong> Gave Penny enough acorns to repay depositors and prevent total collapse. 🏦</li>
+    <li><strong>Fund public projects:</strong> Hired unemployed squirrels to repair trails, plant acorn trees, and build shelters. 🌳</li>
+    <li><strong>Support struggling families:</strong> Gave temporary acorn stipends to squirrels who lost everything. 👨‍👩‍👧‍👦</li>
+  </ul>
+
+  <div class="ba">
+    <div class="ba-box ba-before">
+      <div class="ba-label">⏮️ Before Intervention</div>
+      <p>Bank insolvent 💔<br>No credit available ❄️<br>Mass unemployment 😔<br>Despair spreading 😰</p>
+    </div>
+    <div class="ba-box ba-after">
+      <div class="ba-label">⏭️ After Intervention</div>
+      <p>Bank stabilized 🏦✅<br>Jobs created 👷<br>Spending resumes 💰<br>Hope returns 🌱</p>
+    </div>
+  </div>
+
+  <h2><span>📜</span> The New Rules</h2>
+  <p>But money alone wasn't enough. The Council also passed <strong>new regulations</strong> to prevent another crash:</p>
+
+  <div class="char-grid">
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">📋</span><div><div class="char-name">Rule 1: Reserve Requirements</div><div class="char-title">Keep Some Acorns on Hand</div></div></div>
+      <div class="char-body"><p>Banks must now keep <strong>20% of deposits</strong> in the vault at all times   so they can handle withdrawals even during a panic. 🏦</p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">🔍</span><div><div class="char-name">Rule 2: Loan Transparency</div><div class="char-title">Know What You're Lending</div></div></div>
+      <div class="char-body"><p>Banks must verify borrowers' income and plans. No more lending to squirrels with "trust me" business models. 📊</p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">⚖️</span><div><div class="char-name">Rule 3: Debt-to-Income Limits</div><div class="char-title">Don't Over-Leverage</div></div></div>
+      <div class="char-body"><p>Squirrels can't borrow more than <strong>3x their annual income</strong>. This prevents catastrophic over-borrowing. 🚫💸</p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">🛡️</span><div><div class="char-name">Rule 4: Deposit Insurance</div><div class="char-title">Protect Small Savers</div></div></div>
+      <div class="char-body"><p>The Council now insures the first <strong>50 acorns</strong> of every saver's deposit   so even if a bank fails, small savers don't lose everything. 💚</p></div>
+    </div>
+  </div>
+
+  <h2><span>🌱</span> The Slow Recovery</h2>
+  <p>Recovery didn't happen overnight. It took <strong>three years</strong> for Mosswood to return to pre-crash economic activity. But it did recover. Slowly. Carefully. With new wisdom. 🌳</p>
+
+  <div class="viz"><div class="viz-glow"></div><div class="viz-inner">
+    <div class="viz-top"><div class="viz-icon-wrap">📈</div><div class="viz-meta"><div class="viz-label">The Recovery Curve</div><h4>From Crash to Stability</h4></div></div>
+    <div class="viz-body">
+      <p><strong>Year 1:</strong> Emergency intervention stops freefall 🛑<br><strong>Year 2:</strong> Jobs return, spending resumes 💼<br><strong>Year 3:</strong> New rules restore trust 📜<br><strong>Year 4:</strong> Growth returns   but carefully this time 🌱</p>
+      <div class="viz-lesson">Crashes destroy wealth in weeks. Recovery takes years. <strong>Prevention is always cheaper than cure.</strong> 🧠</div>
+    </div>
+  </div></div>
+
+  <p>Hazel got her acorns back   eventually. Chester reopened his market. The Bushy Tail Brothers? They went bankrupt and left the forest. <strong>But the lessons remained. 📖</strong></p>
+</section>
+
+<div class="think">
+  <div class="think-label">💭 Think About This</div>
+  <h4>Should the Council have bailed out the bank?</h4>
+  <p class="q-start">🤔 Isn't that rewarding failure?</p>
+  <div class="think-line"></div>
+  <p style="font-size:0.9rem;color:var(--text-light);line-height:1.75"><strong>Here's the hard truth:</strong> When a bank collapses, it's not just the bank that suffers   it's every depositor, every borrower, every business, every worker. Letting it fail might feel like justice, but it punishes the innocent far more than the guilty. <strong>Sometimes the least-bad option is still pretty bad.</strong> That's why financial crises are so brutal   there are no good answers, only trade-offs. ⚖️</p>
+</div>
+</div>
+
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-badge">Chapter Five</div>
+    <div class="ch-num">05</div>
+    <h1 class="ch-title">The Whole Forest</h1>
+    <p class="ch-sub">How every squirrel's decision connects to every other squirrel   whether they know it or not</p>
+  </div>
+</div>
+
+<div class="page">
+<section class="section prose">
+  <h2><span>🔗</span> Everything Connects</h2>
+  <p>The Mosswood economy isn't a machine with a single lever. It's a <strong>forest ecosystem</strong> where thousands of decisions ripple through the whole system. 🌊</p>
+  <p>When Hazel saves, Chester can build. When Chester builds, workers get paid. When workers get paid, they buy from Maple. When Maple earns, she saves at Penny's bank. And Penny lends to the next Chester. <strong>The cycle continues. 🔄</strong></p>
+
+  <div class="viz"><div class="viz-glow"></div><div class="viz-inner">
+    <div class="viz-top"><div class="viz-icon-wrap">🌐</div><div class="viz-meta"><div class="viz-label">The Economic Web</div><h4>How One Squirrel Affects Everyone</h4></div></div>
+    <div class="viz-body">
+      <p><strong>😊 Hazel saves</strong> → 🏦 Bank holds → 📋 Penny lends → 😄 Chester builds → 👷 Workers earn → 💰 Spend → 🏪 Sellers profit → 🌰 Save more → <em>cycle repeats</em></p>
+      <div class="viz-lesson">In a healthy economy, <strong>every participant benefits from every other participant's success.</strong> But in a crash, the reverse is also true   one failure cascades through the whole web. 🕸️</div>
+    </div>
+  </div></div>
+
+  <h2><span>🌍</span> How This Applies to You</h2>
+  <p>You are a squirrel in a much larger forest. Every time you:</p>
+  <ul style="font-size:0.95rem;margin:20px 0;padding-left:28px;line-height:1.85">
+    <li><strong>Save money in a bank</strong>   you're enabling someone else to borrow and build. 💰</li>
+    <li><strong>Take out a loan</strong>   you're betting on your future earnings. Make sure the bet is sound. 🎯</li>
+    <li><strong>Buy a house or invest</strong>   you're participating in the same market dynamics that created the 2008 crash. 🏠</li>
+    <li><strong>See interest rates change</strong>   you're watching central bankers try to balance growth and stability. 📊</li>
+  </ul>
+
+  <p><strong>The Mosswood story is your story.</strong> The names change, but the forces remain the same. 🌳</p>
+
+  <div class="char-grid">
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">😊</span><span style="font-size:1rem">→</span><span class="char-emoji">🌍</span><div><div class="char-name">Hazel's Savings Decision</div><div class="char-title">Real World: Your Bank Account</div></div></div>
+      <div class="char-body"><p>Every dollar you save   in a bank account, a pension, an investment   flows into the economy as a loan to someone building something. Your savings are actively at work right now funding businesses, housing, and ideas. <strong>Savers are the silent engine of all growth.</strong></p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">😄</span><span style="font-size:1rem">→</span><span class="char-emoji">🌍</span><div><div class="char-name">Chester's Business Loan</div><div class="char-title">Real World: Every Small Business Loan</div></div></div>
+      <div class="char-body"><p>Every bakery, every startup, every factory expansion started as a loan that a Chester-type squirrel took out and bet their future on. <strong>Entrepreneurship is borrowing against a belief in yourself.</strong> When it works, it creates jobs and goods. When it fails, it costs everyone something.</p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">😎</span><span style="font-size:1rem">→</span><span class="char-emoji">🌍</span><div><div class="char-name">The Bushy Tails' Bet</div><div class="char-title">Real World: The 2008 Housing Crisis</div></div></div>
+      <div class="char-body"><p>In 2008, real-world "Bushy Tail Brothers" borrowed billions betting that housing prices would rise forever. When they fell, the crash cost millions of families their savings, their jobs, and their homes   just like in Mosswood. <strong>The squirrel story actually happened. It just had more zeroes.</strong></p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">🏦</span><span style="font-size:1rem">→</span><span class="char-emoji">🌍</span><div><div class="char-name">Penny's Loan Decision</div><div class="char-title">Real World: Bank Regulation</div></div></div>
+      <div class="char-body"><p>Real banks have real Pennies who must follow real rules about who they can lend to and how much. When those rules get weakened (as they did before 2008), bad loans pile up invisibly until the tower falls. <strong>Careful gatekeeping is boring. Its absence is catastrophic.</strong></p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">🦉</span><span style="font-size:1rem">→</span><span class="char-emoji">🌍</span><div><div class="char-name">The Council's Response</div><div class="char-title">Real World: Government Stimulus</div></div></div>
+      <div class="char-body"><p>In 2008-2009, real governments did exactly what the Squirrel Council did: injected emergency money, cut interest rates to near zero, and made new rules. It was messy and debated and imperfect   and it prevented a Great Depression. <strong>Imperfect action beat perfect inaction.</strong></p></div>
+    </div>
+  </div>
+
+  <!-- THE MASTER DIAGRAM -->
+  <div class="viz"><div class="viz-glow"></div><div class="viz-inner">
+    <div class="viz-top"><div class="viz-icon-wrap">♾️</div><div class="viz-meta"><div class="viz-label">The Complete Picture</div><h4>How Everything Connects in One Flow</h4></div></div>
+    <div class="viz-body">
+      <p><strong>😊 Hazel saves acorns</strong> → 🏦 Bank holds them safely → 📋 Penny reviews loans → 😄 Chester borrows → 🏗️ Chester builds the market → 👷 Workers get paid → 💰 Workers buy things → 🏪 Sellers earn acorns → 🌰 Sellers save new acorns at bank → <em>cycle repeats, each time creating a little more than before</em></p>
+      <p><strong>⚠️ Danger mode:</strong> Oaksworth lowers rates too low → 🌊 Too many loans flow → 😎😎 Bushy Tails over-borrow → 💥 Land prices crash → 💔 Loans fail → 🏦 Bank runs dry → 😱 Hazel loses savings → Chester closes → workers lose jobs → ❄️ Everyone stops spending → recession.</p>
+      <div class="viz-lesson">The economy is not a machine with one driver. It is a forest with thousands of squirrels making millions of decisions   and the health of the whole depends on enough of them being careful enough, enough of the time. 🌳</div>
+    </div>
+  </div></div>
+
+  <div class="prompt"><div class="prompt-head">🌰 THE MOSSWOOD ECONOMY LEARNING PROMPT</div><div class="prompt-body"><strong>I just read The Acorn Economy.</strong> I now understand that: Savings → bank loans → investment → growth → interest rewards savers. Credit (borrowing) can create abundance when used carefully, but causes crashes when everyone borrows more than they can repay. Interest rates are the central bank's main tool to speed up or slow down the whole economy. A crash happens when too many loan promises cannot be kept. Recovery requires new rules, emergency support, and slowly rebuilding trust.<br><br><strong>I want to understand the real economy now.</strong> When I ask you about a news story (like "the Fed raised interest rates"), explain it to me using the Mosswood squirrels. Which squirrel is being helped? Which is being hurt? Is this a spring, summer, fall, or winter moment for the economy?<br><br><strong>Translate the real world into the forest. Help me see the squirrels in every headline.</strong></div></div>
+
+  <div class="think"><div class="think-label">The Final Test 🧠</div><h4>Can you answer these without looking back?</h4>
+    <p class="q-start">🌰 What is interest, and why does the bank pay it to Hazel?</p><div class="think-line"></div>
+    <p class="q-start">📉 Why does Elder Oaksworth lower interest rates when the economy is slow?</p><div class="think-line"></div>
+    <p class="q-start">💥 Why did one land bubble crash hurt squirrels who had nothing to do with land?</p><div class="think-line"></div>
+    <p class="q-start">🌱 Name one thing a squirrel can do to be safe during both boom AND bust seasons:</p><div class="think-line"></div>
+    <p style="font-weight:800;color:var(--acorn);margin-top:14px;font-family:'Nunito',sans-serif;font-size:0.95rem">If you can answer all four, you understand more about economics than most adults. Seriously. 🎓</p>
+  </div>
+
+  <div class="root-review"><div class="root-label">The Complete Acorn Economy   All Together</div>
+    <div class="root-layer"><div class="root-ch">Ch1</div><div class="root-items"><div class="root-pill rp-dim">🌰 Save</div><div class="root-arr">→</div><div class="root-pill rp-dim">🏦 Deposit</div><div class="root-arr">→</div><div class="root-pill rp-dim">📋 Lend</div><div class="root-arr">→</div><div class="root-pill rp-dim">🏗️ Build</div><div class="root-arr">→</div><div class="root-pill rp-dim">💰 Earn Interest</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><div class="root-ch">Ch2</div><div class="root-items"><div class="root-pill rp-dim">📉 Low Rates</div><div class="root-arr">→</div><div class="root-pill rp-dim">🌊 Credit Wave</div><div class="root-arr">→</div><div class="root-pill rp-dim">🚀 Boom</div><div class="root-arr">→</div><div class="root-pill rp-dim">⚠️ Warning</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><div class="root-ch">Ch3</div><div class="root-items"><div class="root-pill rp-dim">💸 Over-borrow</div><div class="root-arr">→</div><div class="root-pill rp-dim">💥 Default</div><div class="root-arr">→</div><div class="root-pill rp-dim">🏦 Crisis</div><div class="root-arr">→</div><div class="root-pill rp-dim">❄️ Recession</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><div class="root-ch">Ch4</div><div class="root-items"><div class="root-pill rp-dim">🛠️ Emergency Response</div><div class="root-arr">→</div><div class="root-pill rp-dim">📜 New Rules</div><div class="root-arr">→</div><div class="root-pill rp-dim">🌱 Recovery</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><div class="root-ch">Ch5</div><div class="root-items"><div class="root-pill rp-dim">🔗 Everything</div><div class="root-arr">→</div><div class="root-pill rp-dim">connects to</div><div class="root-arr">→</div><div class="root-pill rp-dim">🌳 Everything</div><div class="root-arr">→</div><div class="root-pill rp-dim">Always</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><div class="root-ch">Ch6</div><div class="root-items"><div class="root-pill rp-bright">⚔️ Conquest</div><div class="root-arr">→</div><div class="root-pill rp-bright">💀 War Economy</div><div class="root-arr">→</div><div class="root-pill rp-bright">🩸 The True Cost</div></div></div>
+  </div>
+
+  <div class="gq"><p>"Now you know. The economy is not something that happens to you. It is millions of small decisions made by creatures just like you   saving a little, borrowing carefully, building something, and trying not to borrow more than the forest can bear." 🌳🌰</p></div>
+</section>
+</div>
+
+<div class="war-head">
+  <div class="page">
+    <div class="ch-badge">Chapter Six</div>
+    <div class="ch-num">06</div>
+    <h1 class="ch-title">The Conquest</h1>
+    <p class="ch-sub">When the acorns run dry, desperate squirrels look beyond their borders</p>
+  </div>
+</div>
+
+<div class="page">
+<section class="section prose">
+  <h2><span>😰</span> The Population Collapse</h2>
+  <p>Five years after the crash, Mosswood faced a new crisis. Despite the recovery efforts, the forest economy had fundamentally changed. The population had grown faster than the acorn supply. <strong>There simply weren't enough acorns for everyone.</strong></p>
+  <p>Squirrel families that once thrived now struggled to feed their young. Birth rates plummeted. Some families abandoned their burrows and migrated away, searching for better territory. Those who remained grew desperate. 😰</p>
+
+  <div class="war-scene">
+    <div class="war-scene-label">🚨 The Resource Crisis</div>
+    <h4>When Scarcity Breeds Desperation</h4>
+    <p>Elder Oaksworth reviewed the grim statistics: acorn reserves down 40%, winter stores at dangerous lows, and three consecutive seasons of poor harvests. The Oak Vault held barely enough to survive one winter   maybe two if they rationed severely.</p>
+    <p><strong>"We cannot sustain this,"</strong> Oaksworth announced to the Council. <strong>"Without new resources, half of Mosswood will not survive the coming winter." ☠️</strong></p>
+  </div>
+
+  <h2><span>😠</span> The Bushy Tails Return</h2>
+  <p>Into this crisis stepped <strong>Rex Bushy Tail</strong>   younger brother of the infamous speculators who had fled after the crash. But Rex was different. He wasn't a gambler. He was a <strong>general. ⚔️</strong></p>
+  <p>"I've scouted the territories beyond the Great River," Rex announced to a packed council chamber. "The Pinewood Forest is rich with acorns   more than they know what to do with. Their population is small. Their defenses are weak. <strong>We could take it. 😠</strong>"</p>
+
+  <div class="char-grid">
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">⚔️</span><div><div class="char-name">General Rex Bushy Tail</div><div class="char-title">The War Leader</div></div></div>
+      <div class="char-body"><p>Rex represents the <strong>military-industrial complex</strong>   those who profit from conflict and see war as an economic solution. When peace fails to provide prosperity, they offer conquest.</p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">😨</span><div><div class="char-name">The Pinewood Squirrels</div><div class="char-title">The Conquered</div></div></div>
+      <div class="char-body"><p>A smaller, peaceful community about to learn that <strong>economic desperation in one forest becomes violence in another.</strong> They never asked to be part of Mosswood's crisis.</p></div>
+    </div>
+  </div>
+
+  <h2><span>⚖️</span> The Council Debates</h2>
+  <p>The Council chamber erupted in argument.</p>
+  <p><strong>Hazel stood up, trembling:</strong> "This is madness! We're talking about invading another forest? Taking their acorns by force? This isn't who we are! 😱"</p>
+  <p><strong>Chester, now aged and gray, agreed:</strong> "War will destroy us more surely than hunger. We should trade, negotiate, build relationships   not armies. 😔"</p>
+  <p><strong>But Penny, calculating as always, saw the numbers:</strong> "Without new resources, 50% of our population dies. With conquest, perhaps 10% die   theirs and ours combined. From a purely economic standpoint... 🏦"</p>
+  <p>She didn't finish. She didn't need to.</p>
+
+  <div class="ba">
+    <div class="ba-box ba-before">
+      <div class="ba-label">⏮️ Peace Option</div>
+      <p>Population collapse 📉<br>Mass starvation ☠️<br>Mosswood shrinks 😔<br>Moral integrity intact ✅</p>
+    </div>
+    <div class="ba-box ba-after" style="background:rgba(139,0,0,0.1);border-color:var(--blood-dark)">
+      <div class="ba-label" style="color:var(--blood)">⏭️ War Option</div>
+      <p style="color:var(--blood-dark)">Immediate resources 🌰<br>10% casualties 💀<br>Mosswood expands 📈<br>Blood on our hands 🩸</p>
+    </div>
+  </div>
+
+  <p>Elder Oaksworth called for a vote. The chamber fell silent.</p>
+  <p><strong>The vote passed. Mosswood would go to war. ⚔️</strong></p>
+
+  <h2><span>💀</span> The Campaign</h2>
+  <p>General Rex organized Mosswood's first military force   200 strong young squirrels armed with sharpened sticks and acorn-shell armor. They trained for three weeks, then marched across the Great River at dawn.</p>
+  <p>The Pinewood squirrels never saw them coming. 😨</p>
+
+  <div class="war-scene">
+    <div class="war-scene-label">💥 The Battle of Pinewood Grove</div>
+    <h4>The First Assault</h4>
+    <p>The invasion lasted two days. Pinewood had no organized defense, no warning, no chance. Mosswood forces seized the central oak groves, captured the food stores, and established occupation posts throughout the forest.</p>
+    <p><strong>Casualties: 18 Mosswood soldiers killed, 34 wounded. 67 Pinewood squirrels killed, 120 displaced, countless injured. 💀</strong></p>
+    <p>But the acorn vaults were full. Mosswood had won.</p>
+  </div>
+
+  <h2><span>📈</span> The War Economy Booms</h2>
+  <p>Back in Mosswood, something unexpected happened. <strong>The economy exploded. 🚀</strong></p>
+  <p>The influx of Pinewood acorns flooded the Oak Vault. Penny could make loans again   big loans. Chester reopened his market with new vigor. Weapons manufacturers who had supplied the war effort now pivoted to peacetime production. <strong>Unemployment vanished overnight.</strong></p>
+
+  <div class="scene">
+    <div class="scene-label">💰 The Prosperity Report</div>
+    <h4>Six Months After Conquest</h4>
+    <p><strong>Economic Indicators:</strong></p>
+    <ul style="font-size:0.9rem;margin:16px 0;padding-left:28px;line-height:1.75">
+      <li>Acorn reserves: +180% 🌰📈</li>
+      <li>Credit availability: Restored to pre-crash levels 🏦</li>
+      <li>Unemployment: 2% (effectively zero) 👷</li>
+      <li>New construction: 47 burrows, 12 businesses 🏗️</li>
+      <li>Birth rate: Recovering 👶</li>
+    </ul>
+    <p><strong>Mosswood was thriving again. At someone else's expense. 💔</strong></p>
+  </div>
+
+  <p>General Rex became a hero. Squirrels who had opposed the war grew quiet   hard to argue with a full stomach and a warm burrow. Penny expanded the Oak Vault. Chester built a second market. <strong>The conquest had worked. 😬</strong></p>
+
+  <h2><span>🔄</span> The Occupation Economy</h2>
+  <p>To maintain control of Pinewood, Mosswood established a permanent occupation force   50 soldiers stationed in the conquered territory. This created new economic dynamics:</p>
+
+  <div class="char-grid">
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">💰</span><div><div class="char-name">Tribute System</div><div class="char-title">Extractive Economics</div></div></div>
+      <div class="char-body"><p>Pinewood squirrels were required to deliver <strong>30% of their harvest</strong> to Mosswood as tribute. This kept Mosswood fed while ensuring Pinewood never grew strong enough to rebel. A <strong>wealth pump</strong> from the conquered to the conqueror. 🩸</p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">⚔️</span><div><div class="char-name">Military Employment</div><div class="char-title">The War Jobs Program</div></div></div>
+      <div class="char-body"><p>50 permanent garrison jobs, plus supply chains, weapons production, and logistics. War wasn't just profitable   it was now a <strong>major employer.</strong> Economic interests aligned with continued occupation. 😰</p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">🏗️</span><div><div class="char-name">Colonial Development</div><div class="char-title">Infrastructure Extraction</div></div></div>
+      <div class="char-body"><p>Mosswood built roads, warehouses, and trading posts in Pinewood   but designed to <strong>extract resources</strong>, not develop local prosperity. The infrastructure served the occupier, not the occupied. 🚧</p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">😔</span><div><div class="char-name">Resistance & Cost</div><div class="char-title">The Hidden Price</div></div></div>
+      <div class="char-body"><p>Pinewood squirrels formed resistance cells. Sabotage. Raids. Assassination attempts. Mosswood spent 15% of tribute revenue on <strong>security operations.</strong> The peace was expensive and fragile. ⚠️</p></div>
+    </div>
+  </div>
+
+  <h2><span>😞</span> Hazel's Dissent</h2>
+  <p>Hazel never celebrated. She watched Mosswood prosper and felt sick. 😔</p>
+  <p>One evening, she confronted Penny at the Oak Vault:</p>
+
+  <div class="scene">
+    <div class="scene-label">💬 The Moral Reckoning</div>
+    <h4>Hazel Speaks Truth</h4>
+    <p><strong>Hazel:</strong> "We built this economy on stolen acorns and squirrel blood. Every loan you make, every acorn I save   it comes from Pinewood's suffering. We're not prosperous. We're <em>predators.</em> 😞"</p>
+    <p><strong>Penny:</strong> "Hazel, I understand your feelings. But look at the numbers. Our birth rate is recovering. Families are fed. The alternative was starvation. We made a hard choice. 🏦"</p>
+    <p><strong>Hazel:</strong> "A hard choice? We didn't <em>have</em> to invade. We could have migrated. We could have rationed. We could have innovated. Instead, we chose the easiest path   take from those weaker than us. And now we're <strong>dependent</strong> on their suffering to maintain our comfort. When does it end? 😰"</p>
+    <p>Penny had no answer.</p>
+  </div>
+
+  <h2><span>🔮</span> The Eternal Trap</h2>
+  <p>Five years into the occupation, a disturbing pattern emerged. Mosswood's economy had grown addicted to Pinewood tribute. When Pinewood had a bad harvest and couldn't pay full tribute, <strong>Mosswood faced recession.</strong> 📉</p>
+  <p>The solution? Invade the next forest. 😨</p>
+
+  <div class="viz"><div class="viz-glow"></div><div class="viz-inner">
+    <div class="viz-top"><div class="viz-icon-wrap">♾️</div><div class="viz-meta"><div class="viz-label">The Conquest Cycle</div><h4>How War Becomes Economic Necessity</h4></div></div>
+    <div class="viz-body">
+      <p><strong>Step 1:</strong> Resource scarcity threatens population 😰<br><strong>Step 2:</strong> Conquest solves immediate crisis 💰<br><strong>Step 3:</strong> Economy becomes dependent on tribute 📈<br><strong>Step 4:</strong> Tribute decline triggers new scarcity 📉<br><strong>Step 5:</strong> New conquest required to maintain economy ⚔️<br><strong>Step 6:</strong> Return to Step 3 → <em>infinite loop</em> 🔄</p>
+      <div class="viz-lesson">This is how empires are born   not from evil plans, but from <strong>economic structures that require continuous expansion to avoid collapse.</strong> The war economy becomes self-perpetuating. Breaking the cycle requires accepting short-term pain for long-term sustainability. Few societies choose that path. 😔</div>
+    </div>
+  </div></div>
+
+  <p>General Rex proposed the next target: <strong>Birchwood Valley</strong>   another small, peaceful community with rich acorn groves. The Council approved with less debate this time. War was now just... <em>policy.</em> ⚔️</p>
+
+  <h2><span>🩸</span> The True Cost</h2>
+  <p>By the end of Chapter Six, Mosswood controlled three forests and extracted tribute from all of them. Economically, it was the most prosperous period in Mosswood history. But at what cost? 💔</p>
+
+  <div class="char-grid">
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">📊</span><div><div class="char-name">Economic Metrics</div><div class="char-title">The Surface Success</div></div></div>
+      <div class="char-body"><p>GDP up 300% 📈<br>Unemployment under 2% 👷<br>Credit flowing freely 💰<br>Infrastructure expanding 🏗️<br><strong>By the numbers, Mosswood was winning. ✅</strong></p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">💀</span><div><div class="char-name">Human Cost</div><div class="char-title">What the Numbers Don't Show</div></div></div>
+      <div class="char-body"><p>342 total deaths across all campaigns ☠️<br>1,200+ displaced squirrels 😔<br>Ongoing resistance violence ⚔️<br>Mosswood soldiers traumatized 😰<br><strong>Prosperity built on suffering. 🩸</strong></p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">😞</span><div><div class="char-name">Moral Erosion</div><div class="char-title">What Was Lost</div></div></div>
+      <div class="char-body"><p>Community values abandoned 💔<br>Next generation raised on conquest 😰<br>Empathy replaced with entitlement 😠<br>Peace = weakness in new culture ⚔️<br><strong>Mosswood became what it once feared. 👹</strong></p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">🔄</span><div><div class="char-name">The Trap</div><div class="char-title">No Exit Strategy</div></div></div>
+      <div class="char-body"><p>Economy now requires tribute 📉<br>Withdrawal = recession 😰<br>More conquest = only solution 😔<br>Peace is now unaffordable ⚠️<br><strong>Trapped in eternal expansion. ♾️</strong></p></div>
+    </div>
+  </div>
+
+</section>
+
+<div class="gq"><p>"They asked whether we <em>could</em> take Pinewood. They never asked whether we <em>should</em>. And that is how peaceful squirrels became an empire   one desperate decision at a time, until desperation became strategy, and strategy became identity. Now we cannot stop without collapsing. We are prisoners of our own prosperity. 😔⛓️"</p></div>
+
+<div class="think">
+  <div class="think-label">💭 Think About This</div>
+  <h4>Was the conquest justified?</h4>
+  <p class="q-start">⚖️ If you had to choose between mass starvation of your own population vs. invading another forest, what would you choose?</p>
+  <div class="think-line"></div>
+  <p style="font-size:0.9rem;color:var(--text-light);line-height:1.75"><strong>This is the hardest question in the entire story.</strong> The utilitarian calculus says: <em>fewer deaths via conquest = moral choice.</em> But that logic justifies every empire in history. The alternative   accept mass starvation rather than harm others   requires a kind of moral courage that few societies have ever demonstrated. <strong>There may be no "right" answer. Just different kinds of wrong.</strong> 😔</p>
+  <p style="font-size:0.9rem;color:var(--text-light);line-height:1.75;margin-top:12px"><strong>The deeper question:</strong> How did Mosswood get into a position where those were the only two options? What decisions earlier in the story created the conditions where conquest seemed rational? <strong>That's where the real lesson lives.</strong> 🧠</p>
+</div>
+</div>
+
+<div class="page">
+<section class="section prose">
+  <h2><span>🌍</span> How This Applies to Real History</h2>
+  <p>Every empire in human history followed Mosswood's path: 🌍</p>
+
+  <div class="char-grid">
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">🏛️</span><div><div class="char-name">Ancient Rome</div><div class="char-title">The Original Model</div></div></div>
+      <div class="char-body"><p>Started as a small Italian city-state facing resource pressure. Conquered neighbors for survival. Became dependent on tribute and slave labor. Expanded for 500 years   not from ambition, but because <strong>the economy required it.</strong> When expansion stopped, the empire collapsed. 🏛️💔</p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">🇬🇧</span><div><div class="char-name">British Empire</div><div class="char-title">Industrial Extraction</div></div></div>
+      <div class="char-body"><p>Small island nation, limited resources. Conquered 1/4 of the world to extract raw materials and create captive markets. British prosperity directly funded by Indian, African, and Caribbean exploitation. <strong>When the empire ended, Britain's economy never fully recovered.</strong> 🇬🇧📉</p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">🇺🇸</span><div><div class="char-name">American Empire</div><div class="char-title">Modern Variation</div></div></div>
+      <div class="char-body"><p>Post-WWII America built an economy dependent on: access to foreign oil, military presence in 150+ countries, dollar as global reserve currency. Not "colonies" in the traditional sense, but <strong>economic structures requiring global dominance.</strong> What happens if that dominance ends? 🇺🇸🤔</p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">⚠️</span><div><div class="char-name">The Modern Trap</div><div class="char-title">We're Still In It</div></div></div>
+      <div class="char-body"><p>Global supply chains, resource extraction, cheap foreign labor, military spending as economic stimulus   <strong>the Mosswood model never ended. We just made it more complex and harder to see.</strong> 😰</p></div>
+    </div>
+  </div>
+
+  <p><strong>The squirrel story is not a metaphor. It's a pattern recognition tool.</strong> Once you see it, you can't unsee it. 🌳👁️</p>
+</section>
+</div>
+
+<section class="finale">
+  <span class="finale-emoji">⚔️</span>
+  <h2>The forest thrives when the squirrels<br><span>remember what conquest costs.</span></h2>
+  <p>Prosperity built on others' suffering is not prosperity   it's theft with compound interest. Every empire learns this lesson eventually. The question is whether you learn it before or after the collapse.</p>
+  <p style="margin-top:24px;font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:700">🌰 The acorn you steal today is the revolution your grandchildren face tomorrow. 🩸</p>
+</section>
+
+<footer>
+  <p>"Woe to those who add house to house and join field to field, until there is no more room."   Isaiah 5:8</p>
+  <div class="brand">Kingdom Builders AI</div>
+  <p style="margin-top:14px;font-family:'Nunito',sans-serif;font-weight:700">kingdombuilders.ai</p>
+</footer>
+
+<div style="text-align:center;padding:20px 24px 32px;background:#060C04;border-top:1px solid rgba(200,120,32,0.08);font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:700;color:rgba(255,255,255,0.2);line-height:1.6" class="no-print">
+  To save as PDF: Open this file in your browser → File → Print → "Save as PDF"<br>
+  Works on desktop, iPhone, iPad, and Android.
+</div>
+<style>.no-print{display:block}@media print{.no-print{display:none!important}}</style>
+
+</body>
+</html>

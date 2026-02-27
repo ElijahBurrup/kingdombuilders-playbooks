@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lay It Down | Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1A1008;
+  --ink-mid:#2C2010;
+  --ink-soft:#3D3020;
+  --steel:#5A4830;
+  --steel-light:#8A7A60;
+  --fog:#B0A090;
+  --fire:#E8860A;
+  --fire-mid:rgba(232,134,10,0.18);
+  --fire-pale:rgba(232,134,10,0.07);
+  --ember:#FF6B2B;
+  --ember-mid:rgba(255,107,43,0.15);
+  --gold:#D4A030;
+  --gold-mid:rgba(212,160,48,0.18);
+  --gold-pale:rgba(212,160,48,0.08);
+  --ash:#E85050;
+  --ash-mid:rgba(232,80,80,0.15);
+  --green:#2D8A4E;
+  --green-mid:rgba(45,138,78,0.15);
+  --cream:#FFF9F0;
+  --cream-warm:#FFF4E6;
+  --paper:#FFFBF5;
+  --white:#FFFFFF;
+  --radius:10px;
+  --shadow:0 2px 16px rgba(26,16,8,0.09);
+  --shadow-deep:0 8px 40px rgba(26,16,8,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.78;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.label{font-family:'Poppins',sans-serif}
+.page{max-width:700px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--ink-mid);font-weight:600;font-family:'Poppins',sans-serif}
+
+/* === COVER === */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(160deg,#1A0A02 0%,#2A1508 40%,#1A1020 100%);position:relative;overflow:hidden}
+.cover-grain{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:0.5}
+.cover-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 25%,rgba(10,5,2,0.7) 100%)}
+.flame-ring{position:absolute;border-radius:50%;border:1px solid rgba(232,134,10,0.06);animation:flame-expand 7s ease-out infinite}
+.flame-ring:nth-child(3){width:180px;height:180px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:0s}
+.flame-ring:nth-child(4){width:360px;height:360px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:1.8s}
+.flame-ring:nth-child(5){width:540px;height:540px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:3.6s}
+@keyframes flame-expand{0%{opacity:0.6;transform:translate(-50%,-50%) scale(0.85)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.25)}}
+.cover-content{position:relative;z-index:2;padding:60px 24px 40px}
+.cover-badge{display:inline-block;padding:5px 18px;border:1px solid rgba(232,134,10,0.3);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.48rem;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:var(--fire);margin-bottom:40px;background:rgba(232,134,10,0.07)}
+.cover h1{font-family:'Poppins',sans-serif;font-size:clamp(3rem,9vw,5.5rem);font-weight:300;color:#FFFFFF;line-height:0.95;margin-bottom:6px;letter-spacing:-0.02em}
+.cover h1 em{display:block;color:var(--fire);font-style:normal;font-weight:700;font-size:0.5em;margin-top:12px;letter-spacing:0.01em}
+.cover-sub{font-family:'Lora',Georgia,serif;font-size:clamp(0.95rem,2.5vw,1.15rem);font-style:italic;color:rgba(255,255,255,0.45);margin-top:28px;line-height:1.7;max-width:480px;margin-left:auto;margin-right:auto}
+.cover-sub em{color:rgba(232,134,10,0.85);font-style:normal;font-weight:600}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.5rem;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-top:52px}
+.cover-verse{margin-top:28px;padding:14px 24px;display:inline-block;background:rgba(232,134,10,0.06);border:1px solid rgba(232,134,10,0.12);border-radius:8px;font-family:'Lora',Georgia,serif;font-size:0.82rem;font-style:italic;color:rgba(255,255,255,0.35);line-height:1.6}
+
+/* === CHAPTER HEADS === */
+.ch-head{background:linear-gradient(160deg,#1A0A02 0%,#201218 100%);padding:72px 24px 52px;position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 50%,rgba(232,134,10,0.04) 0%,transparent 50%)}
+.ch-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 5%,var(--fire) 50%,transparent 95%);opacity:0.5}
+.ch-head .page{position:relative;z-index:2}
+.ch-num{font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--fire);opacity:0.9;margin-bottom:8px}
+.ch-title{font-family:'Poppins',sans-serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:700;color:#FFFFFF;margin:10px 0 8px;letter-spacing:-0.01em}
+.ch-sub{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:rgba(232,134,10,0.55)}
+
+/* === RIBBON (Scripture) === */
+.ribbon{text-align:center;padding:20px 24px;background:var(--cream-warm);border-top:1px solid rgba(26,16,8,0.06);border-bottom:1px solid rgba(26,16,8,0.06)}
+.ribbon p{font-family:'Lora',Georgia,serif;font-size:0.82rem;font-style:italic;color:var(--steel-light);max-width:540px;margin:0 auto;line-height:1.6}
+
+/* === MISSION === */
+.mission{text-align:center;padding:36px 32px;margin:36px 0;background:linear-gradient(140deg,rgba(232,134,10,0.08),rgba(232,134,10,0.03));border-radius:14px;border:2px solid rgba(232,134,10,0.2);box-shadow:0 0 0 1px rgba(232,134,10,0.06),var(--shadow)}
+.mission-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--fire);margin-bottom:12px}
+.mission p{font-family:'Poppins',sans-serif;font-size:clamp(0.88rem,2.2vw,1.05rem);font-weight:500;color:var(--ink-mid);line-height:1.65}
+.mission p em{color:var(--fire);font-style:normal;font-weight:700}
+
+/* === INSIGHT === */
+.insight{margin:30px 0;padding:28px 32px;background:linear-gradient(140deg,#1A0A02,#201218);border-radius:14px;border:2px solid rgba(232,134,10,0.25);border-left:5px solid var(--fire);position:relative;overflow:hidden;box-shadow:var(--shadow-deep)}
+.insight::before{content:'';position:absolute;top:-40%;right:-10%;width:200px;height:200px;background:radial-gradient(circle,rgba(232,134,10,0.07) 0%,transparent 70%);border-radius:50%}
+.insight p{font-family:'Lora',Georgia,serif;font-size:1.02rem;font-style:italic;color:rgba(255,255,255,0.9);line-height:1.72;position:relative;z-index:2}
+.insight em{color:var(--fire);font-style:normal;font-weight:700}
+
+/* === GUIDED QUOTE === */
+.gq{margin:32px 0;text-align:center;padding:32px 24px;position:relative;background:linear-gradient(160deg,rgba(232,134,10,0.04),rgba(232,134,10,0.07));border-radius:14px;border:1.5px solid rgba(232,134,10,0.15)}
+.gq::before,.gq::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:48px;height:2px;background:linear-gradient(90deg,transparent,var(--fire),transparent)}
+.gq::before{top:0}.gq::after{bottom:0}
+.gq p{font-family:'Lora',Georgia,serif;font-size:1.05rem;font-style:italic;color:var(--ink-soft);line-height:1.6;max-width:520px;margin:0 auto}
+
+/* === VIZ CARDS === */
+.viz{margin:44px 0 32px;border-radius:14px;overflow:hidden;border:2px solid rgba(232,134,10,0.22);box-shadow:var(--shadow-deep);position:relative;background:var(--white)}
+.viz-top{background:linear-gradient(135deg,rgba(232,134,10,0.1),rgba(232,134,10,0.04));padding:20px 26px 18px;display:flex;align-items:center;gap:14px;border-bottom:1px solid rgba(232,134,10,0.12)}
+.viz-icon{width:48px;height:48px;border-radius:50%;border:2px solid rgba(232,134,10,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(145deg,#fff,rgba(255,244,230,0.6));font-size:1.3rem}
+.viz-meta{flex:1}
+.viz-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);margin-bottom:2px}
+.viz h4{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:var(--ink-mid)}
+.viz-body{padding:26px 26px 22px;background:linear-gradient(170deg,#FFFDF8 0%,#FFF8F0 100%)}
+.viz-body p{font-size:0.95rem;color:var(--steel);line-height:1.78;margin-bottom:14px}
+.viz-body p:last-child{margin-bottom:0}
+.viz-trigger{margin-top:18px;padding:14px 18px;background:linear-gradient(135deg,rgba(232,134,10,0.08),rgba(232,134,10,0.14));border:1.5px solid rgba(232,134,10,0.2);border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.76rem;font-weight:600;color:var(--ink-soft);text-align:center;line-height:1.55}
+
+/* === BEFORE/AFTER === */
+.ba-pair{margin:32px 0;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:620px){.ba-pair{grid-template-columns:1fr}}
+.ba-card{border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.ba-head{padding:11px 18px;font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.ba-before{background:linear-gradient(170deg,#FFF0F0,#FFE8E8)}
+.ba-before .ba-head{background:rgba(232,80,80,0.12);color:#8B1F1F}
+.ba-after{background:linear-gradient(170deg,#FFF8EE,#FFF2E0)}
+.ba-after .ba-head{background:rgba(232,134,10,0.12);color:#5A3800}
+.ba-dot{width:7px;height:7px;border-radius:50%}
+.ba-before .ba-dot{background:var(--ash)}
+.ba-after .ba-dot{background:var(--fire)}
+.ba-body{padding:16px 18px;font-size:0.88rem;line-height:1.65}
+.ba-body ul{list-style:none;padding:0;margin:0}
+.ba-body ul li{padding:6px 0;border-bottom:1px solid rgba(0,0,0,0.05);font-family:'Poppins',sans-serif;font-size:0.8rem}
+.ba-body ul li:last-child{border-bottom:none}
+
+/* === DD CARDS === */
+.dd{margin:24px 0;padding:22px 26px;border-radius:12px;border-left:4px solid var(--fire);background:var(--white);box-shadow:var(--shadow)}
+.dd:nth-of-type(even){background:var(--cream)}
+.dd h4{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--ink-mid);margin-bottom:4px}
+.dd .sub{font-family:'Poppins',sans-serif;font-size:0.54rem;font-weight:700;color:var(--fire);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.dd p{font-size:0.95rem;color:var(--steel);line-height:1.78;margin-bottom:8px}
+.dd p:last-child{margin-bottom:0}
+
+/* === ADVENTURE / STORY === */
+.adventure{margin:36px 0;border-radius:14px;overflow:hidden;box-shadow:var(--shadow-deep);background:var(--white);border:1.5px solid rgba(26,16,8,0.08)}
+.adv-head{padding:14px 26px 12px;display:flex;align-items:center;gap:12px;border-bottom:1.5px solid rgba(232,134,10,0.1);background:linear-gradient(135deg,rgba(232,134,10,0.05),rgba(232,134,10,0.02))}
+.adv-head-icon{width:36px;height:36px;border-radius:50%;background:rgba(232,134,10,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1.5px solid rgba(232,134,10,0.2);font-size:1rem}
+.adv-head-text{flex:1}
+.adv-head-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--fire);opacity:0.7}
+.adv-head-title{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--ink-mid)}
+.adv-step{padding:14px 26px;border-bottom:1px solid rgba(26,16,8,0.05)}
+.adv-step:last-child{border-bottom:none}
+.adv-step:nth-child(odd){background:var(--white)}
+.adv-step:nth-child(even){background:rgba(232,134,10,0.02)}
+.step-c p{font-family:'Source Serif 4',Georgia,serif;font-size:0.93rem;line-height:1.75;margin:0 0 6px;color:var(--ink-soft)}
+.step-c p:last-child{margin-bottom:0}
+.step-c em{color:var(--steel-light)}
+.tag-you{font-family:'Poppins',sans-serif;font-weight:700;color:var(--ink-mid);font-size:0.74rem;display:inline-block;padding:2px 10px;background:rgba(232,134,10,0.1);border-radius:4px;margin-bottom:5px;border:1px solid rgba(232,134,10,0.2)}
+.adv-result-good{background:linear-gradient(135deg,rgba(45,138,78,0.04),rgba(45,138,78,0.08))!important}
+
+/* === THINK / EXERCISE === */
+.think{margin:16px 0 36px;padding:30px;background:linear-gradient(145deg,rgba(232,134,10,0.08),rgba(232,134,10,0.04));border:2px dashed rgba(232,134,10,0.35);border-radius:14px;position:relative;box-shadow:0 4px 16px rgba(232,134,10,0.08)}
+.think::before{content:'🔥';position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--paper);padding:0 12px;font-size:0.9rem}
+.think-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);text-align:center;margin-bottom:10px}
+.think h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--ink-mid);text-align:center;margin-bottom:14px}
+.think p{font-size:0.86rem;color:var(--steel);margin-bottom:8px;font-family:'Poppins',sans-serif}
+.think-line{border-bottom:1.5px solid rgba(232,134,10,0.25);height:30px;margin-bottom:4px;cursor:text}
+.think p.q-start{font-family:'Poppins',sans-serif;font-weight:500;color:var(--ink-soft);font-size:0.82rem;text-align:left;margin-top:14px;margin-bottom:4px}
+.think .closing{font-weight:600;color:var(--fire);margin-top:12px;font-family:'Poppins',sans-serif;font-size:0.8rem}
+
+/* === BREATHE === */
+.breathe{margin:44px 0;text-align:center;padding:52px 24px;position:relative;background:linear-gradient(160deg,rgba(232,134,10,0.08),rgba(232,134,10,0.04));border-radius:16px;border:2px solid rgba(232,134,10,0.15)}
+.breathe-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1.5px solid rgba(232,134,10,0.1)}
+.breathe-ring:nth-child(1){width:140px;height:140px;animation:breathe-pulse 6s ease-in-out infinite}
+.breathe-ring:nth-child(2){width:90px;height:90px;animation:breathe-pulse 6s ease-in-out infinite 1.5s}
+.breathe-ring:nth-child(3){width:45px;height:45px;animation:breathe-pulse 6s ease-in-out infinite 3s}
+@keyframes breathe-pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.5}50%{transform:translate(-50%,-50%) scale(1.25);opacity:0.1}}
+.breathe-content{position:relative;z-index:2}
+.breathe-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--fire);margin-bottom:8px}
+.breathe h4{font-family:'Poppins',sans-serif;font-size:0.94rem;font-weight:600;color:var(--ink-mid);margin-bottom:8px}
+.breathe p{font-family:'Lora',Georgia,serif;font-size:0.88rem;font-style:italic;color:var(--steel);max-width:420px;margin:0 auto;line-height:1.65}
+
+/* === DESCENT === */
+.descent-ramp{margin:36px 0 0;display:flex;flex-direction:column;gap:12px}
+.ramp-echo{padding:26px 30px;background:linear-gradient(160deg,rgba(232,134,10,0.07),rgba(232,134,10,0.03));border-radius:14px;border:1.5px solid rgba(232,134,10,0.12)}
+.ramp-echo p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:var(--steel);line-height:1.78;text-align:center;margin:0}
+.ramp-close{padding:36px 30px;text-align:center;background:linear-gradient(160deg,rgba(212,160,48,0.1),rgba(212,160,48,0.05));border-radius:14px;border:1.5px solid rgba(212,160,48,0.2)}
+.ramp-close-label{font-family:'Poppins',sans-serif;font-size:0.44rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--gold);opacity:0.9;margin-bottom:8px}
+.ramp-close p{font-family:'Poppins',sans-serif;font-size:0.8rem;font-weight:500;color:var(--ink-soft);line-height:1.65;max-width:440px;margin:0 auto}
+
+/* === INSTRUCTION === */
+.inst{margin:26px 0;padding:18px 22px;background:linear-gradient(90deg,rgba(232,134,10,0.07),rgba(212,160,48,0.05));border-left:4px solid var(--fire);border-radius:0 12px 12px 0;box-shadow:var(--shadow)}
+.inst p{font-family:'Poppins',sans-serif;font-size:0.8rem;color:var(--steel);line-height:1.6;margin:0}
+.inst strong{color:var(--ink-mid);font-weight:600}
+
+/* === H2 ICON === */
+.h2-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--ink-mid),var(--ink-soft));margin-right:10px;vertical-align:middle;box-shadow:0 2px 8px rgba(26,16,8,0.2);font-size:0.7rem}
+.prose h2{font-family:'Poppins',sans-serif;font-size:1.3rem;color:var(--ink-mid);margin:36px 0 14px;letter-spacing:-0.01em;display:flex;align-items:center}
+
+/* === ROOT REVIEW === */
+.root-review{margin:44px 0;padding:28px 22px;background:linear-gradient(160deg,#FFF8EE,#FFF0F8);border-radius:16px;border:2px solid rgba(232,134,10,0.18);box-shadow:var(--shadow)}
+.root-label{font-family:'Poppins',sans-serif;font-size:0.44rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--fire);text-align:center;margin-bottom:18px}
+.root-layer{display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 0;flex-wrap:wrap}
+.root-layer.current{padding:12px 0}
+.root-ch{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--fog);width:28px;text-align:right;flex-shrink:0}
+.root-layer.current .root-ch{color:var(--fire)}
+.root-items{display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center}
+.root-pill{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:600;padding:5px 13px;border-radius:6px;white-space:nowrap}
+.root-pill.rp-dim{background:rgba(90,72,48,0.1);color:var(--steel);border:1.5px solid rgba(90,72,48,0.18)}
+.root-pill.rp-bright{background:linear-gradient(135deg,rgba(232,134,10,0.18),rgba(232,134,10,0.26));color:var(--ink-mid);border:2px solid rgba(232,134,10,0.35);box-shadow:0 2px 10px rgba(232,134,10,0.12);font-weight:700}
+.root-pill.rp-ch1{background:rgba(232,134,10,0.12);color:#5A3800;border:1.5px solid rgba(232,134,10,0.28);font-weight:600}
+.root-pill.rp-ch2{background:rgba(255,107,43,0.12);color:#5A2000;border:1.5px solid rgba(255,107,43,0.25);font-weight:600}
+.root-pill.rp-ch3{background:rgba(45,138,78,0.12);color:#1A3A28;border:1.5px solid rgba(45,138,78,0.25);font-weight:600}
+.root-pill.rp-ch4{background:rgba(160,100,240,0.12);color:#3A1A5A;border:1.5px solid rgba(160,100,240,0.25);font-weight:600}
+.root-pill.rp-ch5{background:rgba(60,140,240,0.12);color:#1A2E5A;border:1.5px solid rgba(60,140,240,0.25);font-weight:600}
+.root-arr{color:var(--fire);opacity:0.65;font-size:0.78rem;padding:0 3px}
+.root-layer.current .root-arr{opacity:0.9}
+.root-sep{width:60%;max-width:300px;height:1.5px;background:linear-gradient(90deg,transparent,rgba(232,134,10,0.15),transparent);margin:6px auto}
+
+/* === PROMPT === */
+.prompt{margin:32px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(232,134,10,0.22);box-shadow:var(--shadow-deep)}
+.prompt-head{padding:12px 20px;background:linear-gradient(90deg,#1A0A02,#201218);font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--fire)}
+.prompt-body{padding:24px 26px;background:#120A04;color:#C0B8A8;font-family:'Poppins',sans-serif;font-size:0.82rem;line-height:1.8}
+.prompt-body strong{color:var(--fire)}
+
+/* === STACK === */
+.stack{margin:38px 0;text-align:center}
+.stack-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);opacity:0.7;margin-bottom:16px}
+.stack-flow{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap}
+.stack-node{display:inline-flex;align-items:center;justify-content:center;padding:10px 18px;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.68rem;font-weight:600;line-height:1.35;white-space:nowrap}
+.sn-dark{background:var(--ink-mid);color:#FFFFFF;border:1.5px solid rgba(232,134,10,0.2)}
+.sn-fire{background:rgba(232,134,10,0.13);color:var(--ink-mid);border:1.5px solid rgba(232,134,10,0.25)}
+.sn-gold{background:rgba(212,160,48,0.13);color:var(--ink-soft);border:1.5px solid rgba(212,160,48,0.28)}
+.sn-red{background:rgba(232,80,80,0.1);color:#5A1818;border:1.5px solid rgba(232,80,80,0.2)}
+.sn-green{background:rgba(45,138,78,0.1);color:#1A3A28;border:1.5px solid rgba(45,138,78,0.2)}
+.stack-arr{font-size:1rem;color:rgba(232,134,10,0.45);padding:0 7px}
+
+/* === PRAYER BOX === */
+.prayer{margin:32px 0;padding:28px 30px;background:linear-gradient(160deg,#1A0A02,#181020);border-radius:14px;border:2px solid rgba(212,160,48,0.25);position:relative;overflow:hidden}
+.prayer::before{content:'';position:absolute;top:-20%;left:-10%;width:160px;height:160px;background:radial-gradient(circle,rgba(212,160,48,0.06) 0%,transparent 70%);border-radius:50%}
+.prayer-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;position:relative;z-index:2}
+.prayer p{font-family:'Lora',Georgia,serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.85);line-height:1.8;position:relative;z-index:2;margin-bottom:8px}
+.prayer p:last-child{margin-bottom:0}
+.prayer strong{color:var(--gold);font-style:normal;font-weight:700}
+
+/* === FINALE === */
+.finale{text-align:center;padding:80px 24px;background:linear-gradient(160deg,#1A0A02 0%,#201218 100%);position:relative;overflow:hidden}
+.finale::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 50% 50%,rgba(232,134,10,0.04) 0%,transparent 50%)}
+.finale h2{font-family:'Poppins',sans-serif;font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;color:#FFFFFF;margin-bottom:8px;position:relative;z-index:2}
+.finale h2 span{color:var(--fire)}
+.finale p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.38);max-width:460px;margin:16px auto;line-height:1.65;position:relative;z-index:2}
+
+/* === FOOTER === */
+footer{text-align:center;padding:36px 24px;background:#080602}
+footer p{font-family:'Lora',Georgia,serif;font-size:0.8rem;font-style:italic;color:rgba(232,134,10,0.2);margin-bottom:12px}
+footer .brand{font-family:'Poppins',sans-serif;font-size:0.46rem;font-style:normal;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.12)}
+
+/* === SCROLL REVEAL === */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.65s ease,transform 0.65s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.stagger-children > *{opacity:0;transform:translateY(18px);transition:opacity 0.5s ease,transform 0.5s ease}
+.stagger-children.visible > *:nth-child(1){opacity:1;transform:none;transition-delay:0s}
+.stagger-children.visible > *:nth-child(2){opacity:1;transform:none;transition-delay:0.12s}
+.stagger-children.visible > *:nth-child(3){opacity:1;transform:none;transition-delay:0.24s}
+.stagger-children.visible > *:nth-child(4){opacity:1;transform:none;transition-delay:0.36s}
+
+.think:hover{box-shadow:0 0 0 2px rgba(232,134,10,0.25),0 8px 32px rgba(232,134,10,0.1)}
+.think{transition:box-shadow 0.3s ease}
+.adv-step{transition:background 0.2s ease}
+.adv-step:hover{background:rgba(232,134,10,0.04)!important}
+@keyframes insight-border{0%,100%{border-left-color:var(--fire)}50%{border-left-color:rgba(232,134,10,0.3)}}
+.insight{animation:insight-border 4s ease-in-out infinite}
+
+#read-progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--fire),rgba(232,134,10,0.4));z-index:9999;pointer-events:none;transition:width 0.08s linear}
+#chapter-pill{position:fixed;bottom:24px;right:24px;background:var(--ink);border:1px solid rgba(232,134,10,0.25);color:var(--fire);font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:8px 18px;border-radius:50px;opacity:0;transition:opacity 0.35s ease;pointer-events:none;z-index:1000;box-shadow:0 4px 24px rgba(0,0,0,0.4)}
+#chapter-pill.show{opacity:1}
+
+@media(max-width:620px){.stack-node{font-size:0.6rem;padding:8px 12px}}
+@media print{
+  @page{margin:18mm 16mm 22mm 16mm}
+  body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .cover{min-height:auto;padding:80px 24px;break-after:page}
+  .ch-head{break-before:page;padding:56px 24px 40px}
+  .think,.adventure,.viz,.ba-pair,.mission,.insight,.dd,.breathe,.prayer,.prompt,.stack,.descent-ramp{break-inside:avoid}
+  .flame-ring,.cover-grain,.breathe-ring,.cover-vignette{animation:none!important;display:none}
+  .section{padding:36px 0}
+  #read-progress,#chapter-pill,.no-print{display:none!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== COVER ===== -->
+<section class="cover">
+  <div class="cover-grain"></div>
+  <div class="cover-vignette"></div>
+  <div class="flame-ring"></div>
+  <div class="flame-ring"></div>
+  <div class="flame-ring"></div>
+  <div class="cover-content">
+    <div class="cover-badge">Kingdom Builders AI</div>
+    <h1>Lay It Down<em>I Am Calling You Deeper</em></h1>
+    <p class="cover-sub">Sugar. Screens. Gossip. Comfort.<br>They never asked for your soul. They asked for your <em>evenings, your energy, your attention.</em><br>And given enough time, they shaped your loves.</p>
+    <div class="cover-verse">"Lay aside every weight, and sin which clings so closely,<br>and run with endurance the race that is set before us."<br>.  Hebrews 12:1 (NKJV)</div>
+    <p class="cover-author">Kingdom Builders AI</p>
+  </div>
+</section>
+
+<!-- ===== BEFORE WE BEGIN ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Before We Begin</div><h2 class="ch-title">The Altar You Did Not Build on Purpose</h2><p class="ch-sub">Everything you give your consistency to becomes a place of worship.</p></div></div>
+
+<div class="page prose section">
+  <p>An altar is not defined by candles or kneeling. It is defined by two things: <strong>consistency and sacrifice.</strong> Whatever receives your time, your attention, your emotional energy, your first thought in the morning and your last reach at night. that is your altar. You built it with daily deposits, not a single dramatic act.</p>
+  <p>This book is about the altars most believers never named. Not the obvious ones. Not pornography, not substance abuse, not open rebellion. The quiet ones. The ones that wear social approval like camouflage. The ones your friends share, your church ignores, and your body has been trained to obey.</p>
+  <p>Sugar. Caffeine. Screens. Entertainment. Gossip. Comfort.</p>
+  <p>None of them announced themselves as enemies. That is what makes them effective.</p>
+
+  <div class="insight"><p>God does not call you deeper without first confronting what you rely on. What He asks for is rarely open rebellion. More often, it is the thing you have learned to depend on so quietly that you no longer question it. The habit you excuse. The comfort you defend. <em>The substance you call normal.</em></p></div>
+
+  <p>This book will walk you through a process, not a guilt trip, not a lecture, but a guided dismantling of the things that have quietly occupied the space God is asking you to clear. Each chapter names an altar, shows you how it was built, and gives you the tools to tear it down and replace it with something living.</p>
+
+  <div class="breathe">
+    <div class="breathe-ring"></div><div class="breathe-ring"></div><div class="breathe-ring"></div>
+    <div class="breathe-content">
+      <div class="breathe-label">A Word Before You Read</div>
+      <h4>This is not condemnation. This is an invitation.</h4>
+      <p>Conviction is fragile. If you ignore it, it hardens. If you rationalize it, it fades. If you nurture it, if you pray into it, guard it, and obey it, it grows into freedom.</p>
+    </div>
+  </div>
+
+  <div class="inst"><p><strong>How this guide works:</strong> Each chapter names one altar, exposes how it trains your devotion, and gives you a specific counterattack. The exercises are not journaling prompts, they are acts of honesty. No pretending. No performing. Just you, the truth, and a God who is calling you closer.</p></div>
+</div>
+
+<!-- ===== CHAPTER 1 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter One</div><h2 class="ch-title">Comfortable Addictions</h2><p class="ch-sub">When God calls you deeper, He asks you to lay something down.</p></div></div>
+<div class="ribbon"><p>"All things are lawful for me, but I will not be brought under the power of any.". 1 Corinthians 6:12 (NKJV)</p></div>
+
+<div class="page prose section">
+  <div class="mission"><div class="mission-label">The Altar</div><p>Sugar, caffeine, stimulants, and constant consumption.<br>Not because they feel sinful, but because they feel <em>necessary.</em><br>And anything you believe you cannot live without<br>has already claimed a place <em>it was never meant to hold.</em></p></div>
+
+  <p>Most Christians would never touch heroin. Many would be horrified by the idea of needing drugs to function. And yet millions wake up each morning unable to think clearly, feel patient, experience joy, or move through the day without coffee, sugar, energy drinks, snacks, or processed comfort foods.</p>
+  <p>These dependencies simply wear better packaging: social acceptance and approval.</p>
+  <p>The issue is not enjoyment. The issue is <strong>reliance.</strong> When your peace depends on it. When your energy depends on it. When your patience, focus, or sense of normal depends on it. At that point, the issue is no longer the substance; it is the <strong>authority you have given it.</strong></p>
+
+  <div class="viz">
+    <div class="viz-top"><div class="viz-icon">⚖️</div><div class="viz-meta"><div class="viz-label">The Test</div><h4>From Preference to Dependence</h4></div></div>
+    <div class="viz-body">
+      <p>If sugar were neutral, moderation would work. If stimulants were harmless, restraint would solve the problem. But for many people, moderation has already failed, quietly, repeatedly, and convincingly.</p>
+      <p>We understand this logic elsewhere. Smokers don't heal by having a few cigarettes each week. Alcoholics don't recover by learning to sip responsibly. Everyone understands that certain substances cross a line where <strong>zero becomes the only honest starting point.</strong></p>
+      <div class="viz-trigger">If God asked you to lay it down for 30 days. would you feel invited, or exposed?</div>
+    </div>
+  </div>
+
+  <p>That voice that says <em>"I'm not like them"</em> is the same voice every addict hears before they fall again. Addiction always argues for exceptions. It reframes bondage as balance and dependence as preference. And it fights hardest when you consider cutting it off completely.</p>
+
+  <h2><span class="h2-icon">👑</span>Mastery Is the Issue</h2>
+  <p>Scripture does not treat this as minor weakness. It names the issue clearly: <strong>mastery.</strong></p>
+
+  <div class="gq"><p>"Whoever has no rule over his own spirit is like a city broken down, without walls.". Proverbs 25:28 (NKJV)</p></div>
+
+  <p>If a substance controls your mood, energy, patience, focus, or sense of normal, it is no longer just food or drink. It is functioning as a <strong>drug.</strong> Not because you intended it to. Not because you are weak. But because drugs, once given authority, inevitably become masters.</p>
+  <p>Cultural approval does not cancel control. A substance does not need to be illegal to enslave you. What makes sugar and stimulants especially dangerous is not just their chemistry, but their <strong>camouflage.</strong> They hide in celebration. They hide in comfort. They hide in childhood memories, religious gatherings, and phrases like <em>"just this once."</em></p>
+
+  <h2><span class="h2-icon">🧠</span>Conditioning the Soul</h2>
+  <p>Every spike trains your brain to crave the next. Every crash trains you to reach again. Over time, your baseline shifts. Calm feels dull. Stillness feels uncomfortable. Fasting feels extreme. Prayer feels harder. Silence feels unbearable. Not because God is distant, but because your nervous system has been trained to require constant stimulation.</p>
+  <p>That is not accidental. That is <strong>conditioning.</strong></p>
+
+  <div class="insight"><p>This is why people often react with anger when sugar or caffeine is challenged. Not curiosity. Not reflection. <em>Anger.</em> Defensiveness born from the threat of restraint reveals <em>control.</em></p></div>
+
+  <h2><span class="h2-icon">⚔️</span>Why Jesus Did Not Negotiate</h2>
+  <p>Jesus was never gentle with masters who enslave quietly. He did not negotiate with demons. He did not compromise with chains. He did not advise gradual surrender. He called for <strong>decisive separation.</strong></p>
+
+  <div class="gq"><p>"If your right hand causes you to sin, cut it off and cast it from you.". Matthew 5:30 (NKJV)</p></div>
+
+  <p>That was not extremism. It was clarity about survival. You do not taper idols. <strong>You tear them down.</strong></p>
+  <p>For many reading this, the idea of complete removal might feel impossible. That feeling itself is diagnostic. If the thought of zero fills you with anxiety, grief, or fear, that substance has already claimed too much territory.</p>
+
+  <h2><span class="h2-icon">🌅</span>What Replaces Them</h2>
+  <p>Freedom often begins with grief, the grief of losing what you thought was helping you. But what you are actually losing is a <strong>counterfeit comfort</strong> that was charging interest the entire time. Yes, withdrawal is real. Irritability. Fatigue. Headaches. Emotional swings. These are not signs of damage. They are signs of <strong>exposure.</strong> And they pass.</p>
+  <p>What replaces them is clarity not compromised, energy not borrowed, joy that won't spike and crash, hunger rightly ordered, stillness no longer resisted, prayer no longer rushed, and discipline that bears fruit.</p>
+
+  <div class="gq"><p>"Now the Lord is the Spirit; and where the Spirit of the Lord is, there is liberty.". 2 Corinthians 3:17 (NKJV)</p></div>
+
+  <p>This chapter is not asking whether sugar or caffeine is sinful. That question is too small. The real question is <strong>who is in charge</strong>, because whatever answers that question is already shaping your life. The path forward is not moderation. It is honesty. It is surrender. It is <strong>zero.</strong> No footholds.</p>
+  <p>God is not calling you to deprivation. He is calling you deeper. And deeper always begins with laying something down.</p>
+
+  <div class="think">
+    <div class="think-label">The Altar Audit</div>
+    <h4>Name What Has Authority</h4>
+    <p class="q-start">What substance, food, or stimulant does your day revolve around?</p><div class="think-line"></div>
+    <p class="q-start">If it were removed for 30 days. what would you feel? Peace, or panic?</p><div class="think-line"></div>
+    <p class="q-start">When did you stop choosing it and start needing it?</p><div class="think-line"></div>
+    <p class="q-start">What would obedience look like. specifically. starting tomorrow?</p><div class="think-line"></div>
+    <p class="closing">Anything you feel you cannot live without has already asked for a place it was never meant to hold.</p>
+  </div>
+
+  <div class="root-review">
+    <div class="root-label">Your Journey. Built Chapter by Chapter</div>
+    <div class="root-layer current"><div class="root-ch">Ch1</div><div class="root-items"><div class="root-pill rp-bright">Name the Altar</div><div class="root-arr">→</div><div class="root-pill rp-bright">Test: Preference or Dependence?</div><div class="root-arr">→</div><div class="root-pill rp-bright">Choose Zero</div></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 2 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Two</div><h2 class="ch-title">The Counterattack</h2><p class="ch-sub">How to walk through withdrawal without losing heart.</p></div></div>
+<div class="ribbon"><p>"Be sober, be vigilant; because your adversary the devil walks about like a roaring lion, seeking whom he may devour.". 1 Peter 5:8 (NKJV)</p></div>
+
+<div class="page prose section">
+  <div class="mission"><div class="mission-label">The Battle</div><p>When you remove sugar, stimulants, and constant comfort,<br>something will push back. Physically, mentally, and spiritually.<br>This is not failure. <em>This is confirmation</em><br>that something real is being dismantled.</p></div>
+
+  <p>The body resists losing what it has depended on. Old habits scream. Cravings intensify. Thoughts get louder. Resolve feels thinner. Withdrawal is not punishment. It is evidence that a master is losing access to your body.</p>
+
+  <h2><span class="h2-icon">🗡️</span>Step 1: Clear the Battlefield</h2>
+  <div class="dd">
+    <h4>Simplify With a Fast</h4>
+    <div class="sub">6 AM to 6 PM: Let the body relearn hunger</div>
+    <p>The biggest mistake is trying to detox <em>and</em> reinvent your entire diet simultaneously. Fasting from 6 a.m. to 6 p.m. immediately reduces decision fatigue, limits exposure to cravings, creates space to feel withdrawal instead of masking it, and removes constant meal-planning stress. You are not avoiding discomfort. You are <strong>facing it on purpose.</strong></p>
+  </div>
+
+  <h2><span class="h2-icon">💪</span>Step 2: Support the Body</h2>
+  <div class="dd">
+    <h4>Glutathione and Candida Awareness</h4>
+    <div class="sub">Transition symptoms are not danger, they are exposure</div>
+    <p>When sugar is removed, many people experience headaches, brain fog, fatigue, irritability, even sugar dreams. These are signals of <strong>transition</strong>, not danger. Glutathione supports detox pathways in the liver and helps clear byproducts as sugar-dependent organisms lose their fuel source. Do not interpret discomfort as harm. Interpret it as exposure and healing.</p>
+  </div>
+
+  <h2><span class="h2-icon">☕</span>Step 3: Decide on Stimulants</h2>
+  <div class="dd">
+    <h4>Caffeine Deserves Its Own Honesty</h4>
+    <div class="sub">Mood regulation, emotional numbing, borrowed energy</div>
+    <p>For many people, caffeine functions exactly like a drug: mood regulation, emotional numbing, artificial motivation, borrowed energy. Trying to quit sugar while clinging to caffeine often leads to relapse in both. Decide early whether caffeine stays temporarily or goes entirely, but <strong>do not pretend it is neutral.</strong> The lethargy and headaches pass. What replaces them is steadier energy and clearer thinking.</p>
+  </div>
+
+  <h2><span class="h2-icon">🍽️</span>Step 4: Eat for Stability</h2>
+  <div class="dd">
+    <h4>Simple Fuel, Not Entertainment</h4>
+    <div class="sub">Protein, vegetables, healthy fats, salt, water</div>
+    <p>When the fast breaks in the evening, do not complicate meals. Not recipes. Not experimentation. Not novelty. You are not eating for entertainment right now. You are eating for <strong>stability.</strong> Shop the perimeter, produce sections and butcher counters, not aisles. Avoid wandering. Wandering weakens resolve.</p>
+  </div>
+
+  <h2><span class="h2-icon">🧠</span>Step 5: Expect the Mental Assault</h2>
+  <div class="dd">
+    <h4>The Mind Will Negotiate</h4>
+    <div class="sub">"This is extreme." "Just one won't hurt." "God isn't this strict."</div>
+    <p>That is not reason. That is <strong>withdrawal speaking.</strong> The enemy does not usually tempt with rebellion, he tempts with justification. Resolve is not sustained by willpower alone. It is sustained by truth spoken clearly and repeatedly.</p>
+    <p><em>"...bringing every thought into captivity to the obedience of Christ.". 2 Corinthians 10:5</em></p>
+  </div>
+
+  <h2><span class="h2-icon">🙏</span>Step 6: Trade Comfort for Trust</h2>
+  <div class="dd">
+    <h4>This Is Where Faith Grows</h4>
+    <div class="sub">Discipline is not punishment. Discipline is dignity.</div>
+    <p>You will feel exposed without your usual crutches. That exposure is where trust forms. You are learning that peace does not come from sugar, stimulation, or fullness, but from God's presence and sufficiency. Every hour you endure without caving is <strong>muscle memory for freedom.</strong></p>
+  </div>
+
+  <h2><span class="h2-icon">📊</span>Step 7: Measure Progress Correctly</h2>
+  <div class="dd">
+    <h4>Not by Comfort, by Obedience</h4>
+    <div class="sub">Clarity. Stability. Dependence on God.</div>
+    <p>Some days will feel worse before they feel better. That does not mean you are losing ground. You are not depriving yourself. You are <strong>retraining your allegiance.</strong> The withdrawal will end. The clarity will stay. And the chains that once felt normal will lose their grip.</p>
+  </div>
+
+  <div class="adventure">
+    <div class="adv-head"><div class="adv-head-icon">🔥</div><div class="adv-head-text"><div class="adv-head-label">A Gift In the Fire</div><div class="adv-head-title">Walking Through Fire for the Sake of Others</div></div></div>
+    <div class="adv-step"><div class="step-c"><p>If you have ever loved someone who has battled addiction, any addiction, you already know how confusing and painful withdrawal can be to witness. The mood swings. The exhaustion. The irritability. Many people want to help, but they do not understand what the battle actually feels like inside the body and mind.</p></div></div>
+    <div class="adv-step"><div class="step-c"><p>This season gives you a rare gift: <strong>understanding.</strong> Not theoretical compassion. Lived compassion. By willingly walking through chemical withdrawal, you are stepping into terrain many are forced to endure without choice.</p></div></div>
+    <div class="adv-step adv-result-good"><div class="step-c"><p>When you can say, <em>"I did not endure because I was strong, I endured because God was faithful,"</em> you offer others a path instead of a lecture. Christ redeems by entering suffering, not avoiding it. God does not waste what refined you. He turns it into something that can strengthen others. That is how freedom <strong>multiplies.</strong></p></div></div>
+  </div>
+
+  <div class="think">
+    <div class="think-label">Your Battle Plan</div>
+    <h4>Write Your Counterattack</h4>
+    <p class="q-start">Which step feels most urgent for where you are right now?</p><div class="think-line"></div>
+    <p class="q-start">What is the lie your mind uses most often to negotiate? ("Just one," "This is extreme," etc.)</p><div class="think-line"></div>
+    <p class="q-start">Write the truth that answers it. one sentence, spoken out loud:</p><div class="think-line"></div>
+    <p class="q-start">Who in your life has fought addiction that your experience might someday encourage?</p><div class="think-line"></div>
+    <p class="closing">Every hour you endure is muscle memory for freedom. You are not depriving yourself. You are retraining your allegiance.</p>
+  </div>
+
+  <div class="root-review">
+    <div class="root-label">Your Journey. Built Chapter by Chapter</div>
+    <div class="root-layer"><div class="root-ch">Ch1</div><div class="root-items"><div class="root-pill rp-ch1">Name the Altar</div><div class="root-arr">→</div><div class="root-pill rp-ch1">Choose Zero</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><div class="root-ch">Ch2</div><div class="root-items"><div class="root-pill rp-bright">Clear the Field</div><div class="root-arr">→</div><div class="root-pill rp-bright">7-Step Counterattack</div><div class="root-arr">→</div><div class="root-pill rp-bright">Freedom Multiplies</div></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 3 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Three</div><h2 class="ch-title">The Screen as an Altar</h2><p class="ch-sub">How entertainment trains devotion and steals calling.</p></div></div>
+<div class="ribbon"><p>"They exchanged the truth about God for a lie, and worshiped and served created things rather than the Creator.". Romans 1:25 (NKJV)</p></div>
+
+<div class="page prose section">
+  <div class="mission"><div class="mission-label">The Altar</div><p>Entertainment does not drift into your life accidentally.<br>It arrives as a routine. Routines form habits.<br>Habits form loyalty. And loyalty, over time,<br>becomes <em>devotion.</em></p></div>
+
+  <p>Shows release on schedules. Sports follow seasons. News resets daily. Highlight reels, recaps, predictions, commentary, each one insists on your return. Miss a day and you're "out of the loop." Miss a game and you're behind. Miss the headlines and you're uninformed. This is not casual consumption. This is <strong>training.</strong></p>
+
+  <div class="viz">
+    <div class="viz-top"><div class="viz-icon">📺</div><div class="viz-meta"><div class="viz-label">The Pattern</div><h4>Entertainment Demands Faithfulness</h4></div></div>
+    <div class="viz-body">
+      <p>Notice what entertainment quietly asks of you: show up consistently, arrange your schedule around it, anticipate what is coming next, talk about it with others, defend it when challenged.</p>
+      <p>Those are not neutral behaviors. They are the same behaviors Scripture associates with <strong>worship.</strong> Many believers who would never miss a game or an episode struggle to show up consistently for prayer, Scripture, or silence, not because they don't love God, but because their discipline has been given elsewhere.</p>
+      <div class="viz-trigger">What do you give your evenings to? → What shapes your emotional rhythm? → What do you protect when challenged? → That is your altar.</div>
+    </div>
+  </div>
+
+  <h2><span class="h2-icon">🧠</span>What the Mind Learns to Serve</h2>
+  <p>The brain is designed to learn through repetition. Whatever you consistently return to becomes what your nervous system prepares for. Your mind begins rehearsing fictional conflicts, athletic rivalries, political outrage, power fantasies, and imagined heroism. Emotion is spent there. Passion is discharged there. Energy is released there.</p>
+  <p>Then real life asks for courage, discipline, obedience, or risk, and you feel strangely empty. <strong>You already felt like you lived.</strong></p>
+
+  <h2><span class="h2-icon">🪞</span>Living Through Others</h2>
+  <p>God designed the human brain with mirror neurons, pathways that allow us to learn by watching others act. What we repeatedly observe does not remain external. It is rehearsed internally. Over time, <strong>exposure is mistaken for experience, and observation replaces participation.</strong></p>
+  <p>Entertainment exploits this mechanism by feeding us experiences meant to be watched, not obeyed, keeping us stimulated and emotionally engaged while displacing action and fruit.</p>
+
+  <div class="ba-pair">
+    <div class="ba-card ba-before"><div class="ba-head"><div class="ba-dot"></div> What Entertainment Trains</div><div class="ba-body"><ul><li>Fear. alert without action</li><li>Desire. appetite without responsibility</li><li>Power. victory without sacrifice</li><li>Identity. belonging without formation</li></ul></div></div>
+    <div class="ba-card ba-after"><div class="ba-head"><div class="ba-dot"></div> What God Offers Instead</div><div class="ba-body"><ul><li>Courage. faith under pressure</li><li>Discipline. joy through obedience</li><li>Strength. earned through endurance</li><li>Purpose. formed by relationship</li></ul></div></div>
+  </div>
+
+  <p>You were not created to dine on the fruit of others. <strong>You were created to bear your own.</strong></p>
+
+  <h2><span class="h2-icon">🔇</span>What Silence Reveals</h2>
+  <p>When you interrupt the routine. miss the shows, skip the games, ignore the news. something surfaces quickly. Restlessness. Irritation. A sense of loss. That reaction is not boredom. It is <strong>withdrawal from ritual.</strong> Entertainment trained your nervous system to expect stimulation at specific times. When it is gone, the soul finally has room to speak, and many people do not like what they hear.</p>
+
+  <div class="insight"><p>Imagine evenings without glowing noise. Families actually facing each other. Conversations that take effort. Silence that feels awkward at first, and then honest. Ask plainly: Is staring at a screen together <em>fellowship</em>. or <em>shared disengagement?</em></p></div>
+
+  <h2><span class="h2-icon">🔥</span>Why Zero Restores Clarity</h2>
+  <p>Just as with sugar, moderation often fails once dependency has formed. Rituals defend themselves. They negotiate exceptions. They promise balance. But balance rarely restores clarity. Zero is not punishment. Zero is <strong>reorientation.</strong></p>
+  <p>After the ritual breaks, you must choose carefully what returns. Not everything needs to come back. Some things existed only to fill space God meant to occupy. Losing them is not loss; it is liberation.</p>
+
+  <div class="gq"><p>"Choose for yourselves this day whom you will serve.". Joshua 24:15 (NKJV)<br><br>What you show up for faithfully will eventually shape who you become.</p></div>
+
+  <div class="think">
+    <div class="think-label">The Screen Audit</div>
+    <h4>Name What Owns Your Evenings</h4>
+    <p class="q-start">What specific media do you return to most faithfully? (Name it: streaming, sports, news, scrolling, podcasts)</p><div class="think-line"></div>
+    <p class="q-start">When it is removed. what do you feel? And what does that feeling reveal?</p><div class="think-line"></div>
+    <p class="q-start">What would you build, pray, or create with 2 reclaimed hours each evening?</p><div class="think-line"></div>
+    <p class="q-start">Can you commit to a zero window? How long?</p><div class="think-line"></div>
+    <p class="closing">Entertainment does not ask for your soul outright. It asks for your evenings. And given enough time, it shapes your loves.</p>
+  </div>
+
+  <div class="root-review">
+    <div class="root-label">Your Journey. Built Chapter by Chapter</div>
+    <div class="root-layer"><div class="root-ch">Ch1</div><div class="root-items"><div class="root-pill rp-ch1">Comfortable Addictions</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><div class="root-ch">Ch2</div><div class="root-items"><div class="root-pill rp-ch2">The Counterattack</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><div class="root-ch">Ch3</div><div class="root-items"><div class="root-pill rp-bright">Screen = Altar</div><div class="root-arr">→</div><div class="root-pill rp-bright">Ritual = Devotion</div><div class="root-arr">→</div><div class="root-pill rp-bright">Zero = Clarity</div></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 4 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Four</div><h2 class="ch-title">The Media Detox</h2><p class="ch-sub">A step-by-step plan to remove screens, and fill the space with God before a new idol moves in.</p></div></div>
+<div class="ribbon"><p>"When an unclean spirit goes out of a man.. he finds it empty, swept, and put in order; then he goes and takes with him seven other spirits more wicked than himself.". Matthew 12:43-45 (NKJV)</p></div>
+
+<div class="page prose section">
+  <div class="mission"><div class="mission-label">The Warning</div><p>If you clear an altar but leave the space empty,<br>something else will fill it. <em>Guaranteed.</em><br>This chapter is not about removal.<br>It is about <em>replacement.</em></p></div>
+
+  <h2><span class="h2-icon">📝</span>Step 1: Name the Altar</h2>
+  <p>Do not say "less screen time." Say what you are cutting: TV series, streaming, live sports and commentary, 24-hour news and doomscrolling, YouTube shorts and TikTok-style feeds, podcasts that function as constant noise. <strong>Write it down.</strong> Specificity breaks denial.</p>
+
+  <h2><span class="h2-icon">📅</span>Step 2: Commit to a Zero Window</h2>
+  <p>A reset requires a window long enough for the brain to stop expecting the hit. Seven days is a good start but still raw. Fourteen days is where real detox begins. Thirty days is where routines actually rewire. Research consistently finds people report improved well-being after media breaks, but also that the first phase is uncomfortable and many return because of habit loops.</p>
+
+  <h2><span class="h2-icon">🔌</span>Step 3: Remove Access</h2>
+  <p>If the pipeline stays open, your brain will negotiate at the weakest moment. Do the physical work: unplug the TV, remove streaming and news apps, log out and delete saved passwords, turn off notifications. <em>"Make no provision for the flesh."</em>. Romans 13:14</p>
+
+  <h2><span class="h2-icon">⚡</span>Step 4: Understand Withdrawal</h2>
+  <p>Expect restlessness, pacing, "I don't know what to do with myself," boredom that feels almost painful, FOMO, irritability with family (because the screen used to buffer relationships), and sudden urges to fix your discomfort with <em>something.</em> That is your reward system protesting. Name it as withdrawal, not as proof that the detox is not working.</p>
+
+  <h2><span class="h2-icon">🔄</span>Step 5: Expect Idol Migration</h2>
+  <div class="dd">
+    <h4>The Brain Will Hunt for a New Hit</h4>
+    <div class="sub">This is where most people lose the battle</div>
+    <p>Common replacements people slide into when media is removed: shopping and browsing, overeating and snacking (especially sugar), gossip and texting drama, excessive sleep, romance novels, secular music loops, pornography, endless "research" that feels productive but is avoidance, and even religious content binges that function as dopamine without obedience.</p>
+    <p>This is why "empty space" is dangerous. You cleared an altar. <strong>Something will fill it.</strong></p>
+  </div>
+
+  <h2><span class="h2-icon">📖</span>Step 6: Fill the Space on Purpose</h2>
+  <div class="dd">
+    <h4>Schedule God Like You Scheduled TV</h4>
+    <div class="sub">A new devotion rhythm, not a religious moment</div>
+    <p><strong>Morning (10. 20 min):</strong> Read one chapter or a Psalm. Pray out loud. Write one sentence: "Today, obedience looks like ______."</p>
+    <p><strong>Midday (5 min):</strong> A quick reset prayer plus one verse repeated. A short walk outside. no phone.</p>
+    <p><strong>Evening (the old TV slot):</strong> 20 minutes Scripture, journaling, or worship. 20 minutes conversation with family, phones away. 20 minutes purpose work. one small thing you are called to build.</p>
+  </div>
+
+  <h2><span class="h2-icon">🎯</span>Step 7: Receive God's Vision</h2>
+  <p>A huge reason people relapse is they do not know what to do with their reclaimed time. They removed consumption but did not replace it with calling. During week one, ask: <em>"Lord, what have I been avoiding by staying distracted? What fruit do You want in me? What assignment have I postponed?"</em></p>
+  <p>Pick one "calling action" so small you cannot excuse skipping it: fifteen minutes learning a skill, one page of writing, one outreach text, one act of service, one workout, one household leadership action. This is how time becomes purpose and purpose becomes <strong>momentum.</strong></p>
+
+  <h2><span class="h2-icon">🛡️</span>Step 8: Make a Relapse Plan</h2>
+  <p>You need a script for the moment your brain says "just one." Use this: (1) <em>"This is withdrawal, not wisdom."</em> (2) <em>"If I feed it, it grows."</em> (3) <em>"I will wait 20 minutes and pray."</em> Then replace: walk, shower, read a Psalm, call someone, do a task.</p>
+
+  <div class="gq"><p>"Resist the devil, and he will flee from you. Draw near to God, and He will draw near to you.". James 4:7-8 (NKJV)</p></div>
+
+  <p>You are not quitting TV to become boring. You are quitting it because your life is not meant to be a spectator sport. The space <em>will</em> get filled. So fill it first. on purpose. with God, with calling, with fruit.</p>
+
+  <div class="think">
+    <div class="think-label">Your Detox Commitment</div>
+    <h4>Write Your Plan Before You Need It</h4>
+    <p class="q-start">What specifically am I removing? (Name every altar):</p><div class="think-line"></div>
+    <p class="q-start">My zero window: how many days?</p><div class="think-line"></div>
+    <p class="q-start">What physical access am I removing today?</p><div class="think-line"></div>
+    <p class="q-start">My evening replacement: what will I do with the reclaimed hours?</p><div class="think-line"></div>
+    <p class="q-start">My relapse script. the exact words I will say when the urge hits:</p><div class="think-line"></div>
+    <p class="closing">The fruit of the Spirit is love, joy, peace, patience, kindness... Galatians 5:22-23</p>
+  </div>
+
+  <div class="root-review">
+    <div class="root-label">Your Journey. Built Chapter by Chapter</div>
+    <div class="root-layer"><div class="root-ch">Ch1</div><div class="root-items"><div class="root-pill rp-ch1">Comfortable Addictions</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><div class="root-ch">Ch2</div><div class="root-items"><div class="root-pill rp-ch2">The Counterattack</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><div class="root-ch">Ch3</div><div class="root-items"><div class="root-pill rp-ch3">Screen as Altar</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><div class="root-ch">Ch4</div><div class="root-items"><div class="root-pill rp-bright">Detox Plan</div><div class="root-arr">→</div><div class="root-pill rp-bright">Idol Migration</div><div class="root-arr">→</div><div class="root-pill rp-bright">Fill With Purpose</div></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 5 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Five</div><h2 class="ch-title">Rewiring Triggers</h2><p class="ch-sub">How to retrain your nervous system, not just resist temptation.</p></div></div>
+<div class="ribbon"><p>"Be transformed by the renewing of your mind.". Romans 12:2 (NKJV)</p></div>
+
+<div class="page prose section">
+  <div class="mission"><div class="mission-label">The Shift</div><p>Most people lose because they fight <em>consumption</em><br>instead of retraining <em>what triggers it.</em><br>Every urge is an invitation.<br>Boredom, stress, loneliness. they are not enemies.<br>They are <em>old doorways</em> that can lead somewhere new.</p></div>
+
+  <p>For years, those doorways led to sugar, screens, gossip, noise, stimulation, and escape. When you remove those things, the doorways remain. And every time the door opens, your brain says, <em>"We used to go somewhere from here."</em> If you do not deliberately redirect that doorway toward God, something else will rush in.</p>
+
+  <h2><span class="h2-icon">🔍</span>Thoughts vs. Mindsets vs. Heartsets</h2>
+  <div class="dd">
+    <h4>Three Levels of the Battle</h4>
+    <div class="sub">Go deeper than the surface</div>
+    <p><strong>A thought</strong> is a sentence that passes through your mind: "I want something sweet."</p>
+    <p><strong>A mindset</strong> is a patterned way of interpreting reality: "Comfort should be immediate."</p>
+    <p><strong>A heartset</strong> is the deeper posture beneath the mindset: "I don't trust God to meet me here."</p>
+    <p>If you only fight thoughts, the mindset regenerates them. If you confront mindsets, the thoughts lose their authority. If you submit heartsets, <strong>freedom deepens.</strong></p>
+  </div>
+
+  <h2><span class="h2-icon">🔥</span>Using Old Triggers as New Altars</h2>
+  <p>The moment the urge rises. that is your cue. Not to fight. <strong>To redirect.</strong> Jesus did not just say "stop sinning." He said "follow Me." Removal without replacement creates relapse.</p>
+
+  <div class="prayer">
+    <div class="prayer-label">Core Replacement Prayer. Say It Out Loud</div>
+    <p><strong>"I take the consumption mindset captive.</strong><br>I reject the lie that I need stimulation to be whole.<br><strong>I receive God's kingdom mindset, purpose, and presence for my life."</strong></p>
+    <p>Out loud matters. The body hears authority before it feels peace.</p>
+  </div>
+
+  <div class="dd">
+    <h4>When the desire for media or scrolling hits:</h4>
+    <p><em>"I take the mindset of distraction, avoidance, and escape captive. I reject the lie that rest comes from noise. I install God's mindset of stillness, clarity, and attentiveness."</em></p>
+  </div>
+  <div class="dd">
+    <h4>When boredom feels unbearable:</h4>
+    <p><em>"I take the boredom-driven consumption mindset captive. I reject the lie that silence is empty. I receive God's mindset of presence, creativity, and obedience."</em></p>
+  </div>
+  <div class="dd">
+    <h4>When the urge for sugar or stimulation rises:</h4>
+    <p><em>"I take the appetite-for-comfort mindset captive. I reject the lie that relief must be immediate. I receive God's mindset of patience, discipline, and true satisfaction."</em></p>
+  </div>
+  <div class="dd">
+    <h4>When comparison or envy rises:</h4>
+    <p><em>"I take the mindset of comparison and lack captive. I reject the lie that someone else's life diminishes mine. I receive God's mindset of gratitude, calling, and contentment."</em></p>
+  </div>
+  <div class="dd">
+    <h4>When loneliness drives you toward distraction:</h4>
+    <p><em>"I take the mindset that I am alone and unsupported captive. I reject the lie that connection must be artificial. I receive God's mindset of companionship, belonging, and identity in Christ."</em></p>
+  </div>
+
+  <div class="insight"><p>Over time, the brain learns: <em>"When discomfort arises, we go to God."</em> That is discipleship at the neurological level. You are no longer just resisting temptation. You are <em>retraining your nervous system.</em></p></div>
+
+  <p>You do not win by emptying your life. You win by <strong>installing a new operating system.</strong> Consumption trained you one way. Obedience will retrain you another. And the moment you stop feeding idols and start feeding truth, what once felt impossible becomes normal. The urge still comes. But now it leads somewhere holy.</p>
+
+  <div class="think">
+    <div class="think-label">Your Trigger Map</div>
+    <h4>Redirect the Doorways</h4>
+    <p class="q-start">My most common trigger (boredom, stress, loneliness, celebration, pain):</p><div class="think-line"></div>
+    <p class="q-start">Where that trigger used to lead me:</p><div class="think-line"></div>
+    <p class="q-start">My replacement prayer. written in my own words, spoken out loud:</p><div class="think-line"></div><div class="think-line"></div>
+    <p class="q-start">The deeper heartset beneath my trigger ("I don't trust God to..."):</p><div class="think-line"></div>
+    <p class="closing">Every trigger becomes a prayer cue, a formation moment, a redirection toward God.</p>
+  </div>
+
+  <div class="root-review">
+    <div class="root-label">Your Journey. Built Chapter by Chapter</div>
+    <div class="root-layer"><div class="root-ch">Ch1</div><div class="root-items"><div class="root-pill rp-ch1">Name the Altar</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><div class="root-ch">Ch2</div><div class="root-items"><div class="root-pill rp-ch2">The Counterattack</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><div class="root-ch">Ch3</div><div class="root-items"><div class="root-pill rp-ch3">Screen as Altar</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><div class="root-ch">Ch4</div><div class="root-items"><div class="root-pill rp-ch4">Detox Plan</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><div class="root-ch">Ch5</div><div class="root-items"><div class="root-pill rp-bright">Triggers → Doorways</div><div class="root-arr">→</div><div class="root-pill rp-bright">Replacement Prayers</div><div class="root-arr">→</div><div class="root-pill rp-bright">New Operating System</div></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 6 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Six</div><h2 class="ch-title">The Sweet Poison of Gossip</h2><p class="ch-sub">How the enemy uses conversation to kill calling.</p></div></div>
+<div class="ribbon"><p>"Death and life are in the power of the tongue.". Proverbs 18:21 (NKJV)</p></div>
+
+<div class="page prose section">
+  <div class="mission"><div class="mission-label">The Altar</div><p>Gossip is not just a sin of the tongue.<br>It is a <em>dopamine addiction wrapped in words.</em><br>It disguises itself as intimacy<br>while quietly hollowing out obedience, prayer, authority, and love.</p></div>
+
+  <p>Gossip activates the brain's reward system. When you share a story, especially one involving wrongdoing, scandal, failure, or offense, the brain releases dopamine. You feel important (<em>"I know something"</em>), connected (<em>"We're bonded now"</em>), superior (<em>"I'm not like them"</em>), and justified (<em>"I'm right to feel this way"</em>). That chemical reward is real. Which means gossip does not just happen; it <strong>conditions.</strong></p>
+
+  <h2><span class="h2-icon">🎭</span>Gossip as Identity</h2>
+  <p>For many people, gossip is not something they <em>do</em>; it is who they <em>are.</em> They are the one who "knows what's really going on," the emotional hub of relational drama, the interpreter of everyone else's motives. Without gossip, they feel invisible. Without drama, they feel irrelevant. So gossip becomes identity. And any identity not rooted in Christ will eventually <strong>compete with Him.</strong></p>
+
+  <h2><span class="h2-icon">⚔️</span>The Enemy's Strategy</h2>
+  <p>Satan does not need to destroy your faith outright. He only needs to <strong>neutralize your impact.</strong> Gossip accomplishes this perfectly. It divides relationships, poisons trust, hardens hearts, replaces prayer with speculation, and turns discernment into suspicion.</p>
+  <p>A gossiping Christian may still attend church, read Scripture, and speak spiritual language, but their authority is gone. Their prayers feel dry. Their love grows selective. Their impact shrinks. Because <strong>you cannot partner with the Spirit of truth while rehearsing half-truths.</strong></p>
+
+  <div class="ba-pair">
+    <div class="ba-card ba-before"><div class="ba-head"><div class="ba-dot"></div> Gossip Disguised</div><div class="ba-body"><ul><li>"I'm just concerned about them"</li><li>"Did you hear what happened?"</li><li>"I need to process this with someone"</li><li>"I'm just being honest"</li></ul></div></div>
+    <div class="ba-card ba-after"><div class="ba-head"><div class="ba-dot"></div> Love Unmasked</div><div class="ba-body"><ul><li>Love covers. gossip exposes</li><li>Love intercedes. gossip speculates</li><li>Love confronts directly. gossip spreads indirectly</li><li>Love does not need an audience</li></ul></div></div>
+  </div>
+
+  <h2><span class="h2-icon">🚫</span>Why Gossip Kills Prayer</h2>
+  <p>You cannot pray deeply for someone you regularly discuss casually. Every time you rehearse their failure, your heart hardens a little more. Compassion shrinks. Intercession fades. Prayer turns into judgment disguised as concern. And when prayer dies, intimacy with God follows.</p>
+
+  <div class="insight"><p>If you cannot imagine your relationships without gossip.. If silence feels unbearable.. If peace feels dull.. If you need drama to feel alive.. That is not personality. That is not discernment. That is not community. <em>That is an idol.</em></p></div>
+
+  <p>The enemy does not fear loud Christians. He fears <strong>pure ones.</strong> He does not fear talkers. He fears intercessors. You will never gossip your way into greater intimacy with God. You will never criticize your way into kingdom impact. But if you put this idol down. if you choose silence over stimulation. if you replace gossip with prayer. you will feel weaker at first. And then stronger than you have been in years.</p>
+
+  <div class="think">
+    <div class="think-label">The Gossip Audit</div>
+    <h4>Honest Questions</h4>
+    <p class="q-start">Do I feel energized after talking about people, or after praying for them?</p><div class="think-line"></div>
+    <p class="q-start">What reward does gossip give me? (belonging, identity, control, comfort, superiority)</p><div class="think-line"></div>
+    <p class="q-start">Would my words survive if spoken in God's presence?</p><div class="think-line"></div>
+    <p class="q-start">My vow, spoken out loud: "Lord, I renounce gossip as comfort, identity, and connection. I will not feed on people. I will build, bless, and intercede."</p><div class="think-line"></div>
+    <p class="closing">What flows easily from your mouth reveals what rules your heart.</p>
+  </div>
+
+  <div class="root-review">
+    <div class="root-label">Your Journey. Built Chapter by Chapter</div>
+    <div class="root-layer"><div class="root-ch">1. 4</div><div class="root-items"><div class="root-pill rp-ch1">Sugar</div><div class="root-arr">→</div><div class="root-pill rp-ch2">Counterattack</div><div class="root-arr">→</div><div class="root-pill rp-ch3">Screens</div><div class="root-arr">→</div><div class="root-pill rp-ch4">Detox</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><div class="root-ch">Ch5</div><div class="root-items"><div class="root-pill rp-ch5">Rewiring Triggers</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><div class="root-ch">Ch6</div><div class="root-items"><div class="root-pill rp-bright">Gossip = Altar</div><div class="root-arr">→</div><div class="root-pill rp-bright">Dopamine in Words</div><div class="root-arr">→</div><div class="root-pill rp-bright">Replace With Prayer</div></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 7 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Seven</div><h2 class="ch-title">The Output Detox</h2><p class="ch-sub">A step-by-step guide to stop gossiping, and rebuild what your words were meant to be.</p></div></div>
+<div class="ribbon"><p>"Out of the abundance of the heart the mouth speaks.". Matthew 12:34 (NKJV)</p></div>
+
+<div class="page prose section">
+  <div class="mission"><div class="mission-label">The Difference</div><p>Sugar, screens, and media are <em>inputs</em>; you remove them by changing access.<br>Gossip is <em>output</em>; it comes from what is already inside you.<br>This is not "stop talking."<br>This is <em>surrendering a way of being.</em></p></div>
+
+  <h2><span class="h2-icon">1️⃣</span>Admit the Payoff</h2>
+  <p>Most people gossip because it gives them something: belonging, identity, control, comfort, or superiority. Until you name the reward, you will keep returning to it.</p>
+
+  <h2><span class="h2-icon">2️⃣</span>Expect Identity Withdrawal</h2>
+  <p>When you stop gossiping, you may feel invisible, unimportant, socially awkward, uncertain, or lonely, because you removed the glue. That discomfort is not proof you are failing. It is proof your old identity is dying.</p>
+
+  <h2><span class="h2-icon">3️⃣</span>Build the 3-Gate Filter</h2>
+  <div class="dd">
+    <h4>Before You Share Anything About Someone</h4>
+    <div class="sub">If it fails any gate. stop</div>
+    <p><strong>Gate 1: Is it true?</strong> Not assumed. Not exaggerated.</p>
+    <p><strong>Gate 2: Is it necessary?</strong> Does it need to be said <em>by me?</em></p>
+    <p><strong>Gate 3: Is it loving?</strong> Will it build them up or tear them down?</p>
+  </div>
+
+  <h2><span class="h2-icon">4️⃣</span>Replace With the Two Holy Alternatives</h2>
+  <p><strong>Directness:</strong> If there is a real issue, go to the person. clean, humble, private. <em>"If your brother sins against you, go and tell him his fault.. between you and him alone."</em>. Matthew 18:15</p>
+  <p><strong>Intercession:</strong> If you cannot talk to them, talk to God about them. <em>"Lord, bless them, protect them, convict them, strengthen them, restore them."</em> Intercession purifies the heart. Gossip poisons it.</p>
+
+  <h2><span class="h2-icon">5️⃣</span>Prepare for Relational Pushback</h2>
+  <p>Some relationships were built on shared outrage, shared suspicion, shared "tea." When you stop providing that fuel, the relationship may feel like it is dying. And here is the hard truth: <strong>sometimes it should.</strong> Not every connection is covenant. Some were only chemistry. drama chemistry.</p>
+
+  <h2><span class="h2-icon">6️⃣</span>Upgrade Your Output</h2>
+  <p>Many people have "identity speeches". rehearsed narratives of pain, offense, or injury. Trauma is real. Injuries are real. But if your primary output is unhealed narration, it becomes your robe. your way to be seen, understood, protected, and excused. God does not erase your story. <strong>He redeems it.</strong> The shift: from rehearsing pain to stewarding healing, from identity in wounds to identity in Christ.</p>
+
+  <div class="prayer">
+    <div class="prayer-label">Replacement Prayers for Output</div>
+    <p><strong>When the urge to "share the tea" hits:</strong><br>"I take captive the gossip mindset that seeks connection through exposure. I reject it. I receive the Spirit's heartset of love, restraint, and honor."</p>
+    <p><strong>When you feel invisible without being "the one who knows":</strong><br>"I take captive the identity of importance-through-information. I receive sonship, security, and worth from God alone."</p>
+    <p><strong>When you start rehearsing old injuries:</strong><br>"I take captive the rumination mindset. I release this injury to God. I receive His peace, His perspective, and His forward calling."</p>
+  </div>
+
+  <p>When your tongue becomes disciplined, your spirit becomes clearer. Your prayers carry weight. Your presence becomes safe. Your life becomes consistent. And you become the rare person who does not feed on others. That alone makes you a light.</p>
+
+  <div class="gq"><p>"Do all things without grumbling or disputing.. that you may become blameless and harmless.. shine as lights in the world.". Philippians 2:14-15 (NKJV)</p></div>
+</div>
+
+<!-- ===== CHAPTER 8 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Eight</div><h2 class="ch-title">Pruning for Nearness</h2><p class="ch-sub">Why God keeps calling you deeper, and the deeper altars beneath the obvious ones.</p></div></div>
+<div class="ribbon"><p>"Every branch that bears fruit He prunes, that it may bear more fruit.". John 15:2 (NKJV)</p></div>
+
+<div class="page prose section">
+  <div class="mission"><div class="mission-label">The Invitation</div><p>Sugar, media, and gossip may look like very different struggles . <br>but they fracture the soul in the same ways.<br>They separate you from God, from purpose, from people,<br>and from <em>who God is forming you to become.</em></p></div>
+
+  <p>This book was meant to <strong>stir</strong>, to expose, to unsettle places you may have learned to ignore, and then to send you back to God to do the real work. If you have read this far, you already know where God's lamp is pointing. And it may not be sugar. It may not be media. It may not be gossip.</p>
+  <p>It may be bitterness. It may be control. It may be pride, money, ambition, or comfort. The category does not matter. <strong>The conviction does.</strong></p>
+
+  <h2><span class="h2-icon">🪞</span>The Deeper Pruning</h2>
+  <p>This section goes beneath behavior and into the structures of the heart. Do not read quickly. Do not look for what applies to others. Ask only one question: <strong>"Lord, where are You speaking to me?"</strong></p>
+
+  <div class="dd">
+    <h4>Identity-Level Pruning</h4>
+    <div class="sub">Who I believe I am</div>
+    <p>God may be asking you to release: The Provider, whose worth comes from earning. The Strong One, who does not need help. The Capable One, who trusts competence more than obedience. The One Who Knows, whose confidence comes from being right. Ask: <em>Who would I be if God removed this role?</em></p>
+  </div>
+  <div class="dd">
+    <h4>Security-Level Pruning</h4>
+    <div class="sub">What I use to feel safe</div>
+    <p>Financial buffers that replace daily dependence. Contingency plans that eliminate the need for faith. Over-preparation rooted in fear. Control masquerading as wisdom. Ask: <em>What do I believe would happen if I truly trusted God?</em></p>
+  </div>
+  <div class="dd">
+    <h4>Attachment-Level Pruning</h4>
+    <div class="sub">What I cannot imagine losing</div>
+    <p>A standard of living you feel entitled to. Comfort that defines your peace. Options you refuse to surrender. Ask: <em>What would obedience cost me? What feels untouchable?</em></p>
+  </div>
+  <div class="dd">
+    <h4>Heart-Level Pruning</h4>
+    <div class="sub">What I keep rehearsing</div>
+    <p>Bitterness you justify. Resentment you revisit. Offenses you keep alive. Old narratives you refuse to release. Ask: <em>What am I unwilling to forgive? What past pain still shapes my present decisions?</em></p>
+  </div>
+  <div class="dd">
+    <h4>Spiritual-Level Pruning</h4>
+    <div class="sub">How I relate to God</div>
+    <p>Satisfaction with your current closeness. Familiarity that has replaced reverence. Spiritual routines without hunger. Knowledge without surrender. Ask: <em>When did I last hunger for more of Him? Have I settled where God meant to draw me deeper?</em></p>
+  </div>
+
+  <div class="breathe">
+    <div class="breathe-ring"></div><div class="breathe-ring"></div><div class="breathe-ring"></div>
+    <div class="breathe-content">
+      <div class="breathe-label">The Well Is Deeper Than You Think</div>
+      <h4>No matter how close you feel to God right now, there is more.</h4>
+      <p>A deeper well. A higher ascent. A greater knowing. God is fully knowable, and endlessly unknowable. The only limit is how open your heart is willing to be.</p>
+    </div>
+  </div>
+
+  <div class="insight"><p>The enemy is not most dangerous when you are far from God. He is most dangerous when you are <em>satisfied</em> with where you are. Satisfaction pauses pursuit. Satisfaction dulls hunger. You are never standing still spiritually. You are either drawing closer, or drifting back.</p></div>
+
+  <div class="prayer">
+    <div class="prayer-label">Prayer of Surrender</div>
+    <p><strong>"Lord, I receive this conviction.</strong><br>I give You permission to prune what You have shown me.<br><strong>Lead me one step at a time."</strong></p>
+    <p>Conviction is not a demand for perfection.<br>It is an invitation to <strong>intimacy.</strong></p>
+  </div>
+
+  <div class="think">
+    <div class="think-label">Where Is God Speaking to Me?</div>
+    <h4>The Final Altar Audit</h4>
+    <p class="q-start">What is God asking me to release right now? (habits, comforts, dependencies, patterns)</p><div class="think-line"></div>
+    <p class="q-start">Where have I been seeking comfort instead of God?</p><div class="think-line"></div>
+    <p class="q-start">What has been mastering me quietly?</p><div class="think-line"></div>
+    <p class="q-start">What fear rises when I consider letting go?</p><div class="think-line"></div>
+    <p class="q-start">What is one clear, concrete step of obedience God is asking of me today?</p><div class="think-line"></div>
+    <p class="q-start">What fruit am I asking God to grow through this pruning?</p><div class="think-line"></div>
+    <p class="q-start">My prayer of surrender. in my own words, spoken out loud:</p><div class="think-line"></div><div class="think-line"></div>
+    <p class="closing">Every surrender leads to more life. Every pruning leads to more fruit. Every step toward God reveals more of who He is, and who you are becoming.</p>
+  </div>
+
+  <div class="stack">
+    <div class="stack-label">The Complete Lay It Down Protocol</div>
+    <div class="stack-flow">
+      <div class="stack-node sn-dark">Name the Altar</div>
+      <div class="stack-arr">→</div>
+      <div class="stack-node sn-red">Choose Zero</div>
+      <div class="stack-arr">→</div>
+      <div class="stack-node sn-gold">Counterattack</div>
+      <div class="stack-arr">→</div>
+      <div class="stack-node sn-fire">Detox & Replace</div>
+      <div class="stack-arr">→</div>
+      <div class="stack-node sn-fire">Rewire Triggers</div>
+      <div class="stack-arr">→</div>
+      <div class="stack-node sn-green">Prune for Nearness</div>
+    </div>
+  </div>
+
+  <div class="root-review">
+    <div class="root-label">The Complete Journey</div>
+    <div class="root-layer"><div class="root-ch">Ch1</div><div class="root-items"><div class="root-pill rp-ch1">Comfortable Addictions → Name the Altar</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><div class="root-ch">Ch2</div><div class="root-items"><div class="root-pill rp-ch2">The Counterattack → 7 Steps Through Withdrawal</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><div class="root-ch">Ch3</div><div class="root-items"><div class="root-pill rp-ch3">Screen as Altar → Routine = Devotion</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><div class="root-ch">Ch4</div><div class="root-items"><div class="root-pill rp-ch4">Media Detox → Fill With Purpose</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><div class="root-ch">Ch5</div><div class="root-items"><div class="root-pill rp-ch5">Rewire Triggers → Replacement Prayers</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><div class="root-ch">Ch6</div><div class="root-items"><div class="root-pill rp-dim">Gossip = Dopamine in Words</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><div class="root-ch">Ch7</div><div class="root-items"><div class="root-pill rp-dim">The Output Detox → 3-Gate Filter</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><div class="root-ch">Ch8</div><div class="root-items"><div class="root-pill rp-bright">Pruning for Nearness</div><div class="root-arr">→</div><div class="root-pill rp-bright">Deeper Altars</div><div class="root-arr">→</div><div class="root-pill rp-bright">Surrender</div><div class="root-arr">→</div><div class="root-pill rp-bright">Nearness</div></div></div>
+  </div>
+
+  <div class="gq"><p>"Blessed are those who hunger and thirst for righteousness.". Matthew 5:6<br><br>Never stop hungering. Never settle for distance. Never confuse comfort with closeness. The ladder goes higher. The well goes deeper. And God is calling you. again. to come closer.</p></div>
+</div>
+
+<div class="prompt"><div class="prompt-head">LAY IT DOWN. OPERATING PROMPT</div><div class="prompt-body"><strong>I just read "Lay It Down."</strong> The model: everything I give my consistency, comfort, and craving to becomes an altar. Sugar, screens, gossip, and comfort have been training my devotion without my permission.<br><br><strong>My biggest altar right now:</strong> [name it]<br><strong>What reward it gives me:</strong> [belonging / comfort / identity / control / escape]<br><strong>When it became a master:</strong> [approximate time]<br><br>Help me run The Altar Audit. Ask me the honest questions. Help me build my counterattack, write my replacement prayers, and identify my deeper pruning. When I describe decisions, help me identify whether I am operating from obedience or appetite.<br><br><strong>Don't comfort me. convict me. Don't manage me. help me lay it down.</strong></div></div>
+
+<section class="finale">
+  <h2>Lay it down.<br><span>And come closer.</span></h2>
+  <p>Every surrender leads to more life. Every pruning leads to more fruit. Every step toward God reveals more of who He is, and who you are becoming.</p>
+  <p style="margin-top:28px;font-style:normal;font-family:'Poppins',sans-serif;font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;color:rgba(232,134,10,0.25)">The altar is yours to tear down. God is yours to draw near to.</p>
+</section>
+
+<footer>
+  <p>"For I know the plans I have for you. plans to prosper you, not to harm you, plans to give you a future and a hope.". Jeremiah 29:11</p>
+  <div class="brand">Kingdom Builders AI</div>
+  <p style="margin-top:12px">kingdombuilders.ai</p>
+</footer>
+
+<div style="text-align:center;padding:18px 24px 28px;background:#060402;border-top:1px solid rgba(232,134,10,0.06);font-family:'Poppins',sans-serif;font-size:0.6rem;color:rgba(255,255,255,0.2);line-height:1.6" class="no-print">
+  To save as PDF: Open in browser → File → Print → "Save as PDF" · Works on desktop and mobile.
+</div>
+
+<div id="read-progress"></div>
+<div id="chapter-pill">Cover</div>
+
+<script>
+// Scroll reveal
+const revealObs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.classList.add('visible');revealObs.unobserve(el.target)}})},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.mission,.viz,.think,.insight,.gq,.adventure,.dd,.breathe,.root-review,.prompt,.stack,.ramp-echo,.ramp-close,.inst,.prayer').forEach(el=>{el.classList.add('reveal');revealObs.observe(el)});
+document.querySelectorAll('.ba-pair').forEach(el=>{el.classList.add('stagger-children');revealObs.observe(el)});
+
+// Progress bar
+const bar=document.getElementById('read-progress');
+window.addEventListener('scroll',()=>{const p=(window.scrollY/(document.documentElement.scrollHeight-window.innerHeight))*100;bar.style.width=Math.min(100,p)+'%'},{passive:true});
+
+// Chapter pill
+const pill=document.getElementById('chapter-pill');
+const chEls=[{el:document.querySelector('.cover'),label:'Cover'},...Array.from(document.querySelectorAll('.ch-head')).map((el,i)=>({el,label:el.querySelector('.ch-num')?.textContent?.trim()||('Ch '+(i+1))}))].filter(c=>c.el);
+let pillHide;
+const pillObs=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){const c=chEls.find(x=>x.el===en.target);if(c){pill.textContent=c.label;pill.classList.add('show');clearTimeout(pillHide);pillHide=setTimeout(()=>pill.classList.remove('show'),2400)}}})},{threshold:0.5});
+chEls.forEach(c=>pillObs.observe(c.el));
+
+// Think line click glow
+document.querySelectorAll('.think-line').forEach(l=>{l.addEventListener('click',()=>{l.style.borderBottomColor='rgba(232,134,10,0.7)';setTimeout(()=>{l.style.borderBottomColor=''},1800)})});
+</script>
+</body>
+</html>
