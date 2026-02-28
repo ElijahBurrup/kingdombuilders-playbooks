@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Eagle's Lens — How to Make Decisions 10x Faster Using First Principles</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ridge:#2A2018;--ridge-dark:#14100A;--ridge-mid:#4A3828;--ridge-light:#6A5840;--ridge-pale:#9A8870;
+  --sky:#3A6890;--sky-dark:#1A3850;--sky-mid:#4A88B0;--sky-light:#78B0D8;--sky-pale:#A8D0F0;
+  --talon:#C87828;--talon-glow:#E89840;--talon-pale:#F8D0A0;--talon-soft:rgba(200,120,40,0.07);
+  --peak:#E8E0D0;--peak-warm:#F4ECE0;--peak-deep:#D8CDB8;
+  --stone:#6A6058;--stone-light:#A09888;
+  --text:#1A1810;--text-light:#3A3828;--text-muted:#7A6858;
+  --white:#FFFFFF;--radius:16px;
+  --shadow-soft:0 2px 16px rgba(42,32,24,0.07);
+  --shadow-mid:0 4px 28px rgba(42,32,24,0.12);
+  --shadow-strong:0 8px 40px rgba(42,32,24,0.16);
+  --before-bg:#FFF6EE;--before-border:#D8A878;--before-text:#5A3018;
+  --after-bg:#EEF6FF;--after-border:#78A8D0;--after-text:#1A3048;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--peak-warm);line-height:1.82;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
+.page{max-width:720px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--ridge);font-weight:700}
+.prose em{color:var(--talon);font-style:normal;font-weight:600}
+.prose h2{font-size:1.4rem;color:var(--ridge);margin:40px 0 16px;letter-spacing:-0.01em;display:flex;align-items:center;gap:10px}
+
+/* ===== COVER ===== */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;
+  background:linear-gradient(175deg,#060810 0%,#101828 20%,#1A2840 48%,#283850 72%,#0A1420 100%);
+  position:relative;overflow:hidden}
+.thermal{position:absolute;width:3px;height:3px;border-radius:50%;animation:thermal-rise linear infinite;pointer-events:none}
+.thermal:nth-child(1){background:rgba(200,120,40,0.35);left:12%;bottom:0;animation-duration:14s;animation-delay:0s}
+.thermal:nth-child(2){background:rgba(200,120,40,0.25);left:28%;bottom:0;animation-duration:18s;animation-delay:-4s}
+.thermal:nth-child(3){background:rgba(200,120,40,0.3);left:44%;bottom:0;animation-duration:12s;animation-delay:-8s}
+.thermal:nth-child(4){background:rgba(200,120,40,0.2);left:58%;bottom:0;animation-duration:16s;animation-delay:-2s}
+.thermal:nth-child(5){background:rgba(200,120,40,0.3);left:72%;bottom:0;animation-duration:15s;animation-delay:-6s}
+.thermal:nth-child(6){background:rgba(200,120,40,0.25);left:88%;bottom:0;animation-duration:13s;animation-delay:-10s}
+.thermal:nth-child(7){background:rgba(120,176,216,0.2);left:20%;bottom:0;animation-duration:20s;animation-delay:-3s}
+.thermal:nth-child(8){background:rgba(120,176,216,0.15);left:50%;bottom:0;animation-duration:22s;animation-delay:-7s}
+@keyframes thermal-rise{
+  0%{transform:translateY(0) scale(0.5);opacity:0}
+  10%{opacity:0.5}
+  90%{opacity:0.15}
+  100%{transform:translateY(-100vh) scale(1.2);opacity:0}
+}
+.ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.018;mix-blend-mode:overlay;pointer-events:none}
+.cover-content{position:relative;z-index:2;padding:48px 24px}
+.cover-badge{display:inline-block;padding:6px 22px;border:1px solid rgba(200,120,40,0.25);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--talon-glow);margin-bottom:36px}
+.cover-icon{font-size:3.5rem;margin-bottom:16px;display:block;animation:soar 4s ease-in-out infinite}
+@keyframes soar{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-12px) rotate(1deg)}}
+.cover h1{font-family:'Nunito',sans-serif;font-size:clamp(2.2rem,6vw,3.8rem);font-weight:900;color:var(--white);line-height:1.08;margin-bottom:4px}
+.cover h1 strong{font-weight:900;color:var(--talon-glow);display:block;font-size:clamp(2.6rem,7vw,4.4rem)}
+.cover-tagline{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.45);margin-top:24px;line-height:1.78}
+.cover-tagline em{color:var(--talon-pale);font-style:normal;font-weight:600}
+.cover-sub{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-top:12px}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.58rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,0.1);margin-top:48px}
+
+/* ===== CHAPTER HEADS ===== */
+.ch-head{background:linear-gradient(170deg,var(--ridge-dark),var(--ridge));padding:72px 24px 52px;position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239A8870' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.ch-badge{display:inline-block;padding:4px 16px;background:rgba(200,120,40,0.1);border:1px solid rgba(200,120,40,0.25);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;color:var(--talon-pale);margin-bottom:20px}
+.ch-num{font-family:'Nunito',sans-serif;font-size:5.5rem;font-weight:900;line-height:0.9;color:rgba(200,120,40,0.18);margin-bottom:-10px}
+.ch-title{font-family:'Nunito',sans-serif;font-size:2.1rem;font-weight:900;color:var(--white);line-height:1.15;letter-spacing:-0.02em;margin-bottom:10px}
+.ch-sub{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.38);line-height:1.6}
+
+/* ===== COMPONENTS ===== */
+.char-grid{display:grid;gap:24px;margin:40px 0}
+@media(min-width:640px){.char-grid{grid-template-columns:1fr 1fr}}
+.char-card{background:var(--white);border:2px solid var(--peak-deep);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft);transition:all 0.3s ease}
+.char-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-mid)}
+.char-head{background:linear-gradient(135deg,var(--talon-soft),rgba(200,120,40,0.02));padding:18px 20px;border-bottom:1px solid var(--peak-deep);display:flex;align-items:center;gap:14px}
+.char-emoji{font-size:2rem;line-height:1}
+.char-info{flex:1}
+.char-name{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;color:var(--ridge);line-height:1.25}
+.char-title{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-top:2px}
+.char-body{padding:20px}
+.char-body p{font-size:0.92rem;color:var(--text-light);line-height:1.75;margin:0}
+
+.scene{background:linear-gradient(135deg,var(--peak-warm),var(--peak));border:1px solid var(--peak-deep);border-radius:var(--radius);padding:28px;margin:32px 0;box-shadow:var(--shadow-soft)}
+.scene-label{font-family:'Nunito',sans-serif;font-size:0.68rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--talon);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.scene h4{font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:800;color:var(--ridge-dark);margin-bottom:14px;line-height:1.3}
+.scene p{font-size:0.95rem;color:var(--text);line-height:1.8;margin-bottom:12px}
+.scene p:last-child{margin-bottom:0}
+
+.ba{display:grid;gap:20px;margin:36px 0}
+@media(min-width:640px){.ba{grid-template-columns:1fr 1fr}}
+.ba-box{border-radius:var(--radius);padding:24px;box-shadow:var(--shadow-soft)}
+.ba-before{background:var(--before-bg);border:2px solid var(--before-border)}
+.ba-after{background:var(--after-bg);border:2px solid var(--after-border)}
+.ba-label{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.ba-before .ba-label{color:var(--before-text)}
+.ba-after .ba-label{color:var(--after-text)}
+.ba-box p{font-size:0.92rem;line-height:1.75;margin:0}
+.ba-before p{color:var(--before-text)}
+.ba-after p{color:var(--after-text)}
+
+.viz{background:linear-gradient(135deg,#0A1828,#1A2838);border-radius:var(--radius);padding:2px;margin:48px 0;box-shadow:var(--shadow-strong);position:relative;overflow:hidden}
+.viz-glow{position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(58,104,144,0.12),transparent 70%);pointer-events:none}
+.viz-inner{background:linear-gradient(165deg,#0E1C2C,#182840);border-radius:calc(var(--radius) - 2px);padding:32px;position:relative}
+.viz-top{display:flex;align-items:center;gap:18px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid rgba(120,176,216,0.15)}
+.viz-icon-wrap{font-size:2.4rem;line-height:1}
+.viz-meta{flex:1}
+.viz-label{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--sky-light);margin-bottom:6px}
+.viz-meta h4{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:800;color:var(--white);line-height:1.25}
+.viz-body p{font-size:0.95rem;color:rgba(255,255,255,0.72);line-height:1.85;margin-bottom:18px}
+.viz-body p:last-of-type{margin-bottom:0}
+.viz-lesson{background:rgba(120,176,216,0.08);border:1px solid rgba(120,176,216,0.2);border-radius:12px;padding:20px;margin-top:24px;font-size:0.95rem;font-style:italic;color:var(--sky-pale);line-height:1.8}
+
+.gq{background:linear-gradient(135deg,var(--ridge-dark),var(--ridge-mid));border-radius:var(--radius);padding:40px 32px;margin:48px 0;box-shadow:var(--shadow-mid);position:relative;overflow:hidden}
+.gq::before{content:'"';position:absolute;top:-20px;left:10px;font-size:12rem;font-family:Georgia,serif;color:rgba(255,255,255,0.03);line-height:1;pointer-events:none}
+.gq p{font-family:'Lora',serif;font-size:1.15rem;font-style:italic;color:var(--white);line-height:1.85;position:relative;margin:0}
+
+.think{background:var(--peak-warm);border:2px dashed var(--talon);border-radius:var(--radius);padding:32px;margin:40px 0}
+.think-label{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--talon);margin-bottom:8px}
+.think h4{font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:800;color:var(--ridge);margin-bottom:22px}
+.q-start{font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:700;color:var(--ridge-mid);margin-bottom:10px;line-height:1.5}
+.think-line{height:2px;background:var(--peak-deep);margin-bottom:22px;border-radius:2px}
+
+/* Step framework */
+.step-grid{display:grid;gap:16px;margin:36px 0}
+.step-card{background:var(--white);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow-soft);border-left:5px solid var(--sky);transition:all 0.3s ease}
+.step-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-mid)}
+.step-card.s1{border-left-color:#C85040}
+.step-card.s2{border-left-color:#4080C0}
+.step-card.s3{border-left-color:#40A060}
+.step-card.s4{border-left-color:var(--talon)}
+.step-num{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px}
+.s1 .step-num{color:#C85040}
+.s2 .step-num{color:#4080C0}
+.s3 .step-num{color:#40A060}
+.s4 .step-num{color:var(--talon)}
+.step-card h4{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;color:var(--ridge);margin-bottom:8px}
+.step-card p{font-size:0.9rem;color:var(--text-light);line-height:1.72;margin:0 0 10px}
+.step-card p:last-child{margin-bottom:0}
+.step-time{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:1px;color:var(--stone-light);margin-top:8px}
+
+/* Walk-through */
+.walk{background:var(--white);border:2px solid var(--peak-deep);border-radius:var(--radius);overflow:hidden;margin:36px 0;box-shadow:var(--shadow-mid)}
+.walk-head{padding:18px 24px;background:linear-gradient(135deg,var(--ridge-dark),var(--ridge));display:flex;align-items:center;gap:14px}
+.walk-icon{font-size:1.6rem}
+.walk-meta{flex:1}
+.walk-tag{font-family:'Nunito',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--talon-glow)}
+.walk-title{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;color:var(--white);margin-top:2px}
+.walk-body{padding:0}
+.walk-step{padding:20px 24px;border-bottom:1px solid var(--peak-deep)}
+.walk-step:last-child{border-bottom:none}
+.walk-step:nth-child(odd){background:var(--white)}
+.walk-step:nth-child(even){background:rgba(200,120,40,0.02)}
+.walk-step-tag{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;display:inline-block;padding:2px 10px;border-radius:4px}
+.tag-strip{background:rgba(200,80,64,0.08);color:#C85040}
+.tag-test{background:rgba(64,128,192,0.08);color:#4080C0}
+.tag-commit{background:rgba(64,160,96,0.08);color:#40A060}
+.tag-correct{background:rgba(200,120,40,0.08);color:var(--talon)}
+.tag-result{background:rgba(200,120,40,0.12);color:var(--talon);font-weight:800}
+.walk-step p{font-size:0.92rem;color:var(--text);line-height:1.72;margin:0 0 8px}
+.walk-step p:last-child{margin-bottom:0}
+
+/* Prompt */
+.prompt{background:linear-gradient(135deg,var(--talon),var(--talon-glow));border-radius:var(--radius);padding:3px;margin:48px 0;box-shadow:var(--shadow-mid)}
+.prompt-inner{background:var(--white);border-radius:calc(var(--radius) - 3px)}
+.prompt-head{font-family:'Nunito',sans-serif;font-size:0.75rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--white);background:linear-gradient(135deg,var(--talon),var(--talon-glow));padding:14px 24px;border-radius:calc(var(--radius) - 3px) calc(var(--radius) - 3px) 0 0}
+.prompt-body{padding:28px 24px;font-size:0.95rem;color:var(--text);line-height:1.85}
+
+/* Finale */
+.finale{background:linear-gradient(165deg,#0A1828,#182840);text-align:center;padding:80px 24px;color:var(--white)}
+.finale-emoji{font-size:3.5rem;display:block;margin-bottom:24px;animation:gentle-pulse 4s ease-in-out infinite}
+@keyframes gentle-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.finale h2{font-family:'Nunito',sans-serif;font-size:1.8rem;font-weight:800;color:var(--white);line-height:1.4;margin-bottom:24px}
+.finale h2 span{display:block;color:var(--talon-glow);font-size:2rem;margin-top:8px}
+.finale p{font-family:'Lora',serif;font-size:1.05rem;color:rgba(255,255,255,0.5);line-height:1.85;max-width:600px;margin:0 auto}
+footer{background:linear-gradient(165deg,#060810,#0A1018);padding:60px 24px 40px;text-align:center;color:rgba(255,255,255,0.3);border-top:1px solid rgba(200,120,40,0.08)}
+footer p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;margin-bottom:24px;line-height:1.7}
+.brand{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;letter-spacing:1px;color:var(--talon-glow)}
+</style>
+</head>
+<body>
+
+<!-- ===== COVER ===== -->
+<div class="cover">
+  <div class="thermal"></div><div class="thermal"></div><div class="thermal"></div><div class="thermal"></div>
+  <div class="thermal"></div><div class="thermal"></div><div class="thermal"></div><div class="thermal"></div>
+  <div class="ghost-noise"></div>
+  <div class="cover-content">
+    <div class="cover-badge">A Kingdom Builders Parable</div>
+    <span class="cover-icon">🦅</span>
+    <h1>The Eagle's<br><strong>Lens</strong></h1>
+    <p class="cover-tagline">You are not bad at decisions. You are <em>drowning in information</em> and mistaking volume for clarity. This is the story of an eye that sees eight times sharper than yours — and the four-step framework it teaches for cutting through noise to the one thing that actually matters.</p>
+    <p class="cover-sub">Strip. Test. Commit. Correct.</p>
+    <p class="cover-author">Kingdom Builders AI</p>
+  </div>
+</div>
+
+<!-- ===== INTRODUCTION ===== -->
+<div class="page">
+<section class="section">
+  <div class="prose">
+    <p>A golden eagle soaring at 10,000 feet can spot a rabbit at two miles. Not a brown smudge. <strong>The rabbit.</strong> Its individual shape, its movement pattern, its exact distance — all resolved with crystal precision from 3,500 meters above the earth while the eagle is moving at 30 miles per hour through thermals and crosswinds.</p>
+    <p>Meanwhile, you are sitting in a quiet room with a stable internet connection and cannot decide which health insurance plan to choose.</p>
+    <p>This is not a joke. It is the most important observation in this entire playback: <strong>the eagle's problem and your problem are the same problem.</strong> Both of you are looking at a vast, complex field full of noise and trying to identify the one thing that matters. The eagle does it in under three seconds. You agonize for weeks. The difference is not intelligence. It is <em>optics.</em></p>
+    <p>The eagle has specialized equipment that filters, prioritizes, and resolves information in a specific sequence. You are using the human equivalent of a fogged-up windshield and wondering why you cannot see clearly. This playback gives you the eagle's lens — a four-step decision protocol that works on everything from "should I take this job" to "what should I have for dinner" to "should I confront my business partner."</p>
+    <p>By the time you finish, you will have used it on a real decision. Not in theory. For real. Ready? Climb the thermal. 🦅⬆️</p>
+  </div>
+</section>
+</div>
+
+<!-- ==================== CHAPTER 1 ==================== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-badge">Chapter One</div>
+    <div class="ch-num">01</div>
+    <h1 class="ch-title">The Eye</h1>
+    <p class="ch-sub">What eagles see that you don't — and why more information makes decisions worse</p>
+  </div>
+</div>
+
+<div class="page">
+<section class="section prose">
+  <h2><span>🔬</span> The Biology of Clarity</h2>
+  <p>A golden eagle's eye is not just sharper than yours. It is <em>architecturally different</em> in ways that map directly to better decision-making. Understanding the three differences will change how you process information forever.</p>
+
+  <div class="char-grid">
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">👁️</span><div class="char-info"><div class="char-name">The Foveal Pit</div><div class="char-title">Resolution Concentrator</div></div></div>
+      <div class="char-body"><p>Humans have one fovea — a small area of ultra-sharp vision in the center of each eye. Eagles have <strong>two foveae per eye.</strong> One for long-range detection, one for close-range attack precision. The eagle does not see everything sharply. It sees <em>two specific things</em> with extreme sharpness and lets everything else blur. It ignores 95% of its visual field on purpose.</p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">🎨</span><div class="char-info"><div class="char-name">Tetrachromatic Vision</div><div class="char-title">Invisible Spectrum Reader</div></div></div>
+      <div class="char-body"><p>Humans see three color channels (red, green, blue). Eagles see four — including ultraviolet. Rodent urine trails, invisible to every other predator, glow like neon runways to the eagle. <strong>The eagle sees information that is literally invisible to others.</strong> Not by trying harder. By having a different lens.</p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">⚡</span><div class="char-info"><div class="char-name">Rapid Accommodation</div><div class="char-title">Instant Focus Shift</div></div></div>
+      <div class="char-body"><p>An eagle can shift focus from a distant object to a near one in milliseconds — faster than any camera ever built. It does not gradually adjust. It <strong>snaps.</strong> From scanning the whole valley to locking on a single target with zero transition delay. Detect → Lock → Act.</p></div>
+    </div>
+    <div class="char-card">
+      <div class="char-head"><span class="char-emoji">🧠</span><div class="char-info"><div class="char-name">The Decision Lesson</div><div class="char-title">What This Teaches Us</div></div></div>
+      <div class="char-body"><p>The eagle is not smarter than you. It is <strong>more selective.</strong> It ignores most of what it sees. It detects information invisible to others. And it locks on instantly. Three properties. Three advantages. Three things you can learn and apply to every decision you will ever make.</p></div>
+    </div>
+  </div>
+
+  <h2><span>🌫️</span> The Information Fog</h2>
+  <p>Here is the problem the eagle does not have: <strong>no one is feeding the eagle more data.</strong> The eagle surveys a valley and extracts what it needs. You survey a decision and the internet, your friends, your fears, and seventeen Reddit threads all dump additional data onto your lap until you cannot see the rabbit for the field.</p>
+
+  <div class="viz"><div class="viz-glow"></div><div class="viz-inner">
+    <div class="viz-top"><div class="viz-icon-wrap">🌫️</div><div class="viz-meta"><div class="viz-label">The Core Problem</div><h4>Information ≠ Clarity</h4></div></div>
+    <div class="viz-body">
+      <p>Research from Columbia Business School found that people presented with more options are <strong>less likely to make a choice and less satisfied with the choice they make.</strong> The famous jam study: 24 varieties of jam attracted more shoppers but produced 1/10th the purchases of a display with 6 varieties. More information produced worse outcomes.</p>
+      <p>This scales to every domain: more job listings make career decisions harder. More health information makes medical decisions more anxious. More relationship advice makes couples more confused. More investment options make portfolios worse.</p>
+      <p><strong>The eagle succeeds not because it has more data. It succeeds because it has a lens that filters, prioritizes, and eliminates most of what it sees before it even reaches conscious processing.</strong></p>
+      <div class="viz-lesson">You do not need more research. You need a better lens. The four-step framework in this playback is that lens. It works by doing what the eagle's eye does: strip the noise, test the signal, lock on, and adjust at speed.</div>
+    </div>
+  </div></div>
+
+  <div class="gq"><p>Wisdom is not the accumulation of information. Wisdom is the ability to see clearly through the information to the thing that matters. The eagle does not have a bigger brain than the pigeon. It has sharper eyes.</p></div>
+</section>
+
+<div class="think">
+  <div class="think-label">💭 Think About This</div>
+  <h4>What decision are you currently drowning in?</h4>
+  <p class="q-start">🦅 Name one decision you have been circling. Career, financial, relational, health — anything. Write it down. You will use it as your live test case for the rest of this playback.</p>
+  <div class="think-line"></div>
+  <p style="font-size:0.9rem;color:var(--text-light);line-height:1.75"><strong>Keep this decision in mind.</strong> By Chapter Three, you will have run it through all four steps and arrived at clarity. Not theoretical clarity. The kind where you know what to do Monday morning.</p>
+</div>
+</div>
+
+<!-- ==================== CHAPTER 2 ==================== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-badge">Chapter Two</div>
+    <div class="ch-num">02</div>
+    <h1 class="ch-title">The Four Lenses</h1>
+    <p class="ch-sub">Strip — Test — Commit — Correct: the eagle's decision cycle in four moves</p>
+  </div>
+</div>
+
+<div class="page">
+<section class="section prose">
+  <h2><span>🔄</span> The Framework</h2>
+  <p>Every decision the eagle makes follows the same sequence. It does not deliberate. It does not weigh options endlessly. It runs four operations in order, and the sequence produces clarity at speed. Here is the human translation:</p>
+
+  <div class="step-grid">
+    <div class="step-card s1">
+      <div class="step-num">Step 1</div>
+      <h4>🔴 STRIP — Remove everything that doesn't survive one question</h4>
+      <p>The eagle's dual foveae deliberately blur 95% of the visual field. You must do the same. Before analyzing options, apply a single disqualifying question that eliminates most of them instantly.</p>
+      <p><strong>The question:</strong> "If I could not reverse this in 12 months, would I still choose it?"</p>
+      <p>This single filter eliminates impulse decisions, fear-based choices, and anything that only looks good in the moment. If an option cannot survive the 12-month test, it does not get analyzed further. It gets stripped. No spreadsheet. No pros-and-cons list. Gone.</p>
+      <p><strong>For recurring decisions</strong> (what to eat, how to spend an evening, what to buy): use a tighter filter. "Will this matter in 72 hours?" If no, choose the fastest option and move on. Do not waste eagle vision on pigeon problems.</p>
+      <div class="step-time">⏱ Target: 60 seconds or less</div>
+    </div>
+    <div class="step-card s2">
+      <div class="step-num">Step 2</div>
+      <h4>🔵 TEST — Run the surviving options against your non-negotiables</h4>
+      <p>The eagle's UV vision reveals information that is invisible to other predators. Your "UV layer" is your non-negotiables — the 3-5 things you have decided in advance that any good decision must honor.</p>
+      <p><strong>The practice:</strong> Before you need them, define your non-negotiables. Write them once. Apply them forever. They might be: "protects family time," "builds long-term wealth," "does not compromise my integrity," "my spouse is fully aligned." Every surviving option from Step 1 now gets tested against these filters. Options that violate even one are eliminated.</p>
+      <p><strong>Why this works:</strong> Most decision paralysis comes from comparing options that should never have been compared in the first place. One violates your values. One requires a compromise your spouse will resent. One only works if you become a different person. The UV test catches these before you waste weeks evaluating them.</p>
+      <div class="step-time">⏱ Target: 2-5 minutes</div>
+    </div>
+    <div class="step-card s3">
+      <div class="step-num">Step 3</div>
+      <h4>🟢 COMMIT — Lock on and dive. Today.</h4>
+      <p>The eagle's rapid accommodation — that instant focus snap — is the biological model. Once the rabbit is identified, the eagle does not circle for another pass. It tucks its wings and dives at 150 miles per hour. The commitment is total.</p>
+      <p><strong>The rule:</strong> Once Strip and Test leave you with 1-2 options, choose within 24 hours. Not 24 days. Hours. Set a deadline. Tell someone. Make the decision irreversible enough that your brain stops re-litigating it.</p>
+      <p><strong>Why speed matters:</strong> Research from the University of Pennsylvania shows that decision quality barely improves after the first few minutes of deliberation on most personal and professional decisions, but decision <em>anxiety</em> increases with every additional day of delay. You are paying a tax of stress and lost opportunity for a rounding error of improvement. The eagle knows this instinctively: a 90% accurate strike executed now catches the rabbit. A 99% accurate strike deliberated for ten more seconds catches nothing because the rabbit is gone.</p>
+      <div class="step-time">⏱ Target: decide within 24 hours of completing Step 2</div>
+    </div>
+    <div class="step-card s4">
+      <div class="step-num">Step 4</div>
+      <h4>🟠 CORRECT — Adjust in flight, not on the ground</h4>
+      <p>Here is the fact that frees you forever: <strong>eagles miss 80% of their strikes.</strong> The most lethal aerial predator on the planet fails four out of five times. And yet the species thrives. Why? Because each miss generates data that makes the next strike better. The eagle does not circle back to the perch and agonize. It adjusts in flight.</p>
+      <p><strong>The practice:</strong> After committing, set a review point — 30, 60, or 90 days depending on the decision's scale. At the review point, ask two questions: (1) "Is this producing what I expected?" (2) "What do I now know that I did not know at commit?" Then adjust. Not abandon. <em>Adjust.</em> A 10-degree correction at speed is more powerful than starting over from zero.</p>
+      <p>The people who agonize over decisions are terrified of being wrong. The eagle teaches that being wrong is the <em>default state.</em> Mastery is not about avoiding mistakes. It is about correcting faster than anyone else.</p>
+      <div class="step-time">⏱ Review at 30/60/90 days</div>
+    </div>
+  </div>
+
+  <div class="gq"><p>The eagle does not make perfect decisions. It makes fast decisions and corrects in flight. The rabbit does not wait for you to finish your spreadsheet. The job does not wait for you to finish polling your friends. The opportunity does not wait for your anxiety to resolve. Clarity is a verb, not a destination.</p></div>
+
+  <h2><span>⏱️</span> The Speed Comparison</h2>
+
+  <div class="ba">
+    <div class="ba-box ba-before">
+      <div class="ba-label">⬅ Without the Lens</div>
+      <p><strong>"Should I take this new job?"</strong><br>Researches for 3 weeks. Asks 8 friends. Makes a pro/con list with 40 items. Compares salaries in 4 cost-of-living calculators. Reads 12 Glassdoor reviews. Agonizes for 2 more weeks. Decides under deadline pressure while exhausted. Second-guesses for 6 months after. ⏱ Total: 5+ weeks.</p>
+    </div>
+    <div class="ba-box ba-after">
+      <div class="ba-label">➡ With the Lens</div>
+      <p><strong>"Should I take this new job?"</strong><br><strong>Strip:</strong> Would I still want this in 12 months? Yes. <strong>Test:</strong> Protects family time? Check. Builds long-term wealth? Check. Spouse aligned? Had the conversation — yes. <strong>Commit:</strong> Accept by Friday. <strong>Correct:</strong> 90-day review on calendar. ⏱ Total: 2 days.</p>
+    </div>
+  </div>
+
+  <p>Same decision. Same quality of outcome. <strong>Twenty-five times faster.</strong> Not because you skipped thinking. Because you eliminated the noise that masquerades as thinking.</p>
+</section>
+
+<div class="think">
+  <div class="think-label">💭 Build Your UV Layer</div>
+  <h4>Write your 3-5 non-negotiables right now</h4>
+  <p class="q-start">🦅 These are the filters that every major decision must pass through. They do not change with the decision. They are yours. What are the 3-5 things that any good choice in your life must honor?</p>
+  <div class="think-line"></div>
+  <div class="think-line"></div>
+  <div class="think-line"></div>
+  <p style="font-size:0.9rem;color:var(--text-light);line-height:1.75"><strong>Keep these.</strong> Photograph them. Put them in your phone notes. You will use them for every major decision from now on. The UV layer only needs to be built once. After that, it works automatically.</p>
+</div>
+</div>
+
+<!-- ==================== CHAPTER 3 ==================== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-badge">Chapter Three</div>
+    <div class="ch-num">03</div>
+    <h1 class="ch-title">The Dive</h1>
+    <p class="ch-sub">Watch the lens work on four real decisions — then use it on yours</p>
+  </div>
+</div>
+
+<div class="page">
+<section class="section prose">
+  <h2><span>🎯</span> Walk-Throughs</h2>
+  <p>Theory is useless without practice. Here are four real decisions run through the lens at full speed. Watch the pattern. Then you are doing it yourself.</p>
+
+  <div class="walk">
+    <div class="walk-head"><span class="walk-icon">💼</span><div class="walk-meta"><div class="walk-tag">Walk-Through 01</div><div class="walk-title">The Career Crossroads</div></div></div>
+    <div class="walk-body">
+      <div class="walk-step"><p>You have been offered a role at a startup. 30% pay cut. Equity. Exciting product. Your current job is stable but soul-crushing. You have been agonizing for two weeks.</p></div>
+      <div class="walk-step"><div class="walk-step-tag tag-strip">STRIP</div><p>"If I could not reverse this in 12 months, would I still choose it?" The startup — yes, the upside is real. Staying — yes, the stability matters. <strong>Both survive.</strong> But a third option you were secretly considering — going freelance with no clients lined up — does not. Stripped.</p></div>
+      <div class="walk-step"><div class="walk-step-tag tag-test">TEST</div><p>Non-negotiables: protects family finances, spouse aligned, builds toward ownership. Current job: stable finances ✅, spouse does not care ✅, zero ownership ❌. Startup: tight finances for 6 months ⚠️, spouse excited about the vision ✅, real equity ✅. <strong>The startup passes more filters.</strong> The current job fails on the one that matters most to you.</p></div>
+      <div class="walk-step"><div class="walk-step-tag tag-commit">COMMIT</div><p>Accept the startup offer by Friday. Tell your spouse tonight. Give notice Monday. Set a 90-day review to check: Is the equity real? Is the culture what they promised? Am I growing?</p></div>
+      <div class="walk-step"><div class="walk-step-tag tag-correct">CORRECT</div><p>Day 90 review on the calendar. Two questions: Is this producing what I expected? What do I now know? If the answer is "no" and "this was a mistake," you have a correction plan — not a crisis. You re-enter the job market with startup experience and zero regret about indecision.</p></div>
+      <div class="walk-step"><div class="walk-step-tag tag-result">RESULT</div><p>Two weeks of paralysis replaced by two days of framework. Same information. Dramatically different experience. The decision is made. The anxiety is gone. The energy that was consumed by deliberation is now available for execution.</p></div>
+    </div>
+  </div>
+
+  <div class="walk">
+    <div class="walk-head"><span class="walk-icon">❤️</span><div class="walk-meta"><div class="walk-tag">Walk-Through 02</div><div class="walk-title">The Relationship Confrontation</div></div></div>
+    <div class="walk-body">
+      <div class="walk-step"><p>Your business partner has been underperforming for six months. You have been avoiding the conversation. You keep hoping they will self-correct. They will not.</p></div>
+      <div class="walk-step"><div class="walk-step-tag tag-strip">STRIP</div><p>"Will this matter in 12 months if I do nothing?" Yes — the business suffers and resentment poisons the partnership. Inaction is stripped. The only surviving options involve having the conversation. The question is now <em>how</em>, not <em>whether.</em></p></div>
+      <div class="walk-step"><div class="walk-step-tag tag-test">TEST</div><p>Non-negotiables: honesty without cruelty, preserves the relationship if possible, protects the business. A harsh ultimatum? Fails "preserves relationship." Continued silence? Fails "protects the business." A direct, kind conversation with specific expectations and a timeline? Passes all three.</p></div>
+      <div class="walk-step"><div class="walk-step-tag tag-commit">COMMIT</div><p>Schedule the conversation for this week. Not "soon." This week. Prepare your opening sentence: "I value this partnership, and because I value it, I need to be honest about something I've been avoiding." Commit to the date. Tell your spouse so you are accountable.</p></div>
+      <div class="walk-step"><div class="walk-step-tag tag-correct">CORRECT</div><p>Set a 60-day review. Did the conversation produce change? If yes, reinvest in the partnership. If no, the data is clear and the next decision — whatever it is — will be made with honesty instead of hope.</p></div>
+    </div>
+  </div>
+
+  <div class="walk">
+    <div class="walk-head"><span class="walk-icon">🏠</span><div class="walk-meta"><div class="walk-tag">Walk-Through 03</div><div class="walk-title">The Big Purchase</div></div></div>
+    <div class="walk-body">
+      <div class="walk-step"><p>Should you buy a new car or keep driving the paid-off one? The old car needs $2,000 in repairs. A new one costs $35,000.</p></div>
+      <div class="walk-step"><div class="walk-step-tag tag-strip">STRIP</div><p>"Would I still want a new car in 12 months, or would the excitement wear off?" Be honest. The new car smell fades. The payment does not. The $2,000 repair survives because it buys another 3+ years. Leasing a luxury vehicle? Does not survive the 12-month test for your current financial stage. Stripped.</p></div>
+      <div class="walk-step"><div class="walk-step-tag tag-test">TEST</div><p>Non-negotiables: builds long-term wealth, does not create stress. Repairing the old car: $2,000 one-time, no monthly payment, builds wealth ✅, low stress ✅. Buying new: $500/month for 6 years, slows wealth-building ❌. <strong>The repair passes. The new car fails.</strong></p></div>
+      <div class="walk-step"><div class="walk-step-tag tag-commit">COMMIT</div><p>Schedule the repair this week. Take the $500/month you would have spent on payments and auto-transfer it to an investment account. In 12 months, you will have $6,000 growing instead of $6,000 gone.</p></div>
+      <div class="walk-step"><div class="walk-step-tag tag-correct">CORRECT</div><p>12-month review: Is the car still reliable? Is the investment account growing? If the car dies at month 8, you have $4,000 saved toward a replacement — and you make that next decision with the lens, not with panic.</p></div>
+    </div>
+  </div>
+
+  <div class="walk">
+    <div class="walk-head"><span class="walk-icon">🧘</span><div class="walk-meta"><div class="walk-tag">Walk-Through 04</div><div class="walk-title">The Health Commitment</div></div></div>
+    <div class="walk-body">
+      <div class="walk-step"><p>You have tried five different workout programs in two years. None stuck. You are about to start another one. Should you?</p></div>
+      <div class="walk-step"><div class="walk-step-tag tag-strip">STRIP</div><p>"If I could not change this program for 12 months, would I still choose it?" The intense 6-day-a-week program? Honestly, no — you know yourself. The "just walk 30 minutes every morning" plan? Yes. That survives. Strip everything that depends on motivation you historically do not sustain.</p></div>
+      <div class="walk-step"><div class="walk-step-tag tag-test">TEST</div><p>Non-negotiables: fits before 7 AM (kids wake up), requires no equipment or gym membership, spouse can join. Morning walk: ✅ ✅ ✅. CrossFit at 5 AM: ✅ ❌ ❌. The walk passes every filter.</p></div>
+      <div class="walk-step"><div class="walk-step-tag tag-commit">COMMIT</div><p>Tomorrow morning. Not Monday. Tomorrow. Shoes by the door tonight. 30 minutes. No app. No tracker. No Instagram post. Just walk.</p></div>
+      <div class="walk-step"><div class="walk-step-tag tag-correct">CORRECT</div><p>30-day review: Did I walk most days? If yes, add one thing — a podcast during the walk, or 10 minutes of bodyweight exercises after. Build on what stuck. Do not replace it. If you missed most days, the correction is not "try harder." It is "what time actually works?" Adjust the <em>structure</em>, not the effort.</p></div>
+    </div>
+  </div>
+
+  <h2><span>🦅</span> Now You</h2>
+  <p>Remember the decision you wrote down in Chapter One? It is time. Run it through the lens right now. Not later. Now.</p>
+</section>
+
+<div class="think">
+  <div class="think-label">🦅 Your Live Decision</div>
+  <h4>Run your decision through the four lenses</h4>
+  <p style="text-align:left;font-weight:700;color:#C85040">🔴 STRIP — What options do not survive the 12-month test?</p>
+  <div class="think-line"></div>
+  <div class="think-line"></div>
+  <p style="text-align:left;font-weight:700;color:#4080C0">🔵 TEST — Of what survives, which options pass your non-negotiables?</p>
+  <div class="think-line"></div>
+  <div class="think-line"></div>
+  <p style="text-align:left;font-weight:700;color:#40A060">🟢 COMMIT — What is your decision and by when will you act?</p>
+  <div class="think-line"></div>
+  <p style="text-align:left;font-weight:700;color:var(--talon)">🟠 CORRECT — When is your review date and what two questions will you ask?</p>
+  <div class="think-line"></div>
+  <p style="font-size:0.9rem;color:var(--text-light);line-height:1.75;margin-top:16px"><strong>You just made a decision that may have been paralyzing you for weeks.</strong> In about five minutes. That is the lens. It does not give you more information. It gives you the right sequence for processing the information you already have.</p>
+</div>
+</div>
+
+<!-- ==================== CHAPTER 4 ==================== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-badge">Chapter Four</div>
+    <div class="ch-num">04</div>
+    <h1 class="ch-title">The Daily Hunt</h1>
+    <p class="ch-sub">How to use the lens on micro-decisions — and why that is where most of your life actually happens</p>
+  </div>
+</div>
+
+<div class="page">
+<section class="section prose">
+  <h2><span>🐁</span> The Small Game Problem</h2>
+  <p>Eagles do not just hunt elk. Most of their calories come from small game — rabbits, squirrels, fish. Dozens of micro-hunts per day. And that is where the lens becomes truly transformative for your life: not on the big career-or-relationship decisions that happen a few times a year, but on the <strong>hundreds of micro-decisions that drain your energy every single day.</strong></p>
+  <p>Research from Cornell University estimates the average adult makes <strong>35,000 decisions per day.</strong> Most are trivial. But trivial decisions still consume glucose and willpower. By 3 PM, your brain is so depleted from deciding what to eat, what to wear, whether to respond to that email, which route to take, what to cook for dinner — that when a decision that actually matters arrives, you have nothing left.</p>
+  <p>This is called <em>decision fatigue</em>, and it is the silent assassin of good judgment. The eagle's lens fixes it by giving you a speed protocol for small decisions:</p>
+
+  <div class="scene">
+    <div class="scene-label">The 72-Hour Rule</div>
+    <h4>Pigeon Decisions vs. Eagle Decisions</h4>
+    <p><strong>Ask: "Will this matter in 72 hours?"</strong></p>
+    <p><strong>If no → Pigeon decision.</strong> Choose the fastest option. Do not deliberate. What to eat for lunch, which route to drive, whether to reply now or later, what to wear — these are not worth eagle vision. Pick. Move. Save your clarity for what matters. 🐦</p>
+    <p><strong>If yes → Eagle decision.</strong> Run the full lens: Strip, Test, Commit, Correct. These are the decisions that shape your trajectory — job changes, financial commitments, relationship conversations, health protocols. They deserve the framework. 🦅</p>
+    <p><strong>The transformation:</strong> Within one week of sorting pigeon decisions from eagle decisions, most people report feeling dramatically less exhausted by 3 PM. Not because their schedule changed. Because they stopped wasting raptor-grade attention on sparrow-grade problems.</p>
+  </div>
+
+  <h2><span>🔑</span> The Pre-Decision Stack</h2>
+  <p>The ultimate eagle move is eliminating categories of decisions entirely by deciding them once, in advance. This is what eagles do with territory — they choose a hunting range and then never reconsider it. That one decision eliminates thousands of "where should I hunt today?" decisions.</p>
+
+  <div class="scene">
+    <div class="scene-label">Decide Once, Execute Forever</div>
+    <h4>Seven Decisions That Eliminate Hundreds</h4>
+    <p><strong>Meals:</strong> Decide your default breakfast and lunch. Decide once. Eat that every weekday. Decide dinner on Sunday for the whole week. You just eliminated 30+ food decisions per week. 🥗</p>
+    <p><strong>Wardrobe:</strong> Build a capsule — 5 outfits that all work. Lay out tomorrow's clothes tonight. Decision eliminated. 👔</p>
+    <p><strong>Morning:</strong> Same first hour, same sequence, every day. No deciding "what should I do this morning?" ever again. It is decided. 🌅</p>
+    <p><strong>Exercise:</strong> Same days, same time, same type. Gym bag packed the night before. The decision is not "should I work out?" — that is already decided. The only decision is "how heavy today?" 💪</p>
+    <p><strong>Spending:</strong> Set a "no-thought" threshold — say $25. Anything under it, buy without deliberation. Anything over it, wait 48 hours. One rule, hundreds of purchase decisions streamlined. 💰</p>
+    <p><strong>Communication:</strong> Check email at two fixed times per day. Respond to texts in batches. No "should I check my phone?" throughout the day. It is decided. 📱</p>
+    <p><strong>Evenings:</strong> Screens off at a fixed time. Same wind-down sequence. The "what should we do tonight?" conversation disappears. 🌙</p>
+  </div>
+
+  <p>Each of these is a one-time eagle decision that eliminates hundreds of daily pigeon decisions. The cumulative effect is extraordinary: <strong>by Month 3, you will arrive at 3 PM with more mental clarity than you used to have at 9 AM.</strong> Not because you became smarter. Because you stopped wasting your sharpest vision on things that do not require it.</p>
+
+  <div class="viz"><div class="viz-glow"></div><div class="viz-inner">
+    <div class="viz-top"><div class="viz-icon-wrap">⚡</div><div class="viz-meta"><div class="viz-label">The Compound Effect</div><h4>What Happens Over 12 Months</h4></div></div>
+    <div class="viz-body">
+      <p><strong>Month 1:</strong> You learn the lens. Strip-Test-Commit-Correct becomes conscious. Decisions feel slightly faster. You catch yourself agonizing and apply the framework. 🔰</p>
+      <p><strong>Month 3:</strong> The 72-Hour Rule is automatic. Pigeon decisions take seconds. Eagle decisions take minutes instead of weeks. Your energy at 3 PM is noticeably higher. People start commenting that you seem "more decisive." 📈</p>
+      <p><strong>Month 6:</strong> The Pre-Decision Stack has eliminated hundreds of daily micro-decisions. You have made two or three major life decisions using the lens and every one of them produced clarity within 48 hours. The backlog of unmade decisions — that fog — has cleared. You are operating with a level of mental freedom you have not felt since childhood. 🦅</p>
+      <p><strong>Month 12:</strong> The lens is invisible. You no longer think about the steps. You just see clearly. Colleagues, friends, and your spouse start asking how you make decisions so quickly. The answer is simple: you stopped looking at everything and started looking at the right thing. You became the eagle.</p>
+      <div class="viz-lesson">The person you become after 12 months of the eagle's lens is not just a better decision-maker. They are a fundamentally calmer, more present, more effective human being — because decision fatigue was silently consuming 40% of their cognitive capacity and they never knew it. Reclaiming that 40% changes everything it touches: work output, relationship presence, creative energy, physical health. <strong>Clarity compounds.</strong></div>
+    </div>
+  </div></div>
+
+  <div class="prompt">
+    <div class="prompt-inner">
+      <div class="prompt-head">🦅 The Eagle's Lens — Installation Prompt</div>
+      <div class="prompt-body">
+        <p><strong>I just read The Eagle's Lens.</strong> The framework: Strip (12-month test), Test (non-negotiable filters), Commit (decide within 24 hours), Correct (review at 30/60/90 days). Plus the 72-Hour Rule for pigeon vs. eagle decisions and the Pre-Decision Stack for eliminating recurring choices.</p>
+        <p>Here are my non-negotiables: [list yours]</p>
+        <p>Here is a decision I am currently facing: [describe it]</p>
+        <p><strong>Walk me through the four lenses on this decision. Be direct. Strip the noise. Help me commit by the end of this conversation.</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="think">
+  <div class="think-label">The Final Test 🧠</div>
+  <h4>Can you answer these without looking back?</h4>
+  <p class="q-start">👁️ What are the three properties of the eagle's eye that map to better decisions?</p><div class="think-line"></div>
+  <p class="q-start">🔴 What single question does the STRIP step ask?</p><div class="think-line"></div>
+  <p class="q-start">🔵 What are your personal non-negotiables for the TEST step?</p><div class="think-line"></div>
+  <p class="q-start">🟢 Why does COMMIT demand a 24-hour deadline?</p><div class="think-line"></div>
+  <p class="q-start">🟠 What two questions does the CORRECT step ask at review?</p><div class="think-line"></div>
+  <p class="q-start">🐦 What is the 72-Hour Rule and why does it save energy?</p><div class="think-line"></div>
+  <p style="font-weight:800;color:var(--talon);margin-top:14px;font-family:'Nunito',sans-serif;font-size:0.95rem">If you can answer all six and you ran a real decision through the lens today, you are already operating at a level most people will never reach — not because they cannot, but because they never learned to stop looking at everything and start looking at the right thing. 🦅</p>
+</div>
+</div>
+
+<!-- ===== FINALE ===== -->
+<section class="finale">
+  <span class="finale-emoji">🦅</span>
+  <h2>The eagle does not see more.<br><span>It sees what matters.</span></h2>
+  <p>Strip the noise. Test against what you will not compromise. Commit before the moment passes. Correct in flight. That is the entire operating system. Four steps. Every decision. For the rest of your life.</p>
+  <p style="margin-top:24px;font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:700">🦅 Stop circling. Dive. 🎯</p>
+</section>
+
+<footer>
+  <p>"The Lord will guide you always; he will satisfy your needs in a sun-scorched land and will strengthen your frame." — Isaiah 58:11</p>
+  <div class="brand">Kingdom Builders AI</div>
+  <p style="margin-top:14px;font-family:'Nunito',sans-serif;font-weight:700">kingdombuilders.ai</p>
+</footer>
+
+<div style="text-align:center;padding:20px 24px 32px;background:#060810;border-top:1px solid rgba(200,120,40,0.06);font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:700;color:rgba(255,255,255,0.18);line-height:1.6" class="no-print">
+  To save as PDF: Open this file in your browser → File → Print → "Save as PDF"<br>
+  Works on desktop, iPhone, iPad, and Android.
+</div>
+<style>.no-print{display:block}@media print{.no-print{display:none!important}}</style>
+
+</body>
+</html>
