@@ -73,6 +73,31 @@ def the_wolfs_table():
     return send_from_directory("static", "the-wolfs-table.html")
 
 
+@app.route("/thecrowsgambit")
+def the_crows_gambit():
+    return send_from_directory("static", "the-crows-gambit.html")
+
+
+@app.route("/theeagleslens")
+def the_eagles_lens():
+    return send_from_directory("static", "the-eagles-lens.html")
+
+
+@app.route("/thelighthousekeeperslog")
+def the_lighthouse_keepers_log():
+    return send_from_directory("static", "the-lighthouse-keepers-log.html")
+
+
+@app.route("/theoctopusprotocol")
+def the_octopus_protocol():
+    return send_from_directory("static", "the-octopus-protocol.html")
+
+
+@app.route("/thestarlingsmurmuration")
+def the_starlings_murmuration():
+    return send_from_directory("static", "the-starlings-murmuration.html")
+
+
 # --- Playbook Reader (serves full playbook HTML from assets) ---
 @app.route("/read/<slug>")
 def read_playbook(slug):
@@ -87,6 +112,11 @@ def read_playbook(slug):
         "the-squirrel-economy": "The_Squirrel_Economy_Modified.html",
         "conductors-playbook": "The_Conductors_Playbook.html",
         "the-wolfs-table": "The_Wolfs_Table.html",
+        "the-crows-gambit": "The_Crows_Gambit.html",
+        "the-eagles-lens": "The_Eagles_Lens.html",
+        "the-lighthouse-keepers-log": "The_Lighthouse_Keepers_Log.html",
+        "the-octopus-protocol": "The_Octopus_Protocol.html",
+        "the-starlings-murmuration": "The_Starlings_Murmuration.html",
     }
     filename = slug_to_file.get(slug)
     if not filename:

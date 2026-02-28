@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Starling's Murmuration — How Small Alignments Create Unstoppable Momentum</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --dusk:#1A1028;--dusk-dark:#0C0818;--dusk-mid:#2A1E40;--dusk-light:#4A3A68;--dusk-pale:#7A6A98;
+  --rose:#C8506A;--rose-glow:#E87090;--rose-pale:#F8B0C0;--rose-soft:rgba(200,80,106,0.06);
+  --sky:#4878B8;--sky-glow:#6898D8;--sky-pale:#A0C8F0;
+  --gold:#D4A843;--gold-glow:#E8C96A;--gold-pale:#F5E6B8;--gold-soft:rgba(212,168,67,0.06);
+  --warm:#FAF6F0;--warm-mid:#F4EDE2;--warm-deep:#E8DDD0;
+  --text:#1E1428;--text-light:#4A3A5A;--text-muted:#7A6A8A;
+  --white:#FFFFFF;--radius:14px;
+  --shadow-soft:0 2px 14px rgba(26,16,40,0.06);
+  --shadow-mid:0 4px 24px rgba(26,16,40,0.1);
+  --shadow-strong:0 8px 40px rgba(26,16,40,0.14);
+  --before-bg:#FFF6F4;--before-border:#E8A090;--before-text:#6A3828;
+  --after-bg:#F4F8FF;--after-border:#88A8D0;--after-text:#1A2A4A;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--warm);line-height:1.78;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Poppins',sans-serif;line-height:1.2}
+.page{max-width:700px;margin:0 auto;padding:0 24px}
+.section{padding:44px 0}
+.prose p{margin-bottom:20px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--dusk);font-weight:600}
+.prose em{color:var(--rose);font-style:normal;font-weight:600}
+.prose h2{font-size:1.35rem;color:var(--dusk);margin:36px 0 14px;letter-spacing:-0.01em;display:flex;align-items:center;gap:10px}
+
+/* ===== COVER ===== */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(170deg,#06030C 0%,#10081C 18%,#1A1030 40%,#281840 65%,#1C1230 85%,#0C0618 100%);position:relative;overflow:hidden}
+.cover::before{content:'';position:absolute;top:25%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(200,80,106,0.04) 0%,transparent 70%);border-radius:50%}
+.murmur{position:absolute;width:3px;height:3px;border-radius:50%;animation:murmur-drift linear infinite;pointer-events:none}
+.murmur:nth-child(1){background:rgba(200,80,106,0.5);left:15%;top:25%;animation-duration:6s;animation-delay:0s}
+.murmur:nth-child(2){background:rgba(200,80,106,0.35);left:28%;top:18%;animation-duration:7s;animation-delay:-1s}
+.murmur:nth-child(3){background:rgba(200,80,106,0.4);left:40%;top:30%;animation-duration:5.5s;animation-delay:-3s}
+.murmur:nth-child(4){background:rgba(200,80,106,0.3);left:52%;top:22%;animation-duration:8s;animation-delay:-2s}
+.murmur:nth-child(5){background:rgba(200,80,106,0.45);left:65%;top:28%;animation-duration:6.5s;animation-delay:-4s}
+.murmur:nth-child(6){background:rgba(200,80,106,0.3);left:78%;top:20%;animation-duration:7.5s;animation-delay:-5s}
+.murmur:nth-child(7){background:rgba(72,120,184,0.3);left:20%;top:40%;animation-duration:9s;animation-delay:-1.5s}
+.murmur:nth-child(8){background:rgba(72,120,184,0.25);left:45%;top:45%;animation-duration:10s;animation-delay:-3.5s}
+.murmur:nth-child(9){background:rgba(72,120,184,0.3);left:70%;top:38%;animation-duration:8.5s;animation-delay:-6s}
+.murmur:nth-child(10){background:rgba(200,80,106,0.35);left:35%;top:50%;animation-duration:7s;animation-delay:-7s}
+.murmur:nth-child(11){background:rgba(72,120,184,0.2);left:55%;top:55%;animation-duration:11s;animation-delay:-2.5s}
+.murmur:nth-child(12){background:rgba(200,80,106,0.25);left:82%;top:42%;animation-duration:6s;animation-delay:-4.5s}
+@keyframes murmur-drift{
+  0%{transform:translate(0,0) scale(0.6);opacity:0}
+  15%{opacity:0.7}
+  50%{transform:translate(40px,-30px) scale(1);opacity:0.5}
+  85%{opacity:0.3}
+  100%{transform:translate(-20px,60px) scale(0.8);opacity:0}
+}
+.ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.015;mix-blend-mode:overlay;pointer-events:none}
+.cover-content{position:relative;z-index:2;padding:48px 24px}
+.cover-badge{display:inline-block;padding:6px 22px;border:1px solid rgba(200,80,106,0.25);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:var(--rose-glow);margin-bottom:40px}
+.cover-icon{font-size:3.5rem;margin-bottom:18px;display:block;animation:flock-sway 4s ease-in-out infinite}
+@keyframes flock-sway{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-10px) rotate(2deg)}}
+.cover h1{font-family:'Poppins',sans-serif;font-size:clamp(2.2rem,6.5vw,4rem);font-weight:300;color:var(--white);line-height:1.06;margin-bottom:4px}
+.cover h1 strong{font-weight:700;color:var(--rose-glow);display:block}
+.cover-tagline{font-family:'Lora',serif;font-size:1.02rem;font-style:italic;color:rgba(255,255,255,0.42);margin-top:28px;line-height:1.75}
+.cover-tagline em{color:var(--rose-pale);font-style:normal;font-weight:600}
+.cover-sub{font-family:'Poppins',sans-serif;font-size:0.72rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-top:14px}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.58rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,0.12);margin-top:52px}
+
+/* ===== CHAPTER HEADS ===== */
+.ch-head{background:linear-gradient(170deg,var(--dusk-dark),var(--dusk));padding:76px 24px 56px;position:relative;overflow:hidden}
+.ch-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 5%,var(--rose) 50%,transparent 95%)}
+.ch-head .page{position:relative;z-index:2}
+.ch-num{font-family:'Poppins',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:6px;text-transform:uppercase;color:var(--rose);opacity:0.8}
+.ch-title{font-family:'Poppins',sans-serif;font-size:clamp(1.8rem,5vw,2.8rem);font-weight:700;color:var(--white);margin:10px 0 6px;letter-spacing:-0.01em}
+.ch-sub{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:var(--rose-glow);opacity:0.6}
+
+/* ===== SCRIPTURE RIBBON ===== */
+.ribbon{text-align:center;padding:20px 24px;background:linear-gradient(135deg,var(--gold-soft),rgba(212,168,67,0.06));border-top:1.5px solid rgba(212,168,67,0.15);border-bottom:1.5px solid rgba(212,168,67,0.15)}
+.ribbon p{font-family:'Lora',serif;font-size:0.82rem;font-style:italic;color:var(--text-muted);max-width:480px;margin:0 auto}
+
+/* ===== MISSION BOX ===== */
+.mission{text-align:center;padding:44px 36px;margin:36px 0;background:linear-gradient(140deg,var(--dusk),var(--dusk-mid));border-radius:var(--radius);position:relative;overflow:hidden;border:3px solid rgba(200,80,106,0.3);box-shadow:0 0 0 1px rgba(200,80,106,0.08),0 4px 12px rgba(74,45,122,0.2),0 16px 40px rgba(26,10,46,0.16)}
+.mission::before{content:'';position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:280px;height:280px;background:radial-gradient(circle,rgba(200,80,106,0.06) 0%,transparent 70%);border-radius:50%}
+.mission-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--rose);margin-bottom:14px;position:relative}
+.mission p{font-family:'Poppins',sans-serif;font-size:clamp(1.05rem,2.8vw,1.35rem);font-weight:600;color:var(--white);line-height:1.45;position:relative}
+.mission p em{color:var(--rose-glow);font-style:normal}
+
+/* ===== VIZ BOX ===== */
+.viz{margin:48px 0 36px;border-radius:16px;overflow:hidden;border:2.5px solid var(--dusk-light);box-shadow:var(--shadow-strong)}
+.viz-inner{position:relative}
+.viz-top{background:rgba(74,58,104,0.12);padding:22px 28px 20px;display:flex;align-items:center;gap:16px;border-bottom:1.5px solid rgba(74,58,104,0.12)}
+.viz-icon-wrap{width:52px;height:52px;border-radius:50%;border:2px solid rgba(200,80,106,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(145deg,#fff,rgba(255,240,245,0.5));box-shadow:0 3px 12px rgba(200,80,106,0.1);font-size:1.8rem}
+.viz-meta{flex:1}
+.viz-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--rose);margin-bottom:2px}
+.viz h4{font-family:'Poppins',sans-serif;font-size:1.08rem;font-weight:600;color:var(--dusk);letter-spacing:-0.01em}
+.viz-body{padding:28px;background:linear-gradient(170deg,#FEFBFF 0%,#FFFCF7 40%,#FAF6FF 100%)}
+.viz-body p{font-size:0.95rem;color:var(--text-light);line-height:1.72;margin-bottom:14px}
+.viz-body p:last-child{margin-bottom:0}
+.viz-lesson{margin-top:20px;padding:16px 20px;background:linear-gradient(135deg,rgba(200,80,106,0.05),rgba(200,80,106,0.08));border:1.5px solid rgba(200,80,106,0.15);border-radius:10px;font-family:'Lora',serif;font-size:0.9rem;font-style:italic;color:var(--dusk-light);line-height:1.7}
+
+/* ===== BEFORE/AFTER ===== */
+.ba{display:grid;gap:18px;margin:36px 0}
+@media(min-width:640px){.ba{grid-template-columns:1fr 1fr}}
+.ba-box{border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft)}
+.ba-before{background:var(--before-bg)}
+.ba-after{background:var(--after-bg)}
+.ba-head{padding:12px 20px;font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.ba-before .ba-head{background:rgba(160,56,40,0.1);color:var(--before-text)}
+.ba-after .ba-head{background:rgba(72,120,184,0.1);color:var(--after-text)}
+.ba-body{padding:18px 20px;font-size:0.88rem;line-height:1.65}
+.ba-before .ba-body{color:var(--before-text)}
+.ba-after .ba-body{color:var(--after-text)}
+
+/* ===== SCENE ===== */
+.scene{background:linear-gradient(135deg,var(--warm-mid),var(--warm));border:1px solid var(--warm-deep);border-radius:var(--radius);padding:28px;margin:32px 0;box-shadow:var(--shadow-soft)}
+.scene-label{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--rose);margin-bottom:14px}
+.scene h4{font-family:'Poppins',sans-serif;font-size:1.15rem;font-weight:600;color:var(--dusk);margin-bottom:12px}
+.scene p{font-size:0.95rem;color:var(--text);line-height:1.78;margin-bottom:12px}
+.scene p:last-child{margin-bottom:0}
+
+/* ===== INSIGHT ===== */
+.insight{margin:32px 0;padding:28px 32px;background:linear-gradient(140deg,var(--dusk),var(--dusk-mid));border-radius:var(--radius);border:2px solid rgba(200,80,106,0.25);border-left:5px solid var(--rose);position:relative;overflow:hidden;box-shadow:var(--shadow-mid)}
+.insight::before{content:'';position:absolute;top:-50%;right:-20%;width:200px;height:200px;background:radial-gradient(circle,rgba(200,80,106,0.06) 0%,transparent 70%);border-radius:50%}
+.insight p{font-family:'Lora',serif;font-size:1.02rem;font-style:italic;color:var(--white);line-height:1.72;position:relative;z-index:2}
+.insight em{color:var(--rose-glow);font-style:normal;font-weight:600}
+
+/* ===== GOLD QUOTE ===== */
+.gq{margin:32px 0;text-align:center;padding:32px 24px;position:relative;background:linear-gradient(160deg,rgba(212,168,67,0.02),rgba(212,168,67,0.05));border-radius:var(--radius);border:1.5px solid rgba(212,168,67,0.12)}
+.gq::before,.gq::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:48px;height:1.5px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.gq::before{top:0}
+.gq::after{bottom:0}
+.gq p{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:var(--dusk-mid);line-height:1.6;max-width:520px;margin:0 auto}
+
+/* ===== THINK ===== */
+.think{margin:36px 0;padding:32px;background:linear-gradient(145deg,var(--warm-mid),rgba(200,80,106,0.03));border:2.5px dashed var(--rose);border-radius:var(--radius);position:relative;box-shadow:0 2px 6px rgba(200,80,106,0.08)}
+.think::before{content:'✦';position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--warm);padding:0 14px;font-size:1rem;color:var(--rose)}
+.think-label{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--rose);text-align:center;margin-bottom:10px}
+.think h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--dusk);text-align:center;margin-bottom:14px}
+.think p{font-size:0.88rem;text-align:center;color:var(--text-light);margin-bottom:8px}
+.think-line{border-bottom:1px solid rgba(200,80,106,0.2);height:30px}
+
+/* ===== CHARACTER CARDS ===== */
+.char-grid{display:grid;gap:20px;margin:36px 0}
+@media(min-width:640px){.char-grid{grid-template-columns:1fr 1fr}}
+.char-card{background:var(--white);border:2px solid var(--warm-deep);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft);transition:all 0.3s ease}
+.char-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-mid)}
+.char-head{background:linear-gradient(135deg,var(--rose-soft),rgba(200,80,106,0.02));padding:18px 20px;border-bottom:1px solid var(--warm-deep);display:flex;align-items:center;gap:14px}
+.char-emoji{font-size:2rem;line-height:1}
+.char-info{flex:1}
+.char-name{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:var(--dusk);line-height:1.25}
+.char-title{font-family:'Poppins',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-top:2px}
+.char-body{padding:20px}
+.char-body p{font-size:0.9rem;color:var(--text-light);line-height:1.72;margin:0}
+
+/* ===== THE 7 GRID ===== */
+.seven-grid{display:grid;gap:14px;margin:36px 0}
+@media(min-width:640px){.seven-grid{grid-template-columns:1fr 1fr}}
+.seven-card{background:var(--white);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow-soft);border-left:4px solid var(--rose);transition:all 0.3s ease}
+.seven-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-mid)}
+.seven-num{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--rose);margin-bottom:4px}
+.seven-card h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--dusk);margin-bottom:6px}
+.seven-card p{font-size:0.85rem;color:var(--text-light);line-height:1.65;margin:0}
+.seven-full{grid-column:1/-1;border-left-color:var(--gold);background:linear-gradient(135deg,var(--gold-soft),rgba(212,168,67,0.04))}
+
+/* ===== PROMPT BOX ===== */
+.prompt{margin:32px 0;border-radius:var(--radius);overflow:hidden;border:2px solid rgba(200,80,106,0.2);box-shadow:var(--shadow-mid)}
+.prompt-head{padding:14px 24px;background:linear-gradient(90deg,var(--dusk),var(--dusk-mid));font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--rose)}
+.prompt-body{padding:24px;background:#160D22;color:#C8B0D8;font-family:'Lora',serif;font-size:0.88rem;line-height:1.72}
+.prompt-body strong{color:var(--rose-glow)}
+
+/* ===== ROOT CHECK ===== */
+.root-ck{margin:36px 0;padding:28px;background:linear-gradient(140deg,var(--warm-mid),var(--warm-deep));border-radius:var(--radius);border:1.5px solid rgba(200,80,106,0.15);box-shadow:var(--shadow-soft)}
+.rc-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--rose);text-align:center;margin-bottom:6px}
+.root-ck h4{font-family:'Poppins',sans-serif;font-size:0.92rem;font-weight:600;color:var(--dusk);text-align:center;margin-bottom:20px}
+.r-item{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid rgba(200,80,106,0.08)}
+.r-item:last-child{border-bottom:none}
+.r-dot{width:8px;height:8px;border-radius:50%;background:var(--rose);flex-shrink:0;margin-top:7px}
+.r-text{font-size:0.85rem;color:var(--text-light);line-height:1.6}
+.r-text strong{color:var(--dusk);font-weight:600}
+
+/* ===== TIMELINE ===== */
+.tl{margin:36px 0}
+.tl-item{display:grid;grid-template-columns:72px 1fr;gap:16px;padding:18px 0;border-bottom:1px solid rgba(200,80,106,0.08)}
+.tl-wk{font-family:'Poppins',sans-serif;font-size:0.65rem;font-weight:700;color:var(--rose);padding-top:3px}
+.tl-item h4{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--dusk);margin-bottom:4px}
+.tl-item p{font-size:0.86rem;color:var(--text-light);margin:0;line-height:1.6}
+
+/* ===== INSTALL NOTE ===== */
+.inst{margin:28px 0;padding:18px 24px;background:linear-gradient(90deg,var(--rose-soft),var(--gold-soft));border-left:3px solid var(--rose);border-radius:0 var(--radius) var(--radius) 0;box-shadow:var(--shadow-soft)}
+.inst p{font-family:'Poppins',sans-serif;font-size:0.78rem;color:var(--dusk-light);line-height:1.55;margin:0}
+.inst strong{color:var(--dusk)}
+
+/* ===== FINALE ===== */
+.finale{text-align:center;padding:80px 24px;background:linear-gradient(170deg,var(--dusk),#060310)}
+.finale-emoji{font-size:3.5rem;display:block;margin-bottom:24px;animation:gentle-pulse 4s ease-in-out infinite}
+@keyframes gentle-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.finale h2{font-family:'Poppins',sans-serif;font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;color:var(--white);margin-bottom:8px}
+.finale h2 span{color:var(--rose-glow)}
+.finale p{font-family:'Lora',serif;font-size:0.95rem;color:rgba(255,255,255,0.35);max-width:480px;margin:16px auto;line-height:1.6}
+footer{text-align:center;padding:36px 24px;background:#04020A}
+footer p{font-family:'Lora',serif;font-size:0.82rem;font-style:italic;color:rgba(212,168,67,0.25);margin-bottom:14px;line-height:1.7}
+footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:normal;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.12)}
+@media print{
+  @page{margin:18mm 16mm 22mm 16mm}
+  body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .cover{min-height:auto;padding:100px 24px;break-after:page}
+  .ch-head{break-before:page;padding:60px 24px 44px}
+  .think,.scene,.viz,.ba,.char-card,.seven-card,.insight,.gq,.root-ck,.prompt,.mission{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== COVER ===== -->
+<div class="cover">
+  <div class="murmur"></div><div class="murmur"></div><div class="murmur"></div><div class="murmur"></div>
+  <div class="murmur"></div><div class="murmur"></div><div class="murmur"></div><div class="murmur"></div>
+  <div class="murmur"></div><div class="murmur"></div><div class="murmur"></div><div class="murmur"></div>
+  <div class="ghost-noise"></div>
+  <div class="cover-content">
+    <div class="cover-badge">A Kingdom Builders Parable</div>
+    <span class="cover-icon">🐦</span>
+    <h1>The Starling's<br><strong>Murmuration</strong></h1>
+    <p class="cover-tagline">You do not need to change everything. You need to <em>align seven things.</em><br>This is the story of how a quarter million birds move as one mind — and how the same principle can transform your health, your wealth, your relationships, and your peace.</p>
+    <p class="cover-sub">Small Alignments. Unstoppable Momentum.</p>
+    <p class="cover-author">Kingdom Builders AI</p>
+  </div>
+</div>
+
+<!-- ===== WHY THIS MATTERS — OPENING ===== -->
+<div class="ribbon"><p>"Where there is no vision, the people perish: but he that keepeth the law, happy is he." — Proverbs 29:18</p></div>
+
+<div class="page">
+<section class="section">
+  <div class="prose">
+    <p>Before we begin, let's be honest about something most self-improvement content will never tell you:</p>
+
+    <div class="mission">
+      <div class="mission-label">The Uncomfortable Truth</div>
+      <p>You do not have a motivation problem. You do not have a discipline problem. You have an <em>alignment problem.</em> Your inputs are pointed in twelve different directions, and you are trying to move forward by pushing harder. No amount of effort overcomes misalignment. Ask any rocket scientist.</p>
+    </div>
+
+    <p>This playback exists because the world is entering an era of breathtaking abundance — AI, automation, and emerging technology are about to remove enormous amounts of scarcity and toil from human life. But abundance without alignment is just chaos with more options. The people who will thrive in this new world are not the ones who hustle hardest. They are the ones whose <em>inputs are aligned</em> — whose daily choices in health, relationships, work, and thought all point in the same direction, reinforcing each other, compounding silently, creating a life that moves like a murmuration: hundreds of tiny elements, perfectly coordinated, creating something breathtaking.</p>
+    <p>That is what you are about to learn. Not from a textbook. <strong>From a quarter million birds who have been doing it for 50 million years.</strong></p>
+  </div>
+</section>
+</div>
+
+<!-- ==================== CHAPTER 1 ==================== -->
+<div class="ch-head"><div class="page">
+  <div class="ch-num">Chapter One</div>
+  <h2 class="ch-title">The Impossible Dance</h2>
+  <p class="ch-sub">How 250,000 birds move as one — without a leader, a plan, or a single collision</p>
+</div></div>
+
+<div class="ribbon"><p>"Two are better than one, because they have a good return for their labor." — Ecclesiastes 4:9</p></div>
+
+<div class="page">
+<section class="section prose">
+  <h2>🌅 The Evening Sky</h2>
+  <p>Every winter evening over the marshes of southern England, something impossible happens. A quarter million starlings take flight at dusk and perform a coordinated aerial dance so beautiful that people drive hours just to witness it. The flock contracts, expands, spirals, and ripples like a single living organism. No bird collides with another. No bird gets left behind. Changes in direction propagate through the flock at speeds exceeding 90 miles per hour — faster than any individual bird can fly.</p>
+  <p>Scientists spent decades trying to explain it. They assumed there must be a leader — some alpha bird at the front guiding the formation. There was not. They assumed birds must have a mental map of the whole flock's position. They did not. They assumed it required complex communication — calls, signals, something. It did not.</p>
+  <p><strong>The answer, when they finally discovered it, was so simple it changed how physicists, biologists, and computer scientists think about complex systems forever.</strong></p>
+
+  <div class="viz"><div class="viz-inner">
+    <div class="viz-top"><div class="viz-icon-wrap">🔬</div><div class="viz-meta"><div class="viz-label">The Discovery</div><h4>The Rule of Seven</h4></div></div>
+    <div class="viz-body">
+      <p>In 2013, physicists at the University of Rome used 3D tracking technology to map the position and velocity of every individual starling in a murmuration. What they found was stunning:</p>
+      <p><strong>Each starling tracks exactly 6-7 neighbors.</strong> Not the whole flock. Not a leader. Not even the birds closest to it in distance. It maintains alignment with a fixed number of nearest neighbors — approximately seven — and adjusts its speed, direction, and spacing to stay coordinated with those seven birds.</p>
+      <p>That is it. That is the entire algorithm. No central control. No global awareness. Just each bird asking one question: <em>Am I aligned with my seven nearest neighbors?</em></p>
+      <p>And from that single question, repeated 250,000 times simultaneously, the most beautiful coordinated movement in nature emerges.</p>
+      <div class="viz-lesson">The flock does not move because a leader commands it. It moves because every individual element is aligned with its immediate neighbors. The coordination is not top-down. It is emergent. It arises from alignment at the smallest scale.</div>
+    </div>
+  </div></div>
+
+  <p>Dr. Andrea Cavagna, who led the research, said something that should be written on every wall in every home: the reason starlings track a fixed <em>number</em> of neighbors rather than birds within a fixed <em>distance</em> is that number-based alignment makes the flock scale-proof. Whether 500 birds or 500,000, the rule works identically. The flock never breaks apart.</p>
+
+  <div class="insight"><p>You are about to see why this is the most important principle you will ever learn for your life. Because your health, your wealth, your relationships, and your peace work exactly the same way: <em>they do not respond to willpower applied from above. They respond to alignment among your closest inputs.</em></p></div>
+
+  <h2>🧠 Why This Changes Everything</h2>
+  <p>Most people try to change their lives the way scientists first tried to explain murmurations — they look for the leader. The one big thing. The magic morning routine. The perfect diet. The breakthrough business idea. The one relationship fix that makes everything click.</p>
+  <p>And just like the scientists, <strong>they are looking in the wrong place.</strong></p>
+  <p>There is no leader bird. There is no single thing that transforms your life. There is only alignment — the quiet, unglamorous practice of making sure your closest inputs are pointed in the same direction. When they are, momentum happens by itself. When they are not, no amount of effort, discipline, or hustle creates lasting change.</p>
+
+  <div class="ba">
+    <div class="ba-box ba-before">
+      <div class="ba-head">⬅ The Old Way</div>
+      <div class="ba-body"><strong>"I need more discipline."</strong><br>Pushes harder. Adds a 5 AM alarm. Starts a diet on Monday. Downloads a habit tracker. Burns out by Week 3. Blames willpower. Tries again in January. Repeat for 10 years.</div>
+    </div>
+    <div class="ba-box ba-after">
+      <div class="ba-head">➡ The Murmuration Way</div>
+      <div class="ba-body"><strong>"I need better alignment."</strong><br>Identifies seven closest inputs. Checks which ones are pointing in conflicting directions. Aligns them one at a time. Momentum compounds. No heroic effort required. The system moves itself.</div>
+    </div>
+  </div>
+</section>
+
+<div class="think">
+  <div class="think-label">Pause and Feel This</div>
+  <h4>How many of your daily inputs are aligned?</h4>
+  <p>Think about what you eat, what you watch, who you talk to, how you spend your first hour, what you read, how you talk to yourself, and what you do before bed. Are they all pointed at the same life? Or are they pulling in seven different directions?</p>
+  <div class="think-line"></div>
+  <p>If the answer is "different directions," that is not a character flaw. That is a misaligned flock. And now you know how to fix it.</p>
+</div>
+</div>
+
+<!-- ==================== CHAPTER 2 ==================== -->
+<div class="ch-head"><div class="page">
+  <div class="ch-num">Chapter Two</div>
+  <h2 class="ch-title">The Seven Neighbors</h2>
+  <p class="ch-sub">Naming the inputs that determine whether your life murmurates or scatters</p>
+</div></div>
+
+<div class="ribbon"><p>"Above all else, guard your heart, for everything you do flows from it." — Proverbs 4:23</p></div>
+
+<div class="page">
+<section class="section prose">
+  <h2>🐦 Your Personal Flock</h2>
+  <p>If a starling only needs to track seven neighbors to create unstoppable coordinated movement, what are YOUR seven neighbors? What are the inputs closest to you — the ones that, if aligned, create momentum without willpower?</p>
+  <p>After studying high-performers, behavioral science, and the patterns that reliably produce flourishing in health, wealth, and relationships, the same seven inputs appear over and over. Not because they are magic. Because they are <em>closest to you.</em> They are the inputs your life literally cannot avoid interacting with every single day.</p>
+
+  <div class="seven-grid">
+    <div class="seven-card">
+      <div class="seven-num">Neighbor 01</div>
+      <h4>🌅 First Hour</h4>
+      <p>The first 60 minutes of your day set the trajectory for all 24. This is not about 5 AM alarms — it is about whether your first hour is <strong>reactive</strong> (phone, email, news, someone else's agenda) or <strong>intentional</strong> (prayer, movement, planning, silence). The murmuration starts here.</p>
+    </div>
+    <div class="seven-card">
+      <div class="seven-num">Neighbor 02</div>
+      <h4>🥗 Fuel</h4>
+      <p>What you put in your body is not just nutrition — it is information. Every meal either tells your body "we are safe, build and repair" or "we are under attack, store and inflame." Aligned fuel means your body supports your ambition instead of sabotaging it at 2 PM every afternoon.</p>
+    </div>
+    <div class="seven-card">
+      <div class="seven-num">Neighbor 03</div>
+      <h4>🗣️ Inner Voice</h4>
+      <p>The running commentary in your head is a neighbor. Most people's inner voice is a cruel critic they would never tolerate from another person. Aligned inner voice means the story you tell yourself about yourself matches the person you are becoming — not the person you were at your worst moment.</p>
+    </div>
+    <div class="seven-card">
+      <div class="seven-num">Neighbor 04</div>
+      <h4>👥 Five Closest People</h4>
+      <p>You absorb the habits, expectations, and emotional baseline of the people you spend the most time with. This is not a metaphor — it is measurable. Your income, your body weight, and your happiness all correlate with your five closest relationships. Alignment here is not about cutting people off. It is about being intentional about who gets the most access to your time.</p>
+    </div>
+    <div class="seven-card">
+      <div class="seven-num">Neighbor 05</div>
+      <h4>📱 Information Diet</h4>
+      <p>What you scroll, watch, read, and listen to is literally programming your brain's model of reality. An information diet of fear, outrage, and comparison creates a brain that expects threats. An information diet of growth, possibility, and gratitude creates a brain that sees opportunity. Same world. Different inputs.</p>
+    </div>
+    <div class="seven-card">
+      <div class="seven-num">Neighbor 06</div>
+      <h4>💰 Money Direction</h4>
+      <p>Not how much you earn — where it flows. Every dollar is a vote for the life you are building. Misaligned money flows toward instant comfort and accumulates nothing. Aligned money flows toward future freedom and compounds relentlessly. This is not about deprivation. It is about direction.</p>
+    </div>
+    <div class="seven-card seven-full">
+      <div class="seven-num">Neighbor 07</div>
+      <h4>🌙 Last Hour</h4>
+      <p>How you end the day determines the quality of your sleep, which determines the quality of your next day. The last hour is the seed of the first hour. Screens, arguments, and anxiety before bed ripple forward for 18 hours. Gratitude, presence, and calm before bed create a flywheel that makes the morning easier without an alarm.</p>
+    </div>
+  </div>
+
+  <p>Seven inputs. That is your flock. When they are aligned — when your first hour, your fuel, your inner voice, your people, your information, your money, and your last hour are all pointed at the same vision of who you are becoming — momentum is not something you create through effort. <strong>It is something that emerges from the alignment itself.</strong></p>
+
+  <div class="scene">
+    <div class="scene-label">The Alignment Test</div>
+    <h4>Score Your Flock Right Now</h4>
+    <p>For each of your seven neighbors, ask: <strong>"Is this input pointed at the person I am becoming, or the person I am trying to leave behind?"</strong></p>
+    <p>If 5+ are aligned: you already feel momentum, even if life is imperfect. The flock is moving.</p>
+    <p>If 3-4 are aligned: you feel stuck. Effort feels disproportionate to results. The flock is turbulent.</p>
+    <p>If 0-2 are aligned: you feel overwhelmed. Every day is a fight. The flock has scattered.</p>
+    <p><strong>The fix is not "try harder." The fix is "align the next neighbor."</strong></p>
+  </div>
+
+  <div class="gq"><p>"You do not rise to the level of your goals. You fall to the level of your systems." The murmuration teaches us something deeper: you do not even fall to your systems. You fall to the alignment between them.</p></div>
+</section>
+
+<div class="think">
+  <div class="think-label">Your Turn</div>
+  <h4>Name your most misaligned neighbor</h4>
+  <p>Of the seven neighbors, which one is most obviously pointing in the wrong direction? Write it down. Not all seven. Just the worst offender.</p>
+  <div class="think-line"></div>
+  <p>This is where your transformation begins. Not with a complete life overhaul. With one bird turning to face the same direction as the others.</p>
+</div>
+</div>
+
+<!-- ==================== CHAPTER 3 ==================== -->
+<div class="ch-head"><div class="page">
+  <div class="ch-num">Chapter Three</div>
+  <h2 class="ch-title">The Cascade Effect</h2>
+  <p class="ch-sub">Why aligning one neighbor pulls the others into formation — and how momentum compounds without willpower</p>
+</div></div>
+
+<div class="ribbon"><p>"The light of the body is the eye: if therefore thine eye be single, thy whole body shall be full of light." — Matthew 6:22</p></div>
+
+<div class="page">
+<section class="section prose">
+  <h2>🌊 How Signals Propagate</h2>
+  <p>Here is the part of murmuration science that most people miss, and it is the most powerful part: <strong>when one bird turns, it does not just affect that bird. It cascades.</strong></p>
+  <p>When a starling on the edge of the flock detects a predator and changes direction, the signal does not travel from bird to bird in a chain. It propagates <em>through</em> the flock like a wave. The speed of propagation is roughly three times faster than any individual bird's reaction time. The flock responds faster than its individual members are capable of responding.</p>
+  <p><strong>The system is faster than its parts.</strong></p>
+  <p>Your life works the same way. When you align one neighbor, it does not just improve that one area. It cascades. And the cascade is faster and more powerful than what you could achieve by working on each area individually.</p>
+
+  <div class="scene">
+    <div class="scene-label">The Cascade in Action</div>
+    <h4>Watch What Happens When You Align "First Hour"</h4>
+    <p><strong>You reclaim your first hour.</strong> No phone for 60 minutes. Instead: 10 minutes of silence and reflection, 20 minutes of movement, 30 minutes of your most important work.</p>
+    <p><strong>Cascade to Fuel:</strong> You are no longer rushing. You eat an intentional breakfast instead of grabbing sugar and caffeine. Your body stops spiking and crashing. Energy stabilizes. 🥗</p>
+    <p><strong>Cascade to Inner Voice:</strong> You started the day with intention instead of reaction. The inner critic — who thrives on chaos — has less ammunition. You feel more in control. The voice softens. 🗣️</p>
+    <p><strong>Cascade to Relationships:</strong> You arrive at conversations calm instead of frantic. Your spouse notices. Your coworkers feel it. You are more present, less reactive. 👥</p>
+    <p><strong>Cascade to Information Diet:</strong> Because you started intentionally, you are less likely to scroll mindlessly at 10 AM. The craving for distraction fades when the morning was already meaningful. 📱</p>
+    <p><strong>Cascade to Money:</strong> The clarity you built in the morning makes financial decisions clearer. Impulse purchases (which thrive on emotional chaos) drop. Direction strengthens. 💰</p>
+    <p><strong>Cascade to Last Hour:</strong> You end the day with less accumulated anxiety. Less screen time before bed. Better sleep. Which makes the next first hour easier. The flywheel accelerates. 🌙</p>
+  </div>
+
+  <p>This is not motivational fantasy. This is the same physics that makes murmurations work. <strong>Alignment in one node propagates to connected nodes automatically.</strong> You do not need to fix all seven. You need to fix one, and let the cascade do the heavy lifting.</p>
+
+  <div class="viz"><div class="viz-inner">
+    <div class="viz-top"><div class="viz-icon-wrap">⚡</div><div class="viz-meta"><div class="viz-label">The Core Principle</div><h4>Alignment Compounds. Misalignment Cancels.</h4></div></div>
+    <div class="viz-body">
+      <p>When your inputs are aligned, each one makes the others easier. Going to the gym is easier when you slept well. Sleeping well is easier when you did not doom-scroll. Not doom-scrolling is easier when your day felt meaningful. Meaningful days are easier when your first hour was intentional. <strong>Alignment creates a system where each element reduces the friction of every other element.</strong></p>
+      <p>When your inputs are misaligned, each one makes the others harder. Poor sleep makes the gym harder. Skipping the gym makes you reach for sugar. Sugar crashes make you irritable. Irritability damages relationships. Damaged relationships make you scroll for escape. Scrolling destroys your sleep. <strong>Misalignment creates a system where each element increases the friction of every other element.</strong></p>
+      <div class="viz-lesson">This is why life sometimes feels impossibly hard and sometimes feels effortless — even though nothing external changed. The difference is not circumstances. It is alignment. The flock either murmurates or scatters. There is very little in between.</div>
+    </div>
+  </div></div>
+
+  <div class="insight"><p>Most people think change is linear: improve one thing, get one unit of improvement. The murmuration teaches that change is <em>exponential when aligned.</em> Align two neighbors and you get the improvement of three. Align five and you get the improvement of twenty. This is why some people seem to transform overnight — they hit an alignment threshold where the cascade becomes self-sustaining.</p></div>
+</section>
+
+<div class="think">
+  <div class="think-label">The Domino Question</div>
+  <h4>What is your lead domino?</h4>
+  <p>Which single neighbor, if aligned, would make the most other neighbors easier to align? For most people, it is either First Hour or Fuel. These two are the highest-leverage starting points because they cascade the widest.</p>
+  <div class="think-line"></div>
+  <p>Choose one. Not two. Not seven. One bird turns. The flock follows.</p>
+</div>
+</div>
+
+<!-- ==================== CHAPTER 4 ==================== -->
+<div class="ch-head"><div class="page">
+  <div class="ch-num">Chapter Four</div>
+  <h2 class="ch-title">The Predator Response</h2>
+  <p class="ch-sub">How aligned flocks survive disruption — and how yours can too</p>
+</div></div>
+
+<div class="ribbon"><p>"Consider it pure joy, my brothers and sisters, whenever you face trials of many kinds, because you know that the testing of your faith produces perseverance." — James 1:2-3</p></div>
+
+<div class="page">
+<section class="section prose">
+  <h2>🦅 The Hawk Arrives</h2>
+  <p>Murmurations are not just beautiful. They are functional. They exist because starlings face a lethal threat: peregrine falcons, the fastest animal on earth, dive-bombing at 240 miles per hour. A single starling is dead in seconds. A murmuration is almost impossible to catch.</p>
+  <p>When a falcon attacks, the murmuration does not scatter. It <em>contracts.</em> The flock pulls tighter, moves faster, and becomes denser. The falcon cannot lock onto an individual bird because the mass is moving as one. The predator cannot separate a target from the group. The alignment that made the flock beautiful now makes it <strong>resilient.</strong></p>
+  <p>Your life will face falcons. Sickness. Job loss. Relationship crisis. Financial shock. Grief. The question is not whether the falcon comes. It is whether your flock is aligned enough to absorb the hit without scattering.</p>
+
+  <div class="ba">
+    <div class="ba-box ba-before">
+      <div class="ba-head">⬅ Scattered Flock</div>
+      <div class="ba-body"><strong>Crisis hits someone whose inputs are misaligned.</strong> No health reserves (poor fuel, no exercise). No relational reserves (neglected relationships). No financial reserves (no direction). No internal reserves (hostile inner voice). The falcon picks them off easily. One crisis cascades into five.</div>
+    </div>
+    <div class="ba-box ba-after">
+      <div class="ba-head">➡ Aligned Flock</div>
+      <div class="ba-body"><strong>Same crisis hits someone whose inputs are aligned.</strong> Body is strong (good fuel, consistent movement). Relationships are invested (people show up). Finances have margin (reserves exist). Inner voice is steady ("we have faced hard things before"). The flock contracts. The person bends but does not break.</div>
+    </div>
+  </div>
+
+  <p>This is what resilience actually is. Not toughness. Not grit. Not white-knuckling through pain. <strong>Resilience is the accumulated result of alignment.</strong> Every day you kept your seven neighbors pointed in the same direction, you were building falcon-resistance without knowing it.</p>
+
+  <h2>🤝 The Couple Murmuration</h2>
+  <p>The most powerful application of this principle is in marriage and close partnerships. Two people trying to build a life together are two flocks attempting to murmure as one. When their seven neighbors are aligned with each other — when they share a first hour practice, eat well together, speak life into each other, surround themselves with the same quality of people, consume uplifting information, point their money in the same direction, and protect their last hour together — they do not just survive. They become something breathtaking.</p>
+  <p>And when one partner's flock is pointing north while the other's points south? It does not matter how much they love each other. <strong>Misaligned flocks cannot fly together.</strong> The relationship becomes exhausting. Not because of a lack of love, but because of a lack of alignment.</p>
+
+  <div class="gq"><p>"Love is patient, love is kind." Yes. But love also needs alignment to sustain itself. Patience runs out when your inputs drain you. Kindness runs dry when your inner voice is merciless to yourself. The fruit of the spirit grows in aligned soil.</p></div>
+
+  <div class="scene">
+    <div class="scene-label">The Couple Alignment Conversation</div>
+    <h4>A Practice for Partners</h4>
+    <p>Sit with your partner. Walk through the seven neighbors together. Not as a confrontation. As a conversation: "Where are we aligned? Where are we pulling in different directions? What is one neighbor we can align this week?"</p>
+    <p>This single conversation, repeated monthly, does more for a relationship than years of reacting to symptoms. You stop fighting about dishes and money and screen time — those are scattered birds. <strong>You start aligning the flock.</strong></p>
+  </div>
+</section>
+
+<div class="root-ck">
+  <div class="rc-label">Root Check</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Rule of Seven.</strong> Each starling tracks seven neighbors. Each person has seven daily inputs. Alignment among these seven creates all the momentum you need.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Cascade.</strong> Aligning one neighbor pulls others into formation. Start with one. Let the physics do the work.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Predator Response.</strong> Aligned flocks survive crises that scatter misaligned ones. Resilience is not a personality trait. It is a byproduct of alignment.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Couple Murmuration.</strong> Two aligned flocks flying together become unstoppable. Misaligned flocks exhaust each other regardless of love.</div></div>
+</div>
+</div>
+
+<!-- ==================== CHAPTER 5 ==================== -->
+<div class="ch-head"><div class="page">
+  <div class="ch-num">Chapter Five</div>
+  <h2 class="ch-title">The Installation</h2>
+  <p class="ch-sub">Your 30-day murmuration protocol — one neighbor per week, cascade by design</p>
+</div></div>
+
+<div class="ribbon"><p>"For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future." — Jeremiah 29:11</p></div>
+
+<div class="page">
+<section class="section prose">
+  <p>Understanding the murmuration is not enough. The principle must be installed. Here is your 30-day protocol — designed to create the cascade effect in your actual life, starting tomorrow morning.</p>
+
+  <div class="tl">
+    <div class="tl-item"><div class="tl-wk">Week 1</div><div><h4>Align Your First Hour</h4><p>No phone for 60 minutes after waking. Replace scrolling with: 10 minutes of stillness (prayer, meditation, gratitude), 20 minutes of movement (walk, gym, stretching), 30 minutes of your most important task. Track this daily. By Friday, you will feel the cascade into Fuel and Inner Voice. Do not force it. Just notice it.</p></div></div>
+    <div class="tl-item"><div class="tl-wk">Week 2</div><div><h4>Align Your Fuel</h4><p>Keep the First Hour practice. Add: prepare tomorrow's food today. One decision in advance removes 20 reactive decisions in the moment. Cut one thing you know is working against you. Add one thing you know supports you. That is it. The cascade into energy, mood, and sleep is automatic.</p></div></div>
+    <div class="tl-item"><div class="tl-wk">Week 3</div><div><h4>Align Your Information Diet</h4><p>Keep Weeks 1-2. Add: audit your phone. Unfollow three accounts that make you feel worse. Replace with one source of growth. Set a hard stop on news and social media after 8 PM. Watch how the Last Hour improves without you even trying.</p></div></div>
+    <div class="tl-item"><div class="tl-wk">Week 4</div><div><h4>Align Your Inner Voice</h4><p>Keep Weeks 1-3. Add: catch the inner critic three times per day. When you hear "you always" or "you never" or "you are so stupid," pause and reframe: "I am in the process of becoming someone who..." This is not toxic positivity. It is accurate self-narration. You are becoming. The flock is forming. Name it.</p></div></div>
+  </div>
+
+  <div class="inst"><p><strong>Why only four in 30 days?</strong> Because alignment cascades. Aligning First Hour, Fuel, Information, and Inner Voice will automatically begin pulling People, Money, and Last Hour into formation. You do not need to force all seven. You need to reach cascade threshold — which, like the murmuration, is approximately 4-5 aligned neighbors. After that, the system moves itself.</p></div>
+
+  <h2>📋 The Daily Murmuration Check</h2>
+  <p>Every evening, take 60 seconds. Ask seven questions. Score each 1 (misaligned) to 3 (aligned). Write the number. No journaling. No paragraphs. Just seven numbers.</p>
+
+  <div class="scene">
+    <div class="scene-label">60-Second Evening Check</div>
+    <h4>The Seven Questions</h4>
+    <p><strong>1.</strong> Was my first hour intentional? ___</p>
+    <p><strong>2.</strong> Did my fuel support my energy? ___</p>
+    <p><strong>3.</strong> Was my inner voice kind and accurate? ___</p>
+    <p><strong>4.</strong> Did I invest in my closest relationships today? ___</p>
+    <p><strong>5.</strong> Did I consume information that built me up? ___</p>
+    <p><strong>6.</strong> Did my money move toward my future? ___</p>
+    <p><strong>7.</strong> Was my last hour peaceful? ___</p>
+    <p><strong>Score: ___/21.</strong> A perfect day is not the goal. Trend is the goal. A score that moves from 10 to 14 over a month is a flock coming into formation. You will feel it before you see it in the numbers.</p>
+  </div>
+
+  <h2>🌍 The Abundance Horizon</h2>
+  <p>Here is where all of this points. We are entering an era where AI, automation, and emerging technology will remove an enormous amount of the scarcity and toil that has defined human life for millennia. The question is not whether abundance is coming. It is whether you are aligned enough to receive it.</p>
+  <p>Abundance poured into a misaligned life creates chaos — more money fueling worse habits, more free time filling with more distraction, more options creating more paralysis. <strong>Abundance poured into an aligned life creates flourishing</strong> — more time for creating, more resources for generosity, more freedom for the relationships and work that matter.</p>
+  <p>The murmuration is not about survival. It is about <em>preparation for flight.</em> Every neighbor you align is another wing-beat of readiness for a world where human beings can finally reach their creative potential — working as conductors, thinkers, and creators in harmony with one another.</p>
+
+  <div class="mission">
+    <div class="mission-label">The Vision</div>
+    <p>A world where individuals are aligned enough to be <em>generous</em> instead of grasping. Where couples build together instead of pulling apart. Where communities murmure — thousands of aligned people creating beauty and abundance that no individual could produce alone. This is what is possible. And it starts with <em>your seven neighbors.</em></p>
+  </div>
+
+  <div class="prompt">
+    <div class="prompt-head">The Full Installation Prompt</div>
+    <div class="prompt-body"><strong>I just read The Starling's Murmuration.</strong> The framework: seven daily inputs (First Hour, Fuel, Inner Voice, People, Information Diet, Money Direction, Last Hour) that, when aligned, create compounding momentum without willpower.<br><br>Help me install this. Start by asking about my current state across all seven neighbors. Then design my personal 30-day murmuration protocol. One neighbor per week. Check my alignment score weekly. <strong>Be direct. Keep me honest. Do not let me scatter.</strong><br><br>Let us begin.</div>
+  </div>
+</section>
+
+<div class="think">
+  <div class="think-label">Your Commitment</div>
+  <h4>The date the flock takes flight</h4>
+  <p>Write your start date. Tell one person — a spouse, a friend, a partner. Murmurations do not happen alone. A witnessed commitment is a credible commitment.</p>
+  <div class="think-line"></div>
+  <div class="think-line"></div>
+</div>
+</div>
+
+<!-- ===== FINALE ===== -->
+<section class="finale">
+  <span class="finale-emoji">🐦</span>
+  <h2>The flock does not need a leader.<br><span>It needs alignment.</span></h2>
+  <p>You do not need more willpower. You do not need a perfect plan. You need seven inputs pointed in the same direction. Align the closest ones first. Let the cascade carry the rest. The murmuration is waiting.</p>
+  <p style="margin-top:24px;font-family:'Poppins',sans-serif;font-size:0.8rem;font-weight:600;color:rgba(255,255,255,0.2)">One bird turns. The flock follows. Start tomorrow.</p>
+</section>
+
+<footer>
+  <p>"And let us not grow weary of doing good, for in due season we will reap, if we do not give up." — Galatians 6:9</p>
+  <div class="brand">Kingdom Builders AI</div>
+  <p style="margin-top:14px;font-family:'Poppins',sans-serif;font-size:0.58rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.08)">kingdombuilders.ai</p>
+</footer>
+
+<div style="text-align:center;padding:20px 24px 32px;background:#04020A;border-top:1px solid rgba(200,80,106,0.08);font-family:'Poppins',sans-serif;font-size:0.65rem;color:rgba(255,255,255,0.2);line-height:1.6" class="no-print">
+  To save as PDF: Open this file in your browser → File → Print → "Save as PDF"<br>
+  Works on desktop, iPhone, iPad, and Android.
+</div>
+<style>.no-print{display:block}@media print{.no-print{display:none!important}}</style>
+
+</body>
+</html>
