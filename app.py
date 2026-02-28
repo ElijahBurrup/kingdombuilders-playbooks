@@ -68,6 +68,11 @@ def the_squirrel_economy():
     return send_from_directory("static", "the-squirrel-economy.html")
 
 
+@app.route("/thewolfstable")
+def the_wolfs_table():
+    return send_from_directory("static", "the-wolfs-table.html")
+
+
 # --- Playbook Reader (serves full playbook HTML from assets) ---
 @app.route("/read/<slug>")
 def read_playbook(slug):
@@ -81,6 +86,7 @@ def read_playbook(slug):
         "the-salmon-journey": "The_Salmon_Journey.html",
         "the-squirrel-economy": "The_Squirrel_Economy_Modified.html",
         "conductors-playbook": "The_Conductors_Playbook.html",
+        "the-wolfs-table": "The_Wolfs_Table.html",
     }
     filename = slug_to_file.get(slug)
     if not filename:
