@@ -114,6 +114,12 @@ const PLAYBOOKS = [
     readerSlug: "the-geckos-grip",
     tag: "Resilience",
   },
+  {
+    title: "The Firefly's Signal",
+    route: "/thefireflyssignal",
+    readerSlug: "the-fireflys-signal",
+    tag: "Strategy",
+  },
 ];
 
 // ── Catalog Page ──────────────────────────────────────────────
