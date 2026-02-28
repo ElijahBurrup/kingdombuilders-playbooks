@@ -108,6 +108,12 @@ const PLAYBOOKS = [
     readerSlug: "the-spiders-loom",
     tag: "Productivity",
   },
+  {
+    title: "The Gecko's Grip",
+    route: "/thegeckosgrip",
+    readerSlug: "the-geckos-grip",
+    tag: "Resilience",
+  },
 ];
 
 // ── Catalog Page ──────────────────────────────────────────────

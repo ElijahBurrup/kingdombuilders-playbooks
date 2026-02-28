@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Gecko's Grip — How the Smallest Climber Masters the Impossible Wall</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --terra:#C87838;--terra-dark:#A05828;--terra-glow:#E89848;--terra-pale:#F0C898;--terra-soft:rgba(200,120,56,0.07);
+  --jade:#38A868;--jade-glow:#50C080;--jade-pale:#88D8A8;--jade-soft:rgba(56,168,104,0.06);
+  --stone:#D4A060;--stone-warm:#E8C088;--stone-deep:#B88040;
+  --bark:#1A0E08;--bark-dark:#0E0604;--bark-mid:#2A1808;--bark-light:#3A2818;--bark-pale:#5A4028;
+  --sand:#FDF8F2;--sand-warm:#F8F0E0;--sand-deep:#E8D8C0;
+  --text:#2A1808;--text-light:#4A3828;--text-muted:#7A6848;
+  --white:#FFFFFF;--radius:16px;
+  --shadow-soft:0 2px 16px rgba(26,14,8,0.06);
+  --shadow-mid:0 4px 28px rgba(26,14,8,0.12);
+  --shadow-strong:0 8px 40px rgba(26,14,8,0.18);
+  --before-bg:#FFF4EE;--before-border:#C89868;--before-text:#4A2818;
+  --after-bg:#EEFAF2;--after-border:#60B880;--after-text:#0A3818;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--sand);line-height:1.82;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
+.page{max-width:720px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--bark-mid);font-weight:700}
+.prose em{color:var(--terra);font-style:normal;font-weight:600}
+
+/* ===== COVER ===== */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;
+  background:linear-gradient(175deg,#0E0604 0%,#1A0E08 20%,#2A1808 48%,#1A0E08 72%,#0E0604 100%);
+  position:relative;overflow:hidden}
+.wall-crack{position:absolute;background:rgba(212,160,96,0.06);pointer-events:none}
+.wall-crack:nth-child(1){width:1px;height:40%;left:15%;top:20%;transform:rotate(8deg) skewX(5deg);animation:crack-glow 7s ease-in-out infinite}
+.wall-crack:nth-child(2){width:1px;height:30%;left:35%;top:40%;transform:rotate(-5deg);animation:crack-glow 9s ease-in-out infinite;animation-delay:-2s}
+.wall-crack:nth-child(3){width:1px;height:55%;left:55%;top:10%;transform:rotate(3deg) skewX(-3deg);animation:crack-glow 8s ease-in-out infinite;animation-delay:-4s}
+.wall-crack:nth-child(4){width:1px;height:35%;left:75%;top:30%;transform:rotate(-10deg);animation:crack-glow 6s ease-in-out infinite;animation-delay:-1s}
+.wall-crack:nth-child(5){width:45%;height:1px;left:20%;top:40%;transform:rotate(2deg);animation:crack-glow 5s ease-in-out infinite;animation-delay:-3s}
+.wall-crack:nth-child(6){width:35%;height:1px;left:30%;top:60%;transform:rotate(-1deg);animation:crack-glow 7s ease-in-out infinite;animation-delay:-5s}
+.dust-mote{position:absolute;border-radius:50%;pointer-events:none}
+.dust-mote:nth-child(7){width:3px;height:3px;background:rgba(232,152,72,0.45);left:18%;top:30%;animation:mote-float 8s ease-in-out infinite}
+.dust-mote:nth-child(8){width:4px;height:4px;background:rgba(200,120,56,0.35);left:42%;top:50%;animation:mote-float 10s ease-in-out infinite;animation-delay:-3s}
+.dust-mote:nth-child(9){width:2px;height:2px;background:rgba(232,152,72,0.5);left:65%;top:25%;animation:mote-float 7s ease-in-out infinite;animation-delay:-1s}
+.dust-mote:nth-child(10){width:3px;height:3px;background:rgba(212,160,96,0.4);left:80%;top:55%;animation:mote-float 9s ease-in-out infinite;animation-delay:-4s}
+.dust-mote:nth-child(11){width:2px;height:2px;background:rgba(200,120,56,0.3);left:50%;top:70%;animation:mote-float 11s ease-in-out infinite;animation-delay:-6s}
+.dust-mote:nth-child(12){width:3px;height:3px;background:rgba(232,152,72,0.35);left:28%;top:75%;animation:mote-float 8s ease-in-out infinite;animation-delay:-2s}
+@keyframes crack-glow{0%,100%{opacity:0.3}50%{opacity:1;background:rgba(212,160,96,0.12)}}
+@keyframes mote-float{0%{transform:translateY(0) translateX(0);opacity:0.2}25%{opacity:0.7}50%{transform:translateY(-30px) translateX(10px);opacity:0.5}75%{opacity:0.8}100%{transform:translateY(0) translateX(0);opacity:0.2}}
+.ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.015;mix-blend-mode:overlay;pointer-events:none}
+.cover-content{position:relative;z-index:2;padding:48px 24px}
+.cover-badge{display:inline-block;padding:6px 18px;border:1px solid rgba(212,160,96,0.2);border-radius:40px;font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--stone);margin-bottom:40px}
+.cover h1{font-size:clamp(2.6rem,7vw,4.4rem);font-weight:900;color:var(--white);line-height:1.05;margin-bottom:8px}
+.cover h1 span{display:block;background:linear-gradient(135deg,var(--terra-glow),var(--jade-glow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cover-sub{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:rgba(255,255,255,0.3);margin-top:24px;line-height:1.7}
+.cover-sub em{color:var(--terra-pale);font-style:normal}
+.cover-author{font-family:'Nunito',sans-serif;font-size:0.55rem;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.12);margin-top:48px}
+.cover-emoji{width:80px;height:80px;margin:0 auto 20px;animation:breathe 4s ease-in-out infinite;display:block;color:var(--terra-glow)}
+.cover-emoji svg{width:100%;height:100%}
+@keyframes breathe{0%,100%{transform:scale(1);filter:brightness(1)}50%{transform:scale(1.06);filter:brightness(1.25)}}
+
+.ribbon{text-align:center;padding:22px 24px;background:linear-gradient(135deg,rgba(200,120,56,0.03),rgba(56,168,104,0.06));border-top:1.5px solid rgba(200,120,56,0.12);border-bottom:1.5px solid rgba(200,120,56,0.12)}
+.ribbon p{font-family:'Lora',serif;font-size:0.82rem;font-style:italic;color:var(--text-muted);max-width:500px;margin:0 auto}
+
+.ch-head{padding:64px 24px 48px;text-align:center;background:linear-gradient(170deg,var(--bark-dark),var(--bark),var(--bark-mid));position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(200,120,56,0.05) 0%,transparent 70%);border-radius:50%}
+.ch-head .ch-num{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:6px;text-transform:uppercase;color:var(--terra-glow);margin-bottom:12px;position:relative;z-index:2}
+.ch-head h2{font-size:1.6rem;color:var(--white);position:relative;z-index:2;margin-bottom:8px}
+.ch-head .ch-sub{font-family:'Lora',serif;font-size:0.88rem;font-style:italic;color:rgba(255,255,255,0.3);position:relative;z-index:2;max-width:480px;margin:0 auto}
+
+.character-card{display:flex;gap:20px;align-items:flex-start;padding:28px;margin:28px 0;background:var(--white);border-radius:var(--radius);border:2px solid rgba(200,120,56,0.12);box-shadow:var(--shadow-soft)}
+.character-card .avatar{flex-shrink:0;width:64px;height:64px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--bark),var(--bark-mid));border-radius:50%;color:var(--terra-glow)}
+.character-card .avatar svg{width:32px;height:32px}
+.character-card .info h3{font-size:1rem;color:var(--bark-mid);margin-bottom:4px}
+.character-card .info .role{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--terra);margin-bottom:8px}
+.character-card .info p{font-size:0.88rem;color:var(--text-light);line-height:1.65}
+
+.scene{margin:36px 0;padding:32px;background:linear-gradient(140deg,var(--bark-dark),var(--bark));border-radius:var(--radius);border:1px solid rgba(212,160,96,0.1);position:relative;overflow:hidden}
+.scene::before{content:'';position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle,rgba(200,120,56,0.05) 0%,transparent 70%);border-radius:50%}
+.scene .scene-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--terra-glow);margin-bottom:12px;position:relative;z-index:2}
+.scene p{font-family:'Lora',serif;font-size:0.95rem;color:rgba(255,255,255,0.7);line-height:1.78;position:relative;z-index:2;margin-bottom:12px}
+.scene p:last-child{margin-bottom:0}
+.scene em{color:var(--terra-pale);font-style:normal;font-weight:600}
+.scene strong{color:var(--stone-warm);font-weight:700}
+
+.grip-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:32px 0}
+@media(max-width:640px){.grip-grid{grid-template-columns:1fr}}
+.grip-card{padding:28px;border-radius:var(--radius);background:var(--white);border:2px solid rgba(200,120,56,0.1);box-shadow:var(--shadow-soft);position:relative;overflow:hidden}
+.grip-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;border-radius:2px 0 0 2px}
+.grip-card .grip-emoji{width:36px;height:36px;margin-bottom:12px;display:block;color:currentColor}
+.grip-card .grip-emoji svg{width:100%;height:100%}
+.grip-card .grip-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;margin-bottom:8px;display:block}
+.grip-card h3{font-size:1rem;color:var(--bark-mid);margin-bottom:8px}
+.grip-card p{font-size:0.85rem;color:var(--text-light);line-height:1.65;margin-bottom:8px}
+.grip-card p:last-child{margin-bottom:0}
+.grip-hold::before{background:var(--terra)}
+.grip-hold .grip-label{color:var(--terra)}
+.grip-release::before{background:var(--jade)}
+.grip-release .grip-label{color:var(--jade)}
+.grip-climb::before{background:var(--stone-deep)}
+.grip-climb .grip-label{color:var(--stone-deep)}
+.grip-rest::before{background:#A07048}
+.grip-rest .grip-label{color:#A07048}
+
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:28px 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft)}
+@media(max-width:600px){.ba-grid{grid-template-columns:1fr}}
+.ba-before,.ba-after{padding:24px 28px}
+.ba-before{background:var(--before-bg);border-right:2px solid var(--before-border)}
+.ba-after{background:var(--after-bg);border-left:2px solid var(--after-border)}
+@media(max-width:600px){.ba-before{border-right:none;border-bottom:2px solid var(--before-border)}.ba-after{border-left:none;border-top:2px solid var(--after-border)}}
+.ba-before h4,.ba-after h4{font-size:0.6rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;margin-bottom:12px}
+.ba-before h4{color:var(--before-text)}.ba-after h4{color:var(--after-text)}
+.ba-before p,.ba-after p{font-size:0.88rem;line-height:1.65;margin-bottom:8px}
+.ba-before p:last-child,.ba-after p:last-child{margin-bottom:0}
+.ba-before p{color:var(--before-text)}.ba-after p{color:var(--after-text)}
+
+.data-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:28px 0}
+@media(max-width:600px){.data-row{grid-template-columns:1fr}}
+.data-box{padding:28px;background:var(--white);border-radius:var(--radius);border:2px solid rgba(200,120,56,0.1);text-align:center;box-shadow:var(--shadow-soft)}
+.data-box .number{font-family:'Nunito',sans-serif;font-size:2.8rem;font-weight:900;line-height:1;margin-bottom:8px;background:linear-gradient(135deg,var(--terra),var(--terra-dark));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.data-box p{font-size:0.8rem;color:var(--text-muted);line-height:1.5}
+
+.think{margin:32px 0;padding:28px 32px;background:linear-gradient(135deg,rgba(200,120,56,0.04),rgba(56,168,104,0.06));border-radius:var(--radius);border-left:5px solid var(--terra)}
+.think .think-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--terra);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.think .think-label svg{width:16px;height:16px;flex-shrink:0}
+.think h4{font-size:1rem;color:var(--bark-mid);margin-bottom:16px}
+.think p{font-size:0.92rem;color:var(--text-light);line-height:1.7;margin-bottom:12px}
+.think p:last-child{margin-bottom:0}
+.think .fill-line{display:block;border-bottom:1.5px dashed var(--stone-deep);margin:20px 0;height:28px}
+.think .q-start{display:flex;align-items:flex-start;gap:6px}
+
+.grand-quote{margin:40px 0;padding:48px 36px;text-align:center;position:relative}
+.grand-quote::before{content:'\201C';font-family:Georgia,serif;font-size:8rem;color:rgba(200,120,56,0.06);position:absolute;top:-20px;left:50%;transform:translateX(-50%);line-height:1}
+.grand-quote blockquote{font-family:'Lora',serif;font-size:1.15rem;font-style:italic;color:var(--bark-mid);line-height:1.7;max-width:560px;margin:0 auto;position:relative;z-index:2}
+.grand-quote .attribution{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--terra);margin-top:16px}
+
+.viz-box{margin:32px 0;padding:32px;background:var(--white);border-radius:var(--radius);border:2px solid var(--terra);box-shadow:0 0 20px rgba(200,120,56,0.08),var(--shadow-mid);position:relative;overflow:hidden}
+.viz-box::before{content:'';position:absolute;top:-40%;right:-20%;width:300px;height:300px;background:radial-gradient(circle,rgba(200,120,56,0.04) 0%,transparent 70%);border-radius:50%}
+.viz-box .viz-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--terra);margin-bottom:16px;position:relative;z-index:2}
+.viz-box h3{font-size:1.15rem;color:var(--bark-mid);margin-bottom:16px;position:relative;z-index:2}
+.viz-box p{font-size:0.9rem;color:var(--text-light);line-height:1.7;position:relative;z-index:2;margin-bottom:12px}
+.viz-box p:last-child{margin-bottom:0}
+
+.adventure{margin:32px 0;counter-reset:adventure-step}
+.adventure .adv-step{padding:24px 28px;margin-bottom:16px;background:var(--white);border-radius:var(--radius);border:2px solid rgba(200,120,56,0.1);box-shadow:var(--shadow-soft);position:relative;padding-left:72px}
+.adventure .adv-step::before{counter-increment:adventure-step;content:counter(adventure-step);position:absolute;left:20px;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--terra),var(--bark-light));color:var(--white);font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(200,120,56,0.3)}
+.adventure .adv-step h4{font-size:0.92rem;color:var(--bark-mid);margin-bottom:6px}
+.adventure .adv-step p{font-size:0.85rem;color:var(--text-light);line-height:1.6}
+
+.flow{margin:32px 0}
+.flow-step{display:flex;align-items:flex-start;gap:16px;margin-bottom:8px}
+.flow-marker{flex-shrink:0;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:900;color:var(--white);background:linear-gradient(135deg,var(--bark-mid),var(--bark-light));box-shadow:0 2px 8px rgba(26,14,8,0.2)}
+.flow-content{flex:1;padding:12px 0}
+.flow-content h4{font-size:0.95rem;color:var(--bark-mid);margin-bottom:4px}
+.flow-content p{font-size:0.85rem;color:var(--text-light);line-height:1.6}
+.flow-arrow{text-align:center;color:var(--terra);font-size:1.2rem;margin:4px 0 4px 14px;opacity:0.5}
+
+.wall-type{margin:28px 0;padding:28px;background:linear-gradient(145deg,var(--bark-dark),var(--bark));border-radius:var(--radius);border:1px solid rgba(212,160,96,0.1)}
+.wall-type .wt-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--terra-glow);margin-bottom:12px}
+.wall-type h3{font-size:1rem;color:var(--white);margin-bottom:12px}
+.wall-type p{font-size:0.88rem;color:rgba(255,255,255,0.65);line-height:1.7;margin-bottom:8px}
+.wall-type p:last-child{margin-bottom:0}
+.wall-type em{color:var(--terra-pale);font-style:normal;font-weight:600}
+.wall-type strong{color:var(--stone-warm)}
+
+.install{margin:24px 0;padding:20px 24px;background:rgba(200,120,56,0.04);border:1.5px dashed rgba(200,120,56,0.2);border-radius:12px}
+.install p{font-size:0.82rem;color:var(--text-muted);line-height:1.6}
+.install strong{color:var(--terra)}
+
+.prompt-card{margin:40px 0;padding:36px;background:linear-gradient(150deg,var(--bark),var(--bark-mid));border-radius:var(--radius);border:2px solid var(--terra);box-shadow:0 0 24px rgba(200,120,56,0.1)}
+.prompt-card .pc-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--terra-glow);margin-bottom:16px}
+.prompt-card h3{font-size:1.1rem;color:var(--white);margin-bottom:16px}
+.prompt-card p{font-size:0.88rem;color:rgba(255,255,255,0.6);line-height:1.7;margin-bottom:8px}
+.prompt-card code{display:block;margin:16px 0;padding:16px 20px;background:rgba(0,0,0,0.3);border-radius:10px;font-family:'Lora',serif;font-size:0.88rem;color:var(--terra-pale);line-height:1.7;font-style:italic;white-space:pre-wrap}
+
+.finale{padding:80px 24px;text-align:center;background:linear-gradient(175deg,var(--bark-dark),var(--bark),var(--bark-mid));position:relative;overflow:hidden}
+.finale .finale-emoji{width:56px;height:56px;margin:0 auto 24px;display:block;animation:breathe 4s ease-in-out infinite;color:var(--terra-glow)}
+.finale .finale-emoji svg{width:100%;height:100%}
+.finale h2{font-size:1.6rem;color:var(--white);margin-bottom:16px}
+.finale h2 span{color:var(--jade-glow)}
+.finale p{font-family:'Lora',serif;font-size:0.95rem;color:rgba(255,255,255,0.4);max-width:520px;margin:0 auto 16px;line-height:1.7}
+.finale p:last-child{margin-bottom:0}
+
+footer{text-align:center;padding:32px 24px;background:#080402}
+footer p{font-family:'Lora',serif;font-size:0.78rem;font-style:italic;color:rgba(200,120,56,0.18);margin-bottom:12px}
+footer .brand{font-family:'Nunito',sans-serif;font-size:0.5rem;font-style:normal;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.06)}
+</style>
+</head>
+<body>
+
+<!-- SVG Sprite Sheet -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="ico-gecko" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18 16c2-4 6-6 10-6s8 3 10 8c2 6 1 12-1 18l-4 12c-1 3-1 6 0 8l3 6"/>
+    <path d="M14 22c-3 1-6 4-6 8s2 5 4 6"/>
+    <path d="M40 20c3-1 6 1 8 4s1 6-1 8"/>
+    <path d="M22 44c-3 2-7 4-10 3"/>
+    <path d="M30 48c3 2 7 3 10 2"/>
+    <circle cx="24" cy="14" r="2" fill="currentColor" stroke="none"/>
+    <circle cx="32" cy="14" r="2" fill="currentColor" stroke="none"/>
+    <ellipse cx="24" cy="14" rx="1" ry="2" fill="none" stroke="currentColor" stroke-width="1"/>
+    <ellipse cx="32" cy="14" rx="1" ry="2" fill="none" stroke="currentColor" stroke-width="1"/>
+    <path d="M12 36l-6 2m-2 0l-2 1m0 0l-1 2"/>
+    <path d="M14 30l-7-2m-2 0l-2-1m0 0l-2 1"/>
+    <path d="M42 28l6-2m2 0l2-1m0 0l1-2"/>
+    <path d="M40 34l7 2m2-1l2 1m0 0l2 1"/>
+  </symbol>
+  <symbol id="ico-foot" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <ellipse cx="32" cy="38" rx="14" ry="10"/>
+    <path d="M22 30l-6-10m0 0l-4-2m4 2l2-4"/>
+    <path d="M28 28l-2-12m0 0l-4-3m4 3l3-3"/>
+    <path d="M34 28l2-12m0 0l4-3m-4 3l-3-3"/>
+    <path d="M40 30l6-10m0 0l4-2m-4 2l-2-4"/>
+    <path d="M32 28l0-13m0 0l-2-4m2 4l2-4"/>
+  </symbol>
+  <symbol id="ico-tail" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <path d="M8 32c6-2 12 2 18 0s10-6 16-4 10 6 14 4"/>
+    <path d="M14 28l-2-4m8 6l1-5m8 3l2-4m8 5l1-4" stroke-width="1.5" opacity="0.5"/>
+    <path d="M8 32c0 4 2 6 4 6s4-2 4-4" stroke-dasharray="2 3"/>
+  </symbol>
+  <symbol id="ico-eye" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <ellipse cx="32" cy="32" rx="22" ry="16"/>
+    <ellipse cx="32" cy="32" rx="10" ry="14"/>
+    <ellipse cx="32" cy="32" rx="3" ry="14" fill="currentColor" stroke="none" opacity="0.3"/>
+    <circle cx="28" cy="24" r="3" fill="currentColor" stroke="none" opacity="0.15"/>
+  </symbol>
+  <symbol id="ico-moon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <path d="M40 8c-12 4-20 16-16 30s18 22 30 18c-8 2-18-2-22-14S28 12 40 8z"/>
+    <circle cx="44" cy="16" r="1" fill="currentColor" stroke="none"/><circle cx="52" cy="28" r="1.5" fill="currentColor" stroke="none"/><circle cx="48" cy="40" r="1" fill="currentColor" stroke="none"/>
+  </symbol>
+  <symbol id="ico-wall" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <rect x="4" y="4" width="56" height="56" rx="2"/>
+    <line x1="4" y1="18" x2="60" y2="18"/><line x1="4" y1="32" x2="60" y2="32"/><line x1="4" y1="46" x2="60" y2="46"/>
+    <line x1="32" y1="4" x2="32" y2="18"/><line x1="18" y1="18" x2="18" y2="32"/><line x1="46" y1="18" x2="46" y2="32"/>
+    <line x1="32" y1="32" x2="32" y2="46"/><line x1="18" y1="46" x2="18" y2="60"/><line x1="46" y1="46" x2="46" y2="60"/>
+  </symbol>
+  <symbol id="ico-scale" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+    <path d="M8 20c8-4 16-4 24 0s16 4 24 0"/><path d="M8 32c8-4 16-4 24 0s16 4 24 0"/><path d="M8 44c8-4 16-4 24 0s16 4 24 0"/>
+    <path d="M20 14c8-4 16-4 24 0" opacity="0.4"/><path d="M20 50c8-4 16-4 24 0" opacity="0.4"/>
+  </symbol>
+  <symbol id="ico-scar" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 8l6 12-8 10 10 8-6 12 8 6"/>
+    <path d="M34 12l-4 8 6 6-4 10 6 8-2 10" opacity="0.5"/>
+  </symbol>
+  <symbol id="ico-drop" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <path d="M32 8c-8 14-18 22-18 34a18 18 0 0036 0c0-12-10-20-18-34z"/>
+    <path d="M24 38c0-6 4-12 8-18" opacity="0.3" stroke-width="1.5"/>
+  </symbol>
+  <symbol id="ico-grow" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <path d="M32 56V28"/>
+    <path d="M32 28c-4-8-12-14-20-14 8 4 14 10 20 20"/>
+    <path d="M32 36c4-10 14-18 22-18-6 4-14 12-22 24"/>
+    <path d="M32 20c-2-6-2-12 0-14 2 2 2 8 0 14"/>
+    <circle cx="32" cy="12" r="3" fill="currentColor" stroke="none" opacity="0.3"/>
+  </symbol>
+  <symbol id="ico-anchor" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <circle cx="32" cy="14" r="6"/><line x1="32" y1="20" x2="32" y2="56"/><line x1="22" y1="32" x2="42" y2="32"/>
+    <path d="M10 40c0 12 10 18 22 18s22-6 22-18"/>
+  </symbol>
+  <symbol id="ico-grip" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <rect x="16" y="24" width="32" height="24" rx="4"/>
+    <path d="M20 24v-6c0-2 2-4 4-4m8 10v-8c0-2 2-4 4-4m-4 12v-10c0-2 2-4 4-4"/>
+    <path d="M40 24v-4c0-2 2-4 4-4"/>
+    <line x1="20" y1="36" x2="44" y2="36" stroke-dasharray="2 2" opacity="0.4"/>
+  </symbol>
+  <symbol id="ico-shield" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M32 6L8 18v16c0 14 10 22 24 26 14-4 24-12 24-26V18L32 6z"/>
+    <path d="M24 32l6 6 12-14" stroke-width="2.5"/>
+  </symbol>
+  <symbol id="ico-lens" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <circle cx="28" cy="28" r="18"/><line x1="40" y1="40" x2="56" y2="56" stroke-width="3"/>
+    <circle cx="28" cy="28" r="8" stroke-dasharray="3 3" opacity="0.3"/>
+  </symbol>
+  <symbol id="ico-pulse" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 32h12l6-16 8 32 6-24 6 16h18"/>
+  </symbol>
+  <symbol id="ico-spiral" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <path d="M32 32c0-2 2-4 4-4s4 2 4 4-2 8-8 8-12-4-12-8 4-16 12-16 20 6 20 16-8 24-20 24-28-10-28-24"/>
+  </symbol>
+  <symbol id="ico-star" viewBox="0 0 64 64" fill="currentColor" stroke="none">
+    <path d="M32 4l8 20h20l-16 12 6 20-18-12-18 12 6-20L4 24h20z"/>
+  </symbol>
+  <symbol id="ico-quill" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M48 4c-12 6-20 18-24 32l-4 20 8-8c14-4 26-12 32-24-2-4-6-10-8-14z"/>
+    <path d="M24 36c-4-2-8-2-12 0" opacity="0.5"/><line x1="20" y1="56" x2="48" y2="56"/>
+  </symbol>
+  <symbol id="ico-ceiling" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <line x1="4" y1="8" x2="60" y2="8" stroke-width="3"/>
+    <path d="M32 8v4"/>
+    <path d="M32 12c-2 0-4 2-4 4v6c0 2-2 4-4 4h-4"/>
+    <path d="M32 12c2 0 4 2 4 4v6c0 2 2 4 4 4h4"/>
+    <path d="M24 26l-6 4m-2 0l-3 1m3-1l-1 3"/>
+    <path d="M40 26l6 4m2 0l3 1m-3-1l1 3"/>
+    <circle cx="30" cy="14" r="1" fill="currentColor" stroke="none"/>
+    <circle cx="34" cy="14" r="1" fill="currentColor" stroke="none"/>
+    <path d="M32 26c-1 2-1 4 0 6l2 4"/>
+  </symbol>
+  <symbol id="ico-flame" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <path d="M32 4c-4 12-16 20-16 36a16 16 0 0032 0c0-10-4-16-8-20 2 6 0 12-4 14-2-8-6-14-4-30z"/>
+    <path d="M28 44c0-4 2-8 4-10 2 2 4 6 4 10a4 4 0 01-8 0z" fill="currentColor" stroke="none" opacity="0.2"/>
+  </symbol>
+</svg>
+
+<!-- ===== COVER ===== -->
+<section class="cover">
+  <div class="wall-crack"></div><div class="wall-crack"></div><div class="wall-crack"></div><div class="wall-crack"></div>
+  <div class="wall-crack"></div><div class="wall-crack"></div>
+  <div class="dust-mote"></div><div class="dust-mote"></div><div class="dust-mote"></div><div class="dust-mote"></div><div class="dust-mote"></div><div class="dust-mote"></div>
+  <div class="ghost-noise"></div>
+  <div class="cover-content">
+    <span class="cover-emoji">
+      <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Detailed gecko climbing a vertical surface -->
+        <rect x="0" y="0" width="120" height="120" rx="8" fill="none" stroke="rgba(212,160,96,0.08)" stroke-width="0.5"/>
+        <!-- Wall texture lines -->
+        <line x1="0" y1="30" x2="120" y2="30" stroke="rgba(212,160,96,0.04)" stroke-width="0.5"/>
+        <line x1="0" y1="60" x2="120" y2="60" stroke="rgba(212,160,96,0.04)" stroke-width="0.5"/>
+        <line x1="0" y1="90" x2="120" y2="90" stroke="rgba(212,160,96,0.04)" stroke-width="0.5"/>
+        <!-- Body -->
+        <path d="M60 20c-6 2-10 8-12 16-2 10-1 22 2 32 2 8 3 14 2 20l4 8" stroke="#C87838" stroke-width="2.5" fill="none" stroke-linecap="round">
+          <animate attributeName="d" values="M60 20c-6 2-10 8-12 16-2 10-1 22 2 32 2 8 3 14 2 20l4 8;M60 20c-6 2-10 9-12 17-2 10-1 21 2 31 2 8 3 15 2 21l4 7;M60 20c-6 2-10 8-12 16-2 10-1 22 2 32 2 8 3 14 2 20l4 8" dur="4s" repeatCount="indefinite"/>
+        </path>
+        <!-- Scale texture on body -->
+        <path d="M50 38c4-1 8-1 12 0M49 44c5-1 10-1 14 0M50 50c4-1 8-1 11 0M51 56c4-1 7 0 10 0M52 62c3 0 6 0 9 0M53 68c3 0 5 0 8 1" stroke="#A05828" stroke-width="0.6" opacity="0.4" fill="none"/>
+        <!-- Head -->
+        <ellipse cx="58" cy="22" rx="10" ry="7" fill="none" stroke="#C87838" stroke-width="2"/>
+        <!-- Eyes with vertical pupils -->
+        <circle cx="53" cy="20" r="4" fill="none" stroke="#E89848" stroke-width="1.5"/>
+        <ellipse cx="53" cy="20" rx="1.2" ry="3.5" fill="#E89848"/>
+        <circle cx="53" cy="18" r="1" fill="rgba(255,255,255,0.2)"/>
+        <circle cx="63" cy="20" r="4" fill="none" stroke="#E89848" stroke-width="1.5"/>
+        <ellipse cx="63" cy="20" rx="1.2" ry="3.5" fill="#E89848"/>
+        <circle cx="63" cy="18" r="1" fill="rgba(255,255,255,0.2)"/>
+        <!-- Front left foot with toe pads -->
+        <path d="M48 34c-6-2-12-4-18-2" stroke="#C87838" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M30 32l-4-4m4 4l-6-1m6 1l-5 3m5-3l-3-5m3 5l-6 1" stroke="#D4A060" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <!-- Lamellae texture on toe pads -->
+        <path d="M25 28l1 0m-3 1l1 0m-2 3l1 0m1-1l1 0m-5 2l1 0" stroke="#D4A060" stroke-width="0.8" opacity="0.5"/>
+        <!-- Front right foot with toe pads -->
+        <path d="M66 30c6-4 12-6 18-4" stroke="#C87838" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M84 26l4-3m-4 3l6 0m-6 0l4 4m-4-4l5-1m-5 1l5 3" stroke="#D4A060" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <!-- Back left foot -->
+        <path d="M50 70c-4 4-10 6-16 6" stroke="#C87838" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M34 76l-4 3m4-3l-6 1m6-1l-3-4m3 4l-5 4m5-4l-6-1" stroke="#D4A060" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <!-- Back right foot -->
+        <path d="M56 66c4 4 10 8 16 6" stroke="#C87838" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M72 72l4 3m-4-3l6-1m-6 1l3 5m-3-5l5-2m-5 2l5 4" stroke="#D4A060" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <!-- Regenerated tail (shorter, slightly different shade) -->
+        <path d="M56 88c-1 4 0 8 2 12 1 3 0 6-2 8" stroke="#B88040" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-dasharray="none" opacity="0.75"/>
+        <path d="M54 94c2 0 4-1 5 0M53 100c2 1 4 0 5 0" stroke="#A07048" stroke-width="0.5" opacity="0.35"/>
+        <!-- Nostril -->
+        <circle cx="51" cy="17" r="0.8" fill="#A05828"/>
+        <circle cx="65" cy="17" r="0.8" fill="#A05828"/>
+      </svg>
+    </span>
+    <div class="cover-badge">Kingdom Builders AI</div>
+    <h1>The Gecko's <span>Grip</span></h1>
+    <p class="cover-sub">The lion roars. The hawk strikes. The wolf chases.<br>The gecko <em>holds on</em> — and climbs where nothing else can.</p>
+    <p class="cover-author">KingdomBuilders AI</p>
+  </div>
+</section>
+
+<div class="ribbon">
+  <p>"Though the righteous fall seven times, they rise again." — Proverbs 24:16</p>
+</div>
+
+<!-- ===== INTRODUCTION ===== -->
+<div class="section">
+  <div class="page">
+    <div class="prose">
+      <p>There are creatures built for power. The bear tears through obstacles. The cheetah outruns them. The eagle flies above them entirely. These are the animals we admire, the ones on motivational posters, the ones whose strategies fill leadership books and self help shelves.</p>
+      <p>Then there is the gecko. Five inches long. No claws. No venom. No wings. And yet it walks up glass, crosses ceilings, and clings to surfaces so smooth that suction cups fail. It does not overpower the wall. It does not avoid the wall. It <em>grips the wall at the molecular level</em> and climbs where nothing else can follow.</p>
+      <p>This playbook is not about strength. It is about <strong>grip</strong> — the daily, invisible, molecular level actions that keep you attached to your life when everything is trying to shake you off. It is about what to do when you lose something essential, when darkness surrounds you, and when every reasonable person says the wall cannot be climbed.</p>
+    </div>
+
+    <div class="install">
+      <p><strong>How This Works:</strong> Six chapters. Each one installs a survival mechanism from the gecko's biology into your psychology. Chapter 1 diagnoses why we are so catastrophically bad at recovering from setbacks. Chapters 2 through 4 teach you the grip, the strategic sacrifice, and the regrowth protocol. Chapter 5 gives you night vision. Chapter 6 teaches you to walk on ceilings. Two characters will guide you: Kira, a young gecko learning to survive after loss, and Stone, the scarred elder who teaches her. Grip the wall. Climb the wall. Own the wall.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 1: THE FALL ===== -->
+<div class="ch-head">
+  <div class="ch-num">Chapter One</div>
+  <h2>The Fall</h2>
+  <p class="ch-sub">Why humans are catastrophically bad at recovering from setbacks</p>
+</div>
+
+<div class="section">
+  <div class="page">
+    <div class="character-card">
+      <div class="avatar"><svg><use href="#ico-gecko"/></svg></div>
+      <div class="info">
+        <h3>Kira</h3>
+        <div class="role">The Young Gecko</div>
+        <p>Fast, sharp eyed, and terrified. Kira lost her tail three days ago when a kingfisher struck from above. She survived, but the stub where her tail used to be feels like an open wound. She clings to the underside of leaves now, hiding. She has not climbed a wall since the attack.</p>
+      </div>
+    </div>
+
+    <div class="character-card">
+      <div class="avatar"><svg><use href="#ico-scar"/></svg></div>
+      <div class="info">
+        <h3>Stone</h3>
+        <div class="role">The Elder</div>
+        <p>Two missing toes on his left front foot. A scar running the length of his back where a cat's claw once dragged. A tail that has regrown three times, each one shorter and darker than the last. Stone walks every surface like he built it. He has been watching Kira hide for two days. He decides today is enough.</p>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-label">Scene — The Underside of the Leaf</div>
+      <p>Kira pressed herself flat against the bottom of a magnolia leaf, feeling the waxy surface against her belly. From here, she could see the garden below without being seen. Safe. Invisible. <em>Stuck.</em></p>
+      <p>She heard the familiar dry scrape of Stone's footpads on bark before she saw him. He descended the trunk headfirst, paused six inches from her leaf, and turned one golden eye toward her.</p>
+      <p><strong>"Three days,"</strong> he said. Not a question.</p>
+      <p>"I'm resting," she said.</p>
+      <p>"You're hiding. There's a difference. Resting is what you do after climbing. Hiding is what you do <em>instead</em> of climbing."</p>
+      <p>Kira shifted. The stub where her tail had been twitched involuntarily. She hated that it did that.</p>
+      <p>"I'll climb tomorrow."</p>
+      <p>Stone closed his eye. <strong>"That's what every gecko says before they forget they were climbers at all."</strong></p>
+    </div>
+
+    <div class="prose">
+      <p>Stone was right, and the data proves it. Human beings are spectacularly, measurably, almost comically bad at recovering from setbacks. Not because we lack the capacity. Because we lack the <strong>mechanism</strong>.</p>
+      <p>Consider the numbers. A 2019 study by Cornerstone OnDemand found that 78% of people who involuntarily lose their job do not submit a single application for at least three weeks. Not because they do not need income. Not because they are taking strategic time to reassess. Because they are frozen. The psychological term is <em>action paralysis</em> — the state where the pain of the loss has not yet been processed enough for the brain to authorize forward movement.</p>
+    </div>
+
+    <div class="data-row">
+      <div class="data-box">
+        <div class="number">78%</div>
+        <p>of people who lose their job wait 3+ weeks before applying to a new one</p>
+      </div>
+      <div class="data-box">
+        <div class="number">67%</div>
+        <p>of entrepreneurs who fail their first business never attempt a second one</p>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p>The neuroscience is brutal. When you experience a significant loss — a job, a relationship, a business, your health, your reputation — your brain processes it through the same neural pathways as physical pain. The anterior cingulate cortex and the insula, the same regions that fire when you break a bone, light up when you lose something that was part of your identity. Your brain does not distinguish between a shattered wrist and a shattered career. The pain is neurologically <strong>identical</strong>.</p>
+      <p>This is why loss feels like dying. In a very real neurological sense, part of your brain believes something has died. And it responds accordingly: with grief, withdrawal, and the overwhelming desire to protect what remains by doing absolutely nothing.</p>
+      <p>Psychologist Martin Seligman's research on learned helplessness demonstrated that after repeated setbacks, organisms stop trying even when the obstacle has been removed. The cage door is open and the animal stays inside. Not because it cannot leave. Because it has <em>learned</em> that trying leads to pain, and its brain now categorizes all effort as threat.</p>
+    </div>
+
+    <div class="ba-grid">
+      <div class="ba-before">
+        <h4>What Humans Do After Loss</h4>
+        <p>Freeze for days or weeks before acting</p>
+        <p>Replay the loss obsessively</p>
+        <p>Tie identity to what was lost</p>
+        <p>Interpret the loss as evidence of permanent incapacity</p>
+      </div>
+      <div class="ba-after">
+        <h4>What Geckos Do After Loss</h4>
+        <p>Drop the tail deliberately to survive</p>
+        <p>Continue moving immediately</p>
+        <p>Begin regeneration within hours</p>
+        <p>Adapt behavior to compensate while regrowing</p>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p>The difference is not toughness. It is not willpower or grit or any of the words we print on gym walls. The difference is that geckos have a <strong>biological protocol for loss</strong>. The tail drops. The gecko runs. The tail regrows. There is no existential crisis, no three week freeze, no identity collapse. The loss is part of the design.</p>
+      <p>You were not born with a biological protocol for career failure, heartbreak, or financial ruin. But you can build one. That is what this playbook installs.</p>
+    </div>
+
+    <div class="think">
+      <div class="think-label"><svg><use href="#ico-eye"/></svg> Honest Assessment</div>
+      <p>Think about the last significant setback you experienced. How long did you wait before taking your first concrete action toward recovery? Write the honest number.</p>
+      <span class="fill-line"></span>
+      <p>What were you doing during that waiting period? Were you resting or hiding?</p>
+      <span class="fill-line"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 2: THE GRIP ===== -->
+<div class="ch-head">
+  <div class="ch-num">Chapter Two</div>
+  <h2>The Grip</h2>
+  <p class="ch-sub">Millions of invisible forces that hold you to the wall when everything says you should fall</p>
+</div>
+
+<div class="section">
+  <div class="page">
+    <div class="scene">
+      <div class="scene-label">Scene — The First Lesson</div>
+      <p>Stone led Kira to the garden wall. Smooth brick, sun heated, almost vertical. Kira's chest tightened. She had climbed walls like this a hundred times before. Before.</p>
+      <p><strong>"Put one foot on the wall,"</strong> Stone said.</p>
+      <p>"Just one?"</p>
+      <p>"Just one. You don't climb a wall with four feet. You climb it with <em>one foot at a time</em>, a million hairs at a time."</p>
+      <p>Kira pressed her right front foot against the brick. She felt the familiar pull — not suction, not glue, but something deeper. Something that happened at a level she could not see. Her setae — the millions of microscopic hair like structures on her toe pads — spread across the surface and found purchase at the molecular level.</p>
+      <p>"Feel that?" Stone asked.</p>
+      <p>"It feels... small."</p>
+      <p><strong>"Every grip that matters is small. The question is whether you have enough of them."</strong></p>
+    </div>
+
+    <div class="prose">
+      <p>Here is the physics that should change how you think about resilience forever. A gecko does not use suction to climb walls. It does not use glue, hooks, or friction in the way you understand it. It uses <strong>van der Waals forces</strong> — intermolecular attractions that occur when two surfaces are brought extremely close together at the nanoscale.</p>
+      <p>Each gecko toe pad contains approximately 14,000 setae per square millimeter. Each seta branches into hundreds of spatulae — flat, paddle shaped tips approximately 200 nanometers wide. When these spatulae press against a surface, they get close enough to the molecules of that surface to create weak electromagnetic attractions.</p>
+      <p>Each individual spatula generates a force so small it is almost meaningless. About 10 nanonewtons. You could not measure it without laboratory equipment. But a single gecko foot has roughly <em>half a billion spatulae</em>. And the gecko has four feet.</p>
+    </div>
+
+    <div class="data-row">
+      <div class="data-box">
+        <div class="number">2B+</div>
+        <p>spatulae across all four feet, each contributing invisible molecular force</p>
+      </div>
+      <div class="data-box">
+        <div class="number">40lbs</div>
+        <p>total adhesive force a tokay gecko could theoretically support from its pads</p>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p>Two billion points of contact, each one meaningless alone, together strong enough to hold the gecko's body weight forty times over. The gecko does not overpower gravity. It <em>accumulates</em> so many tiny connections to the surface that gravity becomes irrelevant.</p>
+      <p>This is the Grip Principle: <strong>resilience is not one big thing. It is two billion small things.</strong> The people who recover fastest from setbacks do not have some superhuman capacity for suffering. They have an extraordinary number of tiny, daily connections to their own lives — habits, relationships, routines, practices, identities — that keep them attached to the wall when the shaking starts.</p>
+    </div>
+
+    <div class="grand-quote">
+      <blockquote>No single hair holds the gecko to the wall. No single habit holds a life together. But remove enough of either, and you fall.</blockquote>
+      <div class="attribution">The Grip Principle</div>
+    </div>
+
+    <div class="viz-box">
+      <div class="viz-label"><svg style="width:16px;height:16px;vertical-align:middle;margin-right:6px"><use href="#ico-foot"/></svg> The Grip Audit</div>
+      <h3>Mapping Your Molecular Connections</h3>
+      <p>A grip audit catalogs every small thing that keeps you attached to forward motion. These are not goals or dreams. They are the daily micro actions that create traction even when motivation is zero. Audit your life across four grip surfaces:</p>
+    </div>
+
+    <div class="grip-grid">
+      <div class="grip-card grip-hold">
+        <span class="grip-emoji"><svg><use href="#ico-anchor"/></svg></span>
+        <span class="grip-label">Physical Grip</span>
+        <h3>Body Contact Points</h3>
+        <p>Morning routine executed regardless of mood. Movement practice (even 5 minutes). Sleep schedule that does not negotiate. One meal prepared with intention daily. These are the setae of your physical surface.</p>
+      </div>
+      <div class="grip-card grip-release">
+        <span class="grip-emoji"><svg><use href="#ico-pulse"/></svg></span>
+        <span class="grip-label">Relational Grip</span>
+        <h3>Human Contact Points</h3>
+        <p>One person you text every day without being asked. One conversation per week that goes deeper than logistics. One relationship where you show up consistently regardless of reciprocation. These are the setae of your relational surface.</p>
+      </div>
+      <div class="grip-card grip-climb">
+        <span class="grip-emoji"><svg><use href="#ico-wall"/></svg></span>
+        <span class="grip-label">Professional Grip</span>
+        <h3>Work Contact Points</h3>
+        <p>One skill you practice daily. One contribution that does not require permission. One professional relationship you nurture without needing something in return. One project that has nothing to do with your current paycheck.</p>
+      </div>
+      <div class="grip-card grip-rest">
+        <span class="grip-emoji"><svg><use href="#ico-flame"/></svg></span>
+        <span class="grip-label">Spiritual Grip</span>
+        <h3>Soul Contact Points</h3>
+        <p>One practice that connects you to something beyond yourself daily. One act of service per week with no audience. One moment of stillness where you are not consuming, producing, or performing. One act of gratitude that costs you nothing.</p>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p>The people who collapse after setbacks almost always have the same pattern in their grip audit: they have <strong>concentrated grip</strong>. All their setae are on one surface. Their entire identity, routine, social life, and sense of purpose are connected to one thing — their job, their relationship, their business, their role as a parent. When that one surface breaks, they have nothing to hold onto.</p>
+      <p>The people who recover in days instead of months have <strong>distributed grip</strong>. Their micro connections span all four surfaces. When the professional wall crumbles, their physical routine still holds. When the relationship shatters, their spiritual practice keeps them attached. They do not fall because they have too many contact points for one loss to break them all.</p>
+    </div>
+
+    <div class="scene">
+      <div class="scene-label">Scene — Distributed Weight</div>
+      <p>Kira had one foot on the wall. Stone climbed up beside her and pressed his own foot next to hers.</p>
+      <p>"Look at my foot," he said. "What do you see?"</p>
+      <p>She looked. Two of his toes were missing — just smooth stumps where the third and fourth toes should have been. Her stomach turned.</p>
+      <p>"A cat," Stone said, reading her face. <strong>"Three years ago. But look closer."</strong></p>
+      <p>Kira leaned in. The remaining three toes were wider than normal, the pads visibly thicker, the lamellae grooves deeper. The surviving toes had compensated. They had <em>grown more setae</em> to replace what was lost.</p>
+      <p>"I lost two toes and gained a thousand hairs on the ones that remained," Stone said. "That is what adaptation looks like. Not replacement. <em>Redistribution.</em>"</p>
+    </div>
+
+    <div class="think">
+      <div class="think-label"><svg><use href="#ico-foot"/></svg> Your Grip Audit</div>
+      <p>List three micro actions in each category that you currently perform. If a category has fewer than three, that is your weakest surface.</p>
+      <p><strong>Physical:</strong></p>
+      <span class="fill-line"></span>
+      <p><strong>Relational:</strong></p>
+      <span class="fill-line"></span>
+      <p><strong>Professional:</strong></p>
+      <span class="fill-line"></span>
+      <p><strong>Spiritual:</strong></p>
+      <span class="fill-line"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 3: THE TAIL DROP ===== -->
+<div class="ch-head">
+  <div class="ch-num">Chapter Three</div>
+  <h2>The Tail Drop</h2>
+  <p class="ch-sub">The ancient art of losing on purpose</p>
+</div>
+
+<div class="section">
+  <div class="page">
+    <div class="scene">
+      <div class="scene-label">Scene — The Lesson of Letting Go</div>
+      <p>They were on the garden wall now, three feet up. Kira's muscles remembered the motion even if her confidence did not. Left foot, right foot, left foot, right foot. The rhythm of climbing.</p>
+      <p>Stone stopped. "Tell me what happened with the kingfisher."</p>
+      <p>Kira froze. She did not want to talk about it.</p>
+      <p>"It came from above. I didn't see it. It grabbed my tail and I — I just — it <em>came off</em>." She said the last words like a confession.</p>
+      <p>"It didn't come off," Stone said firmly. <strong>"You dropped it. Your body made a decision in a fraction of a second that your conscious mind could never have made. It decided that your tail was less important than your life. And it was right."</strong></p>
+      <p>"But it's gone."</p>
+      <p>"And you're alive. That is not a loss. That is a <em>trade</em>."</p>
+      <p>Kira looked back at her stub. For the first time, she considered that what she had been calling a wound might actually be evidence of a <strong>decision her body made to save her</strong>.</p>
+    </div>
+
+    <div class="prose">
+      <p>Caudal autotomy. That is the scientific name for what geckos, lizards, and some salamanders do when a predator seizes their tail. The tail does not break accidentally. It <strong>separates along pre formed fracture planes</strong> — weak points built into the vertebrae specifically for this purpose. The muscles around the fracture plane contract to seal blood vessels almost instantly. The entire process takes less than one second.</p>
+      <p>But here is the part that should stop you cold: <em>the tail keeps moving after it separates.</em> It twitches, writhes, and flips around for up to 30 minutes. This is not random. The detached tail contains glycogen stores that fuel muscular contractions without any connection to the brain. It is a programmed distraction — designed to hold the predator's attention while the gecko escapes.</p>
+      <p>The gecko sacrifices something real, something that contains stored energy and aids in balance, and that sacrifice <strong>actively protects the gecko</strong> even after it is gone.</p>
+    </div>
+
+    <div class="wall-type">
+      <div class="wt-label"><svg style="width:14px;height:14px;vertical-align:middle;margin-right:6px;color:var(--terra-glow)"><use href="#ico-tail"/></svg> The Biology of Strategic Sacrifice</div>
+      <h3>Pre Formed Fracture Planes</h3>
+      <p>The gecko does not decide where the tail breaks. That was <em>decided during development</em>. The fracture planes are structural features built into the animal before it ever encounters a predator. This means the gecko's body planned for loss before it happened.</p>
+      <p>You need fracture planes in your life. Predetermined lines where you <strong>will</strong> let go if a predator grabs hold. These are not weaknesses. They are survival architecture. The entrepreneur who builds a business with a clear exit strategy is not pessimistic. She has a <em>fracture plane</em>. The employee who maintains an emergency fund and an updated resume has a fracture plane. The person who loves deeply but maintains individual friendships and personal identity has a fracture plane.</p>
+    </div>
+
+    <div class="prose">
+      <p>Most people do not have fracture planes. They have fused structures — identities so completely welded to a single role, relationship, or outcome that when a predator grabs hold, the whole organism is dragged down. The person who <em>is</em> their job has no fracture plane. When the company fails, they cannot separate. The person whose entire social life exists through their romantic partner has no fracture plane. When the relationship ends, their entire world goes with it.</p>
+    </div>
+
+    <div class="viz-box">
+      <div class="viz-label"><svg style="width:16px;height:16px;vertical-align:middle;margin-right:6px"><use href="#ico-tail"/></svg> The "Still Twitching" Inventory</div>
+      <h3>What You Dropped That Is Still Distracting You</h3>
+      <p>When a gecko drops its tail, the tail twitches to distract the predator. But some of the things <em>you</em> have dropped are still twitching — and they are distracting <strong>you</strong>, not your predator. These are the old roles, old relationships, old commitments, and old identities that you separated from but still draw your attention, energy, and emotional resources.</p>
+      <p>A still twitching item meets three criteria: (1) you have already let go of it in practice, (2) it still consumes mental energy or emotional bandwidth, and (3) you keep checking on it even though you cannot reattach it.</p>
+    </div>
+
+    <div class="grip-grid">
+      <div class="grip-card grip-hold">
+        <span class="grip-emoji"><svg><use href="#ico-tail"/></svg></span>
+        <span class="grip-label">Still Twitching</span>
+        <h3>Old Roles</h3>
+        <p>The title you no longer hold but still use to introduce yourself. The team you no longer lead but still mentally manage. The position you were let go from that still defines your professional identity. You dropped it. Stop watching it twitch.</p>
+      </div>
+      <div class="grip-card grip-release">
+        <span class="grip-emoji"><svg><use href="#ico-drop"/></svg></span>
+        <span class="grip-label">Still Twitching</span>
+        <h3>Old Relationships</h3>
+        <p>The friendship that ended two years ago that you still rehearse conversations with in the shower. The ex whose social media you still check. The mentor who moved on. The separation happened. The twitching has not stopped because you keep feeding it attention.</p>
+      </div>
+      <div class="grip-card grip-climb">
+        <span class="grip-emoji"><svg><use href="#ico-spiral"/></svg></span>
+        <span class="grip-label">Still Twitching</span>
+        <h3>Old Plans</h3>
+        <p>The business idea that failed but you still spend mental energy redesigning. The move you decided against but still research neighborhoods for. The degree you chose not to finish but still feel guilty about. These plans are detached tails. Let them stop moving.</p>
+      </div>
+      <div class="grip-card grip-rest">
+        <span class="grip-emoji"><svg><use href="#ico-shield"/></svg></span>
+        <span class="grip-label">Still Twitching</span>
+        <h3>Old Versions of Yourself</h3>
+        <p>The athlete you were at 22. The fearless version of you that existed before the failure. The confident person you were before the betrayal. That version was your tail. It served you. You dropped it to survive. Mourning it is fine. Trying to reattach it is a waste of glucose.</p>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-label">Scene — The Twitch</div>
+      <p>That night, Kira lay on a warm stone, and her tail stub twitched again. Three sharp spasms.</p>
+      <p>"It does that," she told Stone, embarrassed. "I can't make it stop."</p>
+      <p>"The nerves are still firing. They'll stop. But here's the thing nobody tells you about the twitch." Stone turned to face her fully. <strong>"The tail that's on the ground, the one the kingfisher got — it's twitching too. And the kingfisher is still watching it. Still mesmerized by it. Still spending energy on something that isn't even alive."</strong></p>
+      <p>He paused. "Are you the gecko? Or have you become the kingfisher, mesmerized by your own detached tail?"</p>
+      <p>Kira said nothing. She knew the answer.</p>
+    </div>
+
+    <div class="think">
+      <div class="think-label"><svg><use href="#ico-tail"/></svg> Still Twitching Inventory</div>
+      <p>Name two things you dropped that are still consuming your attention:</p>
+      <span class="fill-line"></span>
+      <span class="fill-line"></span>
+      <p>For each one: what specific action would signal to your brain that you are done watching it twitch?</p>
+      <span class="fill-line"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 4: THE REGROWTH ===== -->
+<div class="ch-head">
+  <div class="ch-num">Chapter Four</div>
+  <h2>The Regrowth</h2>
+  <p class="ch-sub">It comes back different. That is the advantage.</p>
+</div>
+
+<div class="section">
+  <div class="page">
+    <div class="scene">
+      <div class="scene-label">Scene — The New Tail</div>
+      <p>Two weeks had passed. Kira woke on the garden wall, five feet up, where she now slept every night. The fear of heights was quieter now. Not gone — quieter. Like a radio turned down three notches.</p>
+      <p>She twisted to examine her stub. Something was different. A nub of new tissue, paler than the rest of her body, slightly translucent. The beginnings of a new tail.</p>
+      <p>She found Stone on the west wall, catching the last of the afternoon sun.</p>
+      <p>"It's growing back," she said, unable to hide the relief.</p>
+      <p>Stone glanced at it. <strong>"It'll come back shorter. Different color. Different texture. It won't look like the one you lost."</strong></p>
+      <p>Kira's heart sank. "Why not?"</p>
+      <p>"Because the original tail was made of bone. The new one is cartilage — more flexible, harder to break. The original had uniform scales. The new one will have irregular patterns — uglier to you, but better at sensing movement." He paused. "Your body does not rebuild what you lost. It builds <em>what you need next</em>."</p>
+    </div>
+
+    <div class="prose">
+      <p>The regenerated gecko tail is objectively different from the original. The original tail contains vertebrae — actual bone. The regenerated tail replaces these with a cartilage tube. The original has segmented muscle groups controlled by distinct nerve clusters. The regenerated tail has a single unsegmented muscle cone with a simplified nerve structure. The skin pattern is different. The coloring is different. Under a microscope, no biologist would confuse a regenerated tail for an original.</p>
+      <p>And yet — the regenerated tail <em>works</em>. It stores fat. It aids balance. It serves as a decoy if another predator strikes. In some species, the regenerated tail is actually more flexible than the original, allowing for greater agility in tight spaces. The gecko does not get its old tail back. It gets a <strong>different tail that is optimized for a gecko who has already survived a predator attack</strong>.</p>
+    </div>
+
+    <div class="grand-quote">
+      <blockquote>Your recovery will not look like your original state. It will look like someone who has survived something. And that is a different kind of strong.</blockquote>
+      <div class="attribution">The Regrowth Principle</div>
+    </div>
+
+    <div class="prose">
+      <p>This is where most people sabotage their own recovery. They try to rebuild <em>exactly what they lost</em>. The person who lost a marriage tries to recreate the same relationship dynamics with someone new. The entrepreneur whose first business failed tries to build the same kind of company again, the same way, with the same assumptions. The professional who was fired tries to get the same job at the same level with the same responsibilities.</p>
+      <p>They are trying to regrow bone when their body is offering them cartilage. And they reject the cartilage because it does not look like what they remember.</p>
+      <p>Research from the Harvard Business Review found that entrepreneurs who fail and then succeed with a subsequent venture almost never replicate their original business model. Instead, they build something that incorporates the lessons of failure into the foundation. The second business is not a copy of the first. It is an <strong>evolved response</strong> — like a cartilage tail replacing bone.</p>
+    </div>
+
+    <div class="viz-box">
+      <div class="viz-label"><svg style="width:16px;height:16px;vertical-align:middle;margin-right:6px"><use href="#ico-grow"/></svg> The Regrowth Protocol</div>
+      <h3>Three Phases of Regeneration</h3>
+      <p>Gecko tail regeneration follows a predictable biological timeline. Your recovery should follow one too. This protocol is not about rushing. It is about giving each phase the right kind of attention.</p>
+    </div>
+
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-marker">1</div>
+        <div class="flow-content">
+          <h4>Days 1 through 7: The Wound Seal</h4>
+          <p>In the gecko, the first phase is hemostasis and wound epithelium formation. Muscles contract to stop bleeding. A thin layer of cells covers the wound site. No growth happens yet. This phase is about <strong>stopping the bleeding</strong>. For you: the first seven days after a major setback are about stabilization, not progress. Cancel unnecessary commitments. Simplify your daily requirements to the absolute minimum. Eat. Sleep. Move. Speak to one trusted person. Do not make major decisions. Do not try to "fix" anything. The only goal of Week One is to stop the bleeding.</p>
+        </div>
+      </div>
+      <div class="flow-arrow"><svg style="width:20px;height:20px"><use href="#ico-grow"/></svg></div>
+      <div class="flow-step">
+        <div class="flow-marker">2</div>
+        <div class="flow-content">
+          <h4>Days 8 through 30: The Blastema</h4>
+          <p>In the gecko, a blastema forms — a mass of undifferentiated cells that will become the new tail. These cells have not yet decided what they will be. They are raw potential. For you: weeks two through four are about <strong>exploration without commitment</strong>. Try things. Have conversations. Research possibilities. Apply to jobs you are not sure you want. Attend events in fields you have never explored. Write down ideas you would normally dismiss. The blastema does not judge what kind of tail it will become. It just grows. Do not force direction in this phase. Let the raw material accumulate.</p>
+        </div>
+      </div>
+      <div class="flow-arrow"><svg style="width:20px;height:20px"><use href="#ico-grow"/></svg></div>
+      <div class="flow-step">
+        <div class="flow-marker">3</div>
+        <div class="flow-content">
+          <h4>Days 31 through 90: Differentiation and Growth</h4>
+          <p>In the gecko, the blastema cells begin differentiating into cartilage, muscle, and skin. The new tail takes shape, gains function, develops its own pattern. For you: months two and three are about <strong>committing to the new structure</strong>. Pick the direction that emerged from the blastema phase. Invest in it. Build the new routine, the new identity, the new set of habits. Accept that it looks different from the old one. The cartilage is forming. Let it form. This is where most people quit because the new life does not look like the old one. Stay on the wall.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="ba-grid">
+      <div class="ba-before">
+        <h4>Bone Thinking (Old Tail)</h4>
+        <p>"I need to get back to where I was"</p>
+        <p>"If it doesn't look like before, it's not real"</p>
+        <p>"Recovery means restoration"</p>
+        <p>"I should be over this by now"</p>
+      </div>
+      <div class="ba-after">
+        <h4>Cartilage Thinking (New Tail)</h4>
+        <p>"I need to grow into where I'm going"</p>
+        <p>"Different is not lesser, it's adapted"</p>
+        <p>"Recovery means regeneration"</p>
+        <p>"This is growing at exactly the right pace"</p>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-label">Scene — Stone's Third Tail</div>
+      <p>Kira stared at Stone's tail — short, dark, thick. Nothing like the long, elegant tails she saw on geckos who had never been caught.</p>
+      <p>"Does it bother you?" she asked. "That it doesn't look... normal?"</p>
+      <p>Stone laughed. It was a dry, clicking sound. <strong>"My first tail was beautiful. Long, striped, perfect balance. A kingfisher took it. My second tail was shorter but functional. A cat took that one. My third tail" — he swung the stubby, dark appendage — "is ugly. But it is also the tail of a gecko who has survived three predators."</strong></p>
+      <p>He turned one eye toward her. "Which would you rather have? A beautiful tail and no survival experience? Or an ugly tail and the knowledge that <em>nothing that has tried to kill you has succeeded</em>?"</p>
+    </div>
+
+    <div class="think">
+      <div class="think-label"><svg><use href="#ico-grow"/></svg> Your Regrowth Map</div>
+      <p>What are you currently trying to regrow as bone (exact replica) when your body is offering cartilage (adapted version)?</p>
+      <span class="fill-line"></span>
+      <p>What would the "cartilage version" of your recovery actually look like?</p>
+      <span class="fill-line"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 5: THE NIGHT VISION ===== -->
+<div class="ch-head">
+  <div class="ch-num">Chapter Five</div>
+  <h2>The Night Vision</h2>
+  <p class="ch-sub">How to see clearly when everything around you is dark</p>
+</div>
+
+<div class="section">
+  <div class="page">
+    <div class="scene">
+      <div class="scene-label">Scene — After Sunset</div>
+      <p>The garden fell dark. Not the gradual dimming of dusk but the sudden, total dark that comes when clouds cover a moonless sky. Most creatures retreated. The birds went silent. The butterflies vanished hours ago. Even the cat went inside.</p>
+      <p>Kira could see <em>everything</em>.</p>
+      <p>The veins on leaves ten feet away. The moth approaching from the east, its wings creating a pattern she could read as clearly as text. The heat signature of an earthworm beneath the soil. Colors — actual colors — in light so dim that a human would see nothing but black.</p>
+      <p>"This is the part they never tell you about being nocturnal," Stone said from somewhere above her. <strong>"Everyone thinks darkness is a disadvantage. But if you can see in the dark, darkness becomes your territory."</strong></p>
+    </div>
+
+    <div class="prose">
+      <p>Gecko eyes are among the most remarkable optical instruments in nature. Most nocturnal animals sacrifice color vision for light sensitivity — their eyes detect shapes in the dark but cannot distinguish hues. Geckos broke that rule. A gecko's eyes are approximately <strong>350 times more sensitive to light than human eyes</strong>, and they retain full color vision in conditions where humans cannot even see their own hand.</p>
+      <p>The mechanism is a multifocal optical system. Where human pupils constrict to a small circle in bright light, gecko pupils constrict to a series of pinholes — tiny apertures along a vertical slit that each focus a slightly different wavelength. In darkness, these pinholes dilate into a single massive opening that gathers every available photon. The result is an eye that can distinguish blue from gray at light levels where laboratory instruments struggle.</p>
+    </div>
+
+    <div class="data-row">
+      <div class="data-box">
+        <div class="number">350x</div>
+        <p>more light sensitive than human eyes, with full color vision retained</p>
+      </div>
+      <div class="data-box">
+        <div class="number">4</div>
+        <p>separate pinhole apertures in each pupil for multifocal light processing</p>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p>Here is the translation: <strong>dark seasons are not blind seasons</strong>. They are seasons where most people lose their vision because they were never built — or never trained — to see in low light. But the people who develop night vision during hardship gain a permanent competitive advantage. They can perceive opportunities, threats, and truths that are invisible to everyone around them.</p>
+      <p>The research supports this. Post traumatic growth studies by Tedeschi and Calhoun at the University of North Carolina found that 70% of people who experience significant trauma report at least one area of meaningful personal growth as a direct result. Not despite the darkness — <em>because of it</em>. The darkness forced them to develop perception systems they never would have built in the light.</p>
+    </div>
+
+    <div class="viz-box">
+      <div class="viz-label"><svg style="width:16px;height:16px;vertical-align:middle;margin-right:6px"><use href="#ico-moon"/></svg> The Dark Room Audit</div>
+      <h3>What You Can See That Others Cannot</h3>
+      <p>When you are in a dark season — grief, failure, uncertainty, transition — you are developing perception that people in the light do not have. The Dark Room Audit helps you identify what your darkness is teaching you to see.</p>
+    </div>
+
+    <div class="adventure">
+      <div class="adv-step">
+        <h4>What truths became visible only after the lights went out?</h4>
+        <p>Which relationships revealed their real strength (or weakness) during your crisis? What assumptions about your life turned out to be illusions that only darkness could dissolve? What did you learn about your own capacity that comfort would never have shown you?</p>
+      </div>
+      <div class="adv-step">
+        <h4>What can you see right now that others in the light cannot?</h4>
+        <p>Your dark season has given you pattern recognition that comfortable people lack. You can spot fragility because you have experienced collapse. You can detect insincerity because you have been desperate enough to notice who showed up and who disappeared. You can evaluate risk more accurately because you have lived through worst case scenarios.</p>
+      </div>
+      <div class="adv-step">
+        <h4>What opportunity exists in this darkness that only you can see?</h4>
+        <p>Every dark market creates opportunities for those who can navigate it. Every organizational crisis reveals power vacuums. Every industry downturn exposes gaps that will need filling when the light returns. What gap can you see from inside the darkness that will be obvious to everyone else only after sunrise?</p>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-label">Scene — The Moth in the Dark</div>
+      <p>A Luna moth drifted through the garden, its pale green wings ghostly in the near total darkness. Kira tracked it instantly. Every movement, every wing beat, every subtle course correction.</p>
+      <p>"Before the kingfisher," Kira said, "I hunted during the day. I competed with every other predator for the same food in the same light."</p>
+      <p>Stone nodded. "And now?"</p>
+      <p>"Now I own the night. There's <em>more</em> food here than I ever found in daylight. And no competition."</p>
+      <p><strong>"That is what darkness gives you,"</strong> Stone said. <strong>"Not less. A different abundance that requires different eyes."</strong></p>
+    </div>
+
+    <div class="grand-quote">
+      <blockquote>The gecko does not wish for daylight. It evolved to dominate the dark. Your worst season is not a detour. It is a new hunting ground.</blockquote>
+      <div class="attribution">The Night Vision Principle</div>
+    </div>
+
+    <div class="prose">
+      <p>Viktor Frankl, the psychiatrist who survived Auschwitz, wrote that the prisoners who survived were not the physically strongest. They were the ones who found <strong>meaning in the darkness</strong>. They developed a kind of psychological night vision — the ability to perceive purpose, connection, and future possibility in conditions where everyone else saw only black.</p>
+      <p>Frankl called this "tragic optimism" — the capacity to remain hopeful not because things are good but because you can see something in the dark that others have stopped looking for. The gecko does not see despite the darkness. It sees <em>because</em> it is built for the dark. Some truths only become visible when the bright, comfortable light is removed.</p>
+    </div>
+
+    <div class="ba-grid">
+      <div class="ba-before">
+        <h4>In the Light (Comfort)</h4>
+        <p>Friends and allies are indistinguishable</p>
+        <p>Your strengths and your habits look the same</p>
+        <p>Confidence feels like competence</p>
+        <p>The path ahead seems obvious and flat</p>
+      </div>
+      <div class="ba-after">
+        <h4>In the Dark (Adversity)</h4>
+        <p>True allies become unmistakable</p>
+        <p>Core strengths separate from comfortable routines</p>
+        <p>Competence is tested and proven</p>
+        <p>The real path emerges from the noise</p>
+      </div>
+    </div>
+
+    <div class="think">
+      <div class="think-label"><svg><use href="#ico-moon"/></svg> Dark Room Audit</div>
+      <p>What truth became visible to you only because the lights went out?</p>
+      <span class="fill-line"></span>
+      <p>What can you see right now that people who have never experienced your specific darkness cannot perceive?</p>
+      <span class="fill-line"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 6: THE CEILING WALK ===== -->
+<div class="ch-head">
+  <div class="ch-num">Chapter Six</div>
+  <h2>The Ceiling Walk</h2>
+  <p class="ch-sub">What looks impossible from below is just physics from the gecko's perspective</p>
+</div>
+
+<div class="section">
+  <div class="page">
+    <div class="scene">
+      <div class="scene-label">Scene — The Underside</div>
+      <p>Stone took Kira to the garden shed. The ceiling was smooth plywood — the hardest surface in the garden. No texture, no cracks, no purchase points visible to the naked eye.</p>
+      <p>"Walk across that," Stone said.</p>
+      <p>Kira looked up. The ceiling stretched twelve feet, perfectly smooth, perfectly horizontal. Gravity pulled straight down. Every instinct said no.</p>
+      <p>"That's impossible."</p>
+      <p>Stone was already climbing the wall. He reached the junction where wall met ceiling and, without pausing, <em>transitioned to the ceiling and kept walking</em>. Upside down. His body hanging from the smooth plywood by nothing but his toe pads. He walked six feet, stopped, turned one eye down at her.</p>
+      <p><strong>"Impossible is a word used by creatures who do not understand the physics of their own feet."</strong></p>
+    </div>
+
+    <div class="prose">
+      <p>A gecko walking on a ceiling is not performing a miracle. It is performing physics. The same van der Waals forces that hold the gecko to a vertical wall work identically on a horizontal ceiling — the direction of gravity is irrelevant to intermolecular attraction. The setae do not care which way is down. They create molecular bonds with whatever surface they contact, regardless of orientation.</p>
+      <p>But here is what makes ceiling walking genuinely extraordinary: the gecko must <strong>actively manage detachment</strong>. On a wall, if a gecko relaxes its foot, it slides. On a ceiling, if a gecko relaxes its foot, it falls. Every step on a ceiling requires the gecko to peel its toes at a precise 30 degree angle to break the van der Waals bonds without damaging the setae, swing the foot forward, and reattach with precise pressure distribution. The gecko takes approximately 15 steps per second on a ceiling. Each step requires attachment, load bearing, precise angle detachment, and reattachment. Fifteen times a second.</p>
+    </div>
+
+    <div class="wall-type">
+      <div class="wt-label"><svg style="width:14px;height:14px;vertical-align:middle;margin-right:6px;color:var(--terra-glow)"><use href="#ico-ceiling"/></svg> The Physics of the Impossible</div>
+      <h3>Why "Impossible" Is Almost Always a Vocabulary Problem</h3>
+      <p>When someone watches a gecko walk across a ceiling, the word "impossible" comes to mind because the observer's mental model does not include van der Waals forces. They are thinking about <em>suction, friction, and glue</em> — the adhesion methods they understand. None of those work on a smooth ceiling. So they conclude: impossible.</p>
+      <p>The gecko is not using any of those methods. It is using a mechanism the observer <strong>does not have a category for</strong>. The ceiling walk is not impossible. It is just operating on physics the observer does not yet understand.</p>
+      <p>Every "impossible" situation in your life follows this same pattern. You look at the obstacle and evaluate it using the tools, strategies, and frameworks you currently understand. When none of them apply, you declare it impossible. But the obstacle is not impossible. <em>Your current framework is insufficient.</em> The ceiling has not changed. You need different feet.</p>
+    </div>
+
+    <div class="viz-box">
+      <div class="viz-label"><svg style="width:16px;height:16px;vertical-align:middle;margin-right:6px"><use href="#ico-ceiling"/></svg> The Ceiling Protocol</div>
+      <h3>5 Steps for Attempting What Everyone Says Cannot Be Done</h3>
+      <p>This protocol is for the moments when every reasonable person, including yourself, has concluded that the situation is impossible. It is not a motivation exercise. It is a diagnostic tool for identifying the invisible physics that might make the impossible merely unfamiliar.</p>
+    </div>
+
+    <div class="adventure">
+      <div class="adv-step">
+        <h4>Name the Ceiling</h4>
+        <p>Write down exactly what everyone says is impossible. Be specific. Not "succeed" — but precisely what outcome has been declared unachievable and by whom. The ceiling only has power when it is vague. Name it in one sentence with no ambiguity.</p>
+      </div>
+      <div class="adv-step">
+        <h4>Audit Your Current Feet</h4>
+        <p>What tools, frameworks, and strategies are you currently using to approach this ceiling? Write them down. These are the methods that have led you to conclude "impossible." They are not wrong. They are just insufficient for this surface. Acknowledge their limits without abandoning them entirely.</p>
+      </div>
+      <div class="adv-step">
+        <h4>Find Someone Walking That Ceiling</h4>
+        <p>Somewhere, someone is doing what you have declared impossible. Find them. Not to copy their method — you have different feet — but to confirm that the ceiling is walkable. Their existence is proof that the physics exist. Your job is to find the physics, not replicate their steps.</p>
+      </div>
+      <div class="adv-step">
+        <h4>Identify the Missing Force</h4>
+        <p>What mechanism are you not currently using? What skill, relationship, technology, knowledge base, or perspective would function as your van der Waals force? This is the hardest step because you are looking for something you do not currently know exists. The answer is almost never "try harder." It is almost always "try differently."</p>
+      </div>
+      <div class="adv-step">
+        <h4>Take the First Upside Down Step</h4>
+        <p>Do not attempt to cross the entire ceiling. Put one foot on it. The gecko's transition from wall to ceiling begins with a single foot placed at the junction where the two surfaces meet. What is one small action you can take that tests your grip on the "impossible" surface? Take it today. Not tomorrow. Ceilings get more intimidating the longer you stare at them from below.</p>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-label">Scene — Kira's Ceiling</div>
+      <p>Kira climbed the wall to the ceiling junction. She paused. Below her, the shed floor was twelve feet down. Her new tail — short, pale, still growing — twitched.</p>
+      <p>"What if I fall?" she asked.</p>
+      <p>Stone, hanging upside down six feet away, turned both eyes toward her. His voice was quiet.</p>
+      <p><strong>"You have already fallen. The kingfisher dropped you from higher than this. You lost your tail, your confidence, and three days of your life to hiding under a leaf. And you are still here, on this wall, at this junction."</strong></p>
+      <p>He paused. "The fall is not the thing you should fear. You have <em>already proven</em> you can survive it."</p>
+      <p>Kira placed her right front foot on the ceiling. Felt the setae engage. Felt the pull — small, molecular, invisible, <strong>real</strong>. She placed her left front foot. Then, with a motion that felt like stepping through a door she had been standing in front of her entire life, she let go of the wall.</p>
+      <p>She was upside down. She was on the ceiling. She was walking.</p>
+      <p>Stone said nothing. He didn't need to. The scars on his feet told every story that mattered.</p>
+    </div>
+
+    <div class="grand-quote">
+      <blockquote>The wall does not care how many times you fell. The ceiling does not care about your scars. The surface only asks one question: can you grip? And you were built to grip.</blockquote>
+      <div class="attribution">Stone's Final Lesson</div>
+    </div>
+
+    <div class="think">
+      <div class="think-label"><svg><use href="#ico-ceiling"/></svg> Your Ceiling</div>
+      <p>What is the one thing in your life that you have declared impossible?</p>
+      <span class="fill-line"></span>
+      <p>Who is already walking that ceiling? (If you do not know, this is your first research task.)</p>
+      <span class="fill-line"></span>
+      <p>What is the one upside down step you can take today?</p>
+      <span class="fill-line"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FINAL TEST ===== -->
+<div class="section"><div class="page">
+<div class="think">
+  <div class="think-label"><svg><use href="#ico-eye"/></svg> The Final Test</div>
+  <h4>Can you answer these without looking back?</h4>
+  <p class="q-start"><strong>1.</strong> What physical force allows a gecko to grip any surface — and what is the human equivalent?</p>
+  <span class="fill-line"></span>
+  <p class="q-start"><strong>2.</strong> Name two things in your life that are "still twitching" after you dropped them.</p>
+  <span class="fill-line"></span>
+  <p class="q-start"><strong>3.</strong> What are the three phases of the Regrowth Protocol and their timeframes?</p>
+  <span class="fill-line"></span>
+  <p class="q-start"><strong>4.</strong> What did Stone teach Kira about the difference between falling and letting go?</p>
+  <span class="fill-line"></span>
+</div>
+</div></div>
+
+<!-- ===== PROMPT CARD ===== -->
+<div class="section"><div class="page">
+<div class="prompt-card">
+  <div class="pc-label"><svg style="width:16px;height:16px;vertical-align:middle;margin-right:6px"><use href="#ico-quill"/></svg> Continue The Lesson</div>
+  <h3>Use This Prompt With Any AI</h3>
+  <p>Paste this into ChatGPT, Claude, or any AI assistant to continue building your grip:</p>
+  <code>I just finished reading The Gecko's Grip about resilience and recovery. I want to build my own Grip Audit. Help me identify: (1) my current micro actions that create daily traction, (2) things I'm holding onto that I should strategically drop, and (3) areas where I'm trying to regrow something exactly as it was instead of letting it come back different. Ask me questions to personalize the framework to my situation.</code>
+</div>
+</div></div>
+
+<!-- ===== FINALE ===== -->
+<div class="finale">
+  <div class="finale-emoji"><svg><use href="#ico-gecko"/></svg></div>
+  <h2>The Wall Doesn't <span>Care</span></h2>
+  <p>It doesn't care how many times you fell. It doesn't care about the tail you lost. It doesn't care what anyone said about your chances.</p>
+  <p>The wall is just a surface. And you were built to climb.</p>
+  <p style="margin-top:32px;color:rgba(255,255,255,0.25);font-size:0.82rem">Stone watched Kira cross the ceiling for the first time. He said nothing. He didn't need to. The scars on his feet told every story that mattered.</p>
+</div>
+
+<footer>
+  <p>"But those who hope in the Lord will renew their strength. They will soar on wings like eagles; they will run and not grow weary, they will walk and not be faint." — Isaiah 40:31</p>
+  <div class="brand">KingdomBuilders AI</div>
+</footer>
+
+</body>
+</html>
