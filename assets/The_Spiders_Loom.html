@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Spider's Loom — Why the Smartest Predator in Nature Never Chases</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --midnight:#0A0E1A;--midnight-dark:#04060E;--midnight-mid:#141828;--midnight-light:#1E2840;--midnight-pale:#384868;
+  --silver:#C0C8D8;--silver-glow:#D8E0F0;--silver-pale:#E8ECF4;--silver-soft:rgba(192,200,216,0.07);
+  --dew:#68A8E0;--dew-glow:#88C0F0;--dew-pale:#B0D8F8;--dew-soft:rgba(104,168,224,0.06);
+  --silk:#F0F4FF;--silk-warm:#E8ECF8;--silk-deep:#D0D8E8;
+  --strand:#8090A8;--strand-light:#A0B0C8;
+  --text:#0E1420;--text-light:#2A3448;--text-muted:#586878;
+  --white:#FFFFFF;--radius:16px;
+  --shadow-soft:0 2px 16px rgba(10,14,26,0.06);
+  --shadow-mid:0 4px 28px rgba(10,14,26,0.12);
+  --shadow-strong:0 8px 40px rgba(10,14,26,0.18);
+  --before-bg:#FFF4EE;--before-border:#C8A080;--before-text:#4A2818;
+  --after-bg:#EEF2FF;--after-border:#80A0D0;--after-text:#0A1838;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--silk);line-height:1.82;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
+.page{max-width:720px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--midnight);font-weight:700}
+.prose em{color:var(--dew);font-style:normal;font-weight:600}
+
+/* ===== COVER ===== */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;
+  background:linear-gradient(175deg,#020408 0%,#060A14 20%,#0A1020 48%,#0E1828 72%,#04080E 100%);
+  position:relative;overflow:hidden}
+.web-strand{position:absolute;background:rgba(192,200,216,0.06);pointer-events:none}
+.web-strand:nth-child(1){width:1px;height:60%;left:20%;top:10%;transform:rotate(15deg);animation:strand-glow 6s ease-in-out infinite}
+.web-strand:nth-child(2){width:1px;height:50%;left:40%;top:20%;transform:rotate(-8deg);animation:strand-glow 8s ease-in-out infinite;animation-delay:-2s}
+.web-strand:nth-child(3){width:1px;height:70%;left:60%;top:5%;transform:rotate(5deg);animation:strand-glow 7s ease-in-out infinite;animation-delay:-4s}
+.web-strand:nth-child(4){width:1px;height:45%;left:80%;top:25%;transform:rotate(-12deg);animation:strand-glow 9s ease-in-out infinite;animation-delay:-1s}
+.web-strand:nth-child(5){width:60%;height:1px;left:15%;top:35%;transform:rotate(3deg);animation:strand-glow 5s ease-in-out infinite;animation-delay:-3s}
+.web-strand:nth-child(6){width:50%;height:1px;left:25%;top:55%;transform:rotate(-2deg);animation:strand-glow 7s ease-in-out infinite;animation-delay:-5s}
+.web-strand:nth-child(7){width:70%;height:1px;left:10%;top:75%;transform:rotate(1deg);animation:strand-glow 6s ease-in-out infinite;animation-delay:-6s}
+.dew-dot{position:absolute;border-radius:50%;pointer-events:none}
+.dew-dot:nth-child(8){width:4px;height:4px;background:rgba(104,168,224,0.5);left:20%;top:35%;animation:dew-pulse 4s ease-in-out infinite}
+.dew-dot:nth-child(9){width:3px;height:3px;background:rgba(104,168,224,0.4);left:40%;top:55%;animation:dew-pulse 5s ease-in-out infinite;animation-delay:-2s}
+.dew-dot:nth-child(10){width:5px;height:5px;background:rgba(104,168,224,0.45);left:60%;top:35%;animation:dew-pulse 6s ease-in-out infinite;animation-delay:-1s}
+.dew-dot:nth-child(11){width:3px;height:3px;background:rgba(104,168,224,0.35);left:80%;top:55%;animation:dew-pulse 4s ease-in-out infinite;animation-delay:-3s}
+.dew-dot:nth-child(12){width:4px;height:4px;background:rgba(104,168,224,0.4);left:50%;top:75%;animation:dew-pulse 5s ease-in-out infinite;animation-delay:-4s}
+@keyframes strand-glow{0%,100%{opacity:0.4}50%{opacity:1;background:rgba(192,200,216,0.12)}}
+@keyframes dew-pulse{0%,100%{transform:scale(1);opacity:0.3}50%{transform:scale(1.8);opacity:0.8;box-shadow:0 0 8px rgba(104,168,224,0.4)}}
+.ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.012;mix-blend-mode:overlay;pointer-events:none}
+.cover-content{position:relative;z-index:2;padding:48px 24px}
+.cover-badge{display:inline-block;padding:6px 18px;border:1px solid rgba(192,200,216,0.2);border-radius:40px;font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--silver);margin-bottom:40px}
+.cover h1{font-size:clamp(2.6rem,7vw,4.4rem);font-weight:900;color:var(--white);line-height:1.05;margin-bottom:8px}
+.cover h1 span{display:block;background:linear-gradient(135deg,var(--silver-glow),var(--dew-glow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cover-sub{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:rgba(255,255,255,0.3);margin-top:24px;line-height:1.7}
+.cover-sub em{color:var(--dew-pale);font-style:normal}
+.cover-author{font-family:'Nunito',sans-serif;font-size:0.55rem;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.12);margin-top:48px}
+.cover-emoji{font-size:4rem;margin-bottom:20px;animation:breathe 4s ease-in-out infinite;display:block}
+@keyframes breathe{0%,100%{transform:scale(1);filter:brightness(1)}50%{transform:scale(1.08);filter:brightness(1.3)}}
+
+.ribbon{text-align:center;padding:22px 24px;background:linear-gradient(135deg,rgba(104,168,224,0.03),rgba(104,168,224,0.06));border-top:1.5px solid rgba(104,168,224,0.1);border-bottom:1.5px solid rgba(104,168,224,0.1)}
+.ribbon p{font-family:'Lora',serif;font-size:0.82rem;font-style:italic;color:var(--text-muted);max-width:500px;margin:0 auto}
+
+.ch-head{padding:64px 24px 48px;text-align:center;background:linear-gradient(170deg,var(--midnight-dark),var(--midnight),var(--midnight-mid));position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(104,168,224,0.04) 0%,transparent 70%);border-radius:50%}
+.ch-head .ch-num{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:6px;text-transform:uppercase;color:var(--dew);margin-bottom:12px;position:relative;z-index:2}
+.ch-head h2{font-size:1.6rem;color:var(--white);position:relative;z-index:2;margin-bottom:8px}
+.ch-head .ch-sub{font-family:'Lora',serif;font-size:0.88rem;font-style:italic;color:rgba(255,255,255,0.3);position:relative;z-index:2;max-width:480px;margin:0 auto}
+
+.character-card{display:flex;gap:20px;align-items:flex-start;padding:28px;margin:28px 0;background:var(--white);border-radius:var(--radius);border:2px solid rgba(104,168,224,0.12);box-shadow:var(--shadow-soft)}
+.character-card .avatar{font-size:2.4rem;flex-shrink:0;width:64px;height:64px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--midnight),var(--midnight-mid));border-radius:50%}
+.character-card .info h3{font-size:1rem;color:var(--midnight);margin-bottom:4px}
+.character-card .info .role{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--dew);margin-bottom:8px}
+.character-card .info p{font-size:0.88rem;color:var(--text-light);line-height:1.65}
+
+.scene{margin:36px 0;padding:32px;background:linear-gradient(140deg,var(--midnight-dark),var(--midnight));border-radius:var(--radius);border:1px solid rgba(192,200,216,0.1);position:relative;overflow:hidden}
+.scene::before{content:'';position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle,rgba(104,168,224,0.04) 0%,transparent 70%);border-radius:50%}
+.scene .scene-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--dew);margin-bottom:12px;position:relative;z-index:2}
+.scene p{font-family:'Lora',serif;font-size:0.95rem;color:rgba(255,255,255,0.7);line-height:1.78;position:relative;z-index:2;margin-bottom:12px}
+.scene p:last-child{margin-bottom:0}
+.scene em{color:var(--dew-pale);font-style:normal;font-weight:600}
+.scene strong{color:var(--silver-glow);font-weight:700}
+
+.strand-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:32px 0}
+@media(max-width:640px){.strand-grid{grid-template-columns:1fr}}
+.strand-card{padding:28px;border-radius:var(--radius);background:var(--white);border:2px solid rgba(104,168,224,0.1);box-shadow:var(--shadow-soft);position:relative;overflow:hidden}
+.strand-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;border-radius:2px 0 0 2px}
+.strand-card .strand-emoji{font-size:2rem;margin-bottom:12px;display:block}
+.strand-card .strand-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;margin-bottom:8px;display:block}
+.strand-card h3{font-size:1rem;color:var(--midnight);margin-bottom:8px}
+.strand-card p{font-size:0.85rem;color:var(--text-light);line-height:1.65;margin-bottom:8px}
+.strand-card p:last-child{margin-bottom:0}
+.strand-capture::before{background:var(--dew)}
+.strand-capture .strand-label{color:var(--dew)}
+.strand-filter::before{background:#E0A040}
+.strand-filter .strand-label{color:#C08820}
+.strand-anchor::before{background:#60B070}
+.strand-anchor .strand-label{color:#40904C}
+.strand-repair::before{background:#A070C0}
+.strand-repair .strand-label{color:#8050A0}
+
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:28px 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft)}
+@media(max-width:600px){.ba-grid{grid-template-columns:1fr}}
+.ba-before,.ba-after{padding:24px 28px}
+.ba-before{background:var(--before-bg);border-right:2px solid var(--before-border)}
+.ba-after{background:var(--after-bg);border-left:2px solid var(--after-border)}
+@media(max-width:600px){.ba-before{border-right:none;border-bottom:2px solid var(--before-border)}.ba-after{border-left:none;border-top:2px solid var(--after-border)}}
+.ba-before h4,.ba-after h4{font-size:0.6rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;margin-bottom:12px}
+.ba-before h4{color:var(--before-text)}.ba-after h4{color:var(--after-text)}
+.ba-before p,.ba-after p{font-size:0.88rem;line-height:1.65;margin-bottom:8px}
+.ba-before p:last-child,.ba-after p:last-child{margin-bottom:0}
+.ba-before p{color:var(--before-text)}.ba-after p{color:var(--after-text)}
+
+.data-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:28px 0}
+@media(max-width:600px){.data-row{grid-template-columns:1fr}}
+.data-box{padding:28px;background:var(--white);border-radius:var(--radius);border:2px solid rgba(104,168,224,0.1);text-align:center;box-shadow:var(--shadow-soft)}
+.data-box .number{font-family:'Nunito',sans-serif;font-size:2.8rem;font-weight:900;line-height:1;margin-bottom:8px;background:linear-gradient(135deg,var(--dew),var(--midnight-pale));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.data-box p{font-size:0.8rem;color:var(--text-muted);line-height:1.5}
+
+.think{margin:32px 0;padding:28px 32px;background:linear-gradient(135deg,rgba(104,168,224,0.04),rgba(104,168,224,0.08));border-radius:var(--radius);border-left:5px solid var(--dew)}
+.think .think-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--dew);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.think p{font-size:0.92rem;color:var(--text-light);line-height:1.7;margin-bottom:12px}
+.think p:last-child{margin-bottom:0}
+.think .fill-line{display:block;border-bottom:1.5px dashed var(--strand);margin:20px 0;height:28px}
+
+.grand-quote{margin:40px 0;padding:48px 36px;text-align:center;position:relative}
+.grand-quote::before{content:'\201C';font-family:Georgia,serif;font-size:8rem;color:rgba(104,168,224,0.06);position:absolute;top:-20px;left:50%;transform:translateX(-50%);line-height:1}
+.grand-quote blockquote{font-family:'Lora',serif;font-size:1.15rem;font-style:italic;color:var(--midnight);line-height:1.7;max-width:560px;margin:0 auto;position:relative;z-index:2}
+.grand-quote .attribution{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--dew);margin-top:16px}
+
+.viz-box{margin:32px 0;padding:32px;background:var(--white);border-radius:var(--radius);border:2px solid var(--dew);box-shadow:0 0 20px rgba(104,168,224,0.08),var(--shadow-mid);position:relative;overflow:hidden}
+.viz-box::before{content:'';position:absolute;top:-40%;right:-20%;width:300px;height:300px;background:radial-gradient(circle,rgba(104,168,224,0.04) 0%,transparent 70%);border-radius:50%}
+.viz-box .viz-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--dew);margin-bottom:16px;position:relative;z-index:2}
+.viz-box h3{font-size:1.15rem;color:var(--midnight);margin-bottom:16px;position:relative;z-index:2}
+.viz-box p{font-size:0.9rem;color:var(--text-light);line-height:1.7;position:relative;z-index:2;margin-bottom:12px}
+.viz-box p:last-child{margin-bottom:0}
+
+.adventure{margin:32px 0;counter-reset:adventure-step}
+.adventure .adv-step{padding:24px 28px;margin-bottom:16px;background:var(--white);border-radius:var(--radius);border:2px solid rgba(104,168,224,0.1);box-shadow:var(--shadow-soft);position:relative;padding-left:72px}
+.adventure .adv-step::before{counter-increment:adventure-step;content:counter(adventure-step);position:absolute;left:20px;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--dew),var(--midnight-light));color:var(--white);font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(104,168,224,0.3)}
+.adventure .adv-step h4{font-size:0.92rem;color:var(--midnight);margin-bottom:6px}
+.adventure .adv-step p{font-size:0.85rem;color:var(--text-light);line-height:1.6}
+
+.flow{margin:32px 0}
+.flow-step{display:flex;align-items:flex-start;gap:16px;margin-bottom:8px}
+.flow-marker{flex-shrink:0;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:900;color:var(--white);background:linear-gradient(135deg,var(--midnight-mid),var(--midnight-light));box-shadow:0 2px 8px rgba(10,14,26,0.2)}
+.flow-content{flex:1;padding:12px 0}
+.flow-content h4{font-size:0.95rem;color:var(--midnight);margin-bottom:4px}
+.flow-content p{font-size:0.85rem;color:var(--text-light);line-height:1.6}
+.flow-arrow{text-align:center;color:var(--dew);font-size:1.2rem;margin:4px 0 4px 14px;opacity:0.5}
+
+.web-type{margin:28px 0;padding:28px;background:linear-gradient(145deg,var(--midnight-dark),var(--midnight));border-radius:var(--radius);border:1px solid rgba(192,200,216,0.1)}
+.web-type .wt-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--dew);margin-bottom:12px}
+.web-type h3{font-size:1rem;color:var(--white);margin-bottom:12px}
+.web-type p{font-size:0.88rem;color:rgba(255,255,255,0.65);line-height:1.7;margin-bottom:8px}
+.web-type p:last-child{margin-bottom:0}
+.web-type em{color:var(--dew-pale);font-style:normal;font-weight:600}
+.web-type strong{color:var(--silver-glow)}
+
+.install{margin:24px 0;padding:20px 24px;background:rgba(104,168,224,0.04);border:1.5px dashed rgba(104,168,224,0.2);border-radius:12px}
+.install p{font-size:0.82rem;color:var(--text-muted);line-height:1.6}
+.install strong{color:var(--dew)}
+
+.prompt-card{margin:40px 0;padding:36px;background:linear-gradient(150deg,var(--midnight),var(--midnight-mid));border-radius:var(--radius);border:2px solid var(--dew);box-shadow:0 0 24px rgba(104,168,224,0.1)}
+.prompt-card .pc-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--dew-glow);margin-bottom:16px}
+.prompt-card h3{font-size:1.1rem;color:var(--white);margin-bottom:16px}
+.prompt-card p{font-size:0.88rem;color:rgba(255,255,255,0.6);line-height:1.7;margin-bottom:8px}
+.prompt-card code{display:block;margin:16px 0;padding:16px 20px;background:rgba(0,0,0,0.3);border-radius:10px;font-family:'Lora',serif;font-size:0.88rem;color:var(--dew-pale);line-height:1.7;font-style:italic;white-space:pre-wrap}
+
+.finale{padding:80px 24px;text-align:center;background:linear-gradient(175deg,var(--midnight-dark),var(--midnight),var(--midnight-mid));position:relative;overflow:hidden}
+.finale .finale-emoji{font-size:3.5rem;margin-bottom:24px;display:block;animation:breathe 4s ease-in-out infinite}
+.finale h2{font-size:1.6rem;color:var(--white);margin-bottom:16px}
+.finale h2 span{color:var(--dew-glow)}
+.finale p{font-family:'Lora',serif;font-size:0.95rem;color:rgba(255,255,255,0.4);max-width:520px;margin:0 auto 16px;line-height:1.7}
+.finale p:last-child{margin-bottom:0}
+
+footer{text-align:center;padding:32px 24px;background:#02040A}
+footer p{font-family:'Lora',serif;font-size:0.78rem;font-style:italic;color:rgba(104,168,224,0.18);margin-bottom:12px}
+footer .brand{font-family:'Nunito',sans-serif;font-size:0.5rem;font-style:normal;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.06)}
+</style>
+</head>
+<body>
+
+<!-- ===== COVER ===== -->
+<section class="cover">
+  <div class="web-strand"></div><div class="web-strand"></div><div class="web-strand"></div><div class="web-strand"></div>
+  <div class="web-strand"></div><div class="web-strand"></div><div class="web-strand"></div>
+  <div class="dew-dot"></div><div class="dew-dot"></div><div class="dew-dot"></div><div class="dew-dot"></div><div class="dew-dot"></div>
+  <div class="ghost-noise"></div>
+  <div class="cover-content">
+    <span class="cover-emoji">🕷️</span>
+    <div class="cover-badge">Kingdom Builders AI</div>
+    <h1>The Spider's <span>Loom</span></h1>
+    <p class="cover-sub">The mantis hunts. The hawk dives. The snake strikes.<br>The spider <em>builds</em> — and eats while they are still chasing.</p>
+    <p class="cover-author">By Elijah AI</p>
+  </div>
+</section>
+
+<div class="ribbon">
+  <p>"Go to the ant, you sluggard; consider its ways and be wise! It has no commander, no overseer or ruler, yet it stores its provisions in summer." — Proverbs 6:6-8</p>
+</div>
+
+<!-- ===== INTRODUCTION ===== -->
+<div class="section">
+  <div class="page">
+    <div class="prose">
+      <p>There are two kinds of creatures in every ecosystem. <strong>Hunters</strong> wake up each morning with the same problem: find food today or starve. Every meal requires a chase, a fight, a kill. No effort, no food. Miss a day, go hungry. Their survival is a straight line between energy spent and calories earned. They live hand to mouth, paw to prey, hour to hour.</p>
+      <p>Then there are <strong>builders.</strong> The spider does not chase. It does not pounce, stalk, or ambush. It builds a structure — a web — and that structure does the catching. While the hunter sleeps, the web works. While the hunter rests, the web earns. The spider's single act of building creates a system that produces returns <em>long after the effort ends.</em></p>
+      <p>Most people live like hunters. They trade time for money, effort for results, presence for progress. Every day is a new chase. They are talented, hardworking, exhausted — and one missed day from falling behind. This playbook teaches you to live like the spider. To stop chasing and start <strong>building systems</strong> that catch opportunities while you sleep, grow stronger over time, and compound every strand you add.</p>
+    </div>
+
+    <div class="install">
+      <p><strong>How This Works:</strong> Seven chapters. Each one installs a strand of your personal web. Chapter 1 shows you why most people are stuck in hunter mode. Chapters 2 through 4 teach you the four strand types, how to architect your web, and the compound math behind it. Chapter 5 gives you the daily maintenance protocol. Chapter 6 resolves the parable. Chapter 7 hands you the 30 day plan. Build the web. Trust the web. Let the web work.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 1 ===== -->
+<div class="ch-head">
+  <div class="ch-num">Chapter One</div>
+  <h2>The Hunter's Trap</h2>
+  <p class="ch-sub">Why effort without systems keeps you running in place forever</p>
+</div>
+
+<div class="section">
+  <div class="page">
+    <div class="character-card">
+      <div class="avatar">🕷️</div>
+      <div class="info">
+        <h3>Silk</h3>
+        <div class="role">The Young Spider</div>
+        <p>Born into a colony of orb weavers, Silk was ashamed of what she was. The other predators in the garden — the mantis, the dragonfly, the jumping spider — were fast, aggressive, decisive. They chased and they caught. Silk wanted to be like them. She spent her days trying to hunt like something she was not.</p>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-label">Scene One — Chasing Flies</div>
+      <p>Silk crouched on the edge of a leaf, watching a housefly circle lazily in the morning sun. She tensed her legs, calculated the distance, and <em>leapt.</em></p>
+      <p>She missed by two body lengths. She was not built for leaping. Her legs were designed for weaving, not sprinting. Her silk glands were loaded with material she never used. Her eyes — all eight of them — were designed to sense vibrations across a web she had never built.</p>
+      <p>The mantis on the next branch snatched a moth from the air without looking. Effortless. Silk watched with envy and hunger.</p>
+      <p>By evening, she had attempted forty seven chases. She caught <strong>two</strong> gnats. Barely enough to survive. She collapsed on a twig, exhausted, while the mantis had eaten twelve meals and was already sleeping.</p>
+    </div>
+
+    <div class="ba-grid">
+      <div class="ba-before">
+        <h4>The Hunter's Math</h4>
+        <p>1 effort = 1 chance at 1 meal</p>
+        <p>0 effort = 0 meals</p>
+        <p>Tired? Hungry? Sick? Still have to chase.</p>
+        <p>Income ceiling = hours available x success rate</p>
+      </div>
+      <div class="ba-after">
+        <h4>The Builder's Math</h4>
+        <p>1 system = catches meals while you rest</p>
+        <p>Each new strand strengthens existing ones</p>
+        <p>Tired? The web still works.</p>
+        <p>Income ceiling = quality of system x time it runs</p>
+      </div>
+    </div>
+
+    <div class="character-card">
+      <div class="avatar">🌐</div>
+      <div class="info">
+        <h3>Weave</h3>
+        <div class="role">The Elder Orb Weaver</div>
+        <p>She sat at the center of a web so vast it stretched between three branches and caught the morning light like a constellation. She had not moved in hours. She did not need to. Every strand was a sensor, a trap, and a highway — all at once. When something landed, she knew its size, its position, and its struggle pattern before she took a single step.</p>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-label">Scene Two — The Question</div>
+      <p>"You are an orb weaver," Weave said, watching Silk limp back from another failed hunt. "Why are you trying to be a mantis?"</p>
+      <p>"Because mantises eat," Silk snapped. "They catch things. They are <em>effective.</em>"</p>
+      <p>"Mantises eat what they catch in the moment they catch it. One meal at a time. One chase at a time. They are effective <strong>hunters.</strong>" Weave plucked a strand of her web and a wrapped moth tumbled gently toward her. She ate without moving. "I caught this while we were talking. And these — " she gestured at four more wrapped parcels along the spiral — "were caught while I slept."</p>
+      <p>Silk stared at the web. Five meals. Waiting. Earned by a structure that worked whether Weave was awake or not.</p>
+      <p>"You were never meant to chase," Weave said. "You were meant to <em>build.</em>"</p>
+    </div>
+
+    <div class="data-row">
+      <div class="data-box">
+        <div class="number">80%</div>
+        <p>Of professionals say they spend most of their day on tasks that produce no lasting value — pure hunting</p>
+      </div>
+      <div class="data-box">
+        <div class="number">5x</div>
+        <p>Average return multiplier of a system versus one-time effort over a 12 month period</p>
+      </div>
+    </div>
+
+    <div class="grand-quote">
+      <blockquote>"The mantis is fast. The hawk is strong. The snake is precise. But the spider is the only predator that eats while it sleeps."</blockquote>
+      <div class="attribution">Weave's First Lesson</div>
+    </div>
+
+    <div class="think">
+      <div class="think-label">🪞 Root Check</div>
+      <p>How much of your current work is <strong>hunting</strong> — effort that produces a result once and then disappears? And how much is <strong>building</strong> — effort that creates something that keeps producing after you stop?</p>
+      <p><strong>My hunting activities (one-time effort):</strong></p>
+      <span class="fill-line"></span>
+      <p><strong>My building activities (systems that keep working):</strong></p>
+      <span class="fill-line"></span>
+      <p>If the hunting list is longer, you are living in Silk's trap.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 2 ===== -->
+<div class="ch-head">
+  <div class="ch-num">Chapter Two</div>
+  <h2>The Four Strands</h2>
+  <p class="ch-sub">Every web that works is made of four types of thread</p>
+</div>
+
+<div class="section">
+  <div class="page">
+    <div class="prose">
+      <p>Weave took Silk to the center of her web and showed her what she had never noticed before: not all strands are the same. A spider's web looks like one structure, but it is actually four different systems woven together. Each type of strand does a different job. Remove any one and the entire web collapses. Together, they create a machine that <em>captures, sorts, holds, and maintains itself.</em></p>
+      <p>"Every system you will ever build," Weave said, "needs these same four strands. Miss one and the web fails. Get all four right and it runs while you sleep."</p>
+    </div>
+
+    <div class="strand-grid">
+      <div class="strand-card strand-capture">
+        <span class="strand-emoji">🎯</span>
+        <span class="strand-label">Capture Strand</span>
+        <h3>The strand that catches opportunities</h3>
+        <p>In a web, the sticky spiral threads are what actually trap prey. In your life, capture strands are the systems that bring opportunities to you without active effort. A published article that gets found by search engines. A referral system that sends clients your way. A weekly email that keeps your name in someone's mind. A networking ritual that generates one new connection per week.</p>
+        <p><strong>The rule:</strong> If you have to manually find every opportunity, you do not have a capture strand. You are hunting.</p>
+      </div>
+      <div class="strand-card strand-filter">
+        <span class="strand-emoji">⚖️</span>
+        <span class="strand-label">Filter Strand</span>
+        <h3>The strand that sorts signal from noise</h3>
+        <p>A web catches everything — leaves, rain, debris, and food. The spider must sort quickly. In your life, filter strands are decision frameworks that prevent you from wasting time on the wrong things. A checklist for evaluating new opportunities. A "not-to-do" list. A qualification criteria for clients. A set of non-negotiable standards that rejects noise before it reaches you.</p>
+        <p><strong>The rule:</strong> If you say yes to everything and then run out of time, you do not have a filter strand. You are drowning.</p>
+      </div>
+      <div class="strand-card strand-anchor">
+        <span class="strand-emoji">⚓</span>
+        <span class="strand-label">Anchor Strand</span>
+        <h3>The strand that holds everything together</h3>
+        <p>The radial threads of a web — the ones that go from center to edge — are not sticky. They are structural. They hold the entire web in shape. In your life, anchor strands are the non-negotiable habits and routines that keep your system running regardless of mood, energy, or circumstance. Your morning routine. Your weekly review. Your exercise commitment. Your relationship rituals.</p>
+        <p><strong>The rule:</strong> If your productivity depends on feeling motivated, you do not have anchor strands. You are relying on weather.</p>
+      </div>
+      <div class="strand-card strand-repair">
+        <span class="strand-emoji">🔧</span>
+        <span class="strand-label">Repair Strand</span>
+        <h3>The strand that keeps the web alive</h3>
+        <p>Spiders rebuild portions of their web every single day. Wind, rain, and captured prey damage the structure constantly. Without daily repair, the web degrades to uselessness within 48 hours. In your life, repair strands are the feedback loops and review processes that keep your systems current. A weekly review of what is working and what is not. Customer feedback loops. Health check-ins. Financial audits.</p>
+        <p><strong>The rule:</strong> If you build systems but never maintain them, you are building webs in a hurricane. They will not last.</p>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-label">Scene Three — The Broken Web</div>
+      <p>Weave showed Silk a web abandoned by another spider. It had been beautiful once — a perfect orb, geometrically precise. But it had not been maintained. The capture spirals had lost their stickiness. The anchor lines sagged. A large hole gaped where a bird had punched through and nobody had repaired it.</p>
+      <p>"This spider was a brilliant builder," Weave said. "But she built once and walked away. <em>A web is not a monument. It is a living system.</em> It needs all four strands and it needs them every day."</p>
+      <p>Silk ran her leg along a sagging strand. "It is not enough to build."</p>
+      <p>"No. It is not enough to build. You must build, filter, anchor, and repair. Every day. That is the loom."</p>
+    </div>
+
+    <div class="think">
+      <div class="think-label">🕸️ Strand Audit</div>
+      <p>For each strand type, write down what you currently have (or write "none"):</p>
+      <p><strong>My Capture Strands (what brings opportunities to me):</strong></p>
+      <span class="fill-line"></span>
+      <p><strong>My Filter Strands (what helps me say no to the wrong things):</strong></p>
+      <span class="fill-line"></span>
+      <p><strong>My Anchor Strands (what keeps me consistent regardless of motivation):</strong></p>
+      <span class="fill-line"></span>
+      <p><strong>My Repair Strands (what feedback loops keep my systems updated):</strong></p>
+      <span class="fill-line"></span>
+      <p>The strand with the fewest entries is your weakest point. That is where your web breaks first.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 3 ===== -->
+<div class="ch-head">
+  <div class="ch-num">Chapter Three</div>
+  <h2>The Web Architecture</h2>
+  <p class="ch-sub">How to design your personal system — and why copying someone else's web always fails</p>
+</div>
+
+<div class="section">
+  <div class="page">
+    <div class="prose">
+      <p>"Every spider builds a different web," Weave told Silk on the third morning. "The orb weaver builds radial symmetry — structured, geometric, methodical. The cobweb spider builds tangled masses — messy, organic, opportunistic. The funnel spider builds a sheet with a retreat — conservative, defensive, patient. None is better than the others. Each is designed for the spider who builds it and the environment it lives in."</p>
+      <p>This is the mistake most people make with systems: they copy someone else's architecture. They read a productivity book and try to implement a morning routine designed for a CEO when they are a freelance designer with two children. They follow a content strategy built for a venture-backed startup when they run a solo consulting practice. <strong>The web must match the spider.</strong></p>
+    </div>
+
+    <div class="web-type">
+      <div class="wt-label">Architecture 1</div>
+      <h3>The Orb Web — For the Structured Builder</h3>
+      <p>Geometric. Predictable. Methodical. You build the same web every day with small improvements. Your calendar is blocked. Your routines are sacred. Your systems run on schedules and checklists. You capture through <em>consistency</em> — the same content every Tuesday, the same follow-up every Friday, the same review every Sunday.</p>
+      <p><strong>Best for:</strong> People who thrive on routine. Professionals in structured environments. Anyone who builds trust through reliability. If your strength is discipline, build an orb web.</p>
+    </div>
+
+    <div class="web-type">
+      <div class="wt-label">Architecture 2</div>
+      <h3>The Cobweb — For the Opportunistic Builder</h3>
+      <p>Messy. Sprawling. Adaptive. You do not build the same web twice. You string connections between branches wherever opportunities arise. Your capture system is <em>serendipity-optimized</em> — you show up in many places, talk to many people, and let patterns emerge. Your filter strand is critical because you will catch more noise than anyone.</p>
+      <p><strong>Best for:</strong> Creatives. Entrepreneurs. Networkers. People whose best opportunities come from unexpected connections. If your strength is adaptability, build a cobweb.</p>
+    </div>
+
+    <div class="web-type">
+      <div class="wt-label">Architecture 3</div>
+      <h3>The Funnel Web — For the Patient Builder</h3>
+      <p>A broad sheet narrows to a single point. You build a wide capture surface — content, reputation, presence — that funnels everything toward <em>one core offer, one key relationship, one primary goal.</em> You are not trying to catch everything. You are trying to catch the right thing and funnel it exactly where it needs to go.</p>
+      <p><strong>Best for:</strong> Specialists. Consultants. Anyone with a focused expertise. If your strength is depth over breadth, build a funnel web.</p>
+    </div>
+
+    <div class="ba-grid">
+      <div class="ba-before">
+        <h4>Copied Architecture</h4>
+        <p>"I tried that system everyone recommends and it did not work for me."</p>
+        <p>"I must be lazy or undisciplined."</p>
+        <p>"Systems just do not work for people like me."</p>
+      </div>
+      <div class="ba-after">
+        <h4>Matched Architecture</h4>
+        <p>"I built a system that matches how I actually work."</p>
+        <p>"The architecture fits my strengths, not someone else's."</p>
+        <p>"The system works because it was designed for <em>my</em> spider, not a generic one."</p>
+      </div>
+    </div>
+
+    <div class="think">
+      <div class="think-label">🏗️ Architecture Check</div>
+      <p>Which web architecture matches you most naturally?</p>
+      <p><strong>Orb (structured/disciplined), Cobweb (adaptive/spontaneous), or Funnel (focused/deep)?</strong></p>
+      <span class="fill-line"></span>
+      <p><strong>Which architecture have you been trying to copy from someone else?</strong></p>
+      <span class="fill-line"></span>
+      <p>The gap between those two answers is why your systems keep failing.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 4 ===== -->
+<div class="ch-head">
+  <div class="ch-num">Chapter Four</div>
+  <h2>The Compound Web</h2>
+  <p class="ch-sub">Why the spider who builds for 30 days outperforms the hunter who chases for a year</p>
+</div>
+
+<div class="section">
+  <div class="page">
+    <div class="prose">
+      <p>Here is the math that changes everything. A hunter's output is <strong>linear</strong>: one hour of effort produces roughly one unit of result. Two hours, two units. Ten hours, ten units. The ceiling is the number of hours available multiplied by skill level. There is no leverage. There is no compounding. The line is straight and it has a hard cap.</p>
+      <p>A builder's output is <strong>exponential.</strong> The first strand catches nothing by itself. The second strand connects to the first and they both become slightly stronger. By the tenth strand, the web has structure. By the fiftieth, it catches things the spider never anticipated. By the hundredth, it is self-reinforcing — new strands are easier to add because the existing structure supports them.</p>
+    </div>
+
+    <div class="data-row">
+      <div class="data-box">
+        <div class="number">Day 1</div>
+        <p>One strand. No catches. The hunter laughs. The spider builds.</p>
+      </div>
+      <div class="data-box">
+        <div class="number">Day 30</div>
+        <p>The web catches while the spider sleeps. The hunter is still chasing every meal.</p>
+      </div>
+    </div>
+
+    <div class="viz-box">
+      <div class="viz-label">The Compound Effect</div>
+      <h3>Each Strand Strengthens Every Other Strand</h3>
+      <p>A blog post (capture strand) generates an email subscriber. The email sequence (capture strand) converts them into a client. The client onboarding checklist (filter strand) ensures they are the right fit. The weekly review (repair strand) identifies what is working and doubles down. The morning routine (anchor strand) ensures you show up consistently to feed the system. No single strand created the outcome. <strong>The web created the outcome.</strong></p>
+      <p>This is why people who "do all the right things" in isolation fail, while people with mediocre individual tactics but excellent <em>systems</em> succeed. The web is more than the sum of its threads. Connection is the multiplier.</p>
+    </div>
+
+    <div class="scene">
+      <div class="scene-label">Scene Four — Silk's First Strand</div>
+      <p>Silk spun her first thread between two leaves. It was thin. Fragile. A gust of wind made it tremble. Nothing landed on it. Nothing even noticed it.</p>
+      <p>"This is useless," she said.</p>
+      <p>"Yes," Weave agreed. "One strand is useless. Keep going."</p>
+      <p>By day three, Silk had a rough triangle between three anchor points. Still no catches. By day seven, she had the beginnings of a spiral. A tiny gnat brushed against a sticky thread and stuck. Silk stared at it. <em>She had not chased it. She had not even seen it coming.</em> The web caught it for her.</p>
+      <p>"That feeling," Weave said from her perch, "is the feeling of a system starting to work. It gets better from here. Much better."</p>
+    </div>
+
+    <div class="grand-quote">
+      <blockquote>"The first strand earns nothing. The tenth strand earns a little. The hundredth strand earns while you sleep. Patience is not waiting. Patience is building."</blockquote>
+      <div class="attribution">Weave's Third Lesson</div>
+    </div>
+
+    <div class="data-row">
+      <div class="data-box">
+        <div class="number">1%</div>
+        <p>Daily improvement in a system compounds to 37x growth over one year — the builder's advantage</p>
+      </div>
+      <div class="data-box">
+        <div class="number">0</div>
+        <p>What a hunter earns on the days they do not hunt — the hunter's ceiling</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 5 ===== -->
+<div class="ch-head">
+  <div class="ch-num">Chapter Five</div>
+  <h2>The Daily Repair</h2>
+  <p class="ch-sub">The 15 minute protocol that keeps every system alive</p>
+</div>
+
+<div class="section">
+  <div class="page">
+    <div class="prose">
+      <p>Here is the fact that separates amateur builders from masters: <strong>spiders rebuild their web every single day.</strong> Not because the web is destroyed daily, but because small damage accumulates. A broken strand here, a loose anchor there, a section of spiral that lost its stickiness overnight. Without daily repair, a perfect web becomes useless within 48 hours.</p>
+      <p>Your systems are no different. The morning routine you built three months ago has drifted. The email sequence you set up last year has outdated links. The networking habit you started has quietly died. Systems do not fail dramatically. They fail through <em>silent neglect</em> — one unrepaired strand at a time until the whole structure sags.</p>
+    </div>
+
+    <div class="adventure">
+      <div class="adv-step">
+        <h4>Inspect the Capture Strands (3 minutes)</h4>
+        <p>Are your systems still bringing opportunities to you? Check your pipeline, your content performance, your referral flow. If the captures have slowed, a strand is broken somewhere. Identify it.</p>
+      </div>
+      <div class="adv-step">
+        <h4>Test the Filter Strands (3 minutes)</h4>
+        <p>Did you say yes to anything yesterday that you should have said no to? Did noise get through that should have been caught? Tighten the filter or add a new one.</p>
+      </div>
+      <div class="adv-step">
+        <h4>Check the Anchor Strands (3 minutes)</h4>
+        <p>Did your non-negotiable habits run yesterday? Your morning routine, your exercise, your weekly review? If an anchor slipped, it is the first sign of web collapse. Recommit immediately.</p>
+      </div>
+      <div class="adv-step">
+        <h4>Add One Strand (3 minutes)</h4>
+        <p>Every day, add one small improvement to any part of your web. A new automation. A template that saves five minutes. A connection that strengthens an existing strand. One strand per day is 365 new strands per year. That is the compound effect in action.</p>
+      </div>
+      <div class="adv-step">
+        <h4>Clear the Debris (3 minutes)</h4>
+        <p>What is tangled in your web that does not belong? Commitments that no longer serve you. Projects that have become obligations. Relationships that drain without returning. Cut it free. A clean web catches better than a cluttered one.</p>
+      </div>
+    </div>
+
+    <div class="viz-box">
+      <div class="viz-label">The Daily Repair Truth</div>
+      <h3>15 Minutes of Maintenance Beats 8 Hours of Rebuilding</h3>
+      <p>The spider who repairs daily spends minutes. The spider who neglects for a month must rebuild from scratch — hours of work to restore what could have been maintained in moments. This is why most "productivity resets" and "fresh starts" fail. You do not need a new system. You need to maintain the one you have. Fifteen minutes per day is the cost. Letting the web run while you sleep is the return.</p>
+    </div>
+
+    <div class="think">
+      <div class="think-label">🔧 Repair Assessment</div>
+      <p>When was the last time you reviewed whether your current systems are still working?</p>
+      <span class="fill-line"></span>
+      <p>Name one system in your life that was working six months ago but has quietly degraded:</p>
+      <span class="fill-line"></span>
+      <p>What would it take to repair that one strand today?</p>
+      <span class="fill-line"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 6 ===== -->
+<div class="ch-head">
+  <div class="ch-num">Chapter Six</div>
+  <h2>Silk's Web</h2>
+  <p class="ch-sub">The moment she stopped chasing and started catching</p>
+</div>
+
+<div class="section">
+  <div class="page">
+    <div class="scene">
+      <div class="scene-label">Scene Five — The Thirtieth Morning</div>
+      <p>Silk woke at the center of her web. It was not Weave's web — not as vast, not as elegant. But it was <em>hers.</em> Thirty days of building, repairing, adjusting. Every morning she had inspected every strand. Every evening she had added one new thread. The web had grown from a clumsy triangle into a functional orb that stretched between four solid anchor points.</p>
+      <p>She felt the first vibration before the sun cleared the trees. A moth — medium sized, healthy, exactly the kind of prey she had chased and missed forty seven times on that humiliating first day. It hit the spiral strand at the web's edge and stuck. She felt its position, its size, its struggle pattern — all transmitted through the radial threads to the exact point where she sat.</p>
+      <p>She wrapped it in under a minute. <em>She had not chased it. She had not even seen it coming.</em></p>
+      <p>By mid-morning, three more insects had landed. She was full. The mantis on the next branch was still hunting, still chasing, still working for every meal. Silk watched him with something she had never felt before: not envy, but <em>compassion.</em> He was a brilliant hunter. He would always be a brilliant hunter. But he would never eat while he slept.</p>
+    </div>
+
+    <div class="grand-quote">
+      <blockquote>"I spent thirty days building what the mantis cannot build in a lifetime. Not because I am smarter. Because I am a spider. And spiders were made to weave."</blockquote>
+      <div class="attribution">Silk, Day 30</div>
+    </div>
+
+    <div class="ba-grid">
+      <div class="ba-before">
+        <h4>Silk, Day 1</h4>
+        <p>47 chases. 2 gnats. Exhausted, hungry, ashamed.</p>
+        <p>Trying to be a mantis in a spider's body.</p>
+        <p>Trading effort for survival.</p>
+      </div>
+      <div class="ba-after">
+        <h4>Silk, Day 30</h4>
+        <p>0 chases. 4 meals before noon. Rested, fed, building.</p>
+        <p>Being exactly what she was made to be.</p>
+        <p>Building structure for freedom.</p>
+      </div>
+    </div>
+
+    <div class="viz-box">
+      <div class="viz-label">The Deeper Truth</div>
+      <h3>You Were Not Made to Chase</h3>
+      <p>Most people who feel burned out, stuck, or frustrated are not lazy. They are not undisciplined. They are not even doing the wrong things. They are doing the right things <em>in the wrong mode.</em> They are hunting when they should be building. They are sprinting when they should be weaving. They are trading hours for results when they should be trading systems for leverage.</p>
+      <p>The spider does not work harder than the mantis. It works <strong>differently.</strong> It invests effort into a structure that multiplies returns over time. That is not a productivity hack. That is an entirely different philosophy of how to spend your one and only life.</p>
+    </div>
+
+    <div class="scene">
+      <div class="scene-label">Scene Six — Passing It On</div>
+      <p>A young spider — barely hatched, still learning to walk — stumbled onto the edge of Silk's web. She was trying to leap between two branches, missing badly, crashing onto leaves below.</p>
+      <p>"You are an orb weaver," Silk said gently.</p>
+      <p>The young spider looked up. "I am trying to learn to jump."</p>
+      <p>"I know. I spent a long time trying to learn that too." Silk plucked a strand and felt it sing through her legs. "Come. Let me show you what we were actually built to do."</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 7 ===== -->
+<div class="ch-head">
+  <div class="ch-num">Chapter Seven</div>
+  <h2>Your First 30 Days</h2>
+  <p class="ch-sub">From hunter to builder in four weeks</p>
+</div>
+
+<div class="section">
+  <div class="page">
+    <div class="viz-box">
+      <div class="viz-label">Week 1 — The Audit</div>
+      <h3>Map Your Current Web (or Lack of One)</h3>
+      <p>Spend this week identifying every system you currently have — and every activity that is pure hunting. Write two lists. The "systems" list includes anything that produces results after you stop actively working on it: automated emails, published content, recurring referral sources, established habits, templates, processes. The "hunting" list includes everything that requires you to be present for it to work: manual outreach, ad hoc client acquisition, unstructured days, reactive task management.</p>
+      <p><strong>Goal:</strong> See the full picture. Most people are shocked at how long the hunting list is.</p>
+    </div>
+
+    <div class="viz-box">
+      <div class="viz-label">Week 2 — The First Strands</div>
+      <h3>Build One Strand of Each Type</h3>
+      <p>Create one capture strand (a system that brings opportunities to you), one filter strand (a decision framework for saying no), one anchor strand (a non-negotiable daily habit), and one repair strand (a weekly review ritual). These do not need to be sophisticated. They need to exist. A rough web catches more than no web at all.</p>
+      <p><strong>Goal:</strong> Have a functional four-strand web by Day 14, even if it is basic.</p>
+    </div>
+
+    <div class="viz-box">
+      <div class="viz-label">Week 3 — The Daily Repair</div>
+      <h3>Install the 15 Minute Protocol</h3>
+      <p>Every morning, run the five-step repair check from Chapter 5. Inspect captures. Test filters. Check anchors. Add one strand. Clear debris. Fifteen minutes. Do this every single day this week without exception. By Day 21, it should feel automatic. You will start noticing your web getting stronger — things landing that you did not chase, decisions getting easier, mornings getting smoother.</p>
+      <p><strong>Goal:</strong> Seven consecutive days of the Daily Repair protocol.</p>
+    </div>
+
+    <div class="viz-box">
+      <div class="viz-label">Week 4 — The Compound</div>
+      <h3>Double Down on What Is Working</h3>
+      <p>By now your web has been running for two weeks and maintained for one. Look at what is catching. Which strands are producing? Which are dead weight? Double the investment in your strongest capture strand. Tighten your best filter. Reinforce your most consistent anchor. Cut the strands that caught nothing. This is the spider's discipline: <strong>more of what works, less of what does not, every single day.</strong></p>
+      <p><strong>Goal:</strong> At least one "unearned" catch — an opportunity, result, or connection that arrived through your web without active effort.</p>
+    </div>
+
+    <div class="data-row">
+      <div class="data-box">
+        <div class="number">30</div>
+        <p>Days to build a functional web — rough, imperfect, but catching</p>
+      </div>
+      <div class="data-box">
+        <div class="number">365</div>
+        <p>Strands added in one year at one per day — that is a web nobody can compete with</p>
+      </div>
+    </div>
+
+    <div class="think">
+      <div class="think-label">📝 Your Loom</div>
+      <p>Write the first strand you will build for each type — the simplest, fastest version you can start today:</p>
+      <p><strong>Capture Strand:</strong></p>
+      <span class="fill-line"></span>
+      <p><strong>Filter Strand:</strong></p>
+      <span class="fill-line"></span>
+      <p><strong>Anchor Strand:</strong></p>
+      <span class="fill-line"></span>
+      <p><strong>Repair Strand:</strong></p>
+      <span class="fill-line"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PROMPT CARD ===== -->
+<div class="section">
+  <div class="page">
+    <div class="prompt-card">
+      <div class="pc-label">Continue Learning with AI</div>
+      <h3>The Spider's Loom System Builder</h3>
+      <p>Copy this into any AI assistant to design your personal web:</p>
+      <code>"I just read The Spider's Loom about building systems instead of hunting for results. The framework uses four strand types: Capture (brings opportunities), Filter (sorts signal from noise), Anchor (non-negotiable habits), and Repair (maintenance/feedback loops). My role is [describe your job/situation]. My biggest 'hunting' activity — the thing I do manually every time that could become a system — is [describe it]. Help me design a personal web architecture with specific, actionable strands for each of the four types. Then create a 30-day build plan with weekly milestones. Be specific and practical — I want strand ideas I can implement this week."</code>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FINALE ===== -->
+<section class="finale">
+  <span class="finale-emoji">🕷️</span>
+  <h2>Stop Chasing. <span>Start Weaving.</span></h2>
+  <p>You were never meant to hunt every meal. You were never meant to trade every hour for every dollar. You were never meant to rebuild from zero every morning. You were meant to build something that works while you rest, grows while you sleep, and catches what you never saw coming.</p>
+  <p>The loom is waiting. One strand at a time.</p>
+  <p style="color:rgba(255,255,255,0.55)">Build the web, Silk.</p>
+</section>
+
+<footer>
+  <p>"She selects wool and flax and works with eager hands. She is like the merchant ships, bringing her food from afar." — Proverbs 31:13-14</p>
+  <div class="brand">Kingdom Builders AI</div>
+</footer>
+
+</body>
+</html>

@@ -102,6 +102,12 @@ const PLAYBOOKS = [
     readerSlug: "the-chameleons-code",
     tag: "Communication",
   },
+  {
+    title: "The Spider's Loom",
+    route: "/thespidersloom",
+    readerSlug: "the-spiders-loom",
+    tag: "Productivity",
+  },
 ];
 
 // ── Catalog Page ──────────────────────────────────────────────
