@@ -98,6 +98,11 @@ def the_starlings_murmuration():
     return send_from_directory("static", "the-starlings-murmuration.html")
 
 
+@app.route("/thechameleonscode")
+def the_chameleons_code():
+    return send_from_directory("static", "the-chameleons-code.html")
+
+
 # --- Playbook Reader (serves full playbook HTML from assets) ---
 @app.route("/read/<slug>")
 def read_playbook(slug):
@@ -117,6 +122,7 @@ def read_playbook(slug):
         "the-lighthouse-keepers-log": "The_Lighthouse_Keepers_Log.html",
         "the-octopus-protocol": "The_Octopus_Protocol.html",
         "the-starlings-murmuration": "The_Starlings_Murmuration.html",
+        "the-chameleons-code": "The_Chameleons_Code.html",
     }
     filename = slug_to_file.get(slug)
     if not filename:
@@ -214,4 +220,4 @@ def refund():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(debug=True, use_reloader=False, port=5000)

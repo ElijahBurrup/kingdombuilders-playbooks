@@ -66,6 +66,42 @@ const PLAYBOOKS = [
     readerSlug: "the-wolfs-table",
     tag: "Relationships",
   },
+  {
+    title: "The Crow's Gambit",
+    route: "/thecrowsgambit",
+    readerSlug: "the-crows-gambit",
+    tag: "Strategy",
+  },
+  {
+    title: "The Eagle's Lens",
+    route: "/theeagleslens",
+    readerSlug: "the-eagles-lens",
+    tag: "Leadership",
+  },
+  {
+    title: "The Lighthouse Keeper's Log",
+    route: "/thelighthousekeeperslog",
+    readerSlug: "the-lighthouse-keepers-log",
+    tag: "Mindset",
+  },
+  {
+    title: "The Octopus Protocol",
+    route: "/theoctopusprotocol",
+    readerSlug: "the-octopus-protocol",
+    tag: "Finance",
+  },
+  {
+    title: "The Starling's Murmuration",
+    route: "/thestarlingsmurmuration",
+    readerSlug: "the-starlings-murmuration",
+    tag: "Leadership",
+  },
+  {
+    title: "The Chameleon's Code",
+    route: "/thechameleonscode",
+    readerSlug: "the-chameleons-code",
+    tag: "Communication",
+  },
 ];
 
 // ── Catalog Page ──────────────────────────────────────────────
