@@ -156,6 +156,42 @@ const PLAYBOOKS = [
     readerSlug: "the-horses-gait",
     tag: "Productivity",
   },
+  {
+    title: "The Tide Pool's Echo",
+    route: "/thetidepoolsecho",
+    readerSlug: "the-tide-pools-echo",
+    tag: "Philosophy",
+  },
+  {
+    title: "The Whale's Breath",
+    route: "/thewhalesbreath",
+    readerSlug: "the-whales-breath",
+    tag: "Philosophy",
+  },
+  {
+    title: "The Butterfly's Crossing",
+    route: "/thebutterflyscrossing",
+    readerSlug: "the-butterflys-crossing",
+    tag: "Philosophy",
+  },
+  {
+    title: "The Elephant's Ground",
+    route: "/theeleophantsground",
+    readerSlug: "the-elephants-ground",
+    tag: "Philosophy",
+  },
+  {
+    title: "The Bee's Dance",
+    route: "/thebeesdance",
+    readerSlug: "the-bees-dance",
+    tag: "Philosophy",
+  },
+  {
+    title: "The Otter's Play",
+    route: "/theottersplay",
+    readerSlug: "the-otters-play",
+    tag: "Philosophy",
+  },
 ];
 
 // ── Catalog Page ──────────────────────────────────────────────

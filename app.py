@@ -148,6 +148,37 @@ def the_horses_gait():
     return send_from_directory("static", "the-horses-gait.html")
 
 
+# --- A Process Model Series ---
+@app.route("/thetidepoolsecho")
+def the_tide_pools_echo():
+    return send_from_directory("static", "the-tide-pools-echo.html")
+
+
+@app.route("/thewhalesbreath")
+def the_whales_breath():
+    return send_from_directory("static", "the-whales-breath.html")
+
+
+@app.route("/thebutterflyscrossing")
+def the_butterflys_crossing():
+    return send_from_directory("static", "the-butterflys-crossing.html")
+
+
+@app.route("/theeleophantsground")
+def the_elephants_ground():
+    return send_from_directory("static", "the-elephants-ground.html")
+
+
+@app.route("/thebeesdance")
+def the_bees_dance():
+    return send_from_directory("static", "the-bees-dance.html")
+
+
+@app.route("/theottersplay")
+def the_otters_play():
+    return send_from_directory("static", "the-otters-play.html")
+
+
 # --- Playbook Reader (serves full playbook HTML from assets) ---
 @app.route("/read/<slug>")
 def read_playbook(slug):
@@ -177,6 +208,12 @@ def read_playbook(slug):
         "the-coyotes-laugh": "The_Coyotes_Laugh.html",
         "the-pangolins-armor": "The_Pangolins_Armor.html",
         "the-horses-gait": "The_Horses_Gait.html",
+        "the-tide-pools-echo": "The_Tide_Pools_Echo.html",
+        "the-whales-breath": "The_Whales_Breath.html",
+        "the-butterflys-crossing": "The_Butterflys_Crossing.html",
+        "the-elephants-ground": "The_Elephants_Ground.html",
+        "the-bees-dance": "The_Bees_Dance.html",
+        "the-otters-play": "The_Otters_Play.html",
     }
     filename = slug_to_file.get(slug)
     if not filename:
