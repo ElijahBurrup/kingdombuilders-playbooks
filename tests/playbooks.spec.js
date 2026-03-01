@@ -126,6 +126,12 @@ const PLAYBOOKS = [
     readerSlug: "the-foxs-trail",
     tag: "Strategy",
   },
+  {
+    title: "The Moth's Flame",
+    route: "/themothsflame",
+    readerSlug: "the-moths-flame",
+    tag: "Mindset",
+  },
 ];
 
 // ── Catalog Page ──────────────────────────────────────────────

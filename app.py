@@ -123,6 +123,11 @@ def the_foxs_trail():
     return send_from_directory("static", "the-foxs-trail.html")
 
 
+@app.route("/themothsflame")
+def the_moths_flame():
+    return send_from_directory("static", "the-moths-flame.html")
+
+
 # --- Playbook Reader (serves full playbook HTML from assets) ---
 @app.route("/read/<slug>")
 def read_playbook(slug):
@@ -147,6 +152,7 @@ def read_playbook(slug):
         "the-geckos-grip": "The_Geckos_Grip.html",
         "the-fireflys-signal": "The_Fireflys_Signal.html",
         "the-foxs-trail": "The_Foxs_Trail.html",
+        "the-moths-flame": "The_Moths_Flame.html",
     }
     filename = slug_to_file.get(slug)
     if not filename:
