@@ -120,6 +120,12 @@ const PLAYBOOKS = [
     readerSlug: "the-fireflys-signal",
     tag: "Strategy",
   },
+  {
+    title: "The Fox's Trail",
+    route: "/thefoxstrail",
+    readerSlug: "the-foxs-trail",
+    tag: "Strategy",
+  },
 ];
 
 // ── Catalog Page ──────────────────────────────────────────────
