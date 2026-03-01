@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Playbooks | Kingdom Builders AI</title>
-<meta name="description" content="Mental models for faith, productivity, finance, identity, and relationships. 25 immersive playbooks from Kingdom Builders AI.">
+<meta name="description" content="Mental models for faith, productivity, finance, identity, and relationships. 25 immersive playbooks from Kingdom Builders AI. 5 free. $1.99 each or $9.99/mo for full access.">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 :root{--gold:#D4A843;--gold-glow:#E8C96A;--purple-deep:#1A0A2E;--purple-dark:#2D1B4E;--purple-mid:#4A2D7A;--purple-accent:#7B4FBF;--cream:#FDFAF3;--text:#2A1A3E;--text-light:#5A4A6E;--text-muted:#8A7A9E;--white:#FFFFFF}
@@ -20,20 +20,34 @@ h1,h2,h3,h4{font-family:'Poppins',sans-serif;line-height:1.2}
 .hero h1{font-size:clamp(2.2rem,6vw,3.8rem);font-weight:300;color:var(--white);margin-bottom:4px}
 .hero h1 strong{font-weight:700;color:var(--gold);display:block}
 .hero-sub{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.35);margin-top:24px;line-height:1.7;max-width:520px;margin-left:auto;margin-right:auto}
+.hero-pricing{margin-top:28px;font-family:'Poppins',sans-serif;font-size:0.78rem;color:rgba(255,255,255,0.3)}
+.hero-pricing strong{color:var(--gold);font-weight:600}
 
 .catalog{max-width:900px;margin:0 auto;padding:60px 24px 80px}
 .catalog-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--gold);text-align:center;margin-bottom:12px}
-.catalog h2{font-size:1.4rem;color:var(--purple-deep);text-align:center;margin-bottom:48px}
+.catalog h2{font-size:1.4rem;color:var(--purple-deep);text-align:center;margin-bottom:32px}
+
+/* === FILTER BAR === */
+.filter-bar{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:40px}
+.filter-btn{padding:6px 16px;border:1.5px solid rgba(123,79,191,0.15);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);background:var(--white);cursor:pointer;transition:all 0.2s}
+.filter-btn:hover{border-color:var(--gold);color:var(--gold)}
+.filter-btn.active{background:linear-gradient(135deg,var(--gold),var(--gold-glow));color:var(--purple-deep);border-color:transparent;box-shadow:0 2px 12px rgba(212,168,67,0.3)}
+.filter-btn[data-filter="free"]{border-color:rgba(34,197,94,0.3);color:#16A34A}
+.filter-btn[data-filter="free"].active{background:linear-gradient(135deg,#22C55E,#4ADE80);color:#052E16;border-color:transparent;box-shadow:0 2px 12px rgba(34,197,94,0.3)}
 
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:28px}
 
 .card{background:var(--white);border-radius:16px;overflow:hidden;border:2px solid rgba(123,79,191,0.08);box-shadow:0 2px 12px rgba(26,10,46,0.05);transition:all 0.3s;text-decoration:none;color:inherit;display:flex;flex-direction:column}
 .card:hover{transform:translateY(-4px);box-shadow:0 8px 32px rgba(26,10,46,0.12);border-color:rgba(212,168,67,0.3)}
+.card.hidden{display:none}
 
 .card-cover{padding:40px 24px 32px;background:linear-gradient(160deg,var(--purple-deep),var(--purple-dark));text-align:center;position:relative;overflow:hidden}
 .card-cover::before{content:'';position:absolute;top:-20%;left:50%;transform:translateX(-50%);width:200px;height:200px;background:radial-gradient(circle,rgba(212,168,67,0.06) 0%,transparent 70%);border-radius:50%}
 .card-title{font-family:'Poppins',sans-serif;font-size:1.15rem;font-weight:700;color:var(--white);position:relative;z-index:2;margin-bottom:6px}
 .card-subtitle{font-family:'Lora',serif;font-size:0.78rem;font-style:italic;color:var(--gold-glow);opacity:0.7;position:relative;z-index:2}
+
+/* === FREE BADGE === */
+.free-badge{position:absolute;top:12px;right:12px;padding:4px 12px;background:linear-gradient(135deg,#22C55E,#4ADE80);color:#052E16;font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;border-radius:50px;z-index:3;box-shadow:0 2px 8px rgba(34,197,94,0.3)}
 
 .card-body{padding:24px;flex:1;display:flex;flex-direction:column}
 .card-desc{font-size:0.85rem;color:var(--text-light);line-height:1.65;flex:1;margin-bottom:20px}
@@ -53,7 +67,28 @@ h1,h2,h3,h4{font-family:'Poppins',sans-serif;line-height:1.2}
 
 .card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid rgba(123,79,191,0.06)}
 .card-price{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:var(--purple-deep)}
+.card-price.free{color:#16A34A}
 .card-link{font-family:'Poppins',sans-serif;font-size:0.72rem;font-weight:600;color:var(--gold);letter-spacing:0.5px}
+
+/* === SUBSCRIPTION BANNER === */
+.sub-banner{padding:56px 24px;text-align:center;background:linear-gradient(165deg,var(--purple-deep) 0%,var(--purple-dark) 50%,var(--purple-mid) 100%);position:relative;overflow:hidden}
+.sub-banner::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;background:radial-gradient(circle,rgba(212,168,67,0.05) 0%,transparent 70%);border-radius:50%}
+.sub-inner{max-width:600px;margin:0 auto;position:relative;z-index:2}
+.sub-banner h2{font-size:1.5rem;font-weight:700;color:var(--white);margin-bottom:8px}
+.sub-banner h2 span{color:var(--gold)}
+.sub-desc{font-family:'Lora',serif;font-size:0.9rem;color:rgba(255,255,255,0.45);margin-bottom:28px;line-height:1.7}
+.sub-options{display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
+.sub-card{padding:28px 32px;border-radius:12px;text-align:center;min-width:200px}
+.sub-card.individual{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1)}
+.sub-card.archive{background:rgba(212,168,67,0.08);border:2px solid rgba(212,168,67,0.3)}
+.sub-card-label{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:8px}
+.sub-card.archive .sub-card-label{color:var(--gold)}
+.sub-card-price{font-family:'Poppins',sans-serif;font-size:2rem;font-weight:700;color:var(--white);line-height:1;margin-bottom:4px}
+.sub-card.archive .sub-card-price{color:var(--gold)}
+.sub-card-note{font-family:'Poppins',sans-serif;font-size:0.65rem;color:rgba(255,255,255,0.3)}
+.sub-card.archive .sub-card-note{color:rgba(212,168,67,0.5)}
+.sub-card-feature{font-family:'Lora',serif;font-size:0.78rem;color:rgba(255,255,255,0.5);margin-top:12px;line-height:1.5}
+.sub-divider{display:flex;align-items:center;font-family:'Poppins',sans-serif;font-size:0.7rem;font-weight:600;color:rgba(255,255,255,0.2)}
 
 /* === CAPTURE BANNER === */
 .capture-banner{padding:56px 24px;text-align:center;background:linear-gradient(135deg,rgba(212,168,67,0.04),rgba(212,168,67,0.08));border-top:1.5px solid rgba(212,168,67,0.15);border-bottom:1.5px solid rgba(212,168,67,0.15)}
@@ -65,7 +100,7 @@ h1,h2,h3,h4{font-family:'Poppins',sans-serif;line-height:1.2}
 .capture-form button{padding:14px 28px;background:linear-gradient(135deg,var(--gold),var(--gold-glow));color:var(--purple-deep);font-family:'Poppins',sans-serif;font-size:0.8rem;font-weight:700;border:none;border-radius:8px;cursor:pointer;white-space:nowrap;box-shadow:0 4px 16px rgba(212,168,67,0.25);transition:transform 0.2s,box-shadow 0.2s}
 .capture-form button:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(212,168,67,0.4)}
 .capture-note{font-size:0.75rem;color:var(--text-muted);margin-top:12px}
-@media(max-width:600px){.capture-form{flex-direction:column}.capture-form button{padding:14px}}
+@media(max-width:600px){.capture-form{flex-direction:column}.capture-form button{padding:14px}.sub-options{flex-direction:column;align-items:center}.sub-divider{margin:0}}
 
 footer{text-align:center;padding:36px 24px;background:#080410}
 footer p{font-family:'Lora',serif;font-size:0.78rem;font-style:italic;color:rgba(212,168,67,0.2);margin-bottom:14px}
@@ -79,6 +114,7 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
     <div class="hero-badge">Kingdom Builders AI</div>
     <h1>The <strong>Playbooks</strong></h1>
     <p class="hero-sub">Mental models for faith, productivity, finance, technology, and identity. 25 immersive guides that change how you think.</p>
+    <p class="hero-pricing"><strong>5 free</strong> &middot; $1.99 each &middot; or <strong>$9.99/mo</strong> for the full archive</p>
   </div>
 </section>
 
@@ -86,9 +122,110 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
   <div class="catalog-label">The Collection</div>
   <h2>Choose Your Playbook</h2>
 
-  <div class="grid">
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="free">Free</button>
+    <button class="filter-btn" data-filter="faith">Faith</button>
+    <button class="filter-btn" data-filter="productivity">Productivity</button>
+    <button class="filter-btn" data-filter="mindset">Mindset</button>
+    <button class="filter-btn" data-filter="strategy">Strategy</button>
+    <button class="filter-btn" data-filter="finance">Finance</button>
+    <button class="filter-btn" data-filter="leadership">Leadership</button>
+    <button class="filter-btn" data-filter="identity">Identity</button>
+    <button class="filter-btn" data-filter="relationships">Relationships</button>
+    <button class="filter-btn" data-filter="resilience">Resilience</button>
+    <button class="filter-btn" data-filter="communication">Communication</button>
+    <button class="filter-btn" data-filter="economics">Economics</button>
+    <button class="filter-btn" data-filter="tech">Technology</button>
+  </div>
 
-    <a href="/conductorsplaybook" class="card">
+  <div class="grid" id="playbook-grid">
+
+    <!-- ===== FREE PLAYBOOKS (5) ===== -->
+
+    <a href="/layitdown" class="card" data-tag="faith" data-free="true">
+      <div class="card-cover">
+        <span class="free-badge">Free</span>
+        <div class="card-title">Lay It Down</div>
+        <div class="card-subtitle">I am calling you deeper.</div>
+      </div>
+      <div class="card-body">
+        <span class="card-tag tag-faith">Faith</span>
+        <p class="card-desc">Identify the comfortable addictions you didn't know you had — and dismantle the altars they built. Not willpower. Authority.</p>
+        <div class="card-footer">
+          <span class="card-price free">Free</span>
+          <span class="card-link">Read Now &rarr;</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="/thenarrator" class="card" data-tag="identity" data-free="true">
+      <div class="card-cover">
+        <span class="free-badge">Free</span>
+        <div class="card-title">The Narrator</div>
+        <div class="card-subtitle">You are performing a character someone else wrote.</div>
+      </div>
+      <div class="card-body">
+        <span class="card-tag tag-identity">Identity</span>
+        <p class="card-desc">The voice telling you who you are? It's not you. It's a script you inherited. Here's how to claim the Author's Chair.</p>
+        <div class="card-footer">
+          <span class="card-price free">Free</span>
+          <span class="card-link">Read Now &rarr;</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="/thecrowsgambit" class="card" data-tag="strategy" data-free="true">
+      <div class="card-cover">
+        <span class="free-badge">Free</span>
+        <div class="card-title">The Crow's Gambit</div>
+        <div class="card-subtitle">How game theory actually works.</div>
+      </div>
+      <div class="card-body">
+        <span class="card-tag tag-strategy">Strategy</span>
+        <p class="card-desc">Forget the textbooks and the math anxiety. The story of how a murder of crows discovered the logic behind every negotiation, conflict, and alliance.</p>
+        <div class="card-footer">
+          <span class="card-price free">Free</span>
+          <span class="card-link">Read Now &rarr;</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="/thesalmonjourney" class="card" data-tag="finance" data-free="true">
+      <div class="card-cover">
+        <span class="free-badge">Free</span>
+        <div class="card-title">The Salmon Journey</div>
+        <div class="card-subtitle">How compound interest actually works.</div>
+      </div>
+      <div class="card-body">
+        <span class="card-tag tag-finance">Finance</span>
+        <p class="card-desc">Why the fish that swims upstream slowly always beats the one that waits. The mathematical force that builds wealth — told through a story you'll never forget.</p>
+        <div class="card-footer">
+          <span class="card-price free">Free</span>
+          <span class="card-link">Read Now &rarr;</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="/thewolfstable" class="card" data-tag="relationships" data-free="true">
+      <div class="card-cover">
+        <span class="free-badge">Free</span>
+        <div class="card-title">The Wolf's Table</div>
+        <div class="card-subtitle">Why the strongest never eat alone.</div>
+      </div>
+      <div class="card-body">
+        <span class="card-tag tag-relationships">Relationships</span>
+        <p class="card-desc">She was the fastest wolf in the range. She was starving anyway. The 90 day protocol for building an inner circle that transforms every area of your life.</p>
+        <div class="card-footer">
+          <span class="card-price free">Free</span>
+          <span class="card-link">Read Now &rarr;</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- ===== PAID PLAYBOOKS ===== -->
+
+    <a href="/conductorsplaybook" class="card" data-tag="productivity">
       <div class="card-cover">
         <div class="card-title">The Conductor's Playbook</div>
         <div class="card-subtitle">Stop generating. Start conducting.</div>
@@ -97,28 +234,13 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
         <span class="card-tag tag-productivity">Productivity</span>
         <p class="card-desc">Four mental models that change how you think, work, and build with AI forever. The complete system for turning AI from a drafting tool into a thinking partner.</p>
         <div class="card-footer">
-          <span class="card-price">$67</span>
+          <span class="card-price">$1.99</span>
           <span class="card-link">View Playbook &rarr;</span>
         </div>
       </div>
     </a>
 
-    <a href="/layitdown" class="card">
-      <div class="card-cover">
-        <div class="card-title">Lay It Down</div>
-        <div class="card-subtitle">I am calling you deeper.</div>
-      </div>
-      <div class="card-body">
-        <span class="card-tag tag-faith">Faith</span>
-        <p class="card-desc">Identify the comfortable addictions you didn't know you had — and dismantle the altars they built. Not willpower. Authority.</p>
-        <div class="card-footer">
-          <span class="card-price">$14.99</span>
-          <span class="card-link">View Playbook &rarr;</span>
-        </div>
-      </div>
-    </a>
-
-    <a href="/theantnetwork" class="card">
+    <a href="/theantnetwork" class="card" data-tag="tech">
       <div class="card-cover">
         <div class="card-title">The Ant Network</div>
         <div class="card-subtitle">How blockchain really works.</div>
@@ -127,13 +249,13 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
         <span class="card-tag tag-tech">Technology</span>
         <p class="card-desc">No crypto hype. No jargon. Just the story of how thousands of autonomous agents built trust with nobody in charge.</p>
         <div class="card-footer">
-          <span class="card-price">$14.99</span>
+          <span class="card-price">$1.99</span>
           <span class="card-link">View Playbook &rarr;</span>
         </div>
       </div>
     </a>
 
-    <a href="/thecostledger" class="card">
+    <a href="/thecostledger" class="card" data-tag="mindset">
       <div class="card-cover">
         <div class="card-title">The Cost Ledger</div>
         <div class="card-subtitle">The lie every human believes.</div>
@@ -142,13 +264,13 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
         <span class="card-tag tag-mindset">Mindset</span>
         <p class="card-desc">You're reading a corrupted financial statement. Here's how to audit the real cost of staying the same — the 10,000-day bill you've been ignoring.</p>
         <div class="card-footer">
-          <span class="card-price">$14.99</span>
+          <span class="card-price">$1.99</span>
           <span class="card-link">View Playbook &rarr;</span>
         </div>
       </div>
     </a>
 
-    <a href="/theghostframe" class="card">
+    <a href="/theghostframe" class="card" data-tag="mindset">
       <div class="card-cover">
         <div class="card-title">The Ghost Frame</div>
         <div class="card-subtitle">The invisible architecture of perception.</div>
@@ -157,13 +279,13 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
         <span class="card-tag tag-mindset">Mindset</span>
         <p class="card-desc">You don't see the world as it is. You see it through a frame you never chose. This playbook makes the frame visible.</p>
         <div class="card-footer">
-          <span class="card-price">$14.99</span>
+          <span class="card-price">$1.99</span>
           <span class="card-link">View Playbook &rarr;</span>
         </div>
       </div>
     </a>
 
-    <a href="/thegravitywell" class="card">
+    <a href="/thegravitywell" class="card" data-tag="productivity">
       <div class="card-cover">
         <div class="card-title">The Gravity Well</div>
         <div class="card-subtitle">Why your attention goes where it goes.</div>
@@ -172,43 +294,13 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
         <span class="card-tag tag-productivity">Productivity</span>
         <p class="card-desc">Stop fighting your attention. Rebuild the physics of your life so your purpose pulls harder than everything else.</p>
         <div class="card-footer">
-          <span class="card-price">$14.99</span>
+          <span class="card-price">$1.99</span>
           <span class="card-link">View Playbook &rarr;</span>
         </div>
       </div>
     </a>
 
-    <a href="/thenarrator" class="card">
-      <div class="card-cover">
-        <div class="card-title">The Narrator</div>
-        <div class="card-subtitle">You are performing a character someone else wrote.</div>
-      </div>
-      <div class="card-body">
-        <span class="card-tag tag-identity">Identity</span>
-        <p class="card-desc">The voice telling you who you are? It's not you. It's a script you inherited. Here's how to claim the Author's Chair.</p>
-        <div class="card-footer">
-          <span class="card-price">$14.99</span>
-          <span class="card-link">View Playbook &rarr;</span>
-        </div>
-      </div>
-    </a>
-
-    <a href="/thesalmonjourney" class="card">
-      <div class="card-cover">
-        <div class="card-title">The Salmon Journey</div>
-        <div class="card-subtitle">How compound interest actually works.</div>
-      </div>
-      <div class="card-body">
-        <span class="card-tag tag-finance">Finance</span>
-        <p class="card-desc">Why the fish that swims upstream slowly always beats the one that waits. The mathematical force that builds wealth — told through a story you'll never forget.</p>
-        <div class="card-footer">
-          <span class="card-price">$14.99</span>
-          <span class="card-link">View Playbook &rarr;</span>
-        </div>
-      </div>
-    </a>
-
-    <a href="/thesquirreleconomy" class="card">
+    <a href="/thesquirreleconomy" class="card" data-tag="economics">
       <div class="card-cover">
         <div class="card-title">The Squirrel Economy</div>
         <div class="card-subtitle">How squirrels saved the forest.</div>
@@ -217,43 +309,13 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
         <span class="card-tag tag-economics">Economics</span>
         <p class="card-desc">See the booms, busts, and bubbles everywhere once you understand how savers, builders, bankers, and speculators interact.</p>
         <div class="card-footer">
-          <span class="card-price">$14.99</span>
+          <span class="card-price">$1.99</span>
           <span class="card-link">View Playbook &rarr;</span>
         </div>
       </div>
     </a>
 
-    <a href="/thewolfstable" class="card">
-      <div class="card-cover">
-        <div class="card-title">The Wolf's Table</div>
-        <div class="card-subtitle">Why the strongest never eat alone.</div>
-      </div>
-      <div class="card-body">
-        <span class="card-tag tag-relationships">Relationships</span>
-        <p class="card-desc">She was the fastest wolf in the range. She was starving anyway. The 90 day protocol for building an inner circle that transforms every area of your life.</p>
-        <div class="card-footer">
-          <span class="card-price">$14.99</span>
-          <span class="card-link">View Playbook &rarr;</span>
-        </div>
-      </div>
-    </a>
-
-    <a href="/thecrowsgambit" class="card">
-      <div class="card-cover">
-        <div class="card-title">The Crow's Gambit</div>
-        <div class="card-subtitle">How game theory actually works.</div>
-      </div>
-      <div class="card-body">
-        <span class="card-tag tag-strategy">Strategy</span>
-        <p class="card-desc">Forget the textbooks and the math anxiety. The story of how a murder of crows discovered the logic behind every negotiation, conflict, and alliance.</p>
-        <div class="card-footer">
-          <span class="card-price">$14.99</span>
-          <span class="card-link">View Playbook &rarr;</span>
-        </div>
-      </div>
-    </a>
-
-    <a href="/theeagleslens" class="card">
+    <a href="/theeagleslens" class="card" data-tag="leadership">
       <div class="card-cover">
         <div class="card-title">The Eagle's Lens</div>
         <div class="card-subtitle">Decide 10x faster using first principles.</div>
@@ -262,13 +324,13 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
         <span class="card-tag tag-leadership">Leadership</span>
         <p class="card-desc">You're not bad at decisions. You're drowning in information. The four-step framework — Strip, Test, Commit, Correct — for cutting through noise to the one thing that matters.</p>
         <div class="card-footer">
-          <span class="card-price">$14.99</span>
+          <span class="card-price">$1.99</span>
           <span class="card-link">View Playbook &rarr;</span>
         </div>
       </div>
     </a>
 
-    <a href="/thelighthousekeeperslog" class="card">
+    <a href="/thelighthousekeeperslog" class="card" data-tag="mindset">
       <div class="card-cover">
         <div class="card-title">The Lighthouse Keeper's Log</div>
         <div class="card-subtitle">How letting go creates forward motion.</div>
@@ -277,13 +339,13 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
         <span class="card-tag tag-mindset">Mindset</span>
         <p class="card-desc">You keep adding more hustle to a ship that's sinking under its own weight. Map the five invisible cargo holds, learn three types of release, and raise your waterline.</p>
         <div class="card-footer">
-          <span class="card-price">$14.99</span>
+          <span class="card-price">$1.99</span>
           <span class="card-link">View Playbook &rarr;</span>
         </div>
       </div>
     </a>
 
-    <a href="/theoctopusprotocol" class="card">
+    <a href="/theoctopusprotocol" class="card" data-tag="finance">
       <div class="card-cover">
         <div class="card-title">The Octopus Protocol</div>
         <div class="card-subtitle">One brain. Many arms. Relentless leverage.</div>
@@ -292,13 +354,13 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
         <span class="card-tag tag-finance">Finance</span>
         <p class="card-desc">One income stream is a leash. Five built wrong is a drowning. The architecture for building multiple revenue streams from one core skill — without burning out.</p>
         <div class="card-footer">
-          <span class="card-price">$14.99</span>
+          <span class="card-price">$1.99</span>
           <span class="card-link">View Playbook &rarr;</span>
         </div>
       </div>
     </a>
 
-    <a href="/thestarlingsmurmuration" class="card">
+    <a href="/thestarlingsmurmuration" class="card" data-tag="leadership">
       <div class="card-cover">
         <div class="card-title">The Starling's Murmuration</div>
         <div class="card-subtitle">How small alignments create unstoppable momentum.</div>
@@ -307,13 +369,13 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
         <span class="card-tag tag-leadership">Leadership</span>
         <p class="card-desc">You don't need to change everything. You need to align seven things. The science of how 250,000 birds move as one — and the 30-day protocol to start your own cascade.</p>
         <div class="card-footer">
-          <span class="card-price">$14.99</span>
+          <span class="card-price">$1.99</span>
           <span class="card-link">View Playbook &rarr;</span>
         </div>
       </div>
     </a>
 
-    <a href="/thechameleonscode" class="card">
+    <a href="/thechameleonscode" class="card" data-tag="communication">
       <div class="card-cover">
         <div class="card-title">The Chameleon's Code</div>
         <div class="card-subtitle">How to speak every room's hidden language.</div>
@@ -322,13 +384,13 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
         <span class="card-tag tag-communication">Communication</span>
         <p class="card-desc">They told you chameleons change color to hide. That is the lie keeping you invisible. The four communication frequencies behind every conversation, negotiation, and relationship.</p>
         <div class="card-footer">
-          <span class="card-price">$14.99</span>
+          <span class="card-price">$1.99</span>
           <span class="card-link">View Playbook &rarr;</span>
         </div>
       </div>
     </a>
 
-    <a href="/thespidersloom" class="card">
+    <a href="/thespidersloom" class="card" data-tag="productivity">
       <div class="card-cover">
         <div class="card-title">The Spider's Loom</div>
         <div class="card-subtitle">Why the smartest predator never chases.</div>
@@ -337,13 +399,13 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
         <span class="card-tag tag-productivity">Productivity</span>
         <p class="card-desc">You were taught that success comes from hustle. The spider disagrees. Build the four strand types that attract opportunities, filter noise, and compound while you sleep.</p>
         <div class="card-footer">
-          <span class="card-price">$14.99</span>
+          <span class="card-price">$1.99</span>
           <span class="card-link">View Playbook &rarr;</span>
         </div>
       </div>
     </a>
 
-    <a href="/thegeckosgrip" class="card">
+    <a href="/thegeckosgrip" class="card" data-tag="resilience">
       <div class="card-cover">
         <div class="card-title">The Gecko's Grip</div>
         <div class="card-subtitle">How the smallest climber masters the impossible wall.</div>
@@ -352,13 +414,13 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
         <span class="card-tag tag-resilience">Resilience</span>
         <p class="card-desc">You were taught that falling means failing. The gecko disagrees. Van der Waals micro actions, strategic sacrifice, and the Regrowth Protocol for recovering stronger than before.</p>
         <div class="card-footer">
-          <span class="card-price">$14.99</span>
+          <span class="card-price">$1.99</span>
           <span class="card-link">View Playbook &rarr;</span>
         </div>
       </div>
     </a>
 
-    <a href="/thefireflyssignal" class="card">
+    <a href="/thefireflyssignal" class="card" data-tag="strategy">
       <div class="card-cover">
         <div class="card-title">The Firefly's Signal</div>
         <div class="card-subtitle">Why the brightest light learned to go dark.</div>
@@ -367,13 +429,13 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
         <span class="card-tag tag-strategy">Strategy</span>
         <p class="card-desc">She was the fastest flasher in the meadow. She was starving anyway. The science of timing, strategic darkness, and the five frameworks for knowing exactly when to act.</p>
         <div class="card-footer">
-          <span class="card-price">$14.99</span>
+          <span class="card-price">$1.99</span>
           <span class="card-link">View Playbook &rarr;</span>
         </div>
       </div>
     </a>
 
-    <a href="/thefoxstrail" class="card">
+    <a href="/thefoxstrail" class="card" data-tag="strategy">
       <div class="card-cover">
         <div class="card-title">The Fox's Trail</div>
         <div class="card-subtitle">Why the cleverest animal never runs the same path twice.</div>
@@ -382,13 +444,13 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
         <span class="card-tag tag-strategy">Strategy</span>
         <p class="card-desc">The fastest fox was starving. The slowest was thriving. Lateral thinking, strategic misdirection, the Scent Map, and the Third Trail that changes everything.</p>
         <div class="card-footer">
-          <span class="card-price">$14.99</span>
+          <span class="card-price">$1.99</span>
           <span class="card-link">View Playbook &rarr;</span>
         </div>
       </div>
     </a>
 
-    <a href="/themothsflame" class="card">
+    <a href="/themothsflame" class="card" data-tag="mindset">
       <div class="card-cover">
         <div class="card-title">The Moth's Flame</div>
         <div class="card-subtitle">He flew a thousand miles by moonlight, then burned himself on a porch lamp.</div>
@@ -397,13 +459,13 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
         <span class="card-tag tag-mindset">Mindset</span>
         <p class="card-desc">His navigation was perfect. The signal was counterfeit. The Signal Audit, the Dark Flight, and the Moon Protocol for distinguishing true north from every bright distraction.</p>
         <div class="card-footer">
-          <span class="card-price">$14.99</span>
+          <span class="card-price">$1.99</span>
           <span class="card-link">View Playbook &rarr;</span>
         </div>
       </div>
     </a>
 
-    <a href="/thebearswinter" class="card">
+    <a href="/thebearswinter" class="card" data-tag="mindset">
       <div class="card-cover">
         <div class="card-title">The Bear's Winter</div>
         <div class="card-subtitle">The strongest animal disappears for five months.</div>
@@ -412,13 +474,13 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
         <span class="card-tag tag-mindset">Mindset</span>
         <p class="card-desc">She vanished in November and emerged in April with cubs. Strategic dormancy, the Sprint-Store-Sleep cycle, and the Re-Entry Protocol for coming back stronger than anything that stayed.</p>
         <div class="card-footer">
-          <span class="card-price">$14.99</span>
+          <span class="card-price">$1.99</span>
           <span class="card-link">View Playbook &rarr;</span>
         </div>
       </div>
     </a>
 
-    <a href="/thecoyoteslaugh" class="card">
+    <a href="/thecoyoteslaugh" class="card" data-tag="resilience">
       <div class="card-cover">
         <div class="card-title">The Coyote's Laugh</div>
         <div class="card-subtitle">A century of eradication made him unstoppable.</div>
@@ -427,13 +489,13 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
         <span class="card-tag tag-resilience">Resilience</span>
         <p class="card-desc">Every trap made him smarter. Every poison made him cautious. Antifragility, the Stress Inoculation framework, the Howl Network, and the Optionality Stack for thriving under pressure.</p>
         <div class="card-footer">
-          <span class="card-price">$14.99</span>
+          <span class="card-price">$1.99</span>
           <span class="card-link">View Playbook &rarr;</span>
         </div>
       </div>
     </a>
 
-    <a href="/thepangolinsarmor" class="card">
+    <a href="/thepangolinsarmor" class="card" data-tag="mindset">
       <div class="card-cover">
         <div class="card-title">The Pangolin's Armor</div>
         <div class="card-subtitle">No claws. No speed. Just the decision to become untouchable.</div>
@@ -442,13 +504,13 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
         <span class="card-tag tag-mindset">Mindset</span>
         <p class="card-desc">The most hunted animal on earth survived with one move. Selective invulnerability, the Three-Layer Shield, the Threat Filter, and the No Protocol for conserving energy on what matters.</p>
         <div class="card-footer">
-          <span class="card-price">$14.99</span>
+          <span class="card-price">$1.99</span>
           <span class="card-link">View Playbook &rarr;</span>
         </div>
       </div>
     </a>
 
-    <a href="/thehorsesgait" class="card">
+    <a href="/thehorsesgait" class="card" data-tag="productivity">
       <div class="card-cover">
         <div class="card-title">The Horse's Gait</div>
         <div class="card-subtitle">Four speeds. One secret: knowing which to use when.</div>
@@ -457,7 +519,7 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
         <span class="card-tag tag-productivity">Productivity</span>
         <p class="card-desc">He galloped everywhere and was lame by noon. She walked and covered more ground in a day. The Four-Gear Framework, the Cool-Down Protocol, and the Weekly Gait Map for sustainable performance.</p>
         <div class="card-footer">
-          <span class="card-price">$14.99</span>
+          <span class="card-price">$1.99</span>
           <span class="card-link">View Playbook &rarr;</span>
         </div>
       </div>
@@ -465,6 +527,29 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
 
   </div>
 </div>
+
+<!-- ===== SUBSCRIPTION BANNER ===== -->
+<section class="sub-banner">
+  <div class="sub-inner">
+    <h2>Unlock the <span>Full Archive</span></h2>
+    <p class="sub-desc">One playbook changes a decision. The full archive changes how you think. Get instant access to all 25 playbooks and every new release.</p>
+    <div class="sub-options">
+      <div class="sub-card individual">
+        <div class="sub-card-label">Per Playbook</div>
+        <div class="sub-card-price">$1.99</div>
+        <div class="sub-card-note">one-time purchase</div>
+        <p class="sub-card-feature">Buy any single playbook.<br>Yours forever.</p>
+      </div>
+      <div class="sub-divider">or</div>
+      <div class="sub-card archive">
+        <div class="sub-card-label">Full Archive</div>
+        <div class="sub-card-price">$9.99</div>
+        <div class="sub-card-note">per month</div>
+        <p class="sub-card-feature">All 25 playbooks.<br>Every future release included.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- ===== EMAIL CAPTURE BANNER ===== -->
 <section class="capture-banner">
@@ -482,6 +567,41 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
   <p>"Whatever you do, work at it with all your heart, as working for the Lord." — Colossians 3:23</p>
   <div class="brand">Kingdom Builders AI</div>
 </footer>
+
+<script>
+(function(){
+  var grid = document.getElementById('playbook-grid');
+  var cards = Array.from(grid.querySelectorAll('.card'));
+  var buttons = document.querySelectorAll('.filter-btn');
+  var originalOrder = cards.slice();
+
+  buttons.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      buttons.forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      var filter = btn.getAttribute('data-filter');
+
+      if(filter === 'all'){
+        // Show all, free first
+        cards.forEach(function(c){ c.classList.remove('hidden'); });
+        var freeCards = originalOrder.filter(function(c){ return c.getAttribute('data-free') === 'true'; });
+        var paidCards = originalOrder.filter(function(c){ return c.getAttribute('data-free') !== 'true'; });
+        freeCards.concat(paidCards).forEach(function(c){ grid.appendChild(c); });
+      } else if(filter === 'free'){
+        cards.forEach(function(c){
+          if(c.getAttribute('data-free') === 'true') c.classList.remove('hidden');
+          else c.classList.add('hidden');
+        });
+      } else {
+        cards.forEach(function(c){
+          if(c.getAttribute('data-tag') === filter) c.classList.remove('hidden');
+          else c.classList.add('hidden');
+        });
+      }
+    });
+  });
+})();
+</script>
 
 </body>
 </html>
