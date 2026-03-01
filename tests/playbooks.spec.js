@@ -202,15 +202,21 @@ test.describe("Landing Pages", () => {
       await expect(errorIcon).not.toBeVisible();
 
       // Should contain the playbook title somewhere
-      await expect(page.locator("body")).toContainText(pb.title.replace(/'/g, "\u2019").replace(/'/g, "'"));
+      await expect(page.locator("body")).toContainText(pb.title);
     });
 
     test(`${pb.title} landing page has a read CTA`, async ({ page }) => {
       await page.goto(pb.route);
 
-      // Every landing page should have a link to /read/<slug>
-      const ctaLink = page.locator(`a[href="/read/${pb.readerSlug}"]`);
-      await expect(ctaLink).toBeVisible();
+      if (pb.readerSlug === "conductors-playbook") {
+        // Conductor's Playbook uses Stripe checkout instead of a direct read link
+        const checkoutBtn = page.locator('button[type="submit"]');
+        await expect(checkoutBtn).toBeVisible();
+      } else {
+        // Every other landing page should have a link to /read/<slug>
+        const ctaLink = page.locator(`a[href="/read/${pb.readerSlug}"]`);
+        await expect(ctaLink).toBeVisible();
+      }
     });
   }
 });
@@ -250,10 +256,14 @@ test.describe("Full Navigation Flow", () => {
       await page.waitForURL(`**${pb.route}`);
       expect(page.url()).toContain(pb.route);
 
-      // Step 3: Click the read CTA
-      const ctaLink = page.locator(`a[href="/read/${pb.readerSlug}"]`);
-      await ctaLink.click();
-      await page.waitForURL(`**/read/${pb.readerSlug}`);
+      // Step 3: Click the read CTA (Conductor's uses Stripe checkout, navigate directly)
+      if (pb.readerSlug === "conductors-playbook") {
+        await page.goto(`/read/${pb.readerSlug}`);
+      } else {
+        const ctaLink = page.locator(`a[href="/read/${pb.readerSlug}"]`);
+        await ctaLink.click();
+        await page.waitForURL(`**/read/${pb.readerSlug}`);
+      }
       expect(page.url()).toContain(`/read/${pb.readerSlug}`);
 
       // Step 4: Verify full playbook rendered (not error page)
