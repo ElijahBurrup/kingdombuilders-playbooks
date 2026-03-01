@@ -128,6 +128,26 @@ def the_moths_flame():
     return send_from_directory("static", "the-moths-flame.html")
 
 
+@app.route("/thebearswinter")
+def the_bears_winter():
+    return send_from_directory("static", "the-bears-winter.html")
+
+
+@app.route("/thecoyoteslaugh")
+def the_coyotes_laugh():
+    return send_from_directory("static", "the-coyotes-laugh.html")
+
+
+@app.route("/thepangolinsarmor")
+def the_pangolins_armor():
+    return send_from_directory("static", "the-pangolins-armor.html")
+
+
+@app.route("/thehorsesgait")
+def the_horses_gait():
+    return send_from_directory("static", "the-horses-gait.html")
+
+
 # --- Playbook Reader (serves full playbook HTML from assets) ---
 @app.route("/read/<slug>")
 def read_playbook(slug):
@@ -153,6 +173,10 @@ def read_playbook(slug):
         "the-fireflys-signal": "The_Fireflys_Signal.html",
         "the-foxs-trail": "The_Foxs_Trail.html",
         "the-moths-flame": "The_Moths_Flame.html",
+        "the-bears-winter": "The_Bears_Winter.html",
+        "the-coyotes-laugh": "The_Coyotes_Laugh.html",
+        "the-pangolins-armor": "The_Pangolins_Armor.html",
+        "the-horses-gait": "The_Horses_Gait.html",
     }
     filename = slug_to_file.get(slug)
     if not filename:

@@ -132,6 +132,30 @@ const PLAYBOOKS = [
     readerSlug: "the-moths-flame",
     tag: "Mindset",
   },
+  {
+    title: "The Bear's Winter",
+    route: "/thebearswinter",
+    readerSlug: "the-bears-winter",
+    tag: "Mindset",
+  },
+  {
+    title: "The Coyote's Laugh",
+    route: "/thecoyoteslaugh",
+    readerSlug: "the-coyotes-laugh",
+    tag: "Resilience",
+  },
+  {
+    title: "The Pangolin's Armor",
+    route: "/thepangolinsarmor",
+    readerSlug: "the-pangolins-armor",
+    tag: "Mindset",
+  },
+  {
+    title: "The Horse's Gait",
+    route: "/thehorsesgait",
+    readerSlug: "the-horses-gait",
+    tag: "Productivity",
+  },
 ];
 
 // ── Catalog Page ──────────────────────────────────────────────

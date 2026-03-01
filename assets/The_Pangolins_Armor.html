@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Pangolin's Armor — Selective Invulnerability</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --rust:#8B4513;--rust-bright:#A0522D;--rust-pale:#CD853F;--rust-soft:rgba(139,69,19,0.07);
+  --ember:#B87333;--ember-glow:#D4956B;--ember-pale:#E8C5A0;--ember-soft:rgba(184,115,51,0.06);
+  --forest:#2C1810;--forest-dark:#1A0E08;--forest-mid:#4A2C1A;--forest-light:#6B3A2A;--forest-pale:#8B5A3A;
+  --earth:#F5F0E8;--earth-warm:#EDE4D6;--earth-deep:#D8CCBA;
+  --text:#1A1008;--text-light:#3A2418;--text-muted:#6A4838;
+  --white:#FFFFFF;--radius:16px;
+  --shadow-soft:0 2px 16px rgba(26,16,8,0.06);
+  --shadow-mid:0 4px 28px rgba(26,16,8,0.12);
+  --shadow-strong:0 8px 40px rgba(26,16,8,0.18);
+  --before-bg:#FFF4EC;--before-border:#8B4513;--before-text:#4A1808;
+  --after-bg:#F0EEE4;--after-border:#6B3A2A;--after-text:#1A1008;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--earth);line-height:1.82;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
+.page{max-width:720px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--forest-mid);font-weight:700}
+.prose em{color:var(--rust);font-style:normal;font-weight:600}
+
+/* ===== COVER ===== */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;
+  background:linear-gradient(175deg,#1A0E08 0%,#2C1810 20%,#4A2C1A 48%,#2C1810 72%,#1A0E08 100%);
+  position:relative;overflow:hidden}
+.scale-float{position:absolute;pointer-events:none;opacity:0;animation:scale-fall linear infinite}
+.scale-float:nth-child(1){width:10px;height:10px;background:rgba(184,115,51,0.2);left:8%;animation-duration:14s;animation-delay:0s;clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);transform:rotate(20deg)}
+.scale-float:nth-child(2){width:8px;height:8px;background:rgba(139,69,19,0.18);left:22%;animation-duration:17s;animation-delay:-3s;clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);transform:rotate(-15deg)}
+.scale-float:nth-child(3){width:12px;height:12px;background:rgba(184,115,51,0.15);left:38%;animation-duration:20s;animation-delay:-6s;clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);transform:rotate(35deg)}
+.scale-float:nth-child(4){width:7px;height:7px;background:rgba(160,82,45,0.22);left:55%;animation-duration:15s;animation-delay:-2s;clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);transform:rotate(-25deg)}
+.scale-float:nth-child(5){width:11px;height:11px;background:rgba(184,115,51,0.16);left:72%;animation-duration:18s;animation-delay:-8s;clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);transform:rotate(10deg)}
+.scale-float:nth-child(6){width:6px;height:6px;background:rgba(139,69,19,0.2);left:88%;animation-duration:13s;animation-delay:-4s;clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);transform:rotate(-30deg)}
+.scale-float:nth-child(7){width:9px;height:9px;background:rgba(160,82,45,0.14);left:45%;animation-duration:19s;animation-delay:-10s;clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);transform:rotate(40deg)}
+.scale-float:nth-child(8){width:5px;height:5px;background:rgba(184,115,51,0.22);left:15%;animation-duration:12s;animation-delay:-5s;clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);transform:rotate(-20deg)}
+.scale-float:nth-child(9){width:8px;height:8px;background:rgba(139,69,19,0.18);left:65%;animation-duration:21s;animation-delay:-7s;clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);transform:rotate(15deg)}
+.scale-float:nth-child(10){width:10px;height:10px;background:rgba(184,115,51,0.16);left:82%;animation-duration:16s;animation-delay:-1s;clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);transform:rotate(-35deg)}
+@keyframes scale-fall{
+  0%{top:-5%;opacity:0;transform:rotate(0deg) translateX(0)}
+  10%{opacity:0.6}
+  50%{transform:rotate(180deg) translateX(25px)}
+  90%{opacity:0.3}
+  100%{top:105%;opacity:0;transform:rotate(360deg) translateX(-15px)}
+}
+.ground-scale{position:absolute;bottom:0;background:rgba(184,115,51,0.03);pointer-events:none;clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%)}
+.ground-scale:nth-child(11){width:20px;height:20px;left:6%;bottom:10px;transform:rotate(-2deg)}
+.ground-scale:nth-child(12){width:16px;height:16px;left:14%;bottom:5px;transform:rotate(1deg)}
+.ground-scale:nth-child(13){width:24px;height:24px;left:25%;bottom:15px;transform:rotate(-4deg)}
+.ground-scale:nth-child(14){width:14px;height:14px;left:35%;bottom:8px;transform:rotate(2deg)}
+.ground-scale:nth-child(15){width:22px;height:22px;left:48%;bottom:12px;transform:rotate(-1deg)}
+.ground-scale:nth-child(16){width:16px;height:16px;left:58%;bottom:6px;transform:rotate(3deg)}
+.ground-scale:nth-child(17){width:20px;height:20px;left:68%;bottom:18px;transform:rotate(-3deg)}
+.ground-scale:nth-child(18){width:14px;height:14px;left:78%;bottom:4px;transform:rotate(1deg)}
+.ground-scale:nth-child(19){width:18px;height:18px;left:88%;bottom:10px;transform:rotate(-2deg)}
+.ground-scale:nth-child(20){width:16px;height:16px;left:95%;bottom:8px;transform:rotate(2deg)}
+.ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.015;mix-blend-mode:overlay;pointer-events:none}
+.cover-content{position:relative;z-index:2;padding:48px 24px}
+.cover-badge{display:inline-block;padding:6px 18px;border:1px solid rgba(184,115,51,0.2);border-radius:40px;font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--ember);margin-bottom:40px}
+.cover h1{font-size:clamp(2.6rem,7vw,4.4rem);font-weight:900;color:var(--white);line-height:1.05;margin-bottom:8px}
+.cover h1 span{display:block;background:linear-gradient(135deg,var(--rust),var(--ember));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cover-sub{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:rgba(255,255,255,0.3);margin-top:24px;line-height:1.7}
+.cover-sub em{color:var(--ember-pale);font-style:normal}
+.cover-author{font-family:'Nunito',sans-serif;font-size:0.55rem;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.12);margin-top:48px}
+.cover-emoji{width:100px;height:100px;margin:0 auto 20px;animation:pangolin-breathe 4s ease-in-out infinite;display:block;color:var(--ember)}
+.cover-emoji svg{width:100%;height:100%}
+@keyframes pangolin-breathe{
+  0%,100%{transform:scale(1);filter:brightness(1) drop-shadow(0 0 8px rgba(184,115,51,0.3))}
+  50%{transform:scale(1.06);filter:brightness(1.3) drop-shadow(0 0 20px rgba(184,115,51,0.6))}
+}
+
+/* ===== RIBBON ===== */
+.ribbon{text-align:center;padding:22px 24px;background:linear-gradient(135deg,rgba(139,69,19,0.03),rgba(184,115,51,0.06));border-top:1.5px solid rgba(139,69,19,0.12);border-bottom:1.5px solid rgba(139,69,19,0.12)}
+.ribbon p{font-family:'Lora',serif;font-size:0.82rem;font-style:italic;color:var(--text-muted);max-width:500px;margin:0 auto}
+
+/* ===== CHAPTER HEADINGS ===== */
+.ch-head{padding:64px 24px 48px;text-align:center;background:linear-gradient(170deg,var(--forest-dark),var(--forest),var(--forest-mid));position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(184,115,51,0.05) 0%,transparent 70%);border-radius:50%}
+.ch-head .ch-num{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:6px;text-transform:uppercase;color:var(--ember);margin-bottom:12px;position:relative;z-index:2}
+.ch-head h2{font-size:1.6rem;color:var(--white);position:relative;z-index:2;margin-bottom:8px}
+.ch-head .ch-sub{font-family:'Lora',serif;font-size:0.88rem;font-style:italic;color:rgba(255,255,255,0.3);position:relative;z-index:2;max-width:480px;margin:0 auto}
+
+/* ===== CHARACTER CARDS ===== */
+.character-card{display:flex;gap:20px;align-items:flex-start;padding:28px;margin:28px 0;background:var(--white);border-radius:var(--radius);border:2px solid rgba(184,115,51,0.12);box-shadow:var(--shadow-soft)}
+.character-card .avatar{flex-shrink:0;width:64px;height:64px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--forest),var(--forest-mid));border-radius:50%;color:var(--ember)}
+.character-card .avatar svg{width:32px;height:32px}
+.character-card .info h3{font-size:1rem;color:var(--forest-mid);margin-bottom:4px}
+.character-card .info .role{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--ember);margin-bottom:8px}
+.character-card .info p{font-size:0.88rem;color:var(--text-light);line-height:1.65}
+
+/* ===== SCENES ===== */
+.scene{margin:36px 0;padding:32px;background:linear-gradient(140deg,var(--forest-dark),var(--forest));border-radius:var(--radius);border:1px solid rgba(184,115,51,0.1);position:relative;overflow:hidden}
+.scene::before{content:'';position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle,rgba(184,115,51,0.05) 0%,transparent 70%);border-radius:50%}
+.scene .scene-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--ember);margin-bottom:12px;position:relative;z-index:2}
+.scene p{font-family:'Lora',serif;font-size:0.95rem;color:rgba(255,255,255,0.7);line-height:1.78;position:relative;z-index:2;margin-bottom:12px}
+.scene p:last-child{margin-bottom:0}
+.scene em{color:var(--ember-pale);font-style:normal;font-weight:600}
+.scene strong{color:var(--ember-pale);font-weight:700}
+
+/* ===== SIGNAL GRID ===== */
+.signal-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:32px 0}
+@media(max-width:640px){.signal-grid{grid-template-columns:1fr}}
+.signal-card{padding:28px;border-radius:var(--radius);background:var(--white);border:2px solid rgba(184,115,51,0.1);box-shadow:var(--shadow-soft);position:relative;overflow:hidden}
+.signal-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;border-radius:2px 0 0 2px}
+.signal-card .card-emoji{width:36px;height:36px;margin-bottom:12px;display:block;color:currentColor}
+.signal-card .card-emoji svg{width:100%;height:100%}
+.signal-card .card-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;margin-bottom:8px;display:block}
+.signal-card h3{font-size:1rem;color:var(--forest-mid);margin-bottom:8px}
+.signal-card p{font-size:0.85rem;color:var(--text-light);line-height:1.65;margin-bottom:8px}
+.signal-card p:last-child{margin-bottom:0}
+.card-rust::before{background:var(--rust)}
+.card-rust .card-label{color:var(--rust)}
+.card-ember::before{background:var(--ember)}
+.card-ember .card-label{color:var(--ember)}
+.card-forest::before{background:var(--forest-light)}
+.card-forest .card-label{color:var(--forest-light)}
+.card-dark::before{background:var(--forest-pale)}
+.card-dark .card-label{color:var(--forest-pale)}
+
+/* ===== BA GRID ===== */
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:28px 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft)}
+@media(max-width:600px){.ba-grid{grid-template-columns:1fr}}
+.ba-before,.ba-after{padding:24px 28px}
+.ba-before{background:var(--before-bg);border-right:2px solid var(--before-border)}
+.ba-after{background:var(--after-bg);border-left:2px solid var(--after-border)}
+@media(max-width:600px){.ba-before{border-right:none;border-bottom:2px solid var(--before-border)}.ba-after{border-left:none;border-top:2px solid var(--after-border)}}
+.ba-before h4,.ba-after h4{font-size:0.6rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;margin-bottom:12px}
+.ba-before h4{color:var(--before-text)}.ba-after h4{color:var(--after-text)}
+.ba-before p,.ba-after p{font-size:0.88rem;line-height:1.65;margin-bottom:8px}
+.ba-before p:last-child,.ba-after p:last-child{margin-bottom:0}
+.ba-before p{color:var(--before-text)}.ba-after p{color:var(--after-text)}
+
+/* ===== DATA ROW ===== */
+.data-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:28px 0}
+@media(max-width:600px){.data-row{grid-template-columns:1fr}}
+.data-box{padding:28px;background:var(--white);border-radius:var(--radius);border:2px solid rgba(184,115,51,0.1);text-align:center;box-shadow:var(--shadow-soft)}
+.data-box .number{font-family:'Nunito',sans-serif;font-size:2.8rem;font-weight:900;line-height:1;margin-bottom:8px;background:linear-gradient(135deg,var(--rust),var(--ember));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.data-box p{font-size:0.8rem;color:var(--text-muted);line-height:1.5}
+
+/* ===== THINK ===== */
+.think{margin:32px 0;padding:28px 32px;background:linear-gradient(135deg,rgba(139,69,19,0.04),rgba(184,115,51,0.06));border-radius:var(--radius);border-left:5px solid var(--rust)}
+.think .think-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--ember);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.think .think-label svg{width:16px;height:16px;flex-shrink:0}
+.think h4{font-size:1rem;color:var(--forest-mid);margin-bottom:16px}
+.think p{font-size:0.92rem;color:var(--text-light);line-height:1.7;margin-bottom:12px}
+.think p:last-child{margin-bottom:0}
+.think .fill-line{display:block;border-bottom:1.5px dashed var(--ember);margin:20px 0;height:28px}
+.think .q-start{display:flex;align-items:flex-start;gap:6px}
+
+/* ===== GRAND QUOTE ===== */
+.grand-quote{margin:40px 0;padding:48px 36px;text-align:center;position:relative}
+.grand-quote::before{content:'\201C';font-family:Georgia,serif;font-size:8rem;color:rgba(184,115,51,0.06);position:absolute;top:-20px;left:50%;transform:translateX(-50%);line-height:1}
+.grand-quote blockquote{font-family:'Lora',serif;font-size:1.15rem;font-style:italic;color:var(--forest-mid);line-height:1.7;max-width:560px;margin:0 auto;position:relative;z-index:2}
+.grand-quote .attribution{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--ember);margin-top:16px}
+
+/* ===== VIZ BOX ===== */
+.viz-box{margin:32px 0;padding:32px;background:var(--white);border-radius:var(--radius);border:2px solid var(--rust);box-shadow:0 0 20px rgba(139,69,19,0.08),var(--shadow-mid);position:relative;overflow:hidden}
+.viz-box::before{content:'';position:absolute;top:-40%;right:-20%;width:300px;height:300px;background:radial-gradient(circle,rgba(184,115,51,0.04) 0%,transparent 70%);border-radius:50%}
+.viz-box .viz-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--rust);margin-bottom:16px;position:relative;z-index:2}
+.viz-box h3{font-size:1.15rem;color:var(--forest-mid);margin-bottom:16px;position:relative;z-index:2}
+.viz-box p{font-size:0.9rem;color:var(--text-light);line-height:1.7;position:relative;z-index:2;margin-bottom:12px}
+.viz-box p:last-child{margin-bottom:0}
+
+/* ===== ADVENTURE ===== */
+.adventure{margin:32px 0;counter-reset:adventure-step}
+.adventure .adv-step{padding:24px 28px;margin-bottom:16px;background:var(--white);border-radius:var(--radius);border:2px solid rgba(184,115,51,0.1);box-shadow:var(--shadow-soft);position:relative;padding-left:72px}
+.adventure .adv-step::before{counter-increment:adventure-step;content:counter(adventure-step);position:absolute;left:20px;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--rust),var(--ember));color:var(--white);font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(139,69,19,0.3)}
+.adventure .adv-step h4{font-size:0.92rem;color:var(--forest-mid);margin-bottom:6px}
+.adventure .adv-step p{font-size:0.85rem;color:var(--text-light);line-height:1.6}
+
+/* ===== FLOW ===== */
+.flow{margin:32px 0}
+.flow-step{display:flex;align-items:flex-start;gap:16px;margin-bottom:8px}
+.flow-marker{flex-shrink:0;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:900;color:var(--white);background:linear-gradient(135deg,var(--rust),var(--rust-bright));box-shadow:0 2px 8px rgba(139,69,19,0.25)}
+.flow-content{flex:1;padding:12px 0}
+.flow-content h4{font-size:0.95rem;color:var(--forest-mid);margin-bottom:4px}
+.flow-content p{font-size:0.85rem;color:var(--text-light);line-height:1.6}
+.flow-arrow{text-align:center;color:var(--rust);font-size:1.2rem;margin:4px 0 4px 14px;opacity:0.5}
+
+/* ===== DARK PANEL ===== */
+.dark-panel{margin:28px 0;padding:28px;background:linear-gradient(145deg,var(--forest-dark),var(--forest));border-radius:var(--radius);border:1px solid rgba(184,115,51,0.1)}
+.dark-panel .dp-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--ember);margin-bottom:12px}
+.dark-panel h3{font-size:1rem;color:var(--white);margin-bottom:12px}
+.dark-panel p{font-size:0.88rem;color:rgba(255,255,255,0.65);line-height:1.7;margin-bottom:8px}
+.dark-panel p:last-child{margin-bottom:0}
+.dark-panel em{color:var(--ember-pale);font-style:normal;font-weight:600}
+.dark-panel strong{color:var(--ember-pale)}
+
+/* ===== PROMPT CARD ===== */
+.prompt-card{margin:40px 0;padding:36px;background:linear-gradient(150deg,var(--forest),var(--forest-mid));border-radius:var(--radius);border:2px solid var(--ember);box-shadow:0 0 24px rgba(184,115,51,0.1)}
+.prompt-card .pc-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--ember);margin-bottom:16px}
+.prompt-card h3{font-size:1.1rem;color:var(--white);margin-bottom:16px}
+.prompt-card p{font-size:0.88rem;color:rgba(255,255,255,0.6);line-height:1.7;margin-bottom:8px}
+.prompt-card code{display:block;margin:16px 0;padding:16px 20px;background:rgba(0,0,0,0.3);border-radius:10px;font-family:'Lora',serif;font-size:0.88rem;color:var(--ember-pale);line-height:1.7;font-style:italic;white-space:pre-wrap}
+
+/* ===== FINALE ===== */
+.finale{padding:80px 24px;text-align:center;background:linear-gradient(175deg,var(--forest-dark),var(--forest),var(--forest-mid));position:relative;overflow:hidden}
+.finale .finale-emoji{width:56px;height:56px;margin:0 auto 24px;display:block;animation:pangolin-breathe 4s ease-in-out infinite;color:var(--ember)}
+.finale .finale-emoji svg{width:100%;height:100%}
+.finale h2{font-size:1.6rem;color:var(--white);margin-bottom:16px}
+.finale h2 span{color:var(--ember-glow)}
+.finale p{font-family:'Lora',serif;font-size:0.95rem;color:rgba(255,255,255,0.4);max-width:520px;margin:0 auto 16px;line-height:1.7}
+.finale p:last-child{margin-bottom:0}
+
+/* ===== FOOTER ===== */
+footer{text-align:center;padding:32px 24px;background:#0A0604}
+footer p{font-family:'Lora',serif;font-size:0.78rem;font-style:italic;color:rgba(184,115,51,0.18);margin-bottom:12px}
+footer .brand{font-family:'Nunito',sans-serif;font-size:0.5rem;font-style:normal;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.06)}
+</style>
+</head>
+<body>
+
+<!-- ===== SVG SPRITE SHEET ===== -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="ico-pangolin" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="30" cy="34" rx="18" ry="14"/>
+    <path d="M12 34C8 30 6 24 8 20C10 16 14 18 16 22"/>
+    <path d="M48 34C50 38 52 44 48 48L40 48"/>
+    <path d="M22 22C24 18 28 16 32 18"/>
+    <path d="M20 28L16 24"/>
+    <circle cx="14" cy="22" r="1.5" fill="currentColor" stroke="none"/>
+    <path d="M18 34C20 34 22 36 22 38" opacity="0.4"/>
+    <path d="M24 32C26 32 28 34 28 36" opacity="0.4"/>
+    <path d="M30 30C32 30 34 32 34 34" opacity="0.4"/>
+    <path d="M36 28C38 28 40 30 40 32" opacity="0.4"/>
+    <path d="M42 30C44 30 46 32 46 34" opacity="0.4"/>
+    <path d="M24 38C26 38 28 40 28 42" opacity="0.3"/>
+    <path d="M30 38C32 38 34 40 34 42" opacity="0.3"/>
+    <path d="M36 36C38 36 40 38 40 40" opacity="0.3"/>
+  </symbol>
+  <symbol id="ico-shield" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M32 4L8 16v16c0 14 10 22 24 28 14-6 24-14 24-28V16L32 4z"/>
+    <path d="M32 20v20"/>
+    <path d="M22 30h20"/>
+  </symbol>
+  <symbol id="ico-curl" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="32" cy="32" r="22"/>
+    <path d="M20 20C24 16 32 14 40 20C46 26 44 36 38 40C32 44 24 42 22 36C20 30 24 26 28 26C32 26 34 30 32 32"/>
+    <circle cx="32" cy="32" r="4" fill="currentColor" opacity="0.15"/>
+  </symbol>
+  <symbol id="ico-scale" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 8L48 8L56 32L48 56L16 56L8 32Z"/>
+    <path d="M16 8L32 20L48 8"/>
+    <path d="M8 32L32 42L56 32"/>
+    <path d="M16 56L32 42"/>
+    <path d="M48 56L32 42"/>
+    <path d="M32 20V42"/>
+  </symbol>
+  <symbol id="ico-armor" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M32 6L10 18V34C10 48 20 56 32 60C44 56 54 48 54 34V18L32 6Z"/>
+    <path d="M18 24L32 16L46 24"/>
+    <path d="M18 34L32 26L46 34"/>
+    <path d="M18 44L32 36L46 44"/>
+    <path d="M24 50L32 46L40 50"/>
+  </symbol>
+  <symbol id="ico-moon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M40 8C30 12 24 22 24 32C24 42 30 52 40 56C28 56 16 46 16 32C16 18 28 8 40 8Z"/>
+    <circle cx="42" cy="18" r="1.5" fill="currentColor" stroke="none" opacity="0.4"/>
+    <circle cx="50" cy="28" r="1" fill="currentColor" stroke="none" opacity="0.3"/>
+    <circle cx="46" cy="40" r="1.2" fill="currentColor" stroke="none" opacity="0.35"/>
+  </symbol>
+  <symbol id="ico-eye" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <ellipse cx="32" cy="32" rx="22" ry="16"/>
+    <circle cx="32" cy="32" r="8"/>
+    <circle cx="32" cy="32" r="3" fill="currentColor" stroke="none"/>
+    <circle cx="28" cy="28" r="2" fill="currentColor" stroke="none" opacity="0.2"/>
+  </symbol>
+  <symbol id="ico-filter" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 12H56L38 36V52L26 56V36L8 12Z"/>
+  </symbol>
+  <symbol id="ico-target" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <circle cx="32" cy="32" r="24"/>
+    <circle cx="32" cy="32" r="16"/>
+    <circle cx="32" cy="32" r="8"/>
+    <circle cx="32" cy="32" r="2" fill="currentColor" stroke="none"/>
+  </symbol>
+  <symbol id="ico-layers" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M32 8L4 24L32 40L60 24Z"/>
+    <path d="M4 32L32 48L60 32"/>
+    <path d="M4 40L32 56L60 40"/>
+  </symbol>
+  <symbol id="ico-lock" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="14" y="28" width="36" height="28" rx="4"/>
+    <path d="M22 28V18C22 12 26 6 32 6C38 6 42 12 42 18V28"/>
+    <circle cx="32" cy="42" r="4"/>
+    <line x1="32" y1="46" x2="32" y2="50"/>
+  </symbol>
+  <symbol id="ico-energy" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="38,4 18,36 30,36 26,60 46,28 34,28"/>
+  </symbol>
+  <symbol id="ico-star" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+    <path d="M32 6l8 16 18 3-13 12 3 18-16-8-16 8 3-18L6 25l18-3z"/>
+  </symbol>
+</svg>
+
+<!-- ========================= COVER ========================= -->
+<div class="cover">
+  <div class="scale-float"></div>
+  <div class="scale-float"></div>
+  <div class="scale-float"></div>
+  <div class="scale-float"></div>
+  <div class="scale-float"></div>
+  <div class="scale-float"></div>
+  <div class="scale-float"></div>
+  <div class="scale-float"></div>
+  <div class="scale-float"></div>
+  <div class="scale-float"></div>
+  <div class="ground-scale"></div>
+  <div class="ground-scale"></div>
+  <div class="ground-scale"></div>
+  <div class="ground-scale"></div>
+  <div class="ground-scale"></div>
+  <div class="ground-scale"></div>
+  <div class="ground-scale"></div>
+  <div class="ground-scale"></div>
+  <div class="ground-scale"></div>
+  <div class="ground-scale"></div>
+  <div class="ghost-noise"></div>
+  <div class="cover-content">
+    <div class="cover-badge">Mindset</div>
+    <div class="cover-emoji"><svg><use href="#ico-pangolin"/></svg></div>
+    <h1>The Pangolin's <span>Armor</span></h1>
+    <p class="cover-sub">The most hunted animal on earth has no claws, no speed, no venom &mdash; just the decision to <em>curl up and become untouchable</em></p>
+    <p class="cover-author">KingdomBuilders AI</p>
+  </div>
+</div>
+
+<!-- Scripture Ribbon -->
+<div class="ribbon">
+  <p>"He is my refuge and my fortress, my God, in whom I trust." &mdash; Psalm 91:2</p>
+</div>
+
+
+<!-- ========================= CHAPTER 1: THE BALL ========================= -->
+<div class="ch-head">
+  <div class="ch-num">Chapter One</div>
+  <h2>The Ball</h2>
+  <div class="ch-sub">Why selective invulnerability is superior to constant defense</div>
+</div>
+
+<div class="section"><div class="page"><div class="prose">
+
+<div class="scene">
+  <div class="scene-label"><svg style="width:14px;height:14px;vertical-align:middle;margin-right:4px"><use href="#ico-pangolin"/></svg> The Clearing at Dusk</div>
+  <p>The lion found Scale at the base of a marula tree, digging for ants. Nine pounds of pangolin. Four hundred and fifty pounds of lion. The arithmetic was simple. The outcome should have been inevitable.</p>
+  <p>Scale did not run. She did not hiss. She did not raise her claws or puff up her body or attempt any of the desperate threat displays that smaller animals use to bluff larger ones. She simply curled into a ball. Her overlapping keratin scales locked into place like medieval plate armor, covering her face, her belly, her legs. She became a sphere of interlocking shields, roughly the size and weight of a bowling ball, and approximately as penetrable.</p>
+  <p>The lion bit down. Its canines, capable of crushing a zebra's windpipe, slid off the scales. It bit again. Same result. It picked Scale up in its jaws and dropped her. It batted her with a paw that could disembowel a wildebeest. The scales held. It rolled her across the clearing with its nose. It sat on her. It mouthed her for <em>forty-five minutes</em>, its frustration building with every failed attempt.</p>
+  <p>Then the lion got bored. It yawned, stretched, and walked away to find something it could actually eat. Scale waited three full minutes after the footsteps faded, then uncurled, returned to the marula tree, and resumed digging for ants.</p>
+  <p>She had expended almost zero energy. Her heart rate had barely elevated. She was uninjured.</p>
+</div>
+
+<p>Three hundred meters east, a young pangolin named <em>Bristle</em> was fighting a jackal. He had encountered the jackal ten minutes earlier on the game trail and, instead of curling up, had decided to fight. He swiped with his claws. He whipped his heavy tail. He hissed and snapped. The jackal, surprised at first, quickly learned that Bristle's claws were designed for digging, not combat. His tail could bruise but not break bone. His hiss had no venom behind it.</p>
+
+<p>The jackal darted in and bit the exposed skin between Bristle's scales at the base of his tail. Bristle yelped and finally curled up, but too late. The damage was done. Half his tail was bleeding. He would spend the next three weeks recovering, unable to dig efficiently, burning calories he could not afford to replace, vulnerable to infection in a body with no immune system designed for open wounds.</p>
+
+<p>Bristle had fought. Scale had not. Bristle was injured. Scale was fine. And this, in essence, is the entire argument for <em>selective invulnerability</em>: the discipline to choose which attacks to absorb rather than fight.</p>
+
+<div class="character-card">
+  <div class="avatar"><svg><use href="#ico-pangolin"/></svg></div>
+  <div class="info">
+    <h3>Bristle</h3>
+    <div class="role">The Young Fighter</div>
+    <p>Young, reactive, proud. Bristle meets every threat with resistance. He swats at hyenas, hisses at pythons, runs from eagles. He exhausts himself fighting battles his body was never designed to win. His scars are not badges of courage. They are evidence of a flawed strategy.</p>
+  </div>
+</div>
+
+<div class="character-card">
+  <div class="avatar"><svg><use href="#ico-curl"/></svg></div>
+  <div class="info">
+    <h3>Scale</h3>
+    <div class="role">The Old Armor</div>
+    <p>Old, calm, unhurried. Scale curls into a ball when threatened and waits. Lions give up. Hyenas lose interest. Eagles cannot find a purchase. She expends zero energy on defense and saves everything for what matters: foraging, raising her young, and surviving another decade.</p>
+  </div>
+</div>
+
+<div class="data-row">
+  <div class="data-box">
+    <div class="number">80%</div>
+    <p>Of threats a pangolin encounters resolve themselves if the pangolin simply curls up and waits. No fighting required.</p>
+  </div>
+  <div class="data-box">
+    <div class="number">0</div>
+    <p>Calories expended by a curled pangolin during a lion attack. The defense is structurally passive and metabolically free.</p>
+  </div>
+</div>
+
+<p>Most people live like Bristle. Every criticism gets a rebuttal. Every slight gets a response. Every competitive threat gets a counter-strategy. Every negative review gets a reply. Every argument gets engaged. They fight jackals all day long, burning energy on threats that would have wandered off on their own, accumulating wounds that compound into chronic damage.</p>
+
+<p>The few people who live like Scale are almost impossible to damage. Warren Buffett has been called a fool, a dinosaur, and a relic by financial media for decades. His response is always the same: nothing. He curls up. He lets the criticism bounce off the scales of his track record and his capital reserves. He does not tweet rebuttals. He does not call press conferences. He does not engage with short-sellers or day traders or anyone operating on a timeline shorter than ten years. He simply waits for the lion to get bored. It always does.</p>
+
+<div class="viz-box">
+  <div class="viz-label"><svg style="width:14px;height:14px;vertical-align:middle;margin-right:4px"><use href="#ico-shield"/></svg> The Attack Classification Matrix</div>
+  <h3>Sorting Threats by Required Response</h3>
+  <p><strong>Category A: Curl Up (80% of attacks).</strong> Criticism from strangers. Social media outrage. Competitor trash talk. Market fluctuations. Unsolicited opinions. These are jackals. They cannot penetrate your scales. The correct response is zero response. Curl up. Wait. They will move on.</p>
+  <p><strong>Category B: Reposition (15% of attacks).</strong> A credible competitor entering your market. A regulatory change. A key employee leaving. These are hyenas: they cannot break through your armor directly, but they can roll you somewhere dangerous. The correct response is not to fight but to reposition: move to safer ground while remaining curled.</p>
+  <p><strong>Category C: Act (5% of attacks).</strong> An existential legal threat. A genuine betrayal from inside your circle. A structural market collapse. These are the rare attacks that can actually harm your belly. Only for these do you uncurl, stand up, and take direct action. The key word is <em>rare</em>. If you are fighting more than five percent of the time, you are misclassifying threats.</p>
+</div>
+
+<div class="ba-grid">
+  <div class="ba-before">
+    <h4><svg style="width:12px;height:12px;vertical-align:middle;margin-right:4px"><use href="#ico-pangolin"/></svg> The Bristle Approach</h4>
+    <p>Fight every threat that appears</p>
+    <p>Respond to every criticism</p>
+    <p>Treat all attacks as equal emergencies</p>
+    <p>Measure courage by engagement</p>
+    <p>Constantly wounded, constantly healing</p>
+  </div>
+  <div class="ba-after">
+    <h4><svg style="width:12px;height:12px;vertical-align:middle;margin-right:4px"><use href="#ico-curl"/></svg> The Scale Approach</h4>
+    <p>Classify threats before responding</p>
+    <p>Let 80% of attacks resolve themselves</p>
+    <p>Reserve energy for the 5% that matter</p>
+    <p>Measure wisdom by non-engagement</p>
+    <p>Perpetually intact, perpetually ready</p>
+  </div>
+</div>
+
+<div class="grand-quote">
+  <blockquote>"The strongest position in any conflict is the one that requires the least energy to maintain. The pangolin understood this before humans had language to describe it."</blockquote>
+  <div class="attribution">The First Law of Armor</div>
+</div>
+
+<div class="think">
+  <div class="think-label"><svg><use href="#ico-eye"/></svg> Pause and Reflect</div>
+  <h4>What are you fighting that you should be absorbing?</h4>
+  <p class="q-start"><strong>1.</strong> List three conflicts or criticisms you engaged with in the past month. For each one: did engaging actually change the outcome, or did it just cost you energy?</p>
+  <span class="fill-line"></span>
+  <p class="q-start"><strong>2.</strong> If you stopped responding to 80% of the negative inputs in your life, what would you have energy left over to do?</p>
+  <span class="fill-line"></span>
+  <p class="q-start"><strong>3.</strong> Who in your life models the Scale approach? What does their calm non-engagement look like in practice?</p>
+  <span class="fill-line"></span>
+</div>
+
+</div></div></div>
+
+<div class="ribbon">
+  <p>"A fool gives full vent to his spirit, but a wise man quietly holds it back." &mdash; Proverbs 29:11</p>
+</div>
+
+
+<!-- ========================= CHAPTER 2: THE SCALE ARCHITECTURE ========================= -->
+<div class="ch-head">
+  <div class="ch-num">Chapter Two</div>
+  <h2>The Scale Architecture</h2>
+  <div class="ch-sub">How overlapping layers create impenetrable defense</div>
+</div>
+
+<div class="section"><div class="page"><div class="prose">
+
+<div class="scene">
+  <div class="scene-label"><svg style="width:14px;height:14px;vertical-align:middle;margin-right:4px"><use href="#ico-layers"/></svg> The Lesson at the Termite Mound</div>
+  <p>Bristle examined Scale's armor one morning while she slept in the hollow log they shared during the dry season. He had always assumed her scales were like his: hard, yes, but essentially just skin that happened to be tough. He was wrong.</p>
+  <p>Each scale was a separate plate of keratin, the same protein that makes up human fingernails, hardened and thickened through years of growth. But the genius was not the material. It was the <em>architecture</em>. Each scale overlapped the one behind it, like shingles on a roof, like tiles on a medieval fortress. A bite that defeated one scale hit the edge of the next. A claw that slipped between two scales met a third underneath. Three layers deep. Interlocking. No single point of failure anywhere.</p>
+  <p>"How do you keep them so strong?" Bristle asked.</p>
+  <p>Scale opened one eye. <em>"I don't fight,"</em> she said. "Every time you fight, you chip your scales. Every wound is a gap in the architecture. I have not been chipped in eleven years because nothing has ever reached the material underneath."</p>
+  <p>Bristle looked at his own scales. Several were cracked from the jackal fight. One was missing entirely from an encounter with a honey badger last season. Each gap was a vulnerability that would take months to regrow, and even then, the replacement scale would never be as strong as the original.</p>
+  <p>"You think your scars prove you are brave," Scale said, closing her eye again. <strong>"They prove you have holes in your armor."</strong></p>
+</div>
+
+<p>A pangolin's scales comprise roughly twenty percent of its total body weight. There are approximately one thousand individual scales on an adult, each one growing continuously from the skin beneath, hardening as it matures, overlapping the adjacent scales with engineering precision. A lion's bite force of 650 PSI cannot penetrate this architecture. Neither can a hyena's 1,100 PSI jaw. The structure is not strong because any individual scale is indestructible. It is strong because the <em>system</em> has no single point of failure.</p>
+
+<p>This is the principle of <em>layered defense</em>, and it applies to every domain of human life. No single protection is ever enough. A contract can be breached. An insurance policy can be denied. A savings account can be depleted. A reputation can be attacked. Any single defense, no matter how strong, has a failure mode. But when defenses overlap, each covering the gaps of the one before it, the system becomes far stronger than any individual component.</p>
+
+<div class="dark-panel">
+  <div class="dp-label"><svg style="width:14px;height:14px;vertical-align:middle;margin-right:4px"><use href="#ico-armor"/></svg> The Architecture of Real Protection</div>
+  <h3>Why Single-Layer Defenses Always Fail</h3>
+  <p>Consider the entrepreneur who builds a successful business but has no legal structure protecting her personal assets. One lawsuit pierces that single scale and reaches the soft belly underneath. Now consider the entrepreneur who has an LLC, an umbrella insurance policy, separate business and personal accounts, a prenuptial agreement, and an irrevocable trust. Five overlapping scales. A lawsuit must defeat all five to reach her personal wealth. The probability of total penetration drops exponentially with each layer.</p>
+  <p>This is not paranoia. It is <em>architecture</em>. The pangolin did not evolve one thick plate. It evolved a thousand thin ones, overlapping. The genius is in the system, not the scale.</p>
+</div>
+
+<div class="viz-box">
+  <div class="viz-label"><svg style="width:14px;height:14px;vertical-align:middle;margin-right:4px"><use href="#ico-layers"/></svg> Framework</div>
+  <h3>The Three-Layer Shield</h3>
+  <p><strong>Layer One: Legal Armor.</strong> Business entity structure (LLC, S-Corp, trust). Contracts with clear terms and liability limits. Intellectual property protection (trademarks, copyrights, patents where applicable). Non-disclosure agreements for sensitive relationships. This is your outermost scale: the first thing any attacker encounters.</p>
+  <p><strong>Layer Two: Financial Armor.</strong> Six to twelve months of operating expenses in reserve. Separate business and personal accounts. Umbrella insurance. Diversified revenue streams so no single client or product can destroy you. An emergency fund that is genuinely untouchable. This layer absorbs the impacts that get past the legal layer.</p>
+  <p><strong>Layer Three: Emotional Armor.</strong> A clear personal identity that is not dependent on external validation. A small, trusted inner circle for honest counsel. Boundaries around your time, attention, and energy. The ability to hear criticism without internalizing it. This is the innermost layer, and for many people, it is the weakest because they have never deliberately built it.</p>
+  <p>Each layer overlaps the others. A legal setback is less devastating when you have financial reserves. A financial setback is less devastating when you have emotional stability. An emotional attack is less devastating when you have legal and financial security beneath you. <em>The system is the armor, not any individual scale.</em></p>
+</div>
+
+<div class="data-row">
+  <div class="data-box">
+    <div class="number">1,000</div>
+    <p>Individual overlapping scales on an adult pangolin, each covering the gap behind the one in front of it</p>
+  </div>
+  <div class="data-box">
+    <div class="number">3x</div>
+    <p>The depth of overlap at any given point on the pangolin's body. No bite ever encounters fewer than three layers.</p>
+  </div>
+</div>
+
+<p>Jeff Bezos built Amazon with layered defense from the beginning. AWS provided financial armor when retail margins were thin. Amazon Prime created customer lock-in that provided competitive armor. The logistics network created operational armor that made the company nearly impossible to compete with on delivery speed. No single layer was unbreakable. But the combination was. Every competitor who tried to attack Amazon discovered that penetrating one layer simply revealed another one underneath.</p>
+
+<p>Your personal armor works the same way. The question is not "Am I protected?" but "How many layers deep is my protection, and are there gaps between them?"</p>
+
+<div class="signal-grid">
+  <div class="signal-card card-rust">
+    <div class="card-emoji"><svg><use href="#ico-lock"/></svg></div>
+    <div class="card-label">Scale One</div>
+    <h3>Legal Layer</h3>
+    <p>Entity structure, contracts, IP protection, NDAs. This is the hard outer shell that creates formal barriers to attack. Most people skip this layer because it feels bureaucratic. That is like a pangolin deciding scales are unnecessary because they are heavy.</p>
+  </div>
+  <div class="signal-card card-ember">
+    <div class="card-emoji"><svg><use href="#ico-energy"/></svg></div>
+    <div class="card-label">Scale Two</div>
+    <h3>Financial Layer</h3>
+    <p>Reserves, diversification, insurance, separate accounts. Money is the scale that absorbs impact. When you have twelve months of expenses saved, most financial attacks simply bounce off. When you are living paycheck to paycheck, every hit reaches the belly.</p>
+  </div>
+  <div class="signal-card card-forest">
+    <div class="card-emoji"><svg><use href="#ico-curl"/></svg></div>
+    <div class="card-label">Scale Three</div>
+    <h3>Emotional Layer</h3>
+    <p>Identity independence, trusted counsel, time boundaries. This is the scale most people never build. They have excellent legal and financial protection but crumble when someone criticizes them online. The innermost armor must be as deliberate as the outermost.</p>
+  </div>
+  <div class="signal-card card-dark">
+    <div class="card-emoji"><svg><use href="#ico-armor"/></svg></div>
+    <div class="card-label">The System</div>
+    <h3>Overlap Is Everything</h3>
+    <p>No single layer can protect you from every threat. But three layers, each covering the gaps of the others, create a defense that is qualitatively different from any individual protection. The system is the armor. Build all three.</p>
+  </div>
+</div>
+
+<div class="think">
+  <div class="think-label"><svg><use href="#ico-eye"/></svg> Pause and Reflect</div>
+  <h4>How many layers deep is your armor?</h4>
+  <p class="q-start"><strong>1.</strong> Rate your legal, financial, and emotional armor on a scale of 1-10. Where is the thinnest layer? That is where the next attack will penetrate.</p>
+  <span class="fill-line"></span>
+  <p class="q-start"><strong>2.</strong> Identify one gap between your layers. Where does a failure in Layer One expose Layer Two directly? What would it cost to add overlap?</p>
+  <span class="fill-line"></span>
+  <p class="q-start"><strong>3.</strong> Scale never fights, so her scales never chip. What fight are you currently engaged in that is slowly degrading your armor?</p>
+  <span class="fill-line"></span>
+</div>
+
+</div></div></div>
+
+<div class="ribbon">
+  <p>"The name of the Lord is a fortified tower; the righteous run to it and are safe." &mdash; Proverbs 18:10</p>
+</div>
+
+
+<!-- ========================= CHAPTER 3: THE ENERGY EQUATION ========================= -->
+<div class="ch-head">
+  <div class="ch-num">Chapter Three</div>
+  <h2>The Energy Equation</h2>
+  <div class="ch-sub">The mathematics of defensive energy allocation</div>
+</div>
+
+<div class="section"><div class="page"><div class="prose">
+
+<div class="scene">
+  <div class="scene-label"><svg style="width:14px;height:14px;vertical-align:middle;margin-right:4px"><use href="#ico-energy"/></svg> The Long Night</div>
+  <p>Bristle was exhausted. It was three hours past sunset and he had not eaten. He had spent the first hour of darkness confronting a porcupine that had wandered too close to his foraging ground. The porcupine had not been a threat. It was looking for tubers, not pangolins. But Bristle had hissed, swiped, and postured until the porcupine ambled away, thoroughly indifferent to the confrontation that had cost Bristle two hundred calories of effort.</p>
+  <p>Then a civet cat had appeared near the stream. Bristle charged it. The civet fled up a tree, where it had been heading anyway. Another hundred and fifty calories spent on a threat that was not a threat.</p>
+  <p>Then an owl's shadow passed overhead. Bristle flattened himself and sprinted for the nearest bush, heart hammering, adrenaline flooding his small body. The owl was hunting mice, not pangolins. But the stress response cost another hundred calories and left Bristle's muscles trembling for twenty minutes.</p>
+  <p>By midnight, Bristle had expended roughly five hundred calories on defense. He had consumed zero calories in food. He was running a deficit that his body would pay for with muscle mass, immune function, and eventually, his life.</p>
+  <p>A quarter mile away, Scale had spent the same three hours eating. She had encountered two threats: a hyena and a jackal. For each, she had curled into a ball, waited, and uncurled when they left. Total defensive energy expenditure: <em>approximately twelve calories</em>. Total calories consumed from termites and ants: <em>approximately two thousand</em>. Net surplus: massive.</p>
+</div>
+
+<p>This is the energy equation that governs all survival, in the savanna and in human life. Every organism has a finite energy budget. Every calorie spent on defense is a calorie not spent on growth, reproduction, foraging, or building. The organism that minimizes defensive expenditure while maintaining adequate protection will always outcompete the organism that fights everything.</p>
+
+<p>The mathematics are brutal. Bristle's strategy of fighting every threat consumed roughly thirty percent of his daily caloric intake. Scale's strategy of curling up consumed less than one percent. Over a year, that difference compounds into thousands of calories, which translates directly into body mass, reproductive success, immune function, and lifespan. <em>Scale does not live longer because she is lucky. She lives longer because she is efficient.</em></p>
+
+<div class="data-row">
+  <div class="data-box">
+    <div class="number">80/20</div>
+    <p>Eighty percent of the threats you perceive are not worth responding to. They resolve themselves. The 20% that remain require only 5% of your energy.</p>
+  </div>
+  <div class="data-box">
+    <div class="number">30%</div>
+    <p>Of most people's productive energy is consumed by defensive reactions: arguments, worry, rebuttal, reputation management, and performative strength</p>
+  </div>
+</div>
+
+<p>Consider the executive who spends two hours per day managing internal politics: responding to passive-aggressive emails, attending meetings called to address conflicts that would dissolve on their own, drafting rebuttals to criticisms that will be forgotten by Friday. That is twenty-five percent of her workday consumed by defensive activity. Now consider the executive who ignores the emails, declines the meetings, and does not respond to the criticisms. She has reclaimed ten hours per week. Over a year, that is five hundred and twenty hours, equivalent to thirteen additional work weeks. She is not more talented than the first executive. She is more efficient. She has better armor.</p>
+
+<p>Charlie Munger, Buffett's partner at Berkshire Hathaway, was famous for his refusal to engage with critics. When asked about negative press, he would say something to the effect of: "I have nothing to add." Three words. Zero calories. The criticism would cycle through the news for a day and then disappear, having encountered a surface it could not penetrate. Munger understood the energy equation: every response amplifies the attack and costs you resources. Non-response is not weakness. It is the most energy-efficient defense in existence.</p>
+
+<div class="viz-box">
+  <div class="viz-label"><svg style="width:14px;height:14px;vertical-align:middle;margin-right:4px"><use href="#ico-filter"/></svg> Framework</div>
+  <h3>The Threat Filter</h3>
+  <p><strong>Step 1: Name the threat.</strong> What exactly is happening? Not what you fear might happen, not what it reminds you of, not the worst case scenario. What is actually occurring right now?</p>
+  <p><strong>Step 2: Calculate the real damage.</strong> If you do absolutely nothing, what is the actual cost? Not the emotional cost. The material cost. Money, relationships, opportunities, health. Be specific. Most threats, when honestly assessed, have a material cost of zero.</p>
+  <p><strong>Step 3: Calculate the cost of response.</strong> What will it cost you in time, energy, money, and attention to fight this? Include opportunity cost: what will you not do while you are engaged in this defense?</p>
+  <p><strong>Step 4: Compare.</strong> If the cost of response exceeds the cost of the threat itself, curl up. Let the attack bounce off your scales. Save the energy for foraging. This single comparison eliminates eighty percent of the fights you are currently engaged in.</p>
+</div>
+
+<div class="dark-panel">
+  <div class="dp-label"><svg style="width:14px;height:14px;vertical-align:middle;margin-right:4px"><use href="#ico-energy"/></svg> The Hidden Tax of Reactivity</div>
+  <h3>What Fighting Everything Actually Costs</h3>
+  <p>The cost of constant defense is not just the energy spent in the moment. It is the <em>compounding drain</em> on every other system. Chronic stress from constant reactivity suppresses immune function, disrupts sleep, impairs decision making, and corrodes relationships. Bristle does not just lose the calories he spends fighting. He loses the quality of every calorie he manages to consume, because his body is in permanent emergency mode.</p>
+  <p>The same is true for humans operating in constant defense. The executive who fights every political battle does not just lose the hours. She loses the quality of the hours she has left, because her nervous system is running in a state of perpetual activation. Her creativity drops. Her patience erodes. Her strategic thinking narrows. She is <strong>spending her armor to fight jackals and wondering why she has no armor left for lions</strong>.</p>
+</div>
+
+<div class="grand-quote">
+  <blockquote>"The pangolin that fights everything eats nothing. The pangolin that fights nothing eats everything. The energy you save on defense is the energy you spend on life."</blockquote>
+  <div class="attribution">The Energy Equation</div>
+</div>
+
+<div class="think">
+  <div class="think-label"><svg><use href="#ico-eye"/></svg> Pause and Reflect</div>
+  <h4>Run your own energy audit</h4>
+  <p class="q-start"><strong>1.</strong> Estimate how many hours per week you spend on defensive activity: arguments, rebuttals, worry about attacks, managing perceptions. Be honest. The number is probably higher than you think.</p>
+  <span class="fill-line"></span>
+  <p class="q-start"><strong>2.</strong> Pick one recurring "jackal" in your life, a threat you keep engaging with that never actually damages you. What would happen if you stopped responding entirely?</p>
+  <span class="fill-line"></span>
+  <p class="q-start"><strong>3.</strong> If you reclaimed all your defensive energy and redirected it into one productive pursuit, what would you build?</p>
+  <span class="fill-line"></span>
+</div>
+
+</div></div></div>
+
+<div class="ribbon">
+  <p>"Be still, and know that I am God." &mdash; Psalm 46:10</p>
+</div>
+
+
+<!-- ========================= CHAPTER 4: THE SOFT BELLY ========================= -->
+<div class="ch-head">
+  <div class="ch-num">Chapter Four</div>
+  <h2>The Soft Belly</h2>
+  <div class="ch-sub">Knowing what actually needs protecting versus what you defend out of ego</div>
+</div>
+
+<div class="section"><div class="page"><div class="prose">
+
+<div class="scene">
+  <div class="scene-label"><svg style="width:14px;height:14px;vertical-align:middle;margin-right:4px"><use href="#ico-target"/></svg> The Lesson of the Belly</div>
+  <p>"What are you protecting when you curl up?" Bristle asked one morning, watching Scale demonstrate the tuck for her two pups. The pups practiced rolling into balls on the cool earth, their soft pink scales not yet fully hardened.</p>
+  <p>"My face," Scale said. "My belly. My legs."</p>
+  <p>"Not your back? Not your tail?"</p>
+  <p>Scale uncurled and looked at him. "My back and tail are already armored. They do not need additional protection. When I curl, I am covering the parts that are genuinely vulnerable: the thin skin of my belly, my eyes, the joints of my legs. Everything else can take the hit."</p>
+  <p>Bristle considered this. When he fought, he tried to protect everything. He guarded his tail, his back, his sides, even the thick scales on his head that no predator could penetrate anyway. He spread his defense across his entire body, which meant that no part was adequately defended.</p>
+  <p><em>"You are guarding armor with more armor,"</em> Scale said, watching his expression change. "And leaving your belly exposed because you have no defense left for it."</p>
+</div>
+
+<p>The pangolin's curl is not random. It is an exercise in <em>triage</em>. When the animal rolls into a ball, it positions its body so that the armored back and tail wrap around the unarmored belly and face. The scales that are already impenetrable become the outer shell. The vulnerable parts are hidden in the center. This is strategic allocation of limited defensive resources to the areas of genuine vulnerability.</p>
+
+<p>Most people do the opposite. They defend what is already strong and leave what is genuinely fragile exposed. They spend enormous energy protecting their public reputation, which is largely resilient and self-repairing, while neglecting their mental health, which is genuinely vulnerable. They build elaborate defenses around their professional position while ignoring the personal relationships that actually sustain them. They guard their pride, which is not a real asset, while leaving their savings account, which is, completely unprotected.</p>
+
+<div class="viz-box">
+  <div class="viz-label"><svg style="width:14px;height:14px;vertical-align:middle;margin-right:4px"><use href="#ico-target"/></svg> Framework</div>
+  <h3>The Vulnerability Map</h3>
+  <p><strong>True Vulnerabilities (protect these):</strong></p>
+  <p>Your health. Without it, nothing else functions. This is the belly. It must be covered first, always.</p>
+  <p>Your closest relationships. Spouse, children, inner circle. These are the joints, the flexible connections that allow you to move. If they break, you cannot function regardless of how strong your armor is.</p>
+  <p>Your financial foundation. Not your wealth or your investment portfolio, but the baseline: the ability to pay for food, shelter, and medical care for your family. This is the face. Protect it absolutely.</p>
+  <p>Your mental clarity. Your ability to think clearly, make decisions, and maintain perspective under pressure. This is perhaps the most neglected vulnerability. People who are financially and physically secure still collapse because they never armored their minds.</p>
+  <p><strong>Perceived Vulnerabilities (stop defending these):</strong></p>
+  <p>Your public reputation. It recovers on its own. The energy you spend managing it is wasted. This is your armored back. It does not need additional protection.</p>
+  <p>Your ego. Being wrong, being criticized, being underestimated. These feel like attacks on your belly but they are attacks on your scales. They bounce off if you let them.</p>
+  <p>Your position in a hierarchy. Titles, status, pecking order. These are the tail. They are already armored by your actual competence and results. Defending them with political energy is defending armor with more armor.</p>
+</div>
+
+<p>Brene Brown's research on vulnerability demonstrates this paradox precisely. The people who appear most invulnerable are not the ones who defend everything. They are the ones who have identified their true vulnerabilities and protect those with fierce intentionality while allowing everything else to be exposed. A leader who admits she does not know the answer but protects her team's psychological safety is practicing the pangolin's curl. A leader who pretends to know everything but lets her team burn out is Bristle: defending her ego while her belly is exposed.</p>
+
+<div class="ba-grid">
+  <div class="ba-before">
+    <h4><svg style="width:12px;height:12px;vertical-align:middle;margin-right:4px"><use href="#ico-pangolin"/></svg> Bristle's Defense Map</h4>
+    <p>Defends reputation aggressively</p>
+    <p>Guards ego and public image at all costs</p>
+    <p>Neglects health and sleep for "hustle"</p>
+    <p>Ignores close relationships during crises</p>
+    <p>Protects what is already strong, neglects what is weak</p>
+  </div>
+  <div class="ba-after">
+    <h4><svg style="width:12px;height:12px;vertical-align:middle;margin-right:4px"><use href="#ico-curl"/></svg> Scale's Defense Map</h4>
+    <p>Lets reputation handle itself</p>
+    <p>Allows ego to absorb hits without reaction</p>
+    <p>Protects health and sleep as non-negotiable</p>
+    <p>Invests in closest relationships during every season</p>
+    <p>Armor wraps around genuine vulnerabilities only</p>
+  </div>
+</div>
+
+<p>Buffett's "circle of competence" is a vulnerability map in disguise. He does not defend his ability to pick technology stocks. He openly admits he does not understand them. He does not defend his knowledge of cryptocurrency, social media trends, or artificial intelligence. He lets those "attacks" on his relevance bounce off without response. Instead, he fiercely protects the narrow domain where he is genuinely capable: value investing in businesses he understands, with management he trusts, at prices that provide a margin of safety. His belly is small, clearly identified, and completely covered. Everything else is exposed to the world because the world's attacks cannot penetrate what is already armored by competence and track record.</p>
+
+<div class="grand-quote">
+  <blockquote>"You are guarding armor with more armor and leaving your belly exposed because you have no defense left for it. Know what is truly soft. Protect only that."</blockquote>
+  <div class="attribution">Scale's Law</div>
+</div>
+
+<div class="think">
+  <div class="think-label"><svg><use href="#ico-eye"/></svg> Pause and Reflect</div>
+  <h4>Draw your own vulnerability map</h4>
+  <p class="q-start"><strong>1.</strong> List three things you spend significant energy defending. For each: is this a genuine vulnerability (belly) or an already-armored surface (back)?</p>
+  <span class="fill-line"></span>
+  <p class="q-start"><strong>2.</strong> What is genuinely vulnerable in your life right now that you are not protecting because you are too busy defending your ego or reputation?</p>
+  <span class="fill-line"></span>
+  <p class="q-start"><strong>3.</strong> What would change if you openly admitted one weakness (exposing your armored back) and redirected that energy to protecting one genuine vulnerability (covering your belly)?</p>
+  <span class="fill-line"></span>
+</div>
+
+</div></div></div>
+
+<div class="ribbon">
+  <p>"Above all else, guard your heart, for everything you do flows from it." &mdash; Proverbs 4:23</p>
+</div>
+
+
+<!-- ========================= CHAPTER 5: THE NIGHT WALK ========================= -->
+<div class="ch-head">
+  <div class="ch-num">Chapter Five</div>
+  <h2>The Night Walk</h2>
+  <div class="ch-sub">Strategic absence as the ultimate defense</div>
+</div>
+
+<div class="section"><div class="page"><div class="prose">
+
+<div class="scene">
+  <div class="scene-label"><svg style="width:14px;height:14px;vertical-align:middle;margin-right:4px"><use href="#ico-moon"/></svg> The Moonlit Path</div>
+  <p>Bristle could not understand why Scale insisted on sleeping through the hottest part of the day and foraging only after dark. He had tried the daytime once. The ants were easier to find. The termite mounds were warm and active. The visibility was excellent. It seemed like the logical choice.</p>
+  <p>He lasted forty minutes before an eagle spotted him from two hundred meters up. He spent the next hour curled in a ball beneath an acacia bush while the eagle circled, waiting. When it finally left, a pack of wild dogs appeared on the game trail. He curled again. Then a leopard. He curled again. By the time the threats subsided, the afternoon was gone and he had eaten nothing.</p>
+  <p>"Why do you walk at night?" he asked Scale that evening, already knowing the answer but needing to hear it.</p>
+  <p><em>"Because at night, the lions sleep. The eagles roost. The wild dogs rest. The leopards hunt, but they hunt by sight, and in the dark, I am invisible."</em> Scale stretched her legs and began walking toward the termite mound. "I do not avoid predators by fighting them or by outrunning them. I avoid them by <strong>not being present when they are active</strong>."</p>
+  <p>Bristle followed her into the darkness. For the first time in weeks, he ate without interruption.</p>
+</div>
+
+<p>The pangolin is nocturnal. This is not a random evolutionary quirk. It is one of the most sophisticated defensive strategies in the animal kingdom. By restricting its activity to nighttime hours, the pangolin eliminates its exposure to the vast majority of its predators in a single behavioral decision. No fighting required. No armor tested. No energy spent on defense at all. The threats simply never encounter the pangolin because the pangolin has removed itself from the time and space where threats operate.</p>
+
+<p>This is the concept of <em>strategic absence</em>: the deliberate decision to not be present in environments, conversations, situations, and timeframes where threats are concentrated. It is the most energy-efficient defense possible because it costs nothing and prevents everything.</p>
+
+<div class="data-row">
+  <div class="data-box">
+    <div class="number">90%</div>
+    <p>Of a pangolin's predators are diurnal (active during the day). By being nocturnal, the pangolin avoids nine out of ten threats without any effort.</p>
+  </div>
+  <div class="data-box">
+    <div class="number">0</div>
+    <p>Defensive encounters required when you are not present. The best armor is not being where the attack happens.</p>
+  </div>
+</div>
+
+<p>Strategic absence is one of the most underutilized tools in human defense. Most people make themselves maximally available to everyone, at all times, through all channels. They answer every email immediately. They accept every meeting invitation. They maintain active presences on every social media platform. They attend every industry event. They are present, visible, and available twenty-four hours a day. And then they wonder why they are constantly under attack.</p>
+
+<p>The pangolin would find this baffling. You are experiencing constant threats because you have positioned yourself in the center of the threat environment. The solution is not better armor. The solution is to <em>not be there</em>.</p>
+
+<div class="viz-box">
+  <div class="viz-label"><svg style="width:14px;height:14px;vertical-align:middle;margin-right:4px"><use href="#ico-moon"/></svg> Framework</div>
+  <h3>The Exposure Audit</h3>
+  <p><strong>1. Map your exposure windows.</strong> List every channel through which people can reach you: email, phone, text, social media (each platform separately), in-person meetings, conferences, public appearances. For each, note who can access you and when.</p>
+  <p><strong>2. Identify the threat concentration.</strong> Which channels deliver the most attacks, distractions, and energy-draining interactions? Social media comment sections. Open-door office policies. Group chats where every minor conflict becomes a multi-hour discussion. These are your daytime savannas, the environments where predators are concentrated.</p>
+  <p><strong>3. Restrict your presence.</strong> Do not eliminate these channels entirely. Instead, restrict when you are present. Check email twice per day instead of continuously. Limit social media to thirty minutes with notifications off. Make yourself available for meetings only during designated blocks. You are not hiding. You are choosing to walk at night.</p>
+  <p><strong>4. Protect your foraging hours.</strong> The time you reclaim from reduced exposure is your nighttime, the hours when you do your actual work without interruption. Guard these hours as Scale guards her nocturnal foraging. No meetings. No notifications. No availability. This is when you eat.</p>
+</div>
+
+<p>Cal Newport's concept of "deep work" is the human version of the pangolin's night walk. Newport argues that the ability to concentrate without distraction on cognitively demanding tasks is becoming simultaneously more valuable and more rare. More valuable because the economy increasingly rewards deep thinking. More rare because the attention economy is designed to make you constantly available, constantly present, constantly exposed to interruption, which is to say, constantly walking across the daytime savanna.</p>
+
+<p>The most productive knowledge workers Newport studied all practiced some form of strategic absence. They turned off email for hours. They closed their office doors. They declined meetings. They made themselves deliberately unavailable during their most productive hours. They were not antisocial. They were nocturnal. They had learned that the best way to avoid predators is to not be in the field when predators are hunting.</p>
+
+<div class="dark-panel">
+  <div class="dp-label"><svg style="width:14px;height:14px;vertical-align:middle;margin-right:4px"><use href="#ico-moon"/></svg> The Availability Trap</div>
+  <h3>Why Being Reachable Is Not a Virtue</h3>
+  <p>Modern professional culture treats availability as a sign of dedication. The executive who answers emails at midnight is "committed." The manager with an open-door policy is "approachable." The entrepreneur who is on every social platform is "engaged." But availability is not a virtue. It is an <em>exposure profile</em>. Every channel you leave open is a trail that predators can follow to find you.</p>
+  <p>Scale is not lazy for sleeping during the day. She is strategic. She has calculated that the cost of daytime exposure, constant predator encounters, stress, energy expenditure, exceeds the benefit of daytime foraging by an enormous margin. She has chosen to be unavailable when the environment is hostile and available only when the environment is safe.</p>
+  <p>The question is not "How available should I be?" It is <strong>"What am I exposed to because of my availability, and is the trade worth it?"</strong></p>
+</div>
+
+<div class="grand-quote">
+  <blockquote>"I do not avoid predators by fighting them or by outrunning them. I avoid them by not being present when they are active. The best battle is the one that never happens."</blockquote>
+  <div class="attribution">The Night Walker's Principle</div>
+</div>
+
+<div class="think">
+  <div class="think-label"><svg><use href="#ico-eye"/></svg> Pause and Reflect</div>
+  <h4>Audit your exposure</h4>
+  <p class="q-start"><strong>1.</strong> List every channel through which people can reach you right now. How many are open 24/7? What percentage of the input from those channels is valuable versus draining?</p>
+  <span class="fill-line"></span>
+  <p class="q-start"><strong>2.</strong> When is your "nighttime"? The hours when you do your best, most focused, most productive work? How well are those hours currently protected from interruption?</p>
+  <span class="fill-line"></span>
+  <p class="q-start"><strong>3.</strong> What is one channel you could restrict starting this week? What would you gain if you were not present on that channel during peak conflict hours?</p>
+  <span class="fill-line"></span>
+</div>
+
+</div></div></div>
+
+<div class="ribbon">
+  <p>"In quietness and trust is your strength." &mdash; Isaiah 30:15</p>
+</div>
+
+
+<!-- ========================= CHAPTER 6: THE PANGOLIN'S CHOICE ========================= -->
+<div class="ch-head">
+  <div class="ch-num">Chapter Six</div>
+  <h2>The Pangolin's Choice</h2>
+  <div class="ch-sub">The complete framework for a life that is untouchable by design</div>
+</div>
+
+<div class="section"><div class="page"><div class="prose">
+
+<div class="scene">
+  <div class="scene-label"><svg style="width:14px;height:14px;vertical-align:middle;margin-right:4px"><use href="#ico-star"/></svg> The Last Lesson</div>
+  <p>It was the wet season, and the termite mounds were alive. Scale sat with Bristle at the edge of the clearing where, months ago, she had been attacked by the lion. The marula tree was in fruit now, its sweet smell drawing animals from across the savanna. Two hyenas trotted past on the game trail. A honey badger dug at the base of a dead log. Somewhere in the tall grass, a leopard was watching something that was not them.</p>
+  <p>Bristle looked different. His scales had regrown where the jackal had torn them. The missing one at the base of his tail had been replaced with a new plate, not as thick as the original but getting there. More importantly, the constant tension had left his body. He was not scanning the darkness for threats. He was not bracing for impact. He was sitting, breathing, watching the clearing with the patient attention of an animal that knows when to curl and when to walk.</p>
+  <p>"I fought a python last month," Bristle said.</p>
+  <p>Scale looked at him.</p>
+  <p>"I curled up," he said. "It tried to constrict me. It could not close around the ball. It tried for fifteen minutes and gave up." He paused. "I did not lose a single scale."</p>
+  <p>Scale smiled the way pangolins smile, not with the mouth but with the slow relaxation of the scales along the back, a softening that only another pangolin would recognize as warmth.</p>
+  <p>"And when the rains flooded the burrow last week?" she asked.</p>
+  <p>"I moved to higher ground," Bristle said. "That was not a curl-up threat. That was a reposition threat. Category B."</p>
+  <p>Scale nodded. "And when the farmer set the trap near the termite mound?"</p>
+  <p>Bristle's jaw tightened. "Category C. I avoided the area entirely and changed my foraging route. That one required action."</p>
+  <p><em>"You have learned the three responses,"</em> Scale said quietly. "Curl. Reposition. Act. And most importantly, you have learned which one to use when." She stood and stretched. "Now you are armored."</p>
+  <p>"No," Bristle said. <strong>"Now I know what the armor is for."</strong></p>
+</div>
+
+<p>This is the complete framework. Not a single technique but a system of decisions that, practiced consistently, makes you functionally untouchable. Not because you are invincible. The pangolin is not invincible. A determined enough predator with enough time can find the gaps, can flip the ball, can reach the belly. But the pangolin makes the cost of attack so high and the probability of success so low that virtually every predator decides it is not worth the effort. That is selective invulnerability: not the absence of weakness, but the strategic arrangement of strength around weakness so that attack becomes irrational.</p>
+
+<div class="viz-box">
+  <div class="viz-label"><svg style="width:14px;height:14px;vertical-align:middle;margin-right:4px"><use href="#ico-pangolin"/></svg> The Pangolin's Choice</div>
+  <h3>The Complete Selective Invulnerability Framework</h3>
+  <p><strong>1. Classify before you respond.</strong> Every threat gets sorted into A (curl), B (reposition), or C (act) before any energy is spent. The classification itself costs almost nothing. The wrong response costs everything. Train yourself to pause for five seconds before reacting to any perceived threat. In those five seconds, classify. Then proceed.</p>
+  <p><strong>2. Build three layers of armor.</strong> Legal, financial, emotional. Each overlapping the gaps of the others. Review the integrity of all three layers quarterly. One cracked scale is a vulnerability. A system of interlocking scales is invulnerability.</p>
+  <p><strong>3. Minimize defensive energy.</strong> Apply the Threat Filter to every potential conflict. If the cost of response exceeds the cost of the threat, do not respond. Redirect that energy into building, creating, foraging. The pangolin that fights nothing eats everything.</p>
+  <p><strong>4. Protect only what is genuinely vulnerable.</strong> Use the Vulnerability Map. Stop defending your ego, your reputation, your status. Start defending your health, your relationships, your financial foundation, your mental clarity. Armor wraps around the belly, not the back.</p>
+  <p><strong>5. Practice strategic absence.</strong> Run the Exposure Audit. Restrict your availability to the channels and timeframes where the ratio of value to threat is favorable. Walk at night. Sleep through the dangerous hours. Be present only when and where it serves you.</p>
+</div>
+
+<div class="dark-panel">
+  <div class="dp-label"><svg style="width:14px;height:14px;vertical-align:middle;margin-right:4px"><use href="#ico-shield"/></svg> The No Protocol</div>
+  <h3>How to Say No Without Explanation</h3>
+  <p>The pangolin does not explain to the lion why it has curled up. It does not negotiate with the hyena. It does not justify its defensive posture to the eagle. It simply curls. The act is the communication. No explanation is required because none would improve the outcome.</p>
+  <p>The human equivalent is the clean "no." Not "no, because..." Not "no, but maybe later..." Not "no, but here is what I can do instead." Just: <em>No</em>. A complete sentence. A curled ball. An armor that requires zero energy to maintain because it is structural, not performative.</p>
+  <p>Practice this week: say no to one request without providing a reason. Notice how much energy you save by not crafting a justification. Notice that the world does not collapse. Notice that the requester moves on, just like the lion moves on, because the cost of pursuing a curled pangolin exceeds the reward. <strong>Your "no" is your curl. It must be practiced until it is automatic.</strong></p>
+</div>
+
+<div class="signal-grid">
+  <div class="signal-card card-rust">
+    <div class="card-emoji"><svg><use href="#ico-curl"/></svg></div>
+    <div class="card-label">Review One</div>
+    <h3>The Ball</h3>
+    <p>Selective invulnerability beats constant defense. Eighty percent of threats resolve themselves if you simply curl up and wait. Classify every threat before responding: curl, reposition, or act. Fighting everything is how you lose your armor.</p>
+  </div>
+  <div class="signal-card card-ember">
+    <div class="card-emoji"><svg><use href="#ico-layers"/></svg></div>
+    <div class="card-label">Review Two</div>
+    <h3>The Scale Architecture</h3>
+    <p>Build three overlapping layers of defense: legal, financial, emotional. No single layer is enough. The system is the armor. One thousand thin scales overlapping is stronger than one thick plate. Build the system, not the wall.</p>
+  </div>
+  <div class="signal-card card-forest">
+    <div class="card-emoji"><svg><use href="#ico-energy"/></svg></div>
+    <div class="card-label">Review Three</div>
+    <h3>The Energy Equation</h3>
+    <p>Every calorie spent on defense is a calorie not spent on growth. Curling up costs nearly nothing. Fighting costs everything. Apply the Threat Filter and reclaim the thirty percent of your energy currently wasted on jackals.</p>
+  </div>
+  <div class="signal-card card-dark">
+    <div class="card-emoji"><svg><use href="#ico-moon"/></svg></div>
+    <div class="card-label">Review Four</div>
+    <h3>The Night Walk</h3>
+    <p>Strategic absence eliminates ninety percent of threats before they occur. Restrict your exposure. Protect your foraging hours. Walk at night. The best defense is not better armor. It is not being where the attack happens.</p>
+  </div>
+</div>
+
+<div class="prompt-card">
+  <div class="pc-label"><svg style="width:14px;height:14px;vertical-align:middle;margin-right:4px"><use href="#ico-armor"/></svg> The 90-Day Armor Audit</div>
+  <h3>Build Your Untouchable Life</h3>
+  <p>Use this framework every 90 days to assess and strengthen your selective invulnerability.</p>
+  <code>1. My Attack Classification (list current threats by category):
+   Category A (curl/ignore): _______________
+   Category B (reposition): _______________
+   Category C (act): _______________
+
+2. My Three-Layer Shield status (rate each 1-10):
+   Legal armor: _______________
+   Financial armor: _______________
+   Emotional armor: _______________
+
+3. My Vulnerability Map:
+   True vulnerabilities I am protecting: _______________
+   Perceived vulnerabilities I will stop defending: _______________
+
+4. My Exposure Audit:
+   Channels I will restrict: _______________
+   Foraging hours I will protect: _______________
+
+5. My No Protocol (one thing I will say no to this quarter):
+   _______________</code>
+</div>
+
+<div class="grand-quote">
+  <blockquote>"The most hunted animal on earth is still here. Not because it fights. Not because it runs. Because it made one decision and perfected it: become untouchable, and let the world exhaust itself against your scales."</blockquote>
+  <div class="attribution">The Pangolin's Choice</div>
+</div>
+
+<div class="think">
+  <div class="think-label"><svg><use href="#ico-eye"/></svg> Pause and Reflect</div>
+  <h4>The final question</h4>
+  <p class="q-start"><strong>1.</strong> If you practiced the Pangolin's Choice for ninety days, classifying every threat, building three layers of armor, filtering your energy, protecting only what is genuinely vulnerable, and restricting your exposure, what would be different about your life?</p>
+  <span class="fill-line"></span>
+  <p class="q-start"><strong>2.</strong> What is the one fight you are currently engaged in that, if you simply curled up and waited, would resolve itself? What is stopping you from curling?</p>
+  <span class="fill-line"></span>
+  <p class="q-start"><strong>3.</strong> If Scale were watching your life from the base of the marula tree, what would she say you are wasting your armor on? What would she tell you to protect instead?</p>
+  <span class="fill-line"></span>
+</div>
+
+</div></div></div>
+
+
+<!-- ========================= FINALE ========================= -->
+<div class="finale">
+  <div class="finale-emoji"><svg><use href="#ico-pangolin"/></svg></div>
+  <h2>Become <span>Untouchable.</span></h2>
+  <p>The most hunted animal on earth has no claws, no speed, no venom. It has one decision. Curl up. Let the world exhaust itself against your scales.</p>
+  <p>The lion gave up after forty-five minutes. Your critics will give up much sooner.</p>
+  <p>Now build your armor.</p>
+</div>
+
+<footer>
+  <p>"He is my refuge and my fortress, my God, in whom I trust." &mdash; Psalm 91:2</p>
+  <div class="brand">KingdomBuilders AI</div>
+</footer>
+
+</body>
+</html>
