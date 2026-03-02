@@ -153,6 +153,12 @@ def the_compass_rose():
     return send_from_directory("static", "the-compass-rose.html")
 
 
+# --- Lay It Down Series (7 Deadly Sins) ---
+@app.route("/layitdownpride")
+def lay_it_down_pride():
+    return send_from_directory("static", "lay-it-down-pride.html")
+
+
 # --- A Process Model Series ---
 @app.route("/thetidepoolsecho")
 def the_tide_pools_echo():
@@ -220,6 +226,7 @@ def read_playbook(slug):
         "the-bees-dance": "The_Bees_Dance.html",
         "the-otters-play": "The_Otters_Play.html",
         "the-compass-rose": "The_Compass_Rose.html",
+        "lay-it-down-pride": "Lay_It_Down_Pride.html",
     }
     filename = slug_to_file.get(slug)
     if not filename:

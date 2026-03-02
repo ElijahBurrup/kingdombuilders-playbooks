@@ -33,9 +33,11 @@ Interactive animal-parable sales playbooks for Kingdom Builders AI. Each playboo
 
 ## Pre-Commit Checklist
 1. Update this CLAUDE.md if architecture, key files, or deployment details changed
-2. Run Playwright tests: `npx playwright test`
+2. Restart localhost: kill any running Flask process, then `cd "C:/Projects/KingdomBuilders.AI/Playbooks" && python app.py` (runs on port 5000)
+3. Run Playwright tests: `npx playwright test`
 
 ## Architecture Notes
 - Each playbook has a landing page (static/*.html) and a full reader page (assets/*.html)
 - Playbook routes are manually registered in app.py — add a new route + slug mapping when creating a new playbook
 - "SetHut" command generates new playbooks as visual experiences (not reading experiences)
+- **After every local deploy/commit**: restart Flask dev server (`python app.py`) on localhost:5000 to verify changes locally
