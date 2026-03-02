@@ -169,6 +169,12 @@ const PLAYBOOKS = [
     tag: "Faith",
   },
   {
+    title: "Lay It Down: Envy",
+    route: "/layitdownenvy",
+    readerSlug: "lay-it-down-envy",
+    tag: "Faith",
+  },
+  {
     title: "The Tide Pool's Echo",
     route: "/thetidepoolsecho",
     readerSlug: "the-tide-pools-echo",
