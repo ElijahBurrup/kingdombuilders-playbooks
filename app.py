@@ -4,194 +4,191 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from flask import Flask, send_from_directory, redirect, request, render_template
+from flask import Flask, Blueprint, send_from_directory, redirect, request, render_template, url_for
 
 import config
 from database import initialize_db
 
-app = Flask(__name__, static_folder="static", template_folder="templates")
-app.secret_key = config.FLASK_SECRET_KEY
-
-# Initialize database on startup
-initialize_db()
+# --- Blueprint for all routes (supports URL_PREFIX) ---
+bp = Blueprint("main", __name__)
 
 
 # --- Product Catalog ---
-@app.route("/")
+@bp.route("/")
 def catalog():
     return send_from_directory("static", "index.html")
 
 
 # --- Playbook Landing Pages ---
-@app.route("/conductorsplaybook")
+@bp.route("/conductorsplaybook")
 def conductors_playbook():
     return send_from_directory("static", "landing.html")
 
 
-@app.route("/layitdown")
+@bp.route("/layitdown")
 def lay_it_down():
     return send_from_directory("static", "lay-it-down.html")
 
 
-@app.route("/theantnetwork")
+@bp.route("/theantnetwork")
 def the_ant_network():
     return send_from_directory("static", "the-ant-network.html")
 
 
-@app.route("/thecostledger")
+@bp.route("/thecostledger")
 def the_cost_ledger():
     return send_from_directory("static", "the-cost-ledger.html")
 
 
-@app.route("/theghostframe")
+@bp.route("/theghostframe")
 def the_ghost_frame():
     return send_from_directory("static", "the-ghost-frame.html")
 
 
-@app.route("/thegravitywell")
+@bp.route("/thegravitywell")
 def the_gravity_well():
     return send_from_directory("static", "the-gravity-well.html")
 
 
-@app.route("/thenarrator")
+@bp.route("/thenarrator")
 def the_narrator():
     return send_from_directory("static", "the-narrator.html")
 
 
-@app.route("/thesalmonjourney")
+@bp.route("/thesalmonjourney")
 def the_salmon_journey():
     return send_from_directory("static", "the-salmon-journey.html")
 
 
-@app.route("/thesquirreleconomy")
+@bp.route("/thesquirreleconomy")
 def the_squirrel_economy():
     return send_from_directory("static", "the-squirrel-economy.html")
 
 
-@app.route("/thewolfstable")
+@bp.route("/thewolfstable")
 def the_wolfs_table():
     return send_from_directory("static", "the-wolfs-table.html")
 
 
-@app.route("/thecrowsgambit")
+@bp.route("/thecrowsgambit")
 def the_crows_gambit():
     return send_from_directory("static", "the-crows-gambit.html")
 
 
-@app.route("/theeagleslens")
+@bp.route("/theeagleslens")
 def the_eagles_lens():
     return send_from_directory("static", "the-eagles-lens.html")
 
 
-@app.route("/thelighthousekeeperslog")
+@bp.route("/thelighthousekeeperslog")
 def the_lighthouse_keepers_log():
     return send_from_directory("static", "the-lighthouse-keepers-log.html")
 
 
-@app.route("/theoctopusprotocol")
+@bp.route("/theoctopusprotocol")
 def the_octopus_protocol():
     return send_from_directory("static", "the-octopus-protocol.html")
 
 
-@app.route("/thestarlingsmurmuration")
+@bp.route("/thestarlingsmurmuration")
 def the_starlings_murmuration():
     return send_from_directory("static", "the-starlings-murmuration.html")
 
 
-@app.route("/thechameleonscode")
+@bp.route("/thechameleonscode")
 def the_chameleons_code():
     return send_from_directory("static", "the-chameleons-code.html")
 
 
-@app.route("/thespidersloom")
+@bp.route("/thespidersloom")
 def the_spiders_loom():
     return send_from_directory("static", "the-spiders-loom.html")
 
 
-@app.route("/thegeckosgrip")
+@bp.route("/thegeckosgrip")
 def the_geckos_grip():
     return send_from_directory("static", "the-geckos-grip.html")
 
 
-@app.route("/thefireflyssignal")
+@bp.route("/thefireflyssignal")
 def the_fireflys_signal():
     return send_from_directory("static", "the-fireflys-signal.html")
 
 
-@app.route("/thefoxstrail")
+@bp.route("/thefoxstrail")
 def the_foxs_trail():
     return send_from_directory("static", "the-foxs-trail.html")
 
 
-@app.route("/themothsflame")
+@bp.route("/themothsflame")
 def the_moths_flame():
     return send_from_directory("static", "the-moths-flame.html")
 
 
-@app.route("/thebearswinter")
+@bp.route("/thebearswinter")
 def the_bears_winter():
     return send_from_directory("static", "the-bears-winter.html")
 
 
-@app.route("/thecoyoteslaugh")
+@bp.route("/thecoyoteslaugh")
 def the_coyotes_laugh():
     return send_from_directory("static", "the-coyotes-laugh.html")
 
 
-@app.route("/thepangolinsarmor")
+@bp.route("/thepangolinsarmor")
 def the_pangolins_armor():
     return send_from_directory("static", "the-pangolins-armor.html")
 
 
-@app.route("/thehorsesgait")
+@bp.route("/thehorsesgait")
 def the_horses_gait():
     return send_from_directory("static", "the-horses-gait.html")
 
 
-@app.route("/thecompassrose")
+@bp.route("/thecompassrose")
 def the_compass_rose():
     return send_from_directory("static", "the-compass-rose.html")
 
 
 # --- Lay It Down Series (7 Deadly Sins) ---
-@app.route("/layitdownpride")
+@bp.route("/layitdownpride")
 def lay_it_down_pride():
     return send_from_directory("static", "lay-it-down-pride.html")
 
 
 # --- A Process Model Series ---
-@app.route("/thetidepoolsecho")
+@bp.route("/thetidepoolsecho")
 def the_tide_pools_echo():
     return send_from_directory("static", "the-tide-pools-echo.html")
 
 
-@app.route("/thewhalesbreath")
+@bp.route("/thewhalesbreath")
 def the_whales_breath():
     return send_from_directory("static", "the-whales-breath.html")
 
 
-@app.route("/thebutterflyscrossing")
+@bp.route("/thebutterflyscrossing")
 def the_butterflys_crossing():
     return send_from_directory("static", "the-butterflys-crossing.html")
 
 
-@app.route("/theeleophantsground")
+@bp.route("/theeleophantsground")
 def the_elephants_ground():
     return send_from_directory("static", "the-elephants-ground.html")
 
 
-@app.route("/thebeesdance")
+@bp.route("/thebeesdance")
 def the_bees_dance():
     return send_from_directory("static", "the-bees-dance.html")
 
 
-@app.route("/theottersplay")
+@bp.route("/theottersplay")
 def the_otters_play():
     return send_from_directory("static", "the-otters-play.html")
 
 
 # --- Playbook Reader (serves full playbook HTML from assets) ---
-@app.route("/read/<slug>")
+@bp.route("/read/<slug>")
 def read_playbook(slug):
     slug_to_file = {
         "lay-it-down": "Lay_It_Down.html",
@@ -238,12 +235,12 @@ def read_playbook(slug):
 
 
 # --- Email Capture / Lead Magnet ---
-@app.route("/subscribe", methods=["POST"])
+@bp.route("/subscribe", methods=["POST"])
 def subscribe():
     email = request.form.get("email", "").strip()
     source = request.form.get("source", "salmon-journey-ch1")
     if not email:
-        return redirect("/")
+        return redirect(url_for("main.catalog"))
     from database import create_subscriber
     create_subscriber(email, source)
     try:
@@ -251,39 +248,39 @@ def subscribe():
         send_lead_magnet_email(email)
     except Exception as e:
         print(f"Lead magnet email failed: {e}")
-    return redirect("/thanks")
+    return redirect(url_for("main.thanks"))
 
 
-@app.route("/thanks")
+@bp.route("/thanks")
 def thanks():
     return send_from_directory("static", "thanks.html")
 
 
-@app.route("/free/salmon-journey-ch1")
+@bp.route("/free/salmon-journey-ch1")
 def free_salmon_ch1():
     return send_from_directory("static", "free-salmon-ch1.html")
 
 
 # --- Stripe Checkout ---
-@app.route("/create-checkout-session", methods=["POST"])
+@bp.route("/create-checkout-session", methods=["POST"])
 def checkout():
     from stripe_checkout import create_checkout_session
     return create_checkout_session()
 
 
 # --- Stripe Webhook ---
-@app.route("/webhook/stripe", methods=["POST"])
+@bp.route("/webhook/stripe", methods=["POST"])
 def stripe_webhook():
     from stripe_checkout import handle_webhook
     return handle_webhook()
 
 
 # --- Success Page ---
-@app.route("/success")
+@bp.route("/success")
 def success():
     session_id = request.args.get("session_id")
     if not session_id:
-        return redirect("/conductorsplaybook")
+        return redirect(url_for("main.conductors_playbook"))
 
     from database import get_purchase_by_session_id
     purchase = get_purchase_by_session_id(session_id)
@@ -301,27 +298,59 @@ def success():
 
 
 # --- Download ---
-@app.route("/download/<token>")
+@bp.route("/download/<token>")
 def download(token):
     from downloads import handle_download
     return handle_download(token)
 
 
 # --- Legal Pages ---
-@app.route("/terms")
+@bp.route("/terms")
 def terms():
     return send_from_directory("static", "terms.html")
 
 
-@app.route("/privacy")
+@bp.route("/privacy")
 def privacy():
     return send_from_directory("static", "privacy.html")
 
 
-@app.route("/refund")
+@bp.route("/refund")
 def refund():
     return send_from_directory("static", "refund.html")
 
+
+def create_app():
+    static_path = f"{config.URL_PREFIX}/static" if config.URL_PREFIX else "/static"
+    flask_app = Flask(__name__, static_folder="static", template_folder="templates",
+                      static_url_path=static_path)
+    flask_app.secret_key = config.FLASK_SECRET_KEY
+
+    flask_app.register_blueprint(bp, url_prefix=config.URL_PREFIX or None)
+
+    @flask_app.context_processor
+    def inject_config():
+        return {"config": config}
+
+    @flask_app.after_request
+    def rewrite_urls(response):
+        if config.URL_PREFIX and response.content_type and "text/html" in response.content_type:
+            content = response.get_data(as_text=True)
+            content = content.replace('href="/', f'href="{config.URL_PREFIX}/')
+            content = content.replace("href='/", f"href='{config.URL_PREFIX}/")
+            content = content.replace('src="/', f'src="{config.URL_PREFIX}/')
+            content = content.replace("src='/", f"src='{config.URL_PREFIX}/")
+            content = content.replace('action="/', f'action="{config.URL_PREFIX}/')
+            content = content.replace("action='/", f"action='{config.URL_PREFIX}/")
+            response.set_data(content)
+        return response
+
+    initialize_db()
+
+    return flask_app
+
+
+app = create_app()
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

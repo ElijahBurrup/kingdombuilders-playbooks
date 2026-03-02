@@ -15,6 +15,7 @@ RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
 # App
 BASE_URL = os.environ.get("BASE_URL", "http://localhost:5000")
 FLASK_SECRET_KEY = os.environ.get("FLASK_SECRET_KEY", "dev-secret-change-me")
+URL_PREFIX = os.environ.get("URL_PREFIX", "")  # e.g. "/playbooks" for subpath deployment
 
 # Paths — use Render persistent disk if available, else local data/
 if os.environ.get("RENDER"):
