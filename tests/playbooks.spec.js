@@ -157,6 +157,12 @@ const PLAYBOOKS = [
     tag: "Productivity",
   },
   {
+    title: "The Compass Rose",
+    route: "/thecompassrose",
+    readerSlug: "the-compass-rose",
+    tag: "History",
+  },
+  {
     title: "The Tide Pool's Echo",
     route: "/thetidepoolsecho",
     readerSlug: "the-tide-pools-echo",

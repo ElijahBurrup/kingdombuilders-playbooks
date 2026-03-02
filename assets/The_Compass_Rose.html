@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Compass Rose | Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0A1628;--navy-mid:#132B4A;--navy-light:#1C3A5E;
+  --compass-gold:#C9A84C;--compass-glow:#E2C96E;--brass:#B8860B;
+  --parchment:#F5ECD7;--parchment-light:#FAF6EE;--cream:#FFFDF7;
+  --steel:#4A6FA5;--steel-light:#6B8FC0;--steel-pale:#A8C4E0;
+  --text:#0D1B2A;--text-light:#5A6F87;--text-muted:#8A9AB0;
+  --white:#FFFFFF;
+  --radius:14px;
+  --shadow-sm:0 2px 8px rgba(10,22,40,0.06);
+  --shadow-md:0 4px 20px rgba(10,22,40,0.1);
+  --shadow-lg:0 10px 40px rgba(10,22,40,0.14);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--parchment-light);line-height:1.78}
+h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
+.page{max-width:680px;margin:0 auto;padding:0 24px}
+
+/* ===== COVER ===== */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;background:linear-gradient(170deg,#050D18 0%,var(--navy) 35%,var(--navy-mid) 70%,#0A1628 100%);position:relative;overflow:hidden}
+.cover::before{content:'';position:absolute;top:20%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(201,168,76,0.04) 0%,transparent 70%);border-radius:50%}
+.cover-stars{position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;pointer-events:none}
+.star{position:absolute;width:2px;height:2px;background:rgba(255,255,255,0.4);border-radius:50%;animation:twinkle 3s ease-in-out infinite alternate}
+@keyframes twinkle{0%{opacity:0.2}100%{opacity:0.8}}
+.cover-badge{display:inline-block;padding:6px 20px;border:1px solid rgba(201,168,76,0.25);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:var(--compass-gold);margin-bottom:32px;position:relative;z-index:3}
+.cover h1{font-family:'Poppins',sans-serif;font-size:clamp(2.4rem,7vw,4.2rem);font-weight:300;color:var(--white);line-height:1.05;margin-bottom:4px;position:relative;z-index:3}
+.cover h1 strong{font-weight:700;color:var(--compass-gold);display:block}
+.cover-tagline{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:rgba(255,255,255,0.35);margin-top:24px;line-height:1.7;position:relative;z-index:3}
+.cover-tagline em{color:var(--compass-glow);font-style:normal}
+.cover-compass{position:relative;z-index:3;margin:40px auto 20px;width:200px;height:200px}
+.cover-compass svg{width:200px;height:200px;filter:drop-shadow(0 0 30px rgba(201,168,76,0.2))}
+.compass-needle{animation:compass-sway 6s ease-in-out infinite;transform-origin:100px 100px}
+@keyframes compass-sway{0%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}100%{transform:rotate(-5deg)}}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.6rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-top:20px;position:relative;z-index:3}
+
+/* ===== GHOST NOISE ===== */
+.ghost-noise{position:absolute;top:0;left:0;width:100%;height:100%;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");opacity:0.5;pointer-events:none}
+
+/* ===== RIBBON ===== */
+.ribbon{text-align:center;padding:22px 24px;background:linear-gradient(135deg,rgba(201,168,76,0.04),rgba(201,168,76,0.08));border-top:1.5px solid rgba(201,168,76,0.2);border-bottom:1.5px solid rgba(201,168,76,0.2)}
+.ribbon p{font-family:'Lora',serif;font-size:0.82rem;font-style:italic;color:var(--text-muted);max-width:520px;margin:0 auto}
+
+/* ===== CHAPTER HEAD ===== */
+.ch-head{margin:56px 0 28px;text-align:center}
+.ch-head .ch-num{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--compass-gold)}
+.ch-head h2{font-size:1.45rem;color:var(--navy);margin-top:6px}
+
+/* ===== CHARACTER CARDS ===== */
+.char-row{display:flex;gap:20px;margin:28px 0;flex-wrap:wrap}
+.char-card{flex:1;min-width:200px;padding:24px;background:var(--white);border-radius:var(--radius);border:2px solid rgba(74,111,165,0.12);box-shadow:var(--shadow-sm);text-align:center}
+.char-card svg{width:64px;height:64px;margin-bottom:12px}
+.char-card .char-name{font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:800;color:var(--navy)}
+.char-card .char-role{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--compass-gold);margin-top:4px}
+.char-card p{font-size:0.85rem;color:var(--text-light);margin-top:10px;line-height:1.6}
+
+/* ===== SCENE ===== */
+.scene{margin:32px 0;padding:32px;background:linear-gradient(150deg,var(--navy),var(--navy-mid));border-radius:var(--radius);border:1px solid rgba(201,168,76,0.15);box-shadow:var(--shadow-md);position:relative;overflow:hidden}
+.scene::before{content:'';position:absolute;top:-30%;right:-15%;width:200px;height:200px;background:radial-gradient(circle,rgba(201,168,76,0.06) 0%,transparent 70%);border-radius:50%}
+.scene .scene-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--compass-gold);margin-bottom:14px;position:relative;z-index:2}
+.scene p{font-family:'Lora',serif;font-size:0.92rem;color:rgba(255,255,255,0.82);line-height:1.78;position:relative;z-index:2;margin-bottom:14px}
+.scene p:last-child{margin-bottom:0}
+.scene em{color:var(--compass-glow);font-style:italic}
+
+/* ===== BEFORE / AFTER ===== */
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:32px 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm)}
+.ba-col{padding:28px 24px}
+.ba-col.before{background:#F0E8E8;border-right:3px solid var(--compass-gold)}
+.ba-col.after{background:#E8F0E8}
+.ba-col .ba-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px}
+.ba-col.after .ba-label{color:#2D7A3A}
+.ba-col ul{list-style:none;padding:0}
+.ba-col li{font-size:0.85rem;color:var(--text-light);line-height:1.6;padding:6px 0;padding-left:18px;position:relative}
+.ba-col.before li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:8px;background:#CC6666;border-radius:50%}
+.ba-col.after li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:8px;background:#44AA55;border-radius:50%}
+@media(max-width:560px){.ba-grid{grid-template-columns:1fr}.ba-col.before{border-right:none;border-bottom:3px solid var(--compass-gold)}}
+
+/* ===== DATA BOX ===== */
+.data-row{display:flex;gap:20px;margin:28px 0;flex-wrap:wrap}
+.data-box{flex:1;min-width:140px;padding:24px;background:var(--white);border-radius:var(--radius);border:2px solid rgba(201,168,76,0.15);box-shadow:var(--shadow-sm);text-align:center}
+.data-box .data-num{font-family:'Poppins',sans-serif;font-size:2.2rem;font-weight:800;color:var(--compass-gold);line-height:1}
+.data-box .data-label{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-top:8px}
+.data-box p{font-size:0.78rem;color:var(--text-light);margin-top:8px;line-height:1.5}
+
+/* ===== THINK ===== */
+.think{margin:32px 0;padding:32px;background:linear-gradient(135deg,rgba(201,168,76,0.04),rgba(201,168,76,0.08));border-radius:var(--radius);border:2px dashed rgba(201,168,76,0.25)}
+.think .think-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--compass-gold);margin-bottom:14px}
+.think p{font-size:0.92rem;color:var(--text);line-height:1.72;margin-bottom:12px}
+.think .q-line{display:block;width:100%;border:none;border-bottom:1.5px solid rgba(201,168,76,0.3);background:transparent;padding:8px 0;font-family:'Lora',serif;font-size:0.9rem;color:var(--text);margin-top:8px;outline:none}
+
+/* ===== GRAND QUOTE ===== */
+.grand-quote{margin:40px 0;padding:48px 36px;text-align:center;position:relative}
+.grand-quote::before{content:'\201C';font-family:Georgia,serif;font-size:8rem;color:rgba(201,168,76,0.06);position:absolute;top:-20px;left:50%;transform:translateX(-50%);line-height:1}
+.grand-quote blockquote{font-family:'Lora',serif;font-size:1.15rem;font-style:italic;color:var(--navy-mid);line-height:1.7;max-width:560px;margin:0 auto;position:relative;z-index:2}
+.grand-quote .attribution{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--compass-gold);margin-top:16px}
+
+/* ===== VIZ BOX ===== */
+.viz-box{margin:32px 0;padding:32px;background:var(--white);border-radius:var(--radius);border:2px solid rgba(74,111,165,0.12);box-shadow:var(--shadow-md);position:relative;overflow:hidden}
+.viz-box::before{content:'';position:absolute;top:-40%;right:-20%;width:300px;height:300px;background:radial-gradient(circle,rgba(201,168,76,0.04) 0%,transparent 70%);border-radius:50%}
+.viz-box .viz-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--steel);margin-bottom:16px;position:relative;z-index:2}
+.viz-box h3{font-size:1.15rem;color:var(--navy);margin-bottom:16px;position:relative;z-index:2}
+.viz-box p{font-size:0.9rem;color:var(--text-light);line-height:1.7;position:relative;z-index:2;margin-bottom:12px}
+.viz-box p:last-child{margin-bottom:0}
+
+/* ===== TIMELINE ===== */
+.timeline{margin:32px 0;position:relative;padding-left:36px}
+.timeline::before{content:'';position:absolute;left:14px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--compass-gold),var(--steel-pale))}
+.tl-item{position:relative;margin-bottom:28px}
+.tl-item::before{content:'';position:absolute;left:-28px;top:6px;width:12px;height:12px;background:var(--compass-gold);border-radius:50%;border:3px solid var(--parchment-light);box-shadow:0 0 0 2px var(--compass-gold)}
+.tl-item .tl-date{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--compass-gold)}
+.tl-item h4{font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:700;color:var(--navy);margin-top:4px}
+.tl-item p{font-size:0.82rem;color:var(--text-light);line-height:1.6;margin-top:4px}
+
+/* ===== COMPASS DIAGRAM ===== */
+.compass-diagram{margin:40px auto;width:320px;height:320px;position:relative}
+.compass-ring{position:absolute;top:50%;left:50%;width:280px;height:280px;transform:translate(-50%,-50%);border:3px solid rgba(201,168,76,0.3);border-radius:50%}
+.compass-ring-inner{position:absolute;top:50%;left:50%;width:200px;height:200px;transform:translate(-50%,-50%);border:2px solid rgba(74,111,165,0.15);border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.6),rgba(245,236,215,0.3))}
+.compass-point{position:absolute;text-align:center;width:100px;transform:translate(-50%,-50%)}
+.compass-point .cp-dir{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:800;color:var(--compass-gold)}
+.compass-point .cp-label{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--navy)}
+.compass-point .cp-desc{font-family:'Lora',serif;font-size:0.7rem;color:var(--text-light);margin-top:2px;line-height:1.4}
+.cp-north{top:-10px;left:50%}
+.cp-east{top:50%;left:calc(100% + 10px)}
+.cp-south{top:calc(100% + 10px);left:50%}
+.cp-west{top:50%;left:-10px}
+
+/* ===== FLOW DIAGRAM ===== */
+.flow{margin:32px 0;counter-reset:flow-step}
+.flow-step{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px}
+.flow-step::before{counter-increment:flow-step;content:counter(flow-step);font-family:'Poppins',sans-serif;font-size:0.85rem;font-weight:800;color:var(--white);background:var(--compass-gold);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:4px}
+.flow-step .flow-content{flex:1}
+.flow-step h4{font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:700;color:var(--navy);margin-bottom:4px}
+.flow-step p{font-size:0.85rem;color:var(--text-light);line-height:1.6}
+.flow-arrow{text-align:center;color:var(--compass-gold);font-size:1.2rem;margin:4px 0 4px 8px}
+
+/* ===== SCENARIO CARDS ===== */
+.scenario-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:28px 0}
+@media(max-width:560px){.scenario-row{grid-template-columns:1fr}}
+.scenario{padding:24px;background:var(--white);border-radius:var(--radius);border-left:4px solid var(--compass-gold);box-shadow:var(--shadow-sm)}
+.scenario .sc-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--steel);margin-bottom:8px}
+.scenario h4{font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:700;color:var(--navy);margin-bottom:8px}
+.scenario p{font-size:0.82rem;color:var(--text-light);line-height:1.6}
+.scenario .sc-bearing{margin-top:10px;padding:8px 12px;background:rgba(201,168,76,0.06);border-radius:8px;font-family:'Nunito',sans-serif;font-size:0.75rem;font-weight:700;color:var(--compass-gold)}
+
+/* ===== STORM METER ===== */
+.storm-meter{margin:28px 0}
+.storm-bar{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.storm-bar .sb-label{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;color:var(--navy);width:120px;flex-shrink:0;text-align:right}
+.storm-bar .sb-track{flex:1;height:24px;background:rgba(10,22,40,0.06);border-radius:12px;overflow:hidden;position:relative}
+.storm-bar .sb-fill{height:100%;border-radius:12px;transition:width 0.6s}
+.storm-bar .sb-val{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;color:var(--text-muted);width:40px;text-align:left}
+.sb-fill.high{background:linear-gradient(90deg,#44AA55,#66CC77)}
+.sb-fill.med{background:linear-gradient(90deg,var(--compass-gold),var(--compass-glow))}
+.sb-fill.low{background:linear-gradient(90deg,#CC6666,#DD8888)}
+
+/* ===== DECLINATION DIAGRAM ===== */
+.decl-diagram{margin:32px auto;padding:32px;background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow-sm);text-align:center}
+.decl-diagram svg{max-width:300px;width:100%;height:auto}
+.decl-diagram .decl-caption{font-family:'Nunito',sans-serif;font-size:0.75rem;color:var(--text-muted);margin-top:12px;line-height:1.5}
+
+/* ===== RECOGNITION BOX ===== */
+.recognition{margin:28px 0;padding:28px;background:rgba(201,168,76,0.06);border-radius:var(--radius);border:1.5px solid rgba(201,168,76,0.15)}
+.recognition .rec-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--compass-gold);margin-bottom:10px}
+.recognition p{font-size:0.9rem;color:var(--text);line-height:1.7}
+
+/* ===== ADVENTURE ===== */
+.adventure{margin:32px 0;counter-reset:adventure-step}
+.adv-step{padding:24px 28px;margin-bottom:2px;background:var(--white);position:relative;padding-left:64px}
+.adv-step:first-child{border-radius:var(--radius) var(--radius) 0 0}
+.adv-step:last-child{border-radius:0 0 var(--radius) var(--radius)}
+.adv-step::before{counter-increment:adventure-step;content:'Step ' counter(adventure-step);font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--compass-gold);position:absolute;left:24px;top:28px}
+.adv-step h4{font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:700;color:var(--navy);margin-bottom:6px;margin-top:16px}
+.adv-step p{font-size:0.85rem;color:var(--text-light);line-height:1.6}
+
+/* ===== INSTALL NOTE ===== */
+.install{margin:28px 0;padding:20px 24px;background:rgba(74,111,165,0.04);border-radius:8px;border-left:3px solid var(--steel);font-size:0.82rem;color:var(--text-light);line-height:1.6;font-style:italic}
+
+/* ===== PROMPT CARD ===== */
+.prompt-card{margin:40px 0;padding:36px;background:linear-gradient(150deg,var(--navy),var(--navy-mid));border-radius:var(--radius);border:2px solid rgba(201,168,76,0.2);box-shadow:var(--shadow-lg);text-align:center}
+.prompt-card .pc-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--compass-gold);margin-bottom:14px}
+.prompt-card p{font-family:'Lora',serif;font-size:0.92rem;color:rgba(255,255,255,0.7);line-height:1.72;max-width:520px;margin:0 auto 12px}
+.prompt-card .prompt-text{background:rgba(0,0,0,0.3);border-radius:8px;padding:20px;margin-top:16px;font-family:'Lora',serif;font-size:0.88rem;color:rgba(255,255,255,0.6);line-height:1.65;text-align:left}
+
+/* ===== FINALE ===== */
+.finale{text-align:center;padding:80px 24px;background:linear-gradient(170deg,#050D18 0%,var(--navy) 40%,var(--navy-mid) 100%);position:relative;overflow:hidden}
+.finale::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(201,168,76,0.05) 0%,transparent 70%);border-radius:50%}
+.finale .ghost-noise{position:absolute;top:0;left:0;width:100%;height:100%}
+.finale svg{position:relative;z-index:2;width:120px;height:120px;margin-bottom:24px;filter:drop-shadow(0 0 20px rgba(201,168,76,0.15))}
+.finale h2{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:300;color:var(--white);position:relative;z-index:2;margin-bottom:8px}
+.finale h2 strong{font-weight:700;color:var(--compass-gold)}
+.finale p{font-family:'Lora',serif;font-size:0.9rem;color:rgba(255,255,255,0.3);position:relative;z-index:2;max-width:480px;margin:0 auto;line-height:1.7}
+
+/* ===== FOOTER ===== */
+.footer-ribbon{text-align:center;padding:24px;background:rgba(201,168,76,0.04);border-top:1.5px solid rgba(201,168,76,0.15)}
+.footer-ribbon p{font-family:'Lora',serif;font-size:0.82rem;font-style:italic;color:var(--text-muted);max-width:520px;margin:0 auto}
+footer{text-align:center;padding:28px 24px;background:#050D18}
+footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.1)}
+
+/* ===== ROOT CHECK ===== */
+.root-check{margin:28px 0;padding:24px;background:var(--white);border-radius:var(--radius);border:2px solid rgba(201,168,76,0.15)}
+.root-check .rc-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--compass-gold);margin-bottom:12px}
+.root-check ul{list-style:none;padding:0}
+.root-check li{font-size:0.85rem;color:var(--text-light);line-height:1.6;padding:6px 0;padding-left:24px;position:relative}
+.root-check li::before{content:'';position:absolute;left:0;top:11px;width:12px;height:12px;border:2px solid var(--compass-gold);border-radius:3px}
+
+/* ===== FINAL TEST ===== */
+.final-test{margin:40px 0;padding:36px;background:var(--white);border-radius:var(--radius);border:2px solid rgba(74,111,165,0.15);box-shadow:var(--shadow-md)}
+.final-test .ft-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--steel);margin-bottom:16px}
+.final-test h3{font-family:'Nunito',sans-serif;font-size:1.1rem;color:var(--navy);margin-bottom:20px}
+.final-test ol{padding-left:24px}
+.final-test li{font-size:0.88rem;color:var(--text);line-height:1.6;padding:8px 0}
+</style>
+
+<!-- ===== SVG SPRITE SHEET ===== -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+<defs>
+  <linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <stop offset="0%" stop-color="#C9A84C"/>
+    <stop offset="100%" stop-color="#E2C96E"/>
+  </linearGradient>
+  <linearGradient id="navy-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+    <stop offset="0%" stop-color="#132B4A"/>
+    <stop offset="100%" stop-color="#0A1628"/>
+  </linearGradient>
+  <linearGradient id="steel-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <stop offset="0%" stop-color="#4A6FA5"/>
+    <stop offset="100%" stop-color="#6B8FC0"/>
+  </linearGradient>
+  <radialGradient id="brass-glow" cx="50%" cy="50%" r="50%">
+    <stop offset="0%" stop-color="#E2C96E" stop-opacity="0.4"/>
+    <stop offset="100%" stop-color="#C9A84C" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+
+<!-- Compass Rose (Cover Art) -->
+<symbol id="compass-rose" viewBox="0 0 200 200">
+  <circle cx="100" cy="100" r="90" fill="none" stroke="url(#gold-grad)" stroke-width="2" opacity="0.3"/>
+  <circle cx="100" cy="100" r="70" fill="none" stroke="url(#gold-grad)" stroke-width="1.5" opacity="0.2"/>
+  <circle cx="100" cy="100" r="50" fill="url(#navy-grad)" stroke="url(#gold-grad)" stroke-width="2"/>
+  <!-- Cardinal tick marks -->
+  <line x1="100" y1="12" x2="100" y2="28" stroke="#C9A84C" stroke-width="2.5"/>
+  <line x1="188" y1="100" x2="172" y2="100" stroke="#C9A84C" stroke-width="2"/>
+  <line x1="100" y1="188" x2="100" y2="172" stroke="#C9A84C" stroke-width="2"/>
+  <line x1="12" y1="100" x2="28" y2="100" stroke="#C9A84C" stroke-width="2"/>
+  <!-- Intercardinal tick marks -->
+  <line x1="162" y1="38" x2="152" y2="48" stroke="#C9A84C" stroke-width="1" opacity="0.5"/>
+  <line x1="162" y1="162" x2="152" y2="152" stroke="#C9A84C" stroke-width="1" opacity="0.5"/>
+  <line x1="38" y1="162" x2="48" y2="152" stroke="#C9A84C" stroke-width="1" opacity="0.5"/>
+  <line x1="38" y1="38" x2="48" y2="48" stroke="#C9A84C" stroke-width="1" opacity="0.5"/>
+  <!-- Cardinal letters -->
+  <text x="100" y="42" text-anchor="middle" font-family="Poppins,sans-serif" font-size="14" font-weight="800" fill="#C9A84C">N</text>
+  <text x="168" y="105" text-anchor="middle" font-family="Poppins,sans-serif" font-size="11" font-weight="700" fill="#C9A84C" opacity="0.7">E</text>
+  <text x="100" y="170" text-anchor="middle" font-family="Poppins,sans-serif" font-size="11" font-weight="700" fill="#C9A84C" opacity="0.7">S</text>
+  <text x="33" y="105" text-anchor="middle" font-family="Poppins,sans-serif" font-size="11" font-weight="700" fill="#C9A84C" opacity="0.7">W</text>
+  <!-- Fleur-de-lis at North (simplified) -->
+  <path d="M100 18 L97 24 L100 20 L103 24 Z" fill="#C9A84C"/>
+  <!-- Needle -->
+  <g class="compass-needle">
+    <polygon points="100,55 96,100 100,95 104,100" fill="#CC3333" opacity="0.9"/>
+    <polygon points="100,145 96,100 100,105 104,100" fill="#DDDDDD" opacity="0.6"/>
+    <circle cx="100" cy="100" r="5" fill="url(#gold-grad)"/>
+  </g>
+  <!-- Glow -->
+  <circle cx="100" cy="100" r="45" fill="url(#brass-glow)"/>
+</symbol>
+
+<!-- Compass Small (for finale/inline) -->
+<symbol id="compass-sm" viewBox="0 0 64 64">
+  <circle cx="32" cy="32" r="28" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.3"/>
+  <circle cx="32" cy="32" r="20" fill="#0A1628" stroke="#C9A84C" stroke-width="1.5"/>
+  <polygon points="32,14 30,32 32,30 34,32" fill="#CC3333" opacity="0.9"/>
+  <polygon points="32,50 30,32 32,34 34,32" fill="#999" opacity="0.5"/>
+  <circle cx="32" cy="32" r="3" fill="#C9A84C"/>
+  <text x="32" y="10" text-anchor="middle" font-family="Poppins,sans-serif" font-size="6" font-weight="800" fill="#C9A84C">N</text>
+</symbol>
+
+<!-- Aina (old navigator) -->
+<symbol id="aina" viewBox="0 0 64 64">
+  <circle cx="32" cy="32" r="30" fill="#132B4A"/>
+  <circle cx="32" cy="24" r="12" fill="#D4A87C"/>
+  <path d="M20 22 Q22 14 32 12 Q42 14 44 22" fill="#AAAAAA" stroke="none"/>
+  <circle cx="28" cy="23" r="1.5" fill="#0A1628"/>
+  <circle cx="36" cy="23" r="1.5" fill="#0A1628"/>
+  <path d="M28 28 Q32 31 36 28" fill="none" stroke="#8B6B4A" stroke-width="1"/>
+  <path d="M18 38 Q32 48 46 38 L48 58 Q32 62 16 58 Z" fill="#1C3A5E"/>
+  <line x1="32" y1="38" x2="32" y2="52" stroke="#C9A84C" stroke-width="1"/>
+  <path d="M22 18 Q18 12 20 8" fill="none" stroke="#AAAAAA" stroke-width="1" opacity="0.5"/>
+  <path d="M42 18 Q46 12 44 8" fill="none" stroke="#AAAAAA" stroke-width="1" opacity="0.5"/>
+</symbol>
+
+<!-- Solen (young captain) -->
+<symbol id="solen" viewBox="0 0 64 64">
+  <circle cx="32" cy="32" r="30" fill="#132B4A"/>
+  <circle cx="32" cy="24" r="12" fill="#C4946C"/>
+  <path d="M20 22 Q22 16 32 14 Q42 16 44 22" fill="#2C1810" stroke="none"/>
+  <circle cx="28" cy="23" r="1.5" fill="#0A1628"/>
+  <circle cx="36" cy="23" r="1.5" fill="#0A1628"/>
+  <path d="M29 28 L35 28" fill="none" stroke="#7A5A3A" stroke-width="1"/>
+  <path d="M18 38 Q32 46 46 38 L48 58 Q32 62 16 58 Z" fill="#8B0000"/>
+  <path d="M28 40 L32 50 L36 40" fill="none" stroke="#C9A84C" stroke-width="1.5"/>
+</symbol>
+
+<!-- Icons -->
+<symbol id="ico-ship" viewBox="0 0 24 24">
+  <path d="M3 18 L12 20 L21 18 L19 12 L14 12 L14 6 L12 4 L10 6 L10 12 L5 12 Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+  <line x1="12" y1="4" x2="12" y2="12" stroke="currentColor" stroke-width="1.5"/>
+  <path d="M12 6 L18 10" fill="none" stroke="currentColor" stroke-width="1"/>
+</symbol>
+
+<symbol id="ico-star" viewBox="0 0 24 24">
+  <polygon points="12,2 15,9 22,9 16,14 18,22 12,17 6,22 8,14 2,9 9,9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+</symbol>
+
+<symbol id="ico-storm" viewBox="0 0 24 24">
+  <path d="M6 16 Q2 16 2 12 Q2 8 6 8 Q7 4 12 4 Q17 4 18 8 Q22 8 22 12 Q22 16 18 16" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <polyline points="10,16 8,22 12,18 10,24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+</symbol>
+
+<symbol id="ico-anchor" viewBox="0 0 24 24">
+  <circle cx="12" cy="6" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <line x1="12" y1="9" x2="12" y2="21" stroke="currentColor" stroke-width="1.5"/>
+  <path d="M5 15 Q5 21 12 21 Q19 21 19 15" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <line x1="8" y1="12" x2="16" y2="12" stroke="currentColor" stroke-width="1.5"/>
+</symbol>
+
+<symbol id="ico-map" viewBox="0 0 24 24">
+  <polyline points="3,4 8,6 16,2 21,4 21,20 16,18 8,22 3,20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+  <line x1="8" y1="6" x2="8" y2="22" stroke="currentColor" stroke-width="1"/>
+  <line x1="16" y1="2" x2="16" y2="18" stroke="currentColor" stroke-width="1"/>
+</symbol>
+</svg>
+</head>
+
+<body>
+
+<!-- ===== COVER ===== -->
+<section class="cover">
+  <div class="ghost-noise"></div>
+  <div class="cover-stars">
+    <div class="star" style="top:8%;left:15%;animation-delay:0s"></div>
+    <div class="star" style="top:12%;left:72%;animation-delay:0.5s"></div>
+    <div class="star" style="top:22%;left:30%;animation-delay:1.2s"></div>
+    <div class="star" style="top:18%;left:85%;animation-delay:0.8s"></div>
+    <div class="star" style="top:35%;left:10%;animation-delay:1.5s"></div>
+    <div class="star" style="top:5%;left:50%;animation-delay:2s"></div>
+    <div class="star" style="top:28%;left:60%;animation-delay:0.3s"></div>
+    <div class="star" style="top:40%;left:88%;animation-delay:1.8s"></div>
+    <div class="star" style="top:15%;left:42%;animation-delay:2.5s"></div>
+    <div class="star" style="top:33%;left:20%;animation-delay:0.7s"></div>
+  </div>
+  <div class="cover-badge">Kingdom Builders AI</div>
+  <div class="cover-compass">
+    <svg><use href="#compass-rose"/></svg>
+  </div>
+  <h1>The Compass <strong>Rose</strong></h1>
+  <p class="cover-tagline">You don't need to see the destination.<br>You need to know where <em>North</em> is.</p>
+  <p class="cover-author">KingdomBuilders AI</p>
+</section>
+
+<!-- ===== RIBBON ===== -->
+<div class="ribbon">
+  <p>"Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight." — Proverbs 3:5-6</p>
+</div>
+
+<!-- ===== INTRODUCTION ===== -->
+<div class="page">
+  <div class="install">
+    This is not a book. It is a navigation instrument. By the time you finish, you will own a mental compass that works in fog, in storms, and in the dark. You will never make another decision by guessing.
+  </div>
+
+  <p style="margin-top:28px;font-size:0.92rem;line-height:1.78">Every decision you have ever regretted was made without a compass.</p>
+  <p style="margin-top:14px;font-size:0.92rem;line-height:1.78">Not without information. Not without intelligence. Without a fixed reference point. You had data, opinions, experience, and gut feelings. You had everything except the one thing that matters: a direction that does not change when the weather does.</p>
+  <p style="margin-top:14px;font-size:0.92rem;line-height:1.78">The compass was invented over two thousand years ago. It transformed human civilization not because it told sailors where to go, but because it told them where North was. That was enough. That was everything.</p>
+  <p style="margin-top:14px;font-size:0.92rem;line-height:1.78">This playbook installs the same instrument in your mind.</p>
+
+  <!-- ===== CHAPTER 1 ===== -->
+  <div class="ch-head">
+    <div class="ch-num">Chapter One</div>
+    <h2>The Lost Fleet</h2>
+  </div>
+
+  <div class="scene">
+    <div class="scene-label">Scene One</div>
+    <p>The fog rolled in at dawn.</p>
+    <p>Captain Solen stood at the helm of the <em>Aurum</em>, the fastest ship in the merchant fleet, and watched the world disappear. First the horizon. Then the coastline. Then the other six ships in his convoy. Within twenty minutes, he could not see his own bow.</p>
+    <p>He had charts. He had three decades of experience. He had the position of every star memorized. None of it mattered. Stars are useless when the sky is gone. Charts are decoration when you cannot find yourself on them. Experience told him to wait. Pride told him to press forward.</p>
+    <p>He pressed forward.</p>
+    <p>By noon, the <em>Aurum</em> had drifted forty miles off course. By nightfall, two of his ships had run aground. By the next morning, his fleet was scattered across three hundred miles of coastline, and the cargo he had promised to deliver in six days would arrive in sixty.</p>
+  </div>
+
+  <p style="margin-top:24px">Solen did not lack skill. He did not lack courage. He lacked a fixed point of reference that worked when he could not see.</p>
+  <p style="margin-top:14px">This is the condition of most human decision-making. We navigate by visibility. We steer toward what we can see, react to what appears in front of us, and correct course based on the feedback our eyes and ears provide. When visibility is good, this works beautifully. We feel competent, confident, in control.</p>
+  <p style="margin-top:14px">Then the fog comes. A job loss. A health crisis. A betrayal. A market crash. A fork in the road where both paths look identical. Suddenly the stars are gone, the shoreline is gone, and the instruments of ordinary navigation fail simultaneously.</p>
+
+  <div class="data-row">
+    <div class="data-box">
+      <div class="data-num">73%</div>
+      <div class="data-label">Fog Decisions</div>
+      <p>Major life decisions made under significant uncertainty</p>
+    </div>
+    <div class="data-box">
+      <div class="data-num">6x</div>
+      <div class="data-label">Regret Factor</div>
+      <p>Reactive decisions are regretted six times more than directional ones</p>
+    </div>
+  </div>
+
+  <div class="ba-grid">
+    <div class="ba-col before">
+      <div class="ba-label">Without a Compass</div>
+      <ul>
+        <li>Decides based on what feels right in the moment</li>
+        <li>Changes direction when emotions change</li>
+        <li>Asks "What do other people think?"</li>
+        <li>Freezes when options look equal</li>
+        <li>Regrets most major decisions within a year</li>
+      </ul>
+    </div>
+    <div class="ba-col after">
+      <div class="ba-label">With a Compass</div>
+      <ul>
+        <li>Decides based on a fixed reference point</li>
+        <li>Holds direction when emotions shift</li>
+        <li>Asks "What does my North say?"</li>
+        <li>Breaks ties by checking the bearing</li>
+        <li>Trusts the direction even before seeing the result</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="think">
+    <div class="think-label">Don't Skip This</div>
+    <p>Think of the last major decision you made under pressure. A career change. A relationship choice. A financial commitment. Did you make it from a fixed reference point, or did you make it from whatever felt most urgent in the moment?</p>
+    <input class="q-line" placeholder="What was the decision?">
+    <input class="q-line" placeholder="What were you steering by?">
+  </div>
+
+  <!-- ===== CHAPTER 2 ===== -->
+  <div class="ch-head">
+    <div class="ch-num">Chapter Two</div>
+    <h2>The Needle That Knows</h2>
+  </div>
+
+  <p>The magnetic compass was not invented by a genius. It was discovered by accident.</p>
+  <p style="margin-top:14px">Sometime around 200 BC, during the Han Dynasty, Chinese scholars noticed that certain stones attracted iron. They called them <em>ci shi</em> — loving stones. Lodestones. When suspended from a thread or floated on water, a sliver of lodestone always pointed the same direction. Always. Regardless of weather, time of day, terrain, or the opinion of the person holding it.</p>
+  <p style="margin-top:14px">For centuries, this was considered a curiosity. A parlor trick for fortune tellers. It took another thousand years before someone thought to put it on a ship.</p>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-date">~200 BC</div>
+      <h4>The Lodestone</h4>
+      <p>Han Dynasty scholars discover magnetized stones that always point south. Used for divination and feng shui, not navigation.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">~1040 AD</div>
+      <h4>The Floating Needle</h4>
+      <p>Chinese inventor Shen Kuo describes rubbing an iron needle on a lodestone and floating it on water. The first true compass.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">~1190 AD</div>
+      <h4>The Compass Card</h4>
+      <p>European sailors mount the needle on a card marked with 32 directional points. The compass rose is born. Open ocean navigation becomes possible.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">~1300 AD</div>
+      <h4>The Age of Exploration</h4>
+      <p>The compass enables Columbus, Magellan, Zheng He, and da Gama. Every major voyage of discovery was guided by a magnetized needle.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">Today</div>
+      <h4>The Principle Remains</h4>
+      <p>GPS satellites, digital maps, AI navigation. Technology changed everything except the core truth: you need a fixed reference point to move with confidence.</p>
+    </div>
+  </div>
+
+  <div class="char-row">
+    <div class="char-card">
+      <svg><use href="#aina"/></svg>
+      <div class="char-name">Aina</div>
+      <div class="char-role">The Navigator</div>
+      <p>Sixty years at sea. She has outlived three captains and navigated through fourteen storms. She trusts the needle more than her own eyes.</p>
+    </div>
+    <div class="char-card">
+      <svg><use href="#solen"/></svg>
+      <div class="char-name">Solen</div>
+      <div class="char-role">The Captain</div>
+      <p>Brilliant, ambitious, impatient. He trusts what he can see, measure, and control. The fog terrifies him because it removes all three.</p>
+    </div>
+  </div>
+
+  <div class="scene">
+    <div class="scene-label">Scene Two</div>
+    <p>Aina found Solen in the chart room, surrounded by maps he could not use.</p>
+    <p>"You have everything except the one thing that matters," she said. She placed a small brass instrument on the table. A needle, suspended on a pin, inside a glass dome. It trembled once and then pointed North.</p>
+    <p>"It does not know where we are going," Aina said. "It does not care about our cargo, our deadline, or our fear. It only knows one thing."</p>
+    <p>"<em>North.</em>"</p>
+    <p>"And that is enough?" Solen asked.</p>
+    <p>"That has always been enough."</p>
+  </div>
+
+  <div class="grand-quote">
+    <blockquote>The compass does not know where you are going. It only knows North. And that has always been enough.</blockquote>
+    <div class="attribution">Aina</div>
+  </div>
+
+  <div class="recognition">
+    <div class="rec-label">You Already Know This</div>
+    <p>You have experienced the compass principle every time you returned to a core value during a crisis. Every time you said "I don't care what everyone else is doing, this is what I believe." That moment of clarity was your needle finding North. You did not need more information. You needed to remember what you already knew.</p>
+  </div>
+
+  <div class="root-check">
+    <div class="rc-label">Root Check</div>
+    <ul>
+      <li>Most decisions fail not from lack of information, but from lack of a fixed reference point</li>
+      <li>The compass was revolutionary because it worked in fog, storms, and darkness</li>
+      <li>Your "North" is the set of values that do not change when circumstances do</li>
+    </ul>
+  </div>
+
+  <!-- ===== CHAPTER 3 ===== -->
+  <div class="ch-head">
+    <div class="ch-num">Chapter Three</div>
+    <h2>The Four Points</h2>
+  </div>
+
+  <p>A compass has four cardinal directions. So does every decision you will ever make.</p>
+  <p style="margin-top:14px">The compass rose was first drawn around 1300 AD by Mediterranean sailors who needed to communicate direction precisely. They started with four points, then eight, then sixteen, then thirty-two. But the four cardinal directions remained the foundation. Everything else was interpolation.</p>
+  <p style="margin-top:14px">Your life has the same architecture. Every choice you face pulls you in one of four fundamental directions. Understanding which direction you are being pulled is the first step to navigating deliberately instead of reactively.</p>
+</div>
+
+<div class="compass-diagram">
+  <div class="compass-ring"></div>
+  <div class="compass-ring-inner"></div>
+  <div class="compass-point cp-north">
+    <div class="cp-dir">N</div>
+    <div class="cp-label">Values</div>
+    <div class="cp-desc">What you believe at your core</div>
+  </div>
+  <div class="compass-point cp-east">
+    <div class="cp-dir">E</div>
+    <div class="cp-label">Growth</div>
+    <div class="cp-desc">What stretches you forward</div>
+  </div>
+  <div class="compass-point cp-south">
+    <div class="cp-dir">S</div>
+    <div class="cp-label">Comfort</div>
+    <div class="cp-desc">What pulls you back to safety</div>
+  </div>
+  <div class="compass-point cp-west">
+    <div class="cp-dir">W</div>
+    <div class="cp-label">Obligation</div>
+    <div class="cp-desc">What others expect of you</div>
+  </div>
+</div>
+
+<div class="page">
+  <div class="viz-box">
+    <div class="viz-label">The Four-Direction Framework</div>
+    <h3>North: Values</h3>
+    <p>Your non-negotiables. The principles that define who you are regardless of circumstances. A decision that points North aligns with your deepest convictions, even when it costs you. North does not change when the market shifts, when friends disagree, or when the outcome is uncertain.</p>
+  </div>
+  <div class="viz-box">
+    <div class="viz-label">Direction Two</div>
+    <h3>East: Growth</h3>
+    <p>The direction of expansion, learning, and discomfort. East is where the sun rises. It is the new skill, the harder conversation, the bigger risk. Decisions that point East stretch your capacity. They feel exciting and terrifying simultaneously. Growth lives here.</p>
+  </div>
+  <div class="viz-box">
+    <div class="viz-label">Direction Three</div>
+    <h3>South: Comfort</h3>
+    <p>The gravitational pull of safety, familiarity, and the path of least resistance. South is not evil. Rest is real. Recovery is necessary. But a life that only moves South shrinks. The question is never "should I rest?" It is "am I resting or am I hiding?"</p>
+  </div>
+  <div class="viz-box">
+    <div class="viz-label">Direction Four</div>
+    <h3>West: Obligation</h3>
+    <p>What other people expect, need, or demand from you. West is the boss's deadline, the family tradition, the cultural norm, the guilt-driven yes. Obligation is sometimes holy and sometimes a cage. The compass helps you tell the difference.</p>
+  </div>
+
+  <div class="scene">
+    <div class="scene-label">Scene Three</div>
+    <p>Aina unrolled the compass rose on the navigation table. Four directions. Four letters. Thirty-two points between them.</p>
+    <p>"Every harbor you have ever entered," she told Solen, "you found by choosing a direction and holding it. Not by watching the waves. Not by asking the wind. The waves and wind are information. <em>The direction is the decision.</em>"</p>
+    <p>Solen stared at the rose. "But how do you choose which direction?"</p>
+    <p>"You already know," Aina said. "You have always known. You just forgot to check the compass before checking the weather."</p>
+  </div>
+
+  <div class="adventure">
+    <div class="adv-step">
+      <h4>Map Your Four Points</h4>
+      <p>Write down your top three non-negotiable values. These are your North. If you cannot name them in under thirty seconds, you have been navigating without a compass.</p>
+    </div>
+    <div class="adv-step">
+      <h4>Identify Your Current Pull</h4>
+      <p>Think of the decision weighing on you right now. Which direction is it pulling you? North (values), East (growth), South (comfort), or West (obligation)?</p>
+    </div>
+    <div class="adv-step">
+      <h4>Name the Conflict</h4>
+      <p>Most hard decisions are hard because two directions are pulling simultaneously. Name the two directions. The compass does not eliminate the tension. It makes the tension legible.</p>
+    </div>
+    <div class="adv-step">
+      <h4>Check the Bearing</h4>
+      <p>Ask: "If I follow North, what happens?" Not "what might go wrong" but "does this align with who I said I am?" If yes, the bearing is true. Walk it.</p>
+    </div>
+  </div>
+
+  <div class="think">
+    <div class="think-label">Right Now</div>
+    <p>What decision are you facing right now? Write it down. Then underneath, write the direction each option points.</p>
+    <input class="q-line" placeholder="The decision:">
+    <input class="q-line" placeholder="Option A points: N / E / S / W">
+    <input class="q-line" placeholder="Option B points: N / E / S / W">
+  </div>
+
+  <div class="root-check">
+    <div class="rc-label">Root Check</div>
+    <ul>
+      <li>Every decision pulls in one of four directions: Values, Growth, Comfort, or Obligation</li>
+      <li>Hard decisions feel hard because two directions pull simultaneously</li>
+      <li>The compass does not eliminate tension. It makes it legible</li>
+      <li>If you cannot name your North in thirty seconds, you have been navigating blind</li>
+    </ul>
+  </div>
+
+  <!-- ===== CHAPTER 4 ===== -->
+  <div class="ch-head">
+    <div class="ch-num">Chapter Four</div>
+    <h2>The Declination</h2>
+  </div>
+
+  <p>Here is a fact that surprises most people: a compass does not point to true North.</p>
+  <p style="margin-top:14px">It points to <em>magnetic</em> North, which is a spot in the Canadian Arctic that shifts by about 55 kilometers every year. Depending on where you stand on Earth, the angle between true North and magnetic North can be anywhere from zero to twenty-five degrees. Navigators call this gap the <em>declination</em>.</p>
+  <p style="margin-top:14px">If you do not correct for declination, a journey of a thousand miles will end hundreds of miles from your target. The longer you travel on an uncalibrated compass, the farther you drift.</p>
+</div>
+
+<div class="page">
+  <div class="decl-diagram">
+    <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+      <!-- True North line -->
+      <line x1="150" y1="180" x2="150" y2="20" stroke="#4A6FA5" stroke-width="2" stroke-dasharray="6,4"/>
+      <text x="155" y="18" font-family="Nunito,sans-serif" font-size="11" font-weight="700" fill="#4A6FA5">True North</text>
+      <!-- Magnetic North line -->
+      <line x1="150" y1="180" x2="120" y2="25" stroke="#CC3333" stroke-width="2"/>
+      <text x="72" y="22" font-family="Nunito,sans-serif" font-size="11" font-weight="700" fill="#CC3333">Magnetic North</text>
+      <!-- Declination arc -->
+      <path d="M150 60 A40 40 0 0 0 136 62" fill="none" stroke="#C9A84C" stroke-width="2.5"/>
+      <text x="128" y="52" font-family="Poppins,sans-serif" font-size="12" font-weight="800" fill="#C9A84C">15&deg;</text>
+      <!-- Observer -->
+      <circle cx="150" cy="180" r="6" fill="#0A1628"/>
+      <text x="162" y="185" font-family="Nunito,sans-serif" font-size="10" fill="#5A6F87">You</text>
+      <!-- Drift illustration -->
+      <line x1="150" y1="20" x2="120" y2="25" stroke="#C9A84C" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+      <text x="175" y="100" font-family="Lora,serif" font-size="9" fill="#8A9AB0" font-style="italic">The gap widens</text>
+      <text x="175" y="112" font-family="Lora,serif" font-size="9" fill="#8A9AB0" font-style="italic">with every mile</text>
+    </svg>
+    <div class="decl-caption">Magnetic north and true north are not the same. The difference is called declination. Without correction, every step takes you further from where you intended to go.</div>
+  </div>
+
+  <p>Your life has a declination too.</p>
+  <p style="margin-top:14px">There is a gap between what you genuinely believe and what you have absorbed by default. Between your actual values and the magnetic pull of culture, upbringing, peer pressure, social media, and the thousand voices that told you what "North" should look like before you had the chance to decide for yourself.</p>
+  <p style="margin-top:14px">Magnetic North is not a lie. It is a real force. It genuinely pulls the needle. But it is not <em>true</em> North. The question every navigator must answer is: how many degrees off am I, and in which direction?</p>
+
+  <div class="data-row">
+    <div class="data-box">
+      <div class="data-num">0-25&deg;</div>
+      <div class="data-label">Physical Declination</div>
+      <p>The angle between magnetic and true north varies by location</p>
+    </div>
+    <div class="data-box">
+      <div class="data-num">?&deg;</div>
+      <div class="data-label">Your Declination</div>
+      <p>The gap between what you believe and what you absorbed</p>
+    </div>
+  </div>
+
+  <div class="scene">
+    <div class="scene-label">Scene Four</div>
+    <p>Solen had always believed he valued independence above all else. It was the story he told at every port. The self-made captain. Beholden to no one.</p>
+    <p>Aina listened to the story for three days before she said anything.</p>
+    <p>"You do not value independence," she said finally. "You value <em>approval</em>. You became a captain because your father was a captain. You chose this route because the guild expected it. You run from obligation by calling it independence, but you have never once asked yourself what you would choose if no one was watching."</p>
+    <p>Solen opened his mouth to argue. Then he closed it.</p>
+    <p>"<em>That</em>," Aina said, "is your declination."</p>
+  </div>
+
+  <div class="ba-grid">
+    <div class="ba-col before">
+      <div class="ba-label">Magnetic North (Absorbed)</div>
+      <ul>
+        <li>Success means a prestigious title</li>
+        <li>Rest is laziness</li>
+        <li>Saying no is selfish</li>
+        <li>More is always better</li>
+        <li>What people think of me matters most</li>
+      </ul>
+    </div>
+    <div class="ba-col after">
+      <div class="ba-label">True North (Chosen)</div>
+      <ul>
+        <li>Success means alignment with purpose</li>
+        <li>Rest is strategic and holy</li>
+        <li>Saying no protects what matters</li>
+        <li>Enough is the goal</li>
+        <li>What I know to be true matters most</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="think">
+    <div class="think-label">Something Just Happened</div>
+    <p>Read those two columns again. Slowly. One of those "Magnetic North" beliefs just tugged at you. You felt it. That tug is your declination showing itself. Name it.</p>
+    <input class="q-line" placeholder="The belief I absorbed but never chose:">
+    <input class="q-line" placeholder="What I actually believe when no one is watching:">
+  </div>
+
+  <div class="root-check">
+    <div class="rc-label">Root Check</div>
+    <ul>
+      <li>A compass does not point to true North. It points to magnetic North. The gap is the declination</li>
+      <li>Your "magnetic North" is what culture, family, and peers told you to value</li>
+      <li>Your "true North" is what you would choose if no one was watching</li>
+      <li>Without correcting for declination, every mile takes you further from your actual destination</li>
+      <li>The Four Points: Values (N), Growth (E), Comfort (S), Obligation (W)</li>
+    </ul>
+  </div>
+
+  <!-- ===== CHAPTER 5 ===== -->
+  <div class="ch-head">
+    <div class="ch-num">Chapter Five</div>
+    <h2>The Storm Test</h2>
+  </div>
+
+  <div class="scene">
+    <div class="scene-label">Scene Five</div>
+    <p>The storm hit on the fourth night.</p>
+    <p>The sky turned black at noon. The wind shifted from west to north to east in the space of an hour, as if the ocean could not decide which direction to punish them from. Rain fell sideways. The horizon vanished. Waves taller than the mast crashed over the bow, and the crew scrambled to reef the sails before the wind shredded them.</p>
+    <p>Solen's hands shook on the wheel. Every instinct screamed at him to turn, to run, to do <em>something</em>. But he could not see where "something" was. North was gone. South was gone. There was only the roar of water and the groan of wood.</p>
+    <p>Aina was standing beside the compass, one hand on the glass dome, steady as iron.</p>
+    <p>"The needle has not moved," she said.</p>
+    <p>Solen looked. Through the spray, through the chaos, the thin red needle was pointing exactly where it had pointed every day since they left port. North.</p>
+    <p>"<em>Hold the bearing,</em>" Aina said. "The storm is temporary. The bearing is not."</p>
+  </div>
+
+  <p style="margin-top:24px">The compass is most valuable precisely when it is hardest to trust. In calm weather, you do not need it. You can see the shore, the stars, the other ships. The compass merely confirms what your eyes already know.</p>
+  <p style="margin-top:14px">In a storm, the compass is the <em>only</em> instrument that still works. Everything else fails. Visibility fails. Communication fails. Experience fails because no two storms are alike. Emotion fails because fear is a compass that always points toward retreat.</p>
+  <p style="margin-top:14px">The needle does not care about the storm. It does not feel the waves. It points North because that is what it does, and it will keep doing it after every storm that has ever existed or ever will.</p>
+
+  <div class="storm-meter">
+    <div class="storm-bar">
+      <div class="sb-label">Calm Seas</div>
+      <div class="sb-track"><div class="sb-fill high" style="width:92%"></div></div>
+      <div class="sb-val">92%</div>
+    </div>
+    <div class="storm-bar">
+      <div class="sb-label">Light Fog</div>
+      <div class="sb-track"><div class="sb-fill high" style="width:78%"></div></div>
+      <div class="sb-val">78%</div>
+    </div>
+    <div class="storm-bar">
+      <div class="sb-label">Heavy Fog</div>
+      <div class="sb-track"><div class="sb-fill med" style="width:54%"></div></div>
+      <div class="sb-val">54%</div>
+    </div>
+    <div class="storm-bar">
+      <div class="sb-label">Storm</div>
+      <div class="sb-track"><div class="sb-fill low" style="width:31%"></div></div>
+      <div class="sb-val">31%</div>
+    </div>
+    <div class="storm-bar">
+      <div class="sb-label">Hurricane</div>
+      <div class="sb-track"><div class="sb-fill low" style="width:12%"></div></div>
+      <div class="sb-val">12%</div>
+    </div>
+    <p style="text-align:center;font-family:'Nunito',sans-serif;font-size:0.7rem;color:var(--text-muted);margin-top:8px">Decision accuracy without a compass, by conditions</p>
+  </div>
+
+  <div class="viz-box">
+    <div class="viz-label">The Three-Bearing Protocol</div>
+    <h3>For Decisions Made Under Pressure</h3>
+    <p>When the storm hits and you cannot see, run these three checks in order. They take sixty seconds. They replace an hour of panicked deliberation.</p>
+  </div>
+
+  <div class="flow">
+    <div class="flow-step">
+      <div class="flow-content">
+        <h4>Check the Compass</h4>
+        <p>Ask: "What do my values say about this?" Not your feelings. Not the opinions swirling around you. Your values. The ones you named as your North. If you have not named them yet, you are reading the storm report instead of the compass.</p>
+      </div>
+    </div>
+    <div class="flow-arrow">&#8595;</div>
+    <div class="flow-step">
+      <div class="flow-content">
+        <h4>Take a Bearing</h4>
+        <p>Ask: "What is the ONE next step that moves me North?" Not the five-year plan. Not the whole journey. One step. One bearing. The next landmark on the heading. That is all you need to see.</p>
+      </div>
+    </div>
+    <div class="flow-arrow">&#8595;</div>
+    <div class="flow-step">
+      <div class="flow-content">
+        <h4>Hold the Line</h4>
+        <p>Ask: "Can I hold this bearing for 24 hours without overcorrecting?" Storms create the urge to turn the wheel every thirty seconds. The compass says: pick a heading and hold it. The turbulence is temporary. The heading is not.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="scenario-row">
+    <div class="scenario">
+      <div class="sc-label">Storm: Career</div>
+      <h4>The Layoff</h4>
+      <p>You lost your job. Fear says take the first offer. The compass says: check if it points North before you accept.</p>
+      <div class="sc-bearing">Bearing: Does this role align with my values, or just my panic?</div>
+    </div>
+    <div class="scenario">
+      <div class="sc-label">Storm: Relationship</div>
+      <h4>The Betrayal</h4>
+      <p>Someone you trusted broke faith. Anger says burn the bridge. The compass says: respond from values, not from wounds.</p>
+      <div class="sc-bearing">Bearing: Who do I want to be on the other side of this?</div>
+    </div>
+    <div class="scenario">
+      <div class="sc-label">Storm: Financial</div>
+      <h4>The Market Crash</h4>
+      <p>Your portfolio dropped 40%. Fear says sell everything. The compass says: check if the plan was sound before the storm, then hold the bearing.</p>
+      <div class="sc-bearing">Bearing: Did my strategy change, or just the weather?</div>
+    </div>
+    <div class="scenario">
+      <div class="sc-label">Storm: Health</div>
+      <h4>The Diagnosis</h4>
+      <p>The doctor delivered bad news. Despair says give up. The compass says: take the next step North. One step. Then another.</p>
+      <div class="sc-bearing">Bearing: What does my North look like right now, in this body?</div>
+    </div>
+  </div>
+
+  <div class="grand-quote">
+    <blockquote>The storm is not the problem. The problem is dropping the compass because your hands are shaking.</blockquote>
+    <div class="attribution">Aina</div>
+  </div>
+
+  <div class="root-check">
+    <div class="rc-label">Root Check</div>
+    <ul>
+      <li>The compass is most valuable when it is hardest to trust</li>
+      <li>Fear is a compass that always points toward retreat</li>
+      <li>The Three-Bearing Protocol: Check the compass, take a bearing, hold the line</li>
+      <li>One step North is the only instruction you need in a storm</li>
+      <li>Declination: correct for absorbed values vs chosen values</li>
+      <li>The Four Points: Values (N), Growth (E), Comfort (S), Obligation (W)</li>
+    </ul>
+  </div>
+
+  <!-- ===== CHAPTER 6 ===== -->
+  <div class="ch-head">
+    <div class="ch-num">Chapter Six</div>
+    <h2>The Bearing</h2>
+  </div>
+
+  <p>A compass does not show you the destination. It shows you the direction. The rest is done one bearing at a time.</p>
+  <p style="margin-top:14px">Here is how a navigator actually uses a compass in the field. Not the theory. The practice.</p>
+  <p style="margin-top:14px">You stand where you are. You hold the compass level. You rotate the bezel until the needle aligns with North. Then you look along your desired heading and find the farthest visible landmark on that line. A tree. A ridge. A tower. That landmark becomes your target. You walk to it. When you arrive, you take a new bearing. You find the next landmark. You walk to it.</p>
+  <p style="margin-top:14px">You never see the destination. You see the next landmark. That is enough. That has always been enough.</p>
+
+  <div class="scene">
+    <div class="scene-label">Scene Six</div>
+    <p>The storm passed in the night. Dawn arrived clean and golden, the sea flattened to glass. Solen stood on deck and looked out at a horizon he did not recognize.</p>
+    <p>"Where are we?" he asked.</p>
+    <p>"We are where the bearing put us," Aina said. She pointed to a faint smudge of land on the eastern horizon. "That is Cape Aldara. Fourteen miles from the harbor we need."</p>
+    <p>Solen stared. "We held the bearing through a hurricane and arrived fourteen miles from the target?"</p>
+    <p>"We arrived fourteen miles from the target <em>because</em> we held the bearing through the hurricane. If you had turned the wheel every time a wave scared you, we would be two hundred miles south, taking on water."</p>
+    <p>Aina tapped the compass. The needle was still pointing North.</p>
+    <p>"Fourteen miles is a morning's sail," she said. "Two hundred miles is a disaster. <em>The difference was not skill. It was the bearing.</em>"</p>
+  </div>
+
+  <div class="viz-box">
+    <div class="viz-label">The 90-Day Bearing Protocol</div>
+    <h3>Navigate Your Next Quarter by Compass</h3>
+    <p>You do not need a five-year plan. You need a 90-day bearing with three landmarks.</p>
+  </div>
+
+  <div class="flow">
+    <div class="flow-step">
+      <div class="flow-content">
+        <h4>Set the Direction</h4>
+        <p>Choose one area of your life (career, health, relationships, faith, finances). State the direction, not the destination. "I am heading North in my finances" means "I am aligning my financial decisions with my values." It does not mean "I will have $50,000 saved."</p>
+      </div>
+    </div>
+    <div class="flow-arrow">&#8595;</div>
+    <div class="flow-step">
+      <div class="flow-content">
+        <h4>Pick Three Landmarks</h4>
+        <p>Identify three visible, achievable milestones on your heading. These are not goals. They are landmarks. You walk to the first one, take a new bearing, and walk to the next. If the terrain changes, the landmarks change. The direction does not.</p>
+      </div>
+    </div>
+    <div class="flow-arrow">&#8595;</div>
+    <div class="flow-step">
+      <div class="flow-content">
+        <h4>Walk to Landmark One</h4>
+        <p>Ignore everything that is not the next landmark. The mountain behind it is not your problem today. The valley to the left is not your problem today. One landmark. One bearing. One step at a time.</p>
+      </div>
+    </div>
+    <div class="flow-arrow">&#8595;</div>
+    <div class="flow-step">
+      <div class="flow-content">
+        <h4>Take a New Bearing</h4>
+        <p>When you reach the first landmark, stop. Pull out the compass. Check the heading. The direction may not have changed but the terrain has. Find the next landmark and walk.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ba-grid">
+    <div class="ba-col before">
+      <div class="ba-label">The Old Way</div>
+      <ul>
+        <li>Set a rigid 5-year goal</li>
+        <li>Panic when the path changes</li>
+        <li>Judge progress by distance to destination</li>
+        <li>Abandon the plan when life happens</li>
+      </ul>
+    </div>
+    <div class="ba-col after">
+      <div class="ba-label">The Bearing Way</div>
+      <ul>
+        <li>Set a direction and three landmarks</li>
+        <li>Adjust landmarks when terrain changes</li>
+        <li>Judge progress by alignment with heading</li>
+        <li>Hold the direction when life happens</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="think">
+    <div class="think-label">This Is Happening to You Right Now</div>
+    <p>Pick one area of your life. Set a direction (not a destination). Name three landmarks you can see from where you stand right now.</p>
+    <input class="q-line" placeholder="Area:">
+    <input class="q-line" placeholder="Direction (heading North means...):">
+    <input class="q-line" placeholder="Landmark 1:">
+    <input class="q-line" placeholder="Landmark 2:">
+    <input class="q-line" placeholder="Landmark 3:">
+  </div>
+
+  <!-- ===== CHAPTER 7 ===== -->
+  <div class="ch-head">
+    <div class="ch-num">Chapter Seven</div>
+    <h2>Your Compass Rose</h2>
+  </div>
+
+  <p>A compass is only useful if you calibrate it. A set of values is only useful if you name them, test them, and check them regularly. This chapter is the calibration.</p>
+
+  <div class="viz-box" style="border-color:rgba(201,168,76,0.25)">
+    <div class="viz-label">Week One</div>
+    <h3>Name Your North</h3>
+    <p>Write down three to five values that you would hold even if they cost you money, status, or comfort. Not aspirational values. Actual values. The ones you have already proven with your behavior, or the ones you are willing to start proving today.</p>
+    <p>Test each one: "Would I hold this value if no one was watching and no one would ever know?" If yes, it is North. If no, it is magnetic North. Note the difference.</p>
+  </div>
+
+  <div class="viz-box" style="border-color:rgba(74,111,165,0.2)">
+    <div class="viz-label">Week Two</div>
+    <h3>Map Your Four Points</h3>
+    <p>For each active area of your life (career, health, relationships, faith, finances), identify which direction your current behavior points. Are you heading North (values), East (growth), South (comfort), or West (obligation)?</p>
+    <p>No judgment. Just data. The compass does not judge South. It simply tells you that you are heading South. What you do with that information is your decision.</p>
+  </div>
+
+  <div class="viz-box" style="border-color:rgba(201,168,76,0.25)">
+    <div class="viz-label">Week Three</div>
+    <h3>Calculate Your Declination</h3>
+    <p>List the beliefs you absorbed by default: from family, culture, industry, social media, peer groups. Next to each one, write what you actually believe. The gap between the two columns is your declination. Some gaps will be small. Some will be twenty-five degrees. Name them all.</p>
+  </div>
+
+  <div class="viz-box" style="border-color:rgba(74,111,165,0.2)">
+    <div class="viz-label">Week Four</div>
+    <h3>Take Your First Bearing</h3>
+    <p>Choose the area of your life with the widest declination. Set a direction. Pick three landmarks. Walk to the first one. When you arrive, take a new bearing. You are navigating.</p>
+  </div>
+
+  <div class="data-row">
+    <div class="data-box">
+      <div class="data-num">30</div>
+      <div class="data-label">Days</div>
+      <p>To calibrate your compass and take your first bearing</p>
+    </div>
+    <div class="data-box">
+      <div class="data-num">4</div>
+      <div class="data-label">Directions</div>
+      <p>Every decision maps to Values, Growth, Comfort, or Obligation</p>
+    </div>
+    <div class="data-box">
+      <div class="data-num">3</div>
+      <div class="data-label">Landmarks</div>
+      <p>All you need to see for a 90-day bearing</p>
+    </div>
+  </div>
+
+  <div class="think">
+    <div class="think-label">You Already Have the Map</div>
+    <p>You are not learning something new. You are remembering something you always knew. The compass was always inside you. The needle was always pointing North. You just stopped looking at it when the noise got loud.</p>
+    <p>Look at it now.</p>
+    <input class="q-line" placeholder="My North (3 values):">
+    <input class="q-line" placeholder="My biggest declination:">
+    <input class="q-line" placeholder="My first bearing:">
+  </div>
+
+  <div class="root-check">
+    <div class="rc-label">Root Check (Complete)</div>
+    <ul>
+      <li>Most decisions fail from lack of a fixed reference point, not lack of information</li>
+      <li>The Four Points: Values (N), Growth (E), Comfort (S), Obligation (W)</li>
+      <li>Declination: the gap between absorbed values and chosen values</li>
+      <li>The Three-Bearing Protocol: Check, Take, Hold</li>
+      <li>Navigate by landmarks, not destinations. You only need to see the next one</li>
+      <li>Calibrate weekly: Name your North, map your directions, check your declination, take a bearing</li>
+      <li>The compass works in fog, storms, and darkness. That is when you need it most</li>
+    </ul>
+  </div>
+
+  <!-- ===== FINAL TEST ===== -->
+  <div class="final-test">
+    <div class="ft-label">Final Test</div>
+    <h3>Can you answer these without looking back?</h3>
+    <ol>
+      <li>What are the four cardinal directions of the decision compass?</li>
+      <li>What is declination, and what is it in your life?</li>
+      <li>What are the three steps of the Three-Bearing Protocol?</li>
+      <li>Why does a compass navigator use landmarks instead of destinations?</li>
+      <li>When is a compass most valuable?</li>
+      <li>What did Aina say the difference was between fourteen miles and two hundred miles?</li>
+      <li>What is the difference between magnetic North and true North in your own life?</li>
+    </ol>
+  </div>
+
+  <!-- ===== PROMPT CARD ===== -->
+  <div class="prompt-card">
+    <div class="pc-label">Continue Learning with AI</div>
+    <p>Copy this prompt into Claude, ChatGPT, or your preferred AI to deepen the compass work:</p>
+    <div class="prompt-text">
+      I just finished reading The Compass Rose by Kingdom Builders AI. I want to calibrate my personal compass. Help me by asking one question at a time. Start by helping me identify my top 3-5 core values (my "North"). Then help me map my Four Points across career, health, relationships, and finances. Then help me find my biggest declination (where what I absorbed differs from what I actually believe). Finally, help me set a 90-day bearing with three landmarks. Be direct. Challenge me if my answers sound like magnetic North instead of true North.
+    </div>
+  </div>
+</div>
+
+<!-- ===== FINALE ===== -->
+<section class="finale">
+  <div class="ghost-noise"></div>
+  <svg><use href="#compass-sm"/></svg>
+  <h2>Stop Looking for the <strong>Destination.</strong></h2>
+  <p>Find North. Take a bearing. Walk.</p>
+  <p style="margin-top:12px">The needle has not moved. It never will.</p>
+</section>
+
+<div class="footer-ribbon">
+  <p>"Whether you turn to the right or to the left, your ears will hear a voice behind you, saying, 'This is the way; walk in it.'" — Isaiah 30:21</p>
+</div>
+
+<footer>
+  <div class="brand">KingdomBuilders AI</div>
+</footer>
+
+</body>
+</html>

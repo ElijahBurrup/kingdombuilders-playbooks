@@ -148,6 +148,11 @@ def the_horses_gait():
     return send_from_directory("static", "the-horses-gait.html")
 
 
+@app.route("/thecompassrose")
+def the_compass_rose():
+    return send_from_directory("static", "the-compass-rose.html")
+
+
 # --- A Process Model Series ---
 @app.route("/thetidepoolsecho")
 def the_tide_pools_echo():
@@ -214,6 +219,7 @@ def read_playbook(slug):
         "the-elephants-ground": "The_Elephants_Ground.html",
         "the-bees-dance": "The_Bees_Dance.html",
         "the-otters-play": "The_Otters_Play.html",
+        "the-compass-rose": "The_Compass_Rose.html",
     }
     filename = slug_to_file.get(slug)
     if not filename:
