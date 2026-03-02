@@ -161,6 +161,11 @@ def lay_it_down_envy():
     return send_from_directory("static", "lay-it-down-envy.html")
 
 
+@bp.route("/layitdownwrath")
+def lay_it_down_wrath():
+    return send_from_directory("static", "lay-it-down-wrath.html")
+
+
 # --- A Process Model Series ---
 @bp.route("/thetidepoolsecho")
 def the_tide_pools_echo():
@@ -230,6 +235,7 @@ def read_playbook(slug):
         "the-compass-rose": "The_Compass_Rose.html",
         "lay-it-down-pride": "Lay_It_Down_Pride.html",
         "lay-it-down-envy": "Lay_It_Down_Envy.html",
+        "lay-it-down-wrath": "Lay_It_Down_Wrath.html",
     }
     filename = slug_to_file.get(slug)
     if not filename:
