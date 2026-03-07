@@ -17,23 +17,6 @@ from starlette.templating import Jinja2Templates
 
 from api.config import settings
 
-
-# ---------------------------------------------------------------------------
-# Helper: serve an HTML file with URL_PREFIX link rewriting
-# ---------------------------------------------------------------------------
-def _html_file_response(file_path: Path) -> HTMLResponse:
-    """Return an HTMLResponse, rewriting absolute links if URL_PREFIX is set."""
-    text = file_path.read_text(encoding="utf-8")
-    prefix = settings.URL_PREFIX
-    if prefix:
-        text = text.replace('href="/', f'href="{prefix}/')
-        text = text.replace("href='/", f"href='{prefix}/")
-        text = text.replace('src="/', f'src="{prefix}/')
-        text = text.replace("src='/", f"src='{prefix}/")
-        text = text.replace('action="/', f'action="{prefix}/')
-        text = text.replace("action='/", f"action='{prefix}/")
-    return HTMLResponse(content=text)
-
 # ---------------------------------------------------------------------------
 # Directory paths — BASE_DIR is the Playbooks project root
 # legacy.py lives at  api/routers/legacy.py
@@ -152,7 +135,7 @@ SLUG_TO_FILE: dict[str, str] = {
 # ============================================================================
 @router.get("/", include_in_schema=False)
 async def catalog():
-    return _html_file_response(STATIC_DIR / "index.html")
+    return FileResponse(STATIC_DIR / "index.html")
 
 
 @router.get("/health", include_in_schema=False)
@@ -169,7 +152,7 @@ def _make_landing_handler(filename: str):
         file_path = STATIC_DIR / filename
         if not file_path.is_file():
             raise HTTPException(status_code=404, detail=f"Landing page not found: {filename}")
-        return _html_file_response(file_path)
+        return FileResponse(file_path)
     return handler
 
 
@@ -209,7 +192,7 @@ async def read_playbook(request: Request, slug: str):
             },
             status_code=404,
         )
-    return _html_file_response(file_path)
+    return FileResponse(file_path)
 
 
 # ============================================================================
@@ -239,12 +222,12 @@ async def subscribe_form(
 
 @router.get("/thanks", include_in_schema=False)
 async def thanks():
-    return _html_file_response(STATIC_DIR / "thanks.html")
+    return FileResponse(STATIC_DIR / "thanks.html")
 
 
 @router.get("/free/salmon-journey-ch1", include_in_schema=False)
 async def free_salmon_ch1():
-    return _html_file_response(STATIC_DIR / "free-salmon-ch1.html")
+    return FileResponse(STATIC_DIR / "free-salmon-ch1.html")
 
 
 # ============================================================================
@@ -454,14 +437,14 @@ async def download(request: Request, token: str):
 # ============================================================================
 @router.get("/terms", include_in_schema=False)
 async def terms():
-    return _html_file_response(STATIC_DIR / "terms.html")
+    return FileResponse(STATIC_DIR / "terms.html")
 
 
 @router.get("/privacy", include_in_schema=False)
 async def privacy():
-    return _html_file_response(STATIC_DIR / "privacy.html")
+    return FileResponse(STATIC_DIR / "privacy.html")
 
 
 @router.get("/refund", include_in_schema=False)
 async def refund():
-    return _html_file_response(STATIC_DIR / "refund.html")
+    return FileResponse(STATIC_DIR / "refund.html")
