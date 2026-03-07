@@ -2,20 +2,6 @@
 const { test, expect } = require("@playwright/test");
 
 /**
- * URL prefix — extracted from BASE_URL env var.
- * e.g. BASE_URL=https://kingdombuilders.ai/playbooks → prefix="/playbooks"
- */
-const baseUrl = process.env.BASE_URL || "";
-const prefix = (() => {
-  try {
-    const u = new URL(baseUrl);
-    return u.pathname.replace(/\/$/, "");
-  } catch {
-    return "";
-  }
-})();
-
-/**
  * Master registry of all playbooks.
  * When adding a new playbook via SetHut, add an entry here.
  */
@@ -291,7 +277,7 @@ test.describe("Catalog Page", () => {
 
     // Verify every playbook has a card in the catalog
     for (const pb of PLAYBOOKS) {
-      const card = page.locator(`a.card[href="${prefix}${pb.route}"]`);
+      const card = page.locator(`a.card[href="${pb.route.slice(1)}"]`);
       await expect(card).toBeVisible();
       await expect(card).toContainText(pb.catalogTitle || pb.title);
     }
@@ -306,9 +292,9 @@ test.describe("Catalog Page", () => {
   test("all catalog card links are clickable and resolve", async ({ page }) => {
     await page.goto("/");
     for (const pb of PLAYBOOKS) {
-      const card = page.locator(`a.card[href="${prefix}${pb.route}"]`);
+      const card = page.locator(`a.card[href="${pb.route.slice(1)}"]`);
       const href = await card.getAttribute("href");
-      expect(href).toBe(`${prefix}${pb.route}`);
+      expect(href).toBe(pb.route.slice(1));
     }
   });
 });
@@ -338,7 +324,7 @@ test.describe("Landing Pages", () => {
         await expect(checkoutBtn).toBeVisible();
       } else {
         // Every other landing page should have a link to /read/<slug>
-        const ctaLink = page.locator(`a[href="${prefix}/read/${pb.readerSlug}"]`);
+        const ctaLink = page.locator(`a[href="read/${pb.readerSlug}"]`);
         await expect(ctaLink).toBeVisible();
       }
     });
@@ -375,7 +361,7 @@ test.describe("Full Navigation Flow", () => {
       await page.goto("/");
 
       // Step 2: Click the playbook card
-      const card = page.locator(`a.card[href="${prefix}${pb.route}"]`);
+      const card = page.locator(`a.card[href="${pb.route.slice(1)}"]`);
       await card.click();
       await page.waitForURL(`**${pb.route}`);
       expect(page.url()).toContain(pb.route);
@@ -384,7 +370,7 @@ test.describe("Full Navigation Flow", () => {
       if (pb.readerSlug === "conductors-playbook") {
         await page.goto(`/read/${pb.readerSlug}`);
       } else {
-        const ctaLink = page.locator(`a[href="${prefix}/read/${pb.readerSlug}"]`);
+        const ctaLink = page.locator(`a[href="read/${pb.readerSlug}"]`);
         await ctaLink.click();
         await page.waitForURL(`**/read/${pb.readerSlug}`);
       }
