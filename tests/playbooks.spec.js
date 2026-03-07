@@ -222,6 +222,42 @@ const PLAYBOOKS = [
     readerSlug: "the-mockingbirds-song",
     tag: "Technology",
   },
+  {
+    title: "Dad Talks: The Dopamine Drought",
+    route: "/dadtalksthedopaminedrought",
+    readerSlug: "dad-talks-the-dopamine-drought",
+    tag: "Parenting",
+  },
+  {
+    title: "Dad Talks: The Mirror Test",
+    route: "/dadtalksthemirrortest",
+    readerSlug: "dad-talks-the-mirror-test",
+    tag: "Parenting",
+  },
+  {
+    title: "The Arrival",
+    route: "/thearrival",
+    readerSlug: "the-arrival",
+    tag: "Faith",
+  },
+  {
+    title: "The Body Lie",
+    route: "/thebodylie",
+    readerSlug: "the-body-lie",
+    tag: "Mindset",
+  },
+  {
+    title: "The Mycelium Network",
+    route: "/themyceliumnetwork",
+    readerSlug: "the-mycelium-network",
+    tag: "Technology",
+  },
+  {
+    title: "The Jacquard Thread",
+    route: "/thejacquardthread",
+    readerSlug: "the-jacquard-thread",
+    tag: "Technology",
+  },
 ];
 
 // ── Catalog Page ──────────────────────────────────────────────

@@ -10,7 +10,6 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
 from api.config import settings
@@ -82,46 +81,18 @@ def create_app() -> FastAPI:
     if ASSETS_DIR.is_dir():
         app.mount("/assets", StaticFiles(directory=str(ASSETS_DIR)), name="assets")
 
-    # --- URL_PREFIX middleware (for subpath deployment like /playbooks) ---
-    # Strips the prefix from incoming request paths AND rewrites HTML links
-    # so the app works behind a reverse proxy that adds a path prefix.
+    # --- URL_PREFIX: mount legacy routes under prefix for subpath deployment ---
+    # Cloudflare Worker sends /playbooks/* so we mount the legacy router
+    # again under the prefix so routes match both with and without it.
     if settings.URL_PREFIX:
-        from starlette.middleware.base import BaseHTTPMiddleware
-        from starlette.requests import Request
-        from starlette.responses import Response
+        app.include_router(legacy_router, prefix=settings.URL_PREFIX)
 
-        class URLPrefixMiddleware(BaseHTTPMiddleware):
-            async def dispatch(self, request: Request, call_next):
-                # Strip prefix from incoming path so routes match
-                prefix = settings.URL_PREFIX
-                path = request.scope.get("path", "")
-                if path.startswith(prefix + "/"):
-                    request.scope["path"] = path[len(prefix):]
-                elif path == prefix:
-                    request.scope["path"] = "/"
+        # Also mount static/assets under the prefix
+        if STATIC_DIR.is_dir():
+            app.mount(f"{settings.URL_PREFIX}/static", StaticFiles(directory=str(STATIC_DIR)), name="prefixed_static")
+        if ASSETS_DIR.is_dir():
+            app.mount(f"{settings.URL_PREFIX}/assets", StaticFiles(directory=str(ASSETS_DIR)), name="prefixed_assets")
 
-                response: Response = await call_next(request)
-
-                # Rewrite links in HTML responses to include the prefix
-                if response.headers.get("content-type", "").startswith("text/html"):
-                    body = b""
-                    async for chunk in response.body_iterator:
-                        if isinstance(chunk, str):
-                            body += chunk.encode()
-                        else:
-                            body += chunk
-                    text = body.decode()
-                    text = text.replace('href="/', f'href="{prefix}/')
-                    text = text.replace("href='/", f"href='{prefix}/")
-                    text = text.replace('src="/', f'src="{prefix}/')
-                    text = text.replace("src='/", f"src='{prefix}/")
-                    text = text.replace('action="/', f'action="{prefix}/')
-                    text = text.replace("action='/", f"action='{prefix}/")
-                    return HTMLResponse(content=text, status_code=response.status_code,
-                                        headers=dict(response.headers))
-                return response
-
-        app.add_middleware(URLPrefixMiddleware)
 
     return app
 
