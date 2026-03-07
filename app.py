@@ -197,6 +197,11 @@ def the_otters_play():
     return send_from_directory("static", "the-otters-play.html")
 
 
+@bp.route("/themockingbirdssong")
+def the_mockingbirds_song():
+    return send_from_directory("static", "the-mockingbirds-song.html")
+
+
 # --- Playbook Reader (serves full playbook HTML from assets) ---
 @bp.route("/read/<slug>")
 def read_playbook(slug):
@@ -236,6 +241,7 @@ def read_playbook(slug):
         "lay-it-down-pride": "Lay_It_Down_Pride.html",
         "lay-it-down-envy": "Lay_It_Down_Envy.html",
         "lay-it-down-wrath": "Lay_It_Down_Wrath.html",
+        "the-mockingbirds-song": "The_Mockingbirds_Song.html",
     }
     filename = slug_to_file.get(slug)
     if not filename:

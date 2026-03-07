@@ -216,6 +216,12 @@ const PLAYBOOKS = [
     readerSlug: "the-otters-play",
     tag: "Philosophy",
   },
+  {
+    title: "The Mockingbird\u2019s Song",
+    route: "/themockingbirdssong",
+    readerSlug: "the-mockingbirds-song",
+    tag: "Technology",
+  },
 ];
 
 // ── Catalog Page ──────────────────────────────────────────────

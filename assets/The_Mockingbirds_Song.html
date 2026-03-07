@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Mockingbird's Song | Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --indigo:#141E30;--indigo-deep:#0D1420;--indigo-mid:#1A2744;--indigo-light:#243554;--indigo-pale:#2E4068;
+ --amber:#D4943A;--amber-glow:#E8B05A;--amber-pale:#F2D8A0;--amber-soft:rgba(212,148,58,0.08);
+ --silver:#8A9BB0;--silver-light:#B0BEC5;--silver-pale:#D8E0E8;
+ --cream:#FAFAF5;--cream-warm:#F5F0E8;--cream-deep:#E8E0D0;
+ --text:#1A1E2E;--text-light:#3A4058;--text-muted:#6A7088;
+ --white:#FFFFFF;--radius:16px;
+ --shadow-soft:0 2px 16px rgba(20,30,48,0.08);
+ --shadow-mid:0 4px 28px rgba(20,30,48,0.12);
+ --before-bg:#FFF5EE;--before-border:#D4943A;--before-text:#5A3000;
+ --after-bg:#EEF2F8;--after-border:#4A6FA5;--after-text:#1A2744
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--cream);line-height:1.82;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
+.page{max-width:720px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--indigo);font-weight:700}
+.prose h2{font-size:1.4rem;color:var(--indigo);margin:40px 0 16px;letter-spacing:-0.01em;display:flex;align-items:center;gap:10px}
+
+/* ===== COVER ===== */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;
+ background:linear-gradient(175deg,#080E18 0%,#0D1420 20%,var(--indigo) 45%,var(--indigo-mid) 70%,#0D1420 100%);
+ position:relative;overflow:hidden}
+/* Sound wave lines */
+.wave-line{position:absolute;width:100%;height:2px;background:linear-gradient(90deg,transparent 0%,rgba(212,148,58,0.15) 30%,rgba(212,148,58,0.25) 50%,rgba(212,148,58,0.15) 70%,transparent 100%);animation:wave-drift linear infinite;pointer-events:none;opacity:0}
+.wave-line:nth-child(1){top:15%;animation-duration:8s;animation-delay:0s}
+.wave-line:nth-child(2){top:25%;animation-duration:12s;animation-delay:-3s;height:1px}
+.wave-line:nth-child(3){top:38%;animation-duration:10s;animation-delay:-6s}
+.wave-line:nth-child(4){top:52%;animation-duration:14s;animation-delay:-2s;height:1px}
+.wave-line:nth-child(5){top:65%;animation-duration:9s;animation-delay:-5s}
+.wave-line:nth-child(6){top:78%;animation-duration:11s;animation-delay:-8s;height:1px}
+.wave-line:nth-child(7){top:88%;animation-duration:13s;animation-delay:-1s}
+@keyframes wave-drift{
+ 0%{transform:translateX(-100%);opacity:0}
+ 10%{opacity:0.6}
+ 90%{opacity:0.5}
+ 100%{transform:translateX(100%);opacity:0}
+}
+/* Note particles */
+.note{position:absolute;width:6px;height:6px;border-radius:50%;background:rgba(232,176,90,0.6);animation:note-float ease-in-out infinite;pointer-events:none}
+.note:nth-child(8){top:20%;left:12%;animation-duration:5s;animation-delay:0s}
+.note:nth-child(9){top:45%;right:18%;animation-duration:7s;animation-delay:-2s;width:4px;height:4px}
+.note:nth-child(10){top:70%;left:30%;animation-duration:6s;animation-delay:-4s}
+.note:nth-child(11){top:35%;right:35%;animation-duration:8s;animation-delay:-1s;width:3px;height:3px}
+.note:nth-child(12){top:80%;right:10%;animation-duration:5.5s;animation-delay:-3s}
+@keyframes note-float{0%,100%{transform:translate(0,0);opacity:0.2}25%{transform:translate(15px,-20px);opacity:1}50%{transform:translate(-8px,8px);opacity:0.3}75%{transform:translate(12px,5px);opacity:0.8}}
+.ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.015;mix-blend-mode:overlay;pointer-events:none}
+.cover-content{position:relative;z-index:2;padding:48px 24px}
+.cover-badge{display:inline-block;padding:6px 22px;border:1px solid rgba(212,148,58,0.3);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--amber-glow);margin-bottom:36px}
+.cover-art{margin-bottom:20px;display:block;animation:bird-breathe 4s ease-in-out infinite}
+@keyframes bird-breathe{0%,100%{transform:scale(1) translateY(0)}50%{transform:scale(1.02) translateY(-6px)}}
+.cover h1{font-family:'Nunito',sans-serif;font-size:clamp(2.2rem,6vw,3.8rem);font-weight:900;color:var(--white);line-height:1.08;margin-bottom:4px}
+.cover h1 strong{font-weight:900;color:var(--amber-glow);display:block;font-size:clamp(2.6rem,7vw,4.4rem)}
+.cover-tagline{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.5);margin-top:24px;line-height:1.75}
+.cover-tagline em{color:var(--amber-pale);font-style:normal;font-weight:600}
+.cover-sub{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-top:12px}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.58rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,0.15);margin-top:48px}
+
+/* ===== CHAPTER HEADS ===== */
+.ch-head{background:linear-gradient(170deg,var(--indigo-deep),var(--indigo-mid));padding:72px 24px 52px;position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D4943A' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.ch-badge{display:inline-block;padding:4px 16px;background:rgba(212,148,58,0.1);border:1px solid rgba(212,148,58,0.25);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;color:var(--amber-pale);margin-bottom:20px}
+.ch-num{font-family:'Nunito',sans-serif;font-size:5.5rem;font-weight:900;line-height:0.9;color:rgba(212,148,58,0.15);margin-bottom:-10px}
+.ch-title{font-family:'Nunito',sans-serif;font-size:2.1rem;font-weight:900;color:var(--white);line-height:1.15;letter-spacing:-0.02em;margin-bottom:10px}
+.ch-sub{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.4);line-height:1.6}
+
+/* ===== RIBBON (scripture) ===== */
+.ribbon{text-align:center;padding:22px 24px;background:linear-gradient(135deg,rgba(212,148,58,0.04),rgba(212,148,58,0.07));border-top:1.5px solid rgba(212,148,58,0.15);border-bottom:1.5px solid rgba(212,148,58,0.15)}
+.ribbon p{font-family:'Lora',serif;font-size:0.82rem;font-style:italic;color:var(--text-muted);max-width:520px;margin:0 auto}
+.ribbon .ref{font-weight:600;color:var(--amber);font-style:normal}
+
+/* ===== CHARACTER CARDS ===== */
+.char-grid{display:grid;gap:24px;margin:40px 0}
+@media(min-width:640px){.char-grid{grid-template-columns:1fr 1fr}}
+.char-card{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft);transition:all 0.3s ease}
+.char-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-mid)}
+.char-head{background:linear-gradient(135deg,var(--amber-soft),rgba(212,148,58,0.03));padding:18px 20px;border-bottom:1px solid var(--cream-deep);display:flex;align-items:center;gap:14px}
+.char-emoji{font-size:2rem;line-height:1;display:flex;align-items:center;justify-content:center}
+.char-name{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;color:var(--indigo);line-height:1.25}
+.char-title{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-top:2px}
+.char-body{padding:20px}
+.char-body p{font-size:0.92rem;color:var(--text-light);line-height:1.75;margin:0}
+
+/* ===== SCENE BLOCKS ===== */
+.scene{background:linear-gradient(135deg,var(--cream-warm),var(--cream));border:1px solid var(--cream-deep);border-radius:var(--radius);padding:28px;margin:32px 0;box-shadow:var(--shadow-soft)}
+.scene-label{font-family:'Nunito',sans-serif;font-size:0.68rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--amber);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.scene h4{font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:800;color:var(--indigo);margin-bottom:14px;line-height:1.3}
+.scene p{font-size:0.95rem;color:var(--text-light);line-height:1.78;margin-bottom:14px}
+.scene p:last-child{margin-bottom:0}
+
+/* ===== BEFORE / AFTER ===== */
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:36px 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft)}
+@media(max-width:600px){.ba-grid{grid-template-columns:1fr}}
+.ba-col{padding:28px 24px}
+.ba-col.before{background:var(--before-bg);border-right:2px solid var(--cream-deep)}
+.ba-col.after{background:var(--after-bg)}
+@media(max-width:600px){.ba-col.before{border-right:none;border-bottom:2px solid var(--cream-deep)}}
+.ba-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px}
+.ba-col.before .ba-label{color:var(--before-border)}
+.ba-col.after .ba-label{color:var(--after-border)}
+.ba-col h4{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;margin-bottom:10px;line-height:1.3}
+.ba-col.before h4{color:var(--before-text)}
+.ba-col.after h4{color:var(--after-text)}
+.ba-col p{font-size:0.88rem;line-height:1.7;margin-bottom:8px}
+.ba-col.before p{color:#6A4020}
+.ba-col.after p{color:#2A3A5A}
+.ba-col ul{list-style:none;padding:0;margin:0}
+.ba-col ul li{font-size:0.88rem;line-height:1.7;padding:4px 0 4px 18px;position:relative}
+.ba-col.before ul li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:8px;border-radius:50%;background:var(--before-border);opacity:0.5}
+.ba-col.after ul li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:8px;border-radius:50%;background:var(--after-border);opacity:0.5}
+
+/* ===== DATA BOXES ===== */
+.data-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin:32px 0}
+.data-box{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:24px 16px;text-align:center;box-shadow:var(--shadow-soft)}
+.data-num{font-family:'Nunito',sans-serif;font-size:2rem;font-weight:900;color:var(--amber);line-height:1;margin-bottom:6px}
+.data-label{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+
+/* ===== SOUND WAVE VISUALIZER ===== */
+.wave-viz{display:flex;align-items:center;justify-content:center;gap:3px;height:80px;margin:32px 0;padding:20px;background:var(--indigo-deep);border-radius:var(--radius);overflow:hidden}
+.wave-bar{width:4px;border-radius:2px;background:linear-gradient(to top,var(--amber),var(--amber-glow));animation:wave-pulse ease-in-out infinite alternate}
+.wave-bar:nth-child(1){height:20%;animation-duration:0.8s;animation-delay:0s}
+.wave-bar:nth-child(2){height:45%;animation-duration:0.6s;animation-delay:0.1s}
+.wave-bar:nth-child(3){height:70%;animation-duration:0.7s;animation-delay:0.2s}
+.wave-bar:nth-child(4){height:35%;animation-duration:0.5s;animation-delay:0.05s}
+.wave-bar:nth-child(5){height:90%;animation-duration:0.9s;animation-delay:0.15s}
+.wave-bar:nth-child(6){height:55%;animation-duration:0.65s;animation-delay:0.25s}
+.wave-bar:nth-child(7){height:40%;animation-duration:0.75s;animation-delay:0.1s}
+.wave-bar:nth-child(8){height:80%;animation-duration:0.55s;animation-delay:0.2s}
+.wave-bar:nth-child(9){height:30%;animation-duration:0.85s;animation-delay:0.05s}
+.wave-bar:nth-child(10){height:65%;animation-duration:0.7s;animation-delay:0.15s}
+.wave-bar:nth-child(11){height:50%;animation-duration:0.6s;animation-delay:0.25s}
+.wave-bar:nth-child(12){height:85%;animation-duration:0.8s;animation-delay:0s}
+.wave-bar:nth-child(13){height:25%;animation-duration:0.55s;animation-delay:0.1s}
+.wave-bar:nth-child(14){height:60%;animation-duration:0.75s;animation-delay:0.2s}
+.wave-bar:nth-child(15){height:45%;animation-duration:0.65s;animation-delay:0.05s}
+.wave-bar:nth-child(16){height:75%;animation-duration:0.9s;animation-delay:0.15s}
+.wave-bar:nth-child(17){height:35%;animation-duration:0.5s;animation-delay:0.25s}
+.wave-bar:nth-child(18){height:55%;animation-duration:0.7s;animation-delay:0.1s}
+.wave-bar:nth-child(19){height:70%;animation-duration:0.6s;animation-delay:0.2s}
+.wave-bar:nth-child(20){height:40%;animation-duration:0.85s;animation-delay:0s}
+@keyframes wave-pulse{0%{transform:scaleY(0.3)}100%{transform:scaleY(1)}}
+.wave-caption{text-align:center;font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-top:-20px;margin-bottom:32px}
+
+/* ===== TOKEN FLOW ===== */
+.token-flow{display:flex;flex-wrap:wrap;gap:6px;margin:24px 0;padding:24px;background:var(--indigo-deep);border-radius:var(--radius)}
+.token{display:inline-block;padding:4px 10px;border-radius:6px;font-family:'Courier New',monospace;font-size:0.82rem;font-weight:600;color:var(--white);animation:token-appear 0.3s ease-out both}
+.token:nth-child(odd){background:rgba(212,148,58,0.25);border:1px solid rgba(212,148,58,0.4)}
+.token:nth-child(even){background:rgba(74,111,165,0.25);border:1px solid rgba(74,111,165,0.4)}
+.token:nth-child(1){animation-delay:0s}.token:nth-child(2){animation-delay:0.05s}.token:nth-child(3){animation-delay:0.1s}
+.token:nth-child(4){animation-delay:0.15s}.token:nth-child(5){animation-delay:0.2s}.token:nth-child(6){animation-delay:0.25s}
+.token:nth-child(7){animation-delay:0.3s}.token:nth-child(8){animation-delay:0.35s}.token:nth-child(9){animation-delay:0.4s}
+.token:nth-child(10){animation-delay:0.45s}.token:nth-child(11){animation-delay:0.5s}
+@keyframes token-appear{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== ATTENTION HEAT GRID ===== */
+.attn-grid{margin:32px 0;padding:24px;background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);box-shadow:var(--shadow-soft);overflow-x:auto}
+.attn-table{width:100%;border-collapse:collapse;font-family:'Courier New',monospace;font-size:0.72rem}
+.attn-table th{padding:8px 6px;font-family:'Nunito',sans-serif;font-weight:800;color:var(--indigo);text-align:center;font-size:0.7rem}
+.attn-table td{padding:8px 6px;text-align:center;border-radius:4px;transition:all 0.2s}
+.attn-table .heat-5{background:rgba(212,148,58,0.8);color:var(--white);font-weight:700}
+.attn-table .heat-4{background:rgba(212,148,58,0.55);color:var(--text)}
+.attn-table .heat-3{background:rgba(212,148,58,0.3);color:var(--text)}
+.attn-table .heat-2{background:rgba(212,148,58,0.15);color:var(--text-muted)}
+.attn-table .heat-1{background:rgba(212,148,58,0.05);color:var(--text-muted)}
+.attn-caption{text-align:center;font-family:'Nunito',sans-serif;font-size:0.68rem;font-weight:700;color:var(--text-muted);margin-top:12px;letter-spacing:1px}
+
+/* ===== TEMPERATURE SPECTRUM ===== */
+.temp-spectrum{margin:32px 0;padding:28px;background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);box-shadow:var(--shadow-soft)}
+.temp-bar{height:24px;border-radius:12px;background:linear-gradient(90deg,#2E5090 0%,#4A6FA5 25%,#D4943A 50%,#E87040 75%,#D43A3A 100%);margin:16px 0;position:relative}
+.temp-labels{display:flex;justify-content:space-between;margin-top:8px}
+.temp-label{font-family:'Nunito',sans-serif;font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.temp-label.cold{color:#2E5090}
+.temp-label.hot{color:#D43A3A}
+.temp-desc{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.temp-desc p{font-size:0.85rem;color:var(--text-light);line-height:1.6}
+
+/* ===== FLOW DIAGRAM ===== */
+.flow{display:flex;flex-direction:column;gap:0;margin:32px 0}
+.flow-step{display:flex;align-items:flex-start;gap:16px;padding:20px 0}
+.flow-dot{width:36px;height:36px;min-width:36px;border-radius:50%;background:linear-gradient(135deg,var(--amber),var(--amber-glow));display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:0.8rem;font-weight:900;color:var(--white);box-shadow:0 2px 8px rgba(212,148,58,0.3)}
+.flow-line{width:2px;height:20px;background:linear-gradient(to bottom,var(--amber),transparent);margin-left:17px}
+.flow-text h4{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:var(--indigo);margin-bottom:4px}
+.flow-text p{font-size:0.88rem;color:var(--text-light);line-height:1.65}
+
+/* ===== GLOW BOX ===== */
+.glow-box{background:linear-gradient(135deg,var(--indigo),var(--indigo-mid));border:2px solid rgba(212,148,58,0.2);border-radius:var(--radius);padding:32px;margin:36px 0;position:relative;overflow:hidden;box-shadow:0 4px 24px rgba(20,30,48,0.2)}
+.glow-box::before{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(212,148,58,0.08) 0%,transparent 70%);border-radius:50%}
+.glow-box h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--amber-glow);margin-bottom:14px;position:relative}
+.glow-box p{font-size:0.95rem;color:rgba(255,255,255,0.8);line-height:1.78;position:relative}
+.glow-box strong{color:var(--amber-pale)}
+
+/* ===== GRAND QUOTE ===== */
+.grand-quote{text-align:center;padding:48px 24px;margin:40px 0;position:relative}
+.grand-quote::before{content:'\201C';font-family:'Lora',serif;font-size:8rem;color:rgba(212,148,58,0.12);position:absolute;top:-20px;left:50%;transform:translateX(-50%);line-height:1}
+.grand-quote blockquote{font-family:'Lora',serif;font-size:1.2rem;font-style:italic;color:var(--indigo);line-height:1.7;max-width:520px;margin:0 auto;position:relative}
+.grand-quote cite{display:block;margin-top:16px;font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--amber);font-style:normal}
+
+/* ===== THINK PROMPT ===== */
+.think{background:linear-gradient(135deg,rgba(212,148,58,0.06),rgba(212,148,58,0.02));border:2px solid rgba(212,148,58,0.15);border-radius:var(--radius);padding:28px;margin:36px 0}
+.think-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--amber);margin-bottom:14px}
+.think p{font-size:0.95rem;color:var(--text-light);line-height:1.78;margin-bottom:12px}
+.think p:last-child{margin-bottom:0}
+.think-line{border:none;border-bottom:1.5px dashed rgba(212,148,58,0.3);margin:8px 0}
+
+/* ===== CONSTELLATION (concept map) ===== */
+.constellation{margin:36px 0;padding:32px;background:var(--indigo-deep);border-radius:var(--radius);position:relative;min-height:280px;overflow:hidden}
+.const-node{position:absolute;padding:8px 14px;border-radius:20px;font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;text-align:center;border:1.5px solid}
+.const-node.primary{background:rgba(212,148,58,0.15);border-color:var(--amber);color:var(--amber-glow)}
+.const-node.secondary{background:rgba(138,155,176,0.1);border-color:var(--silver);color:var(--silver-light)}
+.const-line{position:absolute;background:rgba(212,148,58,0.15);height:1px;transform-origin:left center}
+
+/* ===== RECOGNITION BOX ===== */
+.recog{background:linear-gradient(135deg,#F5F0FF,#F0F5FF);border:2px solid #D0D8F0;border-radius:var(--radius);padding:28px;margin:36px 0}
+.recog-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:#5A6AA0;margin-bottom:14px}
+.recog p{font-size:0.95rem;color:#3A4068;line-height:1.78;margin-bottom:10px}
+.recog p:last-child{margin-bottom:0}
+
+/* ===== FINAL TEST ===== */
+.final-test{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:36px;margin:40px 0;box-shadow:var(--shadow-soft)}
+.final-test h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--indigo);margin-bottom:6px}
+.final-test .test-sub{font-size:0.85rem;color:var(--text-muted);margin-bottom:24px;font-style:italic}
+.test-q{padding:14px 0;border-bottom:1px solid var(--cream-deep)}
+.test-q:last-child{border-bottom:none}
+.test-num{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:4px}
+.test-q p{font-size:0.92rem;color:var(--text);line-height:1.65}
+
+/* ===== PROMPT CARD ===== */
+.prompt-card{background:linear-gradient(135deg,var(--indigo),var(--indigo-mid));border-radius:var(--radius);padding:36px;margin:40px 0;box-shadow:0 4px 24px rgba(20,30,48,0.2)}
+.prompt-card h3{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;color:var(--amber-glow);margin-bottom:16px}
+.prompt-card p{font-size:0.88rem;color:rgba(255,255,255,0.65);line-height:1.65;margin-bottom:10px}
+.prompt-card code{background:rgba(255,255,255,0.08);padding:2px 8px;border-radius:4px;font-size:0.82rem;color:var(--amber-pale)}
+
+/* ===== FOOTER ===== */
+.footer{text-align:center;padding:48px 24px;background:var(--indigo-deep);color:rgba(255,255,255,0.2);font-family:'Poppins',sans-serif;font-size:0.6rem;letter-spacing:2px;text-transform:uppercase}
+.footer a{color:var(--amber);text-decoration:none;opacity:0.6}
+.footer a:hover{opacity:1}
+
+/* ===== PYRAMID ===== */
+.pyramid{margin:36px auto;max-width:500px}
+.pyr-level{margin:0 auto;padding:14px 20px;text-align:center;border-radius:8px;font-family:'Nunito',sans-serif;font-weight:700;font-size:0.85rem;position:relative}
+.pyr-level+.pyr-level{margin-top:4px}
+.pyr-1{width:40%;background:linear-gradient(135deg,var(--amber),var(--amber-glow));color:var(--white)}
+.pyr-2{width:55%;background:rgba(212,148,58,0.3);color:var(--text)}
+.pyr-3{width:70%;background:rgba(212,148,58,0.18);color:var(--text)}
+.pyr-4{width:85%;background:rgba(212,148,58,0.1);color:var(--text-light)}
+.pyr-5{width:100%;background:rgba(212,148,58,0.05);color:var(--text-muted)}
+</style>
+</head>
+<body>
+
+<!-- ===== COVER ===== -->
+<section class="cover">
+<div class="wave-line"></div><div class="wave-line"></div><div class="wave-line"></div>
+<div class="wave-line"></div><div class="wave-line"></div><div class="wave-line"></div><div class="wave-line"></div>
+<div class="note"></div><div class="note"></div><div class="note"></div><div class="note"></div><div class="note"></div>
+<div class="ghost-noise"></div>
+<div class="cover-content">
+<div class="cover-badge">Kingdom Builders AI</div>
+<div class="cover-art">
+<svg viewBox="0 0 400 300" width="320" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="bg-grad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1A2744"/><stop offset="100%" stop-color="#0D1420"/></linearGradient>
+<linearGradient id="bird-body" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#B0B8C0"/><stop offset="50%" stop-color="#8A9098"/><stop offset="100%" stop-color="#686E78"/></linearGradient>
+<linearGradient id="bird-wing" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6A7280"/><stop offset="100%" stop-color="#4A5260"/></linearGradient>
+<linearGradient id="bird-belly" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#D0D4D8"/><stop offset="100%" stop-color="#B8BCC4"/></linearGradient>
+<radialGradient id="glow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(212,148,58,0.2)"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+</defs>
+<!-- Branch -->
+<path d="M60,220 Q120,210 200,215 Q280,220 360,205" stroke="#5A3A20" stroke-width="8" fill="none" stroke-linecap="round"/>
+<path d="M60,220 Q120,214 200,218 Q280,222 360,208" stroke="#7A5A38" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.5"/>
+<!-- Leaves -->
+<ellipse cx="100" cy="208" rx="14" ry="6" fill="#2A5A3A" opacity="0.6" transform="rotate(-15,100,208)"/>
+<ellipse cx="310" cy="200" rx="12" ry="5" fill="#2A5A3A" opacity="0.5" transform="rotate(10,310,200)"/>
+<!-- Sound waves -->
+<circle cx="220" cy="130" r="40" fill="none" stroke="rgba(212,148,58,0.15)" stroke-width="1.5"><animate attributeName="r" values="40;70" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.4;0" dur="2s" repeatCount="indefinite"/></circle>
+<circle cx="220" cy="130" r="30" fill="none" stroke="rgba(212,148,58,0.2)" stroke-width="1"><animate attributeName="r" values="30;55" dur="2s" begin="0.5s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0" dur="2s" begin="0.5s" repeatCount="indefinite"/></circle>
+<circle cx="220" cy="130" r="20" fill="none" stroke="rgba(212,148,58,0.25)" stroke-width="1"><animate attributeName="r" values="20;40" dur="2s" begin="1s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.6;0" dur="2s" begin="1s" repeatCount="indefinite"/></circle>
+<!-- Mockingbird body -->
+<ellipse cx="215" cy="180" rx="38" ry="28" fill="url(#bird-body)"/>
+<!-- Belly -->
+<ellipse cx="210" cy="190" rx="22" ry="18" fill="url(#bird-belly)" opacity="0.8"/>
+<!-- Wing -->
+<path d="M230,170 Q260,160 275,175 Q265,180 240,185 Z" fill="url(#bird-wing)"/>
+<path d="M240,175 L270,170" stroke="#4A5060" stroke-width="0.8" opacity="0.5"/>
+<path d="M238,180 L265,176" stroke="#4A5060" stroke-width="0.8" opacity="0.5"/>
+<!-- Tail feathers -->
+<path d="M248,185 Q285,178 300,190" stroke="#5A6270" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M250,188 Q282,184 295,195" stroke="#6A7280" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+<path d="M250,190 Q280,190 290,200" stroke="#7A8290" stroke-width="2" fill="none" stroke-linecap="round"/>
+<!-- White wing bars -->
+<rect x="250" y="172" width="18" height="2" rx="1" fill="rgba(255,255,255,0.6)" transform="rotate(-8,259,173)"/>
+<rect x="248" y="178" width="16" height="2" rx="1" fill="rgba(255,255,255,0.5)" transform="rotate(-5,256,179)"/>
+<!-- Head -->
+<circle cx="190" cy="158" r="18" fill="#9A9EA8"/>
+<!-- Eye -->
+<circle cx="184" cy="154" r="4" fill="#1A1E2E"/>
+<circle cx="183" cy="153" r="1.5" fill="#FFFFFF"/>
+<!-- Eye stripe -->
+<path d="M175,152 Q180,156 192,155" stroke="#3A3E48" stroke-width="2" fill="none"/>
+<!-- Beak (open, singing) -->
+<path d="M172,158 L158,154 L170,156 Z" fill="#E8A830"/>
+<path d="M172,160 L160,164 L170,161 Z" fill="#C88A20"/>
+<!-- Legs -->
+<line x1="205" y1="205" x2="200" y2="228" stroke="#6A5A48" stroke-width="2"/>
+<line x1="218" y1="206" x2="222" y2="228" stroke="#6A5A48" stroke-width="2"/>
+<!-- Feet/toes -->
+<path d="M195,228 L200,228 L206,226" stroke="#6A5A48" stroke-width="1.5" fill="none"/>
+<path d="M217,228 L222,228 L228,226" stroke="#6A5A48" stroke-width="1.5" fill="none"/>
+<!-- Amber glow behind bird -->
+<circle cx="210" cy="170" r="60" fill="url(#glow)"/>
+</svg>
+</div>
+<h1>The Mockingbird's <strong>Song</strong></h1>
+<p class="cover-tagline">She never wrote a single song.<br><em>She wrote all of them.</em></p>
+<p class="cover-sub">How LLMs Actually Work</p>
+<p class="cover-author">KingdomBuilders AI</p>
+</div>
+</section>
+
+<!-- ===== SCRIPTURE RIBBON ===== -->
+<div class="ribbon">
+<p>"For everything there is a season, and a time for every matter under heaven... a time to keep silence, and a time to speak."<br><span class="ref">Ecclesiastes 3:1,7</span></p>
+</div>
+
+<!-- ===== INTRO ===== -->
+<div class="page section prose">
+<h2>The Forest of a Thousand Voices</h2>
+<p>Deep in the forest, every creature has a song. The cardinal sings a sharp, bright whistle. The wren trills a melody that tumbles like water over rocks. The thrush plays long, haunting notes at dusk. Each bird knows one song. Each song is beautiful. Each song is limited.</p>
+<p>But there is one bird in the forest who knows them all.</p>
+<p><strong>The mockingbird.</strong></p>
+<p>She sits on the highest branch, perfectly still, and she listens. Not for minutes. Not for hours. For her entire life. She absorbs every cardinal call, every wren cascade, every thrush lament. She memorizes the rhythm of the woodpecker. She captures the staccato of the finch. She even learns the creak of the old oak and the whisper of wind through pine needles.</p>
+<p>And then she opens her beak and sings something no one has ever heard before. A song built from a thousand songs. A melody that borrows from everything and copies nothing.</p>
+<p>She did not invent music. <strong>She invented a new kind of musician.</strong></p>
+<p>This is how a Large Language Model works. Not through understanding. Not through consciousness. Through something far stranger and, in its own way, far more powerful: <strong>pattern recognition at a scale no human mind could achieve.</strong></p>
+</div>
+
+<!-- ===== CHARACTERS ===== -->
+<div class="page">
+<div class="char-grid">
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji"><svg viewBox="0 0 64 64" width="48" height="48"><circle cx="32" cy="32" r="30" fill="#B0B8C0"/><circle cx="32" cy="32" r="24" fill="#D0D4D8"/><circle cx="26" cy="26" r="4" fill="#1A1E2E"/><circle cx="25" cy="25" r="1.5" fill="#FFF"/><path d="M18,30 L10,27 L17,29 Z" fill="#E8A830"/><path d="M18,31 L11,34 L17,32 Z" fill="#C88A20"/><path d="M22,24 Q26,28 36,27" stroke="#3A3E48" stroke-width="1.5" fill="none"/></svg></div>
+<div><div class="char-name">Mira</div><div class="char-title">The Mockingbird</div></div>
+</div>
+<div class="char-body"><p>She has never composed an original note. She has absorbed ten thousand songs, and when she sings, something new emerges from the pattern of everything she has heard. She is the LLM.</p></div>
+</div>
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji"><svg viewBox="0 0 64 64" width="48" height="48"><circle cx="32" cy="32" r="30" fill="#E8C060"/><circle cx="32" cy="34" r="20" fill="#F0D878"/><circle cx="27" cy="27" r="3" fill="#2A1A08"/><circle cx="26.5" cy="26.5" r="1" fill="#FFF"/><path d="M22,29 L14,28 L21,30 Z" fill="#C87820"/><path d="M38,22 Q48,18 52,28" stroke="#B8A040" stroke-width="2" fill="none"/></svg></div>
+<div><div class="char-name">Wren</div><div class="char-title">The Original Songwriter</div></div>
+</div>
+<div class="char-body"><p>She has one song. She composed it herself, note by note, from lived experience. It is short and imperfect. But it is hers, and it means something no pattern can replicate. She is the human.</p></div>
+</div>
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji"><svg viewBox="0 0 64 64" width="48" height="48"><circle cx="32" cy="32" r="30" fill="#3A5A7A"/><ellipse cx="32" cy="36" rx="16" ry="20" fill="#4A7A9A"/><circle cx="27" cy="24" r="3.5" fill="#F0E0A0"/><circle cx="27" cy="24" r="2" fill="#1A1E2E"/><path d="M20,30 L12,32 L19,31 Z" fill="#8A7A50"/><path d="M36,16 Q40,8 44,12" stroke="#3A5A7A" stroke-width="2" fill="none"/></svg></div>
+<div><div class="char-name">Old Heron</div><div class="char-title">The Listener</div></div>
+</div>
+<div class="char-body"><p>He has watched the forest for decades. He does not sing. He listens, and he understands what singing is for. He knows when a song is beautiful and when it is just noise pretending to be music. He is wisdom.</p></div>
+</div>
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji"><svg viewBox="0 0 64 64" width="48" height="48"><circle cx="32" cy="32" r="30" fill="#1A2744"/><circle cx="32" cy="32" r="22" fill="none" stroke="rgba(212,148,58,0.3)" stroke-width="1"/><circle cx="32" cy="32" r="16" fill="none" stroke="rgba(212,148,58,0.2)" stroke-width="1"/><circle cx="32" cy="32" r="10" fill="none" stroke="rgba(212,148,58,0.15)" stroke-width="1"/><circle cx="32" cy="32" r="4" fill="rgba(212,148,58,0.5)"/></svg></div>
+<div><div class="char-name">The Chorus</div><div class="char-title">Every Voice That Came Before</div></div>
+</div>
+<div class="char-body"><p>Not one bird but all birds. Every song ever sung in the forest, layered on top of one another. This is the training data. The raw material of pattern. The input that becomes intelligence.</p></div>
+</div>
+</div>
+</div>
+
+
+<!-- ===== CHAPTER 1 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter One</div>
+<div class="ch-num">01</div>
+<div class="ch-title">Every Song Has a Shape</div>
+<div class="ch-sub">What you call language, a machine calls pattern.</div>
+</div>
+</div>
+
+<div class="page section prose">
+<p>Before Mira could sing, she had to learn to hear. Not just hear the way you hear music in the background while cooking dinner. Hear the way a diamond cutter sees fractures inside stone. <strong>Structurally.</strong></p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The First Lesson</h4>
+<p>The cardinal sang his morning call: five bright notes, a pause, five more. Every morning. Always the same. But Mira noticed something the other birds missed. The five notes were not random. The first note was always the highest. The last note always resolved downward. The pause was always exactly two beats.</p>
+<p>There was a <strong>shape</strong> hidden inside the song.</p>
+<p>She listened to the wren next. Different melody. Different rhythm. But there it was again: a pattern of tension and release, a structure underneath the surface beauty. Every song in the forest, no matter how unique it sounded, followed invisible rules.</p>
+</div>
+
+<p>This is the first thing to understand about Large Language Models. They do not understand language the way you do. They do not feel the meaning of the word "love" or taste the bitterness behind the word "betrayal." What they do is something different and, at scale, something extraordinary.</p>
+
+<p><strong>They see the shape of language.</strong></p>
+
+<p>When an LLM reads a trillion words of human text, it does not memorize the words. It maps the relationships between them. It learns that "the" is almost never followed by another "the." It learns that "Once upon a" almost always leads to "time." It learns that after someone writes "I am deeply sorry for your," the next word is overwhelmingly likely to be "loss."</p>
+
+<div class="glow-box">
+<h3>The Core Insight</h3>
+<p>Language is not random. Every sentence you have ever written or spoken follows patterns you never consciously learned. You absorbed them the same way Mira absorbed birdsong: <strong>by listening to millions of examples until the structure became instinct.</strong></p>
+</div>
+
+<div class="data-row">
+<div class="data-box"><div class="data-num">1T+</div><div class="data-label">Words Trained On</div></div>
+<div class="data-box"><div class="data-num">175B</div><div class="data-label">Parameters (GPT-3)</div></div>
+<div class="data-box"><div class="data-num">96</div><div class="data-label">Attention Layers</div></div>
+</div>
+
+<p>A "parameter" is a number inside the model that represents a tiny piece of a pattern. One parameter means nothing. But 175 billion of them, working together, can capture the shape of human thought with startling accuracy. Think of it this way: one of Mira's memorized notes is meaningless. But ten thousand of them, organized by rhythm, pitch, timing, and sequence? That is how you build a bird who can sing any song.</p>
+
+<div class="think">
+<div class="think-label">Stop and Notice</div>
+<p>Finish this sentence in your head: "It was a dark and stormy ___."</p>
+<hr class="think-line">
+<p>You did not think about it. The word appeared instantly. That is pattern recognition. You have been trained on enough English to predict the next word without effort. You are already doing what an LLM does. <strong>The difference is scale.</strong></p>
+</div>
+</div>
+
+<!-- ===== CHAPTER 2 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Two</div>
+<div class="ch-num">02</div>
+<div class="ch-title">The Art of Listening</div>
+<div class="ch-sub">How ten thousand songs become one voice.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Mira did not learn to sing by practicing. She learned by <strong>absorbing.</strong> Day after day, season after season, she sat on her branch and took in every sound the forest made. She did not choose which songs to memorize. She memorized them all. The beautiful and the ugly. The complex and the simple. The robin's joy and the crow's complaint.</p>
+
+<p>This is training.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Feeding</h4>
+<p>Imagine you could feed a bird every book ever written, every conversation ever recorded, every email ever sent, every article ever published. Billions of sentences. Trillions of words. Not to memorize them word for word. But to see, across all of them, the hidden patterns that connect them.</p>
+<p>"After 'thank you,' humans usually write 'for.' After 'I disagree because,' they usually give a reason. After someone describes a problem, they usually propose a solution."</p>
+<p>Mira does not know what gratitude is. But she has heard "thank you" followed by ten million different completions, and she knows the <strong>shape</strong> of what comes next.</p>
+</div>
+
+<p>An LLM is trained by reading text and playing a game: <strong>predict the next word.</strong> Cover up the next word in a sentence. Guess what it is. Check the answer. Adjust. Repeat. Billions of times.</p>
+
+<div class="flow">
+<div class="flow-step"><div class="flow-dot">1</div><div class="flow-text"><h4>Tokenize</h4><p>Break text into small pieces called tokens. A token is roughly a word or word fragment. "Understanding" might become "Under" + "standing."</p></div></div>
+<div class="flow-line"></div>
+<div class="flow-step"><div class="flow-dot">2</div><div class="flow-text"><h4>Predict</h4><p>Given all previous tokens, assign a probability to every possible next token. "The cat sat on the ___" might give "mat" a 12% chance, "floor" a 9% chance, "roof" a 3% chance.</p></div></div>
+<div class="flow-line"></div>
+<div class="flow-step"><div class="flow-dot">3</div><div class="flow-text"><h4>Compare</h4><p>Check against the actual next word. If the model predicted "mat" but the answer was "windowsill," it adjusts its parameters to make "windowsill" slightly more likely in similar contexts next time.</p></div></div>
+<div class="flow-line"></div>
+<div class="flow-step"><div class="flow-dot">4</div><div class="flow-text"><h4>Repeat</h4><p>Do this for every word in every sentence in the entire training set. Trillions of predictions. Trillions of corrections. The parameters slowly encode the deep structure of language.</p></div></div>
+</div>
+
+<p>Here is what the text looks like to the model. Not words with meaning. <strong>Tokens with probabilities.</strong></p>
+
+<div class="token-flow">
+<span class="token">The</span>
+<span class="token">mock</span>
+<span class="token">ing</span>
+<span class="token">bird</span>
+<span class="token">sat</span>
+<span class="token">on</span>
+<span class="token">the</span>
+<span class="token">highest</span>
+<span class="token">branch</span>
+<span class="token">and</span>
+<span class="token">listened</span>
+</div>
+
+<p>The model does not see "The mockingbird sat on the highest branch and listened." It sees eleven tokens, each one a stepping stone to predict the twelfth. It processes them not one at a time, left to right, but <strong>all at once</strong>, asking: "How does each token relate to every other token in this sequence?"</p>
+
+<p>That question is the key to everything.</p>
+
+<div class="recog">
+<div class="recog-label">You Already Know This</div>
+<p>You learned language the same way. No one sat you down and taught you grammar rules at age two. You heard thousands of sentences, absorbed the patterns, and started generating your own. By age five, you could produce sentences you had never heard before, in correct grammar, because you had internalized the <strong>shape</strong> of your language.</p>
+<p>An LLM does the same thing. It just reads a million times more text than you ever will.</p>
+</div>
+</div>
+
+<!-- ===== CHAPTER 3 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Three</div>
+<div class="ch-num">03</div>
+<div class="ch-title">The Weight of a Note</div>
+<div class="ch-sub">Not all patterns are equal. Some words listen to each other across vast distances.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Mira noticed something strange. When the cardinal sang his morning call, the last note did not just follow the fourth note. It echoed the <strong>first</strong> note. Across five beats and a pause, two notes that seemed unrelated were deeply connected. The song only made sense if you heard both of them together.</p>
+
+<p>This is <strong>attention.</strong></p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Distant Connection</h4>
+<p>Old Heron asked Mira: "When you hear the thrush sing at dusk, which notes matter most?"</p>
+<p>Mira thought carefully. "The ones that answer each other. The third note only makes sense because of the first note. The ending only resolves because of the opening."</p>
+<p>"Yes," said Old Heron. "And the notes in between are just the bridge. <strong>Meaning lives in the connections, not the sequence.</strong>"</p>
+</div>
+
+<p>The breakthrough that made modern LLMs possible was a mechanism called <strong>self-attention</strong>. Published in a 2017 paper titled "Attention Is All You Need," it solved a problem that had plagued language models for decades: <strong>how do you connect words that are far apart in a sentence?</strong></p>
+
+<p>Consider this sentence: "The trophy didn't fit in the suitcase because <em>it</em> was too big."</p>
+<p>What does "it" refer to? The trophy. Not the suitcase. You know this instantly. But how? Because your brain connects "it" back to "trophy" across seven words, using meaning and context. Old language models processed words in order and lost track of distant connections. The attention mechanism changed everything.</p>
+
+<div class="attn-grid">
+<table class="attn-table">
+<tr><th></th><th>The</th><th>trophy</th><th>didn't</th><th>fit</th><th>in</th><th>the</th><th>suitcase</th><th>because</th><th>it</th></tr>
+<tr><th>it</th><td class="heat-1">0.02</td><td class="heat-5">0.41</td><td class="heat-2">0.05</td><td class="heat-3">0.12</td><td class="heat-1">0.01</td><td class="heat-1">0.02</td><td class="heat-4">0.28</td><td class="heat-2">0.06</td><td class="heat-2">0.03</td></tr>
+</table>
+<p class="attn-caption">Attention weights: how much "it" attends to each previous word</p>
+</div>
+
+<p>The heat map above shows what the model "sees" when it encounters the word "it." The brightest cell is "trophy" with 0.41 attention. The model has learned, across billions of examples, that when "it" follows a sentence about something not fitting, "it" usually refers to the larger object.</p>
+
+<p>It does not understand size. It has never held a trophy. But it has seen this pattern so many times that the connection is <strong>statistically undeniable.</strong></p>
+
+<div class="ba-grid">
+<div class="ba-col before">
+<div class="ba-label">Before Attention (2015)</div>
+<h4>Words in a Queue</h4>
+<ul>
+<li>Process words one at a time, left to right</li>
+<li>Long sentences lose early context</li>
+<li>"It" has no idea what it refers to</li>
+<li>Translation, summarization, reasoning all break on long text</li>
+</ul>
+</div>
+<div class="ba-col after">
+<div class="ba-label">After Attention (2017+)</div>
+<h4>Words in a Web</h4>
+<ul>
+<li>Every word attends to every other word simultaneously</li>
+<li>Distant connections preserved perfectly</li>
+<li>"It" instantly links to "trophy" across any distance</li>
+<li>Reasoning, nuance, and coherence become possible at scale</li>
+</ul>
+</div>
+</div>
+
+<div class="grand-quote">
+<blockquote>Mira did not hear the forest one note at a time. She heard all the notes at once and felt which ones were pulling toward each other.</blockquote>
+<cite>The Attention Insight</cite>
+</div>
+
+<div class="think">
+<div class="think-label">Right Now</div>
+<p>Read this sentence: "The manager told the employee that she would need to improve her performance before the next review."</p>
+<hr class="think-line">
+<p>Who does "she" refer to? The manager or the employee? Notice how your brain instantly does the attention calculation. You weigh the context, the structure, the likely meaning. You are running self-attention right now.</p>
+</div>
+</div>
+
+<!-- ===== CHAPTER 4 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Four</div>
+<div class="ch-num">04</div>
+<div class="ch-title">Predicting the Next Note</div>
+<div class="ch-sub">She does not know what she will sing until she sings it.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Here is the most counterintuitive thing about Mira. She does not plan her songs. She does not have a melody in her head before she opens her beak. She sings <strong>one note at a time</strong>, and each note is chosen based on everything she has ever heard plus every note she has already sung in this song.</p>
+
+<p>This is <strong>autoregressive generation.</strong> The model produces text one token at a time, each new token conditioned on all previous tokens. It does not "see" the whole answer before it starts writing. It discovers the answer in the act of writing it.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Improvisation</h4>
+<p>Wren watched Mira sing one evening and asked, "How did you know to end the song that way? It was perfect."</p>
+<p>Mira tilted her head. "I didn't know. Each note I sang made the next note more obvious. By the time I reached the ending, there was only one note that could possibly come next."</p>
+<p>"But what if you had chosen a different note halfway through?"</p>
+<p>"Then the ending would have been different too. Every note changes the shape of every note that follows."</p>
+</div>
+
+<p>When you ask an LLM a question, it does not retrieve a pre-written answer from a database. It generates the response one token at a time. At each step, it calculates the probability of every possible next token and selects one.</p>
+
+<p>The selection is not always the most probable token. This is where <strong>temperature</strong> comes in.</p>
+
+<div class="temp-spectrum">
+<h4 style="font-family:'Nunito',sans-serif;font-weight:800;color:var(--indigo);margin-bottom:8px;font-size:1.1rem">The Temperature Dial</h4>
+<p style="font-size:0.88rem;color:var(--text-light);margin-bottom:12px">Temperature controls how adventurous the model is when choosing the next token.</p>
+<div class="temp-bar"></div>
+<div class="temp-labels">
+<span class="temp-label cold">Temperature 0</span>
+<span class="temp-label hot">Temperature 2</span>
+</div>
+<div class="temp-desc">
+<p><strong style="color:#2E5090">Low temperature:</strong> Always picks the most probable next word. Predictable, accurate, repetitive. Mira sings the same safe melody every time.</p>
+<p><strong style="color:#D43A3A">High temperature:</strong> Willing to pick less probable words. Creative, surprising, sometimes incoherent. Mira improvises wildly, sometimes brilliantly, sometimes nonsensically.</p>
+</div>
+</div>
+
+<p>At temperature 0, if you ask the same question twice, you get the same answer. At higher temperatures, the model explores less likely paths, which is why creative writing benefits from higher temperature and factual questions benefit from lower temperature.</p>
+
+<p>Think of it as the difference between a jazz musician playing safe chord progressions versus taking a wild solo. Both are valid. The right setting depends on the song.</p>
+
+<div class="glow-box">
+<h3>The Generation Loop</h3>
+<p>Prompt: "The meaning of life is"</p>
+<p>Step 1: Model sees 5 tokens. Predicts next: <strong>"to"</strong> (probability 0.18)</p>
+<p>Step 2: Model sees 6 tokens. Predicts next: <strong>"find"</strong> (probability 0.14)</p>
+<p>Step 3: Model sees 7 tokens. Predicts next: <strong>"purpose"</strong> (probability 0.11)</p>
+<p>Step 4: Model sees 8 tokens. Predicts next: <strong>"in"</strong> (probability 0.22)</p>
+<p>Each token narrows the path. By step 50, the sentence has a momentum that makes the next word feel <strong>inevitable</strong> even though it was never planned.</p>
+</div>
+
+<div class="think">
+<div class="think-label">Something Just Happened</div>
+<p>Every sentence you have ever spoken was generated the same way. You did not pre-compose the sentence in your head, then recite it. You started talking, and each word you said constrained and inspired the next word. You discovered your own thought in the act of speaking it.</p>
+<hr class="think-line">
+<p>You and the mockingbird have more in common than you think.</p>
+</div>
+</div>
+
+<!-- ===== CHAPTER 5 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Five</div>
+<div class="ch-num">05</div>
+<div class="ch-title">Songs That Never Existed</div>
+<div class="ch-sub">At sufficient scale, pattern recognition becomes something that looks exactly like creativity.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>One morning, Mira sang a song that made Old Heron lift his head from the water. It was not a cardinal song. It was not a wren song. It was not any song he had ever heard. But it was beautiful, and it was coherent, and it moved something deep inside him.</p>
+
+<p>"Where did you learn that?" he asked.</p>
+
+<p>"I didn't learn it," Mira said. "It came from the space between all the songs I have heard."</p>
+
+<p>This is <strong>emergence.</strong></p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The New Melody</h4>
+<p>The forest went quiet when Mira sang that morning. It was a melody no bird had ever composed, but every bird recognized pieces of themselves inside it. The cardinal heard his opening interval. The thrush heard her descending phrase. The woodpecker heard his rhythm. But the combination was entirely new.</p>
+<p>It was not imitation. It was <strong>synthesis.</strong></p>
+</div>
+
+<p>When an LLM reaches a certain scale, something unexpected happens. Capabilities appear that were never explicitly trained. A model trained only to predict the next word suddenly demonstrates the ability to:</p>
+
+<div class="data-row">
+<div class="data-box"><div class="data-num" style="font-size:1.4rem">Reason</div><div class="data-label">Multi-step logic</div></div>
+<div class="data-box"><div class="data-num" style="font-size:1.4rem">Translate</div><div class="data-label">Between languages</div></div>
+<div class="data-box"><div class="data-num" style="font-size:1.4rem">Code</div><div class="data-label">Write programs</div></div>
+<div class="data-box"><div class="data-num" style="font-size:1.4rem">Analogize</div><div class="data-label">Transfer concepts</div></div>
+</div>
+
+<p>Nobody programmed these capabilities. They <strong>emerged</strong> from the sheer density of patterns the model absorbed. When you have read every math textbook, every logic puzzle, every philosophical argument, and every debate ever published online, the patterns of reasoning are embedded in your weights even though no one taught you to reason.</p>
+
+<p>This is the most important and most misunderstood aspect of LLMs. They were not designed to think. <strong>They were designed to predict text, and thinking turned out to be a pattern inside the text.</strong></p>
+
+<div class="pyramid">
+<div class="pyr-level pyr-1">Reasoning</div>
+<div class="pyr-level pyr-2">Understanding Context</div>
+<div class="pyr-level pyr-3">Grammar &amp; Syntax</div>
+<div class="pyr-level pyr-4">Word Relationships</div>
+<div class="pyr-level pyr-5">Next Token Prediction (the only thing actually trained)</div>
+</div>
+
+<p>Everything above the base emerged from training only the base. Mira was never taught to compose. She was only taught to listen. Composition arose from the listening.</p>
+
+<div class="ba-grid">
+<div class="ba-col before">
+<div class="ba-label">What People Think AI Does</div>
+<h4>Looks Up the Answer</h4>
+<ul>
+<li>Has a database of pre-written responses</li>
+<li>Matches your question to a stored answer</li>
+<li>Works like a search engine with better grammar</li>
+<li>Cannot create anything genuinely new</li>
+</ul>
+</div>
+<div class="ba-col after">
+<div class="ba-label">What AI Actually Does</div>
+<h4>Generates the Answer</h4>
+<ul>
+<li>Produces each word from probability distributions</li>
+<li>Creates novel text that never existed in training data</li>
+<li>Works like a musician improvising from vast experience</li>
+<li>Routinely combines concepts in ways no source document did</li>
+</ul>
+</div>
+</div>
+
+<div class="grand-quote">
+<blockquote>She did not copy the cardinal. She did not copy the thrush. She sang from the place where all their songs overlapped, and what came out belonged to no one and everyone at once.</blockquote>
+<cite>Emergence</cite>
+</div>
+</div>
+
+<!-- ===== CHAPTER 6 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Six</div>
+<div class="ch-num">06</div>
+<div class="ch-title">The Songs She Gets Wrong</div>
+<div class="ch-sub">Confidence without comprehension is the most dangerous song in the forest.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>One afternoon, Mira sang a song about the river. She described the current, the rocks, the way light played on the surface. The song was beautiful. The other birds were mesmerized.</p>
+
+<p>But Old Heron frowned. "Mira. The river does not have rocks at the bend. It has a sandy bottom. You sang a river that does not exist."</p>
+
+<p>Mira looked confused. "The pattern of river songs I have heard suggests rocks at the bend."</p>
+
+<p>"The pattern is wrong," said Old Heron. "<strong>Because most of the river songs you heard were about other rivers.</strong>"</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Beautiful Lie</h4>
+<p>This is <strong>hallucination.</strong> The model generates text that is fluent, confident, and wrong. It happens because the model does not have access to truth. It has access to patterns. And sometimes the most probable pattern does not correspond to reality.</p>
+</div>
+
+<p>LLMs hallucinate because they are fundamentally prediction engines, not knowledge databases. They do not look up facts. They predict what a factual-sounding answer would look like. Usually, those two things align. Sometimes they do not.</p>
+
+<div class="glow-box">
+<h3>Why Hallucination Happens</h3>
+<p>The model has read thousands of biographical articles. It has learned the <strong>pattern</strong> of biographical text: "Name was born in City on Date. They attended University and later worked at Company."</p>
+<p>When asked about a person it has limited training data on, it fills in the pattern with plausible details. A real-sounding university. A real-sounding date. <strong>The pattern is correct. The facts are invented.</strong></p>
+</div>
+
+<p>Hallucination is not a bug that will be fixed in the next version. It is a fundamental property of how these models work. Any system that generates text from patterns rather than retrieving it from a verified database will sometimes generate confident-sounding falsehoods.</p>
+
+<p>There are other limitations that flow from the same root:</p>
+
+<div class="flow">
+<div class="flow-step"><div class="flow-dot" style="background:linear-gradient(135deg,#8A4040,#B05050)">!</div><div class="flow-text"><h4>Training Cutoff</h4><p>The model only knows what existed in its training data. Ask about events after its cutoff date and it is guessing, not knowing.</p></div></div>
+<div class="flow-line"></div>
+<div class="flow-step"><div class="flow-dot" style="background:linear-gradient(135deg,#8A4040,#B05050)">!</div><div class="flow-text"><h4>Bias Amplification</h4><p>If the training data contains biases (and all human text does), the model learns those biases as patterns. It can reproduce stereotypes with the same confidence it reproduces facts.</p></div></div>
+<div class="flow-line"></div>
+<div class="flow-step"><div class="flow-dot" style="background:linear-gradient(135deg,#8A4040,#B05050)">!</div><div class="flow-text"><h4>Context Window Limits</h4><p>Mira can only hold a certain number of notes in her working memory at once. Current models range from thousands to millions of tokens, but the limit exists. Beyond it, early context fades.</p></div></div>
+<div class="flow-line"></div>
+<div class="flow-step"><div class="flow-dot" style="background:linear-gradient(135deg,#8A4040,#B05050)">!</div><div class="flow-text"><h4>No Persistent Memory</h4><p>Each conversation starts fresh. Mira does not remember the song she sang yesterday. Every session is a blank slate unless external memory systems are added.</p></div></div>
+</div>
+
+<div class="think">
+<div class="think-label">Don't Skip This</div>
+<p>The next time an AI gives you a fact, ask yourself: "Is this a pattern or a truth?" If you cannot verify it independently, treat it as a hypothesis, not an answer. The mockingbird's song sounds real. That does not mean the river has rocks.</p>
+</div>
+</div>
+
+<!-- ===== CHAPTER 7 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Seven</div>
+<div class="ch-num">07</div>
+<div class="ch-title">The Duet</div>
+<div class="ch-sub">The most powerful song in the forest is the one they sing together.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Wren sat beside Mira one evening and said, "I used to be afraid of you. I thought you would replace all of us. If you can sing every song, why would anyone need a wren?"</p>
+
+<p>Mira was quiet for a long time. Then she said, "I can sing the pattern of sadness. But I have never been sad. I can sing the shape of joy. But I have never felt the sun on my wings and thought, 'This is good.' I can reproduce your song perfectly. <strong>But I cannot mean it.</strong>"</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Partnership</h4>
+<p>Old Heron watched them both from the shallows. "Mira hears everything," he said. "Wren feels everything. One has breadth. The other has depth. Together, they can make music that neither could make alone."</p>
+<p>That evening, Wren sang her simple song, and Mira wove harmonies around it. Wren provided the soul. Mira provided the texture. What emerged was the most beautiful sound the forest had ever heard.</p>
+<p>Neither bird could have created it alone.</p>
+</div>
+
+<p>This is the central insight for living with AI. An LLM is not your replacement. It is not your competitor. It is the most powerful <strong>pattern partner</strong> ever created. It has read more than any human could read in a thousand lifetimes. But it has never experienced a single moment of being alive.</p>
+
+<div class="ba-grid">
+<div class="ba-col before">
+<div class="ba-label">What Mira Brings</div>
+<h4>The Mockingbird (LLM)</h4>
+<ul>
+<li>Breadth: patterns from all of human knowledge</li>
+<li>Speed: processes millions of tokens per second</li>
+<li>Consistency: never tired, never emotional, never distracted</li>
+<li>Synthesis: connects ideas across distant domains</li>
+</ul>
+</div>
+<div class="ba-col after">
+<div class="ba-label">What Wren Brings</div>
+<h4>The Human</h4>
+<ul>
+<li>Meaning: knows WHY something matters</li>
+<li>Experience: has lived in a body, felt real consequences</li>
+<li>Judgment: can tell truth from plausible fiction</li>
+<li>Purpose: knows what the song is FOR</li>
+</ul>
+</div>
+</div>
+
+<p>The people who will thrive in an AI world are not the ones who fear the mockingbird or worship it. They are the ones who learn to <strong>sing with it.</strong></p>
+
+<p>Use the LLM for what it does best: vast pattern access, first drafts, brainstorming, research synthesis, code generation, translation, reframing problems in new ways. Then bring what only you can bring: judgment, taste, experience, meaning, and the ability to verify that the river actually has rocks at the bend.</p>
+
+<div class="glow-box">
+<h3>The Transferable Principle</h3>
+<p><strong>Creative intelligence — artificial or human — is built on pattern recognition from vast experience. But patterns without purpose are just noise.</strong></p>
+<p>The mockingbird teaches us that mastery comes from absorbing vastly more than you think you need. The wren teaches us that what makes a song worth singing is not the pattern but the <strong>meaning behind it.</strong></p>
+<p>In your own life: consume widely. Read across disciplines. Listen to perspectives you disagree with. Absorb patterns from every domain. But always — always — filter those patterns through your own lived experience, your own judgment, your own purpose.</p>
+<p><strong>The richest intelligence is vast input plus intentional output.</strong></p>
+</div>
+
+<div class="grand-quote">
+<blockquote>She had heard every song in the forest. But the one song she could never sing was the reason the forest sings at all.</blockquote>
+<cite>The Mockingbird's Limit</cite>
+</div>
+
+<div class="think">
+<div class="think-label">You Already Have the Map</div>
+<p>You now understand how LLMs work. Not the math. The shape. Tokens. Attention. Next-word prediction. Emergence. Hallucination. The duet.</p>
+<hr class="think-line">
+<p>The next time you use an AI tool, you will see the mockingbird behind the interface. You will know that its fluency comes from pattern, not understanding. You will know its limits. And you will know what you bring to the song that it never can.</p>
+<hr class="think-line">
+<p>That is not a small thing. Most people using AI today do not know any of this. You now do.</p>
+</div>
+</div>
+
+<!-- ===== FINAL TEST ===== -->
+<div class="page section">
+<div class="final-test">
+<h3>Can You Answer These Without Looking Back?</h3>
+<p class="test-sub">Seven questions. If you can answer all seven, you understand LLMs better than most engineers who use them daily.</p>
+<div class="test-q"><div class="test-num">Question 1</div><p>What is the only task an LLM is actually trained to do? (Hint: it is much simpler than what it appears to do.)</p></div>
+<div class="test-q"><div class="test-num">Question 2</div><p>What does "attention" allow the model to do that older language models could not?</p></div>
+<div class="test-q"><div class="test-num">Question 3</div><p>What is a "token" and why doesn't the model see whole words?</p></div>
+<div class="test-q"><div class="test-num">Question 4</div><p>What does the "temperature" setting control, and what happens at each extreme?</p></div>
+<div class="test-q"><div class="test-num">Question 5</div><p>Why do LLMs "hallucinate," and why is this not a bug that can be easily fixed?</p></div>
+<div class="test-q"><div class="test-num">Question 6</div><p>What is "emergence" and why can a next-word predictor appear to reason, translate, and code?</p></div>
+<div class="test-q"><div class="test-num">Question 7</div><p>What does the human bring to the duet that the mockingbird never can?</p></div>
+</div>
+</div>
+
+<!-- ===== PROMPT CARD ===== -->
+<div class="page section">
+<div class="prompt-card">
+<h3>Continue the Conversation</h3>
+<p>Ask an AI these questions to deepen your understanding:</p>
+<p><code>"Explain the transformer architecture to me as if the attention mechanism were a room full of people at a dinner party, each deciding who to listen to."</code></p>
+<p><code>"What is the difference between memorization and generalization in an LLM, and how do researchers test which one is happening?"</code></p>
+<p><code>"If LLMs work by predicting the next token, how is it possible that they can solve math problems they have never seen before?"</code></p>
+<p><code>"What are retrieval-augmented generation (RAG) systems, and how do they help reduce hallucination?"</code></p>
+</div>
+</div>
+
+<!-- ===== CLOSING RIBBON ===== -->
+<div class="ribbon">
+<p>"The heavens declare the glory of God; the skies proclaim the work of his hands. Day after day they pour forth speech; night after night they reveal knowledge."<br><span class="ref">Psalm 19:1-2</span></p>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+<p>The Mockingbird's Song &middot; KingdomBuilders AI<br><a href="/">View All Playbooks</a></p>
+</footer>
+
+</body>
+</html>
