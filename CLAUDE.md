@@ -53,7 +53,7 @@ Playbooks/
 - `static/index.html` — Product catalog (main landing page)
 - `static/*.html` — Individual playbook landing pages
 - `assets/*.html` — Full playbook content (served via /read/<slug>)
-- `tests/playbooks.spec.js` — Playwright test suite (139/145 passing — 6 pre-existing smart-quote mismatches)
+- `tests/playbooks.spec.js` — Playwright test suite (173/173 passing)
 - `alembic.ini` + `api/migrations/` — Database migrations
 
 ## API Endpoints

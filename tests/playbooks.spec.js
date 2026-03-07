@@ -261,9 +261,9 @@ const PLAYBOOKS = [
     tag: "Technology",
   },
   {
-    title: "The Jacquard Thread",
-    route: "/thejacquardthread",
-    readerSlug: "the-jacquard-thread",
+    title: "The Movable Type",
+    route: "/themovabletype",
+    readerSlug: "the-movable-type",
     tag: "Technology",
   },
 ];

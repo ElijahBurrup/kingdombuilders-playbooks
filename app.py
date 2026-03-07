@@ -229,9 +229,9 @@ def the_mycelium_network():
     return send_from_directory("static", "the-mycelium-network.html")
 
 
-@bp.route("/thejacquardthread")
-def the_jacquard_thread():
-    return send_from_directory("static", "the-jacquard-thread.html")
+@bp.route("/themovabletype")
+def the_movable_type():
+    return send_from_directory("static", "the-movable-type.html")
 
 
 # --- Playbook Reader (serves full playbook HTML from assets) ---
@@ -279,7 +279,7 @@ def read_playbook(slug):
         "the-arrival": "The_Arrival.html",
         "the-body-lie": "The_Body_Lie.html",
         "the-mycelium-network": "The_Mycelium_Network.html",
-        "the-jacquard-thread": "The_Jacquard_Thread.html",
+        "the-movable-type": "The_Movable_Type.html",
     }
     filename = slug_to_file.get(slug)
     if not filename:

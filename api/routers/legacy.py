@@ -78,7 +78,7 @@ LANDING_ROUTES: dict[str, str] = {
     "/thearrival": "the-arrival.html",
     "/thebodylie": "the-body-lie.html",
     "/themyceliumnetwork": "the-mycelium-network.html",
-    "/thejacquardthread": "the-jacquard-thread.html",
+    "/themovabletype": "the-movable-type.html",
 }
 
 # ============================================================================
@@ -126,7 +126,7 @@ SLUG_TO_FILE: dict[str, str] = {
     "the-arrival": "The_Arrival.html",
     "the-body-lie": "The_Body_Lie.html",
     "the-mycelium-network": "The_Mycelium_Network.html",
-    "the-jacquard-thread": "The_Jacquard_Thread.html",
+    "the-movable-type": "The_Movable_Type.html",
 }
 
 

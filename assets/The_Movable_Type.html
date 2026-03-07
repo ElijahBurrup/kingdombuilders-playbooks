@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Movable Type — Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1A1410;--ink-deep:#0E0C08;--ink-mid:#2D261E;--ink-light:#4A4038;--ink-pale:#7A6E62;
+  --press:#8B1A1A;--press-dark:#6A1010;--press-glow:#C83030;--press-pale:#E8A0A0;--press-soft:rgba(139,26,26,0.08);
+  --parchment:#FAF6EE;--parch-warm:#F5EDE0;--parch-deep:#E8DCC8;
+  --gold:#C8A050;--gold-glow:#E8C878;--gold-soft:rgba(200,160,80,0.08);
+  --type-metal:#8A8A8A;--type-shine:#C0C0C0;
+  --code:#3B82F6;--code-soft:rgba(59,130,246,0.08);--code-glow:rgba(59,130,246,0.15);
+  --agent:#10B981;--agent-soft:rgba(16,185,129,0.08);--agent-glow:rgba(16,185,129,0.15);
+  --text:#1A1A1A;--text-light:#3A3A3A;--text-muted:#6A6A6A;
+  --white:#FFFFFF;--radius:16px;
+  --shadow-soft:0 2px 16px rgba(26,20,16,0.08);
+  --shadow-mid:0 4px 28px rgba(26,20,16,0.12);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--parchment);line-height:1.85;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Poppins',sans-serif;line-height:1.2}
+.page{max-width:740px;margin:0 auto;padding:0 26px}
+.section{padding:52px 0}
+.prose p{margin-bottom:24px;font-size:1.02rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--ink);font-weight:700}
+
+/* COVER */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(165deg,var(--ink-deep) 0%,var(--ink) 30%,var(--ink-mid) 70%,var(--ink-deep) 100%);position:relative;overflow:hidden}
+.cover-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(139,26,26,0.06) 0%,transparent 70%);animation:pulse 8s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.6}50%{transform:translate(-50%,-50%) scale(1.3);opacity:0.2}}
+.ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.012;mix-blend-mode:overlay;pointer-events:none}
+
+/* Ink drop animation */
+.ink-drops{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.ink-drop{position:absolute;width:6px;height:6px;border-radius:50%;background:rgba(139,26,26,0.15);animation:drip 8s ease-in infinite}
+.ink-drop:nth-child(1){left:12%;animation-delay:0s}
+.ink-drop:nth-child(2){left:28%;animation-delay:2s}
+.ink-drop:nth-child(3){left:45%;animation-delay:4s}
+.ink-drop:nth-child(4){left:62%;animation-delay:1s}
+.ink-drop:nth-child(5){left:78%;animation-delay:3s}
+.ink-drop:nth-child(6){left:88%;animation-delay:5s}
+@keyframes drip{0%{top:-10px;opacity:0}10%{opacity:0.6}90%{opacity:0.3}100%{top:105%;opacity:0}}
+
+.cover-content{position:relative;z-index:2;padding:40px 24px}
+.cover-badge{display:inline-block;padding:6px 20px;border:1px solid rgba(139,26,26,0.3);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:var(--press-glow);margin-bottom:44px}
+.cover h1{font-family:'Poppins',sans-serif;font-size:clamp(2.4rem,7vw,4.2rem);font-weight:300;color:var(--white);line-height:1.05;margin-bottom:4px}
+.cover h1 strong{font-weight:700;color:var(--press-glow);display:block}
+.cover-tagline{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:rgba(255,255,255,0.4);margin-top:28px;line-height:1.7}
+.cover-tagline em{color:var(--press-pale);font-style:normal;font-weight:600}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.6rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,0.15);margin-top:52px}
+
+/* COVER SVG */
+.cover-art{margin:32px auto 0;max-width:380px}
+.cover-art svg{width:100%;height:auto}
+.press-arm{animation:press-strike 4s ease-in-out infinite}
+@keyframes press-strike{0%,100%{transform:translateY(0)}40%{transform:translateY(0)}50%{transform:translateY(8px)}60%{transform:translateY(0)}}
+
+/* SCRIPTURE RIBBON */
+.ribbon{text-align:center;padding:22px 24px;background:linear-gradient(135deg,rgba(139,26,26,0.03),rgba(139,26,26,0.06));border-top:1.5px solid rgba(139,26,26,0.15);border-bottom:1.5px solid rgba(139,26,26,0.15)}
+.ribbon p{font-family:'Lora',serif;font-size:0.82rem;font-style:italic;color:var(--text-muted);max-width:520px;margin:0 auto}
+
+/* CHAPTER HEADERS */
+.ch-head{padding:56px 0 20px;background:linear-gradient(165deg,var(--ink-deep),var(--ink),var(--ink-mid));position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.015;mix-blend-mode:overlay;pointer-events:none}
+.ch-num{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--press-glow);margin-bottom:10px}
+.ch-title{font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;color:var(--white);margin-bottom:12px}
+.ch-sub{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.4);max-width:560px;line-height:1.65}
+
+/* SCENE BLOCKS */
+.scene{margin:32px 0;padding:28px 32px;background:linear-gradient(140deg,var(--ink),var(--ink-mid));border-radius:var(--radius);border-left:4px solid var(--press);position:relative;overflow:hidden}
+.scene::before{content:'';position:absolute;top:-30%;right:-15%;width:180px;height:180px;background:radial-gradient(circle,rgba(139,26,26,0.05) 0%,transparent 70%);border-radius:50%}
+.scene-num{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--press-glow);margin-bottom:10px;position:relative;z-index:2}
+.scene p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.8);line-height:1.75;position:relative;z-index:2}
+.scene em{color:var(--press-pale);font-style:normal;font-weight:600}
+
+/* INSIGHT BOXES */
+.insight{margin:36px 0;padding:28px 32px;background:linear-gradient(140deg,var(--ink),var(--ink-mid));border-radius:var(--radius);border:2px solid rgba(139,26,26,0.25);border-left:5px solid var(--press);position:relative;overflow:hidden;box-shadow:var(--shadow-mid)}
+.insight::before{content:'';position:absolute;top:-50%;right:-20%;width:200px;height:200px;background:radial-gradient(circle,rgba(139,26,26,0.06) 0%,transparent 70%);border-radius:50%}
+.insight p{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:var(--white);line-height:1.72;position:relative;z-index:2}
+.insight em{color:var(--press-pale);font-style:normal;font-weight:600}
+
+/* GRAND QUOTE */
+.grand-quote{text-align:center;padding:48px 32px;margin:40px 0;position:relative}
+.grand-quote::before,.grand-quote::after{font-family:'Lora',serif;font-size:4rem;color:var(--press);opacity:0.15;position:absolute}
+.grand-quote::before{content:'\201C';top:10px;left:20px}
+.grand-quote::after{content:'\201D';bottom:-10px;right:20px}
+.grand-quote p{font-family:'Lora',serif;font-size:1.2rem;font-style:italic;color:var(--ink);line-height:1.6;max-width:560px;margin:0 auto}
+.grand-quote cite{display:block;margin-top:16px;font-family:'Poppins',sans-serif;font-size:0.7rem;font-style:normal;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+
+/* BEFORE / AFTER */
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:32px 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft)}
+.ba-col{padding:28px 24px}
+.ba-col.before{background:#FFF5EE;border-right:2px solid var(--parch-deep)}
+.ba-col.after{background:#F0FFF4}
+.ba-label{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;margin-bottom:14px}
+.ba-col.before .ba-label{color:#8B1A1A}
+.ba-col.after .ba-label{color:#2A7A4A}
+.ba-col p{font-size:0.88rem;color:var(--text-light);line-height:1.65;margin-bottom:10px}
+.ba-col p:last-child{margin-bottom:0}
+@media(max-width:600px){.ba-grid{grid-template-columns:1fr}.ba-col.before{border-right:none;border-bottom:2px solid var(--parch-deep)}}
+
+/* TIMELINE */
+.timeline{margin:36px 0;padding:0 0 0 28px;border-left:3px solid var(--press);position:relative}
+.timeline::before{content:'';position:absolute;top:0;left:-6px;width:9px;height:9px;border-radius:50%;background:var(--press)}
+.timeline::after{content:'';position:absolute;bottom:0;left:-6px;width:9px;height:9px;border-radius:50%;background:var(--press)}
+.tl-node{padding:20px 0;position:relative}
+.tl-node::before{content:'';position:absolute;top:28px;left:-32px;width:9px;height:9px;border-radius:50%;background:var(--parchment);border:3px solid var(--press)}
+.tl-year{font-family:'Poppins',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:3px;color:var(--press);margin-bottom:4px}
+.tl-event{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--ink);margin-bottom:4px}
+.tl-desc{font-size:0.85rem;color:var(--text-light);line-height:1.6}
+
+/* FLOW DIAGRAM */
+.flow{margin:32px 0;display:flex;flex-direction:column;gap:0;align-items:center}
+.flow-step{display:flex;align-items:center;gap:16px;width:100%;max-width:580px;padding:20px 24px;background:var(--white);border-radius:var(--radius);border:2px solid rgba(139,26,26,0.1);box-shadow:var(--shadow-soft);position:relative}
+.flow-step+.flow-step{margin-top:20px}
+.flow-step+.flow-step::before{content:'';position:absolute;top:-14px;left:50%;transform:translateX(-50%);width:2px;height:14px;background:var(--press)}
+.flow-num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--press),var(--press-glow));display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-size:0.75rem;font-weight:700;color:var(--white);flex-shrink:0}
+.flow-text{flex:1}
+.flow-text h4{font-size:0.85rem;color:var(--ink);margin-bottom:2px}
+.flow-text p{font-size:0.8rem;color:var(--text-light);line-height:1.5}
+
+/* DATA BOX */
+.data-box{text-align:center;margin:32px 0;padding:36px;background:linear-gradient(140deg,var(--ink),var(--ink-mid));border-radius:var(--radius);box-shadow:var(--shadow-mid)}
+.data-num{font-family:'Poppins',sans-serif;font-size:3rem;font-weight:800;color:var(--press-glow);line-height:1}
+.data-label{font-family:'Poppins',sans-serif;font-size:0.7rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:8px}
+.data-context{font-family:'Lora',serif;font-size:0.85rem;color:rgba(255,255,255,0.5);margin-top:12px;line-height:1.6}
+
+/* STAT CARDS */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:32px 0}
+@media(max-width:600px){.stat-grid{grid-template-columns:1fr}}
+.stat-card{padding:24px;background:var(--white);border-radius:var(--radius);border:2px solid rgba(139,26,26,0.1);box-shadow:var(--shadow-soft);text-align:center}
+.stat-card .stat-num{font-family:'Poppins',sans-serif;font-size:2rem;font-weight:800;color:var(--press);line-height:1}
+.stat-card .stat-label{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-top:6px}
+.stat-card .stat-desc{font-size:0.82rem;color:var(--text-light);margin-top:8px;line-height:1.5}
+.stat-card.green{border-color:rgba(16,185,129,0.2)}
+.stat-card.green .stat-num{color:#059669}
+
+/* DISPLACEMENT TABLE */
+.displacement{margin:32px 0;overflow-x:auto}
+.displacement table{width:100%;border-collapse:collapse;font-size:0.82rem}
+.displacement th{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--press-dark);padding:12px 16px;background:var(--parch-warm);border-bottom:2px solid var(--press);text-align:left}
+.displacement td{padding:12px 16px;border-bottom:1px solid var(--parch-deep);color:var(--text-light);line-height:1.5}
+.displacement tr:last-child td{border-bottom:none}
+.displacement .era{font-family:'Poppins',sans-serif;font-weight:600;color:var(--ink)}
+.displacement .destroyed{color:var(--press)}
+.displacement .created{color:#059669;font-weight:600}
+
+/* THINK PROMPTS */
+.think{margin:36px 0;padding:28px 32px;background:var(--press-soft);border:2px solid rgba(139,26,26,0.15);border-radius:var(--radius)}
+.think-label{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--press-dark);margin-bottom:12px}
+.think p{font-size:0.95rem;color:var(--text);line-height:1.72}
+
+/* CONCEPT MAP */
+.concept-map{margin:32px 0;padding:32px;background:var(--white);border-radius:var(--radius);border:2px solid rgba(139,26,26,0.15);box-shadow:var(--shadow-soft);text-align:center}
+.cm-center{display:inline-block;padding:14px 28px;background:linear-gradient(135deg,var(--press),var(--press-glow));color:var(--white);font-family:'Poppins',sans-serif;font-size:0.9rem;font-weight:700;border-radius:50px;margin-bottom:20px}
+.cm-branches{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:500px){.cm-branches{grid-template-columns:1fr}}
+.cm-branch{padding:14px 16px;background:var(--parch-warm);border-radius:10px;border-left:3px solid var(--press);text-align:left}
+.cm-branch h4{font-size:0.78rem;color:var(--ink);margin-bottom:4px}
+.cm-branch p{font-size:0.72rem;color:var(--text-light);line-height:1.5}
+
+/* CAPABILITY CHART */
+.capability-chart{margin:32px 0;padding:28px;background:var(--white);border-radius:var(--radius);border:2px solid rgba(139,26,26,0.1);box-shadow:var(--shadow-soft)}
+.cap-row{margin-bottom:16px}
+.cap-row:last-child{margin-bottom:0}
+.cap-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.cap-label span{font-family:'Poppins',sans-serif;font-size:0.75rem;font-weight:600;color:var(--ink)}
+.cap-label small{font-family:'Poppins',sans-serif;font-size:0.6rem;color:var(--text-muted)}
+.cap-bar{height:10px;border-radius:5px;background:var(--parch-deep);overflow:hidden}
+.cap-fill{height:100%;border-radius:5px;transition:width 1s ease}
+.cap-fill.scribe{background:linear-gradient(90deg,var(--press),var(--press-glow));width:95%}
+.cap-fill.type{background:linear-gradient(90deg,var(--gold),var(--gold-glow));width:82%}
+.cap-fill.code{background:linear-gradient(90deg,var(--code),#60A5FA);width:72%}
+.cap-fill.agent{background:linear-gradient(90deg,var(--agent),#34D399);width:55%}
+
+/* RECOGNITION BOX */
+.recognition{margin:32px 0;padding:24px 28px;background:var(--gold-soft);border:2px solid rgba(200,160,80,0.2);border-radius:var(--radius)}
+.recognition-label{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--press-dark);margin-bottom:10px}
+.recognition p{font-size:0.92rem;color:var(--text);line-height:1.7}
+
+/* FINAL TEST */
+.final-test{margin:40px 0;padding:32px;background:var(--white);border-radius:var(--radius);border:2px solid rgba(139,26,26,0.2);box-shadow:var(--shadow-soft)}
+.final-test h3{font-size:1.1rem;color:var(--ink);margin-bottom:20px;text-align:center}
+.ft-q{margin-bottom:16px;padding:14px 18px;background:var(--parch-warm);border-radius:10px;font-size:0.88rem;color:var(--text-light);line-height:1.6}
+.ft-q strong{color:var(--press-dark)}
+
+/* PROMPT CARD */
+.prompt-card{margin:40px 0;padding:32px;background:linear-gradient(140deg,var(--ink),var(--ink-mid));border-radius:var(--radius);border:2px solid rgba(139,26,26,0.2);box-shadow:var(--shadow-mid)}
+.prompt-card h3{font-family:'Poppins',sans-serif;font-size:1rem;color:var(--press-glow);margin-bottom:16px;text-align:center}
+.prompt-card p{font-family:'Lora',serif;font-size:0.9rem;color:rgba(255,255,255,0.7);line-height:1.7;margin-bottom:12px}
+.prompt-card code{display:block;margin:12px 0;padding:16px 20px;background:rgba(0,0,0,0.3);border-radius:8px;font-family:'Source Code Pro',monospace;font-size:0.82rem;color:var(--press-pale);line-height:1.6;white-space:pre-wrap}
+
+/* FOOTER */
+.footer-ribbon{text-align:center;padding:36px 24px;background:var(--ink-deep)}
+.footer-ribbon p{font-family:'Lora',serif;font-size:0.82rem;font-style:italic;color:rgba(139,26,26,0.3);margin-bottom:14px;max-width:480px;margin-left:auto;margin-right:auto}
+.footer-ribbon .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:normal;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.1)}
+</style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- COVER                                                         -->
+<!-- ============================================================ -->
+<section class="cover">
+  <div class="ink-drops">
+    <div class="ink-drop"></div><div class="ink-drop"></div><div class="ink-drop"></div>
+    <div class="ink-drop"></div><div class="ink-drop"></div><div class="ink-drop"></div>
+  </div>
+  <div class="cover-glow"></div>
+  <div class="ghost-noise"></div>
+  <div class="cover-content">
+    <div class="cover-badge">Kingdom Builders AI</div>
+    <h1>The Movable <strong>Type</strong></h1>
+    <p class="cover-tagline">Gutenberg did not invent better handwriting.<br>He made the <em>copyist irrelevant and the author inevitable.</em></p>
+
+    <div class="cover-art">
+      <svg viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="press-body" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#4A4038"/>
+            <stop offset="100%" stop-color="#2D261E"/>
+          </linearGradient>
+          <linearGradient id="metal-shine" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#C0C0C0"/>
+            <stop offset="100%" stop-color="#8A8A8A"/>
+          </linearGradient>
+          <linearGradient id="page-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FAF6EE"/>
+            <stop offset="100%" stop-color="#E8DCC8"/>
+          </linearGradient>
+        </defs>
+        <!-- Press frame -->
+        <rect x="60" y="30" width="280" height="200" rx="6" fill="url(#press-body)" stroke="#3A3028" stroke-width="2"/>
+        <!-- Press bed -->
+        <rect x="90" y="160" width="220" height="50" rx="4" fill="#1A1410" stroke="#3A3028" stroke-width="1"/>
+        <!-- Paper on bed -->
+        <rect x="100" y="165" width="200" height="40" rx="2" fill="url(#page-grad)"/>
+        <!-- Text lines on paper -->
+        <line x1="115" y1="175" x2="285" y2="175" stroke="#2D261E" stroke-width="1" opacity="0.3"/>
+        <line x1="115" y1="182" x2="260" y2="182" stroke="#2D261E" stroke-width="1" opacity="0.25"/>
+        <line x1="115" y1="189" x2="275" y2="189" stroke="#2D261E" stroke-width="1" opacity="0.3"/>
+        <line x1="115" y1="196" x2="240" y2="196" stroke="#2D261E" stroke-width="1" opacity="0.2"/>
+        <!-- Press arm -->
+        <g class="press-arm">
+          <rect x="170" y="40" width="60" height="110" rx="4" fill="url(#metal-shine)"/>
+          <rect x="130" y="130" width="140" height="20" rx="3" fill="#8A8A8A" stroke="#6A6A6A" stroke-width="1"/>
+        </g>
+        <!-- Screw -->
+        <circle cx="200" cy="55" r="15" fill="#6A6A6A" stroke="#4A4A4A" stroke-width="2"/>
+        <circle cx="200" cy="55" r="6" fill="#4A4A4A"/>
+        <!-- Type blocks (left side) -->
+        <rect x="20" y="80" width="28" height="28" rx="2" fill="#8A8A8A" stroke="#6A6A6A" stroke-width="1"/>
+        <text x="28" y="100" font-family="serif" font-size="16" font-weight="bold" fill="#2D261E">A</text>
+        <rect x="20" y="115" width="28" height="28" rx="2" fill="#8A8A8A" stroke="#6A6A6A" stroke-width="1"/>
+        <text x="28" y="135" font-family="serif" font-size="16" font-weight="bold" fill="#2D261E">I</text>
+        <rect x="20" y="150" width="28" height="28" rx="2" fill="#8A8A8A" stroke="#6A6A6A" stroke-width="1"/>
+        <text x="25" y="170" font-family="monospace" font-size="12" font-weight="bold" fill="#2D261E">{ }</text>
+        <!-- Code symbols (right side) -->
+        <text x="350" y="90" font-family="monospace" font-size="12" fill="#8B1A1A" opacity="0.3">def</text>
+        <text x="345" y="120" font-family="monospace" font-size="11" fill="#8B1A1A" opacity="0.25">class</text>
+        <text x="348" y="150" font-family="monospace" font-size="12" fill="#8B1A1A" opacity="0.2">run()</text>
+        <text x="350" y="200" font-family="monospace" font-size="11" fill="#8B1A1A" opacity="0.2">build</text>
+      </svg>
+    </div>
+
+    <p class="cover-author">KingdomBuilders AI</p>
+  </div>
+</section>
+
+<div class="ribbon">
+  <p>"The grass withers and the flowers fall, but the word of our God endures forever." — Isaiah 40:8</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- BOLD PROMISE                                                  -->
+<!-- ============================================================ -->
+<div class="section">
+  <div class="page prose">
+    <p><strong>Once you finish this playbook, you will:</strong></p>
+    <p>Understand exactly how AI went from writing sentences to writing software — not as a vague concept but as a mechanical process you can see, explain, and use. You will know what tokens are (and why they are identical to Gutenberg's movable type). You will know why agents are not tools but entire publishing houses. And you will see the pattern that has repeated in every displacement panic for 600 years: <strong>the machine never kills the craft. It kills the ceiling.</strong></p>
+    <p>Every job destroyed by a printing press, a loom, a spreadsheet, or an ATM created more jobs than it eliminated. The numbers are in this playbook. They are not close.</p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- CHAPTER 1: THE COPYIST'S CEILING                              -->
+<!-- ============================================================ -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter One</div><h2 class="ch-title">The Copyist's Ceiling</h2><p class="ch-sub">For 1,000 years, the fastest way to make a book was a monk with perfect handwriting. The ceiling never moved.</p></div></div>
+
+<div class="section"><div class="page prose">
+
+<div class="scene">
+  <div class="scene-num">A Benedictine Scriptorium — 1440</div>
+  <p>A monk sits at a wooden desk, copying the Book of Psalms. He has been working on this single book for <em>two years</em>. Each page is written by hand, one letter at a time, in ink he ground himself that morning. If he makes a mistake on the last page, he scrapes the vellum and starts that page again. There is no undo. There is no copy-paste. There is only the hand, the ink, and the ceiling.</p>
+</div>
+
+<p>Europe had roughly <strong>30,000 scribes</strong> in 1440. Together, they produced about 1,000 books per year across the entire continent. Each book took between one and three years. Each book cost roughly the same as a house. Literacy was irrelevant for most people because there was nothing to read.</p>
+
+<p>The ceiling was not talent. The ceiling was not demand. The ceiling was not even the cost of materials. <strong>The ceiling was the human hand.</strong></p>
+
+<p>The book existed in the scribe's mind and exited through his fingers — one letter at a time, one page per day, one book per year. The knowledge and the practitioner were fused together. When the scribe died, no more books from that hand. When the scribe was slow, the books were slow. The world's access to knowledge was bottlenecked through wrists and ink.</p>
+
+<div class="ba-grid">
+  <div class="ba-col before">
+    <div class="ba-label">The Scribe (1440)</div>
+    <p>Text locked in trained hand</p>
+    <p>One error ruins a page</p>
+    <p>Speed limited by writing speed</p>
+    <p>1,000 books per year in all of Europe</p>
+  </div>
+  <div class="ba-col after">
+    <div class="ba-label">The Programmer (2019)</div>
+    <p>Logic locked in trained brain</p>
+    <p>One bug can crash an application</p>
+    <p>Speed limited by typing and debugging</p>
+    <p>28 million developers for 8 billion people</p>
+  </div>
+</div>
+
+<p>The parallel is structural, not poetic. In both cases, the world needed <strong>more output than the practitioners could physically produce.</strong> In both cases, the practitioners were highly trained specialists who had spent years mastering a precise skill. In both cases, everyone assumed the ceiling was permanent.</p>
+
+<p>And then, in a workshop in Mainz, a goldsmith named Johannes Gutenberg asked the same question that Joseph Marie Jacquard would ask 364 years later about silk looms, that OpenAI would ask 580 years later about code: <strong>What if the pattern did not need the practitioner at all?</strong></p>
+
+<div class="data-box">
+  <div class="data-num">30,000</div>
+  <div class="data-label">scribes in Europe</div>
+  <div class="data-context">Producing roughly 1,000 books per year. By 1500 — fifty years after Gutenberg — there were 20 million books in circulation. The same number of human hands, a 20,000x increase in output.</div>
+</div>
+
+</div></div>
+
+<!-- ============================================================ -->
+<!-- CHAPTER 2: THE MOVABLE TYPE                                   -->
+<!-- ============================================================ -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Two</div><h2 class="ch-title">The Movable Type</h2><p class="ch-sub">Gutenberg's genius was not the press. It was the block. An individual, reusable letter that could be rearranged to say anything.</p></div></div>
+
+<div class="section"><div class="page prose">
+
+<div class="scene">
+  <div class="scene-num">Mainz, Germany — 1440</div>
+  <p>Gutenberg's key insight was deceptively simple. He cast individual letters as separate metal blocks. Each block was identical — an <em>A</em> was always an <em>A</em>, a <em>T</em> was always a <em>T</em>. To print a page, you arranged the blocks in a tray. To print a different page, you rearranged the same blocks. <em>The letters were not the message. The arrangement was the message.</em></p>
+</div>
+
+<p>Stop here. Read that last sentence again.</p>
+
+<p><strong>The letters were not the message. The arrangement was the message.</strong></p>
+
+<p>This is exactly how a large language model works.</p>
+
+<p>An LLM does not store sentences, paragraphs, or ideas. It stores <strong>tokens</strong> — small fragments of text, roughly equivalent to syllables or short words. Each token is a block. The model's job is to predict which block comes next. Given the sequence so far, what is the most likely next block?</p>
+
+<p>Gutenberg's movable type and an LLM's token vocabulary are the same invention, separated by 580 years.</p>
+
+<div class="concept-map">
+  <div class="cm-center">The Same Invention Twice</div>
+  <div class="cm-branches">
+    <div class="cm-branch">
+      <h4>Movable Type Block</h4>
+      <p>Individual, reusable letter cast in metal. Arranged in a tray to form words, sentences, pages. Rearranged to print anything.</p>
+    </div>
+    <div class="cm-branch">
+      <h4>LLM Token</h4>
+      <p>Individual, reusable text fragment stored as a number. Arranged by prediction to form words, sentences, programs. Rearranged to express anything.</p>
+    </div>
+    <div class="cm-branch">
+      <h4>Typesetting Tray</h4>
+      <p>Holds a fixed number of type blocks. The typesetter fills the tray for one page, prints, then resets. Physical limit on blocks per page.</p>
+    </div>
+    <div class="cm-branch">
+      <h4>Context Window</h4>
+      <p>Holds a fixed number of tokens. The model processes within this window, then the context resets. Computational limit on tokens per interaction.</p>
+    </div>
+  </div>
+</div>
+
+<p>The typesetting tray is the context window. The typesetter — the person arranging the blocks — is prompt engineering. The press strike — one pull, an entire page produced — is inference. The ink is the model's weights: the accumulated knowledge from every text it has ever processed, compressed into the pattern of how blocks tend to follow other blocks.</p>
+
+<p>When a scribe copied a book, every letter came from his brain, through his hand, onto the page. The typesetter did not need the scribe's handwriting, his memory, or his years of training. He needed <strong>the blocks</strong> and the knowledge of <strong>how to arrange them.</strong></p>
+
+<p>When a programmer writes code, every function comes from her brain, through her fingers, onto the screen. The LLM does not need the programmer's syntax memorization, her debugging intuition, or her years of training. It needs <strong>the tokens</strong> and the statistical knowledge of <strong>how they tend to be arranged.</strong></p>
+
+<div class="grand-quote">
+  <p>Gutenberg did not teach metal to write. He taught arrangement to replace handwriting. LLMs did not teach silicon to think. They taught token prediction to replace manual coding.</p>
+  <cite>The Movable Type Principle</cite>
+</div>
+
+<div class="think">
+  <div class="think-label">See It</div>
+  <p>Right now, you understand something most people do not: an LLM is not a brain. It is a printing press. It does not "know" things the way you know things. It knows which blocks tend to follow which blocks — and it knows this so well that the output looks like knowledge. The scribe knew what the words meant. The press did not. But the press produced more books in a year than every scribe in Europe produced in a decade. <strong>The mechanism does not need to understand. It needs to be right.</strong></p>
+</div>
+
+</div></div>
+
+<!-- ============================================================ -->
+<!-- CHAPTER 3: THE TYPESETTER'S TRAY                              -->
+<!-- ============================================================ -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Three</div><h2 class="ch-title">The Typesetter's Tray</h2><p class="ch-sub">Inside the machine: how tokens become code, how arrangement becomes architecture, and why the press learned to print things Gutenberg never imagined.</p></div></div>
+
+<div class="section"><div class="page prose">
+
+<p>Once Gutenberg's press existed, something unexpected happened. The press was built to reproduce Bibles. But within fifty years, people were printing scientific papers, political pamphlets, musical scores, navigation charts, and mathematical tables. The press did not know it was printing science. It was just arranging blocks. But the <strong>arrangement</strong> could express anything.</p>
+
+<p>This is the story of LLMs and code, compressed into one paragraph.</p>
+
+<p>GPT was trained to predict text. That was its mandate: given a sequence of tokens, output the next one. Nobody designed it to write Python. Nobody trained it on "how to be a programmer." But code IS text — a formal, structured, precise form of text with grammar, syntax, and meaning. The model did not learn to code. It discovered that <strong>code had been inside its type tray the entire time.</strong></p>
+
+<p>Here is how it actually works, using the press as a map:</p>
+
+<div class="flow">
+  <div class="flow-step">
+    <div class="flow-num">1</div>
+    <div class="flow-text">
+      <h4>Casting the Type (Training)</h4>
+      <p>The model processes billions of text documents — books, code, conversations, websites — and learns the statistical relationships between tokens. This is like casting every letter, ligature, and symbol that will ever be needed. It takes months and millions of dollars.</p>
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">2</div>
+    <div class="flow-text">
+      <h4>Setting the Tray (Prompt + Context)</h4>
+      <p>You provide a prompt: "Write a function that sorts a list." The model loads this into its context window — the typesetting tray. Everything the model can "see" is what fits in this tray. Longer context = bigger tray = more complex pages.</p>
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div class="flow-text">
+      <h4>Arranging the Blocks (Inference)</h4>
+      <p>The model predicts the next token based on everything in the tray. Then it adds that token to the tray and predicts again. And again. Token by token, block by block, until the page is complete. Each prediction takes milliseconds.</p>
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">4</div>
+    <div class="flow-text">
+      <h4>The Press Strike (Output)</h4>
+      <p>The result appears: a working Python function. The model did not "understand" sorting. It predicted which tokens follow "def sort" based on billions of examples where those tokens appeared together. The arrangement is correct because the statistical pattern is correct.</p>
+    </div>
+  </div>
+</div>
+
+<p>But here is where the analogy takes a turn that Gutenberg could not have anticipated.</p>
+
+<p>Gutenberg's press reproduced fixed pages. Each page was set once and printed identically a thousand times. The press was powerful but <strong>literal.</strong></p>
+
+<p>LLMs do something the press never could: they <strong>compose.</strong> Each output is a new arrangement. Each arrangement is generated on the fly, based on the specific input. You do not load a pre-set page. You describe what you need, and the model arranges the blocks in real-time to produce something that has never existed before.</p>
+
+<p>This is the difference between the printing press and the publishing house. The press reproduces. The publishing house <strong>creates.</strong></p>
+
+<div class="insight">
+  <p>The press printed Bibles for fifty years before someone thought to print a pamphlet. The LLM wrote text for two years before someone thought to <em>make it write software.</em> The leap was never the technology. It was the imagination of the person holding the tray.</p>
+</div>
+
+</div></div>
+
+<!-- ============================================================ -->
+<!-- CHAPTER 4: THE PUBLISHING HOUSE                               -->
+<!-- ============================================================ -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Four</div><h2 class="ch-title">The Publishing House</h2><p class="ch-sub">A printing press is a tool. A publishing house is an agent. The difference changes everything.</p></div></div>
+
+<div class="section"><div class="page prose">
+
+<p>By 1500, the press had evolved. It was no longer a single machine operated by a single person. It was a <strong>system.</strong></p>
+
+<p>An acquisitions editor decided which books to publish. A copy editor refined the manuscript. A typesetter arranged the blocks. A pressman operated the machine. A proofreader checked for errors. A binder assembled the pages. A distributor shipped the finished product. No single person did everything. The publishing house <strong>orchestrated</strong> specialized roles into a complete pipeline.</p>
+
+<p>This is exactly what happened to AI between 2023 and 2025. LLMs stopped being presses and became publishing houses.</p>
+
+<div class="ba-grid">
+  <div class="ba-col before">
+    <div class="ba-label">LLM as Press (2020-2023)</div>
+    <p>"Write me a function that sorts this list"</p>
+    <p>Single input, single output</p>
+    <p>Human reviews, tests, integrates</p>
+    <p>AI prints one page at a time</p>
+    <p>Human is the typesetter</p>
+  </div>
+  <div class="ba-col after">
+    <div class="ba-label">AI Agent as Publishing House (2024+)</div>
+    <p>"Build me an expense tracker with auth"</p>
+    <p>Multi-step planning and execution</p>
+    <p>Agent edits, tests, debugs its own output</p>
+    <p>AI produces the entire book</p>
+    <p>Human is the publisher</p>
+  </div>
+</div>
+
+<p>A modern coding agent does not just print pages. It <strong>acquires</strong> the project (reads your codebase, understands the architecture). It <strong>edits</strong> the plan (decides which files to change, what approach to take). It <strong>typesets</strong> the code (writes the actual implementation). It <strong>proofreads</strong> (runs tests, reads error messages). It <strong>corrects</strong> (debugs failures, rewrites broken sections). It <strong>binds</strong> (commits the code, deploys the application). One conversation. Multiple steps. An entire pipeline orchestrated by a single intelligence.</p>
+
+<div class="capability-chart">
+  <div class="cap-row">
+    <div class="cap-label"><span>Single Page (Text Completion)</span><small>One response per prompt</small></div>
+    <div class="cap-bar"><div class="cap-fill scribe"></div></div>
+  </div>
+  <div class="cap-row">
+    <div class="cap-label"><span>Chapter (Code Generation)</span><small>Functions, modules, files</small></div>
+    <div class="cap-bar"><div class="cap-fill type"></div></div>
+  </div>
+  <div class="cap-row">
+    <div class="cap-label"><span>Full Book (Architecture)</span><small>System-level design and planning</small></div>
+    <div class="cap-bar"><div class="cap-fill code"></div></div>
+  </div>
+  <div class="cap-row">
+    <div class="cap-label"><span>Publishing House (Autonomous Agent)</span><small>Plan + build + test + debug + deploy</small></div>
+    <div class="cap-bar"><div class="cap-fill agent"></div></div>
+  </div>
+</div>
+
+<p>The publisher does not need to know how to typeset. The publisher needs to know <strong>what is worth printing.</strong> That is the skill shift happening right now. The question is no longer "can you code?" The question is "can you see what needs to exist?"</p>
+
+<div class="think">
+  <div class="think-label">The Shift</div>
+  <p>A publisher who tries to typeset every page themselves will always be slower than the press. A developer who tries to write every line of code themselves will always be slower than the agent. The skill is not in the typing. It is in the <strong>judgment</strong> — knowing what to build, for whom, and why. The press handles the blocks. You handle the vision.</p>
+</div>
+
+</div></div>
+
+<!-- ============================================================ -->
+<!-- CHAPTER 5: THE DISPLACEMENT MYTH                              -->
+<!-- ============================================================ -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Five</div><h2 class="ch-title">The Displacement Myth</h2><p class="ch-sub">Every revolution triggers the same panic. Every panic produces the same prediction. Every prediction is wrong by the same factor. Here are the numbers.</p></div></div>
+
+<div class="section"><div class="page prose">
+
+<p>The scribes saw Gutenberg's press and predicted the end of their profession. They were right. They also predicted the end of the book. They were spectacularly wrong.</p>
+
+<p>This pattern — <strong>correct about the job, wrong about the work</strong> — has repeated in every major displacement for 600 years. The job dies. The work explodes. And the number of people doing the work multiplies, because the machine does not replace demand. It <strong>creates demand that did not previously exist.</strong></p>
+
+<p>Here is the evidence:</p>
+
+<div class="displacement">
+  <table>
+    <tr><th>Revolution</th><th>Jobs Destroyed</th><th>Jobs Created</th><th>Net Effect</th></tr>
+    <tr>
+      <td class="era">Printing Press (1450)</td>
+      <td class="destroyed">~30,000 scribes eliminated within one generation</td>
+      <td class="created">Authors, editors, typesetters, publishers, booksellers, journalists, librarians, literacy teachers</td>
+      <td>By 1500: <strong>millions</strong> employed in the book trade. Literacy rate exploded from 5% to 30% within 150 years.</td>
+    </tr>
+    <tr>
+      <td class="era">Jacquard Loom (1804)</td>
+      <td class="destroyed">Master pattern-memorizers replaced by cards</td>
+      <td class="created">Pattern designers, card punchers, loom operators, textile merchants, fashion industry</td>
+      <td>Weavers in Lyon <strong>quadrupled</strong> within 20 years. Complex textiles became affordable, demand exploded.</td>
+    </tr>
+    <tr>
+      <td class="era">Automated Telephone Switching (1920s)</td>
+      <td class="destroyed">~100,000 switchboard operators eliminated</td>
+      <td class="created">Telecom engineers, equipment manufacturers, sales reps, customer service roles</td>
+      <td>Cheap calls meant businesses used phones for everything. Telecom employment grew <strong>10x</strong> by 1960.</td>
+    </tr>
+    <tr>
+      <td class="era">Container Shipping (1956)</td>
+      <td class="destroyed">Longshoreman jobs down 90%</td>
+      <td class="created">Logistics coordinators, warehouse managers, supply chain analysts, customs brokers</td>
+      <td>Shipping costs fell 97%. Global trade volume grew <strong>30x</strong>. Millions of new trade-related jobs.</td>
+    </tr>
+    <tr>
+      <td class="era">ATMs (1970s)</td>
+      <td class="destroyed">Expected to eliminate bank tellers</td>
+      <td class="created">More branches (cheaper to operate), tellers shifted to advisory roles</td>
+      <td>Teller employment <strong>grew 2x</strong> between 1970 and 2010. More ATMs = more branches = more tellers.</td>
+    </tr>
+    <tr>
+      <td class="era">Electronic Spreadsheets (1979)</td>
+      <td class="destroyed">~400,000 bookkeeping/ledger clerk positions eliminated</td>
+      <td class="created">Financial analysts, accountants, business intelligence roles, data analysts</td>
+      <td><strong>600,000 new</strong> accounting and financial analyst jobs created. VisiCalc killed the ledger clerk, created the analyst.</td>
+    </tr>
+    <tr>
+      <td class="era">CAD Software (1980s)</td>
+      <td class="destroyed">Manual drafters expected to be eliminated</td>
+      <td class="created">CAD technicians, 3D modelers, design engineers, BIM specialists</td>
+      <td>Architects could iterate 10x faster = 10x more projects = <strong>more drafters</strong> (now called CAD technicians).</td>
+    </tr>
+    <tr>
+      <td class="era">Digital Photography (1990s)</td>
+      <td class="destroyed">Film developers, darkroom technicians, Kodak's 145,000 employees</td>
+      <td class="created">Digital editors, content creators, social media managers, UX photographers, stock photo industry</td>
+      <td>Photography employment <strong>grew 300%</strong>. More images taken in 2 minutes today than in the entire 1800s.</td>
+    </tr>
+  </table>
+</div>
+
+<p>The pattern is not subtle. It is a <strong>law</strong>:</p>
+
+<div class="grand-quote">
+  <p>When a machine removes the ceiling from a human skill, demand for the output of that skill does not stay the same. It explodes. And the explosion creates more jobs than the machine destroyed — jobs that were unimaginable before the machine existed.</p>
+  <cite>The Displacement Law</cite>
+</div>
+
+<p>Let's look at the numbers that matter most:</p>
+
+<div class="stat-grid">
+  <div class="stat-card green">
+    <div class="stat-num">4x</div>
+    <div class="stat-label">Weavers in Lyon</div>
+    <div class="stat-desc">After punch cards "replaced" them. The cards did not replace weavers. They replaced the ceiling. Demand for complex textiles exploded.</div>
+  </div>
+  <div class="stat-card green">
+    <div class="stat-num">2x</div>
+    <div class="stat-label">Bank Tellers</div>
+    <div class="stat-desc">After ATMs "replaced" them. Cheaper branches meant more branches. Tellers shifted from counting cash to selling financial products.</div>
+  </div>
+  <div class="stat-card green">
+    <div class="stat-num">600K</div>
+    <div class="stat-label">New Analyst Jobs</div>
+    <div class="stat-desc">Created after spreadsheets killed 400K bookkeeping jobs. VisiCalc did not eliminate the work. It eliminated the drudgery and amplified the judgment.</div>
+  </div>
+  <div class="stat-card green">
+    <div class="stat-num">20M</div>
+    <div class="stat-label">Books by 1500</div>
+    <div class="stat-desc">Fifty years after the press. From 1,000 per year to 20 million in circulation. The scribes were gone. The books were everywhere. The readers were born.</div>
+  </div>
+</div>
+
+<p>Now apply this to software.</p>
+
+<p>There are roughly 28 million software developers on Earth serving 8 billion people. Most small businesses cannot afford custom software. Most individuals have never had a tool built specifically for their needs. The demand for software is not shrinking — it is <strong>unfathomably larger</strong> than what 28 million developers can produce.</p>
+
+<p>AI coding agents do not reduce this demand. They <strong>unlock</strong> it. The same way cheap books did not reduce the demand for reading — they created an entire civilization of readers, writers, publishers, teachers, and thinkers who could not have existed when books cost as much as houses.</p>
+
+<div class="data-box">
+  <div class="data-num">28M → ?</div>
+  <div class="data-label">Software builders</div>
+  <div class="data-context">28 million developers serve 8 billion people. When the ceiling lifts, how many people will be building software? Not fewer. The printing press turned 30,000 scribes into millions of participants in the book trade. The loom turned hundreds of master weavers into thousands. The pattern only goes one direction.</div>
+</div>
+
+<div class="recognition">
+  <div class="recognition-label">The Scribe's Mistake</div>
+  <p>The scribes assumed the number of books was fixed — that there was a set amount of "book demand" in the world, and the press would simply produce that fixed amount with fewer people. They were catastrophically wrong. There was not a fixed amount of demand. There was an <strong>infinite</strong> amount of demand that had been suppressed by the ceiling of human hand-copying. The press did not serve existing demand. It created a market that dwarfed anything the scribes could imagine. The same is happening with software right now.</p>
+</div>
+
+</div></div>
+
+<!-- ============================================================ -->
+<!-- CHAPTER 6: YOUR PRESS                                         -->
+<!-- ============================================================ -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Six</div><h2 class="ch-title">Your Press</h2><p class="ch-sub">The mental model is not about AI. It is about what happens when the ceiling lifts on any human skill. Yours is next.</p></div></div>
+
+<div class="section"><div class="page prose">
+
+<p>The Movable Type is a 580-year story, but the mental model underneath it fits in one sentence:</p>
+
+<div class="grand-quote">
+  <p>Every revolution happens when a machine separates the arrangement from the arranger.</p>
+  <cite>The Movable Type Principle</cite>
+</div>
+
+<p>When letters left the scribe's hand and entered movable type, books became accessible to everyone. When weaving patterns left the weaver's memory and entered punch cards, textiles became affordable for everyone. When code left the programmer's fingers and entered language models, software became buildable by everyone.</p>
+
+<p>The people who thrive in each revolution are never the ones who cling to the old arrangement. They are the ones who <strong>move up the stack.</strong></p>
+
+<div class="flow">
+  <div class="flow-step">
+    <div class="flow-num">1</div>
+    <div class="flow-text">
+      <h4>The Scribe Became the Author</h4>
+      <p>Scribes who clung to hand-copying disappeared. Scribes who realized their real skill was <strong>knowing what was worth writing</strong> became the first professional authors. The hand was replaced. The mind was promoted.</p>
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">2</div>
+    <div class="flow-text">
+      <h4>The Weaver Became the Designer</h4>
+      <p>Weavers who clung to pattern memorization were replaced by cards. Weavers who realized their real skill was <strong>imagining patterns the cards had never seen</strong> became the silk designers of Lyon. Their income quadrupled.</p>
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div class="flow-text">
+      <h4>The Bookkeeper Became the Analyst</h4>
+      <p>Bookkeepers who clung to manual ledgers were replaced by spreadsheets. Bookkeepers who realized their real skill was <strong>understanding what the numbers meant</strong> became financial analysts. The drudgery was removed. The judgment was amplified.</p>
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">4</div>
+    <div class="flow-text">
+      <h4>The Coder Becomes the Architect</h4>
+      <p>Programmers who cling to manual syntax construction will be outpaced by agents. Programmers who realize their real skill was never typing — it was <strong>knowing what to build and why</strong> — will become the publishers of the AI age.</p>
+    </div>
+  </div>
+</div>
+
+<p>Here is how to use this mental model starting now:</p>
+
+<div class="concept-map">
+  <div class="cm-center">Move Up the Stack</div>
+  <div class="cm-branches">
+    <div class="cm-branch">
+      <h4>Identify the Arrangement</h4>
+      <p>What in your work is "typesetting" — the mechanical arrangement of known blocks into known patterns? This is what the machine will do.</p>
+    </div>
+    <div class="cm-branch">
+      <h4>Find the Judgment</h4>
+      <p>What in your work requires taste, context, empathy, or vision? What decisions require knowing your audience, your market, your mission? This is what the machine cannot do.</p>
+    </div>
+    <div class="cm-branch">
+      <h4>Become the Publisher</h4>
+      <p>The publisher does not typeset. The publisher decides what is worth printing. Your job is moving from arrangement to <strong>curation, judgment, and vision.</strong></p>
+    </div>
+    <div class="cm-branch">
+      <h4>Ride the Explosion</h4>
+      <p>When the ceiling lifts, demand explodes. Position yourself not for the old market but for the new one — the one that could not exist when the ceiling was in place.</p>
+    </div>
+  </div>
+</div>
+
+<p>The scribes who thrived after Gutenberg were not the ones who fought the press. They were the ones who realized that the press <strong>freed them</strong> from the mechanical drudgery of copying and let them focus on the thing they were actually good at: knowing what was worth saying.</p>
+
+<p>The developers who will thrive after agents are not the ones who fight the machine. They are the ones who realize that the agent <strong>frees them</strong> from the mechanical drudgery of syntax and debugging and lets them focus on the thing they were actually good at: knowing what needs to exist in the world.</p>
+
+<p><strong>Your type is movable now. What will you arrange?</strong></p>
+
+<div class="think">
+  <div class="think-label">Your Move</div>
+  <p>What part of your work is typesetting — the mechanical arrangement that a machine could learn? And what part is publishing — the judgment, vision, and taste that no machine has ever replicated? Write both down. Then ask yourself: which one am I spending more time on? The answer tells you where you are on the stack. The question tells you where to go next.</p>
+</div>
+
+</div></div>
+
+<!-- ============================================================ -->
+<!-- FINAL TEST                                                    -->
+<!-- ============================================================ -->
+<div class="section"><div class="page">
+  <div class="final-test">
+    <h3>Can You Answer These Without Looking Back?</h3>
+    <div class="ft-q"><strong>1.</strong> What was the fundamental constraint that limited book production for 1,000 years — and what is its modern equivalent in software development?</div>
+    <div class="ft-q"><strong>2.</strong> How is a movable type block functionally identical to an LLM token? What is the typesetting tray's equivalent?</div>
+    <div class="ft-q"><strong>3.</strong> What is the difference between the printing press (tool) and the publishing house (agent)?</div>
+    <div class="ft-q"><strong>4.</strong> Name three historical displacements where the "replacement" technology actually increased total employment. What was the multiplier in each case?</div>
+    <div class="ft-q"><strong>5.</strong> What happened to the number of weavers in Lyon after Jacquard's punch cards "replaced" them? Why?</div>
+    <div class="ft-q"><strong>6.</strong> State the Displacement Law in one sentence. Then apply it to your own profession.</div>
+    <div class="ft-q"><strong>7.</strong> What is the difference between typesetting and publishing? Which one describes your current work? Which one should?</div>
+  </div>
+</div></div>
+
+<!-- ============================================================ -->
+<!-- PROMPT CARD                                                   -->
+<!-- ============================================================ -->
+<div class="section"><div class="page">
+  <div class="prompt-card">
+    <h3>Continue the Press Run</h3>
+    <p>Copy this prompt into any AI assistant to go deeper:</p>
+    <code>I just read "The Movable Type" — a playbook about how Gutenberg's printing press and AI coding agents are the same revolution, separated by 580 years. The core principle: when a machine separates the arrangement from the arranger, demand for the output explodes and creates more jobs than it destroys. I want to apply this to my own career. Help me identify: (1) what part of my work is "typesetting" — mechanical arrangement that an AI could learn, (2) what part is "publishing" — judgment, vision, and taste that no machine can replicate, and (3) how I shift my time from the first to the second. My context: [describe your work, industry, or situation].</code>
+  </div>
+</div></div>
+
+<!-- ============================================================ -->
+<!-- FOOTER                                                        -->
+<!-- ============================================================ -->
+<div class="ribbon">
+  <p>"Whatever you do, work at it with all your heart, as working for the Lord, not for human masters." — Colossians 3:23</p>
+</div>
+
+<footer class="footer-ribbon">
+  <p>"The type is movable. The question is what you arrange."</p>
+  <div class="brand">KingdomBuilders AI</div>
+</footer>
+
+</body>
+</html>
