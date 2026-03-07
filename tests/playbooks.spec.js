@@ -2,6 +2,20 @@
 const { test, expect } = require("@playwright/test");
 
 /**
+ * URL prefix — extracted from BASE_URL env var.
+ * e.g. BASE_URL=https://kingdombuilders.ai/playbooks → prefix="/playbooks"
+ */
+const baseUrl = process.env.BASE_URL || "";
+const prefix = (() => {
+  try {
+    const u = new URL(baseUrl);
+    return u.pathname.replace(/\/$/, "");
+  } catch {
+    return "";
+  }
+})();
+
+/**
  * Master registry of all playbooks.
  * When adding a new playbook via SetHut, add an entry here.
  */
@@ -181,55 +195,63 @@ const PLAYBOOKS = [
     tag: "Faith",
   },
   {
-    title: "The Tide Pool's Echo",
+    title: "The Tide Pool\u2019s Echo",
+    catalogTitle: "The Tide Pool's Echo",
     route: "/thetidepoolsecho",
     readerSlug: "the-tide-pools-echo",
     tag: "Philosophy",
   },
   {
-    title: "The Whale's Breath",
+    title: "The Whale\u2019s Breath",
+    catalogTitle: "The Whale's Breath",
     route: "/thewhalesbreath",
     readerSlug: "the-whales-breath",
     tag: "Philosophy",
   },
   {
-    title: "The Butterfly's Crossing",
+    title: "The Butterfly\u2019s Crossing",
+    catalogTitle: "The Butterfly's Crossing",
     route: "/thebutterflyscrossing",
     readerSlug: "the-butterflys-crossing",
     tag: "Philosophy",
   },
   {
-    title: "The Elephant's Ground",
+    title: "The Elephant\u2019s Ground",
+    catalogTitle: "The Elephant's Ground",
     route: "/theeleophantsground",
     readerSlug: "the-elephants-ground",
     tag: "Philosophy",
   },
   {
-    title: "The Bee's Dance",
+    title: "The Bee\u2019s Dance",
+    catalogTitle: "The Bee's Dance",
     route: "/thebeesdance",
     readerSlug: "the-bees-dance",
     tag: "Philosophy",
   },
   {
-    title: "The Otter's Play",
+    title: "The Otter\u2019s Play",
+    catalogTitle: "The Otter's Play",
     route: "/theottersplay",
     readerSlug: "the-otters-play",
     tag: "Philosophy",
   },
   {
-    title: "The Mockingbird\u2019s Song",
+    title: "The Mockingbird's Song",
     route: "/themockingbirdssong",
     readerSlug: "the-mockingbirds-song",
     tag: "Technology",
   },
   {
-    title: "Dad Talks: The Dopamine Drought",
+    title: "The Dopamine Drought",
+    catalogTitle: "Dad Talks: The Dopamine Drought",
     route: "/dadtalksthedopaminedrought",
     readerSlug: "dad-talks-the-dopamine-drought",
     tag: "Parenting",
   },
   {
-    title: "Dad Talks: The Mirror Test",
+    title: "The Mirror Test",
+    catalogTitle: "Dad Talks: The Mirror Test",
     route: "/dadtalksthemirrortest",
     readerSlug: "dad-talks-the-mirror-test",
     tag: "Parenting",
@@ -269,9 +291,9 @@ test.describe("Catalog Page", () => {
 
     // Verify every playbook has a card in the catalog
     for (const pb of PLAYBOOKS) {
-      const card = page.locator(`a.card[href="${pb.route}"]`);
+      const card = page.locator(`a.card[href="${prefix}${pb.route}"]`);
       await expect(card).toBeVisible();
-      await expect(card).toContainText(pb.title);
+      await expect(card).toContainText(pb.catalogTitle || pb.title);
     }
   });
 
@@ -284,9 +306,9 @@ test.describe("Catalog Page", () => {
   test("all catalog card links are clickable and resolve", async ({ page }) => {
     await page.goto("/");
     for (const pb of PLAYBOOKS) {
-      const card = page.locator(`a.card[href="${pb.route}"]`);
+      const card = page.locator(`a.card[href="${prefix}${pb.route}"]`);
       const href = await card.getAttribute("href");
-      expect(href).toBe(pb.route);
+      expect(href).toBe(`${prefix}${pb.route}`);
     }
   });
 });
@@ -316,7 +338,7 @@ test.describe("Landing Pages", () => {
         await expect(checkoutBtn).toBeVisible();
       } else {
         // Every other landing page should have a link to /read/<slug>
-        const ctaLink = page.locator(`a[href="/read/${pb.readerSlug}"]`);
+        const ctaLink = page.locator(`a[href="${prefix}/read/${pb.readerSlug}"]`);
         await expect(ctaLink).toBeVisible();
       }
     });
@@ -353,7 +375,7 @@ test.describe("Full Navigation Flow", () => {
       await page.goto("/");
 
       // Step 2: Click the playbook card
-      const card = page.locator(`a.card[href="${pb.route}"]`);
+      const card = page.locator(`a.card[href="${prefix}${pb.route}"]`);
       await card.click();
       await page.waitForURL(`**${pb.route}`);
       expect(page.url()).toContain(pb.route);
@@ -362,7 +384,7 @@ test.describe("Full Navigation Flow", () => {
       if (pb.readerSlug === "conductors-playbook") {
         await page.goto(`/read/${pb.readerSlug}`);
       } else {
-        const ctaLink = page.locator(`a[href="/read/${pb.readerSlug}"]`);
+        const ctaLink = page.locator(`a[href="${prefix}/read/${pb.readerSlug}"]`);
         await ctaLink.click();
         await page.waitForURL(`**/read/${pb.readerSlug}`);
       }
