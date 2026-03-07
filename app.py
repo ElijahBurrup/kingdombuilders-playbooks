@@ -284,6 +284,12 @@ def read_playbook(slug):
     return send_from_directory("assets", filename)
 
 
+# --- Health Check (keep-alive for Render free tier) ---
+@bp.route("/health")
+def health():
+    return "ok", 200
+
+
 # --- Email Capture / Lead Magnet ---
 @bp.route("/subscribe", methods=["POST"])
 def subscribe():
