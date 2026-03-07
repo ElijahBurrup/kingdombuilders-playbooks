@@ -202,6 +202,33 @@ def the_mockingbirds_song():
     return send_from_directory("static", "the-mockingbirds-song.html")
 
 
+# --- Dad Talks Series ---
+@bp.route("/dadtalksthedopaminedrought")
+def dad_talks_the_dopamine_drought():
+    return send_from_directory("static", "dad-talks-the-dopamine-drought.html")
+
+
+@bp.route("/dadtalksthemirrortest")
+def dad_talks_the_mirror_test():
+    return send_from_directory("static", "dad-talks-the-mirror-test.html")
+
+
+# --- Additional Playbooks ---
+@bp.route("/thearrival")
+def the_arrival():
+    return send_from_directory("static", "the-arrival.html")
+
+
+@bp.route("/thebodylie")
+def the_body_lie():
+    return send_from_directory("static", "the-body-lie.html")
+
+
+@bp.route("/themyceliumnetwork")
+def the_mycelium_network():
+    return send_from_directory("static", "the-mycelium-network.html")
+
+
 # --- Playbook Reader (serves full playbook HTML from assets) ---
 @bp.route("/read/<slug>")
 def read_playbook(slug):
@@ -242,6 +269,11 @@ def read_playbook(slug):
         "lay-it-down-envy": "Lay_It_Down_Envy.html",
         "lay-it-down-wrath": "Lay_It_Down_Wrath.html",
         "the-mockingbirds-song": "The_Mockingbirds_Song.html",
+        "dad-talks-the-dopamine-drought": "Dad_Talks_The_Dopamine_Drought.html",
+        "dad-talks-the-mirror-test": "Dad_Talks_The_Mirror_Test.html",
+        "the-arrival": "The_Arrival.html",
+        "the-body-lie": "The_Body_Lie.html",
+        "the-mycelium-network": "The_Mycelium_Network.html",
     }
     filename = slug_to_file.get(slug)
     if not filename:
