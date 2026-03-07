@@ -72,6 +72,7 @@ LANDING_ROUTES: dict[str, str] = {
     "/theeleophantsground": "the-elephants-ground.html",
     "/thebeesdance": "the-bees-dance.html",
     "/theottersplay": "the-otters-play.html",
+    "/themockingbirdssong": "the-mockingbirds-song.html",
 }
 
 # ============================================================================
@@ -113,6 +114,7 @@ SLUG_TO_FILE: dict[str, str] = {
     "lay-it-down-pride": "Lay_It_Down_Pride.html",
     "lay-it-down-envy": "Lay_It_Down_Envy.html",
     "lay-it-down-wrath": "Lay_It_Down_Wrath.html",
+    "the-mockingbirds-song": "The_Mockingbirds_Song.html",
 }
 
 
