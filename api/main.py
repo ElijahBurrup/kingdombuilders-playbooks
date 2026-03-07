@@ -82,7 +82,9 @@ def create_app() -> FastAPI:
     if ASSETS_DIR.is_dir():
         app.mount("/assets", StaticFiles(directory=str(ASSETS_DIR)), name="assets")
 
-    # --- URL_PREFIX rewrite middleware (for subpath deployment like /playbooks) ---
+    # --- URL_PREFIX middleware (for subpath deployment like /playbooks) ---
+    # Strips the prefix from incoming request paths AND rewrites HTML links
+    # so the app works behind a reverse proxy that adds a path prefix.
     if settings.URL_PREFIX:
         from starlette.middleware.base import BaseHTTPMiddleware
         from starlette.requests import Request
@@ -90,7 +92,17 @@ def create_app() -> FastAPI:
 
         class URLPrefixMiddleware(BaseHTTPMiddleware):
             async def dispatch(self, request: Request, call_next):
+                # Strip prefix from incoming path so routes match
+                prefix = settings.URL_PREFIX
+                path = request.scope.get("path", "")
+                if path.startswith(prefix + "/"):
+                    request.scope["path"] = path[len(prefix):]
+                elif path == prefix:
+                    request.scope["path"] = "/"
+
                 response: Response = await call_next(request)
+
+                # Rewrite links in HTML responses to include the prefix
                 if response.headers.get("content-type", "").startswith("text/html"):
                     body = b""
                     async for chunk in response.body_iterator:
@@ -99,7 +111,6 @@ def create_app() -> FastAPI:
                         else:
                             body += chunk
                     text = body.decode()
-                    prefix = settings.URL_PREFIX
                     text = text.replace('href="/', f'href="{prefix}/')
                     text = text.replace("href='/", f"href='{prefix}/")
                     text = text.replace('src="/', f'src="{prefix}/')
