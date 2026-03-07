@@ -73,6 +73,12 @@ LANDING_ROUTES: dict[str, str] = {
     "/thebeesdance": "the-bees-dance.html",
     "/theottersplay": "the-otters-play.html",
     "/themockingbirdssong": "the-mockingbirds-song.html",
+    "/dadtalksthedopaminedrought": "dad-talks-the-dopamine-drought.html",
+    "/dadtalksthemirrortest": "dad-talks-the-mirror-test.html",
+    "/thearrival": "the-arrival.html",
+    "/thebodylie": "the-body-lie.html",
+    "/themyceliumnetwork": "the-mycelium-network.html",
+    "/thejacquardthread": "the-jacquard-thread.html",
 }
 
 # ============================================================================
@@ -115,6 +121,12 @@ SLUG_TO_FILE: dict[str, str] = {
     "lay-it-down-envy": "Lay_It_Down_Envy.html",
     "lay-it-down-wrath": "Lay_It_Down_Wrath.html",
     "the-mockingbirds-song": "The_Mockingbirds_Song.html",
+    "dad-talks-the-dopamine-drought": "Dad_Talks_The_Dopamine_Drought.html",
+    "dad-talks-the-mirror-test": "Dad_Talks_The_Mirror_Test.html",
+    "the-arrival": "The_Arrival.html",
+    "the-body-lie": "The_Body_Lie.html",
+    "the-mycelium-network": "The_Mycelium_Network.html",
+    "the-jacquard-thread": "The_Jacquard_Thread.html",
 }
 
 
@@ -124,6 +136,11 @@ SLUG_TO_FILE: dict[str, str] = {
 @router.get("/", include_in_schema=False)
 async def catalog():
     return FileResponse(STATIC_DIR / "index.html")
+
+
+@router.get("/health", include_in_schema=False)
+async def health():
+    return HTMLResponse("ok", status_code=200)
 
 
 # ============================================================================
