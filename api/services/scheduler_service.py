@@ -15,25 +15,32 @@ from api.config import settings
 _scheduler: BackgroundScheduler | None = None
 
 
-def get_scheduler() -> BackgroundScheduler:
+def get_scheduler() -> BackgroundScheduler | None:
     """Get or create the singleton APScheduler instance."""
     global _scheduler
     if _scheduler is None:
-        db_path = settings.DATA_DIR / "scheduler.db"
-        db_path.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            db_path = settings.DATA_DIR / "scheduler.db"
+            db_path.parent.mkdir(parents=True, exist_ok=True)
 
-        jobstores = {
-            "default": SQLAlchemyJobStore(url=f"sqlite:///{db_path}")
-        }
+            jobstores = {
+                "default": SQLAlchemyJobStore(url=f"sqlite:///{db_path}")
+            }
 
-        _scheduler = BackgroundScheduler(jobstores=jobstores)
-        _scheduler.start()
+            _scheduler = BackgroundScheduler(jobstores=jobstores)
+            _scheduler.start()
+        except Exception as e:
+            print(f"Scheduler init failed (non-fatal): {e}")
+            _scheduler = None
     return _scheduler
 
 
 def init_scheduler() -> None:
     """Initialize the scheduler on app startup."""
-    get_scheduler()
+    try:
+        get_scheduler()
+    except Exception as e:
+        print(f"Scheduler startup failed (non-fatal): {e}")
 
 
 def schedule_followup_emails(customer_email: str, download_token: str) -> None:
