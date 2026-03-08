@@ -904,10 +904,12 @@ async def success_page(request: Request, session_id: str | None = None):
     # Try to retrieve the Stripe session to get metadata
     stripe.api_key = settings.STRIPE_SECRET_KEY
     slug = ""
+    mode = "single"
     try:
         stripe_session = stripe.checkout.Session.retrieve(session_id)
         metadata = stripe_session.get("metadata", {})
         slug = metadata.get("slug", "")
+        mode = metadata.get("mode", "single")
     except Exception:
         pass
 
@@ -936,8 +938,12 @@ async def success_page(request: Request, session_id: str | None = None):
             "prefix": prefix,
         },
     )
-    # Set admin_unlocked cookie as fallback for immediate access
-    response.set_cookie("admin_unlocked", "1", max_age=86400, httponly=True, samesite="lax")
+
+    # Only set admin_unlocked (all-access) for subscriptions.
+    # Single purchases rely on per-slug DB access checked in read_playbook.
+    if mode in ("monthly", "yearly"):
+        response.set_cookie("admin_unlocked", "1", max_age=86400, httponly=True, samesite="lax")
+
     return response
 
 
