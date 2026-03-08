@@ -10,8 +10,19 @@ import config
 from database import initialize_db
 
 # --- Version & Release Notes ---
-APP_VERSION = "2.5.0"
+APP_VERSION = "2.6.0"
 RELEASE_NOTES = [
+    {
+        "version": "2.6.0",
+        "date": "2026-03-08",
+        "title": "Lay It Down: 7 Deadly Sins Complete",
+        "changes": [
+            "New playbook: Lay It Down: Gluttony (Part 6 of 7)",
+            "New playbook: Lay It Down: Lust (Part 7 of 7 — Series Finale)",
+            "Complete 7 Deadly Sins series now live",
+            "48 playbooks now live",
+        ],
+    },
     {
         "version": "2.5.0",
         "date": "2026-03-08",
@@ -152,6 +163,8 @@ def _slug_to_file():
         "the-fibonacci-trim": "The_Fibonacci_Trim.html",
         "lay-it-down-sloth": "Lay_It_Down_Sloth.html",
         "lay-it-down-greed": "Lay_It_Down_Greed.html",
+        "lay-it-down-gluttony": "Lay_It_Down_Gluttony.html",
+        "lay-it-down-lust": "Lay_It_Down_Lust.html",
     }
 
 
@@ -394,6 +407,14 @@ def lay_it_down_sloth():
 @bp.route("/layitdowngreed")
 def lay_it_down_greed():
     return send_from_directory("static", "lay-it-down-greed.html")
+
+@bp.route("/layitdowngluttony")
+def lay_it_down_gluttony():
+    return send_from_directory("static", "lay-it-down-gluttony.html")
+
+@bp.route("/layitdownlust")
+def lay_it_down_lust():
+    return send_from_directory("static", "lay-it-down-lust.html")
 
 
 # --- Playbook Reader (serves full playbook HTML from assets) ---

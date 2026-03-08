@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lay It Down: Lust | Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1A0810;--ink-mid:#2C1020;--ink-soft:#3D2030;
+  --steel:#5A3848;--steel-light:#8A6A7A;--fog:#B09098;
+  --fire:#B22222;--fire-mid:rgba(178,34,34,0.18);--fire-pale:rgba(178,34,34,0.07);
+  --ember:#C94040;--ember-mid:rgba(201,64,64,0.15);
+  --gold:#D4A030;--gold-mid:rgba(212,160,48,0.18);--gold-pale:rgba(212,160,48,0.08);
+  --ash:#9B3060;--ash-mid:rgba(155,48,96,0.15);
+  --green:#2D8A4E;--green-mid:rgba(45,138,78,0.15);
+  --cream:#FFF8F6;--cream-warm:#FFFAF8;--paper:#FFFAF8;--white:#FFFFFF;
+  --radius:10px;--shadow:0 2px 16px rgba(26,8,16,0.09);--shadow-deep:0 8px 40px rgba(26,8,16,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.78;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.label{font-family:'Poppins',sans-serif}
+.page{max-width:700px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--ink-mid);font-weight:600;font-family:'Poppins',sans-serif}
+
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(160deg,#120206 0%,#2A0A18 40%,#1A0820 100%);position:relative;overflow:hidden}
+.cover-grain{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:0.5}
+.cover-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 25%,rgba(10,2,4,0.7) 100%)}
+.flame-ring{position:absolute;border-radius:50%;border:1px solid rgba(178,34,34,0.06);animation:flame-expand 7s ease-out infinite}
+.flame-ring:nth-child(3){width:180px;height:180px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:0s}
+.flame-ring:nth-child(4){width:360px;height:360px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:1.8s}
+.flame-ring:nth-child(5){width:540px;height:540px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:3.6s}
+@keyframes flame-expand{0%{opacity:0.6;transform:translate(-50%,-50%) scale(0.85)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.25)}}
+.cover-content{position:relative;z-index:2;padding:60px 24px 40px}
+.cover-badge{display:inline-block;padding:5px 18px;border:1px solid rgba(178,34,34,0.3);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.48rem;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:var(--fire);margin-bottom:40px;background:rgba(178,34,34,0.07)}
+.cover h1{font-family:'Poppins',sans-serif;font-size:clamp(3rem,9vw,5.5rem);font-weight:300;color:#FFFFFF;line-height:0.95;margin-bottom:6px;letter-spacing:-0.02em}
+.cover h1 em{display:block;color:var(--fire);font-style:normal;font-weight:700;font-size:0.5em;margin-top:12px;letter-spacing:0.01em}
+.cover-sub{font-family:'Lora',Georgia,serif;font-size:clamp(0.95rem,2.5vw,1.15rem);font-style:italic;color:rgba(255,255,255,0.45);margin-top:28px;line-height:1.7;max-width:480px;margin-left:auto;margin-right:auto}
+.cover-sub em{color:rgba(178,34,34,0.85);font-style:normal;font-weight:600}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.5rem;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-top:52px}
+.cover-verse{margin-top:28px;padding:14px 24px;display:inline-block;background:rgba(178,34,34,0.06);border:1px solid rgba(178,34,34,0.12);border-radius:8px;font-family:'Lora',Georgia,serif;font-size:0.82rem;font-style:italic;color:rgba(255,255,255,0.35);line-height:1.6}
+
+.ch-head{background:linear-gradient(160deg,#120206 0%,#201018 100%);padding:72px 24px 52px;position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 50%,rgba(178,34,34,0.04) 0%,transparent 50%)}
+.ch-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 5%,var(--fire) 50%,transparent 95%);opacity:0.5}
+.ch-head .page{position:relative;z-index:2}
+.ch-num{font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--fire);opacity:0.9;margin-bottom:8px}
+.ch-title{font-family:'Poppins',sans-serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:700;color:#FFFFFF;margin:10px 0 8px;letter-spacing:-0.01em}
+.ch-sub{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:rgba(178,34,34,0.55)}
+
+.ribbon{text-align:center;padding:20px 24px;background:var(--cream-warm);border-top:1px solid rgba(26,8,16,0.06);border-bottom:1px solid rgba(26,8,16,0.06)}
+.ribbon p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:var(--steel-light);max-width:540px;margin:0 auto;line-height:1.6}
+
+.mission{text-align:center;padding:36px 32px;margin:36px 0;background:linear-gradient(140deg,rgba(178,34,34,0.08),rgba(178,34,34,0.03));border-radius:14px;border:2px solid rgba(178,34,34,0.2);box-shadow:0 0 0 1px rgba(178,34,34,0.06),var(--shadow)}
+.mission-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--fire);margin-bottom:12px}
+.mission p{font-family:'Poppins',sans-serif;font-size:clamp(0.88rem,2.2vw,1.05rem);font-weight:500;color:var(--ink-mid);line-height:1.65}
+.mission p em{color:var(--fire);font-style:normal;font-weight:700}
+
+.insight{margin:30px 0;padding:28px 32px;background:linear-gradient(140deg,#120206,#201018);border-radius:14px;border:2px solid rgba(178,34,34,0.25);border-left:5px solid var(--fire);position:relative;overflow:hidden;box-shadow:var(--shadow-deep)}
+.insight::before{content:'';position:absolute;top:-40%;right:-10%;width:200px;height:200px;background:radial-gradient(circle,rgba(178,34,34,0.07) 0%,transparent 70%);border-radius:50%}
+.insight p{font-family:'Lora',Georgia,serif;font-size:1.02rem;font-style:italic;color:rgba(255,255,255,0.9);line-height:1.72;position:relative;z-index:2}
+.insight em{color:var(--fire);font-style:normal;font-weight:700}
+
+.gq{margin:32px 0;text-align:center;padding:32px 24px;position:relative;background:linear-gradient(160deg,rgba(178,34,34,0.04),rgba(178,34,34,0.07));border-radius:14px;border:1.5px solid rgba(178,34,34,0.15)}
+.gq::before,.gq::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:48px;height:2px;background:linear-gradient(90deg,transparent,var(--fire),transparent)}
+.gq::before{top:0}.gq::after{bottom:0}
+.gq p{font-family:'Lora',Georgia,serif;font-size:1.05rem;font-style:italic;color:var(--ink-soft);line-height:1.6;max-width:520px;margin:0 auto}
+
+.viz{margin:44px 0 32px;border-radius:14px;overflow:hidden;border:2px solid rgba(178,34,34,0.22);box-shadow:var(--shadow-deep);position:relative;background:var(--white)}
+.viz-top{background:linear-gradient(135deg,rgba(178,34,34,0.1),rgba(178,34,34,0.04));padding:20px 26px 18px;display:flex;align-items:center;gap:14px;border-bottom:1px solid rgba(178,34,34,0.12)}
+.viz-icon{width:48px;height:48px;border-radius:50%;border:2px solid rgba(178,34,34,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(145deg,#fff,rgba(255,240,240,0.6))}
+.viz-meta{flex:1}
+.viz-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);margin-bottom:2px}
+.viz h4{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:var(--ink-mid)}
+.viz-body{padding:26px 26px 22px;background:linear-gradient(170deg,#FFFDF8 0%,#FFF8F4 100%)}
+.viz-body p{font-size:0.95rem;color:var(--steel);line-height:1.78;margin-bottom:14px}
+.viz-body strong,.viz-lesson strong{color:rgba(255,255,255,0.95);font-weight:700}
+.viz-body em,.viz-lesson em{color:var(--fire-pale);font-style:normal;font-weight:600}
+.viz-body p:last-child{margin-bottom:0}
+.viz-trigger{margin-top:18px;padding:14px 18px;background:linear-gradient(135deg,rgba(178,34,34,0.08),rgba(178,34,34,0.14));border:1.5px solid rgba(178,34,34,0.2);border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.76rem;font-weight:600;color:var(--ink-soft);text-align:center;line-height:1.55}
+
+.ba-pair{margin:32px 0;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:620px){.ba-pair{grid-template-columns:1fr}}
+.ba-card{border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.ba-head{padding:11px 18px;font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.ba-before{background:linear-gradient(170deg,#FFF0F0,#FFE8E8)}
+.ba-before .ba-head{background:rgba(178,34,34,0.12);color:#6B1F1F}
+.ba-after{background:linear-gradient(170deg,#F0FFF4,#E8FFE8)}
+.ba-after .ba-head{background:rgba(45,138,78,0.12);color:#1A4A28}
+.ba-dot{width:7px;height:7px;border-radius:50%}
+.ba-before .ba-dot{background:var(--fire)}
+.ba-after .ba-dot{background:var(--green)}
+.ba-body{padding:16px 18px;font-size:0.88rem;line-height:1.65}
+.ba-body ul{list-style:none;padding:0;margin:0}
+.ba-body ul li{padding:6px 0;border-bottom:1px solid rgba(0,0,0,0.05);font-family:'Poppins',sans-serif;font-size:0.8rem}
+.ba-body ul li:last-child{border-bottom:none}
+
+.dd{margin:24px 0;padding:22px 26px;border-radius:12px;border-left:4px solid var(--fire);background:var(--white);box-shadow:var(--shadow)}
+.dd:nth-of-type(even){background:var(--cream)}
+.dd h4{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--ink-mid);margin-bottom:4px}
+.dd .sub{font-family:'Poppins',sans-serif;font-size:0.54rem;font-weight:700;color:var(--fire);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.dd p{font-size:0.95rem;color:var(--steel);line-height:1.78;margin-bottom:8px}
+.dd p:last-child{margin-bottom:0}
+
+.adventure{margin:36px 0;border-radius:14px;overflow:hidden;box-shadow:var(--shadow-deep);background:var(--white);border:1.5px solid rgba(26,8,16,0.08)}
+.adv-head{padding:14px 26px 12px;display:flex;align-items:center;gap:12px;border-bottom:1.5px solid rgba(178,34,34,0.1);background:linear-gradient(135deg,rgba(178,34,34,0.05),rgba(178,34,34,0.02))}
+.adv-head-icon{width:36px;height:36px;border-radius:50%;background:rgba(178,34,34,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1.5px solid rgba(178,34,34,0.2)}
+.adv-head-text{flex:1}
+.adv-head-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--fire);opacity:0.7}
+.adv-head-title{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--ink-mid)}
+.adv-step{padding:14px 26px;border-bottom:1px solid rgba(26,8,16,0.05)}
+.adv-step:last-child{border-bottom:none}
+.adv-step:nth-child(odd){background:var(--white)}
+.adv-step:nth-child(even){background:rgba(178,34,34,0.02)}
+.step-c p{font-family:'Source Serif 4',Georgia,serif;font-size:0.93rem;line-height:1.75;margin:0 0 6px;color:var(--ink-soft)}
+.step-c p:last-child{margin-bottom:0}
+.step-c em{color:var(--steel-light)}
+.tag-you{font-family:'Poppins',sans-serif;font-weight:700;color:var(--ink-mid);font-size:0.74rem;display:inline-block;padding:2px 10px;background:rgba(178,34,34,0.1);border-radius:4px;margin-bottom:5px;border:1px solid rgba(178,34,34,0.2)}
+.adv-result-good{background:linear-gradient(135deg,rgba(45,138,78,0.04),rgba(45,138,78,0.08))!important}
+
+.think{margin:16px 0 36px;padding:30px;background:linear-gradient(145deg,rgba(178,34,34,0.08),rgba(178,34,34,0.04));border:2px dashed rgba(178,34,34,0.35);border-radius:14px;position:relative;box-shadow:0 4px 16px rgba(178,34,34,0.08)}
+.think::before{content:'';position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--paper);padding:0 12px;width:28px;height:28px;display:block;margin-left:-14px;background:var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23B22222' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z'/%3E%3C/svg%3E") center/contain no-repeat}
+.think-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);text-align:center;margin-bottom:10px}
+.think h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--ink-mid);text-align:center;margin-bottom:14px}
+.think p{font-size:0.86rem;color:var(--steel);margin-bottom:8px;font-family:'Poppins',sans-serif}
+.think-line{border-bottom:1.5px solid rgba(178,34,34,0.25);height:30px;margin-bottom:4px;cursor:text}
+.think p.q-start{font-family:'Poppins',sans-serif;font-weight:500;color:var(--ink-soft);font-size:0.82rem;text-align:left;margin-top:14px;margin-bottom:4px}
+.think .closing{font-weight:600;color:var(--fire);margin-top:12px;font-family:'Poppins',sans-serif;font-size:0.8rem}
+
+.breathe{margin:44px 0;text-align:center;padding:52px 24px;position:relative;background:linear-gradient(160deg,rgba(178,34,34,0.08),rgba(178,34,34,0.04));border-radius:16px;border:2px solid rgba(178,34,34,0.15)}
+.breathe-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1.5px solid rgba(178,34,34,0.1)}
+.breathe-ring:nth-child(1){width:140px;height:140px;animation:breathe-pulse 6s ease-in-out infinite}
+.breathe-ring:nth-child(2){width:90px;height:90px;animation:breathe-pulse 6s ease-in-out infinite 1.5s}
+.breathe-ring:nth-child(3){width:45px;height:45px;animation:breathe-pulse 6s ease-in-out infinite 3s}
+@keyframes breathe-pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.5}50%{transform:translate(-50%,-50%) scale(1.25);opacity:0.1}}
+.breathe-content{position:relative;z-index:2}
+.breathe-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--fire);margin-bottom:8px}
+.breathe h4{font-family:'Poppins',sans-serif;font-size:0.94rem;font-weight:600;color:var(--ink-mid);margin-bottom:8px}
+.breathe p{font-family:'Lora',Georgia,serif;font-size:0.88rem;font-style:italic;color:var(--steel);max-width:420px;margin:0 auto;line-height:1.65}
+
+.descent-ramp{margin:36px 0 0;display:flex;flex-direction:column;gap:12px}
+.ramp-echo{padding:26px 30px;background:linear-gradient(160deg,rgba(178,34,34,0.07),rgba(178,34,34,0.03));border-radius:14px;border:1.5px solid rgba(178,34,34,0.12)}
+.ramp-echo p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:var(--steel);line-height:1.78;text-align:center;margin:0}
+.ramp-close{padding:36px 30px;text-align:center;background:linear-gradient(160deg,rgba(212,160,48,0.1),rgba(212,160,48,0.05));border-radius:14px;border:1.5px solid rgba(212,160,48,0.2)}
+.ramp-close-label{font-family:'Poppins',sans-serif;font-size:0.44rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--gold);opacity:0.9;margin-bottom:8px}
+.ramp-close p{font-family:'Poppins',sans-serif;font-size:0.8rem;font-weight:500;color:var(--ink-soft);line-height:1.65;max-width:440px;margin:0 auto}
+
+.inst{margin:26px 0;padding:18px 22px;background:linear-gradient(90deg,rgba(178,34,34,0.07),rgba(212,160,48,0.05));border-left:4px solid var(--fire);border-radius:0 12px 12px 0;box-shadow:var(--shadow)}
+.inst p{font-family:'Poppins',sans-serif;font-size:0.8rem;color:var(--steel);line-height:1.6;margin:0}
+.inst strong{color:var(--ink-mid);font-weight:600}
+
+.h2-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--ink-mid),var(--ink-soft));margin-right:10px;vertical-align:middle;box-shadow:0 2px 8px rgba(26,8,16,0.2)}
+.h2-icon svg{width:16px;height:16px;stroke:var(--fire);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.viz-icon svg{width:24px;height:24px;stroke:var(--fire);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.adv-head-icon svg{width:18px;height:18px;stroke:var(--fire);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.prose h2{font-family:'Poppins',sans-serif;font-size:1.3rem;color:var(--ink-mid);margin:36px 0 14px;letter-spacing:-0.01em;display:flex;align-items:center}
+
+.root-review{margin:44px 0;padding:28px 22px;background:linear-gradient(160deg,#FFF8F4,#FFF0F0);border-radius:16px;border:2px solid rgba(178,34,34,0.18);box-shadow:var(--shadow)}
+.root-label{font-family:'Poppins',sans-serif;font-size:0.44rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--fire);text-align:center;margin-bottom:18px}
+.root-layer{display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 0;flex-wrap:wrap}
+.root-layer.current{padding:12px 0}
+.root-ch{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--fog);width:28px;text-align:right;flex-shrink:0}
+.root-layer.current .root-ch{color:var(--fire)}
+.root-items{display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center}
+.root-pill{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:600;padding:5px 13px;border-radius:6px;white-space:nowrap}
+.root-pill.rp-dim{background:rgba(90,56,72,0.1);color:var(--steel);border:1.5px solid rgba(90,56,72,0.18)}
+.root-pill.rp-bright{background:linear-gradient(135deg,rgba(178,34,34,0.18),rgba(178,34,34,0.26));color:var(--ink-mid);border:2px solid rgba(178,34,34,0.35);box-shadow:0 2px 10px rgba(178,34,34,0.12);font-weight:700}
+.root-pill.rp-ch1{background:rgba(178,34,34,0.12);color:#5A1010;border:1.5px solid rgba(178,34,34,0.28);font-weight:600}
+.root-pill.rp-ch2{background:rgba(155,48,96,0.12);color:#5A1040;border:1.5px solid rgba(155,48,96,0.25);font-weight:600}
+.root-pill.rp-ch3{background:rgba(45,138,78,0.12);color:#1A3A28;border:1.5px solid rgba(45,138,78,0.25);font-weight:600}
+.root-pill.rp-ch4{background:rgba(160,100,240,0.12);color:#3A1A5A;border:1.5px solid rgba(160,100,240,0.25);font-weight:600}
+.root-pill.rp-ch5{background:rgba(60,140,240,0.12);color:#1A2E5A;border:1.5px solid rgba(60,140,240,0.25);font-weight:600}
+.root-arr{color:var(--fire);opacity:0.65;font-size:0.78rem;padding:0 3px}
+.root-layer.current .root-arr{opacity:0.9}
+.root-sep{width:60%;max-width:300px;height:1.5px;background:linear-gradient(90deg,transparent,rgba(178,34,34,0.15),transparent);margin:6px auto}
+
+.prompt{margin:32px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(178,34,34,0.22);box-shadow:var(--shadow-deep)}
+.prompt-head{padding:12px 20px;background:linear-gradient(90deg,#120206,#201018);font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--fire)}
+.prompt-body{padding:24px 26px;background:#0A0204;color:#C0B0B8;font-family:'Poppins',sans-serif;font-size:0.82rem;line-height:1.8}
+.prompt-body strong{color:var(--fire)}
+
+.stack{margin:38px 0;text-align:center}
+.stack-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);opacity:0.7;margin-bottom:16px}
+.stack-flow{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap}
+.stack-node{display:inline-flex;align-items:center;justify-content:center;padding:10px 18px;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.68rem;font-weight:600;line-height:1.35;white-space:nowrap}
+.sn-dark{background:var(--ink-mid);color:#FFFFFF;border:1.5px solid rgba(178,34,34,0.2)}
+.sn-fire{background:rgba(178,34,34,0.13);color:var(--ink-mid);border:1.5px solid rgba(178,34,34,0.25)}
+.sn-gold{background:rgba(212,160,48,0.13);color:var(--ink-soft);border:1.5px solid rgba(212,160,48,0.28)}
+.sn-red{background:rgba(178,34,34,0.1);color:#5A1818;border:1.5px solid rgba(178,34,34,0.2)}
+.sn-green{background:rgba(45,138,78,0.1);color:#1A3A28;border:1.5px solid rgba(45,138,78,0.2)}
+.stack-arr{font-size:1rem;color:rgba(178,34,34,0.45);padding:0 7px}
+
+.prayer{margin:32px 0;padding:28px 30px;background:linear-gradient(160deg,#120206,#181020);border-radius:14px;border:2px solid rgba(212,160,48,0.25);position:relative;overflow:hidden}
+.prayer::before{content:'';position:absolute;top:-20%;left:-10%;width:160px;height:160px;background:radial-gradient(circle,rgba(212,160,48,0.06) 0%,transparent 70%);border-radius:50%}
+.prayer-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;position:relative;z-index:2}
+.prayer p{font-family:'Lora',Georgia,serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.85);line-height:1.8;position:relative;z-index:2;margin-bottom:8px}
+.prayer p:last-child{margin-bottom:0}
+.prayer strong{color:var(--gold);font-style:normal;font-weight:700}
+
+.finale{text-align:center;padding:80px 24px;background:linear-gradient(160deg,#120206 0%,#201018 100%);position:relative;overflow:hidden}
+.finale::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 50% 50%,rgba(178,34,34,0.04) 0%,transparent 50%)}
+.finale h2{font-family:'Poppins',sans-serif;font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;color:#FFFFFF;margin-bottom:8px;position:relative;z-index:2}
+.finale h2 span{color:var(--fire)}
+.finale p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.38);max-width:460px;margin:16px auto;line-height:1.65;position:relative;z-index:2}
+
+footer{text-align:center;padding:36px 24px;background:#060204}
+footer p{font-family:'Lora',Georgia,serif;font-size:0.8rem;font-style:italic;color:rgba(178,34,34,0.2);margin-bottom:12px}
+footer .brand{font-family:'Poppins',sans-serif;font-size:0.46rem;font-style:normal;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.12)}
+
+/* === COUNTERFEIT TIMELINE === */
+.trigger-timeline{margin:36px 0;padding:28px 26px;background:var(--white);border-radius:14px;border:2px solid rgba(178,34,34,0.2);box-shadow:var(--shadow)}
+.trigger-timeline-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);text-align:center;margin-bottom:22px}
+.tl-track{position:relative;padding-left:28px}
+.tl-track::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--fire),var(--ember),var(--gold),var(--green));border-radius:3px}
+.tl-node{position:relative;padding:14px 0 22px 24px}
+.tl-node::before{content:'';position:absolute;left:-22px;top:18px;width:12px;height:12px;border-radius:50%;border:2.5px solid var(--fire);background:var(--white);z-index:1}
+.tl-node.tl-green::before{border-color:var(--green)}
+.tl-node.tl-gold::before{border-color:var(--gold)}
+.tl-node-label{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--fire);margin-bottom:4px}
+.tl-node.tl-green .tl-node-label{color:var(--green)}
+.tl-node.tl-gold .tl-node-label{color:var(--gold)}
+.tl-node h4{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--ink-mid);margin-bottom:6px}
+.tl-node p{font-family:'Poppins',sans-serif;font-size:0.82rem;color:var(--steel);line-height:1.6}
+
+/* === INTIMACY LEDGER === */
+.resent-ledger{margin:36px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(178,34,34,0.2);box-shadow:var(--shadow-deep)}
+.resent-ledger-head{padding:14px 22px;background:linear-gradient(135deg,rgba(178,34,34,0.1),rgba(178,34,34,0.04));font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);text-align:center;border-bottom:1.5px solid rgba(178,34,34,0.12)}
+.resent-table{width:100%;border-collapse:collapse}
+.resent-table th{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:12px 16px;text-align:left;border-bottom:1.5px solid rgba(26,8,16,0.08)}
+.resent-table th:first-child{color:#6B1F1F;background:rgba(178,34,34,0.05)}
+.resent-table th:last-child{color:#1A4A28;background:rgba(45,138,78,0.05)}
+.resent-table td{padding:12px 16px;font-family:'Poppins',sans-serif;font-size:0.8rem;color:var(--steel);border-bottom:1px solid rgba(26,8,16,0.05);vertical-align:top}
+.resent-table tr:last-child td{border-bottom:none}
+.resent-table td:first-child{background:rgba(178,34,34,0.02)}
+.resent-table td:last-child{background:rgba(45,138,78,0.02)}
+
+/* === LUST CYCLE === */
+.rage-cycle{margin:36px 0;text-align:center;padding:32px 24px;background:var(--white);border-radius:14px;border:2px solid rgba(178,34,34,0.2);box-shadow:var(--shadow)}
+.rage-cycle-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);margin-bottom:20px}
+.rc-ring{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0}
+.rc-node{padding:12px 20px;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.72rem;font-weight:600;min-width:120px}
+.rc-node.rc-fire{background:rgba(178,34,34,0.12);color:#5A1010;border:1.5px solid rgba(178,34,34,0.25)}
+.rc-node.rc-ember{background:rgba(201,64,64,0.12);color:#5A1818;border:1.5px solid rgba(201,64,64,0.2)}
+.rc-node.rc-dark{background:var(--ink-mid);color:#FFFFFF;border:1.5px solid rgba(178,34,34,0.2)}
+.rc-node.rc-gold{background:rgba(212,160,48,0.12);color:#5A3800;border:1.5px solid rgba(212,160,48,0.25)}
+.rc-arr{font-size:1.1rem;color:rgba(178,34,34,0.4);padding:0 8px}
+.rc-break{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--green);margin-top:20px;padding:10px 20px;border:2px dashed rgba(45,138,78,0.3);border-radius:8px;display:inline-block;background:rgba(45,138,78,0.06)}
+
+.series-progress{text-align:center;padding:32px 24px;background:var(--cream-warm);border-top:1px solid rgba(26,8,16,0.06)}
+.series-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);margin-bottom:14px}
+.series-dots{display:flex;align-items:center;justify-content:center;gap:12px}
+.series-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(178,34,34,0.3);background:transparent}
+.series-dot.done{background:rgba(178,34,34,0.25);border-color:rgba(178,34,34,0.5)}
+.series-dot.active{background:var(--fire);border-color:var(--fire);box-shadow:0 0 8px rgba(178,34,34,0.3)}
+.series-dot-label{font-family:'Poppins',sans-serif;font-size:0.55rem;color:var(--steel-light);margin-top:10px}
+
+/* === SERIES COMPLETE CELEBRATION === */
+.series-complete{text-align:center;padding:60px 24px;background:linear-gradient(160deg,#0A0204 0%,#181020 50%,#0A0204 100%);position:relative;overflow:hidden}
+.series-complete::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(212,160,48,0.06) 0%,transparent 60%)}
+.sc-badge{display:inline-block;padding:8px 28px;border:2px solid rgba(212,160,48,0.4);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--gold);margin-bottom:24px;background:rgba(212,160,48,0.08)}
+.series-complete h2{font-family:'Poppins',sans-serif;font-size:clamp(1.6rem,4.5vw,2.5rem);font-weight:700;color:#FFFFFF;margin-bottom:16px;position:relative;z-index:2}
+.series-complete h2 span{color:var(--gold)}
+.series-complete p{font-family:'Lora',Georgia,serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.55);max-width:520px;margin:12px auto;line-height:1.72;position:relative;z-index:2}
+.series-complete strong{color:var(--gold);font-style:normal;font-weight:700}
+.sc-sins{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:28px auto;max-width:500px;position:relative;z-index:2}
+.sc-sin{padding:8px 16px;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.68rem;font-weight:600;background:rgba(212,160,48,0.1);border:1.5px solid rgba(212,160,48,0.25);color:rgba(255,255,255,0.7)}
+.sc-sin.sc-current{background:rgba(212,160,48,0.2);border-color:var(--gold);color:var(--gold);box-shadow:0 0 12px rgba(212,160,48,0.15)}
+
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.65s ease,transform 0.65s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.stagger-children > *{opacity:0;transform:translateY(18px);transition:opacity 0.5s ease,transform 0.5s ease}
+.stagger-children.visible > *:nth-child(1){opacity:1;transform:none;transition-delay:0s}
+.stagger-children.visible > *:nth-child(2){opacity:1;transform:none;transition-delay:0.12s}
+.stagger-children.visible > *:nth-child(3){opacity:1;transform:none;transition-delay:0.24s}
+.stagger-children.visible > *:nth-child(4){opacity:1;transform:none;transition-delay:0.36s}
+.think:hover{box-shadow:0 0 0 2px rgba(178,34,34,0.25),0 8px 32px rgba(178,34,34,0.1)}
+.think{transition:box-shadow 0.3s ease}
+.adv-step{transition:background 0.2s ease}
+.adv-step:hover{background:rgba(178,34,34,0.04)!important}
+@keyframes insight-border{0%,100%{border-left-color:var(--fire)}50%{border-left-color:rgba(178,34,34,0.3)}}
+.insight{animation:insight-border 4s ease-in-out infinite}
+
+#read-progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--fire),rgba(178,34,34,0.4));z-index:9999;pointer-events:none;transition:width 0.08s linear}
+#chapter-pill{position:fixed;bottom:24px;right:24px;background:var(--ink);border:1px solid rgba(178,34,34,0.25);color:var(--fire);font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:8px 18px;border-radius:50px;opacity:0;transition:opacity 0.35s ease;pointer-events:none;z-index:1000;box-shadow:0 4px 24px rgba(0,0,0,0.4)}
+#chapter-pill.show{opacity:1}
+
+@media(max-width:620px){.stack-node{font-size:0.6rem;padding:8px 12px}.rc-node{font-size:0.6rem;padding:10px 14px;min-width:90px}.tl-node{padding-left:18px}}
+@media print{
+  @page{margin:18mm 16mm 22mm 16mm}
+  body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .cover{min-height:auto;padding:80px 24px;break-after:page}
+  .ch-head{break-before:page;padding:56px 24px 40px}
+  .think,.adventure,.viz,.ba-pair,.mission,.insight,.dd,.breathe,.prayer,.prompt,.stack,.descent-ramp,.trigger-timeline,.resent-ledger,.rage-cycle{break-inside:avoid}
+  .flame-ring,.cover-grain,.breathe-ring,.cover-vignette{animation:none!important;display:none}
+  .section{padding:36px 0}
+  #read-progress,#chapter-pill,.no-print{display:none!important}
+}
+</style>
+</head>
+<body>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="ico-heart" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></symbol>
+  <symbol id="ico-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="ico-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+  <symbol id="ico-chain" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+  <symbol id="ico-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="ico-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></symbol>
+  <symbol id="ico-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+  <symbol id="ico-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+</svg>
+
+<div id="read-progress"></div>
+<div id="chapter-pill"></div>
+
+<!-- ===== COVER ===== -->
+<section class="cover">
+  <div class="cover-grain"></div>
+  <div class="cover-vignette"></div>
+  <div class="flame-ring"></div>
+  <div class="flame-ring"></div>
+  <div class="flame-ring"></div>
+  <div class="cover-content">
+    <div class="cover-badge">Lay It Down Series. Part 7 of 7 . The Finale</div>
+    <h1>Lay It Down<em>Lust</em></h1>
+    <p class="cover-sub">The sin that counterfeits intimacy. You have <em>thousands of connections</em> and zero depth. You know how to attract but not how to stay.</p>
+    <p class="cover-author">KingdomBuilders AI</p>
+    <div class="cover-verse">"Flee from sexual immorality. All other sins a person commits are outside the body,<br>but whoever sins sexually, sins against their own body."<br> 1 Corinthians 6:18 (NIV)</div>
+  </div>
+</section>
+
+<!-- ===== BEFORE WE BEGIN ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Before We Begin</div><h2 class="ch-title">The Sin That Counterfeits Intimacy</h2><p class="ch-sub">Lust does not look like a person in a dark room. It looks like a person who cannot be known.</p></div></div>
+<div class="ribbon"><p>"Do you not know that your bodies are temples of the Holy Spirit, who is in you, whom you have received from God? You are not your own; you were bought at a price. Therefore honor God with your bodies." 1 Corinthians 6:19, 20 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>Lust does not arrive wearing a trench coat. It arrives wearing charm. It tells you this feeling is passion. It tells you that desire is natural, that intensity is the same as connection, that the thrill running through your body is proof that something real is happening.</p>
+  <p>And sometimes desire IS beautiful. God designed attraction. He invented the body. He created the capacity for two people to know each other so deeply that Scripture calls it "one flesh." That is not lust. That is the original design. But here is the problem: <strong>you are not living in the original design.</strong> You are living in the counterfeit. And the counterfeit looks so much like the real thing that you stopped noticing the difference years ago.</p>
+  <p>Lust is not just about sex. It is about the compulsive pursuit of physical and emotional intensity as a replacement for genuine connection. It reduces people to objects. It replaces vulnerability with consumption. It trades covenant depth for transactional surface. The person caught in lust does not look like a predator. They look like someone with <strong>a thousand connections and zero depth.</strong> Someone who knows how to attract but not how to stay. Someone whose wallet looks full but every bill is counterfeit.</p>
+
+  <div class="mission reveal">
+    <div class="mission-label">The Mission</div>
+    <p>Identify the three altars of lust<em>the counterfeit connection, the objectification reflex, and the intensity addiction</em>, and dismantle them with protocols that restore vulnerability, retrain the gaze, and build genuine depth where surface intensity used to live.</p>
+  </div>
+
+  <div class="insight reveal">
+    <p>"Lust is not an excess of desire. It is a <em>misdirection</em> of desire. The hunger is real. What you have been feeding it is not."</p>
+  </div>
+
+  <div class="stack reveal">
+    <div class="stack-label">The Three Altars of Lust</div>
+    <div class="stack-flow">
+      <span class="stack-node sn-red">Counterfeit Connection</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-dark">Objectification Reflex</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-fire">Intensity Addiction</span>
+    </div>
+  </div>
+
+  <p>Three altars. Three counterfeits you built thinking they were filling you. They are emptying you. And it is time to lay them down.</p>
+
+  <div class="insight reveal"><p>If you finish this playbook, you will know the three altars where lust hides: the counterfeit connection, the objectification reflex, and the intensity addiction. You will own <strong>a Vulnerability Protocol that replaces consumption with connection, a Gaze Reset that retrains how you see people, and a Depth Practice that builds what intensity never could.</strong></p></div>
+</div>
+
+<!-- ===== CHAPTER 1: THE COUNTERFEIT MENU ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter One</div><h2 class="ch-title">The Counterfeit Menu</h2><p class="ch-sub">You are not seeking pleasure. You are fleeing vulnerability.</p></div></div>
+<div class="ribbon"><p>"Above all else, guard your heart, for everything you do flows from it." Proverbs 4:23 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>You do not have a lust problem. You have a <strong>vulnerability problem.</strong> Somewhere along the way, being truly known became too dangerous. Maybe someone saw the real you and rejected what they found. Maybe you opened yourself to someone who used that openness as a weapon. Maybe you were never taught that intimacy requires risk, and risk requires trust, and trust requires time that your nervous system does not want to spend.</p>
+  <p>So you found substitutes. Not because you are weak. Because you are <strong>human.</strong> The need for connection is hardwired. When the genuine version feels too costly, the brain goes shopping for counterfeits. And the menu is extensive.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-eye"/></svg></span>The Intimacy Audit</h2>
+  <p>Every counterfeit on this menu shares one trait: it simulates the feeling of connection without requiring the risk of being known. That is the defining signature of lust. Intensity without intimacy. Consumption without covenant.</p>
+
+  <div class="trigger-timeline reveal">
+    <div class="trigger-timeline-label">The Counterfeit Menu</div>
+    <div class="tl-track">
+      <div class="tl-node"><div class="tl-node-label">Counterfeit 1</div><h4>Fantasy</h4><p>The mind constructs a version of intimacy where you are always desired, never rejected, and never required to be vulnerable. Fantasy is the safest relationship you will ever have. That is exactly why it produces nothing real.</p></div>
+      <div class="tl-node"><div class="tl-node-label">Counterfeit 2</div><h4>Pornography</h4><p>The industrialization of fantasy. It offers the chemical experience of connection, dopamine, arousal, release, without a single second of actual human contact. Over time, it rewires the brain to associate intimacy with screens rather than souls.</p></div>
+      <div class="tl-node"><div class="tl-node-label">Counterfeit 3</div><h4>Serial Attraction</h4><p>The pattern of moving from person to person, always pursuing, never landing. Each new attraction feels electric. Each existing relationship feels stale. You are not drawn to people. You are drawn to beginnings. And beginnings are the part of intimacy that requires the least vulnerability.</p></div>
+      <div class="tl-node tl-gold"><div class="tl-node-label">Counterfeit 4</div><h4>Emotional Affairs</h4><p>The most sophisticated counterfeit. No physical line is crossed, but the emotional investment that belongs in one relationship is being spent in another. You tell yourself nothing is happening. But something is: the deepest parts of you are being shared with someone who has no covenant obligation to protect them.</p></div>
+    </div>
+  </div>
+
+  <p>Look at that menu. You might recognize one item. You might recognize all four. The question is not which counterfeits you have ordered. The question is: <strong>what were you actually hungry for when you placed the order?</strong></p>
+
+  <div class="ba-pair reveal">
+    <div class="ba-card ba-before">
+      <div class="ba-head"><span class="ba-dot"></span>The Counterfeit Bill</div>
+      <div class="ba-body"><ul>
+        <li>Feels like connection</li>
+        <li>Requires no vulnerability</li>
+        <li>Produces a chemical high</li>
+        <li>Leaves you emptier afterward</li>
+        <li>Must be repeated to sustain the feeling</li>
+      </ul></div>
+    </div>
+    <div class="ba-card ba-after">
+      <div class="ba-head"><span class="ba-dot"></span>The Real Currency</div>
+      <div class="ba-body"><ul>
+        <li>IS connection</li>
+        <li>Requires complete vulnerability</li>
+        <li>Produces deep peace</li>
+        <li>Fills you more over time</li>
+        <li>Compounds with sustained investment</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Right Now</div>
+    <h4>The Intimacy Audit</h4>
+    <p class="q-start">Which counterfeits from the menu above do you recognize in your own life?</p>
+    <div class="think-line"></div>
+    <p class="q-start">When did you first start reaching for substitutes instead of real connection?</p>
+    <div class="think-line"></div>
+    <p class="q-start">What is the vulnerability you are avoiding by choosing the counterfeit?</p>
+    <div class="think-line"></div>
+    <p class="q-start">What would it cost you to be fully known by one person?</p>
+    <div class="think-line"></div>
+    <p class="closing">Your wallet looks full. But every bill is counterfeit. That is why you still feel broke.</p>
+  </div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapter 1</div>
+    <div class="root-layer current"><span class="root-ch">1</span><div class="root-items"><span class="root-pill rp-bright">Counterfeit Connection</span><span class="root-arr">&rarr;</span><span class="root-pill rp-dim">The Menu</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 2: THE VULNERABILITY PROTOCOL ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Two</div><h2 class="ch-title">The Vulnerability Protocol</h2><p class="ch-sub">Real intimacy requires being seen. Lust is the escape from being seen.</p></div></div>
+<div class="ribbon"><p>"Therefore each of you must put off falsehood and speak truthfully to your neighbor, for we are all members of one body." Ephesians 4:25 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>Chapter One showed you the counterfeits. Now you replace them. But the replacement is not a different behavior. It is a different posture. The opposite of lust is not abstinence. <strong>The opposite of lust is vulnerability.</strong></p>
+  <p>Vulnerability is the act of letting another person see what you have spent your entire life hiding. Not your body. Your soul. Your weakness. Your failure. Your need. These are the three layers that lust helps you avoid, because each one carries a specific risk that your nervous system considers unacceptable.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-heart"/></svg></span>The Three Layers of Exposure</h2>
+
+  <div class="dd reveal"><h4>Layer 1. Sharing Weakness</h4><div class="sub">The Risk: They See You Cannot Do It Alone</div><p>Lust allows you to maintain the illusion of strength. In fantasy, you are always capable. In pornography, you are always in control. In serial attraction, you are always the pursuer, never the one who needs. But real intimacy begins the moment you say: <strong>"I cannot do this alone. I need you."</strong> Those five words are more intimate than anything the counterfeits ever offered. They are also more terrifying.</p></div>
+
+  <div class="dd reveal"><h4>Layer 2. Sharing Failure</h4><div class="sub">The Risk: They See You Have Fallen</div><p>The counterfeits never require confession. They never ask you to admit that you broke a promise, that you fell short, that you are not the person you pretend to be. But covenant relationships survive on confession. Not public spectacle, but private honesty. The moment you tell one trusted person the truth about where you have fallen, lust loses its primary weapon: <strong>secrecy.</strong></p></div>
+
+  <div class="dd reveal"><h4>Layer 3. Sharing Need</h4><div class="sub">The Risk: They See the Hunger</div><p>This is the deepest layer. Not just admitting weakness or failure, but admitting that you <strong>need</strong> something from another person. That you are hungry for affection, for touch, for attention, for presence. Lust counterfeits all of these because admitting the need feels like handing someone a weapon. But here is the truth: the need is already visible. Everyone around you can see it. The only person pretending it is not there is you.</p></div>
+
+  <div class="viz reveal">
+    <div class="viz-top"><div class="viz-icon"><svg><use href="#ico-shield"/></svg></div><div class="viz-meta"><div class="viz-label">Protocol</div><h4>The 5 Day Vulnerability Challenge</h4></div></div>
+    <div class="viz-body">
+      <p><strong>Day 1:</strong> Tell one trusted person about one area of weakness. Not a dramatic confession. A simple admission: "I struggle with this."</p>
+      <p><strong>Day 2:</strong> Share one recent failure with someone who was affected by it. Not an excuse. An acknowledgment: "I fell short here. I am sorry."</p>
+      <p><strong>Day 3:</strong> Express one specific need to someone you trust. Not a hint. A direct request: "I need your help with this."</p>
+      <p><strong>Day 4:</strong> Sit with someone for 20 minutes without your phone, without a task, without an agenda. Just be present. Notice what your body does when there is nowhere to hide.</p>
+      <p><strong>Day 5:</strong> Write down what each day felt like. Not what you thought about it. What your body experienced. Tightness, relief, fear, freedom. That is the map of your vulnerability resistance.</p>
+      <div class="viz-trigger">Every counterfeit you have ever consumed was an attempt to skip this process. There are no shortcuts to being known.</div>
+    </div>
+  </div>
+
+  <div class="gq reveal"><p>"Confess your sins to each other and pray for each other so that you may be healed." James 5:16 (NIV)</p></div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapters 1, 2</div>
+    <div class="root-layer"><span class="root-ch">1</span><div class="root-items"><span class="root-pill rp-ch1">Counterfeit Connection</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">The Menu</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">2</span><div class="root-items"><span class="root-pill rp-bright">Vulnerability Protocol</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Three Layers</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 3: THE OBJECTIFICATION REFLEX ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Three</div><h2 class="ch-title">The Objectification Reflex</h2><p class="ch-sub">Your brain has been trained to evaluate. Every person gets processed through a filter that was never supposed to exist.</p></div></div>
+<div class="ribbon"><p>"But I tell you that anyone who looks at a woman lustfully has already committed adultery with her in his heart." Matthew 5:28 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>This chapter is not about guilt. It is about <strong>neuroscience.</strong> Your brain has a reflex that fires before your conscious mind participates. When a person enters your field of vision, the brain runs a millisecond assessment. In a healthy brain, that assessment categorizes: friend, stranger, threat, neutral. In a brain shaped by lust, the assessment adds a category that was never supposed to be there: <strong>object of gratification.</strong></p>
+  <p>This is not a moral failing. It is a trained neural pathway. Every image consumed, every fantasy entertained, every person reduced to their physical attributes in your private thoughts has been a repetition. And repetition builds reflexes. The reflex now fires automatically. You do not choose it. But you did build it. And you can rebuild it.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-eye"/></svg></span>The Rehumanization Practice</h2>
+  <p>The objectification reflex takes less than a second. The rehumanization practice takes three. That is the entire battleground: three seconds between reflex and response.</p>
+
+  <div class="dd reveal"><h4>Second 1. Notice the Reflex</h4><div class="sub">Awareness Without Shame</div><p>The reflex fired. You noticed it. That is not failure. That is awareness. Shame says: "You are terrible for having that thought." Awareness says: "That thought arrived. I did not invite it. I am choosing what happens next." The difference between those two responses determines whether the pathway gets reinforced or interrupted.</p></div>
+
+  <div class="dd reveal"><h4>Second 2. Name the Image Bearer</h4><div class="sub">Restoring Personhood</div><p>This person is not a collection of features for your evaluation. This person has a name you do not know, a story you cannot see, wounds you would weep over if you understood them. They are someone's child. Possibly someone's parent. They carry burdens you will never carry. In three seconds, say internally: <strong>"This is a person. Not a product. An image bearer. Not an object."</strong></p></div>
+
+  <div class="dd reveal"><h4>Second 3. Redirect the Gaze</h4><div class="sub">Breaking the Loop</div><p>The first look is a reflex. The second look is a choice. Move your eyes. Not in shame, not in panic, but in decision. You are retraining the neural pathway. Every redirected gaze is a repetition in the opposite direction. Over weeks and months, the reflex weakens. The pathway atrophies. What was automatic becomes optional. What was optional becomes rare.</p></div>
+
+  <div class="resent-ledger reveal">
+    <div class="resent-ledger-head">The Objectification Inventory</div>
+    <table class="resent-table">
+      <tr><th>What the Reflex Does</th><th>What the Practice Restores</th></tr>
+      <tr><td>Evaluates physical attributes</td><td>Recognizes a whole person</td></tr>
+      <tr><td>Categorizes as object</td><td>Acknowledges as image bearer</td></tr>
+      <tr><td>Triggers fantasy pathway</td><td>Triggers compassion pathway</td></tr>
+      <tr><td>Reduces to body</td><td>Elevates to soul</td></tr>
+      <tr><td>Consumes without cost</td><td>Honors without consuming</td></tr>
+    </table>
+  </div>
+
+  <div class="insight reveal">
+    <p>"You were not created with the capacity for desire so that you could consume people. You were created with the capacity for desire so that you could <em>know</em> them. The wiring is the same. The direction is everything."</p>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Right Now</div>
+    <h4>The Reflex Map</h4>
+    <p class="q-start">When does the objectification reflex fire most often? (Scrolling, in public, at work, other?)</p>
+    <div class="think-line"></div>
+    <p class="q-start">How many seconds typically pass before you realize it happened?</p>
+    <div class="think-line"></div>
+    <p class="q-start">What would change in your relationships if every person you encountered was seen as an image bearer first?</p>
+    <div class="think-line"></div>
+    <p class="closing">Three seconds. That is the distance between consuming a person and honoring them.</p>
+  </div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapter 3</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Counterfeit Connection</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Vulnerability Protocol</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">3</span><div class="root-items"><span class="root-pill rp-bright">Objectification</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Rehumanization</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 4: THE GAZE RESET ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Four</div><h2 class="ch-title">The Gaze Reset</h2><p class="ch-sub">Retraining the eyes, the mind, and the heart.</p></div></div>
+<div class="ribbon"><p>"I made a covenant with my eyes not to look lustfully at a young woman." Job 31:1 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>Chapter Three identified the reflex. Now you retrain it. The gaze is not just what your eyes do. It is the posture of your entire inner world toward other people. The eyes follow the heart, and the heart follows whatever it has been trained to worship. Retraining the gaze is not about willpower. It is about <strong>replacing one worship habit with another.</strong></p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-shield"/></svg></span>The Three Resets</h2>
+
+  <div class="dd reveal"><h4>Reset 1. The Bounced Gaze</h4><div class="sub">Training the Eyes</div><p>When the first look triggers the reflex, bounce the gaze immediately. Not down in shame. Sideways. To a task, a face you know, a window, a text on your phone. The bounce is not avoidance. It is a decision. You are telling your brain: "We do not process people through that filter anymore." The first bounce feels unnatural. By the fiftieth, it is automatic. By the five hundredth, the reflex itself starts to weaken because the reward pathway has been consistently denied.</p></div>
+
+  <div class="dd reveal"><h4>Reset 2. The Thought Replacement</h4><div class="sub">Training the Mind</div><p>The gaze bounces, but the thought lingers. A memory, a fantasy, an image. The Thought Replacement protocol does not fight the thought. It replaces it. Have a preloaded mental anchor: a Scripture, a prayer, a specific image of your spouse, your child, or the person you are becoming. When the thought arrives, do not argue with it. Simply load the replacement. "I am not that person anymore. I am becoming someone who sees people as God sees them." Repeat until the original thought loses its charge.</p></div>
+
+  <div class="dd reveal"><h4>Reset 3. The Covenant Eyes Framework</h4><div class="sub">Training the Heart Through Accountability</div><p>Accountability without shame. Find one person, someone who will not lecture you and will not judge you, and give them permission to ask you the hard questions. Weekly. Not "Did you mess up?" That question invites lying. Instead: "Where were you most tempted this week? What was happening emotionally when the temptation hit? What did you do in that moment?" These questions locate the pattern. And patterns, once located, can be interrupted.</p></div>
+
+  <div class="adventure reveal">
+    <div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-eye"/></svg></div><div class="adv-head-text"><div class="adv-head-label">Scenario</div><div class="adv-head-title">The Scroll</div></div></div>
+    <div class="adv-step"><div class="step-c"><p>It is 11 PM. You are alone. The day was long and draining. You open your phone to unwind. The algorithm, trained by years of your behavior, serves you exactly what your tired brain craves. The first image catches your eye. The reflex fires. The old pathway lights up.</p></div></div>
+    <div class="adv-step"><div class="step-c"><span class="tag-you">The Altar Response</span><p>You scroll deeper. Fifteen minutes pass, then thirty. The chemical hit arrives: dopamine, arousal, temporary numbness. The loneliness fades for a moment. When you put the phone down, the loneliness returns doubled, and shame arrives to keep it company. You swear you will not do this again. You will. Because willpower alone cannot break a trained neural pathway.</p></div></div>
+    <div class="adv-step"><div class="step-c"><span class="tag-you">The Protocol Response</span><p>You see the first image. The reflex fires. You notice it. You put the phone face down on the table. You text your accountability partner: "Tempted right now. Day was rough." You do not explain. You do not elaborate. You just break the secrecy. Then you load the replacement thought. You get up. You walk to another room. The urge peaks at about 90 seconds and begins to fade. <em>You just denied the pathway one more repetition. The reflex got weaker tonight.</em></p></div></div>
+    <div class="adv-step adv-result-good"><div class="step-c"><p><strong>The difference is not discipline. It is design.</strong> The altar response relies on willpower. The protocol response relies on systems: a bounce, a replacement, a contact, a location change. Systems beat willpower every single time.</p></div></div>
+  </div>
+
+  <div class="gq reveal"><p>"Set your minds on things above, not on earthly things." Colossians 3:2 (NIV)</p></div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapters 3, 4</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Counterfeit Connection</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Vulnerability Protocol</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">3</span><div class="root-items"><span class="root-pill rp-ch2">Objectification</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch2">Rehumanization</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">4</span><div class="root-items"><span class="root-pill rp-bright">Gaze Reset</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Three Resets</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 5: THE INTENSITY TRAP ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Five</div><h2 class="ch-title">The Intensity Trap</h2><p class="ch-sub">You have been chasing the wrong chemical.</p></div></div>
+<div class="ribbon"><p>"Love is patient, love is kind. It does not envy, it does not boast, it is not proud." 1 Corinthians 13:4 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>You have spent four chapters confronting two altars: the counterfeit connection and the objectification reflex. Before you encounter the third, there is a piece of science that changes everything. <strong>New attraction produces dopamine. Sustained love produces oxytocin.</strong> You have been chasing the wrong chemical.</p>
+  <p>Dopamine is the spark. It fires during novelty, during pursuit, during the first electric moments of mutual attraction. It is intoxicating. It makes you feel invincible. It convinces you that this person, this connection, this feeling is different from every one that came before. It is not different. It is the same chemical doing the same job it always does: <strong>rewarding novelty.</strong></p>
+  <p>Oxytocin is the bond. It builds slowly through sustained proximity, repeated vulnerability, shared suffering, physical affection over years. It does not feel electric. It feels warm. It does not make your heart race. It makes your nervous system calm. It is the chemical signature of covenant. And it cannot be rushed.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-zap"/></svg></span>The Chemistry of the Trap</h2>
+
+  <div class="rage-cycle reveal">
+    <div class="rage-cycle-label">The Intensity Loop</div>
+    <div class="rc-ring">
+      <span class="rc-node rc-fire">New Attraction</span>
+      <span class="rc-arr">&rarr;</span>
+      <span class="rc-node rc-ember">Dopamine Surge</span>
+      <span class="rc-arr">&rarr;</span>
+      <span class="rc-node rc-dark">Novelty Fades</span>
+      <span class="rc-arr">&rarr;</span>
+      <span class="rc-node rc-gold">Boredom Arrives</span>
+      <span class="rc-arr">&rarr;</span>
+      <span class="rc-node rc-fire">Seek New Attraction</span>
+    </div>
+    <div class="rc-break">Break the Loop Here</div>
+  </div>
+
+  <p>Look at that cycle. New attraction creates a dopamine surge. The surge fades because dopamine always fades. Boredom arrives because the brain recalibrates to the new normal. And instead of staying through the boredom into the bonding phase where oxytocin takes over, you exit. You seek a new person, a new image, a new fantasy. The dopamine fires again. And you mistake the spark for proof that the new connection is "more real" than the one you left.</p>
+  <p>This is why the spark always fades. This is why depth always costs more than intensity. This is why you keep starting over. <strong>You are addicted to beginnings because beginnings are where dopamine lives.</strong> And dopamine is a liar. It tells you the spark is the whole story. The spark is just the introduction. The story is written in years, not moments.</p>
+
+  <div class="ba-pair reveal">
+    <div class="ba-card ba-before">
+      <div class="ba-head"><span class="ba-dot"></span>Dopamine (Intensity)</div>
+      <div class="ba-body"><ul>
+        <li>Fires during novelty</li>
+        <li>Peaks early, fades fast</li>
+        <li>Feels like electricity</li>
+        <li>Rewards pursuit</li>
+        <li>Creates addiction to "new"</li>
+      </ul></div>
+    </div>
+    <div class="ba-card ba-after">
+      <div class="ba-head"><span class="ba-dot"></span>Oxytocin (Depth)</div>
+      <div class="ba-body"><ul>
+        <li>Builds through consistency</li>
+        <li>Deepens over years</li>
+        <li>Feels like warmth</li>
+        <li>Rewards presence</li>
+        <li>Creates capacity for covenant</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <div class="breathe reveal">
+    <div class="breathe-ring"></div>
+    <div class="breathe-ring"></div>
+    <div class="breathe-ring"></div>
+    <div class="breathe-content">
+      <div class="breathe-label">Pause</div>
+      <h4>Which Chemical Are You Chasing?</h4>
+      <p>Not which one do you want to be chasing. Which one has actually been driving your decisions? The one that fires at the beginning, or the one that builds over years?</p>
+    </div>
+  </div>
+
+  <div class="inst reveal"><p><strong>The rewiring:</strong> The next time you feel bored in a relationship, ask: "Am I experiencing the absence of dopamine, or the absence of love?" Those are two very different things. Dopamine says leave. Oxytocin says stay and go deeper.</p></div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapter 5</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Counterfeit Connection</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Vulnerability Protocol</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">3-4</span><div class="root-items"><span class="root-pill rp-ch2">Objectification</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch2">Gaze Reset</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">5</span><div class="root-items"><span class="root-pill rp-bright">Intensity Trap</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">The Chemistry</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 6: THE DEPTH PRACTICE ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Six</div><h2 class="ch-title">The Depth Practice</h2><p class="ch-sub">Building genuine intimacy in one relationship instead of surface intensity across many.</p></div></div>
+<div class="ribbon"><p>"Two are better than one, because they have a good return for their labor: If either of them falls down, one can help the other up." Ecclesiastes 4:9, 10 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>Chapter Five showed you the trap. Now you escape it. Not by running from intensity, but by <strong>redirecting it.</strong> The same energy you have been spending across the surface of dozens of connections is enough to reach extraordinary depth in one. But depth requires tools that intensity never needed. Intensity just required a spark. Depth requires a shovel.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-chain"/></svg></span>The Three Depth Tools</h2>
+
+  <div class="dd reveal"><h4>Tool 1. The Weekly Depth Conversation</h4><div class="sub">Every Week. Same Person. Real Questions.</div><p>Choose one person: your spouse, your closest friend, someone in covenant with you. Once a week, sit face to face (not side by side watching something) and ask three questions. First: "What was the hardest part of your week?" Second: "Where do you feel unseen right now?" Third: "What do you need from me that you have not asked for?" These are not therapy questions. They are intimacy questions. They require the kind of attention that no screen can replicate and no counterfeit can simulate.</p></div>
+
+  <div class="dd reveal"><h4>Tool 2. The Monthly Vulnerability Review</h4><div class="sub">Once a Month. Go Deeper.</div><p>Once a month, extend the conversation. Sit together for an hour and answer one question each: "What am I most afraid of right now?" Not afraid of in the abstract. Afraid of in the specific. "I am afraid I am failing at my job." "I am afraid you are going to leave." "I am afraid I am becoming my father." The monthly review is where the oxytocin compounds. Each honest admission builds a layer of trust that dopamine could never create.</p></div>
+
+  <div class="dd reveal"><h4>Tool 3. The Annual Covenant Renewal</h4><div class="sub">Once a Year. Rebuild the Foundation.</div><p>Once a year, take a full day (not an evening, a day) and answer four questions together. Where have we grown? Where have we drifted? What do I need more of from you? What do I commit to becoming this year? Write the answers down. Date the page. Put it somewhere you will find it next year. This is not a romantic gesture. It is structural maintenance. Every building stands because someone inspects the foundation. <strong>Your relationship is no different.</strong></p></div>
+
+  <div class="viz reveal">
+    <div class="viz-top"><div class="viz-icon"><svg><use href="#ico-heart"/></svg></div><div class="viz-meta"><div class="viz-label">Protocol</div><h4>The Depth Investment Schedule</h4></div></div>
+    <div class="viz-body">
+      <p><strong>Weekly:</strong> 30 minutes. Face to face. The three depth questions. No phones. No distractions. This is the minimum investment that genuine intimacy requires.</p>
+      <p><strong>Monthly:</strong> 1 hour. The vulnerability question. Go where the weekly conversation cannot reach. Share what you are actually afraid of. Listen without fixing.</p>
+      <p><strong>Annually:</strong> Full day. The covenant review. Where have we been? Where are we going? What do we commit to? Write it down. Sign it. Mean it.</p>
+      <p><strong>The math:</strong> 26 hours a year on weekly conversations. 12 hours on monthly reviews. 1 day on the annual renewal. That is less time than most people spend scrolling in a single month. And it produces something no amount of scrolling ever will.</p>
+      <div class="viz-trigger">Depth is not a feeling. It is a practice. And like every practice, it only works if you show up consistently.</div>
+    </div>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Right Now</div>
+    <h4>The Depth Audit</h4>
+    <p class="q-start">Who is the one person you are willing to go deep with?</p>
+    <div class="think-line"></div>
+    <p class="q-start">When was the last time you asked them a question that required real honesty to answer?</p>
+    <div class="think-line"></div>
+    <p class="q-start">What is the vulnerability you have been withholding from them?</p>
+    <div class="think-line"></div>
+    <p class="closing">You have been spreading yourself wide. It is time to go deep.</p>
+  </div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapter 6</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Counterfeit Connection</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Vulnerability Protocol</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">3-4</span><div class="root-items"><span class="root-pill rp-ch2">Objectification</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch2">Gaze Reset</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">5</span><div class="root-items"><span class="root-pill rp-ch3">Intensity Trap</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch3">The Chemistry</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">6</span><div class="root-items"><span class="root-pill rp-bright">Depth Practice</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Three Tools</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 7: THE HOLY GAZE ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Seven</div><h2 class="ch-title">The Holy Gaze</h2><p class="ch-sub">The opposite of lust is not prudishness. It is the ability to see another person as God sees them.</p></div></div>
+<div class="ribbon"><p>"So God created mankind in his own image, in the image of God he created them; male and female he created them." Genesis 1:27 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>You have spent six chapters confronting three altars. The counterfeit connection. The objectification reflex. The intensity addiction. Each one built on the same lie: that people exist for your consumption. That desire is something to be fed rather than stewarded. That intensity is the measure of connection.</p>
+  <p>But Genesis 1:27 rewrites the entire equation. Every person you have ever objectified, fantasized about, consumed through a screen, or reduced to their physical attributes <strong>carries the image of God.</strong> Not metaphorically. Ontologically. They are image bearers. They carry the fingerprints of the Creator in their very being. And the holy gaze is the ability to see that before you see anything else.</p>
+  <p>The opposite of lust is not prudishness. Prudishness is just lust's mirror image: it is still obsessed with the body, just in the other direction. The opposite of lust is the ability to see another person as God sees them: <strong>infinitely valuable, deeply sacred, and worthy of protection rather than consumption.</strong></p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-compass"/></svg></span>The Daily Posture</h2>
+
+  <div class="dd reveal"><h4>Morning. The Consecration</h4><div class="sub">Before the Day Starts</div><p>Before your feet hit the floor: "God, my eyes belong to You today. My mind belongs to You today. My desire belongs to You today. Every person I encounter is Your image bearer. Help me see them the way You see them." This is not a magic formula. It is a daily surrender. You are setting the posture before the pressure arrives. A bow strung before the battle is stronger than one strung mid-fight.</p></div>
+
+  <div class="dd reveal"><h4>Midday. The Guard</h4><div class="sub">In the Heat of the Day</div><p>Midday is when fatigue weakens the will. The defenses you set in the morning start to erode. At noon, reset. Take 60 seconds: "Where has my gaze drifted today? Where has my mind wandered? Am I consuming people or honoring them?" No guilt. Just recalibration. A pilot checks instruments at regular intervals not because the plane is crashing but because small course corrections prevent the crash entirely.</p></div>
+
+  <div class="dd reveal"><h4>Evening. The Examination</h4><div class="sub">Before You Sleep</div><p>Three questions before the lights go out. First: "Where did I see someone as an object today?" Name the moment. Not in shame, in honesty. Second: "Where did I see someone as an image bearer?" Celebrate that moment. Third: "What was happening emotionally when the temptation was strongest?" That answer reveals the pattern. And the pattern, once seen, can be addressed. The evening examination is not punishment. It is intelligence gathering for tomorrow's battle.</p></div>
+
+  <div class="descent-ramp reveal stagger-children">
+    <div class="ramp-echo"><p>The counterfeit said: "Consume them." But God said: <strong>"Honor them. They carry My image."</strong></p></div>
+    <div class="ramp-echo"><p>The reflex said: "Evaluate them." But God said: <strong>"See them. They are fearfully and wonderfully made."</strong></p></div>
+    <div class="ramp-echo"><p>The intensity said: "Chase the spark." But God said: <strong>"Build the covenant. Depth is where I live."</strong></p></div>
+    <div class="ramp-close">
+      <div class="ramp-close-label">The Holy Gaze</div>
+      <p>You do not need another person to fill the ache. You do not need a screen to numb the loneliness. You do not need intensity to feel alive. You need to see people the way God sees them. And you need to let God see you the way you have been hiding from everyone else.</p>
+    </div>
+  </div>
+
+  <div class="prayer reveal">
+    <div class="prayer-label">A Prayer from the Holy Gaze</div>
+    <p><strong>Father,</strong> I have been consuming people. Not always with my body. With my eyes. With my mind. With my fantasies. I reduced image bearers to objects. I traded covenant for intensity. I chose the counterfeit because the real thing required more vulnerability than I was willing to risk.</p>
+    <p>I am laying down the counterfeits. <strong>I am closing the menu.</strong> I am retraining my gaze. Not because I am strong enough to do it, but because You are. Teach me to see the way You see. Teach me to honor the way You honor. Teach me that desire is a gift to be stewarded, not a fire to be fed without limit.</p>
+    <p>Give me the courage to be vulnerable. Give me the patience to build depth. Give me the eyes to see image bearers in every person who crosses my path. <strong>Fill the space where the counterfeits were with Your genuine presence.</strong></p>
+    <p><strong>In Jesus' name, amen.</strong></p>
+  </div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Full Map</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Counterfeit Connection</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Vulnerability Protocol</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">3-4</span><div class="root-items"><span class="root-pill rp-ch2">Objectification</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch2">Gaze Reset</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">5</span><div class="root-items"><span class="root-pill rp-ch3">Intensity Trap</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch3">The Chemistry</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">6-7</span><div class="root-items"><span class="root-pill rp-bright">Depth Practice</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Holy Gaze</span></div></div>
+  </div>
+</div>
+
+<!-- ===== FINAL TEST ===== -->
+<div class="page prose section reveal">
+  <div class="root-review">
+    <div class="root-label">Final Test. Can You Answer Without Looking Back?</div>
+    <div style="padding:0 16px">
+      <div class="dd"><h4>1.</h4><p>What are the three altars of lust identified in this book?</p></div>
+      <div class="dd"><h4>2.</h4><p>What are the four items on the Counterfeit Menu?</p></div>
+      <div class="dd"><h4>3.</h4><p>What are the Three Layers of Exposure in the Vulnerability Protocol?</p></div>
+      <div class="dd"><h4>4.</h4><p>What are the three seconds of the Rehumanization Practice?</p></div>
+      <div class="dd"><h4>5.</h4><p>What are the Three Resets in the Gaze Reset chapter?</p></div>
+      <div class="dd"><h4>6.</h4><p>What is the difference between dopamine and oxytocin, and which one does lust chase?</p></div>
+      <div class="dd"><h4>7.</h4><p>What are the three tools in the Depth Practice?</p></div>
+      <div class="dd"><h4>8.</h4><p>What are the three parts of the Daily Posture for the Holy Gaze?</p></div>
+      <div class="dd"><h4>9.</h4><p>Complete the sentence: "The opposite of lust is not prudishness. It is the ability to ___."</p></div>
+      <div class="dd"><h4>10.</h4><p>What is the defining signature of lust? (Two words: intensity without ___)</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PROMPT CARD ===== -->
+<div class="page section reveal">
+  <div class="prompt">
+    <div class="prompt-head">Continue with AI. Prompt Card</div>
+    <div class="prompt-body">
+      <p><strong>Copy this prompt into any AI assistant to continue working on lust:</strong></p>
+      <p>"I just read Lay It Down: Lust by Kingdom Builders AI. It identified three altars of lust: the counterfeit connection, the objectification reflex, and the intensity addiction. I want you to help me do a personal audit. Ask me questions about each altar, one at a time, and help me identify which one has the strongest grip on my life right now. Then give me a personalized 7-day protocol based on the Vulnerability Challenge, the Rehumanization Practice, and the Depth Practice from the book. Be direct, not preachy. Challenge me like a coach, not a therapist."</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FINALE ===== -->
+<section class="finale reveal">
+  <h2>Lay It <span>Down.</span></h2>
+  <p>"Flee from sexual immorality. All other sins a person commits are outside the body, but whoever sins sexually, sins against their own body."</p>
+  <p> 1 Corinthians 6:18 (NIV)</p>
+</section>
+
+<!-- ===== SERIES PROGRESS ===== -->
+<div class="series-progress">
+  <div class="series-label">Lay It Down. The Seven Deadly Sins</div>
+  <div class="series-dots">
+    <span class="series-dot done" title="Pride"></span>
+    <span class="series-dot done" title="Envy"></span>
+    <span class="series-dot done" title="Wrath"></span>
+    <span class="series-dot done" title="Sloth"></span>
+    <span class="series-dot done" title="Greed"></span>
+    <span class="series-dot done" title="Gluttony"></span>
+    <span class="series-dot active" title="Lust"></span>
+  </div>
+  <div class="series-dot-label">Part 7 of 7. Lust . The Finale</div>
+</div>
+
+<!-- ===== SERIES COMPLETE CELEBRATION ===== -->
+<section class="series-complete reveal">
+  <div class="sc-badge">Series Complete</div>
+  <h2>You Laid Them <span>All</span> Down.</h2>
+  <p>Seven sins. Seven altars. Seven invitations to walk free. You did not just read about them. You confronted them.</p>
+  <div class="sc-sins">
+    <span class="sc-sin">Pride</span>
+    <span class="sc-sin">Envy</span>
+    <span class="sc-sin">Wrath</span>
+    <span class="sc-sin">Sloth</span>
+    <span class="sc-sin">Greed</span>
+    <span class="sc-sin">Gluttony</span>
+    <span class="sc-sin sc-current">Lust</span>
+  </div>
+  <p><strong>Pride</strong> told you that you were the center. You laid it down and learned to orbit something greater than yourself.</p>
+  <p><strong>Envy</strong> told you that someone else had what was yours. You laid it down and learned that comparison is a thief with no inventory of its own.</p>
+  <p><strong>Wrath</strong> told you that fire was strength. You laid it down and learned that stillness is where real power lives.</p>
+  <p><strong>Sloth</strong> told you that tomorrow was soon enough. You laid it down and learned that the cost of delay compounds daily.</p>
+  <p><strong>Greed</strong> told you that more would finally be enough. You laid it down and learned that sufficiency is a decision, not a number.</p>
+  <p><strong>Gluttony</strong> told you that consumption could fill the void. You laid it down and learned that the void was never meant to be filled by things.</p>
+  <p><strong>Lust</strong> told you that intensity was intimacy. You laid it down and learned that being truly known is worth more than being endlessly desired.</p>
+  <p>The altars are empty now. <strong>What you build on that cleared ground is up to you.</strong></p>
+  <p>"He has shown you, O mortal, what is good. And what does the Lord require of you? To act justly and to love mercy and to walk humbly with your God." Micah 6:8 (NIV)</p>
+</section>
+
+<footer>
+  <p>"Flee from sexual immorality... honor God with your bodies." 1 Corinthians 6:18, 20</p>
+  <div class="brand">KingdomBuilders AI</div>
+</footer>
+
+<script>
+(function(){
+  const bar=document.getElementById('read-progress');
+  const pill=document.getElementById('chapter-pill');
+  const chEls=[{el:document.querySelector('.cover'),label:'Cover'},...Array.from(document.querySelectorAll('.ch-head')).map((el,i)=>({el,label:el.querySelector('.ch-num')?.textContent?.trim()||('Ch '+(i+1))}))].filter(c=>c.el);
+  function onScroll(){
+    const h=document.documentElement;
+    const pct=h.scrollTop/(h.scrollHeight-h.clientHeight)*100;
+    bar.style.width=pct+'%';
+    let cur='';
+    for(const c of chEls){if(c.el.getBoundingClientRect().top<200)cur=c.label}
+    if(cur){pill.textContent=cur;pill.classList.add('show')}else{pill.classList.remove('show')}
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  const revealEls=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    const obs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:0.12});
+    revealEls.forEach(el=>obs.observe(el));
+  }else{revealEls.forEach(el=>el.classList.add('visible'))}
+})();
+</script>
+</body>
+</html>

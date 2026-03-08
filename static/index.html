@@ -165,7 +165,7 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
   <div class="hero-content">
     <div class="hero-badge">Kingdom Builders AI</div>
     <h1>The <strong>Playbooks</strong></h1>
-    <p class="hero-sub">Mental models for faith, productivity, finance, technology, and identity. 46 immersive guides that change how you think.</p>
+    <p class="hero-sub">Mental models for faith, productivity, finance, technology, and identity. 48 immersive guides that change how you think.</p>
     <p class="hero-pricing"><strong>5 free</strong> &middot; $2.50 each &middot; or <strong>$10/mo</strong> for the full archive</p>
   </div>
 </section>
@@ -288,6 +288,36 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
       <div class="card-body">
         <span class="card-tag tag-spiritual">Spiritual</span>
         <p class="card-desc">It was never about the money. The scarcity engine, the hoarding instinct, and the hedonic treadmill. Each one identified, exposed, and given a specific counterattack. Part 5 of the 7 Deadly Sins series.</p>
+        <div class="card-footer">
+          <span class="card-price">$2.50</span>
+          <span class="card-link">View Playbook &rarr;</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="read/lay-it-down-gluttony" class="card" data-pillar="health" data-sub="spiritual">
+      <div class="card-cover">
+        <div class="card-title">Lay It Down: Gluttony</div>
+        <div class="card-subtitle">You are not hungry. You are hollow.</div>
+      </div>
+      <div class="card-body">
+        <span class="card-tag tag-spiritual">Spiritual</span>
+        <p class="card-desc">The numbing agent, the appetite machine, and the fullness lie. Each one identified, exposed, and given a specific counterattack. Part 6 of the 7 Deadly Sins series.</p>
+        <div class="card-footer">
+          <span class="card-price">$2.50</span>
+          <span class="card-link">View Playbook &rarr;</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="read/lay-it-down-lust" class="card" data-pillar="health" data-sub="spiritual">
+      <div class="card-cover">
+        <div class="card-title">Lay It Down: Lust</div>
+        <div class="card-subtitle">It was never about desire.</div>
+      </div>
+      <div class="card-body">
+        <span class="card-tag tag-spiritual">Spiritual</span>
+        <p class="card-desc">The counterfeit connection, the objectification reflex, and the intensity addiction. Each one identified, exposed, and given a specific counterattack. Part 7 of 7. The series finale.</p>
         <div class="card-footer">
           <span class="card-price">$2.50</span>
           <span class="card-link">View Playbook &rarr;</span>
@@ -927,14 +957,14 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
         <div class="sub-card-label">Monthly</div>
         <div class="sub-card-price">$10</div>
         <div class="sub-card-note">per month</div>
-        <p class="sub-card-feature">All 46 playbooks.<br>Every future release included.</p>
+        <p class="sub-card-feature">All 48 playbooks.<br>Every future release included.</p>
       </a>
       <div class="sub-divider">or</div>
       <a href="checkout-redirect?mode=yearly&slug=all" class="sub-card archive sub-card-link">
         <div class="sub-card-label">Yearly</div>
         <div class="sub-card-price">$100</div>
         <div class="sub-card-note">per year (save $20)</div>
-        <p class="sub-card-feature">All 46 playbooks.<br>Best value. Two months free.</p>
+        <p class="sub-card-feature">All 48 playbooks.<br>Best value. Two months free.</p>
       </a>
     </div>
   </div>
@@ -976,7 +1006,50 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
   var searchInput = document.getElementById('search-input');
   var searchClear = document.getElementById('search-clear');
   var noResults = document.getElementById('no-results');
-  var activeFilter = 'all';
+  var subBar = document.getElementById('sub-filter-bar');
+  var activePillar = 'all';
+  var activeSub = 'all';
+
+  var subCategories = {
+    health: [
+      {key:'all', label:'All Health'},
+      {key:'mental', label:'Mental'},
+      {key:'spiritual', label:'Spiritual'},
+      {key:'resilience', label:'Resilience'}
+    ],
+    wealth: [
+      {key:'all', label:'All Wealth'},
+      {key:'money', label:'Money'},
+      {key:'strategy', label:'Strategy'},
+      {key:'systems', label:'Systems'},
+      {key:'leadership', label:'Leadership'}
+    ],
+    relationships: [
+      {key:'all', label:'All Relationships'},
+      {key:'connection', label:'Connection'},
+      {key:'parenting', label:'Parenting'}
+    ]
+  };
+
+  function buildSubButtons(pillar){
+    subBar.innerHTML = '';
+    var subs = subCategories[pillar];
+    if(!subs){ subBar.classList.remove('open'); return; }
+    subs.forEach(function(s){
+      var btn = document.createElement('button');
+      btn.className = 'sub-btn' + (s.key === 'all' ? ' active' : '');
+      btn.setAttribute('data-sub', s.key);
+      btn.textContent = s.label;
+      btn.addEventListener('click', function(){
+        subBar.querySelectorAll('.sub-btn').forEach(function(b){ b.classList.remove('active'); });
+        btn.classList.add('active');
+        activeSub = s.key;
+        applyFilters();
+      });
+      subBar.appendChild(btn);
+    });
+    subBar.classList.add('open');
+  }
 
   function applyFilters(){
     var query = searchInput.value.trim().toLowerCase();
@@ -985,10 +1058,15 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
 
     cards.forEach(function(c){
       var matchesFilter = true;
-      if(activeFilter === 'free'){
+      if(activePillar === 'free'){
         matchesFilter = c.getAttribute('data-free') === 'true';
-      } else if(activeFilter !== 'all'){
-        matchesFilter = (c.getAttribute('data-tag') || '').split(' ').indexOf(activeFilter) !== -1;
+      } else if(activePillar !== 'all'){
+        var pillars = (c.getAttribute('data-pillar') || '').split(' ');
+        matchesFilter = pillars.indexOf(activePillar) !== -1;
+        if(matchesFilter && activeSub !== 'all'){
+          var subs = (c.getAttribute('data-sub') || '').split(' ');
+          matchesFilter = subs.indexOf(activeSub) !== -1;
+        }
       }
 
       var matchesSearch = true;
@@ -1018,12 +1096,19 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
     btn.addEventListener('click', function(){
       buttons.forEach(function(b){ b.classList.remove('active'); });
       btn.classList.add('active');
-      activeFilter = btn.getAttribute('data-filter');
+      activePillar = btn.getAttribute('data-filter');
+      activeSub = 'all';
 
-      if(activeFilter === 'all' && !searchInput.value.trim()){
+      if(activePillar === 'all' && !searchInput.value.trim()){
         var freeCards = originalOrder.filter(function(c){ return c.getAttribute('data-free') === 'true'; });
         var paidCards = originalOrder.filter(function(c){ return c.getAttribute('data-free') !== 'true'; });
         freeCards.concat(paidCards).forEach(function(c){ grid.appendChild(c); });
+      }
+
+      if(subCategories[activePillar]){
+        buildSubButtons(activePillar);
+      } else {
+        subBar.classList.remove('open');
       }
       applyFilters();
     });
@@ -1035,25 +1120,25 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
     applyFilters();
     searchInput.focus();
   });
-  // --- Multi-tag badge generator ---
-  var tagLabels = {
-    faith:'Faith', mindset:'Mindset', productivity:'Productivity', strategy:'Strategy',
-    finance:'Finance', leadership:'Leadership', identity:'Identity', relationships:'Relationships',
-    resilience:'Resilience', communication:'Communication', economics:'Economics', tech:'Technology',
-    philosophy:'Philosophy', history:'History', parenting:'Parenting', 'dad-talks':'Dad Talks'
+
+  // --- Multi-sub badge generator ---
+  var subLabels = {
+    mental:'Mental', spiritual:'Spiritual', resilience:'Resilience',
+    money:'Money', strategy:'Strategy', systems:'Systems', leadership:'Leadership',
+    connection:'Connection', parenting:'Parenting'
   };
   cards.forEach(function(c){
-    var tags = (c.getAttribute('data-tag') || '').split(' ').filter(Boolean);
-    if(tags.length <= 1) return;
+    var subs = (c.getAttribute('data-sub') || '').split(' ').filter(Boolean);
+    if(subs.length <= 1) return;
     var body = c.querySelector('.card-body');
     var existing = body.querySelector('.card-tag');
     if(!existing) return;
     var container = document.createElement('div');
     container.className = 'card-tags';
-    tags.forEach(function(t){
+    subs.forEach(function(t){
       var span = document.createElement('span');
       span.className = 'card-tag tag-' + t;
-      span.textContent = tagLabels[t] || t;
+      span.textContent = subLabels[t] || t;
       container.appendChild(span);
     });
     existing.replaceWith(container);
