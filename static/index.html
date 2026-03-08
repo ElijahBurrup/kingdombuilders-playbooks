@@ -75,6 +75,8 @@ h1,h2,h3,h4{font-family:'Poppins',sans-serif;line-height:1.2}
 
 .card-body{padding:24px;flex:1;display:flex;flex-direction:column}
 .card-desc{font-size:0.85rem;color:var(--text-light);line-height:1.65;flex:1;margin-bottom:20px}
+.card-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}
+.card-tags .card-tag{margin-bottom:0}
 .card-tag{display:inline-block;padding:3px 12px;border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
 .tag-faith{background:rgba(123,79,191,0.08);color:var(--purple-accent)}
 .tag-tech{background:rgba(59,130,246,0.08);color:#3B82F6}
@@ -967,7 +969,8 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
         var title = (c.querySelector('.card-title') || {}).textContent || '';
         var subtitle = (c.querySelector('.card-subtitle') || {}).textContent || '';
         var desc = (c.querySelector('.card-desc') || {}).textContent || '';
-        var tag = (c.querySelector('.card-tag') || {}).textContent || '';
+        var tagEl = c.querySelector('.card-tags') || c.querySelector('.card-tag');
+        var tag = (tagEl || {}).textContent || '';
         var haystack = (title + ' ' + subtitle + ' ' + desc + ' ' + tag).toLowerCase();
         matchesSearch = haystack.indexOf(query) !== -1;
       }
@@ -1004,6 +1007,29 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
     searchInput.value = '';
     applyFilters();
     searchInput.focus();
+  });
+  // --- Multi-tag badge generator ---
+  var tagLabels = {
+    faith:'Faith', mindset:'Mindset', productivity:'Productivity', strategy:'Strategy',
+    finance:'Finance', leadership:'Leadership', identity:'Identity', relationships:'Relationships',
+    resilience:'Resilience', communication:'Communication', economics:'Economics', tech:'Technology',
+    philosophy:'Philosophy', history:'History', parenting:'Parenting', 'dad-talks':'Dad Talks'
+  };
+  cards.forEach(function(c){
+    var tags = (c.getAttribute('data-tag') || '').split(' ').filter(Boolean);
+    if(tags.length <= 1) return;
+    var body = c.querySelector('.card-body');
+    var existing = body.querySelector('.card-tag');
+    if(!existing) return;
+    var container = document.createElement('div');
+    container.className = 'card-tags';
+    tags.forEach(function(t){
+      var span = document.createElement('span');
+      span.className = 'card-tag tag-' + t;
+      span.textContent = tagLabels[t] || t;
+      container.appendChild(span);
+    });
+    existing.replaceWith(container);
   });
 })();
 
