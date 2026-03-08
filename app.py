@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from flask import Flask, Blueprint, send_from_directory, redirect, request, render_template, url_for
+from flask import Flask, Blueprint, send_from_directory, redirect, request, render_template, url_for, jsonify
 
 import config
 from database import initialize_db
@@ -287,7 +287,89 @@ def read_playbook(slug):
             title="Playbook Not Found",
             message="The playbook you're looking for doesn't exist."
         ), 404
-    return send_from_directory("assets", filename)
+
+    # Read the HTML and inject tracking script before </body>
+    file_path = Path(__file__).parent / "assets" / filename
+    html = file_path.read_text(encoding="utf-8")
+    tracking_script = f"""
+<script>
+(function(){{
+  var slug = '{slug}';
+  var base = (document.querySelector('base') || {{}}).href || '';
+  var prefix = '';
+  try {{ var m = location.pathname.match(/^(\\/[^\\/]+)\\/read\\//); if(m) prefix = m[1]; }} catch(e){{}}
+  var startTime = Date.now();
+  var tracked = false;
+
+  fetch(prefix + '/api/track/view', {{
+    method: 'POST',
+    headers: {{'Content-Type': 'application/json'}},
+    body: JSON.stringify({{slug: slug}})
+  }}).catch(function(){{}});
+
+  function getScrollPercent() {{
+    var h = document.documentElement;
+    var b = document.body;
+    var st = h.scrollTop || b.scrollTop;
+    var sh = (h.scrollHeight || b.scrollHeight) - h.clientHeight;
+    return sh > 0 ? Math.round((st / sh) * 100) : 0;
+  }}
+
+  function sendExit() {{
+    if (tracked) return;
+    tracked = true;
+    var data = JSON.stringify({{
+      slug: slug,
+      scroll_percent: getScrollPercent(),
+      time_spent_secs: Math.round((Date.now() - startTime) / 1000)
+    }});
+    if (navigator.sendBeacon) {{
+      navigator.sendBeacon(prefix + '/api/track/exit', new Blob([data], {{type: 'application/json'}}));
+    }} else {{
+      fetch(prefix + '/api/track/exit', {{method: 'POST', headers: {{'Content-Type': 'application/json'}}, body: data, keepalive: true}}).catch(function(){{}});
+    }}
+  }}
+
+  window.addEventListener('beforeunload', sendExit);
+  document.addEventListener('visibilitychange', function() {{ if (document.visibilityState === 'hidden') sendExit(); }});
+}})();
+</script>
+"""
+    html = html.replace("</body>", tracking_script + "</body>")
+    return html, 200, {"Content-Type": "text/html; charset=utf-8"}
+
+
+# --- Analytics Tracking ---
+@bp.route("/api/track/view", methods=["POST"])
+def track_view():
+    data = request.get_json(silent=True) or {}
+    slug = data.get("slug", "").strip()
+    if not slug:
+        return jsonify({"error": "slug required"}), 400
+    from database import log_playbook_view
+    log_playbook_view(slug, request.remote_addr, request.headers.get("User-Agent"))
+    return jsonify({"ok": True})
+
+
+@bp.route("/api/track/exit", methods=["POST"])
+def track_exit():
+    data = request.get_json(silent=True) or {}
+    slug = data.get("slug", "").strip()
+    scroll_percent = data.get("scroll_percent", 0)
+    time_spent = data.get("time_spent_secs", 0)
+    if not slug:
+        return jsonify({"error": "slug required"}), 400
+    from database import log_playbook_exit
+    log_playbook_exit(slug, scroll_percent, time_spent, request.remote_addr)
+    return jsonify({"ok": True})
+
+
+# --- Admin Dashboard ---
+@bp.route("/admin")
+def admin_dashboard():
+    from database import get_playbook_analytics
+    analytics = get_playbook_analytics()
+    return render_template("admin.html", analytics=analytics)
 
 
 # --- Health Check (keep-alive for Render free tier) ---

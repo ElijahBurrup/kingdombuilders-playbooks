@@ -57,6 +57,25 @@ CREATE TABLE IF NOT EXISTS subscribers (
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 CREATE INDEX IF NOT EXISTS idx_subscribers_email ON subscribers(email);
+
+CREATE TABLE IF NOT EXISTS playbook_views (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    slug        TEXT NOT NULL,
+    ip_address  TEXT,
+    user_agent  TEXT,
+    viewed_at   TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_playbook_views_slug ON playbook_views(slug);
+
+CREATE TABLE IF NOT EXISTS playbook_exits (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    slug            TEXT NOT NULL,
+    scroll_percent  REAL NOT NULL DEFAULT 0,
+    time_spent_secs INTEGER NOT NULL DEFAULT 0,
+    ip_address      TEXT,
+    exited_at       TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_playbook_exits_slug ON playbook_exits(slug);
 """
 
 
@@ -165,6 +184,55 @@ def create_subscriber(email, source="salmon-journey-ch1"):
         (email, source)
     )
     conn.commit()
+
+
+def log_playbook_view(slug, ip_address=None, user_agent=None):
+    """Record a playbook open event."""
+    conn = get_connection()
+    conn.execute(
+        "INSERT INTO playbook_views (slug, ip_address, user_agent) VALUES (?, ?, ?)",
+        (slug, ip_address, user_agent)
+    )
+    conn.commit()
+
+
+def log_playbook_exit(slug, scroll_percent, time_spent_secs, ip_address=None):
+    """Record where a reader exited a playbook."""
+    conn = get_connection()
+    conn.execute(
+        "INSERT INTO playbook_exits (slug, scroll_percent, time_spent_secs, ip_address) VALUES (?, ?, ?, ?)",
+        (slug, scroll_percent, time_spent_secs, ip_address)
+    )
+    conn.commit()
+
+
+def get_playbook_analytics():
+    """Get aggregated analytics for all playbooks."""
+    conn = get_connection()
+    views = conn.execute("""
+        SELECT slug, COUNT(*) as total_views,
+               COUNT(DISTINCT ip_address) as unique_visitors,
+               MIN(viewed_at) as first_view,
+               MAX(viewed_at) as last_view
+        FROM playbook_views
+        GROUP BY slug
+        ORDER BY total_views DESC
+    """).fetchall()
+
+    exits = conn.execute("""
+        SELECT slug,
+               AVG(scroll_percent) as avg_scroll,
+               AVG(time_spent_secs) as avg_time,
+               COUNT(*) as exit_count,
+               SUM(CASE WHEN scroll_percent >= 90 THEN 1 ELSE 0 END) as completions
+        FROM playbook_exits
+        GROUP BY slug
+    """).fetchall()
+
+    return {
+        "views": [dict(r) for r in views],
+        "exits": {r["slug"]: dict(r) for r in exits}
+    }
 
 
 def get_subscriber_by_email(email):

@@ -27,6 +27,18 @@ h1,h2,h3,h4{font-family:'Poppins',sans-serif;line-height:1.2}
 .catalog-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--gold);text-align:center;margin-bottom:12px}
 .catalog h2{font-size:1.4rem;color:var(--purple-deep);text-align:center;margin-bottom:32px}
 
+/* === SEARCH BAR === */
+.search-wrap{max-width:420px;margin:0 auto 28px;position:relative}
+.search-input{width:100%;padding:12px 18px 12px 44px;border:2px solid rgba(123,79,191,0.12);border-radius:50px;font-family:'Lora',serif;font-size:0.9rem;color:var(--text);background:var(--white);outline:none;transition:border-color 0.2s,box-shadow 0.2s}
+.search-input:focus{border-color:var(--gold);box-shadow:0 2px 16px rgba(212,168,67,0.15)}
+.search-input::placeholder{color:var(--text-muted);font-style:italic}
+.search-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--text-muted);pointer-events:none}
+.search-clear{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:20px;height:20px;border:none;background:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;display:none;padding:0;line-height:1}
+.search-clear.visible{display:block}
+.no-results{text-align:center;padding:40px 20px;display:none}
+.no-results h3{font-size:1.1rem;color:var(--text-light);margin-bottom:8px}
+.no-results p{font-size:0.85rem;color:var(--text-muted)}
+
 /* === FILTER BAR === */
 .filter-bar{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:40px}
 .filter-btn{padding:6px 16px;border:1.5px solid rgba(123,79,191,0.15);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);background:var(--white);cursor:pointer;transition:all 0.2s}
@@ -123,6 +135,13 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
 <div class="catalog">
   <div class="catalog-label">The Collection</div>
   <h2>Choose Your Playbook</h2>
+
+  <div class="search-wrap">
+    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" class="search-input" id="search-input" placeholder="Search playbooks..." autocomplete="off">
+    <button class="search-clear" id="search-clear" title="Clear search">&times;</button>
+  </div>
+  <div class="no-results" id="no-results"><h3>No playbooks found</h3><p>Try a different search term or clear filters.</p></div>
 
   <div class="filter-bar">
     <button class="filter-btn active" data-filter="all">All</button>
@@ -839,31 +858,66 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
   var cards = Array.from(grid.querySelectorAll('.card'));
   var buttons = document.querySelectorAll('.filter-btn');
   var originalOrder = cards.slice();
+  var searchInput = document.getElementById('search-input');
+  var searchClear = document.getElementById('search-clear');
+  var noResults = document.getElementById('no-results');
+  var activeFilter = 'all';
+
+  function applyFilters(){
+    var query = searchInput.value.trim().toLowerCase();
+    searchClear.classList.toggle('visible', query.length > 0);
+    var visibleCount = 0;
+
+    cards.forEach(function(c){
+      var matchesFilter = true;
+      if(activeFilter === 'free'){
+        matchesFilter = c.getAttribute('data-free') === 'true';
+      } else if(activeFilter !== 'all'){
+        matchesFilter = c.getAttribute('data-tag') === activeFilter;
+      }
+
+      var matchesSearch = true;
+      if(query){
+        var title = (c.querySelector('.card-title') || {}).textContent || '';
+        var subtitle = (c.querySelector('.card-subtitle') || {}).textContent || '';
+        var desc = (c.querySelector('.card-desc') || {}).textContent || '';
+        var tag = (c.querySelector('.card-tag') || {}).textContent || '';
+        var haystack = (title + ' ' + subtitle + ' ' + desc + ' ' + tag).toLowerCase();
+        matchesSearch = haystack.indexOf(query) !== -1;
+      }
+
+      if(matchesFilter && matchesSearch){
+        c.classList.remove('hidden');
+        visibleCount++;
+      } else {
+        c.classList.add('hidden');
+      }
+    });
+
+    noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+    grid.style.display = visibleCount === 0 ? 'none' : '';
+  }
 
   buttons.forEach(function(btn){
     btn.addEventListener('click', function(){
       buttons.forEach(function(b){ b.classList.remove('active'); });
       btn.classList.add('active');
-      var filter = btn.getAttribute('data-filter');
+      activeFilter = btn.getAttribute('data-filter');
 
-      if(filter === 'all'){
-        // Show all, free first
-        cards.forEach(function(c){ c.classList.remove('hidden'); });
+      if(activeFilter === 'all' && !searchInput.value.trim()){
         var freeCards = originalOrder.filter(function(c){ return c.getAttribute('data-free') === 'true'; });
         var paidCards = originalOrder.filter(function(c){ return c.getAttribute('data-free') !== 'true'; });
         freeCards.concat(paidCards).forEach(function(c){ grid.appendChild(c); });
-      } else if(filter === 'free'){
-        cards.forEach(function(c){
-          if(c.getAttribute('data-free') === 'true') c.classList.remove('hidden');
-          else c.classList.add('hidden');
-        });
-      } else {
-        cards.forEach(function(c){
-          if(c.getAttribute('data-tag') === filter) c.classList.remove('hidden');
-          else c.classList.add('hidden');
-        });
       }
+      applyFilters();
     });
+  });
+
+  searchInput.addEventListener('input', applyFilters);
+  searchClear.addEventListener('click', function(){
+    searchInput.value = '';
+    applyFilters();
+    searchInput.focus();
   });
 })();
 </script>
