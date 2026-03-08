@@ -9,13 +9,21 @@ to work without any changes on the client side.
 import secrets
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from urllib.parse import quote, urlencode
 
 import stripe
-from fastapi import APIRouter, Form, HTTPException, Request, status
+from fastapi import APIRouter, Depends, Form, HTTPException, Request, status
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, RedirectResponse
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.templating import Jinja2Templates
 
 from api.config import settings
+from api.database import get_db
+from api.models.user import User, OAuthAccount
+from api.models.purchase import Purchase, Subscription, StripeCustomer
+from api.utils.security import hash_password, verify_password
+from api.utils.session import get_session_user_id, set_session_cookie, clear_session_cookie
 
 # ---------------------------------------------------------------------------
 # Directory paths — BASE_DIR is the Playbooks project root
@@ -314,7 +322,7 @@ def _inject_back_button_and_tracking(html: str, slug: str) -> str:
 
 
 @router.get("/read/{slug}", include_in_schema=False)
-async def read_playbook(request: Request, slug: str):
+async def read_playbook(request: Request, slug: str, db: AsyncSession = Depends(get_db)):
     filename = SLUG_TO_FILE.get(slug)
     if not filename:
         return templates.TemplateResponse(
@@ -330,8 +338,14 @@ async def read_playbook(request: Request, slug: str):
     # Purchase gate: check if playbook is free or session is unlocked
     if slug not in FREE_SLUGS:
         admin_unlocked = request.cookies.get("admin_unlocked") == "1"
-        unlocked_slugs = request.cookies.get("unlocked_slugs", "").split(",")
-        if not admin_unlocked and slug not in unlocked_slugs:
+
+        # Check if logged-in user has DB access (subscription or purchase)
+        user_id = get_session_user_id(request)
+        db_access = False
+        if user_id:
+            db_access = await _user_has_access(user_id, slug, db)
+
+        if not admin_unlocked and not db_access:
             prefix = settings.URL_PREFIX or ""
             return templates.TemplateResponse(
                 "purchase_gate.html",
@@ -341,6 +355,7 @@ async def read_playbook(request: Request, slug: str):
                     "title": _slug_to_title(slug),
                     "error": request.query_params.get("error"),
                     "prefix": prefix,
+                    "logged_in": user_id is not None,
                 },
             )
 
@@ -372,6 +387,164 @@ async def unlock_playbook(request: Request, slug: str, code: str = Form("")):
         response.set_cookie("admin_unlocked", "1", max_age=86400, httponly=True, samesite="lax")
         return response
     return RedirectResponse(url=f"{prefix}/read/{slug}?error=1", status_code=303)
+
+
+# ============================================================================
+# Authentication — server-rendered sign in / sign up
+# ============================================================================
+@router.get("/auth", include_in_schema=False)
+async def auth_page(request: Request):
+    prefix = settings.URL_PREFIX or ""
+    # If already logged in, redirect to next or catalog
+    user_id = get_session_user_id(request)
+    next_url = request.query_params.get("next", f"{prefix}/")
+    if user_id:
+        return RedirectResponse(url=next_url, status_code=303)
+
+    return templates.TemplateResponse(
+        "auth.html",
+        {
+            "request": request,
+            "prefix": prefix,
+            "next_url": next_url,
+            "error": request.query_params.get("error"),
+            "tab": request.query_params.get("tab", "login"),
+            "email": request.query_params.get("email", ""),
+        },
+    )
+
+
+@router.post("/auth/register", include_in_schema=False)
+async def auth_register(
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+    email: str = Form(""),
+    password: str = Form(""),
+    display_name: str = Form(""),
+    next: str = Form(""),
+):
+    prefix = settings.URL_PREFIX or ""
+    next_url = next or f"{prefix}/"
+    email = email.strip().lower()
+
+    if not email or not password:
+        return RedirectResponse(
+            url=f"{prefix}/auth?error=Email+and+password+required&tab=register&next={quote(next_url)}",
+            status_code=303,
+        )
+    if len(password) < 8:
+        return RedirectResponse(
+            url=f"{prefix}/auth?error=Password+must+be+at+least+8+characters&tab=register&email={quote(email)}&next={quote(next_url)}",
+            status_code=303,
+        )
+
+    # Check if email already exists
+    result = await db.execute(select(User).where(User.email == email))
+    existing = result.scalar_one_or_none()
+    if existing:
+        return RedirectResponse(
+            url=f"{prefix}/auth?error=Email+already+registered.+Please+sign+in.&email={quote(email)}&next={quote(next_url)}",
+            status_code=303,
+        )
+
+    # Create user
+    user = User(
+        email=email,
+        password_hash=hash_password(password),
+        display_name=display_name.strip() or None,
+    )
+    db.add(user)
+    await db.commit()
+    await db.refresh(user)
+
+    response = RedirectResponse(url=next_url, status_code=303)
+    set_session_cookie(response, str(user.id))
+    return response
+
+
+@router.post("/auth/login", include_in_schema=False)
+async def auth_login(
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+    email: str = Form(""),
+    password: str = Form(""),
+    next: str = Form(""),
+):
+    prefix = settings.URL_PREFIX or ""
+    next_url = next or f"{prefix}/"
+    email = email.strip().lower()
+
+    if not email or not password:
+        return RedirectResponse(
+            url=f"{prefix}/auth?error=Email+and+password+required&next={quote(next_url)}",
+            status_code=303,
+        )
+
+    result = await db.execute(select(User).where(User.email == email))
+    user = result.scalar_one_or_none()
+
+    if not user or not user.password_hash or not verify_password(password, user.password_hash):
+        return RedirectResponse(
+            url=f"{prefix}/auth?error=Invalid+email+or+password&email={quote(email)}&next={quote(next_url)}",
+            status_code=303,
+        )
+
+    if not user.is_active:
+        return RedirectResponse(
+            url=f"{prefix}/auth?error=Account+is+inactive&next={quote(next_url)}",
+            status_code=303,
+        )
+
+    response = RedirectResponse(url=next_url, status_code=303)
+    set_session_cookie(response, str(user.id))
+    return response
+
+
+@router.post("/auth/logout", include_in_schema=False)
+async def auth_logout():
+    prefix = settings.URL_PREFIX or ""
+    response = RedirectResponse(url=f"{prefix}/", status_code=303)
+    clear_session_cookie(response)
+    response.delete_cookie("admin_unlocked")
+    return response
+
+
+# ============================================================================
+# Helper: check if user has access to a paid playbook (subscription or purchase)
+# ============================================================================
+async def _user_has_access(user_id: str, slug: str, db: AsyncSession) -> bool:
+    """Check if user has an active subscription or has purchased this specific playbook."""
+    import uuid as _uuid
+    uid = _uuid.UUID(user_id)
+
+    # Check active subscription
+    result = await db.execute(
+        select(Subscription).where(
+            Subscription.user_id == uid,
+            Subscription.status == "active",
+            Subscription.current_period_end > datetime.now(timezone.utc),
+        )
+    )
+    if result.scalar_one_or_none():
+        return True
+
+    # Check single playbook purchase (by slug in metadata — stored in provider_payment_id field)
+    # We store slug in Purchase metadata, so check by provider_session_id or a custom field
+    # For now, check purchases where the slug matches
+    result = await db.execute(
+        select(Purchase).where(
+            Purchase.user_id == uid,
+            Purchase.status == "completed",
+        )
+    )
+    purchases = result.scalars().all()
+    # Check if any purchase metadata contains this slug
+    # Since we don't have a slug column, we'll add slug to provider_payment_id as "single:{slug}"
+    for p in purchases:
+        if p.provider_payment_id and p.provider_payment_id == f"single:{slug}":
+            return True
+
+    return False
 
 
 # ============================================================================
@@ -453,30 +626,46 @@ async def track_exit(request: Request):
 # ============================================================================
 @router.post("/create-checkout-session", include_in_schema=False)
 async def checkout(
+    request: Request,
+    db: AsyncSession = Depends(get_db),
     mode: str = Form("single"),
     slug: str = Form(""),
 ):
+    prefix = settings.URL_PREFIX or ""
+    base = settings.BASE_URL
+
+    # Require authentication before checkout
+    user_id = get_session_user_id(request)
+    if not user_id:
+        # Redirect to auth, then back to checkout
+        next_url = f"{prefix}/checkout-redirect?mode={quote(mode)}&slug={quote(slug)}"
+        return RedirectResponse(url=f"{prefix}/auth?next={quote(next_url)}", status_code=303)
+
+    # Load user email for Stripe pre-fill
+    result = await db.execute(select(User).where(User.id == user_id))
+    user = result.scalar_one_or_none()
+    customer_email = user.email if user else None
+
     stripe.api_key = settings.STRIPE_SECRET_KEY
 
     # Pick the right price ID and Stripe mode
     if mode == "monthly":
         price_id = settings.STRIPE_PRICE_MONTHLY
         stripe_mode = "subscription"
-        metadata = {"mode": "monthly"}
+        metadata = {"mode": "monthly", "user_id": user_id}
     elif mode == "yearly":
         price_id = settings.STRIPE_PRICE_YEARLY
         stripe_mode = "subscription"
-        metadata = {"mode": "yearly"}
+        metadata = {"mode": "yearly", "user_id": user_id}
     else:
         price_id = settings.STRIPE_PRICE_SINGLE or settings.STRIPE_PRICE_ID
         stripe_mode = "payment"
-        metadata = {"mode": "single", "slug": slug}
+        metadata = {"mode": "single", "slug": slug, "user_id": user_id}
 
     if not price_id:
         return JSONResponse({"error": "Stripe price not configured"}, status_code=500)
 
     cancel_path = f"/read/{slug}" if slug else "/"
-    base = settings.BASE_URL
 
     try:
         session_params = {
@@ -487,6 +676,8 @@ async def checkout(
             "cancel_url": f"{base}{cancel_path}?payment=cancelled",
             "metadata": metadata,
         }
+        if customer_email:
+            session_params["customer_email"] = customer_email
         if stripe_mode == "payment":
             session_params["customer_creation"] = "always"
 
@@ -500,11 +691,28 @@ async def checkout(
         )
 
 
+@router.get("/checkout-redirect", include_in_schema=False)
+async def checkout_redirect(request: Request):
+    """After auth, auto-submit the checkout form via a self-posting page."""
+    prefix = settings.URL_PREFIX or ""
+    mode = request.query_params.get("mode", "single")
+    slug = request.query_params.get("slug", "")
+    # Render a page that auto-submits a POST form
+    html = f"""<!DOCTYPE html><html><body>
+    <form id="f" method="POST" action="{prefix}/create-checkout-session">
+      <input type="hidden" name="mode" value="{mode}">
+      <input type="hidden" name="slug" value="{slug}">
+    </form>
+    <script>document.getElementById('f').submit();</script>
+    </body></html>"""
+    return HTMLResponse(html)
+
+
 # ============================================================================
 # Stripe webhook (legacy)
 # ============================================================================
 @router.post("/webhook/stripe", include_in_schema=False)
-async def stripe_webhook(request: Request):
+async def stripe_webhook(request: Request, db: AsyncSession = Depends(get_db)):
     stripe.api_key = settings.STRIPE_SECRET_KEY
     payload = await request.body()
     sig_header = request.headers.get("Stripe-Signature", "")
@@ -518,41 +726,170 @@ async def stripe_webhook(request: Request):
     except stripe.error.SignatureVerificationError:
         raise HTTPException(status_code=400, detail="Invalid signature")
 
-    if event["type"] == "checkout.session.completed":
-        session_obj = event["data"]["object"]
-        _handle_successful_purchase(session_obj)
+    event_type = event["type"]
+    obj = event["data"]["object"]
+
+    if event_type == "checkout.session.completed":
+        await _handle_checkout_completed(obj, db)
+    elif event_type in ("customer.subscription.created", "customer.subscription.updated"):
+        await _handle_subscription_updated(obj, db)
+    elif event_type == "customer.subscription.deleted":
+        await _handle_subscription_deleted(obj, db)
 
     return {"status": "ok"}
 
 
-def _handle_successful_purchase(session: dict) -> None:
-    """Record purchase, generate download token, send delivery email, schedule follow-ups."""
-    from database import create_purchase, get_purchase_by_session_id
-    from api.services.email_service import send_delivery_email
-    from api.services.scheduler_service import schedule_followup_emails
+async def _handle_checkout_completed(session: dict, db: AsyncSession) -> None:
+    """Record purchase in PostgreSQL linked to the user, send delivery email."""
+    import uuid as _uuid
 
     session_id = session["id"]
+    metadata = session.get("metadata", {})
+    mode = metadata.get("mode", "single")
+    user_id_str = metadata.get("user_id")
+    customer_email = session.get("customer_details", {}).get("email", "")
+    amount_cents = session.get("amount_total", 0)
 
-    # Idempotency: skip if already processed
-    if get_purchase_by_session_id(session_id):
+    # Also write to legacy SQLite for backward compatibility
+    try:
+        from database import create_purchase as legacy_create, get_purchase_by_session_id as legacy_get
+        if not legacy_get(session_id):
+            download_token = secrets.token_urlsafe(32)
+            expires_at = datetime.now(timezone.utc) + timedelta(days=365)
+            legacy_create(
+                stripe_session_id=session_id,
+                customer_email=customer_email,
+                download_token=download_token,
+                downloads_remaining=99,
+                expires_at=expires_at,
+                stripe_payment_intent=session.get("payment_intent"),
+                amount_cents=amount_cents,
+            )
+    except Exception as e:
+        print(f"Legacy SQLite write failed (non-critical): {e}")
+
+    if not user_id_str:
+        print(f"Webhook: no user_id in metadata for session {session_id}")
         return
 
-    customer_email = session["customer_details"]["email"]
-    download_token = secrets.token_urlsafe(32)
-    expires_at = datetime.now(timezone.utc) + timedelta(days=30)
+    uid = _uuid.UUID(user_id_str)
 
-    create_purchase(
-        stripe_session_id=session_id,
-        customer_email=customer_email,
-        download_token=download_token,
-        downloads_remaining=5,
-        expires_at=expires_at,
-        stripe_payment_intent=session.get("payment_intent"),
-        amount_cents=session.get("amount_total", 6700),
+    if mode == "single":
+        slug = metadata.get("slug", "")
+        # Create Purchase record in PostgreSQL
+        purchase = Purchase(
+            user_id=uid,
+            payment_provider="stripe",
+            provider_payment_id=f"single:{slug}",
+            provider_session_id=session_id,
+            amount_cents=amount_cents,
+            status="completed",
+            download_token=secrets.token_urlsafe(32),
+            downloads_remaining=99,
+            download_expires_at=datetime.now(timezone.utc) + timedelta(days=365),
+        )
+        db.add(purchase)
+
+    elif mode in ("monthly", "yearly"):
+        # Subscription — record will be created by subscription.created webhook
+        # But also create/link StripeCustomer
+        stripe_customer_id = session.get("customer")
+        if stripe_customer_id:
+            result = await db.execute(
+                select(StripeCustomer).where(StripeCustomer.user_id == uid)
+            )
+            if not result.scalar_one_or_none():
+                db.add(StripeCustomer(user_id=uid, stripe_customer_id=stripe_customer_id))
+
+    await db.commit()
+
+    # Send delivery email
+    try:
+        from api.services.email_service import send_delivery_email
+        send_delivery_email(customer_email, "")
+    except Exception as e:
+        print(f"Delivery email failed: {e}")
+
+
+async def _handle_subscription_updated(subscription: dict, db: AsyncSession) -> None:
+    """Create or update a Subscription record linked to the user."""
+    import uuid as _uuid
+
+    stripe_sub_id = subscription.get("id", "")
+    stripe_status = subscription.get("status", "")
+    stripe_customer_id = subscription.get("customer", "")
+    period_start = subscription.get("current_period_start")
+    period_end = subscription.get("current_period_end")
+
+    # Map Stripe status
+    if stripe_status in ("active", "trialing"):
+        db_status = "active"
+    elif stripe_status == "past_due":
+        db_status = "past_due"
+    else:
+        db_status = "canceled"
+
+    # Find user by StripeCustomer
+    result = await db.execute(
+        select(StripeCustomer).where(StripeCustomer.stripe_customer_id == stripe_customer_id)
     )
+    sc = result.scalar_one_or_none()
+    if not sc:
+        print(f"Webhook: no StripeCustomer for {stripe_customer_id}")
+        return
 
-    send_delivery_email(customer_email, download_token)
-    schedule_followup_emails(customer_email, download_token)
+    # Check if subscription already exists
+    result = await db.execute(
+        select(Subscription).where(Subscription.provider_subscription_id == stripe_sub_id)
+    )
+    sub = result.scalar_one_or_none()
+
+    now = datetime.now(timezone.utc)
+    ps = datetime.fromtimestamp(period_start, tz=timezone.utc) if period_start else now
+    pe = datetime.fromtimestamp(period_end, tz=timezone.utc) if period_end else now + timedelta(days=30)
+
+    # Determine plan type from price
+    plan_items = subscription.get("items", {}).get("data", [])
+    price_id = plan_items[0]["price"]["id"] if plan_items else ""
+    if price_id == settings.STRIPE_PRICE_YEARLY:
+        plan_type = "yearly"
+        price_cents = 10000
+    else:
+        plan_type = "monthly"
+        price_cents = 1000
+
+    if sub:
+        sub.status = db_status
+        sub.current_period_start = ps
+        sub.current_period_end = pe
+        sub.updated_at = now
+    else:
+        sub = Subscription(
+            user_id=sc.user_id,
+            plan_type=plan_type,
+            price_cents=price_cents,
+            payment_provider="stripe",
+            provider_subscription_id=stripe_sub_id,
+            status=db_status,
+            current_period_start=ps,
+            current_period_end=pe,
+        )
+        db.add(sub)
+
+    await db.commit()
+
+
+async def _handle_subscription_deleted(subscription: dict, db: AsyncSession) -> None:
+    """Mark subscription as canceled."""
+    stripe_sub_id = subscription.get("id", "")
+    result = await db.execute(
+        select(Subscription).where(Subscription.provider_subscription_id == stripe_sub_id)
+    )
+    sub = result.scalar_one_or_none()
+    if sub:
+        sub.status = "canceled"
+        sub.updated_at = datetime.now(timezone.utc)
+        await db.commit()
 
 
 # ============================================================================
@@ -560,36 +897,46 @@ def _handle_successful_purchase(session: dict) -> None:
 # ============================================================================
 @router.get("/success", include_in_schema=False)
 async def success_page(request: Request, session_id: str | None = None):
+    prefix = settings.URL_PREFIX or ""
     if not session_id:
-        return RedirectResponse(url="/conductorsplaybook", status_code=303)
+        return RedirectResponse(url=f"{prefix}/", status_code=303)
 
-    from database import get_purchase_by_session_id
+    # Try to retrieve the Stripe session to get metadata
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    slug = ""
+    try:
+        stripe_session = stripe.checkout.Session.retrieve(session_id)
+        metadata = stripe_session.get("metadata", {})
+        slug = metadata.get("slug", "")
+    except Exception:
+        pass
 
-    purchase = get_purchase_by_session_id(session_id)
-    if not purchase:
-        return templates.TemplateResponse(
-            "error.html",
-            {
-                "request": request,
-                "title": "Purchase Not Found",
-                "message": (
-                    "We couldn't find your purchase. Your payment may still be "
-                    "processing — please check your email in a few minutes."
-                ),
-            },
-            status_code=404,
-        )
+    # Try legacy DB lookup
+    purchase = None
+    try:
+        from database import get_purchase_by_session_id
+        purchase = get_purchase_by_session_id(session_id)
+    except Exception:
+        pass
+
+    email = ""
+    download_token = ""
+    if purchase:
+        email = purchase["customer_email"]
+        download_token = purchase["download_token"]
 
     response = templates.TemplateResponse(
         "success.html",
         {
             "request": request,
-            "download_token": purchase["download_token"],
-            "email": purchase["customer_email"],
+            "download_token": download_token,
+            "email": email,
             "base_url": settings.BASE_URL,
+            "slug": slug,
+            "prefix": prefix,
         },
     )
-    # Unlock all playbooks after successful purchase
+    # Set admin_unlocked cookie as fallback for immediate access
     response.set_cookie("admin_unlocked", "1", max_age=86400, httponly=True, samesite="lax")
     return response
 
