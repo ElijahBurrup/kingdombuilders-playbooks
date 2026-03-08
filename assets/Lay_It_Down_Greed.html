@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lay It Down: Greed | Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0A1810;--ink-mid:#14281C;--ink-soft:#1E3828;
+  --steel:#3A5848;--steel-light:#6A8A7A;--fog:#90B0A0;
+  --greed:#2E8B57;--greed-mid:rgba(46,139,87,0.18);--greed-pale:rgba(46,139,87,0.07);
+  --emerald:#34A065;--emerald-mid:rgba(52,160,101,0.15);
+  --gold:#D4A030;--gold-mid:rgba(212,160,48,0.18);--gold-pale:rgba(212,160,48,0.08);
+  --brass:#B8860B;--brass-mid:rgba(184,134,11,0.15);
+  --green:#2D8A4E;--green-mid:rgba(45,138,78,0.15);
+  --cream:#F8FFF6;--cream-warm:#F4FFF0;--paper:#FAFFF8;--white:#FFFFFF;
+  --radius:10px;--shadow:0 2px 16px rgba(10,24,16,0.09);--shadow-deep:0 8px 40px rgba(10,24,16,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.78;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.label{font-family:'Poppins',sans-serif}
+.page{max-width:700px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--ink-mid);font-weight:600;font-family:'Poppins',sans-serif}
+
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(160deg,#020E06 0%,#0A2212 40%,#081A10 100%);position:relative;overflow:hidden}
+.cover-grain{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:0.5}
+.cover-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 25%,rgba(2,10,4,0.7) 100%)}
+.vault-ring{position:absolute;border-radius:50%;border:1px solid rgba(46,139,87,0.06);animation:vault-expand 7s ease-out infinite}
+.vault-ring:nth-child(3){width:180px;height:180px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:0s}
+.vault-ring:nth-child(4){width:360px;height:360px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:1.8s}
+.vault-ring:nth-child(5){width:540px;height:540px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:3.6s}
+@keyframes vault-expand{0%{opacity:0.6;transform:translate(-50%,-50%) scale(0.85)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.25)}}
+.cover-content{position:relative;z-index:2;padding:60px 24px 40px}
+.cover-badge{display:inline-block;padding:5px 18px;border:1px solid rgba(46,139,87,0.3);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.48rem;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:var(--greed);margin-bottom:40px;background:rgba(46,139,87,0.07)}
+.cover h1{font-family:'Poppins',sans-serif;font-size:clamp(3rem,9vw,5.5rem);font-weight:300;color:#FFFFFF;line-height:0.95;margin-bottom:6px;letter-spacing:-0.02em}
+.cover h1 em{display:block;color:var(--greed);font-style:normal;font-weight:700;font-size:0.5em;margin-top:12px;letter-spacing:0.01em}
+.cover-sub{font-family:'Lora',Georgia,serif;font-size:clamp(0.95rem,2.5vw,1.15rem);font-style:italic;color:rgba(255,255,255,0.45);margin-top:28px;line-height:1.7;max-width:480px;margin-left:auto;margin-right:auto}
+.cover-sub em{color:rgba(46,139,87,0.85);font-style:normal;font-weight:600}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.5rem;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-top:52px}
+.cover-verse{margin-top:28px;padding:14px 24px;display:inline-block;background:rgba(46,139,87,0.06);border:1px solid rgba(46,139,87,0.12);border-radius:8px;font-family:'Lora',Georgia,serif;font-size:0.82rem;font-style:italic;color:rgba(255,255,255,0.35);line-height:1.6}
+
+.ch-head{background:linear-gradient(160deg,#020E06 0%,#101E18 100%);padding:72px 24px 52px;position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 50%,rgba(46,139,87,0.04) 0%,transparent 50%)}
+.ch-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 5%,var(--greed) 50%,transparent 95%);opacity:0.5}
+.ch-head .page{position:relative;z-index:2}
+.ch-num{font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--greed);opacity:0.9;margin-bottom:8px}
+.ch-title{font-family:'Poppins',sans-serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:700;color:#FFFFFF;margin:10px 0 8px;letter-spacing:-0.01em}
+.ch-sub{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:rgba(46,139,87,0.55)}
+
+.ribbon{text-align:center;padding:20px 24px;background:var(--cream-warm);border-top:1px solid rgba(10,24,16,0.06);border-bottom:1px solid rgba(10,24,16,0.06)}
+.ribbon p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:var(--steel-light);max-width:540px;margin:0 auto;line-height:1.6}
+
+.mission{text-align:center;padding:36px 32px;margin:36px 0;background:linear-gradient(140deg,rgba(46,139,87,0.08),rgba(46,139,87,0.03));border-radius:14px;border:2px solid rgba(46,139,87,0.2);box-shadow:0 0 0 1px rgba(46,139,87,0.06),var(--shadow)}
+.mission-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--greed);margin-bottom:12px}
+.mission p{font-family:'Poppins',sans-serif;font-size:clamp(0.88rem,2.2vw,1.05rem);font-weight:500;color:var(--ink-mid);line-height:1.65}
+.mission p em{color:var(--greed);font-style:normal;font-weight:700}
+
+.insight{margin:30px 0;padding:28px 32px;background:linear-gradient(140deg,#020E06,#101E18);border-radius:14px;border:2px solid rgba(46,139,87,0.25);border-left:5px solid var(--greed);position:relative;overflow:hidden;box-shadow:var(--shadow-deep)}
+.insight::before{content:'';position:absolute;top:-40%;right:-10%;width:200px;height:200px;background:radial-gradient(circle,rgba(46,139,87,0.07) 0%,transparent 70%);border-radius:50%}
+.insight p{font-family:'Lora',Georgia,serif;font-size:1.02rem;font-style:italic;color:rgba(255,255,255,0.9);line-height:1.72;position:relative;z-index:2}
+.insight em{color:var(--greed);font-style:normal;font-weight:700}
+
+.gq{margin:32px 0;text-align:center;padding:32px 24px;position:relative;background:linear-gradient(160deg,rgba(46,139,87,0.04),rgba(46,139,87,0.07));border-radius:14px;border:1.5px solid rgba(46,139,87,0.15)}
+.gq::before,.gq::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:48px;height:2px;background:linear-gradient(90deg,transparent,var(--greed),transparent)}
+.gq::before{top:0}.gq::after{bottom:0}
+.gq p{font-family:'Lora',Georgia,serif;font-size:1.05rem;font-style:italic;color:var(--ink-soft);line-height:1.6;max-width:520px;margin:0 auto}
+
+.viz{margin:44px 0 32px;border-radius:14px;overflow:hidden;border:2px solid rgba(46,139,87,0.22);box-shadow:var(--shadow-deep);position:relative;background:var(--white)}
+.viz-top{background:linear-gradient(135deg,rgba(46,139,87,0.1),rgba(46,139,87,0.04));padding:20px 26px 18px;display:flex;align-items:center;gap:14px;border-bottom:1px solid rgba(46,139,87,0.12)}
+.viz-icon{width:48px;height:48px;border-radius:50%;border:2px solid rgba(46,139,87,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(145deg,#fff,rgba(240,255,244,0.6))}
+.viz-meta{flex:1}
+.viz-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--greed);margin-bottom:2px}
+.viz h4{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:var(--ink-mid)}
+.viz-body{padding:26px 26px 22px;background:linear-gradient(170deg,#FAFFF8 0%,#F4FFF0 100%)}
+.viz-body p{font-size:0.95rem;color:var(--steel);line-height:1.78;margin-bottom:14px}
+.viz-body strong{color:var(--ink-mid);font-weight:700}
+.viz-body em{color:var(--greed);font-style:normal;font-weight:600}
+.viz-body p:last-child{margin-bottom:0}
+.viz-trigger{margin-top:18px;padding:14px 18px;background:linear-gradient(135deg,rgba(46,139,87,0.08),rgba(46,139,87,0.14));border:1.5px solid rgba(46,139,87,0.2);border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.76rem;font-weight:600;color:var(--ink-soft);text-align:center;line-height:1.55}
+
+.ba-pair{margin:32px 0;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:620px){.ba-pair{grid-template-columns:1fr}}
+.ba-card{border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.ba-head{padding:11px 18px;font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.ba-before{background:linear-gradient(170deg,#F0FFF0,#E0FFE0)}
+.ba-before .ba-head{background:rgba(46,139,87,0.12);color:#1A4A28}
+.ba-after{background:linear-gradient(170deg,#FFFFF0,#FFF8E0)}
+.ba-after .ba-head{background:rgba(212,160,48,0.12);color:#5A3800}
+.ba-dot{width:7px;height:7px;border-radius:50%}
+.ba-before .ba-dot{background:var(--greed)}
+.ba-after .ba-dot{background:var(--gold)}
+.ba-body{padding:16px 18px;font-size:0.88rem;line-height:1.65}
+.ba-body ul{list-style:none;padding:0;margin:0}
+.ba-body ul li{padding:6px 0;border-bottom:1px solid rgba(0,0,0,0.05);font-family:'Poppins',sans-serif;font-size:0.8rem}
+.ba-body ul li:last-child{border-bottom:none}
+
+.dd{margin:24px 0;padding:22px 26px;border-radius:12px;border-left:4px solid var(--greed);background:var(--white);box-shadow:var(--shadow)}
+.dd:nth-of-type(even){background:var(--cream)}
+.dd h4{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--ink-mid);margin-bottom:4px}
+.dd .sub{font-family:'Poppins',sans-serif;font-size:0.54rem;font-weight:700;color:var(--greed);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.dd p{font-size:0.95rem;color:var(--steel);line-height:1.78;margin-bottom:8px}
+.dd p:last-child{margin-bottom:0}
+
+.adventure{margin:36px 0;border-radius:14px;overflow:hidden;box-shadow:var(--shadow-deep);background:var(--white);border:1.5px solid rgba(10,24,16,0.08)}
+.adv-head{padding:14px 26px 12px;display:flex;align-items:center;gap:12px;border-bottom:1.5px solid rgba(46,139,87,0.1);background:linear-gradient(135deg,rgba(46,139,87,0.05),rgba(46,139,87,0.02))}
+.adv-head-icon{width:36px;height:36px;border-radius:50%;background:rgba(46,139,87,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1.5px solid rgba(46,139,87,0.2)}
+.adv-head-text{flex:1}
+.adv-head-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--greed);opacity:0.7}
+.adv-head-title{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--ink-mid)}
+.adv-step{padding:14px 26px;border-bottom:1px solid rgba(10,24,16,0.05)}
+.adv-step:last-child{border-bottom:none}
+.adv-step:nth-child(odd){background:var(--white)}
+.adv-step:nth-child(even){background:rgba(46,139,87,0.02)}
+.step-c p{font-family:'Source Serif 4',Georgia,serif;font-size:0.93rem;line-height:1.75;margin:0 0 6px;color:var(--ink-soft)}
+.step-c p:last-child{margin-bottom:0}
+.step-c em{color:var(--steel-light)}
+.tag-you{font-family:'Poppins',sans-serif;font-weight:700;color:var(--ink-mid);font-size:0.74rem;display:inline-block;padding:2px 10px;background:rgba(46,139,87,0.1);border-radius:4px;margin-bottom:5px;border:1px solid rgba(46,139,87,0.2)}
+.adv-result-good{background:linear-gradient(135deg,rgba(212,160,48,0.04),rgba(212,160,48,0.08))!important}
+
+.think{margin:16px 0 36px;padding:30px;background:linear-gradient(145deg,rgba(46,139,87,0.08),rgba(46,139,87,0.04));border:2px dashed rgba(46,139,87,0.35);border-radius:14px;position:relative;box-shadow:0 4px 16px rgba(46,139,87,0.08)}
+.think::before{content:'';position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--paper);padding:0 12px;width:28px;height:28px;display:block;margin-left:-14px;background:var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232E8B57' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22c-2 0-4-1.5-4-4 0-2 2-3 4-3s4 1 4 3c0 2.5-2 4-4 4z'/%3E%3Cpath d='M12 15c-1.5-2-5-4-5-8a5 5 0 0 1 10 0c0 4-3.5 6-5 8z'/%3E%3Cpath d='M9.5 9c.3-1.8 1.5-3 2.5-3'/%3E%3C/svg%3E") center/contain no-repeat}
+.think-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--greed);text-align:center;margin-bottom:10px}
+.think h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--ink-mid);text-align:center;margin-bottom:14px}
+.think p{font-size:0.86rem;color:var(--steel);margin-bottom:8px;font-family:'Poppins',sans-serif}
+.think-line{border-bottom:1.5px solid rgba(46,139,87,0.25);height:30px;margin-bottom:4px;cursor:text}
+.think p.q-start{font-family:'Poppins',sans-serif;font-weight:500;color:var(--ink-soft);font-size:0.82rem;text-align:left;margin-top:14px;margin-bottom:4px}
+.think .closing{font-weight:600;color:var(--greed);margin-top:12px;font-family:'Poppins',sans-serif;font-size:0.8rem}
+
+.breathe{margin:44px 0;text-align:center;padding:52px 24px;position:relative;background:linear-gradient(160deg,rgba(46,139,87,0.08),rgba(46,139,87,0.04));border-radius:16px;border:2px solid rgba(46,139,87,0.15)}
+.breathe-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1.5px solid rgba(46,139,87,0.1)}
+.breathe-ring:nth-child(1){width:140px;height:140px;animation:breathe-pulse 6s ease-in-out infinite}
+.breathe-ring:nth-child(2){width:90px;height:90px;animation:breathe-pulse 6s ease-in-out infinite 1.5s}
+.breathe-ring:nth-child(3){width:45px;height:45px;animation:breathe-pulse 6s ease-in-out infinite 3s}
+@keyframes breathe-pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.5}50%{transform:translate(-50%,-50%) scale(1.25);opacity:0.1}}
+.breathe-content{position:relative;z-index:2}
+.breathe-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--greed);margin-bottom:8px}
+.breathe h4{font-family:'Poppins',sans-serif;font-size:0.94rem;font-weight:600;color:var(--ink-mid);margin-bottom:8px}
+.breathe p{font-family:'Lora',Georgia,serif;font-size:0.88rem;font-style:italic;color:var(--steel);max-width:420px;margin:0 auto;line-height:1.65}
+
+.descent-ramp{margin:36px 0 0;display:flex;flex-direction:column;gap:12px}
+.ramp-echo{padding:26px 30px;background:linear-gradient(160deg,rgba(46,139,87,0.07),rgba(46,139,87,0.03));border-radius:14px;border:1.5px solid rgba(46,139,87,0.12)}
+.ramp-echo p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:var(--steel);line-height:1.78;text-align:center;margin:0}
+.ramp-close{padding:36px 30px;text-align:center;background:linear-gradient(160deg,rgba(212,160,48,0.1),rgba(212,160,48,0.05));border-radius:14px;border:1.5px solid rgba(212,160,48,0.2)}
+.ramp-close-label{font-family:'Poppins',sans-serif;font-size:0.44rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--gold);opacity:0.9;margin-bottom:8px}
+.ramp-close p{font-family:'Poppins',sans-serif;font-size:0.8rem;font-weight:500;color:var(--ink-soft);line-height:1.65;max-width:440px;margin:0 auto}
+
+.inst{margin:26px 0;padding:18px 22px;background:linear-gradient(90deg,rgba(46,139,87,0.07),rgba(212,160,48,0.05));border-left:4px solid var(--greed);border-radius:0 12px 12px 0;box-shadow:var(--shadow)}
+.inst p{font-family:'Poppins',sans-serif;font-size:0.8rem;color:var(--steel);line-height:1.6;margin:0}
+.inst strong{color:var(--ink-mid);font-weight:600}
+
+.h2-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--ink-mid),var(--ink-soft));margin-right:10px;vertical-align:middle;box-shadow:0 2px 8px rgba(10,24,16,0.2)}
+.h2-icon svg{width:16px;height:16px;stroke:var(--greed);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.viz-icon svg{width:24px;height:24px;stroke:var(--greed);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.adv-head-icon svg{width:18px;height:18px;stroke:var(--greed);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.prose h2{font-family:'Poppins',sans-serif;font-size:1.3rem;color:var(--ink-mid);margin:36px 0 14px;letter-spacing:-0.01em;display:flex;align-items:center}
+
+.root-review{margin:44px 0;padding:28px 22px;background:linear-gradient(160deg,#F4FFF8,#F0FFF0);border-radius:16px;border:2px solid rgba(46,139,87,0.18);box-shadow:var(--shadow)}
+.root-label{font-family:'Poppins',sans-serif;font-size:0.44rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--greed);text-align:center;margin-bottom:18px}
+.root-layer{display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 0;flex-wrap:wrap}
+.root-layer.current{padding:12px 0}
+.root-ch{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--fog);width:28px;text-align:right;flex-shrink:0}
+.root-layer.current .root-ch{color:var(--greed)}
+.root-items{display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center}
+.root-pill{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:600;padding:5px 13px;border-radius:6px;white-space:nowrap}
+.root-pill.rp-dim{background:rgba(58,88,72,0.1);color:var(--steel);border:1.5px solid rgba(58,88,72,0.18)}
+.root-pill.rp-bright{background:linear-gradient(135deg,rgba(46,139,87,0.18),rgba(46,139,87,0.26));color:var(--ink-mid);border:2px solid rgba(46,139,87,0.35);box-shadow:0 2px 10px rgba(46,139,87,0.12);font-weight:700}
+.root-pill.rp-ch1{background:rgba(46,139,87,0.12);color:#1A4A28;border:1.5px solid rgba(46,139,87,0.28);font-weight:600}
+.root-pill.rp-ch2{background:rgba(34,120,70,0.12);color:#143A20;border:1.5px solid rgba(34,120,70,0.25);font-weight:600}
+.root-pill.rp-ch3{background:rgba(184,134,11,0.12);color:#5A3800;border:1.5px solid rgba(184,134,11,0.25);font-weight:600}
+.root-pill.rp-ch4{background:rgba(160,100,240,0.12);color:#3A1A5A;border:1.5px solid rgba(160,100,240,0.25);font-weight:600}
+.root-pill.rp-ch5{background:rgba(60,140,240,0.12);color:#1A2E5A;border:1.5px solid rgba(60,140,240,0.25);font-weight:600}
+.root-arr{color:var(--greed);opacity:0.65;font-size:0.78rem;padding:0 3px}
+.root-layer.current .root-arr{opacity:0.9}
+.root-sep{width:60%;max-width:300px;height:1.5px;background:linear-gradient(90deg,transparent,rgba(46,139,87,0.15),transparent);margin:6px auto}
+
+.prompt{margin:32px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(46,139,87,0.22);box-shadow:var(--shadow-deep)}
+.prompt-head{padding:12px 20px;background:linear-gradient(90deg,#020E06,#101E18);font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--greed)}
+.prompt-body{padding:24px 26px;background:#040A06;color:#B0C0B8;font-family:'Poppins',sans-serif;font-size:0.82rem;line-height:1.8}
+.prompt-body strong{color:var(--greed)}
+
+.stack{margin:38px 0;text-align:center}
+.stack-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--greed);opacity:0.7;margin-bottom:16px}
+.stack-flow{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap}
+.stack-node{display:inline-flex;align-items:center;justify-content:center;padding:10px 18px;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.68rem;font-weight:600;line-height:1.35;white-space:nowrap}
+.sn-dark{background:var(--ink-mid);color:#FFFFFF;border:1.5px solid rgba(46,139,87,0.2)}
+.sn-greed{background:rgba(46,139,87,0.13);color:var(--ink-mid);border:1.5px solid rgba(46,139,87,0.25)}
+.sn-gold{background:rgba(212,160,48,0.13);color:var(--ink-soft);border:1.5px solid rgba(212,160,48,0.28)}
+.sn-brass{background:rgba(184,134,11,0.1);color:#5A3800;border:1.5px solid rgba(184,134,11,0.2)}
+.sn-green{background:rgba(45,138,78,0.1);color:#1A3A28;border:1.5px solid rgba(45,138,78,0.2)}
+.stack-arr{font-size:1rem;color:rgba(46,139,87,0.45);padding:0 7px}
+
+.prayer{margin:32px 0;padding:28px 30px;background:linear-gradient(160deg,#020E06,#101820);border-radius:14px;border:2px solid rgba(212,160,48,0.25);position:relative;overflow:hidden}
+.prayer::before{content:'';position:absolute;top:-20%;left:-10%;width:160px;height:160px;background:radial-gradient(circle,rgba(212,160,48,0.06) 0%,transparent 70%);border-radius:50%}
+.prayer-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;position:relative;z-index:2}
+.prayer p{font-family:'Lora',Georgia,serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.85);line-height:1.8;position:relative;z-index:2;margin-bottom:8px}
+.prayer p:last-child{margin-bottom:0}
+.prayer strong{color:var(--gold);font-style:normal;font-weight:700}
+
+.finale{text-align:center;padding:80px 24px;background:linear-gradient(160deg,#020E06 0%,#101E18 100%);position:relative;overflow:hidden}
+.finale::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 50% 50%,rgba(46,139,87,0.04) 0%,transparent 50%)}
+.finale h2{font-family:'Poppins',sans-serif;font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;color:#FFFFFF;margin-bottom:8px;position:relative;z-index:2}
+.finale h2 span{color:var(--greed)}
+.finale p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.38);max-width:460px;margin:16px auto;line-height:1.65;position:relative;z-index:2}
+
+footer{text-align:center;padding:36px 24px;background:#020604}
+footer p{font-family:'Lora',Georgia,serif;font-size:0.8rem;font-style:italic;color:rgba(46,139,87,0.2);margin-bottom:12px}
+footer .brand{font-family:'Poppins',sans-serif;font-size:0.46rem;font-style:normal;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.12)}
+
+/* === ACCUMULATION CYCLE === */
+.accum-cycle{margin:36px 0;text-align:center;padding:32px 24px;background:var(--white);border-radius:14px;border:2px solid rgba(46,139,87,0.2);box-shadow:var(--shadow)}
+.accum-cycle-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--greed);margin-bottom:20px}
+.ac-ring{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0}
+.ac-node{padding:12px 20px;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.72rem;font-weight:600;min-width:120px}
+.ac-node.ac-greed{background:rgba(46,139,87,0.12);color:#1A4A28;border:1.5px solid rgba(46,139,87,0.25)}
+.ac-node.ac-emerald{background:rgba(52,160,101,0.12);color:#1A4020;border:1.5px solid rgba(52,160,101,0.2)}
+.ac-node.ac-dark{background:var(--ink-mid);color:#FFFFFF;border:1.5px solid rgba(46,139,87,0.2)}
+.ac-node.ac-gold{background:rgba(212,160,48,0.12);color:#5A3800;border:1.5px solid rgba(212,160,48,0.25)}
+.ac-arr{font-size:1.1rem;color:rgba(46,139,87,0.4);padding:0 8px}
+.ac-break{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-top:20px;padding:10px 20px;border:2px dashed rgba(212,160,48,0.3);border-radius:8px;display:inline-block;background:rgba(212,160,48,0.06)}
+
+/* === SCARCITY TIMELINE === */
+.scarcity-timeline{margin:36px 0;padding:28px 26px;background:var(--white);border-radius:14px;border:2px solid rgba(46,139,87,0.2);box-shadow:var(--shadow)}
+.scarcity-timeline-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--greed);text-align:center;margin-bottom:22px}
+.stl-track{position:relative;padding-left:28px}
+.stl-track::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--greed),var(--emerald),var(--gold),var(--brass));border-radius:3px}
+.stl-node{position:relative;padding:14px 0 22px 24px}
+.stl-node::before{content:'';position:absolute;left:-22px;top:18px;width:12px;height:12px;border-radius:50%;border:2.5px solid var(--greed);background:var(--white);z-index:1}
+.stl-node.stl-gold::before{border-color:var(--gold)}
+.stl-node.stl-brass::before{border-color:var(--brass)}
+.stl-node-label{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--greed);margin-bottom:4px}
+.stl-node.stl-gold .stl-node-label{color:var(--gold)}
+.stl-node.stl-brass .stl-node-label{color:var(--brass)}
+.stl-node h4{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--ink-mid);margin-bottom:6px}
+.stl-node p{font-family:'Poppins',sans-serif;font-size:0.82rem;color:var(--steel);line-height:1.6}
+
+/* === ENOUGH TABLE === */
+.enough-table{margin:36px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(46,139,87,0.2);box-shadow:var(--shadow-deep)}
+.enough-table-head{padding:14px 22px;background:linear-gradient(135deg,rgba(46,139,87,0.1),rgba(46,139,87,0.04));font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--greed);text-align:center;border-bottom:1.5px solid rgba(46,139,87,0.12)}
+.enough-grid{width:100%;border-collapse:collapse}
+.enough-grid th{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:12px 16px;text-align:left;border-bottom:1.5px solid rgba(10,24,16,0.08)}
+.enough-grid th:first-child{color:#1A4A28;background:rgba(46,139,87,0.05)}
+.enough-grid th:nth-child(2){color:#5A3800;background:rgba(184,134,11,0.05)}
+.enough-grid th:last-child{color:#1A4A28;background:rgba(46,139,87,0.05)}
+.enough-grid td{padding:12px 16px;font-family:'Poppins',sans-serif;font-size:0.8rem;color:var(--steel);border-bottom:1px solid rgba(10,24,16,0.05);vertical-align:top}
+.enough-grid tr:last-child td{border-bottom:none}
+.enough-grid td:first-child{background:rgba(46,139,87,0.02);font-weight:600;color:var(--ink-mid)}
+.enough-grid td:nth-child(2){background:rgba(184,134,11,0.02)}
+.enough-grid td:last-child{background:rgba(46,139,87,0.02)}
+
+.series-progress{text-align:center;padding:32px 24px;background:var(--cream-warm);border-top:1px solid rgba(10,24,16,0.06)}
+.series-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--greed);margin-bottom:14px}
+.series-dots{display:flex;align-items:center;justify-content:center;gap:12px}
+.series-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(46,139,87,0.3);background:transparent}
+.series-dot.done{background:rgba(46,139,87,0.25);border-color:rgba(46,139,87,0.5)}
+.series-dot.active{background:var(--greed);border-color:var(--greed);box-shadow:0 0 8px rgba(46,139,87,0.3)}
+.series-dot-label{font-family:'Poppins',sans-serif;font-size:0.55rem;color:var(--steel-light);margin-top:10px}
+
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.65s ease,transform 0.65s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.stagger-children > *{opacity:0;transform:translateY(18px);transition:opacity 0.5s ease,transform 0.5s ease}
+.stagger-children.visible > *:nth-child(1){opacity:1;transform:none;transition-delay:0s}
+.stagger-children.visible > *:nth-child(2){opacity:1;transform:none;transition-delay:0.12s}
+.stagger-children.visible > *:nth-child(3){opacity:1;transform:none;transition-delay:0.24s}
+.stagger-children.visible > *:nth-child(4){opacity:1;transform:none;transition-delay:0.36s}
+.think:hover{box-shadow:0 0 0 2px rgba(46,139,87,0.25),0 8px 32px rgba(46,139,87,0.1)}
+.think{transition:box-shadow 0.3s ease}
+.adv-step{transition:background 0.2s ease}
+.adv-step:hover{background:rgba(46,139,87,0.04)!important}
+@keyframes insight-border{0%,100%{border-left-color:var(--greed)}50%{border-left-color:rgba(46,139,87,0.3)}}
+.insight{animation:insight-border 4s ease-in-out infinite}
+
+#read-progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--greed),rgba(46,139,87,0.4));z-index:9999;pointer-events:none;transition:width 0.08s linear}
+#chapter-pill{position:fixed;bottom:24px;right:24px;background:var(--ink);border:1px solid rgba(46,139,87,0.25);color:var(--greed);font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:8px 18px;border-radius:50px;opacity:0;transition:opacity 0.35s ease;pointer-events:none;z-index:1000;box-shadow:0 4px 24px rgba(0,0,0,0.4)}
+#chapter-pill.show{opacity:1}
+
+@media(max-width:620px){.stack-node{font-size:0.6rem;padding:8px 12px}.ac-node{font-size:0.6rem;padding:10px 14px;min-width:90px}.stl-node{padding-left:18px}}
+@media print{
+  @page{margin:18mm 16mm 22mm 16mm}
+  body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .cover{min-height:auto;padding:80px 24px;break-after:page}
+  .ch-head{break-before:page;padding:56px 24px 40px}
+  .think,.adventure,.viz,.ba-pair,.mission,.insight,.dd,.breathe,.prayer,.prompt,.stack,.descent-ramp,.scarcity-timeline,.enough-table,.accum-cycle{break-inside:avoid}
+  .vault-ring,.cover-grain,.breathe-ring,.cover-vignette{animation:none!important;display:none}
+  .section{padding:36px 0}
+  #read-progress,#chapter-pill,.no-print{display:none!important}
+}
+</style>
+</head>
+<body>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="ico-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="ico-layers" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></symbol>
+  <symbol id="ico-scale" viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M5 8l7-5 7 5"/><path d="M2 14l3-6 3 6a3 3 0 0 1-6 0z"/><path d="M16 14l3-6 3 6a3 3 0 0 1-6 0z"/></symbol>
+  <symbol id="ico-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></symbol>
+  <symbol id="ico-gift" viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></symbol>
+  <symbol id="ico-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+  <symbol id="ico-heart" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></symbol>
+  <symbol id="ico-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></symbol>
+</svg>
+
+<div id="read-progress"></div>
+<div id="chapter-pill"></div>
+
+<!-- ===== COVER ===== -->
+<section class="cover">
+  <div class="cover-grain"></div>
+  <div class="cover-vignette"></div>
+  <div class="vault-ring"></div>
+  <div class="vault-ring"></div>
+  <div class="vault-ring"></div>
+  <div class="cover-content">
+    <div class="cover-badge">Lay It Down Series. Part 5 of 7</div>
+    <h1>Lay It Down<em>Greed</em></h1>
+    <p class="cover-sub">The sin that never says enough. It does not look greedy. It looks <em>responsible</em>. Until you notice you cannot give anything away.</p>
+    <p class="cover-author">KingdomBuilders AI</p>
+    <div class="cover-verse">"Watch out! Be on your guard against all kinds of greed;<br>life does not consist in an abundance of possessions."<br> Luke 12:15 (NIV)</div>
+  </div>
+</section>
+
+<!-- ===== BEFORE WE BEGIN ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Before We Begin</div><h2 class="ch-title">The Sin That Never Says Enough</h2><p class="ch-sub">Greed does not look greedy. That is the trap.</p></div></div>
+<div class="ribbon"><p>"Keep your lives free from the love of money and be content with what you have, because God has said, 'Never will I leave you; never will I forsake you.'". Hebrews 13:5 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>Greed does not arrive wearing a top hat and counting gold coins. It arrives wearing a spreadsheet. It tells you it is being responsible. It tells you it is planning for the future. It tells you this is just wisdom, and anyone who questions it is being naive about how the world works.</p>
+  <p>And sometimes planning IS wise. Saving IS responsible. Building IS good stewardship. But here is the problem: you crossed the line from stewardship to hoarding so gradually that you never noticed the shift. The number that was supposed to bring peace kept moving. The promotion that was supposed to be enough opened a door to a bigger promotion. The house, the car, the account balance, the title. Each one was supposed to be the finish line. <strong>None of them were.</strong></p>
+  <p>This playbook is not about becoming careless with money. It is about recognizing that the accumulation you have been chasing is not making you secure. <strong>It is replacing your life.</strong> Piece by piece, acquisition by acquisition, greed has been writing a version of your story where you own everything and enjoy nothing.</p>
+
+  <div class="mission reveal">
+    <div class="mission-label">The Mission</div>
+    <p>Identify the three altars of greed<em>the Scarcity Engine, the Hoarding Instinct, and the More Trap</em>, and dismantle them with protocols that redefine enough, retrain the grip reflex, and redirect accumulation into generosity with purpose.</p>
+  </div>
+
+  <div class="insight reveal">
+    <p>"Greed is almost never about money. It is about control. <em>The belief that if you can just accumulate enough, you will finally be safe.</em> But the vault has no ceiling and the hunger has no floor."</p>
+  </div>
+
+  <div class="stack reveal">
+    <div class="stack-label">The Three Altars of Greed</div>
+    <div class="stack-flow">
+      <span class="stack-node sn-greed">The Scarcity Engine</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-dark">The Hoarding Instinct</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-brass">The More Trap</span>
+    </div>
+  </div>
+
+  <p>Three altars. Three vaults you built thinking they were protecting you. They are imprisoning you. And it is time to lay them down.</p>
+
+  <div class="insight reveal"><p>If you finish this playbook, you will know the three altars where greed hides, the scarcity story, the hoarding reflex, and the hedonic treadmill. You will own <strong>an Enough Declaration that defines sufficiency, a Generosity Protocol that retrains your grip, and a Legacy Audit that gives your accumulation an actual destination.</strong></p></div>
+</div>
+
+<!-- ===== CHAPTER 1: THE SCARCITY STORY ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter One</div><h2 class="ch-title">The Scarcity Story</h2><p class="ch-sub">You are not afraid of poverty. You are addicted to the feeling of accumulation.</p></div></div>
+<div class="ribbon"><p>"Do not worry about your life, what you will eat or drink; or about your body, what you will wear. Is not life more than food, and the body more than clothes?". Matthew 6:25 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>You do not have a money problem. You have a <strong>story problem.</strong> Somewhere in your past, a narrative was written that said the world is a place of scarcity, that there is never enough to go around, and that the only way to survive is to acquire more than you need before someone else takes it. That story became the operating system for every financial, relational, and professional decision you have made since.</p>
+  <p>The scarcity story is brilliant in its disguise. It does not say "I am greedy." It says "I am being smart." It does not say "I am hoarding." It says "I am preparing." It does not say "I cannot stop acquiring." It says "You never know what could happen." And because the story sounds so reasonable, nobody questions it. Least of all you.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-lock"/></svg></span>The Scarcity Pipeline</h2>
+  <p>Every act of compulsive accumulation follows the same architecture. Understanding the pipeline is the first step to interrupting it.</p>
+
+  <div class="scarcity-timeline reveal">
+    <div class="scarcity-timeline-label">The Accumulation Pipeline</div>
+    <div class="stl-track">
+      <div class="stl-node"><div class="stl-node-label">The Seed</div><h4>The Origin Story</h4><p>A childhood moment, a family crisis, a season of genuine lack. The brain records: "Not enough is dangerous."</p></div>
+      <div class="stl-node"><div class="stl-node-label">The Narrative</div><h4>The Belief Hardens</h4><p>"There will never be enough." "I have to get mine before it runs out." "Relaxing is irresponsible." The story becomes identity.</p></div>
+      <div class="stl-node"><div class="stl-node-label">The Behavior</div><h4>The Compulsive Acquiring</h4><p>Working past exhaustion. Saving past sufficiency. Buying things you do not need. Collecting options you will never exercise.</p></div>
+      <div class="stl-node stl-brass"><div class="stl-node-label">The Cost</div><h4>The Invisible Tax</h4><p>Relationships neglected. Health sacrificed. Joy postponed. The thing you were saving for, a good life, passes you by while you are busy accumulating.</p></div>
+      <div class="stl-node stl-gold"><div class="stl-node-label">The Loop</div><h4>The Reset</h4><p>Achievement arrives. Relief lasts days, sometimes hours. The scarcity alarm resets. The cycle begins again. Louder.</p></div>
+    </div>
+  </div>
+
+  <p>Look at that pipeline. The scarcity story was planted by something real, a genuine moment of not having enough. But the story outgrew the moment. You are no longer responding to actual scarcity. You are responding to <strong>a recording of scarcity that plays on a loop,</strong> regardless of how much you actually have.</p>
+
+  <div class="ba-pair reveal">
+    <div class="ba-card ba-before">
+      <div class="ba-head"><span class="ba-dot"></span>The Scarcity Voice</div>
+      <div class="ba-body"><ul>
+        <li>"What if I lose it all?"</li>
+        <li>"I need to save more before I can relax."</li>
+        <li>"I cannot afford to be generous right now."</li>
+        <li>"One more promotion, then I will be secure."</li>
+        <li>"They do not understand how hard I worked for this."</li>
+      </ul></div>
+    </div>
+    <div class="ba-card ba-after">
+      <div class="ba-head"><span class="ba-dot"></span>The Truth Underneath</div>
+      <div class="ba-body"><ul>
+        <li>"I am afraid of being vulnerable."</li>
+        <li>"No amount has ever actually made me relax."</li>
+        <li>"I am using 'later' to avoid giving now."</li>
+        <li>"The goalpost has moved every single time."</li>
+        <li>"My identity is tangled with my net worth."</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <p>Read the right column slowly. Which of those sentences makes your stomach tighten? That tightness is not wisdom. That tightness is the scarcity engine running, converting every resource into fear and every dollar into a security blanket that never actually makes you feel secure.</p>
+
+  <div class="think reveal">
+    <div class="think-label">Right Now</div>
+    <h4>The Scarcity Audit</h4>
+    <p class="q-start">What is the earliest memory you have of "not having enough"?</p>
+    <div class="think-line"></div>
+    <p class="q-start">How old were you when you first decided you would never let that happen again?</p>
+    <div class="think-line"></div>
+    <p class="q-start">Has any amount of accumulation since then actually silenced that fear?</p>
+    <div class="think-line"></div>
+    <p class="closing">If the answer to the last question is no, the problem was never the amount. It was the story.</p>
+  </div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapter 1</div>
+    <div class="root-layer current"><span class="root-ch">1</span><div class="root-items"><span class="root-pill rp-bright">Scarcity Story</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Scarcity Audit</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 2: THE ENOUGH NUMBER ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Two</div><h2 class="ch-title">The Enough Number</h2><p class="ch-sub">If you cannot name the number, you will never reach it.</p></div></div>
+<div class="ribbon"><p>"But godliness with contentment is great gain. For we brought nothing into the world, and we can take nothing out of it.". 1 Timothy 6:6, 7 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>Here is the question that exposes greed faster than any sermon: <strong>What is your enough number?</strong> Not your "comfortable" number. Not your "dream" number. Your enough number. The amount of income, savings, possessions, and status that would allow you to exhale, look at what you have, and say: "This is sufficient. I do not need more."</p>
+  <p>If you cannot name it, you have just discovered the engine of your greed. A person running toward a finish line they have never defined is not running toward anything. They are running FROM something. And no amount of speed or distance will resolve that, because you cannot arrive at a destination you never set.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-scale"/></svg></span>The Enough Declaration</h2>
+  <p>Enough is not a feeling. It is a decision. You declare it before you feel it, the same way you declare a budget before you spend. The Enough Declaration covers seven domains of life where greed operates.</p>
+
+  <div class="enough-table reveal">
+    <div class="enough-table-head">The Seven Domains of Enough</div>
+    <table class="enough-grid">
+      <tr><th>Domain</th><th>The Greed Question</th><th>Your Enough Declaration</th></tr>
+      <tr><td>Income</td><td>"How much do I need to earn to feel safe?"</td><td>$_______ per year is sufficient.</td></tr>
+      <tr><td>Savings</td><td>"How much do I need saved before I can stop worrying?"</td><td>$_______ in reserves is enough.</td></tr>
+      <tr><td>Housing</td><td>"How big does my home need to be?"</td><td>_______ sq ft with __ bedrooms is enough.</td></tr>
+      <tr><td>Career</td><td>"What title or position will finally be enough?"</td><td>The role of _______ is sufficient.</td></tr>
+      <tr><td>Possessions</td><td>"What do I actually need to own?"</td><td>I need _______ and the rest is surplus.</td></tr>
+      <tr><td>Status</td><td>"Whose approval am I still chasing?"</td><td>The approval of _______ is enough.</td></tr>
+      <tr><td>Options</td><td>"How many backup plans do I need?"</td><td>Plan A plus one contingency is enough.</td></tr>
+    </table>
+  </div>
+
+  <p>Look at that table. If you filled it in honestly, you probably noticed two things. First, some of those numbers are smaller than what you already have, which means you passed "enough" a long time ago and never noticed. Second, some of those blanks made you anxious just reading them, because <strong>naming the number feels like capping your potential.</strong></p>
+  <p>That anxiety IS the scarcity engine. It is telling you that defining enough is the same as giving up. It is not. It is the same as drawing a finish line so you can finally stop running and start living.</p>
+
+  <div class="viz reveal">
+    <div class="viz-top"><div class="viz-icon"><svg><use href="#ico-scale"/></svg></div><div class="viz-meta"><div class="viz-label">Protocol</div><h4>The Annual Enough Review</h4></div></div>
+    <div class="viz-body">
+      <p><strong>Once a year, on January 1st:</strong> Revisit the seven domains. Ask: "Has my enough number changed? If so, why?" If the number went up, investigate. Did your circumstances genuinely change, or did the scarcity engine recalibrate upward because you hit the old number and it was not enough?</p>
+      <p><strong>The test:</strong> If your enough number keeps rising every time you reach it, the number is not the problem. The story is the problem. Go back to Chapter 1.</p>
+      <p><strong>The commitment:</strong> Everything above your enough number gets redirected. Giving. Investing in people. Funding things that outlast you. Accumulation without a ceiling is hoarding. Accumulation with a ceiling and a purpose is stewardship.</p>
+      <div class="viz-trigger">Enough is not a ceiling on your potential. It is a floor under your freedom.</div>
+    </div>
+  </div>
+
+  <div class="prayer reveal">
+    <div class="prayer-label">A Prayer for Enough</div>
+    <p><strong>Father,</strong> I have been running toward a number I never set. I have passed "enough" so many times I lost count, and I never stopped to notice. The scarcity voice told me that naming the number was dangerous. But the truth is that not naming it was the real danger.</p>
+    <p>Give me the courage to define sufficiency. <strong>Give me the peace that comes from a finish line.</strong> And give me the generosity to redirect everything above that line toward the purposes You designed it for.</p>
+    <p><strong>In Jesus' name, amen.</strong></p>
+  </div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapter 2</div>
+    <div class="root-layer"><span class="root-ch">1</span><div class="root-items"><span class="root-pill rp-ch1">Scarcity Story</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Scarcity Audit</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">2</span><div class="root-items"><span class="root-pill rp-bright">Enough Number</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Seven Domains</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 3: THE HOARDER'S INVENTORY ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Three</div><h2 class="ch-title">The Hoarder's Inventory</h2><p class="ch-sub">The cost of holding is higher than the cost of releasing.</p></div></div>
+<div class="ribbon"><p>"Do not store up for yourselves treasures on earth, where moths and vermin destroy, and where thieves break in and steal.". Matthew 6:19 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>You are holding onto things you do not need. Not just physical things, though your closets and storage units tell that story clearly enough. You are holding onto relationships you do not nurture, professional options you will never exercise, old identities you have outgrown, and control over situations that do not require your management.</p>
+  <p>Hoarding is the second altar of greed, and it is the quietest one. The scarcity engine drives you to acquire. But the hoarding instinct prevents you from releasing. Together, they create a one way valve: <strong>everything flows in and nothing flows out.</strong> And the pressure builds until your life is so full of things you are holding that there is no room for things you actually want.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-layers"/></svg></span>The Five Categories of Hoarding</h2>
+
+  <div class="dd reveal"><h4>1. Physical Possessions</h4><div class="sub">The Visible Hoard</div><p>Clothes you have not worn in two years. Equipment for hobbies you no longer practice. Furniture from a life you no longer live. Every object you hold carries a maintenance cost, even if that cost is just the mental weight of owning it. Ask yourself: "If I did not already own this, would I buy it today?" If the answer is no, it is inventory, not treasure.</p></div>
+
+  <div class="dd reveal"><h4>2. Financial Reserves</h4><div class="sub">The Invisible Fortress</div><p>There is a difference between a wise emergency fund and a fortress of cash you are sitting on because releasing any of it triggers the scarcity alarm. If your savings exceed your defined "enough" by a significant margin and you still cannot bring yourself to give, invest in others, or enjoy what you have, the money is not serving you. It is imprisoning you. You are a guard sitting in your own vault.</p></div>
+
+  <div class="dd reveal"><h4>3. Relationships</h4><div class="sub">The Contact Hoard</div><p>Connections you maintain not because you care about the person but because "you never know when they might be useful." Friendships you refuse to release because ending them feels like losing an asset. People reduced to networking nodes in your personal economy. Ask: "If this person could do nothing for my career or status, would I still call them?" The honest answer reveals which relationships are alive and which are inventory.</p></div>
+
+  <div class="dd reveal"><h4>4. Options</h4><div class="sub">The Decision Hoard</div><p>Keeping three job opportunities warm because committing to one means losing the other two. Maintaining backup plans for your backup plans. Refusing to go deep in one direction because breadth feels safer. The option hoarder never fully commits to anything because commitment means closing a door, and closed doors trigger the scarcity alarm. The result: a life a mile wide and an inch deep.</p></div>
+
+  <div class="dd reveal"><h4>5. Control</h4><div class="sub">The Authority Hoard</div><p>Refusing to delegate because nobody does it as well as you. Micromanaging teams, projects, even family routines. Hoarding decisions the way others hoard possessions. Every task you refuse to release is a task that owns you. The person who must control everything is controlled by everything.</p></div>
+
+  <div class="think reveal">
+    <div class="think-label">Right Now</div>
+    <h4>The Hoarder's Inventory</h4>
+    <p class="q-start">Name three physical possessions you are holding that no longer serve your life.</p>
+    <div class="think-line"></div>
+    <p class="q-start">Name one relationship you maintain purely for strategic value.</p>
+    <div class="think-line"></div>
+    <p class="q-start">Name one decision or responsibility you refuse to delegate.</p>
+    <div class="think-line"></div>
+    <p class="q-start">What is the common thread? What are you actually afraid of losing?</p>
+    <div class="think-line"></div>
+    <p class="closing">The cost of holding everything is the inability to fully hold anything.</p>
+  </div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapter 3</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Scarcity Engine</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Enough Number</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">3</span><div class="root-items"><span class="root-pill rp-bright">Hoarding</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Five Categories</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 4: THE OPEN HAND DRILL ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Four</div><h2 class="ch-title">The Open Hand Drill</h2><p class="ch-sub">Retraining the grip reflex. One release at a time.</p></div></div>
+<div class="ribbon"><p>"Give, and it will be given to you. A good measure, pressed down, shaken together and running over, will be poured into your lap.". Luke 6:38 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>You have spent three chapters diagnosing the scarcity engine and the hoarding instinct. Now you dismantle them. Not with willpower. Not with guilt. With <strong>structured practice</strong> that retrains your nervous system from clutch to release, from gripping to giving, from the closed fist to the open hand.</p>
+  <p>Generosity is not a personality trait. It is a skill. And like any skill, it can be trained. The reason giving feels so difficult for you is not that you are a bad person. It is that your nervous system has been conditioned to interpret releasing resources as danger. Every act of giving triggers the scarcity alarm. The Open Hand Drill does not silence the alarm. It teaches you to give while the alarm is still ringing, until the alarm learns that giving does not produce the catastrophe it predicted.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-gift"/></svg></span>The 30 Day Generosity Protocol</h2>
+
+  <div class="dd reveal"><h4>Week 1. Micro Releases</h4><div class="sub">Days 1 Through 7</div><p>Give away one physical possession per day. Not junk. Not things you were going to throw out anyway. Something with value. A book you love. A tool you use. A piece of clothing that still fits. The point is not decluttering. The point is <strong>feeling the resistance and giving anyway.</strong> When the voice says "But what if you need that later?" respond: "Then I will solve that problem later. Right now I am training my hand to open."</p></div>
+
+  <div class="dd reveal"><h4>Week 2. Financial Releases</h4><div class="sub">Days 8 Through 14</div><p>Give money every day for seven days. The amounts do not matter. What matters is the consistency and the intentionality. Day 8: buy a stranger's coffee. Day 9: tip 50% instead of 20%. Day 10: donate to a cause you care about. Day 11: pay for the person behind you. Day 12: send money to a friend who did not ask. Day 13: give to your local church or nonprofit. Day 14: make the largest single gift you have given in a year. Watch what happens to your body when you do it. That tension is the scarcity engine losing power.</p></div>
+
+  <div class="dd reveal"><h4>Week 3. Relational Releases</h4><div class="sub">Days 15 Through 21</div><p>Give time and attention with no expectation of return. Day 15: call someone who cannot advance your career and listen for 30 minutes. Day 16: write a handwritten note of encouragement to someone. Day 17: volunteer two hours at a local organization. Day 18: mentor someone for free. Day 19: cancel a networking event and spend the evening with your family instead. Day 20: publicly celebrate someone else's win without mentioning your own. Day 21: forgive a debt someone owes you, financial or emotional, without telling them.</p></div>
+
+  <div class="dd reveal"><h4>Week 4. Control Releases</h4><div class="sub">Days 22 Through 30</div><p>Delegate something you have been hoarding. Day 22: hand off a project at work. Day 23: let your spouse make a financial decision without your input. Day 24: say "no" to an opportunity you would normally hoard. Day 25: let someone else lead the meeting. Day 26: release an option you have been holding open and commit fully to one path. Day 27: admit publicly that someone else's idea is better than yours. Day 28: take a full day off without checking email or accounts. Day 29: give your best idea away to someone who needs it. Day 30: write down everything you released this month. Notice what you actually lost. The answer will almost always be: nothing that mattered.</p></div>
+
+  <div class="adventure reveal">
+    <div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-gift"/></svg></div><div class="adv-head-text"><div class="adv-head-label">Scenario</div><div class="adv-head-title">The Bonus</div></div></div>
+    <div class="adv-step"><div class="step-c"><p>You receive an unexpected bonus at work. It is significant. Enough to make a real difference. Your first instinct is to move it immediately into savings. The scarcity engine fires up: "Finally, some breathing room. Do not touch it. Add it to the fortress."</p></div></div>
+    <div class="adv-step"><div class="step-c"><span class="tag-you">The Altar Response</span><p>You transfer the entire amount to savings within an hour. You tell no one. You check the account balance three times that evening. The number is bigger now. You feel a brief wave of relief, followed by the familiar thought: "It is still not enough." By morning, the relief is gone. The baseline has shifted upward. You need the next bonus to feel what this one was supposed to make you feel.</p></div></div>
+    <div class="adv-step"><div class="step-c"><span class="tag-you">The Protocol Response</span><p>You pause. You consult your Enough Declaration. Your savings already exceed your enough number. So you make a decision: one third to savings, one third to a cause you believe in, one third to something that creates a memory with people you love. You write the donation check and your hand shakes slightly. That is the scarcity engine. You mail it anyway. <em>Two weeks later, you remember the dinner with your family. You do not remember the account balance.</em></p></div></div>
+    <div class="adv-step adv-result-good"><div class="step-c"><p><strong>Money remembered is money hoarded. Money forgotten is money that became something better.</strong> The goal is not to be reckless. The goal is to be intentional. And intention requires a plan, not a reflex.</p></div></div>
+  </div>
+
+  <div class="gq reveal"><p>"Command those who are rich in this present world not to be arrogant nor to put their hope in wealth, which is so uncertain, but to put their hope in God, who richly provides us with everything for our enjoyment.". 1 Timothy 6:17 (NIV)</p></div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapters 3, 4</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Scarcity Engine</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Enough Number</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">3</span><div class="root-items"><span class="root-pill rp-ch2">Hoarding</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch2">Five Categories</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">4</span><div class="root-items"><span class="root-pill rp-bright">Open Hand Drill</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">30 Day Protocol</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 5: THE HEDONIC TREADMILL ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Five</div><h2 class="ch-title">The Hedonic Treadmill</h2><p class="ch-sub">Every raise felt good for two weeks. Every purchase satisfied for three days.</p></div></div>
+<div class="ribbon"><p>"Whoever loves money never has enough; whoever loves wealth is never satisfied with their income. This too is meaningless.". Ecclesiastes 5:10 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>You have confronted the scarcity engine and the hoarding instinct. Before you encounter the third altar, there is something underneath all of it that must be named. <strong>The reason "more" never works is not a spiritual mystery. It is a neurological fact.</strong></p>
+  <p>Psychologists call it hedonic adaptation. The brain is designed to return to a baseline level of satisfaction regardless of external changes. Win the lottery, and within 18 months your happiness returns to where it was before. Get the promotion, and within weeks you are already thinking about the next one. Buy the dream car, and within a month it is just your car.</p>
+  <p>This is the third altar of greed: <strong>the More Trap.</strong> The belief that the next acquisition will produce the lasting satisfaction that the last 50 acquisitions did not. It is not stupidity. It is biology. Your brain is wired to adapt to new normals. Every upgrade becomes the baseline. Every achievement becomes the floor. And the only direction the treadmill goes is faster.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-compass"/></svg></span>The Adaptation Curve</h2>
+
+  <div class="accum-cycle reveal">
+    <div class="accum-cycle-label">The More Trap Loop</div>
+    <div class="ac-ring">
+      <span class="ac-node ac-greed">Desire Identified</span>
+      <span class="ac-arr">&rarr;</span>
+      <span class="ac-node ac-emerald">Acquisition Rush</span>
+      <span class="ac-arr">&rarr;</span>
+      <span class="ac-node ac-dark">Brief Satisfaction</span>
+      <span class="ac-arr">&rarr;</span>
+      <span class="ac-node ac-gold">Adaptation</span>
+      <span class="ac-arr">&rarr;</span>
+      <span class="ac-node ac-greed">New Baseline</span>
+    </div>
+    <div class="ac-break">Break the Loop Here</div>
+  </div>
+
+  <p>Look at that cycle. Desire forms. You acquire the thing. Satisfaction arrives, briefly, intensely. Then the brain adapts. The new thing becomes normal. Satisfaction fades. A new desire forms to replace it. And the cycle accelerates, because each loop teaches your brain that the solution to dissatisfaction is more acquisition, which produces more dissatisfaction, which demands more acquisition.</p>
+  <p>Solomon understood this three thousand years before neuroscience confirmed it. "Whoever loves wealth is never satisfied with their income." Not because wealth is evil, but because the human brain was not designed to find its rest in accumulation. <strong>The treadmill was never going to take you anywhere. It was designed to keep you running.</strong></p>
+
+  <div class="ba-pair reveal">
+    <div class="ba-card ba-before">
+      <div class="ba-head"><span class="ba-dot"></span>What the Treadmill Promises</div>
+      <div class="ba-body"><ul>
+        <li>"This purchase will make me happy."</li>
+        <li>"This salary will make me feel secure."</li>
+        <li>"This house will make me feel successful."</li>
+        <li>"This title will make me feel respected."</li>
+        <li>"Then I will finally be satisfied."</li>
+      </ul></div>
+    </div>
+    <div class="ba-card ba-after">
+      <div class="ba-head"><span class="ba-dot"></span>What Actually Happens</div>
+      <div class="ba-body"><ul>
+        <li>Happy for 3 days, then it is just a thing.</li>
+        <li>Secure for 2 weeks, then the new number feels low.</li>
+        <li>Proud for a month, then you notice a bigger house.</li>
+        <li>Respected briefly, then you see a higher title.</li>
+        <li>"Satisfied" lasts until the next commercial break.</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <div class="breathe reveal">
+    <div class="breathe-ring"></div>
+    <div class="breathe-ring"></div>
+    <div class="breathe-ring"></div>
+    <div class="breathe-content">
+      <div class="breathe-label">Pause</div>
+      <h4>Name the Last Thing That Was Supposed to Be Enough</h4>
+      <p>The purchase, the raise, the milestone. The one you were certain would change how you felt. Did it? For how long?</p>
+    </div>
+  </div>
+
+  <p>This bridge chapter is not about hating your possessions. It is about <strong>seeing the mechanism clearly.</strong> Once you understand that the treadmill will never deliver the satisfaction it promises, you stop looking to acquisition for your peace. And that is when contentment becomes possible.</p>
+
+  <div class="inst reveal"><p><strong>The rewiring:</strong> The next time you feel the pull to buy, earn, or acquire something in order to feel satisfied, ask: "How long did the last acquisition satisfy me?" That single question breaks the trance of the treadmill.</p></div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapter 5</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Scarcity Engine</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Enough Number</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">3-4</span><div class="root-items"><span class="root-pill rp-ch2">Hoarding</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch2">Open Hand Drill</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">5</span><div class="root-items"><span class="root-pill rp-bright">More Trap</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Hedonic Treadmill</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 6: THE CONTENTMENT PRACTICE ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Six</div><h2 class="ch-title">The Contentment Practice</h2><p class="ch-sub">Contentment is not settling. It is the radical act of experiencing fullness in the present moment.</p></div></div>
+<div class="ribbon"><p>"I have learned the secret of being content in any and every situation, whether well fed or hungry, whether living in plenty or in want.". Philippians 4:12 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>The apostle Paul wrote those words from a prison cell. Not from a beachfront villa. Not after a successful quarter. From a cell. And he called contentment a <strong>secret he had learned,</strong> which means it did not come naturally. He had to practice it. Train it. Build it the way you build a muscle.</p>
+  <p>Contentment is the direct antidote to the hedonic treadmill. It is the ability to experience sufficiency in the present moment, not because everything is perfect, but because you have decided that this moment contains enough to be grateful for. Greed says "More, then peace." Contentment says "Peace, then whatever comes." The order matters. It changes everything.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-sun"/></svg></span>The Daily Contentment Inventory</h2>
+
+  <div class="viz reveal">
+    <div class="viz-top"><div class="viz-icon"><svg><use href="#ico-sun"/></svg></div><div class="viz-meta"><div class="viz-label">Protocol</div><h4>The Morning Enough Meditation</h4></div></div>
+    <div class="viz-body">
+      <p><strong>Every morning, before you check your phone, your email, or your accounts:</strong> Sit for five minutes. Close your eyes. Breathe slowly. Then answer one question: "What do I already have that is sufficient for today?"</p>
+      <p>Not sufficient for the rest of your life. Not sufficient for every scenario. Sufficient for <strong>today.</strong> Enough food for today. Enough shelter for today. Enough love for today. Enough breath for today. Today is the only day you are actually living. And today, right now, you have enough.</p>
+      <p><strong>Then speak it:</strong> "I have enough for today. What I have been given is sufficient. I do not need to acquire anything else to be complete in this moment."</p>
+      <div class="viz-trigger">Contentment is not the absence of desire. It is the presence of gratitude strong enough to hold the desire without being driven by it.</div>
+    </div>
+  </div>
+
+  <div class="viz reveal">
+    <div class="viz-top"><div class="viz-icon"><svg><use href="#ico-heart"/></svg></div><div class="viz-meta"><div class="viz-label">Protocol</div><h4>The Evening Gratitude Inventory</h4></div></div>
+    <div class="viz-body">
+      <p><strong>Every evening, before you sleep:</strong> Write down three things from today that money could not buy. A conversation. A sunset. A child's laugh. A moment of quiet. The warmth of a bed you already own.</p>
+      <p><strong>Then write down one thing you wanted today that you did not get.</strong> Look at it. Ask: "Am I actually worse off because I did not get this? Or am I the same person I was this morning, just with one unfulfilled want?"</p>
+      <p><strong>The science:</strong> Gratitude practices physically rewire the reward circuits in the brain. After 21 consecutive days, the brain begins to default toward noticing what is present rather than scanning for what is missing. This is not positive thinking. It is neurological retraining. You are teaching your brain to find satisfaction in sufficiency instead of chasing it through acquisition.</p>
+      <div class="viz-trigger">What you focus on expands. Focus on scarcity and you will always see lack. Focus on sufficiency and you will begin to see abundance everywhere.</div>
+    </div>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Right Now</div>
+    <h4>The Contentment Test</h4>
+    <p class="q-start">If you never earned another dollar more than you earn right now, could you build a meaningful life with what you have?</p>
+    <div class="think-line"></div>
+    <p class="q-start">If the answer is yes, what has been driving the pursuit of more?</p>
+    <div class="think-line"></div>
+    <p class="q-start">If the answer is no, what specifically is missing, and is acquisition actually the solution?</p>
+    <div class="think-line"></div>
+    <p class="closing">Paul learned the secret of contentment. The word "learned" means it was not his default. It can become yours.</p>
+  </div>
+
+  <div class="insight reveal">
+    <p>"The wealthy person is not the one who has the most. It is the one who needs the least. <em>Contentment is the only wealth that cannot be taxed, stolen, or inflated away.</em>"</p>
+  </div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapter 6</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Scarcity Engine</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Enough Number</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">3-4</span><div class="root-items"><span class="root-pill rp-ch2">Hoarding</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch2">Open Hand Drill</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">5</span><div class="root-items"><span class="root-pill rp-ch3">More Trap</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch3">Hedonic Treadmill</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">6</span><div class="root-items"><span class="root-pill rp-bright">Contentment</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Daily Practice</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 7: THE LEGACY QUESTION ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Seven</div><h2 class="ch-title">The Legacy Question</h2><p class="ch-sub">The opposite of greed is not poverty. It is generosity with purpose.</p></div></div>
+<div class="ribbon"><p>"A good person leaves an inheritance for their children's children, but a sinner's wealth is stored up for the righteous.". Proverbs 13:22 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>Chapter Six showed you how to find peace in the present. Now you point the surplus toward the future. The Legacy Question is not about how much you leave behind. It is about <strong>what your accumulation actually produces.</strong> Because accumulation without purpose is just a pile. And a pile is not a legacy.</p>
+  <p>Here is the question that separates the hoarder from the steward: "When I am gone, what will all of this have built?" Not "How much will be in the account?" but "What lives were changed? What missions were funded? What problems were solved? What people were fed, housed, educated, or set free because of how I directed my resources?"</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-compass"/></svg></span>The Legacy Audit</h2>
+
+  <div class="dd reveal"><h4>Question 1. What Am I Building?</h4><div class="sub">The Purpose Test</div><p>Write down every major asset and financial goal you are pursuing. Next to each one, write who it serves besides you. If the answer to most of them is "no one," your accumulation has no legacy trajectory. It is a personal fortress masquerading as a life plan. A legacy requires beneficiaries. If you are the only beneficiary of your own accumulation, that is not a legacy. That is a vault.</p></div>
+
+  <div class="dd reveal"><h4>Question 2. What Am I Funding?</h4><div class="sub">The Generosity Test</div><p>What percentage of your income currently goes toward things that outlast you? Not savings for your own future. Not investments for your own retirement. Giving. Funding. Supporting. If the percentage is less than 10%, you are consuming more than you are contributing. The number does not have to start large. But it has to start. And it has to grow. Generosity is not what you do with the leftovers. It is what you plan before the budget begins.</p></div>
+
+  <div class="dd reveal"><h4>Question 3. What Story Will They Tell?</h4><div class="sub">The Eulogy Test</div><p>Close your eyes and imagine your funeral. Someone stands up to speak about your life. Will they talk about your account balance? Your title? The square footage of your house? Or will they talk about how you made them feel, what you gave, who you helped, and the way you lived with open hands? The eulogy test is brutal because it exposes the gap between what you are building and what actually matters to the people you love.</p></div>
+
+  <div class="adventure reveal">
+    <div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-compass"/></svg></div><div class="adv-head-text"><div class="adv-head-label">Scenario</div><div class="adv-head-title">The Inheritance</div></div></div>
+    <div class="adv-step"><div class="step-c"><p>A wealthy man dies and leaves his children a large inheritance. No instructions. No values. No framework for how to use it. Just money. Within five years, the money is gone and the family is fractured by disputes over what remains.</p></div></div>
+    <div class="adv-step"><div class="step-c"><span class="tag-you">What Happened</span><p>He accumulated without purpose. He built the vault but never wrote the manual. His children inherited money but not wisdom, wealth but not values, accounts but not character. The inheritance became a curse because it arrived without context.</p></div></div>
+    <div class="adv-step"><div class="step-c"><span class="tag-you">The Alternative</span><p>A different man dies and leaves less money but a lifetime of modeled generosity. His children watched him give. They watched him define enough. They watched him fund things that mattered. They watched him hold everything with open hands. They inherited less money and more of everything that actually matters. <em>The legacy was not the balance. It was the example.</em></p></div></div>
+    <div class="adv-step adv-result-good"><div class="step-c"><p><strong>The greatest inheritance is not what you leave for your children. It is what you leave in them.</strong> Greed leaves vaults. Generosity leaves legacies. Choose carefully which one you are building.</p></div></div>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Right Now</div>
+    <h4>Your Legacy Declaration</h4>
+    <p class="q-start">What do you want your life to have funded, built, or changed when it is over?</p>
+    <div class="think-line"></div>
+    <p class="q-start">What percentage of your current resources is aimed at that legacy?</p>
+    <div class="think-line"></div>
+    <p class="q-start">What is one step you can take THIS WEEK to redirect accumulation toward legacy?</p>
+    <div class="think-line"></div>
+    <p class="closing">A legacy is not built in a will. It is built in a life. Start now.</p>
+  </div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Full Map</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Scarcity Engine</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Enough Number</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">3-4</span><div class="root-items"><span class="root-pill rp-ch2">Hoarding</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch2">Open Hand Drill</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">5</span><div class="root-items"><span class="root-pill rp-ch3">More Trap</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch3">Hedonic Treadmill</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">6-7</span><div class="root-items"><span class="root-pill rp-bright">Contentment</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Legacy Audit</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 8: THE OPEN HAND ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Eight</div><h2 class="ch-title">The Open Hand</h2><p class="ch-sub">The opposite of greed is not poverty. It is peace that does not need a vault to feel alive.</p></div></div>
+<div class="ribbon"><p>"Command them to do good, to be rich in good deeds, and to be generous and willing to share.". 1 Timothy 6:18 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>You have spent seven chapters confronting three altars. The Scarcity Engine. The Hoarding Instinct. The More Trap. Each one built on a lie: that accumulation was keeping you safe, that holding was protecting you, that more would eventually satisfy.</p>
+  <p>But 1 Timothy 6:18 gives the countercommand. <strong>Be generous and willing to share.</strong> Not reckless. Not irresponsible. Generous. The Greek word is <em>eumetadotos,</em> it means "ready to distribute, liberal in giving." It describes a person whose default posture is an open hand, not because they have no needs, but because they trust the Provider more than the provision.</p>
+  <p>Your hand has been clenched for years. Around the account. Around the options. Around the title. Around the possessions. And God is saying: <strong>open your hand.</strong> Not because the needs are not real. But because the vault is a prison and He has something better than accumulation to fill you with.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-heart"/></svg></span>The Daily Posture</h2>
+
+  <div class="dd reveal"><h4>Morning. The Check</h4><div class="sub">Before the Day Starts</div><p>Before your feet hit the floor: "Am I carrying scarcity from yesterday?" If yes, name it. Name the fear or the number or the situation. Then release it: "This vault is not mine to guard today. God is the Provider and I am the steward." Start the day with an open hand, not a clenched fist.</p></div>
+
+  <div class="dd reveal"><h4>Midday. The Translation</h4><div class="sub">In the Heat of the Day</div><p>When the urge to acquire, hoard, or control surfaces during the day, translate it in real time: "I want to accumulate right now. What am I actually afraid of underneath?" Insecurity? Irrelevance? Powerlessness? Name the real need. Address the real need. Let the accumulation instinct stand down.</p></div>
+
+  <div class="dd reveal"><h4>Evening. The Inventory</h4><div class="sub">Before You Sleep</div><p>Three questions: Where did I grip today instead of give? What am I holding that I should release? Where did I pursue more instead of practicing enough? No guilt. Just awareness. The vault empties one honest evening at a time.</p></div>
+
+  <div class="descent-ramp reveal stagger-children">
+    <div class="ramp-echo"><p>The Scarcity Engine said: "There is never enough." But God said: <strong>"I will never leave you or forsake you."</strong></p></div>
+    <div class="ramp-echo"><p>The Hoarding Instinct said: "Hold everything tightly." But God said: <strong>"Give, and it will be given to you, pressed down, shaken together and running over."</strong></p></div>
+    <div class="ramp-echo"><p>The More Trap said: "The next acquisition will satisfy." But God said: <strong>"Godliness with contentment is great gain."</strong></p></div>
+    <div class="ramp-close">
+      <div class="ramp-close-label">The Open Hand</div>
+      <p>You do not need a vault to feel safe. You do not need a bigger number to feel enough. You do not need the next acquisition to feel satisfied. Open your hand. Release the grip. What God fills you with next is worth more than everything you were holding.</p>
+    </div>
+  </div>
+
+  <div class="prayer reveal">
+    <div class="prayer-label">A Prayer from the Open Hand</div>
+    <p><strong>Father,</strong> I have been accumulating for years. I thought the accumulation was wisdom. I thought it was stewardship. I thought it was being responsible. But it was consuming me. Consuming my generosity. Consuming my peace. Consuming the person You created me to be.</p>
+    <p>I am laying down the scarcity story. <strong>I am defining my enough number.</strong> I am opening the vault and letting things flow out as freely as they flowed in. Not because the needs are not real. But because You said You would provide, contentment is great gain, and generosity is the path to actual life.</p>
+    <p>Teach me to hold everything with open hands. Teach me to address the fear instead of feeding the fortress. Teach me to build a legacy instead of a pile. <strong>Fill the space where the greed was with Your peace.</strong></p>
+    <p><strong>In Jesus' name, amen.</strong></p>
+  </div>
+</div>
+
+<!-- ===== FINAL TEST ===== -->
+<div class="page prose section reveal">
+  <div class="root-review">
+    <div class="root-label">Final Test. Can You Answer Without Looking Back?</div>
+    <div style="padding:0 16px">
+      <div class="dd"><h4>1.</h4><p>What are the three altars of greed identified in this book?</p></div>
+      <div class="dd"><h4>2.</h4><p>What is the Scarcity Pipeline and what triggers it?</p></div>
+      <div class="dd"><h4>3.</h4><p>What are the seven domains of the Enough Declaration?</p></div>
+      <div class="dd"><h4>4.</h4><p>What are the five categories of hoarding?</p></div>
+      <div class="dd"><h4>5.</h4><p>What are the four weeks of the 30 Day Generosity Protocol?</p></div>
+      <div class="dd"><h4>6.</h4><p>What is hedonic adaptation and why does "more" never satisfy?</p></div>
+      <div class="dd"><h4>7.</h4><p>What is the difference between contentment and settling?</p></div>
+      <div class="dd"><h4>8.</h4><p>What are the three questions of the Legacy Audit?</p></div>
+      <div class="dd"><h4>9.</h4><p>What are the three parts of the Daily Posture for defeating greed?</p></div>
+      <div class="dd"><h4>10.</h4><p>Complete the sentence: "The greatest inheritance is not what you leave for your children. It is what you leave ___."</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PROMPT CARD ===== -->
+<div class="page section reveal">
+  <div class="prompt">
+    <div class="prompt-head">Continue with AI. Prompt Card</div>
+    <div class="prompt-body">
+      <p><strong>Copy this prompt into any AI assistant to continue working on greed:</strong></p>
+      <p>"I just read Lay It Down: Greed by Kingdom Builders AI. It identified three altars of greed: the Scarcity Engine, the Hoarding Instinct, and the More Trap. I want you to help me do a personal audit. Ask me questions about each altar, one at a time, and help me identify which one has the strongest grip on my life right now. Then help me build my Enough Declaration across the seven domains, design a personalized 30 Day Generosity Protocol, and draft my Legacy Declaration. Be direct, not preachy. Challenge me like a financial coach who cares about my soul, not just my portfolio."</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FINALE ===== -->
+<section class="finale reveal">
+  <h2>Lay It <span>Down.</span></h2>
+  <p>"Watch out! Be on your guard against all kinds of greed; life does not consist in an abundance of possessions."</p>
+  <p> Luke 12:15 (NIV)</p>
+</section>
+
+<!-- ===== SERIES PROGRESS ===== -->
+<div class="series-progress">
+  <div class="series-label">Lay It Down. The Seven Deadly Sins</div>
+  <div class="series-dots">
+    <span class="series-dot done" title="Pride"></span>
+    <span class="series-dot done" title="Envy"></span>
+    <span class="series-dot done" title="Wrath"></span>
+    <span class="series-dot done" title="Sloth"></span>
+    <span class="series-dot active" title="Greed"></span>
+    <span class="series-dot" title="Gluttony"></span>
+    <span class="series-dot" title="Lust"></span>
+  </div>
+  <div class="series-dot-label">Part 5 of 7. Greed</div>
+</div>
+
+<footer>
+  <p>"Watch out! Be on your guard against all kinds of greed.". Luke 12:15</p>
+  <div class="brand">KingdomBuilders AI</div>
+</footer>
+
+<script>
+(function(){
+  const bar=document.getElementById('read-progress');
+  const pill=document.getElementById('chapter-pill');
+  const chEls=[{el:document.querySelector('.cover'),label:'Cover'},...Array.from(document.querySelectorAll('.ch-head')).map((el,i)=>({el,label:el.querySelector('.ch-num')?.textContent?.trim()||('Ch '+(i+1))}))].filter(c=>c.el);
+  function onScroll(){
+    const h=document.documentElement;
+    const pct=h.scrollTop/(h.scrollHeight-h.clientHeight)*100;
+    bar.style.width=pct+'%';
+    let cur='';
+    for(const c of chEls){if(c.el.getBoundingClientRect().top<200)cur=c.label}
+    if(cur){pill.textContent=cur;pill.classList.add('show')}else{pill.classList.remove('show')}
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  const revealEls=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    const obs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:0.12});
+    revealEls.forEach(el=>obs.observe(el));
+  }else{revealEls.forEach(el=>el.classList.add('visible'))}
+})();
+</script>
+</body>
+</html>

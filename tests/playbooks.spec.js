@@ -43,6 +43,8 @@ const PLAYBOOKS = [
   { title: "Lay It Down: Pride", slug: "lay-it-down-pride", tag: "Faith" },
   { title: "Lay It Down: Envy", slug: "lay-it-down-envy", tag: "Faith" },
   { title: "Lay It Down: Wrath", slug: "lay-it-down-wrath", tag: "Faith" },
+  { title: "Lay It Down: Sloth", slug: "lay-it-down-sloth", tag: "Faith" },
+  { title: "Lay It Down: Greed", slug: "lay-it-down-greed", tag: "Faith" },
   { title: "The Tide Pool\u2019s Echo", catalogTitle: "The Tide Pool's Echo", slug: "the-tide-pools-echo", tag: "Philosophy" },
   { title: "The Whale\u2019s Breath", catalogTitle: "The Whale's Breath", slug: "the-whales-breath", tag: "Philosophy" },
   { title: "The Butterfly\u2019s Crossing", catalogTitle: "The Butterfly's Crossing", slug: "the-butterflys-crossing", tag: "Philosophy" },

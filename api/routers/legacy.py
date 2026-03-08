@@ -44,8 +44,18 @@ router = APIRouter(tags=["legacy"])
 # ============================================================================
 # Version & Release Notes
 # ============================================================================
-APP_VERSION = "2.4.0"
+APP_VERSION = "2.5.0"
 RELEASE_NOTES = [
+    {
+        "version": "2.5.0",
+        "date": "2026-03-08",
+        "title": "Lay It Down: Sloth & Greed",
+        "changes": [
+            "New playbook: Lay It Down: Sloth (Part 4 of 7)",
+            "New playbook: Lay It Down: Greed (Part 5 of 7)",
+            "46 playbooks now live",
+        ],
+    },
     {
         "version": "2.4.0",
         "date": "2026-03-07",
@@ -163,6 +173,8 @@ LANDING_ROUTES: dict[str, str] = {
     "/thetermitecathedral": "the-termite-cathedral.html",
     "/thebonsaimethod": "the-bonsai-method.html",
     "/thefibonaccitrim": "the-fibonacci-trim.html",
+    "/layitdownsloth": "lay-it-down-sloth.html",
+    "/layitdowngreed": "lay-it-down-greed.html",
 }
 
 # ============================================================================
@@ -213,6 +225,8 @@ SLUG_TO_FILE: dict[str, str] = {
     "the-termite-cathedral": "The_Termite_Cathedral.html",
     "the-bonsai-method": "The_Bonsai_Method.html",
     "the-fibonacci-trim": "The_Fibonacci_Trim.html",
+    "lay-it-down-sloth": "Lay_It_Down_Sloth.html",
+    "lay-it-down-greed": "Lay_It_Down_Greed.html",
 }
 
 
@@ -692,7 +706,7 @@ async def checkout(
     if not price_id:
         return JSONResponse({"error": "Stripe price not configured"}, status_code=500)
 
-    cancel_path = f"/read/{slug}" if slug else "/"
+    cancel_path = f"/read/{slug}" if slug and slug != "all" else "/"
 
     try:
         session_params = {

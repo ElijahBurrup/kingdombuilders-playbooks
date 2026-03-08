@@ -10,8 +10,18 @@ import config
 from database import initialize_db
 
 # --- Version & Release Notes ---
-APP_VERSION = "2.4.0"
+APP_VERSION = "2.5.0"
 RELEASE_NOTES = [
+    {
+        "version": "2.5.0",
+        "date": "2026-03-08",
+        "title": "Lay It Down: Sloth & Greed",
+        "changes": [
+            "New playbook: Lay It Down: Sloth (Part 4 of 7)",
+            "New playbook: Lay It Down: Greed (Part 5 of 7)",
+            "46 playbooks now live",
+        ],
+    },
     {
         "version": "2.4.0",
         "date": "2026-03-07",
@@ -140,6 +150,8 @@ def _slug_to_file():
         "the-termite-cathedral": "The_Termite_Cathedral.html",
         "the-bonsai-method": "The_Bonsai_Method.html",
         "the-fibonacci-trim": "The_Fibonacci_Trim.html",
+        "lay-it-down-sloth": "Lay_It_Down_Sloth.html",
+        "lay-it-down-greed": "Lay_It_Down_Greed.html",
     }
 
 
@@ -372,6 +384,16 @@ def the_bonsai_method():
 @bp.route("/thefibonaccitrim")
 def the_fibonacci_trim():
     return send_from_directory("static", "the-fibonacci-trim.html")
+
+
+@bp.route("/layitdownsloth")
+def lay_it_down_sloth():
+    return send_from_directory("static", "lay-it-down-sloth.html")
+
+
+@bp.route("/layitdowngreed")
+def lay_it_down_greed():
+    return send_from_directory("static", "lay-it-down-greed.html")
 
 
 # --- Playbook Reader (serves full playbook HTML from assets) ---

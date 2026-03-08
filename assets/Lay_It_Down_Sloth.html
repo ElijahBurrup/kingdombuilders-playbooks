@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lay It Down: Sloth | Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#10141A;--ink-mid:#1C2230;--ink-soft:#2E3648;
+  --steel:#4A5568;--steel-light:#718096;--fog:#A0AEC0;
+  --fire:#607080;--fire-mid:rgba(96,112,128,0.18);--fire-pale:rgba(96,112,128,0.07);
+  --ember:#8B6914;--ember-mid:rgba(139,105,20,0.15);
+  --gold:#D4A030;--gold-mid:rgba(212,160,48,0.18);--gold-pale:rgba(212,160,48,0.08);
+  --ash:#708090;--ash-mid:rgba(112,128,144,0.15);
+  --green:#2D8A4E;--green-mid:rgba(45,138,78,0.15);
+  --rust:#9B6B3A;--rust-mid:rgba(155,107,58,0.15);
+  --cream:#F7F8FA;--cream-warm:#F2F0EC;--paper:#F8F7F5;--white:#FFFFFF;
+  --radius:10px;--shadow:0 2px 16px rgba(16,20,26,0.09);--shadow-deep:0 8px 40px rgba(16,20,26,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.78;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.label{font-family:'Poppins',sans-serif}
+.page{max-width:700px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--ink-mid);font-weight:600;font-family:'Poppins',sans-serif}
+
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(160deg,#0E1118 0%,#1A1E2A 40%,#161820 100%);position:relative;overflow:hidden}
+.cover-grain{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:0.5}
+.cover-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 25%,rgba(10,12,18,0.7) 100%)}
+.flame-ring{position:absolute;border-radius:50%;border:1px solid rgba(112,128,144,0.06);animation:flame-expand 9s ease-out infinite}
+.flame-ring:nth-child(3){width:180px;height:180px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:0s}
+.flame-ring:nth-child(4){width:360px;height:360px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:2.2s}
+.flame-ring:nth-child(5){width:540px;height:540px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:4.4s}
+@keyframes flame-expand{0%{opacity:0.5;transform:translate(-50%,-50%) scale(0.85)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.25)}}
+.cover-content{position:relative;z-index:2;padding:60px 24px 40px}
+.cover-badge{display:inline-block;padding:5px 18px;border:1px solid rgba(112,128,144,0.3);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.48rem;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:var(--ash);margin-bottom:40px;background:rgba(112,128,144,0.07)}
+.cover h1{font-family:'Poppins',sans-serif;font-size:clamp(3rem,9vw,5.5rem);font-weight:300;color:#FFFFFF;line-height:0.95;margin-bottom:6px;letter-spacing:-0.02em}
+.cover h1 em{display:block;color:var(--ash);font-style:normal;font-weight:700;font-size:0.5em;margin-top:12px;letter-spacing:0.01em}
+.cover-sub{font-family:'Lora',Georgia,serif;font-size:clamp(0.95rem,2.5vw,1.15rem);font-style:italic;color:rgba(255,255,255,0.45);margin-top:28px;line-height:1.7;max-width:480px;margin-left:auto;margin-right:auto}
+.cover-sub em{color:rgba(155,107,58,0.85);font-style:normal;font-weight:600}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.5rem;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-top:52px}
+.cover-verse{margin-top:28px;padding:14px 24px;display:inline-block;background:rgba(112,128,144,0.06);border:1px solid rgba(112,128,144,0.12);border-radius:8px;font-family:'Lora',Georgia,serif;font-size:0.82rem;font-style:italic;color:rgba(255,255,255,0.35);line-height:1.6}
+
+.ch-head{background:linear-gradient(160deg,#0E1118 0%,#1A1E28 100%);padding:72px 24px 52px;position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 50%,rgba(112,128,144,0.04) 0%,transparent 50%)}
+.ch-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 5%,var(--ash) 50%,transparent 95%);opacity:0.4}
+.ch-head .page{position:relative;z-index:2}
+.ch-num{font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--ash);opacity:0.9;margin-bottom:8px}
+.ch-title{font-family:'Poppins',sans-serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:700;color:#FFFFFF;margin:10px 0 8px;letter-spacing:-0.01em}
+.ch-sub{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:rgba(112,128,144,0.65)}
+
+.ribbon{text-align:center;padding:20px 24px;background:var(--cream-warm);border-top:1px solid rgba(16,20,26,0.06);border-bottom:1px solid rgba(16,20,26,0.06)}
+.ribbon p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:var(--steel-light);max-width:540px;margin:0 auto;line-height:1.6}
+
+.mission{text-align:center;padding:36px 32px;margin:36px 0;background:linear-gradient(140deg,rgba(112,128,144,0.08),rgba(112,128,144,0.03));border-radius:14px;border:2px solid rgba(112,128,144,0.2);box-shadow:0 0 0 1px rgba(112,128,144,0.06),var(--shadow)}
+.mission-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--ash);margin-bottom:12px}
+.mission p{font-family:'Poppins',sans-serif;font-size:clamp(0.88rem,2.2vw,1.05rem);font-weight:500;color:var(--ink-mid);line-height:1.65}
+.mission p em{color:var(--rust);font-style:normal;font-weight:700}
+
+.insight{margin:30px 0;padding:28px 32px;background:linear-gradient(140deg,#0E1118,#1A1E28);border-radius:14px;border:2px solid rgba(112,128,144,0.25);border-left:5px solid var(--ash);position:relative;overflow:hidden;box-shadow:var(--shadow-deep)}
+.insight::before{content:'';position:absolute;top:-40%;right:-10%;width:200px;height:200px;background:radial-gradient(circle,rgba(112,128,144,0.07) 0%,transparent 70%);border-radius:50%}
+.insight p{font-family:'Lora',Georgia,serif;font-size:1.02rem;font-style:italic;color:rgba(255,255,255,0.9);line-height:1.72;position:relative;z-index:2}
+.insight em{color:var(--rust);font-style:normal;font-weight:700}
+
+.gq{margin:32px 0;text-align:center;padding:32px 24px;position:relative;background:linear-gradient(160deg,rgba(112,128,144,0.04),rgba(112,128,144,0.07));border-radius:14px;border:1.5px solid rgba(112,128,144,0.15)}
+.gq::before,.gq::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:48px;height:2px;background:linear-gradient(90deg,transparent,var(--ash),transparent)}
+.gq::before{top:0}.gq::after{bottom:0}
+.gq p{font-family:'Lora',Georgia,serif;font-size:1.05rem;font-style:italic;color:var(--ink-soft);line-height:1.6;max-width:520px;margin:0 auto}
+
+.viz{margin:44px 0 32px;border-radius:14px;overflow:hidden;border:2px solid rgba(112,128,144,0.22);box-shadow:var(--shadow-deep);position:relative;background:var(--white)}
+.viz-top{background:linear-gradient(135deg,rgba(112,128,144,0.1),rgba(112,128,144,0.04));padding:20px 26px 18px;display:flex;align-items:center;gap:14px;border-bottom:1px solid rgba(112,128,144,0.12)}
+.viz-icon{width:48px;height:48px;border-radius:50%;border:2px solid rgba(112,128,144,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(145deg,#fff,rgba(240,242,245,0.6))}
+.viz-meta{flex:1}
+.viz-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--ash);margin-bottom:2px}
+.viz h4{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:var(--ink-mid)}
+.viz-body{padding:26px 26px 22px;background:linear-gradient(170deg,#FAFBFC 0%,#F5F6F8 100%)}
+.viz-body p{font-size:0.95rem;color:var(--steel);line-height:1.78;margin-bottom:14px}
+.viz-body strong,.viz-lesson strong{color:rgba(255,255,255,0.95);font-weight:700}
+.viz-body em,.viz-lesson em{color:var(--fire-pale);font-style:normal;font-weight:600}
+.viz-body p:last-child{margin-bottom:0}
+.viz-trigger{margin-top:18px;padding:14px 18px;background:linear-gradient(135deg,rgba(112,128,144,0.08),rgba(112,128,144,0.14));border:1.5px solid rgba(112,128,144,0.2);border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.76rem;font-weight:600;color:var(--ink-soft);text-align:center;line-height:1.55}
+
+.ba-pair{margin:32px 0;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:620px){.ba-pair{grid-template-columns:1fr}}
+.ba-card{border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.ba-head{padding:11px 18px;font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.ba-before{background:linear-gradient(170deg,#F0F2F5,#E8EAED)}
+.ba-before .ba-head{background:rgba(112,128,144,0.12);color:#3A4050}
+.ba-after{background:linear-gradient(170deg,#F0FFF4,#E8FFE8)}
+.ba-after .ba-head{background:rgba(45,138,78,0.12);color:#1A4A28}
+.ba-dot{width:7px;height:7px;border-radius:50%}
+.ba-before .ba-dot{background:var(--ash)}
+.ba-after .ba-dot{background:var(--green)}
+.ba-body{padding:16px 18px;font-size:0.88rem;line-height:1.65}
+.ba-body ul{list-style:none;padding:0;margin:0}
+.ba-body ul li{padding:6px 0;border-bottom:1px solid rgba(0,0,0,0.05);font-family:'Poppins',sans-serif;font-size:0.8rem}
+.ba-body ul li:last-child{border-bottom:none}
+
+.dd{margin:24px 0;padding:22px 26px;border-radius:12px;border-left:4px solid var(--ash);background:var(--white);box-shadow:var(--shadow)}
+.dd:nth-of-type(even){background:var(--cream)}
+.dd h4{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--ink-mid);margin-bottom:4px}
+.dd .sub{font-family:'Poppins',sans-serif;font-size:0.54rem;font-weight:700;color:var(--ash);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.dd p{font-size:0.95rem;color:var(--steel);line-height:1.78;margin-bottom:8px}
+.dd p:last-child{margin-bottom:0}
+
+.adventure{margin:36px 0;border-radius:14px;overflow:hidden;box-shadow:var(--shadow-deep);background:var(--white);border:1.5px solid rgba(16,20,26,0.08)}
+.adv-head{padding:14px 26px 12px;display:flex;align-items:center;gap:12px;border-bottom:1.5px solid rgba(112,128,144,0.1);background:linear-gradient(135deg,rgba(112,128,144,0.05),rgba(112,128,144,0.02))}
+.adv-head-icon{width:36px;height:36px;border-radius:50%;background:rgba(112,128,144,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1.5px solid rgba(112,128,144,0.2)}
+.adv-head-text{flex:1}
+.adv-head-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--ash);opacity:0.7}
+.adv-head-title{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--ink-mid)}
+.adv-step{padding:14px 26px;border-bottom:1px solid rgba(16,20,26,0.05)}
+.adv-step:last-child{border-bottom:none}
+.adv-step:nth-child(odd){background:var(--white)}
+.adv-step:nth-child(even){background:rgba(112,128,144,0.02)}
+.step-c p{font-family:'Source Serif 4',Georgia,serif;font-size:0.93rem;line-height:1.75;margin:0 0 6px;color:var(--ink-soft)}
+.step-c p:last-child{margin-bottom:0}
+.step-c em{color:var(--steel-light)}
+.tag-you{font-family:'Poppins',sans-serif;font-weight:700;color:var(--ink-mid);font-size:0.74rem;display:inline-block;padding:2px 10px;background:rgba(112,128,144,0.1);border-radius:4px;margin-bottom:5px;border:1px solid rgba(112,128,144,0.2)}
+.adv-result-good{background:linear-gradient(135deg,rgba(45,138,78,0.04),rgba(45,138,78,0.08))!important}
+
+.think{margin:16px 0 36px;padding:30px;background:linear-gradient(145deg,rgba(112,128,144,0.08),rgba(112,128,144,0.04));border:2px dashed rgba(112,128,144,0.35);border-radius:14px;position:relative;box-shadow:0 4px 16px rgba(112,128,144,0.08)}
+.think::before{content:'';position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--paper);padding:0 12px;width:28px;height:28px;display:block;margin-left:-14px;background:var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23708090' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22c-2 0-4-1.5-4-4 0-2 2-3 4-3s4 1 4 3c0 2.5-2 4-4 4z'/%3E%3Cpath d='M12 15c-1.5-2-5-4-5-8a5 5 0 0 1 10 0c0 4-3.5 6-5 8z'/%3E%3Cpath d='M9.5 9c.3-1.8 1.5-3 2.5-3'/%3E%3C/svg%3E") center/contain no-repeat}
+.think-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--ash);text-align:center;margin-bottom:10px}
+.think h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--ink-mid);text-align:center;margin-bottom:14px}
+.think p{font-size:0.86rem;color:var(--steel);margin-bottom:8px;font-family:'Poppins',sans-serif}
+.think-line{border-bottom:1.5px solid rgba(112,128,144,0.25);height:30px;margin-bottom:4px;cursor:text}
+.think p.q-start{font-family:'Poppins',sans-serif;font-weight:500;color:var(--ink-soft);font-size:0.82rem;text-align:left;margin-top:14px;margin-bottom:4px}
+.think .closing{font-weight:600;color:var(--rust);margin-top:12px;font-family:'Poppins',sans-serif;font-size:0.8rem}
+
+.breathe{margin:44px 0;text-align:center;padding:52px 24px;position:relative;background:linear-gradient(160deg,rgba(112,128,144,0.08),rgba(112,128,144,0.04));border-radius:16px;border:2px solid rgba(112,128,144,0.15)}
+.breathe-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1.5px solid rgba(112,128,144,0.1)}
+.breathe-ring:nth-child(1){width:140px;height:140px;animation:breathe-pulse 8s ease-in-out infinite}
+.breathe-ring:nth-child(2){width:90px;height:90px;animation:breathe-pulse 8s ease-in-out infinite 2s}
+.breathe-ring:nth-child(3){width:45px;height:45px;animation:breathe-pulse 8s ease-in-out infinite 4s}
+@keyframes breathe-pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.5}50%{transform:translate(-50%,-50%) scale(1.25);opacity:0.1}}
+.breathe-content{position:relative;z-index:2}
+.breathe-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--ash);margin-bottom:8px}
+.breathe h4{font-family:'Poppins',sans-serif;font-size:0.94rem;font-weight:600;color:var(--ink-mid);margin-bottom:8px}
+.breathe p{font-family:'Lora',Georgia,serif;font-size:0.88rem;font-style:italic;color:var(--steel);max-width:420px;margin:0 auto;line-height:1.65}
+
+.descent-ramp{margin:36px 0 0;display:flex;flex-direction:column;gap:12px}
+.ramp-echo{padding:26px 30px;background:linear-gradient(160deg,rgba(112,128,144,0.07),rgba(112,128,144,0.03));border-radius:14px;border:1.5px solid rgba(112,128,144,0.12)}
+.ramp-echo p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:var(--steel);line-height:1.78;text-align:center;margin:0}
+.ramp-close{padding:36px 30px;text-align:center;background:linear-gradient(160deg,rgba(212,160,48,0.1),rgba(212,160,48,0.05));border-radius:14px;border:1.5px solid rgba(212,160,48,0.2)}
+.ramp-close-label{font-family:'Poppins',sans-serif;font-size:0.44rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--gold);opacity:0.9;margin-bottom:8px}
+.ramp-close p{font-family:'Poppins',sans-serif;font-size:0.8rem;font-weight:500;color:var(--ink-soft);line-height:1.65;max-width:440px;margin:0 auto}
+
+.inst{margin:26px 0;padding:18px 22px;background:linear-gradient(90deg,rgba(112,128,144,0.07),rgba(212,160,48,0.05));border-left:4px solid var(--ash);border-radius:0 12px 12px 0;box-shadow:var(--shadow)}
+.inst p{font-family:'Poppins',sans-serif;font-size:0.8rem;color:var(--steel);line-height:1.6;margin:0}
+.inst strong{color:var(--ink-mid);font-weight:600}
+
+.h2-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--ink-mid),var(--ink-soft));margin-right:10px;vertical-align:middle;box-shadow:0 2px 8px rgba(16,20,26,0.2)}
+.h2-icon svg{width:16px;height:16px;stroke:var(--ash);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.viz-icon svg{width:24px;height:24px;stroke:var(--ash);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.adv-head-icon svg{width:18px;height:18px;stroke:var(--ash);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.prose h2{font-family:'Poppins',sans-serif;font-size:1.3rem;color:var(--ink-mid);margin:36px 0 14px;letter-spacing:-0.01em;display:flex;align-items:center}
+
+.root-review{margin:44px 0;padding:28px 22px;background:linear-gradient(160deg,#F5F6F8,#EDEEF2);border-radius:16px;border:2px solid rgba(112,128,144,0.18);box-shadow:var(--shadow)}
+.root-label{font-family:'Poppins',sans-serif;font-size:0.44rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--ash);text-align:center;margin-bottom:18px}
+.root-layer{display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 0;flex-wrap:wrap}
+.root-layer.current{padding:12px 0}
+.root-ch{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--fog);width:28px;text-align:right;flex-shrink:0}
+.root-layer.current .root-ch{color:var(--ash)}
+.root-items{display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center}
+.root-pill{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:600;padding:5px 13px;border-radius:6px;white-space:nowrap}
+.root-pill.rp-dim{background:rgba(74,85,104,0.1);color:var(--steel);border:1.5px solid rgba(74,85,104,0.18)}
+.root-pill.rp-bright{background:linear-gradient(135deg,rgba(112,128,144,0.18),rgba(112,128,144,0.26));color:var(--ink-mid);border:2px solid rgba(112,128,144,0.35);box-shadow:0 2px 10px rgba(112,128,144,0.12);font-weight:700}
+.root-pill.rp-ch1{background:rgba(112,128,144,0.12);color:#2E3648;border:1.5px solid rgba(112,128,144,0.28);font-weight:600}
+.root-pill.rp-ch2{background:rgba(155,107,58,0.12);color:#5A3A18;border:1.5px solid rgba(155,107,58,0.25);font-weight:600}
+.root-pill.rp-ch3{background:rgba(45,138,78,0.12);color:#1A3A28;border:1.5px solid rgba(45,138,78,0.25);font-weight:600}
+.root-pill.rp-ch4{background:rgba(160,100,240,0.12);color:#3A1A5A;border:1.5px solid rgba(160,100,240,0.25);font-weight:600}
+.root-pill.rp-ch5{background:rgba(60,140,240,0.12);color:#1A2E5A;border:1.5px solid rgba(60,140,240,0.25);font-weight:600}
+.root-arr{color:var(--ash);opacity:0.65;font-size:0.78rem;padding:0 3px}
+.root-layer.current .root-arr{opacity:0.9}
+.root-sep{width:60%;max-width:300px;height:1.5px;background:linear-gradient(90deg,transparent,rgba(112,128,144,0.15),transparent);margin:6px auto}
+
+.prompt{margin:32px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(112,128,144,0.22);box-shadow:var(--shadow-deep)}
+.prompt-head{padding:12px 20px;background:linear-gradient(90deg,#0E1118,#1A1E28);font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--ash)}
+.prompt-body{padding:24px 26px;background:#0A0C12;color:#B0B8C0;font-family:'Poppins',sans-serif;font-size:0.82rem;line-height:1.8}
+.prompt-body strong{color:var(--rust)}
+
+.stack{margin:38px 0;text-align:center}
+.stack-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--ash);opacity:0.7;margin-bottom:16px}
+.stack-flow{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap}
+.stack-node{display:inline-flex;align-items:center;justify-content:center;padding:10px 18px;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.68rem;font-weight:600;line-height:1.35;white-space:nowrap}
+.sn-dark{background:var(--ink-mid);color:#FFFFFF;border:1.5px solid rgba(112,128,144,0.2)}
+.sn-fire{background:rgba(112,128,144,0.13);color:var(--ink-mid);border:1.5px solid rgba(112,128,144,0.25)}
+.sn-gold{background:rgba(212,160,48,0.13);color:var(--ink-soft);border:1.5px solid rgba(212,160,48,0.28)}
+.sn-red{background:rgba(112,128,144,0.1);color:#2E3648;border:1.5px solid rgba(112,128,144,0.2)}
+.sn-rust{background:rgba(155,107,58,0.1);color:#5A3A18;border:1.5px solid rgba(155,107,58,0.2)}
+.sn-green{background:rgba(45,138,78,0.1);color:#1A3A28;border:1.5px solid rgba(45,138,78,0.2)}
+.stack-arr{font-size:1rem;color:rgba(112,128,144,0.45);padding:0 7px}
+
+.prayer{margin:32px 0;padding:28px 30px;background:linear-gradient(160deg,#0E1118,#161820);border-radius:14px;border:2px solid rgba(212,160,48,0.25);position:relative;overflow:hidden}
+.prayer::before{content:'';position:absolute;top:-20%;left:-10%;width:160px;height:160px;background:radial-gradient(circle,rgba(212,160,48,0.06) 0%,transparent 70%);border-radius:50%}
+.prayer-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;position:relative;z-index:2}
+.prayer p{font-family:'Lora',Georgia,serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.85);line-height:1.8;position:relative;z-index:2;margin-bottom:8px}
+.prayer p:last-child{margin-bottom:0}
+.prayer strong{color:var(--gold);font-style:normal;font-weight:700}
+
+.finale{text-align:center;padding:80px 24px;background:linear-gradient(160deg,#0E1118 0%,#1A1E28 100%);position:relative;overflow:hidden}
+.finale::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 50% 50%,rgba(112,128,144,0.04) 0%,transparent 50%)}
+.finale h2{font-family:'Poppins',sans-serif;font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;color:#FFFFFF;margin-bottom:8px;position:relative;z-index:2}
+.finale h2 span{color:var(--gold)}
+.finale p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.38);max-width:460px;margin:16px auto;line-height:1.65;position:relative;z-index:2}
+
+footer{text-align:center;padding:36px 24px;background:#060810}
+footer p{font-family:'Lora',Georgia,serif;font-size:0.8rem;font-style:italic;color:rgba(112,128,144,0.2);margin-bottom:12px}
+footer .brand{font-family:'Poppins',sans-serif;font-size:0.46rem;font-style:normal;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.12)}
+
+/* === DRIFT TIMELINE === */
+.trigger-timeline{margin:36px 0;padding:28px 26px;background:var(--white);border-radius:14px;border:2px solid rgba(112,128,144,0.2);box-shadow:var(--shadow)}
+.trigger-timeline-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--ash);text-align:center;margin-bottom:22px}
+.tl-track{position:relative;padding-left:28px}
+.tl-track::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--ash),var(--fog),var(--rust),var(--gold));border-radius:3px}
+.tl-node{position:relative;padding:14px 0 22px 24px}
+.tl-node::before{content:'';position:absolute;left:-22px;top:18px;width:12px;height:12px;border-radius:50%;border:2.5px solid var(--ash);background:var(--white);z-index:1}
+.tl-node.tl-green::before{border-color:var(--green)}
+.tl-node.tl-gold::before{border-color:var(--gold)}
+.tl-node.tl-rust::before{border-color:var(--rust)}
+.tl-node-label{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--ash);margin-bottom:4px}
+.tl-node.tl-green .tl-node-label{color:var(--green)}
+.tl-node.tl-gold .tl-node-label{color:var(--gold)}
+.tl-node.tl-rust .tl-node-label{color:var(--rust)}
+.tl-node h4{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--ink-mid);margin-bottom:6px}
+.tl-node p{font-family:'Poppins',sans-serif;font-size:0.82rem;color:var(--steel);line-height:1.6}
+
+/* === COMFORT AUDIT === */
+.resent-ledger{margin:36px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(112,128,144,0.2);box-shadow:var(--shadow-deep)}
+.resent-ledger-head{padding:14px 22px;background:linear-gradient(135deg,rgba(112,128,144,0.1),rgba(112,128,144,0.04));font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--ash);text-align:center;border-bottom:1.5px solid rgba(112,128,144,0.12)}
+.resent-table{width:100%;border-collapse:collapse}
+.resent-table th{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:12px 16px;text-align:left;border-bottom:1.5px solid rgba(16,20,26,0.08)}
+.resent-table th:first-child{color:#3A4050;background:rgba(112,128,144,0.05)}
+.resent-table th:last-child{color:#1A4A28;background:rgba(45,138,78,0.05)}
+.resent-table td{padding:12px 16px;font-family:'Poppins',sans-serif;font-size:0.8rem;color:var(--steel);border-bottom:1px solid rgba(16,20,26,0.05);vertical-align:top}
+.resent-table tr:last-child td{border-bottom:none}
+.resent-table td:first-child{background:rgba(112,128,144,0.02)}
+.resent-table td:last-child{background:rgba(45,138,78,0.02)}
+
+/* === SLOTH CYCLE === */
+.rage-cycle{margin:36px 0;text-align:center;padding:32px 24px;background:var(--white);border-radius:14px;border:2px solid rgba(112,128,144,0.2);box-shadow:var(--shadow)}
+.rage-cycle-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--ash);margin-bottom:20px}
+.rc-ring{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0}
+.rc-node{padding:12px 20px;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.72rem;font-weight:600;min-width:120px}
+.rc-node.rc-fire{background:rgba(112,128,144,0.12);color:#2E3648;border:1.5px solid rgba(112,128,144,0.25)}
+.rc-node.rc-ember{background:rgba(155,107,58,0.12);color:#5A3A18;border:1.5px solid rgba(155,107,58,0.2)}
+.rc-node.rc-dark{background:var(--ink-mid);color:#FFFFFF;border:1.5px solid rgba(112,128,144,0.2)}
+.rc-node.rc-gold{background:rgba(212,160,48,0.12);color:#5A3800;border:1.5px solid rgba(212,160,48,0.25)}
+.rc-arr{font-size:1.1rem;color:rgba(112,128,144,0.4);padding:0 8px}
+.rc-break{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--green);margin-top:20px;padding:10px 20px;border:2px dashed rgba(45,138,78,0.3);border-radius:8px;display:inline-block;background:rgba(45,138,78,0.06)}
+
+.series-progress{text-align:center;padding:32px 24px;background:var(--cream-warm);border-top:1px solid rgba(16,20,26,0.06)}
+.series-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--ash);margin-bottom:14px}
+.series-dots{display:flex;align-items:center;justify-content:center;gap:12px}
+.series-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(112,128,144,0.3);background:transparent}
+.series-dot.done{background:rgba(112,128,144,0.25);border-color:rgba(112,128,144,0.5)}
+.series-dot.active{background:var(--ash);border-color:var(--ash);box-shadow:0 0 8px rgba(112,128,144,0.3)}
+.series-dot-label{font-family:'Poppins',sans-serif;font-size:0.55rem;color:var(--steel-light);margin-top:10px}
+
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.65s ease,transform 0.65s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.stagger-children > *{opacity:0;transform:translateY(18px);transition:opacity 0.5s ease,transform 0.5s ease}
+.stagger-children.visible > *:nth-child(1){opacity:1;transform:none;transition-delay:0s}
+.stagger-children.visible > *:nth-child(2){opacity:1;transform:none;transition-delay:0.12s}
+.stagger-children.visible > *:nth-child(3){opacity:1;transform:none;transition-delay:0.24s}
+.stagger-children.visible > *:nth-child(4){opacity:1;transform:none;transition-delay:0.36s}
+.think:hover{box-shadow:0 0 0 2px rgba(112,128,144,0.25),0 8px 32px rgba(112,128,144,0.1)}
+.think{transition:box-shadow 0.3s ease}
+.adv-step{transition:background 0.2s ease}
+.adv-step:hover{background:rgba(112,128,144,0.04)!important}
+@keyframes insight-border{0%,100%{border-left-color:var(--ash)}50%{border-left-color:rgba(112,128,144,0.3)}}
+.insight{animation:insight-border 4s ease-in-out infinite}
+
+#read-progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--ash),rgba(112,128,144,0.4));z-index:9999;pointer-events:none;transition:width 0.08s linear}
+#chapter-pill{position:fixed;bottom:24px;right:24px;background:var(--ink);border:1px solid rgba(112,128,144,0.25);color:var(--ash);font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:8px 18px;border-radius:50px;opacity:0;transition:opacity 0.35s ease;pointer-events:none;z-index:1000;box-shadow:0 4px 24px rgba(0,0,0,0.4)}
+#chapter-pill.show{opacity:1}
+
+@media(max-width:620px){.stack-node{font-size:0.6rem;padding:8px 12px}.rc-node{font-size:0.6rem;padding:10px 14px;min-width:90px}.tl-node{padding-left:18px}}
+@media print{
+  @page{margin:18mm 16mm 22mm 16mm}
+  body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .cover{min-height:auto;padding:80px 24px;break-after:page}
+  .ch-head{break-before:page;padding:56px 24px 40px}
+  .think,.adventure,.viz,.ba-pair,.mission,.insight,.dd,.breathe,.prayer,.prompt,.stack,.descent-ramp,.trigger-timeline,.resent-ledger,.rage-cycle{break-inside:avoid}
+  .flame-ring,.cover-grain,.breathe-ring,.cover-vignette{animation:none!important;display:none}
+  .section{padding:36px 0}
+  #read-progress,#chapter-pill,.no-print{display:none!important}
+}
+</style>
+</head>
+<body>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="ico-bed" viewBox="0 0 24 24"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></symbol>
+  <symbol id="ico-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+  <symbol id="ico-anchor" viewBox="0 0 24 24"><circle cx="12" cy="5" r="3"/><line x1="12" y1="8" x2="12" y2="22"/><path d="M5 12H2a10 10 0 0 0 20 0h-3"/></symbol>
+  <symbol id="ico-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+  <symbol id="ico-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+  <symbol id="ico-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="ico-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+  <symbol id="ico-heart" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></symbol>
+  <symbol id="ico-sunrise" viewBox="0 0 24 24"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="9" x2="12" y2="2"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/><line x1="23" y1="22" x2="1" y2="22"/><polyline points="8 6 12 2 16 6"/></symbol>
+  <symbol id="ico-flame" viewBox="0 0 24 24"><path d="M12 22c-2 0-4-1.5-4-4 0-2 2-3 4-3s4 1 4 3c0 2.5-2 4-4 4z"/><path d="M12 15c-1.5-2-5-4-5-8a5 5 0 0 1 10 0c0 4-3.5 6-5 8z"/></symbol>
+</svg>
+
+<div id="read-progress"></div>
+<div id="chapter-pill"></div>
+
+<!-- ===== COVER ===== -->
+<section class="cover">
+  <div class="cover-grain"></div>
+  <div class="cover-vignette"></div>
+  <div class="flame-ring"></div>
+  <div class="flame-ring"></div>
+  <div class="flame-ring"></div>
+  <div class="cover-content">
+    <div class="cover-badge">Lay It Down Series. Part 4 of 7</div>
+    <h1>Lay It Down<em>Sloth</em></h1>
+    <p class="cover-sub">The sin that feels like rest. It is not laziness. It is the <em>quiet refusal</em> to become who you were created to be.</p>
+    <p class="cover-author">KingdomBuilders AI</p>
+    <div class="cover-verse">"Whatever your hand finds to do, do it with all your might."<br> Ecclesiastes 9:10 (NIV)</div>
+  </div>
+</section>
+
+<!-- ===== BEFORE WE BEGIN ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Before We Begin</div><h2 class="ch-title">The Sin That Feels Like Rest</h2><p class="ch-sub">Sloth does not look like a person on the couch. It looks like a person who is busy with everything except the one thing that matters.</p></div></div>
+<div class="ribbon"><p>"Whatever your hand finds to do, do it with all your might, for in the realm of the dead, where you are going, there is neither working nor planning nor knowledge nor wisdom." Ecclesiastes 9:10 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>You expected a chapter about laziness. A person on the couch. A person who sleeps until noon and never finishes anything. That is not what sloth is. That version is almost too easy to spot. The real version is far more dangerous because it wears productivity as a disguise.</p>
+  <p>Sloth is the ancient word <strong>acedia</strong>, and it does not mean laziness. It means spiritual apathy. The refusal to care about the things that actually matter. The slow, quiet decision to fill your life with noise, busyness, comfort, and distraction so you never have to face the one question you have been avoiding: <strong>"What did God put me here to do, and why am I not doing it?"</strong></p>
+  <p>You are not lazy. You are exhausted from running the wrong direction. You have spent years building elaborate systems of avoidance, constructing a life of comfortable numbness, staying busy enough to feel productive while the real work, the deep work, the sacred assignment sits untouched in the corner gathering dust.</p>
+
+  <div class="mission reveal">
+    <div class="mission-label">The Mission</div>
+    <p>Identify the three altars of sloth<em>comfort addiction, procrastination architecture, and spiritual numbness</em>, and dismantle them with protocols that retrain your relationship with discomfort, collapse your delay systems, and reignite the fire God placed in you before the world taught you to play it safe.</p>
+  </div>
+
+  <div class="insight reveal">
+    <p>"Sloth is not the absence of activity. It is the absence of the RIGHT activity. <em>You can be exhausted and still be in the grip of sloth if everything you are tired from is a substitute for the one thing you are called to.</em>"</p>
+  </div>
+
+  <div class="stack reveal">
+    <div class="stack-label">The Three Altars of Sloth</div>
+    <div class="stack-flow">
+      <span class="stack-node sn-red">Comfort Addiction</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-dark">Procrastination</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-rust">Spiritual Numbness</span>
+    </div>
+  </div>
+
+  <p>Three altars. Three fog banks you walked into thinking they were shelters. They are prisons. And it is time to lay them down.</p>
+
+  <div class="insight reveal"><p>If you finish this playbook, you will know the three altars where sloth hides: the body that craves ease, the mind that engineers delay, and the soul that stopped caring. You will own <strong>a Resistance Protocol that creates momentum before motivation arrives, a First Domino method that collapses procrastination, and a Daily Ignition practice that wakes you up to what actually matters.</strong></p></div>
+</div>
+
+<!-- ===== CHAPTER 1: THE COMFORT THRESHOLD ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter One</div><h2 class="ch-title">The Comfort Threshold</h2><p class="ch-sub">Your nervous system has been trained to avoid all discomfort.</p></div></div>
+<div class="ribbon"><p>"No discipline seems pleasant at the time, but painful. Later on, however, it produces a harvest of righteousness and peace for those who have been trained by it." Hebrews 12:11 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>Your body has a threshold. A line drawn in the sand that says: <strong>"This is the maximum amount of discomfort I will tolerate before I retreat."</strong> For most people, that line has been moving inward their entire adult life. It started wide. As a child, you would run until your legs burned. You would try things that terrified you. You would fall and get back up without a cost benefit analysis.</p>
+  <p>But year after year, the threshold contracted. The temperature had to be perfect. The chair had to be soft enough. The task had to feel manageable before you would start. The conversation had to feel safe before you would be honest. The cost of effort had to be justified before you would spend a single calorie. And now the threshold is so narrow that even small discomforts, a hard phone call, a workout, a difficult conversation, a new project, feel like emergencies.</p>
+  <p>This is the first altar of sloth: <strong>comfort addiction.</strong> Not laziness. Addiction. Your body has been conditioned to treat comfort as a right instead of a rest stop. You were designed to rest after exertion, not instead of it.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-bed"/></svg></span>The Comfort Audit</h2>
+  <p>Every day contains approximately ten moments where you choose comfort over action. Most of them are invisible because they have become reflexive. The Comfort Audit makes them visible.</p>
+
+  <div class="trigger-timeline reveal">
+    <div class="trigger-timeline-label">The 10 Daily Micro Retreats</div>
+    <div class="tl-track">
+      <div class="tl-node"><div class="tl-node-label">6:00 AM</div><h4>The Snooze</h4><p>The alarm goes off. The body says "five more minutes." Five becomes twenty. The day starts behind.</p></div>
+      <div class="tl-node"><div class="tl-node-label">7:30 AM</div><h4>The Scroll</h4><p>Instead of the hard first task, you open your phone. Thirty minutes vanish into content that demanded nothing from you.</p></div>
+      <div class="tl-node"><div class="tl-node-label">9:00 AM</div><h4>The Easy Task</h4><p>You choose the task that feels manageable instead of the one that matters. The inbox gets organized. The real project stays untouched.</p></div>
+      <div class="tl-node"><div class="tl-node-label">11:00 AM</div><h4>The Snack Break</h4><p>Not because you are hungry. Because the work got hard and your body needed a reward signal. Comfort disguised as fuel.</p></div>
+      <div class="tl-node tl-rust"><div class="tl-node-label">3:00 PM</div><h4>The Afternoon Fade</h4><p>Energy dips. Instead of pushing through, you coast. The second half of the day becomes maintenance mode.</p></div>
+      <div class="tl-node tl-gold"><div class="tl-node-label">Evening</div><h4>The Collapse</h4><p>You tell yourself you earned the couch. The screen becomes the anesthetic. Another day passes with the real work untouched.</p></div>
+    </div>
+  </div>
+
+  <p>None of these are catastrophic in isolation. That is the trap. Each one is small enough to justify. But stacked together, day after day, they form an invisible cage. You are not lazy. You are caught in a <strong>pattern of micro retreats</strong> that has become so automatic you do not even notice it happening.</p>
+
+  <div class="ba-pair reveal">
+    <div class="ba-card ba-before">
+      <div class="ba-head"><span class="ba-dot"></span>Comfort Addicted</div>
+      <div class="ba-body"><ul>
+        <li>Waits until it "feels right" to start</li>
+        <li>Treats discomfort as a warning signal</li>
+        <li>Energy follows mood</li>
+        <li>Defaults to the easiest available option</li>
+        <li>"I'll do it when I'm ready"</li>
+      </ul></div>
+    </div>
+    <div class="ba-card ba-after">
+      <div class="ba-head"><span class="ba-dot"></span>Comfort Trained</div>
+      <div class="ba-body"><ul>
+        <li>Starts before it feels right</li>
+        <li>Treats discomfort as a growth signal</li>
+        <li>Action creates energy</li>
+        <li>Defaults to the most important option</li>
+        <li>"I do it, then I feel ready"</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Right Now</div>
+    <h4>Your Comfort Audit</h4>
+    <p class="q-start">What is the first thing you reach for when the work gets hard?</p>
+    <div class="think-line"></div>
+    <p class="q-start">Name three micro retreats you took yesterday:</p>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+    <p class="q-start">What is the one task you have been avoiding because it feels uncomfortable?</p>
+    <div class="think-line"></div>
+    <p class="closing">The threshold contracts every time you choose comfort. It expands every time you choose effort.</p>
+  </div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapter 1</div>
+    <div class="root-layer current"><span class="root-ch">1</span><div class="root-items"><span class="root-pill rp-bright">Comfort Addiction</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Comfort Audit</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 2: THE RESISTANCE PROTOCOL ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Two</div><h2 class="ch-title">The Resistance Protocol</h2><p class="ch-sub">You cannot wait for motivation. Motivation follows action.</p></div></div>
+<div class="ribbon"><p>"Do you not know that in a race all the runners run, but only one gets the prize? Run in such a way as to get the prize." 1 Corinthians 9:24 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>The great lie of sloth is that motivation comes before action. That you need to feel ready, inspired, energized, or emotionally prepared before you can begin. This is backwards. The research is unanimous: <strong>action produces motivation.</strong> Motivation does not produce action. You will never feel like starting. That feeling is the sloth talking.</p>
+  <p>The Resistance Protocol is a three part framework designed to short circuit the waiting game. It does not require willpower. Willpower is a muscle that tires by noon. It requires systems that make action the default and avoidance the harder choice.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-zap"/></svg></span>The Three Resistance Tools</h2>
+
+  <div class="dd reveal"><h4>Tool 1. The 2 Minute Launch</h4><div class="sub">Break the Inertia</div><p>When you face a task you are avoiding, commit to exactly two minutes of effort. Not the whole task. Two minutes. Open the document. Write one sentence. Put on the shoes. Walk to the door. The secret is that once you start moving, the resistance drops dramatically. A body in motion tends to stay in motion. You do not need to finish. You need to <strong>begin.</strong></p></div>
+
+  <div class="dd reveal"><h4>Tool 2. The Discomfort Dose</h4><div class="sub">Train the Threshold</div><p>Every day, choose one small act of voluntary discomfort. A cold shower. A hard conversation. Waking up 15 minutes earlier. Skipping the easy task and starting with the difficult one. You are not punishing yourself. You are <strong>training your nervous system</strong> that discomfort is survivable. Every dose expands your comfort threshold by a fraction. Over weeks, the things that used to paralyze you become manageable.</p></div>
+
+  <div class="dd reveal"><h4>Tool 3. Friction Removal</h4><div class="sub">Engineer Your Environment</div><p>You do not need more discipline. You need less friction. Put the running shoes by the door. Delete the apps that steal your first hour. Set the alarm across the room so you have to stand up. Prepare your workspace the night before. The environment should make the right choice easier than the wrong one. <strong>Stop relying on willpower. Start relying on architecture.</strong></p></div>
+
+  <div class="viz reveal">
+    <div class="viz-top"><div class="viz-icon"><svg><use href="#ico-zap"/></svg></div><div class="viz-meta"><div class="viz-label">Protocol</div><h4>The Morning Resistance Sequence</h4></div></div>
+    <div class="viz-body">
+      <p><strong>Step 1:</strong> Alarm goes off. Feet hit the floor within 5 seconds. No negotiation.</p>
+      <p><strong>Step 2:</strong> Before any screen, complete one act of physical movement. Pushups, a walk, stretching. Anything that tells your body: "We are awake and we are moving."</p>
+      <p><strong>Step 3:</strong> Identify the one task you are most likely to avoid today. Do two minutes of it before checking email, before scrolling, before any comfort activity.</p>
+      <p><strong>Step 4:</strong> After the two minutes, you have a choice. Keep going or stop. Most days, you will keep going. The hardest part was already behind you before the day even started.</p>
+      <div class="viz-trigger">The battle against sloth is won or lost before 8 AM.</div>
+    </div>
+  </div>
+
+  <div class="gq reveal"><p>"Lazy hands make for poverty, but diligent hands bring wealth." Proverbs 10:4 (NIV)</p></div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapters 1, 2</div>
+    <div class="root-layer"><span class="root-ch">1</span><div class="root-items"><span class="root-pill rp-ch1">Comfort Addiction</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Comfort Audit</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">2</span><div class="root-items"><span class="root-pill rp-bright">Resistance Protocol</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Three Tools</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 3: THE DELAY ARCHITECTURE ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Three</div><h2 class="ch-title">The Delay Architecture</h2><p class="ch-sub">Procrastination is not laziness. It is an engineering project.</p></div></div>
+<div class="ribbon"><p>"How long will you lie there, you sluggard? When will you get up from your sleep?" Proverbs 6:9 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>You have never been lazy. You have been <strong>brilliantly strategic</strong> about avoidance. Procrastination is not the absence of a plan. It is the presence of an incredibly sophisticated plan to do everything except the one thing that matters. You have built an architecture of delay so elegant that it looks like productivity from the outside.</p>
+  <p>The Delay Architecture has three load bearing walls. Remove any one of them and the whole structure collapses. But as long as all three are standing, you will keep circling the real work like a plane that never lands.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-clock"/></svg></span>The Three Walls of Delay</h2>
+
+  <div class="dd reveal"><h4>Wall 1. The Distraction Machine</h4><div class="sub">The Noise Generator</div><p>Your phone is a distraction factory that produces an infinite supply of reasons to look away from the hard thing. Every notification is a miniature escape hatch. Every scroll is a micro vacation. You do not reach for your phone because you are curious. You reach for it because the work in front of you requires effort, and your brain has been conditioned to seek the path of least cognitive resistance. The phone is not the problem. <strong>The phone is the symptom of a nervous system that treats effort as a threat.</strong></p></div>
+
+  <div class="dd reveal"><h4>Wall 2. The Perfectionism Shield</h4><div class="sub">The Noble Excuse</div><p>Perfectionism looks like high standards. It is actually fear of judgment wearing a disguise. "I cannot start until I have the perfect plan." "I cannot publish until it is flawless." "I cannot launch until every detail is right." These are not standards. They are <strong>stalling tactics.</strong> Perfectionism keeps you in the planning phase forever because planning feels productive but costs nothing. Starting costs everything. And the perfectionist would rather have a perfect plan they never execute than a messy action that actually changes something.</p></div>
+
+  <div class="dd reveal"><h4>Wall 3. The Monday Loop</h4><div class="sub">The Reset Fantasy</div><p>"I'll start Monday." "I'll start after the holidays." "I'll start when things calm down." You have been saying this for years. Things never calm down. Monday always becomes next Monday. The future version of you who is finally ready does not exist. That person is a fantasy you invented so the present version of you could stay comfortable. The Monday Loop is the most elegant piece of the Delay Architecture because it lets you feel like you are committed without ever actually committing. <strong>You get the emotional satisfaction of deciding to change without the discomfort of changing.</strong></p></div>
+
+  <div class="rage-cycle reveal">
+    <div class="rage-cycle-label">The Procrastination Loop</div>
+    <div class="rc-ring">
+      <span class="rc-node rc-fire">Important Task</span>
+      <span class="rc-arr">&rarr;</span>
+      <span class="rc-node rc-ember">Discomfort Signal</span>
+      <span class="rc-arr">&rarr;</span>
+      <span class="rc-node rc-dark">Distraction Escape</span>
+      <span class="rc-arr">&rarr;</span>
+      <span class="rc-node rc-gold">Guilt + Promise</span>
+      <span class="rc-arr">&rarr;</span>
+      <span class="rc-node rc-fire">"I'll Start Monday"</span>
+    </div>
+    <div class="rc-break">Break the Loop Here</div>
+  </div>
+
+  <div class="insight reveal">
+    <p>"The person who says 'I'll start Monday' fifty-two times a year is not someone who lacks a plan. <em>They are someone who has mistaken the intention to change for the act of changing.</em>"</p>
+  </div>
+
+  <div class="resent-ledger reveal">
+    <div class="resent-ledger-head">The Delay Architecture Audit</div>
+    <table class="resent-table">
+      <tr><th>The Delay Tactic</th><th>The Truth Underneath</th></tr>
+      <tr><td>"I need to do more research first"</td><td>I am afraid of starting and failing</td></tr>
+      <tr><td>"The timing is not right"</td><td>I am waiting for a version of me that feels no fear</td></tr>
+      <tr><td>"I work better under pressure"</td><td>I am addicted to the adrenaline of last minute panic</td></tr>
+      <tr><td>"I just need the right tools/system"</td><td>I am buying preparation instead of doing the work</td></tr>
+      <tr><td>"It has to be perfect before I share it"</td><td>I am terrified of being judged</td></tr>
+    </table>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Right Now</div>
+    <h4>Your Delay Architecture</h4>
+    <p class="q-start">What is the ONE project you have been "about to start" for more than three months?</p>
+    <div class="think-line"></div>
+    <p class="q-start">Which wall is holding your delay in place? Distraction, perfectionism, or the Monday Loop?</p>
+    <div class="think-line"></div>
+    <p class="q-start">What would happen if you started right now, imperfectly, with what you have?</p>
+    <div class="think-line"></div>
+    <p class="closing">Procrastination is the tax you pay on a life you never lived.</p>
+  </div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapter 3</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Comfort Addiction</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Resistance Protocol</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">3</span><div class="root-items"><span class="root-pill rp-bright">Delay Architecture</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Three Walls</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 4: THE FIRST DOMINO ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Four</div><h2 class="ch-title">The First Domino</h2><p class="ch-sub">Dismantling procrastination one brick at a time.</p></div></div>
+<div class="ribbon"><p>"Whoever watches the wind will not plant; whoever looks at the clouds will not reap." Ecclesiastes 11:4 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>Chapter Three showed you the architecture. Now you demolish it. The demolition does not require a wrecking ball. It requires a single brick. The First Domino Protocol is built on one principle: <strong>momentum is more powerful than motivation.</strong> You do not need to see the entire staircase. You need to take the first step. Then the second step becomes visible.</p>
+  <p>Every massive project, every life change, every transformation you have ever witnessed started with one absurdly small action. The book started with one sentence. The business started with one phone call. The restoration of a marriage started with one honest conversation. The domino does not need to be impressive. It needs to be <strong>first.</strong></p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-target"/></svg></span>The First Domino Protocol</h2>
+
+  <div class="dd reveal"><h4>Step 1. Name the Project</h4><div class="sub">The Thing You Have Been Avoiding</div><p>Write down the one project, goal, or change that has been sitting on your "someday" list the longest. Not the small stuff. The big one. The one that makes your stomach tighten when you think about starting. The book. The business. The degree. The apology. The health overhaul. Name it. Out loud. Writing it makes it real.</p></div>
+
+  <div class="dd reveal"><h4>Step 2. Identify the Smallest Possible Action</h4><div class="sub">Absurdly Small</div><p>Not the first milestone. Not the first chapter. Not the business plan. The smallest possible physical action that moves you one inch toward the goal. Open the blank document. Buy the domain name. Text the person you need to call. Lace up the shoes. The action should take less than five minutes and require almost zero emotional energy. <strong>If it feels too easy, it is the right size.</strong></p></div>
+
+  <div class="dd reveal"><h4>Step 3. Do It Right Now</h4><div class="sub">Not Later. Now.</div><p>Close this playbook. Do the action. Come back. If you skip this step, you have just demonstrated the exact pattern Chapter Three described: you consumed information about change instead of changing. The difference between someone who reads about procrastination and someone who overcomes it is five minutes of action. <strong>Go. Then come back.</strong></p></div>
+
+  <div class="dd reveal"><h4>Step 4. Stack the Second Domino</h4><div class="sub">Tomorrow's First Action</div><p>Now that the first domino has fallen, identify what the second one is. Write it down. Set a time. The chain has begun. Your only job is to never let more than 24 hours pass without the next domino falling. Momentum dies in gaps. Feed it daily.</p></div>
+
+  <div class="adventure reveal">
+    <div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-target"/></svg></div><div class="adv-head-text"><div class="adv-head-label">Scenario</div><div class="adv-head-title">The Book That Never Gets Written</div></div></div>
+    <div class="adv-step"><div class="step-c"><p>You have wanted to write a book for three years. You have the idea. You have the outline in your head. You have told people about it. But the document is still blank. Every time you sit down to write, the perfectionism shield activates: "The opening has to be perfect." You research more. You read about writing. You buy a new notebook. The book stays unwritten.</p></div></div>
+    <div class="adv-step"><div class="step-c"><span class="tag-you">The Delay Response</span><p>You spend 45 minutes reading articles about how successful authors structure their mornings. You feel informed and inspired. You tell yourself you will start this weekend when you have a bigger block of time. The weekend comes and goes. The document remains blank. You have been "about to write" this book for 1,095 days.</p></div></div>
+    <div class="adv-step"><div class="step-c"><span class="tag-you">The First Domino Response</span><p>You open the document. You type one sentence. It is terrible. It does not matter. You type a second sentence. Also not great. But the document is no longer blank. You have transformed from "someone who wants to write a book" into "someone who is writing a book." <em>That identity shift is worth more than a thousand hours of preparation.</em></p></div></div>
+    <div class="adv-step adv-result-good"><div class="step-c"><p><strong>Preparation without execution is just entertainment.</strong> The first domino is never pretty. It does not need to be. It needs to fall.</p></div></div>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Right Now</div>
+    <h4>Your First Domino</h4>
+    <p class="q-start">The project you have been avoiding:</p>
+    <div class="think-line"></div>
+    <p class="q-start">The smallest possible action (under 5 minutes):</p>
+    <div class="think-line"></div>
+    <p class="q-start">When will you do it? (Write a specific time today):</p>
+    <div class="think-line"></div>
+    <p class="q-start">The second domino for tomorrow:</p>
+    <div class="think-line"></div>
+    <p class="closing">A mediocre start beats a perfect plan that stays in your head forever.</p>
+  </div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapters 3, 4</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Comfort Addiction</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Resistance Protocol</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">3</span><div class="root-items"><span class="root-pill rp-ch2">Delay Architecture</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch2">Three Walls</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">4</span><div class="root-items"><span class="root-pill rp-bright">First Domino</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Momentum Chain</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 5: THE NUMB ZONE ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Five</div><h2 class="ch-title">The Numb Zone</h2><p class="ch-sub">You stopped praying not because you lost faith but because you stopped caring.</p></div></div>
+<div class="ribbon"><p>"I know your deeds, that you are neither cold nor hot. I wish you were either one or the other!" Revelation 3:15 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>The first four chapters confronted the body and the mind. Now we reach the deepest altar. The one nobody talks about because it is the most uncomfortable to admit. <strong>Spiritual numbness.</strong> Not doubt. Not rebellion. Not anger at God. Numbness. The slow, quiet fade from conviction to comfortable indifference.</p>
+  <p>You remember when you used to feel something during worship. When a verse would hit you so hard you would sit in your car afterward unable to move. When prayer felt like a real conversation, not a recitation. When you would read scripture and feel a fire in your chest that demanded response. That fire did not go out because of some dramatic crisis of faith. It went out because you stopped tending it.</p>
+  <p>The third altar of sloth is acedia in its purest form: <strong>the soul that stopped caring about the things that matter.</strong> Not because it was angry. Not because it was wounded. Because it was comfortable. The spiritual anesthetic of a life with enough ease to make God feel optional.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-eye"/></svg></span>The Fade Timeline</h2>
+  <p>Spiritual numbness does not arrive overnight. It arrives in stages, each one barely noticeable until you look back and realize how far you have drifted.</p>
+
+  <div class="trigger-timeline reveal">
+    <div class="trigger-timeline-label">The Slow Fade</div>
+    <div class="tl-track">
+      <div class="tl-node"><div class="tl-node-label">Stage 1</div><h4>Convenience Replaces Conviction</h4><p>You start skipping the practices that cost you something. The early morning prayer. The Sunday you feel tired. The conversation about faith that feels awkward. Convenience becomes the filter for spiritual engagement.</p></div>
+      <div class="tl-node"><div class="tl-node-label">Stage 2</div><h4>Consumption Replaces Communion</h4><p>You replace direct encounters with God with content about God. Podcasts replace prayer. Books about faith replace the actual practice of faith. You feel informed but untransformed.</p></div>
+      <div class="tl-node tl-rust"><div class="tl-node-label">Stage 3</div><h4>Comfort Replaces Calling</h4><p>The question shifts from "What does God want me to do?" to "What do I feel like doing?" Your life becomes about managing comfort, not pursuing mission. The calling fades to a distant memory.</p></div>
+      <div class="tl-node tl-gold"><div class="tl-node-label">Stage 4</div><h4>Indifference Replaces Longing</h4><p>You stop missing God. That is the final stage. Not anger. Not grief. You simply stop caring. The numbness is complete. And because you feel nothing, you assume nothing is wrong.</p></div>
+    </div>
+  </div>
+
+  <div class="breathe reveal">
+    <div class="breathe-ring"></div>
+    <div class="breathe-ring"></div>
+    <div class="breathe-ring"></div>
+    <div class="breathe-content">
+      <div class="breathe-label">Pause</div>
+      <h4>Where Are You on the Fade Timeline?</h4>
+      <p>Not where you were five years ago. Where you are right now. Be honest. Nobody is reading this but you and God. Which stage describes your current spiritual posture?</p>
+    </div>
+  </div>
+
+  <div class="ba-pair reveal">
+    <div class="ba-card ba-before">
+      <div class="ba-head"><span class="ba-dot"></span>The Numb Zone</div>
+      <div class="ba-body"><ul>
+        <li>Prayer feels like talking to a wall</li>
+        <li>Scripture feels like a textbook</li>
+        <li>Worship feels performative</li>
+        <li>Conviction feels distant</li>
+        <li>"I believe, but I don't feel anything"</li>
+      </ul></div>
+    </div>
+    <div class="ba-card ba-after">
+      <div class="ba-head"><span class="ba-dot"></span>The Reawakening</div>
+      <div class="ba-body"><ul>
+        <li>Prayer is an honest conversation, even when it is messy</li>
+        <li>Scripture is a mirror, not a manual</li>
+        <li>Worship is a response, not a routine</li>
+        <li>Conviction is welcomed, not avoided</li>
+        <li>"I feel it again, and I am willing to follow it"</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <p>This chapter is a bridge. It names the wound. The next chapter treats it. But before you move on, you need to acknowledge one thing: <strong>the numbness was not accidental.</strong> On some level, you chose it. Not maliciously. You chose it because feeling things costs something. Conviction demands response. And you were tired of responding. So you let the fire go out and called it maturity.</p>
+
+  <div class="inst reveal"><p><strong>The honest confession:</strong> "I stopped pursuing God not because He was absent, but because His presence demanded more of me than I was willing to give. The numbness was the price I paid for comfort."</p></div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapter 5</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Comfort Addiction</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Resistance Protocol</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">3-4</span><div class="root-items"><span class="root-pill rp-ch2">Delay Architecture</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch2">First Domino</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">5</span><div class="root-items"><span class="root-pill rp-bright">Spiritual Numbness</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">The Slow Fade</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 6: THE WAKE-UP DRILL ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Six</div><h2 class="ch-title">The Wake Up Drill</h2><p class="ch-sub">Not more religious activity. More honest confrontation with what you are avoiding.</p></div></div>
+<div class="ribbon"><p>"Wake up, sleeper, rise from the dead, and Christ will shine on you." Ephesians 5:14 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>The cure for spiritual numbness is not more religion. It is not reading your Bible harder, attending more services, or adding another devotional to your morning. Those are good things, but if the numbness is deep enough, they become performances of faithfulness that produce no actual faith. More activity on top of a numb soul is just noise.</p>
+  <p>The cure is <strong>honesty.</strong> Raw, uncomfortable, undecorated honesty. The kind of honesty that says: "God, I do not feel You. I am not sure I want to. And I am not even sure I want to want to. But I am here. And I am saying this out loud instead of pretending everything is fine."</p>
+  <p>That prayer, messy as it is, has more spiritual power than a thousand polished devotions spoken from behind the numbness. Because that prayer is <strong>true.</strong> And God can work with truth. He cannot work with performance.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-sunrise"/></svg></span>The Daily Ignition Practice</h2>
+
+  <div class="dd reveal"><h4>1. The Honest Check In</h4><div class="sub">First 5 Minutes of the Day</div><p>Before any prayer formula, before any devotional app, before any "quiet time" routine, sit in silence for two minutes and answer one question: <strong>"What am I avoiding?"</strong> Not what task. What truth. What conviction. What conversation with God am I sidestepping? Name it. Do not fix it. Just name it. Naming the avoidance is the first crack in the numbness.</p></div>
+
+  <div class="dd reveal"><h4>2. The One Verse Confrontation</h4><div class="sub">Not Study. Confrontation.</div><p>Do not read a chapter. Do not follow a plan. Open scripture and find one verse. Just one. Read it slowly. Three times. Then ask it one question: <strong>"What is this verse asking me to do that I am not doing?"</strong> This is not Bible study. This is letting the Word do what Hebrews 4:12 says it does: penetrate, divide, and expose the thoughts and intentions of your heart. Let it be uncomfortable.</p></div>
+
+  <div class="dd reveal"><h4>3. The Unfiltered Prayer</h4><div class="sub">Say What You Mean</div><p>Throw away the template. Do not start with "Dear Heavenly Father" if that is not what your heart is saying. Start with what is real: "God, I am frustrated." "God, I do not feel close to You and I do not know how to get back." "God, I am scared that I have wasted years on the wrong things." Unfiltered prayer is the opposite of numbness because it requires you to <strong>feel something</strong> and <strong>say it.</strong></p></div>
+
+  <div class="viz reveal">
+    <div class="viz-top"><div class="viz-icon"><svg><use href="#ico-sunrise"/></svg></div><div class="viz-meta"><div class="viz-label">Protocol</div><h4>The 30 Day Ignition Challenge</h4></div></div>
+    <div class="viz-body">
+      <p><strong>Days 1 through 10:</strong> The Honest Check In only. Two minutes of silence. One question: "What am I avoiding?" Write it down. That is all. Do not try to add anything else. You are training honesty before you add activity.</p>
+      <p><strong>Days 11 through 20:</strong> Add the One Verse Confrontation. Five minutes total. Silence, then one verse, then the confrontation question. Write what surfaces. Some days it will feel like nothing. Those days matter most.</p>
+      <p><strong>Days 21 through 30:</strong> Add the Unfiltered Prayer. Seven minutes total. By now, the numbness has started to crack. Not because you tried harder, but because <strong>you stopped pretending.</strong> The fire returns when the performance stops.</p>
+      <div class="viz-trigger">The goal is not to feel spiritual. The goal is to be honest. The feeling follows the honesty.</div>
+    </div>
+  </div>
+
+  <div class="adventure reveal">
+    <div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-eye"/></svg></div><div class="adv-head-text"><div class="adv-head-label">Scenario</div><div class="adv-head-title">The Sunday Morning Test</div></div></div>
+    <div class="adv-step"><div class="step-c"><p>You are sitting in church. The worship band is playing. Everyone around you has their hands up. You feel nothing. Not anger. Not sadness. Just nothing. A flat, gray nothing. You mouth the words but they feel like a foreign language. You wonder if something is broken in you.</p></div></div>
+    <div class="adv-step"><div class="step-c"><span class="tag-you">The Numbness Response</span><p>You put on the face. You raise a hand. You sing louder. You perform engagement. After the service, someone asks how you are doing and you say "Good, really good." The performance is flawless. Nobody knows. But you know. And the distance between what you displayed and what you felt grows a little wider.</p></div></div>
+    <div class="adv-step"><div class="step-c"><span class="tag-you">The Ignition Response</span><p>You stop pretending. You keep your hands at your sides. You close your eyes and whisper the only honest thing you have: "God, I do not feel You right now. I do not know how to get this back. But I am here. And that has to count for something." You sit with the discomfort instead of covering it with performance. <em>And something stirs. Small. Almost imperceptible. But real.</em></p></div></div>
+    <div class="adv-step adv-result-good"><div class="step-c"><p><strong>Honesty in the numbness is more worship than a thousand polished performances.</strong> God is not looking for perfection. He is looking for presence. And presence begins with truth.</p></div></div>
+  </div>
+
+  <div class="prayer reveal">
+    <div class="prayer-label">A Prayer from the Numb Zone</div>
+    <p><strong>God,</strong> I do not know how I got here. I used to feel things when I prayed. I used to want to be in Your presence. Somewhere along the way, the fire went out and I did not notice because the numbness was so comfortable.</p>
+    <p>I am not going to pretend today. I am not going to perform. <strong>I am just going to tell You the truth:</strong> I am numb. I have been numb for longer than I want to admit. And I do not know how to get back.</p>
+    <p>But I am here. I showed up. And I am asking You to <strong>wake me up.</strong> Not with noise. Not with more activity. With Your presence. The real kind. The kind that makes everything else look small.</p>
+    <p><strong>In Jesus' name, amen.</strong></p>
+  </div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapter 6</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Comfort Addiction</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Resistance Protocol</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">3-4</span><div class="root-items"><span class="root-pill rp-ch2">Delay Architecture</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch2">First Domino</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">5</span><div class="root-items"><span class="root-pill rp-ch3">Spiritual Numbness</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch3">The Slow Fade</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">6</span><div class="root-items"><span class="root-pill rp-bright">Wake Up Drill</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Daily Ignition</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 7: THE BURNING YES ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Seven</div><h2 class="ch-title">The Burning Yes</h2><p class="ch-sub">The opposite of sloth is not hustle. It is a burning, specific YES to the one thing God put you here to do.</p></div></div>
+<div class="ribbon"><p>"For we are God's handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do." Ephesians 2:10 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>You have spent six chapters confronting what sloth does to the body, the mind, and the soul. Now comes the final chapter. Not another protocol. Not another audit. <strong>A destination.</strong> Because the opposite of sloth is not productivity. It is not grinding harder, checking more boxes, or filling your calendar until there is no white space left. The opposite of sloth is purpose. A specific, burning, undeniable YES.</p>
+  <p>Ephesians 2:10 does not say you were created for good works in general. It says God <strong>prepared works in advance</strong> for you to do. Specific works. Your works. Not someone else's calling. Not the thing that looks impressive. Not the thing the internet says you should be doing. The thing that was placed inside you before you were born, the thing that makes you lose track of time, the thing that makes your chest burn when you imagine doing it fully and fearlessly.</p>
+  <p>Sloth kept you from finding it. Comfort kept you from pursuing it. Procrastination kept you from starting it. Numbness kept you from caring about it. But it is still there. The ember never fully dies. <strong>It is time to fan it into a flame.</strong></p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-flame"/></svg></span>The Calling Inventory</h2>
+
+  <div class="dd reveal"><h4>Question 1. What Breaks Your Heart?</h4><div class="sub">The Compassion Test</div><p>Not what makes you sad in a general, "that's too bad" way. What makes you angry enough to act? What injustice, what suffering, what problem in the world makes you say: <strong>"Someone should do something about this."</strong> That reaction is a signal. The "someone" might be you. Your calling often lives in the intersection of your pain and the world's need.</p></div>
+
+  <div class="dd reveal"><h4>Question 2. What Comes Naturally That Others Find Difficult?</h4><div class="sub">The Gift Test</div><p>You have abilities that feel so natural to you that you assume everyone has them. They do not. The thing you do effortlessly, the thing people keep asking you for help with, the thing that flows from you without depletion, that is a gift. It is not an accident. It was designed. And it was designed for deployment, not storage.</p></div>
+
+  <div class="dd reveal"><h4>Question 3. What Would You Do If Money Were Irrelevant?</h4><div class="sub">The Freedom Test</div><p>Remove every financial constraint. Remove every practical objection. If you could spend your days doing one thing and money was handled, what would it be? The answer that surfaces when you remove the economic filter is often the truest answer. Not the most practical. The most true. <strong>And God has a history of funding the things He assigns.</strong></p></div>
+
+  <div class="dd reveal"><h4>Question 4. What Makes You Lose Track of Time?</h4><div class="sub">The Flow Test</div><p>There is an activity, a kind of work, a form of service that absorbs you so completely that hours feel like minutes. You do not need to be motivated to do it. You need to be reminded to stop. That state is not random. It is your design signature. The thing that puts you in flow is the thing you were built for.</p></div>
+
+  <div class="think reveal">
+    <div class="think-label">Right Now</div>
+    <h4>The Calling Inventory</h4>
+    <p class="q-start">What breaks your heart?</p>
+    <div class="think-line"></div>
+    <p class="q-start">What comes naturally to you that others find difficult?</p>
+    <div class="think-line"></div>
+    <p class="q-start">What would you do if money were irrelevant?</p>
+    <div class="think-line"></div>
+    <p class="q-start">What makes you lose track of time?</p>
+    <div class="think-line"></div>
+    <p class="q-start">Where do those four answers overlap? Write one sentence that captures the intersection:</p>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+    <p class="closing">That intersection is your burning YES. Sloth has been keeping you from it. Not anymore.</p>
+  </div>
+
+  <div class="stack reveal">
+    <div class="stack-label">From Sloth to Purpose</div>
+    <div class="stack-flow">
+      <span class="stack-node sn-red">Comfort Zone</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-rust">Resistance</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-dark">First Domino</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-gold">Momentum</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-green">Burning YES</span>
+    </div>
+  </div>
+
+  <div class="insight reveal">
+    <p>"Your calling is not the thing that sounds impressive. It is the thing that sounds <em>inevitable.</em> The thing you would do even if nobody paid you, even if nobody clapped, even if nobody ever knew your name."</p>
+  </div>
+
+  <div class="gq reveal"><p>"For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future." Jeremiah 29:11 (NIV)</p></div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Full Map</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Comfort Addiction</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Resistance Protocol</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">3-4</span><div class="root-items"><span class="root-pill rp-ch2">Delay Architecture</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch2">First Domino</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">5-6</span><div class="root-items"><span class="root-pill rp-ch3">Spiritual Numbness</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch3">Daily Ignition</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">7</span><div class="root-items"><span class="root-pill rp-bright">The Burning YES</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Calling Inventory</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 8: THE AWAKE LIFE ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Eight</div><h2 class="ch-title">The Awake Life</h2><p class="ch-sub">The opposite of sloth is not hustle. It is being fully present, fully engaged, fully alive.</p></div></div>
+<div class="ribbon"><p>"I have come that they may have life, and have it to the full." John 10:10 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>You have spent seven chapters confronting three altars. Comfort addiction. Procrastination architecture. Spiritual numbness. Each one built on a lie: that comfort was safety, that delay was wisdom, that numbness was maturity.</p>
+  <p>But John 10:10 gives the countercommand. <strong>Life to the full.</strong> Not a comfortable life. Not a safe life. Not a numb life. A full life. The Greek word is <em>perissos</em>, and it means superabundant, excessive, overflowing. It is the kind of life that has more purpose than one schedule can contain, more fire than one comfort zone can hold, more meaning than one lifetime feels worthy of.</p>
+  <p>That is what sloth stole from you. Not your productivity. Your <strong>aliveness.</strong> The fire in your chest. The urgency of a calling. The electric awareness that today matters, that this hour matters, that the person in front of you matters. Sloth replaced all of that with a gray, fog covered "fine." And "fine" is the most dangerous word in the English language because nobody ever rescued someone from "fine."</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-shield"/></svg></span>The Daily Posture</h2>
+
+  <div class="dd reveal"><h4>Morning. The Ignition</h4><div class="sub">Before the Day Starts</div><p>Before your feet hit the floor: "What is the ONE thing today that matters most, the thing I will be tempted to avoid?" Name it. Then commit: "I will do this first. Before the easy tasks. Before the inbox. Before the scroll." Start every day with the hardest domino. Everything after that is downhill.</p></div>
+
+  <div class="dd reveal"><h4>Midday. The Audit</h4><div class="sub">In the Middle of the Day</div><p>At noon, pause for 60 seconds. Ask: "Am I doing what matters, or am I doing what is comfortable?" If you have drifted into busywork, redirect. If you have chosen the easy path, course correct. The audit is not about guilt. It is about <strong>awareness.</strong> You cannot fight a pattern you do not see.</p></div>
+
+  <div class="dd reveal"><h4>Evening. The Honest Review</h4><div class="sub">Before You Sleep</div><p>Three questions: Where did I choose comfort over calling today? Where did I delay when I should have acted? Where did I feel numb when I should have felt something? No guilt. Just honesty. Write down one thing you will do differently tomorrow. <strong>One thing. Not ten.</strong> The awake life is built one honest evening at a time.</p></div>
+
+  <div class="descent-ramp reveal stagger-children">
+    <div class="ramp-echo"><p>Comfort addiction said: "Rest first, work later." But God said: <strong>"Whatever your hand finds to do, do it with all your might."</strong></p></div>
+    <div class="ramp-echo"><p>Procrastination said: "Wait until you are ready." But God said: <strong>"Do not watch the wind. Do not look at the clouds. Plant."</strong></p></div>
+    <div class="ramp-echo"><p>Spiritual numbness said: "You do not need to feel anything." But God said: <strong>"Wake up, sleeper. Rise from the dead. And Christ will shine on you."</strong></p></div>
+    <div class="ramp-close">
+      <div class="ramp-close-label">The Awake Life</div>
+      <p>You do not need more comfort. You do not need a better plan. You do not need to feel ready. You need to wake up. Open your eyes. Stand up. Take the first step. What God prepared for you is still waiting. And you have wasted enough years sleeping through your own life.</p>
+    </div>
+  </div>
+
+  <div class="prayer reveal">
+    <div class="prayer-label">A Prayer from the Awake Life</div>
+    <p><strong>Father,</strong> I have been asleep. Not the obvious kind. The dangerous kind. The kind where my eyes are open and my body is moving but my soul has been on autopilot for longer than I want to admit.</p>
+    <p>I am laying down the comfort. <strong>I am demolishing the delay.</strong> I am breaking through the numbness. Not because I am strong enough, but because You are calling me and I am tired of hitting snooze on my own purpose.</p>
+    <p>Wake me up. Not with a whisper. <strong>With a fire.</strong> The kind that burns away every excuse, every distraction, every comfortable lie I have been telling myself. Show me the thing You prepared for me before I was born. And give me the courage to pursue it with everything I have.</p>
+    <p><strong>In Jesus' name, amen.</strong></p>
+  </div>
+</div>
+
+<!-- ===== FINAL TEST ===== -->
+<div class="page prose section reveal">
+  <div class="root-review">
+    <div class="root-label">Final Test. Can You Answer Without Looking Back?</div>
+    <div style="padding:0 16px">
+      <div class="dd"><h4>1.</h4><p>What are the three altars of sloth identified in this playbook?</p></div>
+      <div class="dd"><h4>2.</h4><p>What is acedia, and how is it different from laziness?</p></div>
+      <div class="dd"><h4>3.</h4><p>What are the three tools in the Resistance Protocol?</p></div>
+      <div class="dd"><h4>4.</h4><p>What are the three walls of the Delay Architecture?</p></div>
+      <div class="dd"><h4>5.</h4><p>What is the First Domino Protocol, and what is the correct size for a first domino?</p></div>
+      <div class="dd"><h4>6.</h4><p>What are the four stages of the Slow Fade into spiritual numbness?</p></div>
+      <div class="dd"><h4>7.</h4><p>What are the three parts of the Daily Ignition practice?</p></div>
+      <div class="dd"><h4>8.</h4><p>What are the four questions in the Calling Inventory?</p></div>
+      <div class="dd"><h4>9.</h4><p>What are the three parts of the Daily Posture for defeating sloth?</p></div>
+      <div class="dd"><h4>10.</h4><p>Complete the sentence: "The opposite of sloth is not hustle. It is ___."</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PROMPT CARD ===== -->
+<div class="page section reveal">
+  <div class="prompt">
+    <div class="prompt-head">Continue with AI. Prompt Card</div>
+    <div class="prompt-body">
+      <p><strong>Copy this prompt into any AI assistant to continue working on sloth:</strong></p>
+      <p>"I just read Lay It Down: Sloth by Kingdom Builders AI. It identified three altars of sloth: comfort addiction, procrastination architecture, and spiritual numbness. I want you to help me do a personal audit. Ask me questions about each altar, one at a time, and help me identify which one has the strongest grip on my life right now. Then give me a personalized 7 day protocol based on the Resistance Protocol, First Domino method, and Daily Ignition practice from the book. Be direct, not preachy. Challenge me like a coach, not a therapist."</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FINALE ===== -->
+<section class="finale reveal">
+  <h2>Lay It <span>Down.</span></h2>
+  <p>"Whatever your hand finds to do, do it with all your might."</p>
+  <p> Ecclesiastes 9:10 (NIV)</p>
+</section>
+
+<!-- ===== SERIES PROGRESS ===== -->
+<div class="series-progress">
+  <div class="series-label">Lay It Down. The Seven Deadly Sins</div>
+  <div class="series-dots">
+    <span class="series-dot done" title="Pride"></span>
+    <span class="series-dot done" title="Envy"></span>
+    <span class="series-dot done" title="Wrath"></span>
+    <span class="series-dot active" title="Sloth"></span>
+    <span class="series-dot" title="Greed"></span>
+    <span class="series-dot" title="Gluttony"></span>
+    <span class="series-dot" title="Lust"></span>
+  </div>
+  <div class="series-dot-label">Part 4 of 7. Sloth</div>
+</div>
+
+<footer>
+  <p>"Whatever your hand finds to do, do it with all your might." Ecclesiastes 9:10</p>
+  <div class="brand">KingdomBuilders AI</div>
+</footer>
+
+<script>
+(function(){
+  const bar=document.getElementById('read-progress');
+  const pill=document.getElementById('chapter-pill');
+  const chEls=[{el:document.querySelector('.cover'),label:'Cover'},...Array.from(document.querySelectorAll('.ch-head')).map((el,i)=>({el,label:el.querySelector('.ch-num')?.textContent?.trim()||('Ch '+(i+1))}))].filter(c=>c.el);
+  function onScroll(){
+    const h=document.documentElement;
+    const pct=h.scrollTop/(h.scrollHeight-h.clientHeight)*100;
+    bar.style.width=pct+'%';
+    let cur='';
+    for(const c of chEls){if(c.el.getBoundingClientRect().top<200)cur=c.label}
+    if(cur){pill.textContent=cur;pill.classList.add('show')}else{pill.classList.remove('show')}
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  const revealEls=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    const obs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:0.12});
+    revealEls.forEach(el=>obs.observe(el));
+  }else{revealEls.forEach(el=>el.classList.add('visible'))}
+})();
+</script>
+</body>
+</html>
