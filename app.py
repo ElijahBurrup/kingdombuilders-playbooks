@@ -9,6 +9,65 @@ from flask import Flask, Blueprint, send_from_directory, redirect, request, rend
 import config
 from database import initialize_db
 
+# --- Version & Release Notes ---
+APP_VERSION = "2.4.0"
+RELEASE_NOTES = [
+    {
+        "version": "2.4.0",
+        "date": "2026-03-07",
+        "title": "Purchase Gate & Knowledge Layer",
+        "changes": [
+            "Purchase gate — paid playbooks now show pricing options before reading",
+            "Three access tiers: single playbook ($2.50), monthly ($10/mo), yearly ($100/yr)",
+            "Admin access codes for complimentary entry",
+            "Knowledge Layer — hover any highlighted term to see its definition instantly",
+            "The Bonsai Method: 22 domain terms with hover definitions",
+        ],
+    },
+    {
+        "version": "2.3.0",
+        "date": "2026-03-06",
+        "title": "Stripe Integration & Analytics",
+        "changes": [
+            "Full Stripe checkout for single, monthly, and yearly purchases",
+            "Stripe webhook for automatic access provisioning",
+            "Playbook analytics — tracks opens and scroll depth per playbook",
+            "Admin dashboard at /admin with visual analytics",
+        ],
+    },
+    {
+        "version": "2.2.0",
+        "date": "2026-03-06",
+        "title": "Search & Bold Claims",
+        "changes": [
+            "Search bar — find playbooks instantly by title, description, or category",
+            "Bold Claims added to all 44 playbooks",
+            "Stage Setters added to all 44 playbooks",
+        ],
+    },
+    {
+        "version": "2.1.0",
+        "date": "2026-03-05",
+        "title": "New Playbooks",
+        "changes": [
+            "Added The Bonsai Method — personal finance through the art of bonsai shaping",
+            "Added The Fibonacci Trim — painless spending cuts using nature's ratio",
+            "Catalog now features 44 playbooks",
+        ],
+    },
+    {
+        "version": "2.0.0",
+        "date": "2026-03-04",
+        "title": "The Grand Redesign",
+        "changes": [
+            "Completely redesigned catalog with category filtering",
+            "5 free playbooks available without purchase",
+            "Subscription pricing model introduced",
+            "Email capture for free chapter previews",
+        ],
+    },
+]
+
 # --- Blueprint for all routes (supports URL_PREFIX) ---
 bp = Blueprint("main", __name__)
 
@@ -428,6 +487,15 @@ def admin_dashboard():
     from database import get_playbook_analytics
     analytics = get_playbook_analytics()
     return render_template("admin.html", analytics=analytics)
+
+
+# --- Version API ---
+@bp.route("/api/version")
+def api_version():
+    return jsonify({
+        "version": APP_VERSION,
+        "notes": RELEASE_NOTES[:3],  # Last 3 releases
+    })
 
 
 # --- Health Check (keep-alive for Render free tier) ---

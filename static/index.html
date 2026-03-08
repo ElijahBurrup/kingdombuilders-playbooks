@@ -78,6 +78,8 @@ h1,h2,h3,h4{font-family:'Poppins',sans-serif;line-height:1.2}
 .tag-resilience{background:rgba(200,120,56,0.08);color:#C87838}
 .tag-philosophy{background:rgba(13,115,119,0.08);color:#0D7377}
 .tag-history{background:rgba(139,90,43,0.08);color:#8B5A2B}
+.tag-parenting{background:rgba(236,72,153,0.08);color:#DB2777}
+.tag-dad-talks{background:rgba(236,72,153,0.08);color:#DB2777}
 
 .card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid rgba(123,79,191,0.06)}
 .card-price{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:var(--purple-deep)}
@@ -119,6 +121,28 @@ h1,h2,h3,h4{font-family:'Poppins',sans-serif;line-height:1.2}
 footer{text-align:center;padding:36px 24px;background:#080410}
 footer p{font-family:'Lora',serif;font-size:0.78rem;font-style:italic;color:rgba(212,168,67,0.2);margin-bottom:14px}
 footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:normal;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.1)}
+.version-tag{font-family:'Poppins',sans-serif;font-size:0.45rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.08);margin-top:10px;cursor:pointer;transition:color 0.2s}
+.version-tag:hover{color:rgba(212,168,67,0.3)}
+
+/* === WHAT'S NEW MODAL === */
+.wn-overlay{position:fixed;inset:0;background:rgba(10,4,24,0.85);backdrop-filter:blur(6px);z-index:9000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s}
+.wn-overlay.show{opacity:1;pointer-events:auto}
+.wn-modal{background:linear-gradient(170deg,#1A0A2E,#2D1B4E);border:1px solid rgba(212,168,67,0.15);border-radius:16px;max-width:460px;width:calc(100% - 48px);max-height:80vh;overflow-y:auto;padding:36px 32px 28px;box-shadow:0 24px 80px rgba(0,0,0,0.5);transform:translateY(20px);transition:transform 0.3s}
+.wn-overlay.show .wn-modal{transform:translateY(0)}
+.wn-badge{display:inline-block;padding:4px 14px;border:1px solid rgba(212,168,67,0.25);border-radius:100px;font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+.wn-title{font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:#fff;margin-bottom:4px}
+.wn-title span{color:var(--gold)}
+.wn-date{font-family:'Poppins',sans-serif;font-size:0.65rem;color:rgba(255,255,255,0.25);margin-bottom:24px}
+.wn-release{margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.wn-release:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.wn-release-header{font-family:'Poppins',sans-serif;font-size:0.7rem;font-weight:600;color:rgba(255,255,255,0.5);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.wn-release-header .wn-ver{color:var(--gold);font-weight:700}
+.wn-list{list-style:none;padding:0}
+.wn-list li{font-family:'Lora',serif;font-size:0.82rem;color:rgba(255,255,255,0.55);line-height:1.6;padding:3px 0 3px 18px;position:relative}
+.wn-list li::before{content:'';position:absolute;left:0;top:11px;width:6px;height:6px;border-radius:50%;background:var(--gold);opacity:0.4}
+.wn-close{display:block;width:100%;margin-top:24px;padding:14px;background:linear-gradient(135deg,var(--gold),var(--gold-glow));color:var(--purple-deep);font-family:'Poppins',sans-serif;font-size:0.8rem;font-weight:700;border:none;border-radius:8px;cursor:pointer;transition:box-shadow 0.2s,transform 0.2s}
+.wn-close:hover{box-shadow:0 4px 20px rgba(212,168,67,0.4);transform:translateY(-1px)}
+@media(max-width:500px){.wn-modal{padding:28px 20px 24px}}
 </style>
 </head>
 <body>
@@ -160,13 +184,15 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
     <button class="filter-btn" data-filter="tech">Technology</button>
     <button class="filter-btn" data-filter="philosophy">Philosophy</button>
     <button class="filter-btn" data-filter="history">History</button>
+    <button class="filter-btn" data-filter="parenting">Parenting</button>
+    <button class="filter-btn" data-filter="dad-talks">Dad Talks</button>
   </div>
 
   <div class="grid" id="playbook-grid">
 
     <!-- ===== FREE PLAYBOOKS (5) ===== -->
 
-    <a href="layitdown" class="card" data-tag="faith" data-free="true">
+    <a href="layitdown" class="card" data-tag="faith mindset" data-free="true">
       <div class="card-cover">
         <span class="free-badge">Free</span>
         <div class="card-title">Lay It Down</div>
@@ -182,7 +208,7 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
       </div>
     </a>
 
-    <a href="layitdownpride" class="card" data-tag="faith">
+    <a href="layitdownpride" class="card" data-tag="faith mindset">
       <div class="card-cover">
         <div class="card-title">Lay It Down: Pride</div>
         <div class="card-subtitle">The sin that looks like your personality.</div>
@@ -197,7 +223,7 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
       </div>
     </a>
 
-    <a href="layitdownenvy" class="card" data-tag="faith">
+    <a href="layitdownenvy" class="card" data-tag="faith mindset">
       <div class="card-cover">
         <div class="card-title">Lay It Down: Envy</div>
         <div class="card-subtitle">The sin that scrolls.</div>
@@ -212,7 +238,7 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
       </div>
     </a>
 
-    <a href="layitdownwrath" class="card" data-tag="faith">
+    <a href="layitdownwrath" class="card" data-tag="faith mindset">
       <div class="card-cover">
         <div class="card-title">Lay It Down: Wrath</div>
         <div class="card-subtitle">The fire you mistook for strength.</div>
@@ -227,7 +253,7 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
       </div>
     </a>
 
-    <a href="themockingbirdssong" class="card" data-tag="tech">
+    <a href="themockingbirdssong" class="card" data-tag="tech mindset">
       <div class="card-cover">
         <div class="card-title">The Mockingbird's Song</div>
         <div class="card-subtitle">She never wrote a single song. She wrote all of them.</div>
@@ -242,7 +268,7 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
       </div>
     </a>
 
-    <a href="thenarrator" class="card" data-tag="identity" data-free="true">
+    <a href="thenarrator" class="card" data-tag="identity mindset" data-free="true">
       <div class="card-cover">
         <span class="free-badge">Free</span>
         <div class="card-title">The Narrator</div>
@@ -880,7 +906,17 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
 <footer>
   <p>"Whatever you do, work at it with all your heart, as working for the Lord." — Colossians 3:23</p>
   <div class="brand">Kingdom Builders AI</div>
+  <div class="version-tag" id="version-tag" onclick="document.getElementById('wn-overlay').classList.add('show')"></div>
 </footer>
+
+<!-- What's New Modal -->
+<div class="wn-overlay" id="wn-overlay" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="wn-modal">
+    <div class="wn-badge">What's New</div>
+    <div id="wn-content"></div>
+    <button class="wn-close" onclick="document.getElementById('wn-overlay').classList.remove('show')">Got It</button>
+  </div>
+</div>
 
 <script>
 (function(){
@@ -903,7 +939,7 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
       if(activeFilter === 'free'){
         matchesFilter = c.getAttribute('data-free') === 'true';
       } else if(activeFilter !== 'all'){
-        matchesFilter = c.getAttribute('data-tag') === activeFilter;
+        matchesFilter = (c.getAttribute('data-tag') || '').split(' ').indexOf(activeFilter) !== -1;
       }
 
       var matchesSearch = true;
@@ -949,6 +985,43 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
     applyFilters();
     searchInput.focus();
   });
+})();
+
+// --- What's New version check ---
+(function(){
+  var prefix = '';
+  try { var m = location.pathname.match(/^(\/[^\/]+)\/?(#.*)?$/); if(m && m[1] !== '/') prefix = m[1]; } catch(e){}
+
+  fetch(prefix + '/api/version')
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      var ver = data.version;
+      var notes = data.notes || [];
+
+      // Show version in footer
+      var tag = document.getElementById('version-tag');
+      if(tag) tag.textContent = 'v' + ver;
+
+      // Build modal content
+      var html = '';
+      notes.forEach(function(rel, i){
+        html += '<div class="wn-release">';
+        html += '<div class="wn-release-header"><span class="wn-ver">v' + rel.version + '</span> ' + (rel.title || '') + '</div>';
+        if(rel.date) html += '<div class="wn-date">' + rel.date + '</div>';
+        html += '<ul class="wn-list">';
+        (rel.changes || []).forEach(function(c){ html += '<li>' + c + '</li>'; });
+        html += '</ul></div>';
+      });
+      document.getElementById('wn-content').innerHTML = html;
+
+      // Show popup if version changed
+      var lastSeen = localStorage.getItem('kb_playbooks_version');
+      if(lastSeen !== ver){
+        document.getElementById('wn-overlay').classList.add('show');
+        localStorage.setItem('kb_playbooks_version', ver);
+      }
+    })
+    .catch(function(){});
 })();
 </script>
 
