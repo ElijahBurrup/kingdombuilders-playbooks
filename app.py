@@ -234,6 +234,16 @@ def the_termite_cathedral():
     return send_from_directory("static", "the-termite-cathedral.html")
 
 
+@bp.route("/thebonsaimethod")
+def the_bonsai_method():
+    return send_from_directory("static", "the-bonsai-method.html")
+
+
+@bp.route("/thefibonaccitrim")
+def the_fibonacci_trim():
+    return send_from_directory("static", "the-fibonacci-trim.html")
+
+
 # --- Playbook Reader (serves full playbook HTML from assets) ---
 @bp.route("/read/<slug>")
 def read_playbook(slug):
@@ -280,6 +290,8 @@ def read_playbook(slug):
         "the-body-lie": "The_Body_Lie.html",
         "the-mycelium-network": "The_Mycelium_Network.html",
         "the-termite-cathedral": "The_Termite_Cathedral.html",
+        "the-bonsai-method": "The_Bonsai_Method.html",
+        "the-fibonacci-trim": "The_Fibonacci_Trim.html",
     }
     filename = slug_to_file.get(slug)
     if not filename:

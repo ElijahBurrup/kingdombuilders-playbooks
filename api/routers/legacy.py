@@ -79,6 +79,8 @@ LANDING_ROUTES: dict[str, str] = {
     "/thebodylie": "the-body-lie.html",
     "/themyceliumnetwork": "the-mycelium-network.html",
     "/thetermitecathedral": "the-termite-cathedral.html",
+    "/thebonsaimethod": "the-bonsai-method.html",
+    "/thefibonaccitrim": "the-fibonacci-trim.html",
 }
 
 # ============================================================================
@@ -127,6 +129,8 @@ SLUG_TO_FILE: dict[str, str] = {
     "the-body-lie": "The_Body_Lie.html",
     "the-mycelium-network": "The_Mycelium_Network.html",
     "the-termite-cathedral": "The_Termite_Cathedral.html",
+    "the-bonsai-method": "The_Bonsai_Method.html",
+    "the-fibonacci-trim": "The_Fibonacci_Trim.html",
 }
 
 

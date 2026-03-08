@@ -266,6 +266,18 @@ const PLAYBOOKS = [
     readerSlug: "the-termite-cathedral",
     tag: "Technology",
   },
+  {
+    title: "The Bonsai Method",
+    route: "/thebonsaimethod",
+    readerSlug: "the-bonsai-method",
+    tag: "Finance",
+  },
+  {
+    title: "The Fibonacci Trim",
+    route: "/thefibonaccitrim",
+    readerSlug: "the-fibonacci-trim",
+    tag: "Finance",
+  },
 ];
 
 // ── Catalog Page ──────────────────────────────────────────────
