@@ -484,6 +484,12 @@ usage pattern.
 
 ---
 
+## VIII-b. WRITING RULES (apply to ALL playbook text)
+
+**NO HYPHENS OR DASHES.** Never use em dashes (—), en dashes (–), or hyphens (-) as punctuation in prose text. Use commas, periods, or restructure sentences instead. This is a hard rule for all new SetHut playbooks and has been retroactively applied to all 44 existing playbooks.
+
+---
+
 ## IX. THE MANDATORY NINE (required in every new playbook)
 
 | # | Element | Why It's Mandatory |

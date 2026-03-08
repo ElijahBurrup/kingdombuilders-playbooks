@@ -88,6 +88,7 @@ Playbooks/
 - Legacy routes are data-driven via `LANDING_ROUTES` and `SLUG_TO_FILE` dicts in `api/routers/legacy.py`
 - New playbooks added via admin API or seed script (no more manual route registration)
 - "SetHut" command generates new playbooks as visual experiences
+- **NO HYPHENS/DASHES in playbook text**: Never use em dashes (—), en dashes (–), or hyphens (-) as punctuation in prose. Use commas, periods, or restructure sentences instead. This applies to ALL visible text content in assets/*.html files. CSS properties and HTML attributes with hyphens are fine.
 - URL_PREFIX middleware supports subpath deployment (e.g., /playbooks on Cloudflare Worker)
 
 ## Branches
