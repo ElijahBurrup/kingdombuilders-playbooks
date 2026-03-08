@@ -93,6 +93,22 @@ usage pattern.
 **Gold Standard (Squirrel Economy):** "An economics parable where *every squirrel decision* ripples through the whole economy — from the savers to the spenders, the careful to the reckless, the boom to the crash, and back again."
 **Used in:** Every playbook (MANDATORY)
 
+### 7c. The Knowledge Layer
+**What it is:** Hover-to-define tooltips on ~20% of domain-specific terms throughout the playbook.
+**How it works:** Key terms are wrapped in `<dfn class="def" data-def="Plain-language definition here">term</dfn>`. On hover (desktop) or tap (mobile), a tooltip appears above the word with a brief, accessible definition. Pure CSS — no JavaScript required.
+**CSS spec:**
+- `.def`: `cursor: help; border-bottom: 1px dotted rgba(255,255,255,0.3); position: relative`
+- `.def::after`: `content: attr(data-def); position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: #1a1a2e; color: #e8c96a; padding: 8px 14px; border-radius: 6px; font-size: 0.78rem; white-space: normal; width: max-content; max-width: 260px; opacity: 0; pointer-events: none; transition: opacity 0.2s; box-shadow: 0 4px 16px rgba(0,0,0,0.5); z-index: 50; line-height: 1.4`
+- `.def:hover::after, .def:focus::after`: `opacity: 1`
+- Mobile breakpoint (max-width 600px): `left: 0; transform: none`
+**Term selection guidelines:**
+- Target ~20% of words that carry domain-specific weight
+- Include: technical terms, framework names, coined phrases, metaphor-specific vocabulary
+- Exclude: common words, terms already explained in adjacent text, proper nouns
+- Definitions should be 8-20 words, plain language, no jargon in the definition itself
+**Gold Standard (Bonsai Method):** 22 terms defined — "trunk line", "crossing branch", "30/70 Rule", "Happiness Audit", "Three Account Architecture", "shadow spending", "convenience purchases", "lifestyle inflation", etc.
+**Used in:** Every playbook (MANDATORY for new playbooks, retrofit existing)
+
 ### 8. The Root System
 **What it is:** Cumulative memory anchors placed between chapters that review everything learned so far.
 **How it works:** After each chapter, ALL previous lessons are listed plus the new one. By the final chapter, the reader has reviewed the core concepts 5-7 times. This is spaced repetition built into the document structure.
@@ -468,17 +484,19 @@ usage pattern.
 
 ---
 
-## IX. THE MANDATORY SEVEN (required in every new playbook)
+## IX. THE MANDATORY NINE (required in every new playbook)
 
 | # | Element | Why It's Mandatory |
 |---|---------|-------------------|
-| 1 | **Bold Promise** | Stakes — without it the reader has no reason to commit |
+| 1 | **Bold Claim** | Stakes — "If you finish this, you will..." gives the reader a reason to commit |
+| 1b | **Stage Setter** | Cover tagline — contrast pairs that frame the journey in one breath |
 | 2 | **Root System** | Spaced repetition — this is what makes playbooks teach, not just inform |
 | 3 | **Final Test** | Accountability — proves whether the reader absorbed it or just read it |
 | 4 | **Scripture Ribbon** | Faith thread — this is KingdomBuilders, the spiritual cadence must be consistent |
 | 5 | **The Cast** | Characters — the reader needs someone to follow through the story |
 | 6 | **Visualization Box** | Mental image — what sticks months later. The neural anchor |
 | 7 | **Installation Prompt** | Continuation — turns a static document into an interactive coaching session |
+| 8 | **Knowledge Layer** | Hover definitions on ~20% of domain terms — instant comprehension without leaving the flow |
 
 ### Optional (used intentionally, not everywhere):
 - Breathe Gate — only before emotionally heavy content
@@ -508,7 +526,9 @@ usage pattern.
 | Visualization Box | ~28/36 | **MANDATORY** |
 | Root System | ~25/36 | **MANDATORY** |
 | Scripture Ribbon | ~20/36 | **MANDATORY** |
-| Bold Promise | ~15/36 | **MANDATORY** |
+| Bold Claim | 44/44 | **MANDATORY** |
+| Stage Setter | 44/44 | **MANDATORY** |
+| Knowledge Layer | 1/44 | **MANDATORY** (retrofit in progress) |
 | Dark Panel | ~15/36 | Frequent |
 | Flow Diagram | ~20/36 | Frequent |
 | Data Hero | ~10/36 | Occasional |

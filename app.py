@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from flask import Flask, Blueprint, send_from_directory, redirect, request, render_template, url_for, jsonify
+from flask import Flask, Blueprint, send_from_directory, redirect, request, render_template, url_for, jsonify, session
 
 import config
 from database import initialize_db
@@ -13,9 +13,25 @@ from database import initialize_db
 bp = Blueprint("main", __name__)
 
 
+FREE_SLUGS = {
+    "conductors-playbook",
+    "the-squirrel-economy",
+    "the-salmon-journey",
+    "the-wolfs-table",
+    "the-crows-gambit",
+}
+
+ADMIN_CODE = "elijahsentme"
+
+
 def get_all_slugs():
     """Return list of all playbook slugs (used by grant_all_playbook_access)."""
     return list(_slug_to_file().keys())
+
+
+def _slug_to_title(slug):
+    """Convert slug to display title."""
+    return slug.replace("-", " ").title().replace("S ", "s ").replace("'S", "'s")
 
 
 def _slug_to_file():
@@ -310,6 +326,16 @@ def read_playbook(slug):
             message="The playbook you're looking for doesn't exist."
         ), 404
 
+    # Check access: free playbooks, admin-unlocked sessions, or per-slug unlocks pass through
+    if slug not in FREE_SLUGS:
+        unlocked = session.get("admin_unlocked") or slug in session.get("unlocked_slugs", [])
+        if not unlocked:
+            return render_template("purchase_gate.html",
+                slug=slug,
+                title=_slug_to_title(slug),
+                error=request.args.get("error")
+            )
+
     # Read the HTML and inject tracking script before </body>
     file_path = Path(__file__).parent / "assets" / filename
     html = file_path.read_text(encoding="utf-8")
@@ -359,6 +385,16 @@ def read_playbook(slug):
 """
     html = html.replace("</body>", tracking_script + "</body>")
     return html, 200, {"Content-Type": "text/html; charset=utf-8"}
+
+
+# --- Playbook Unlock (admin code) ---
+@bp.route("/read/<slug>/unlock", methods=["POST"])
+def unlock_playbook(slug):
+    code = request.form.get("code", "").strip()
+    if code == ADMIN_CODE:
+        session["admin_unlocked"] = True
+        return redirect(url_for("main.read_playbook", slug=slug))
+    return redirect(url_for("main.read_playbook", slug=slug, error="1"))
 
 
 # --- Analytics Tracking ---
@@ -455,6 +491,9 @@ def success():
             title="Purchase Not Found",
             message="We couldn't find your purchase. Your payment may still be processing — please check your email in a few minutes."
         ), 404
+
+    # Grant session-level access so the user can read immediately
+    session["admin_unlocked"] = True
 
     return render_template("success.html",
         download_token=purchase["download_token"],
