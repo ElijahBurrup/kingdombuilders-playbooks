@@ -233,14 +233,14 @@ const PLAYBOOKS = [
     catalogTitle: "Dad Talks: The Dopamine Drought",
     route: "/dadtalksthedopaminedrought",
     readerSlug: "dad-talks-the-dopamine-drought",
-    tag: "Parenting",
+    tag: "Parenting Dad Talks",
   },
   {
     title: "The Mirror Test",
     catalogTitle: "Dad Talks: The Mirror Test",
     route: "/dadtalksthemirrortest",
     readerSlug: "dad-talks-the-mirror-test",
-    tag: "Parenting",
+    tag: "Parenting Dad Talks",
   },
   {
     title: "The Arrival",
