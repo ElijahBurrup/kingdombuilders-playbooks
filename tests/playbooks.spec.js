@@ -261,9 +261,9 @@ const PLAYBOOKS = [
     tag: "Technology",
   },
   {
-    title: "The Movable Type",
-    route: "/themovabletype",
-    readerSlug: "the-movable-type",
+    title: "The Termite Cathedral",
+    route: "/thetermitecathedral",
+    readerSlug: "the-termite-cathedral",
     tag: "Technology",
   },
 ];
