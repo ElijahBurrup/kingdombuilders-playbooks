@@ -13,6 +13,61 @@ from database import initialize_db
 bp = Blueprint("main", __name__)
 
 
+def get_all_slugs():
+    """Return list of all playbook slugs (used by grant_all_playbook_access)."""
+    return list(_slug_to_file().keys())
+
+
+def _slug_to_file():
+    """Central slug-to-filename mapping."""
+    return {
+        "lay-it-down": "Lay_It_Down.html",
+        "the-ant-network": "The_Ant_Network.html",
+        "the-cost-ledger": "The_Cost_Ledger.html",
+        "the-ghost-frame": "The_Ghost_Frame.html",
+        "the-gravity-well": "The_Gravity_Well.html",
+        "the-narrator": "The_Narrator.html",
+        "the-salmon-journey": "The_Salmon_Journey.html",
+        "the-squirrel-economy": "The_Squirrel_Economy_Modified.html",
+        "conductors-playbook": "The_Conductors_Playbook.html",
+        "the-wolfs-table": "The_Wolfs_Table.html",
+        "the-crows-gambit": "The_Crows_Gambit.html",
+        "the-eagles-lens": "The_Eagles_Lens.html",
+        "the-lighthouse-keepers-log": "The_Lighthouse_Keepers_Log.html",
+        "the-octopus-protocol": "The_Octopus_Protocol.html",
+        "the-starlings-murmuration": "The_Starlings_Murmuration.html",
+        "the-chameleons-code": "The_Chameleons_Code.html",
+        "the-spiders-loom": "The_Spiders_Loom.html",
+        "the-geckos-grip": "The_Geckos_Grip.html",
+        "the-fireflys-signal": "The_Fireflys_Signal.html",
+        "the-foxs-trail": "The_Foxs_Trail.html",
+        "the-moths-flame": "The_Moths_Flame.html",
+        "the-bears-winter": "The_Bears_Winter.html",
+        "the-coyotes-laugh": "The_Coyotes_Laugh.html",
+        "the-pangolins-armor": "The_Pangolins_Armor.html",
+        "the-horses-gait": "The_Horses_Gait.html",
+        "the-tide-pools-echo": "The_Tide_Pools_Echo.html",
+        "the-whales-breath": "The_Whales_Breath.html",
+        "the-butterflys-crossing": "The_Butterflys_Crossing.html",
+        "the-elephants-ground": "The_Elephants_Ground.html",
+        "the-bees-dance": "The_Bees_Dance.html",
+        "the-otters-play": "The_Otters_Play.html",
+        "the-compass-rose": "The_Compass_Rose.html",
+        "lay-it-down-pride": "Lay_It_Down_Pride.html",
+        "lay-it-down-envy": "Lay_It_Down_Envy.html",
+        "lay-it-down-wrath": "Lay_It_Down_Wrath.html",
+        "the-mockingbirds-song": "The_Mockingbirds_Song.html",
+        "dad-talks-the-dopamine-drought": "Dad_Talks_The_Dopamine_Drought.html",
+        "dad-talks-the-mirror-test": "Dad_Talks_The_Mirror_Test.html",
+        "the-arrival": "The_Arrival.html",
+        "the-body-lie": "The_Body_Lie.html",
+        "the-mycelium-network": "The_Mycelium_Network.html",
+        "the-termite-cathedral": "The_Termite_Cathedral.html",
+        "the-bonsai-method": "The_Bonsai_Method.html",
+        "the-fibonacci-trim": "The_Fibonacci_Trim.html",
+    }
+
+
 # --- Product Catalog ---
 @bp.route("/")
 def catalog():
@@ -247,52 +302,7 @@ def the_fibonacci_trim():
 # --- Playbook Reader (serves full playbook HTML from assets) ---
 @bp.route("/read/<slug>")
 def read_playbook(slug):
-    slug_to_file = {
-        "lay-it-down": "Lay_It_Down.html",
-        "the-ant-network": "The_Ant_Network.html",
-        "the-cost-ledger": "The_Cost_Ledger.html",
-        "the-ghost-frame": "The_Ghost_Frame.html",
-        "the-gravity-well": "The_Gravity_Well.html",
-        "the-narrator": "The_Narrator.html",
-        "the-salmon-journey": "The_Salmon_Journey.html",
-        "the-squirrel-economy": "The_Squirrel_Economy_Modified.html",
-        "conductors-playbook": "The_Conductors_Playbook.html",
-        "the-wolfs-table": "The_Wolfs_Table.html",
-        "the-crows-gambit": "The_Crows_Gambit.html",
-        "the-eagles-lens": "The_Eagles_Lens.html",
-        "the-lighthouse-keepers-log": "The_Lighthouse_Keepers_Log.html",
-        "the-octopus-protocol": "The_Octopus_Protocol.html",
-        "the-starlings-murmuration": "The_Starlings_Murmuration.html",
-        "the-chameleons-code": "The_Chameleons_Code.html",
-        "the-spiders-loom": "The_Spiders_Loom.html",
-        "the-geckos-grip": "The_Geckos_Grip.html",
-        "the-fireflys-signal": "The_Fireflys_Signal.html",
-        "the-foxs-trail": "The_Foxs_Trail.html",
-        "the-moths-flame": "The_Moths_Flame.html",
-        "the-bears-winter": "The_Bears_Winter.html",
-        "the-coyotes-laugh": "The_Coyotes_Laugh.html",
-        "the-pangolins-armor": "The_Pangolins_Armor.html",
-        "the-horses-gait": "The_Horses_Gait.html",
-        "the-tide-pools-echo": "The_Tide_Pools_Echo.html",
-        "the-whales-breath": "The_Whales_Breath.html",
-        "the-butterflys-crossing": "The_Butterflys_Crossing.html",
-        "the-elephants-ground": "The_Elephants_Ground.html",
-        "the-bees-dance": "The_Bees_Dance.html",
-        "the-otters-play": "The_Otters_Play.html",
-        "the-compass-rose": "The_Compass_Rose.html",
-        "lay-it-down-pride": "Lay_It_Down_Pride.html",
-        "lay-it-down-envy": "Lay_It_Down_Envy.html",
-        "lay-it-down-wrath": "Lay_It_Down_Wrath.html",
-        "the-mockingbirds-song": "The_Mockingbirds_Song.html",
-        "dad-talks-the-dopamine-drought": "Dad_Talks_The_Dopamine_Drought.html",
-        "dad-talks-the-mirror-test": "Dad_Talks_The_Mirror_Test.html",
-        "the-arrival": "The_Arrival.html",
-        "the-body-lie": "The_Body_Lie.html",
-        "the-mycelium-network": "The_Mycelium_Network.html",
-        "the-termite-cathedral": "The_Termite_Cathedral.html",
-        "the-bonsai-method": "The_Bonsai_Method.html",
-        "the-fibonacci-trim": "The_Fibonacci_Trim.html",
-    }
+    slug_to_file = _slug_to_file()
     filename = slug_to_file.get(slug)
     if not filename:
         return render_template("error.html",

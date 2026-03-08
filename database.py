@@ -67,6 +67,32 @@ CREATE TABLE IF NOT EXISTS playbook_views (
 );
 CREATE INDEX IF NOT EXISTS idx_playbook_views_slug ON playbook_views(slug);
 
+CREATE TABLE IF NOT EXISTS playbook_access (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    customer_email  TEXT NOT NULL,
+    slug            TEXT NOT NULL,
+    access_type     TEXT NOT NULL DEFAULT 'single',
+    stripe_session_id TEXT,
+    granted_at      TEXT NOT NULL DEFAULT (datetime('now')),
+    UNIQUE(customer_email, slug)
+);
+CREATE INDEX IF NOT EXISTS idx_playbook_access_email ON playbook_access(customer_email);
+CREATE INDEX IF NOT EXISTS idx_playbook_access_slug ON playbook_access(slug);
+
+CREATE TABLE IF NOT EXISTS subscriptions (
+    id                     INTEGER PRIMARY KEY AUTOINCREMENT,
+    customer_email         TEXT NOT NULL,
+    stripe_customer_id     TEXT,
+    stripe_subscription_id TEXT UNIQUE,
+    plan                   TEXT NOT NULL DEFAULT 'monthly',
+    status                 TEXT NOT NULL DEFAULT 'active',
+    current_period_end     TEXT,
+    created_at             TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at             TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_subscriptions_email ON subscriptions(customer_email);
+CREATE INDEX IF NOT EXISTS idx_subscriptions_stripe_sub ON subscriptions(stripe_subscription_id);
+
 CREATE TABLE IF NOT EXISTS playbook_exits (
     id              INTEGER PRIMARY KEY AUTOINCREMENT,
     slug            TEXT NOT NULL,
@@ -184,6 +210,88 @@ def create_subscriber(email, source="salmon-journey-ch1"):
         (email, source)
     )
     conn.commit()
+
+
+def grant_playbook_access(customer_email, slug, access_type="single", stripe_session_id=None):
+    """Grant a customer access to a specific playbook."""
+    conn = get_connection()
+    conn.execute(
+        """INSERT OR IGNORE INTO playbook_access
+           (customer_email, slug, access_type, stripe_session_id)
+           VALUES (?, ?, ?, ?)""",
+        (customer_email, slug, access_type, stripe_session_id)
+    )
+    conn.commit()
+
+
+def grant_all_playbook_access(customer_email, access_type="subscription", stripe_session_id=None):
+    """Grant a customer access to ALL playbooks."""
+    from app import get_all_slugs
+    conn = get_connection()
+    for slug in get_all_slugs():
+        conn.execute(
+            """INSERT OR IGNORE INTO playbook_access
+               (customer_email, slug, access_type, stripe_session_id)
+               VALUES (?, ?, ?, ?)""",
+            (customer_email, slug, access_type, stripe_session_id)
+        )
+    conn.commit()
+
+
+def check_playbook_access(customer_email, slug):
+    """Check if a customer has access to a specific playbook."""
+    conn = get_connection()
+    # Check direct access
+    access = conn.execute(
+        "SELECT id FROM playbook_access WHERE customer_email = ? AND slug = ?",
+        (customer_email, slug)
+    ).fetchone()
+    if access:
+        return True
+    # Check active subscription
+    sub = conn.execute(
+        "SELECT id FROM subscriptions WHERE customer_email = ? AND status = 'active'",
+        (customer_email,)
+    ).fetchone()
+    return sub is not None
+
+
+def create_subscription(customer_email, stripe_customer_id, stripe_subscription_id,
+                        plan="monthly", status="active", current_period_end=None):
+    """Create or update a subscription record."""
+    conn = get_connection()
+    conn.execute(
+        """INSERT INTO subscriptions
+           (customer_email, stripe_customer_id, stripe_subscription_id, plan, status, current_period_end)
+           VALUES (?, ?, ?, ?, ?, ?)
+           ON CONFLICT(stripe_subscription_id) DO UPDATE SET
+             status = excluded.status,
+             current_period_end = excluded.current_period_end,
+             updated_at = datetime('now')""",
+        (customer_email, stripe_customer_id, stripe_subscription_id, plan, status,
+         current_period_end)
+    )
+    conn.commit()
+
+
+def update_subscription_status(stripe_subscription_id, status, current_period_end=None):
+    """Update a subscription's status (active, canceled, past_due)."""
+    conn = get_connection()
+    conn.execute(
+        """UPDATE subscriptions SET status = ?, current_period_end = ?, updated_at = datetime('now')
+           WHERE stripe_subscription_id = ?""",
+        (status, current_period_end, stripe_subscription_id)
+    )
+    conn.commit()
+
+
+def get_subscription_by_email(customer_email):
+    """Get active subscription for an email."""
+    conn = get_connection()
+    return conn.execute(
+        "SELECT * FROM subscriptions WHERE customer_email = ? AND status = 'active' ORDER BY created_at DESC LIMIT 1",
+        (customer_email,)
+    ).fetchone()
 
 
 def log_playbook_view(slug, ip_address=None, user_agent=None):
