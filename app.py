@@ -392,7 +392,8 @@ def read_playbook(slug):
             return render_template("purchase_gate.html",
                 slug=slug,
                 title=_slug_to_title(slug),
-                error=request.args.get("error")
+                error=request.args.get("error"),
+                prefix=config.URL_PREFIX or ""
             )
 
     # Read the HTML and inject tracking script before </body>

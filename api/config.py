@@ -11,6 +11,9 @@ class Settings(BaseSettings):
     STRIPE_SECRET_KEY: str = ""
     STRIPE_PUBLISHABLE_KEY: str = ""
     STRIPE_PRICE_ID: str = ""
+    STRIPE_PRICE_SINGLE: str = ""
+    STRIPE_PRICE_MONTHLY: str = ""
+    STRIPE_PRICE_YEARLY: str = ""
     STRIPE_WEBHOOK_SECRET: str = ""
 
     # Resend

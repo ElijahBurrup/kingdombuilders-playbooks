@@ -12,7 +12,7 @@ from pathlib import Path
 
 import stripe
 from fastapi import APIRouter, Form, HTTPException, Request, status
-from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, RedirectResponse
 from starlette.templating import Jinja2Templates
 
 from api.config import settings
@@ -32,6 +32,80 @@ TEMPLATES_DIR = BASE_DIR / "templates"
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
 router = APIRouter(tags=["legacy"])
+
+# ============================================================================
+# Version & Release Notes
+# ============================================================================
+APP_VERSION = "2.4.0"
+RELEASE_NOTES = [
+    {
+        "version": "2.4.0",
+        "date": "2026-03-07",
+        "title": "Purchase Gate & Knowledge Layer",
+        "changes": [
+            "Purchase gate — paid playbooks now show pricing options before reading",
+            "Three access tiers: single playbook ($2.50), monthly ($10/mo), yearly ($100/yr)",
+            "Admin access codes for complimentary entry",
+            "Knowledge Layer — hover any highlighted term to see its definition instantly",
+            "The Bonsai Method: 22 domain terms with hover definitions",
+        ],
+    },
+    {
+        "version": "2.3.0",
+        "date": "2026-03-06",
+        "title": "Stripe Integration & Analytics",
+        "changes": [
+            "Full Stripe checkout for single, monthly, and yearly purchases",
+            "Stripe webhook for automatic access provisioning",
+            "Playbook analytics — tracks opens and scroll depth per playbook",
+            "Admin dashboard at /admin with visual analytics",
+        ],
+    },
+    {
+        "version": "2.2.0",
+        "date": "2026-03-06",
+        "title": "Search & Bold Claims",
+        "changes": [
+            "Search bar — find playbooks instantly by title, description, or category",
+            "Bold Claims added to all 44 playbooks",
+            "Stage Setters added to all 44 playbooks",
+        ],
+    },
+    {
+        "version": "2.1.0",
+        "date": "2026-03-05",
+        "title": "Catalog Launch",
+        "changes": [
+            "5 free playbooks available without purchase",
+            "Subscription pricing model introduced",
+            "Email capture for free chapter previews",
+        ],
+    },
+    {
+        "version": "2.0.0",
+        "date": "2026-03-04",
+        "title": "The Grand Redesign",
+        "changes": [
+            "Completely redesigned catalog with category filtering",
+            "5 free playbooks available without purchase",
+            "Subscription pricing model introduced",
+            "Email capture for free chapter previews",
+        ],
+    },
+]
+
+# ============================================================================
+# Free slugs & admin access
+# ============================================================================
+FREE_SLUGS = {
+    "lay-it-down",
+    "the-narrator",
+    "the-crows-gambit",
+    "the-salmon-journey",
+    "the-wolfs-table",
+}
+
+ADMIN_CODE = "elijahsentme"
 
 # ============================================================================
 # Landing-page routes — maps a URL path to a file inside static/
@@ -170,8 +244,75 @@ for _path, _filename in LANDING_ROUTES.items():
 
 
 # ============================================================================
-# Playbook reader — /read/{slug}
+# Playbook reader — /read/{slug} (with purchase gate)
 # ============================================================================
+def _slug_to_title(slug: str) -> str:
+    """Convert slug like 'the-eagles-lens' to 'The Eagle's Lens'."""
+    return slug.replace("-", " ").title()
+
+
+def _inject_back_button_and_tracking(html: str, slug: str) -> str:
+    """Inject fixed back button and exit tracking script before </body>."""
+    prefix = settings.URL_PREFIX or ""
+    back_button = f"""
+<style>
+.pb-back{{position:fixed;top:16px;left:16px;z-index:9999;display:flex;align-items:center;gap:6px;
+  padding:8px 16px 8px 12px;background:rgba(10,6,20,0.75);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,0.1);border-radius:50px;
+  font-family:'Poppins',Helvetica,sans-serif;font-size:0.7rem;font-weight:600;color:rgba(255,255,255,0.7);
+  text-decoration:none;cursor:pointer;transition:all 0.25s;box-shadow:0 2px 12px rgba(0,0,0,0.3)}}
+.pb-back:hover{{background:rgba(10,6,20,0.9);color:#E8C96A;border-color:rgba(212,168,67,0.3)}}
+.pb-back svg{{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}}
+@media print{{.pb-back{{display:none}}}}
+</style>
+<a class="pb-back" href="{prefix}/"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Playbooks</a>
+"""
+    tracking_script = f"""
+<script>
+(function(){{
+  var slug = '{slug}';
+  var prefix = '';
+  try {{ var m = location.pathname.match(/^(\\/[^\\/]+)\\/read\\//); if(m) prefix = m[1]; }} catch(e){{}}
+  var startTime = Date.now();
+  var tracked = false;
+
+  fetch(prefix + '/api/track/view', {{
+    method: 'POST',
+    headers: {{'Content-Type': 'application/json'}},
+    body: JSON.stringify({{slug: slug}})
+  }}).catch(function(){{}});
+
+  function getScrollPercent() {{
+    var h = document.documentElement;
+    var b = document.body;
+    var st = h.scrollTop || b.scrollTop;
+    var sh = (h.scrollHeight || b.scrollHeight) - h.clientHeight;
+    return sh > 0 ? Math.round((st / sh) * 100) : 0;
+  }}
+
+  function sendExit() {{
+    if (tracked) return;
+    tracked = true;
+    var data = JSON.stringify({{
+      slug: slug,
+      scroll_percent: getScrollPercent(),
+      time_spent_secs: Math.round((Date.now() - startTime) / 1000)
+    }});
+    if (navigator.sendBeacon) {{
+      navigator.sendBeacon(prefix + '/api/track/exit', new Blob([data], {{type: 'application/json'}}));
+    }} else {{
+      fetch(prefix + '/api/track/exit', {{method: 'POST', headers: {{'Content-Type': 'application/json'}}, body: data, keepalive: true}}).catch(function(){{}});
+    }}
+  }}
+
+  window.addEventListener('beforeunload', sendExit);
+  document.addEventListener('visibilitychange', function() {{ if (document.visibilityState === 'hidden') sendExit(); }});
+}})();
+</script>
+"""
+    return html.replace("</body>", back_button + tracking_script + "</body>")
+
+
 @router.get("/read/{slug}", include_in_schema=False)
 async def read_playbook(request: Request, slug: str):
     filename = SLUG_TO_FILE.get(slug)
@@ -185,6 +326,24 @@ async def read_playbook(request: Request, slug: str):
             },
             status_code=404,
         )
+
+    # Purchase gate: check if playbook is free or session is unlocked
+    if slug not in FREE_SLUGS:
+        admin_unlocked = request.cookies.get("admin_unlocked") == "1"
+        unlocked_slugs = request.cookies.get("unlocked_slugs", "").split(",")
+        if not admin_unlocked and slug not in unlocked_slugs:
+            prefix = settings.URL_PREFIX or ""
+            return templates.TemplateResponse(
+                "purchase_gate.html",
+                {
+                    "request": request,
+                    "slug": slug,
+                    "title": _slug_to_title(slug),
+                    "error": request.query_params.get("error"),
+                    "prefix": prefix,
+                },
+            )
+
     file_path = ASSETS_DIR / filename
     if not file_path.is_file():
         return templates.TemplateResponse(
@@ -196,7 +355,23 @@ async def read_playbook(request: Request, slug: str):
             },
             status_code=404,
         )
-    return FileResponse(file_path)
+
+    html = file_path.read_text(encoding="utf-8")
+    html = _inject_back_button_and_tracking(html, slug)
+    return HTMLResponse(html)
+
+
+# ============================================================================
+# Admin unlock — /read/{slug}/unlock
+# ============================================================================
+@router.post("/read/{slug}/unlock", include_in_schema=False)
+async def unlock_playbook(request: Request, slug: str, code: str = Form("")):
+    prefix = settings.URL_PREFIX or ""
+    if code.strip() == ADMIN_CODE:
+        response = RedirectResponse(url=f"{prefix}/read/{slug}", status_code=303)
+        response.set_cookie("admin_unlocked", "1", max_age=86400, httponly=True, samesite="lax")
+        return response
+    return RedirectResponse(url=f"{prefix}/read/{slug}?error=1", status_code=303)
 
 
 # ============================================================================
@@ -235,29 +410,92 @@ async def free_salmon_ch1():
 
 
 # ============================================================================
+# API — Version, Hot, Tracking
+# ============================================================================
+@router.get("/api/version", include_in_schema=False)
+async def api_version():
+    return JSONResponse({"version": APP_VERSION, "notes": RELEASE_NOTES[:3]})
+
+
+@router.get("/api/hot", include_in_schema=False)
+async def api_hot(period: str = "all"):
+    from database import get_hot_playbooks
+    hot = get_hot_playbooks(period, limit=3)
+    return JSONResponse(hot)
+
+
+@router.post("/api/track/view", include_in_schema=False)
+async def track_view(request: Request):
+    data = await request.json()
+    slug = data.get("slug", "").strip()
+    if not slug:
+        return JSONResponse({"error": "slug required"}, status_code=400)
+    from database import log_playbook_view
+    log_playbook_view(slug, request.client.host if request.client else None, request.headers.get("User-Agent"))
+    return JSONResponse({"ok": True})
+
+
+@router.post("/api/track/exit", include_in_schema=False)
+async def track_exit(request: Request):
+    data = await request.json()
+    slug = data.get("slug", "").strip()
+    scroll_percent = data.get("scroll_percent", 0)
+    time_spent = data.get("time_spent_secs", 0)
+    if not slug:
+        return JSONResponse({"error": "slug required"}, status_code=400)
+    from database import log_playbook_exit
+    log_playbook_exit(slug, scroll_percent, time_spent, request.client.host if request.client else None)
+    return JSONResponse({"ok": True})
+
+
+# ============================================================================
 # Stripe checkout (legacy — form-post flow)
 # ============================================================================
 @router.post("/create-checkout-session", include_in_schema=False)
-async def checkout():
+async def checkout(
+    mode: str = Form("single"),
+    slug: str = Form(""),
+):
     stripe.api_key = settings.STRIPE_SECRET_KEY
+
+    # Pick the right price ID and Stripe mode
+    if mode == "monthly":
+        price_id = settings.STRIPE_PRICE_MONTHLY
+        stripe_mode = "subscription"
+        metadata = {"mode": "monthly"}
+    elif mode == "yearly":
+        price_id = settings.STRIPE_PRICE_YEARLY
+        stripe_mode = "subscription"
+        metadata = {"mode": "yearly"}
+    else:
+        price_id = settings.STRIPE_PRICE_SINGLE or settings.STRIPE_PRICE_ID
+        stripe_mode = "payment"
+        metadata = {"mode": "single", "slug": slug}
+
+    if not price_id:
+        return JSONResponse({"error": "Stripe price not configured"}, status_code=500)
+
+    cancel_path = f"/read/{slug}" if slug else "/"
+    base = settings.BASE_URL
+
     try:
-        session = stripe.checkout.Session.create(
-            mode="payment",
-            payment_method_types=["card"],
-            line_items=[{
-                "price": settings.STRIPE_PRICE_ID,
-                "quantity": 1,
-            }],
-            success_url=f"{settings.BASE_URL}/success?session_id={{CHECKOUT_SESSION_ID}}",
-            cancel_url=f"{settings.BASE_URL}/conductorsplaybook?payment=cancelled",
-            customer_creation="always",
-            metadata={"product": "conductors_playbook"},
-        )
+        session_params = {
+            "mode": stripe_mode,
+            "payment_method_types": ["card"],
+            "line_items": [{"price": price_id, "quantity": 1}],
+            "success_url": f"{base}/success?session_id={{CHECKOUT_SESSION_ID}}",
+            "cancel_url": f"{base}{cancel_path}?payment=cancelled",
+            "metadata": metadata,
+        }
+        if stripe_mode == "payment":
+            session_params["customer_creation"] = "always"
+
+        session = stripe.checkout.Session.create(**session_params)
         return RedirectResponse(url=session.url, status_code=303)
     except Exception as e:
         print(f"Stripe checkout error: {e}")
         return RedirectResponse(
-            url=f"{settings.BASE_URL}/conductorsplaybook?payment=error",
+            url=f"{base}{cancel_path}?payment=error",
             status_code=303,
         )
 
@@ -342,7 +580,7 @@ async def success_page(request: Request, session_id: str | None = None):
             status_code=404,
         )
 
-    return templates.TemplateResponse(
+    response = templates.TemplateResponse(
         "success.html",
         {
             "request": request,
@@ -351,6 +589,9 @@ async def success_page(request: Request, session_id: str | None = None):
             "base_url": settings.BASE_URL,
         },
     )
+    # Unlock all playbooks after successful purchase
+    response.set_cookie("admin_unlocked", "1", max_age=86400, httponly=True, samesite="lax")
+    return response
 
 
 # ============================================================================
