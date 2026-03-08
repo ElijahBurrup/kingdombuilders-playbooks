@@ -343,6 +343,28 @@ def get_playbook_analytics():
     }
 
 
+def get_hot_playbooks(period="all", limit=3):
+    """Return top N most-viewed playbooks for a time period."""
+    conn = get_connection()
+    if period == "today":
+        where = "WHERE viewed_at >= datetime('now', '-1 day')"
+    elif period == "week":
+        where = "WHERE viewed_at >= datetime('now', '-7 days')"
+    elif period == "month":
+        where = "WHERE viewed_at >= datetime('now', '-30 days')"
+    else:
+        where = ""
+    rows = conn.execute(f"""
+        SELECT slug, COUNT(*) as views
+        FROM playbook_views
+        {where}
+        GROUP BY slug
+        ORDER BY views DESC
+        LIMIT ?
+    """, (limit,)).fetchall()
+    return [{"slug": r["slug"], "views": r["views"]} for r in rows]
+
+
 def get_subscriber_by_email(email):
     """Look up a subscriber by email."""
     conn = get_connection()

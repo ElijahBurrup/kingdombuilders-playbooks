@@ -73,11 +73,11 @@ bp = Blueprint("main", __name__)
 
 
 FREE_SLUGS = {
-    "conductors-playbook",
-    "the-squirrel-economy",
+    "lay-it-down",
+    "the-narrator",
+    "the-crows-gambit",
     "the-salmon-journey",
     "the-wolfs-table",
-    "the-crows-gambit",
 }
 
 ADMIN_CODE = "elijahsentme"
@@ -487,6 +487,16 @@ def admin_dashboard():
     from database import get_playbook_analytics
     analytics = get_playbook_analytics()
     return render_template("admin.html", analytics=analytics)
+
+
+# --- Hot Playbooks API ---
+@bp.route("/api/hot")
+def api_hot():
+    """Return top 3 most-read playbooks for a given time range."""
+    period = request.args.get("period", "all")  # today, week, month, all
+    from database import get_hot_playbooks
+    hot = get_hot_playbooks(period, limit=3)
+    return jsonify(hot)
 
 
 # --- Version API ---

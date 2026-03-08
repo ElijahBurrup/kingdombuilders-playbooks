@@ -17,11 +17,11 @@ stripe.api_key = config.STRIPE_SECRET_KEY
 
 # Free playbook slugs (no payment required)
 FREE_SLUGS = {
-    "conductors-playbook",
-    "the-squirrel-economy",
+    "lay-it-down",
+    "the-narrator",
+    "the-crows-gambit",
     "the-salmon-journey",
     "the-wolfs-table",
-    "the-crows-gambit",
 }
 
 
