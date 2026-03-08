@@ -510,6 +510,33 @@ async def auth_logout():
 
 
 # ============================================================================
+# Admin: delete user (protected by admin code)
+# ============================================================================
+@router.delete("/api/admin/user", include_in_schema=False)
+async def admin_delete_user(request: Request, email: str = "", code: str = "", db: AsyncSession = Depends(get_db)):
+    if code != ADMIN_CODE:
+        return JSONResponse({"error": "unauthorized"}, status_code=403)
+    if not email:
+        return JSONResponse({"error": "email required"}, status_code=400)
+
+    result = await db.execute(select(User).where(User.email == email))
+    user = result.scalar_one_or_none()
+    if not user:
+        return JSONResponse({"error": "user not found"}, status_code=404)
+
+    # Delete related records (cascade should handle most, but be explicit)
+    await db.execute(select(Purchase).where(Purchase.user_id == user.id))
+    for table in [Purchase, Subscription, StripeCustomer]:
+        del_result = await db.execute(select(table).where(table.user_id == user.id))
+        for row in del_result.scalars().all():
+            await db.delete(row)
+
+    await db.delete(user)
+    await db.commit()
+    return JSONResponse({"deleted": email})
+
+
+# ============================================================================
 # Helper: check if user has access to a paid playbook (subscription or purchase)
 # ============================================================================
 async def _user_has_access(user_id: str, slug: str, db: AsyncSession) -> bool:
