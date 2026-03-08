@@ -79,14 +79,19 @@ usage pattern.
 
 ## II. PEDAGOGICAL SYSTEMS
 
-### 7. The Bold Promise
-**What it is:** A paragraph before Chapter 1 that makes a direct, concrete promise to the reader about what they will gain.
-**How it works:** Uses second-person address: "Once you finish this playbook, you will..." followed by 2-4 specific, tangible outcomes. Sets stakes and creates commitment before the reader invests time.
-**Format:** Prose paragraph, sometimes inside a `div.gq` or standalone
-**Examples:**
-- Wolf's Table: "If you finish this playbook, you will have the exact architecture, scripts, and 90-day protocol..."
-- Crow's Gambit: "If you finish this story, you will understand..."
-**Used in:** ~15 playbooks (should be in all — some early playbooks lack it)
+### 7. The Bold Claim
+**What it is:** A paragraph in the Chapter 00 / Pregame section (before Chapter 1) that makes a direct, concrete promise to the reader about what they will gain.
+**How it works:** Uses second-person address: "If you finish this story/playbook, you will..." followed by 2-4 specific, tangible outcomes. Must be seamlessly integrated into the pregame flow. Sets stakes and creates commitment before the reader invests time.
+**Format:** Prose `<p>` with `<strong>` for emphasis on key outcomes
+**Gold Standard (Squirrel Economy):** "If you finish this story, you will understand more about how money works than most adults ever learn. You will see **why banks exist, what interest rates actually do, how crashes happen, and why your grandmother was right about saving.**"
+**Used in:** Every playbook (MANDATORY)
+
+### 7b. The Stage Setter
+**What it is:** A poetic, provocative cover subtitle (`class="cover-tagline"`) that frames the entire journey in one breath.
+**How it works:** Appears on the cover page below the title. Uses contrast pairs, rhythmic structure, and `<em>` for emphasis. Tells the reader what kind of journey they're about to take without spoiling the content.
+**Format:** `<p class="cover-tagline">` with `<em>` tags for emphasis words
+**Gold Standard (Squirrel Economy):** "An economics parable where *every squirrel decision* ripples through the whole economy — from the savers to the spenders, the careful to the reckless, the boom to the crash, and back again."
+**Used in:** Every playbook (MANDATORY)
 
 ### 8. The Root System
 **What it is:** Cumulative memory anchors placed between chapters that review everything learned so far.
