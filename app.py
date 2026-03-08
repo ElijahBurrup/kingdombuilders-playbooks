@@ -398,6 +398,20 @@ def read_playbook(slug):
     # Read the HTML and inject tracking script before </body>
     file_path = Path(__file__).parent / "assets" / filename
     html = file_path.read_text(encoding="utf-8")
+    # Inject back button (fixed position, triggers exit tracking on click)
+    back_button = f"""
+<style>
+.pb-back{{position:fixed;top:16px;left:16px;z-index:9999;display:flex;align-items:center;gap:6px;
+  padding:8px 16px 8px 12px;background:rgba(10,6,20,0.75);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,0.1);border-radius:50px;
+  font-family:'Poppins',Helvetica,sans-serif;font-size:0.7rem;font-weight:600;color:rgba(255,255,255,0.7);
+  text-decoration:none;cursor:pointer;transition:all 0.25s;box-shadow:0 2px 12px rgba(0,0,0,0.3)}}
+.pb-back:hover{{background:rgba(10,6,20,0.9);color:#E8C96A;border-color:rgba(212,168,67,0.3)}}
+.pb-back svg{{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}}
+@media print{{.pb-back{{display:none}}}}
+</style>
+<a class="pb-back" href="{config.URL_PREFIX or ''}/"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Playbooks</a>
+"""
     tracking_script = f"""
 <script>
 (function(){{
@@ -442,7 +456,7 @@ def read_playbook(slug):
 }})();
 </script>
 """
-    html = html.replace("</body>", tracking_script + "</body>")
+    html = html.replace("</body>", back_button + tracking_script + "</body>")
     return html, 200, {"Content-Type": "text/html; charset=utf-8"}
 
 
