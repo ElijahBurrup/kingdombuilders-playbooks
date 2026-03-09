@@ -1,20 +1,27 @@
 """
-Discovery API — powers the Thread System (end-of-playbook chaining).
+Discovery API — powers the Thread System.
 
 Endpoints:
   GET  /api/v1/discovery/chain/{slug}  — 3 recommendations (deeper, bridge, surprise)
   POST /api/v1/discovery/chain-click   — track which recommendation was clicked
+  GET  /api/v1/discovery/tags          — top tags for catalog filter UI
+  GET  /api/v1/discovery/surprise      — random playbook from an unexplored category
 """
 
+import random
+
 from fastapi import APIRouter, Depends
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from api.database import get_db
 from api.models.playbook import Playbook, Category
 from api.models.discovery import PlaybookConnection, PlaybookTag
-from api.schemas.discovery import ChainCard, ChainResponse, ChainClickRequest
+from api.schemas.discovery import (
+    ChainCard, ChainResponse, ChainClickRequest,
+    TagInfo, TagsResponse, SurpriseResponse,
+)
 
 router = APIRouter(prefix="/discovery", tags=["discovery"])
 
@@ -165,5 +172,90 @@ async def _tag_based_fallback(
 @router.post("/chain-click")
 async def track_chain_click(body: ChainClickRequest):
     """Track when a user clicks a chain recommendation (for analytics)."""
-    # For now, just acknowledge. Phase 2 will store in user_reading_sessions.
+    # For now, just acknowledge. Future: store in user_reading_sessions.
     return {"status": "ok"}
+
+
+@router.get("/tags", response_model=TagsResponse)
+async def get_tags(db: AsyncSession = Depends(get_db)):
+    """Return top tags used across playbooks, with counts and connected slugs."""
+
+    # Get all tags with their playbook slugs
+    result = await db.execute(
+        select(
+            PlaybookTag.tag,
+            func.count(PlaybookTag.id).label("count"),
+        )
+        .group_by(PlaybookTag.tag)
+        .order_by(func.count(PlaybookTag.id).desc())
+    )
+    tag_counts = [(row.tag, row.count) for row in result]
+
+    # Get slugs per tag for the top tags
+    tags: list[TagInfo] = []
+    for tag_name, count in tag_counts:
+        slug_result = await db.execute(
+            select(Playbook.slug)
+            .join(PlaybookTag, PlaybookTag.playbook_id == Playbook.id)
+            .where(PlaybookTag.tag == tag_name)
+            .where(Playbook.status == "published")
+        )
+        slugs = [row.slug for row in slug_result]
+        tags.append(TagInfo(tag=tag_name, count=count, slugs=slugs))
+
+    return TagsResponse(tags=tags)
+
+
+@router.get("/surprise", response_model=SurpriseResponse)
+async def get_surprise(
+    exclude: str = "",
+    db: AsyncSession = Depends(get_db),
+):
+    """Return a random playbook, preferring unexplored categories.
+
+    Query param `exclude` is a comma-separated list of slugs the user has already read.
+    """
+    exclude_slugs = {s.strip() for s in exclude.split(",") if s.strip()}
+
+    # Get all published playbooks with categories
+    result = await db.execute(
+        select(Playbook)
+        .where(Playbook.status == "published")
+        .options(selectinload(Playbook.category))
+    )
+    all_playbooks = result.scalars().all()
+
+    if not all_playbooks:
+        return SurpriseResponse(slug="", title="", cover_emoji=None, category_name="", reason="No playbooks available")
+
+    # Separate into read vs unread
+    unread = [pb for pb in all_playbooks if pb.slug not in exclude_slugs]
+    if not unread:
+        unread = all_playbooks  # fallback: all read, pick any
+
+    # Find categories the user has read
+    read_categories = {
+        pb.category_id for pb in all_playbooks if pb.slug in exclude_slugs
+    }
+
+    # Prefer playbooks from unexplored categories
+    unexplored = [pb for pb in unread if pb.category_id not in read_categories]
+
+    if unexplored:
+        pick = random.choice(unexplored)
+        cat = pick.category
+        reason = f"You have not explored any {cat.name} playbooks yet" if cat else "Something new for you"
+    else:
+        pick = random.choice(unread)
+        cat = pick.category
+        reason = f"A fresh pick from {cat.name}" if cat else "Something different"
+
+    return SurpriseResponse(
+        slug=pick.slug,
+        title=pick.title,
+        cover_emoji=pick.cover_emoji,
+        category_name=cat.name if cat else "",
+        category_color=cat.color_text if cat else "#7B4FBF",
+        is_free=pick.pricing_type == "free",
+        reason=reason,
+    )

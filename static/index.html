@@ -52,6 +52,21 @@ h1,h2,h3,h4{font-family:'Poppins',sans-serif;line-height:1.2}
 .sub-btn:hover{border-color:var(--gold);color:var(--gold)}
 .sub-btn.active{background:rgba(212,168,67,0.12);color:var(--gold);border-color:rgba(212,168,67,0.3)}
 
+/* === THREAD FILTER (tag-based) === */
+.thread-bar{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-bottom:28px;max-height:0;overflow:hidden;opacity:0;transition:max-height 0.4s ease,opacity 0.3s ease,margin 0.3s ease}
+.thread-bar.open{max-height:120px;opacity:1;margin-bottom:28px}
+.thread-label{width:100%;text-align:center;font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.thread-btn{padding:4px 12px;border:1px solid rgba(123,79,191,0.1);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);background:var(--white);cursor:pointer;transition:all 0.2s}
+.thread-btn:hover{border-color:var(--purple-accent);color:var(--purple-accent)}
+.thread-btn.active{background:linear-gradient(135deg,var(--purple-deep),var(--purple-dark));color:var(--white);border-color:transparent;box-shadow:0 2px 8px rgba(26,10,46,0.2)}
+.thread-btn .thread-count{font-size:0.4rem;opacity:0.5;margin-left:3px}
+
+/* === SURPRISE ME === */
+.surprise-btn{padding:8px 20px;border:1.5px dashed rgba(212,168,67,0.3);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--gold);background:transparent;cursor:pointer;transition:all 0.25s;display:flex;align-items:center;gap:6px}
+.surprise-btn:hover{background:rgba(212,168,67,0.08);border-color:var(--gold);box-shadow:0 2px 12px rgba(212,168,67,0.2)}
+.surprise-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;animation:surprise-spin 3s ease-in-out infinite}
+@keyframes surprise-spin{0%,100%{transform:rotate(0deg)}25%{transform:rotate(15deg)}75%{transform:rotate(-15deg)}}
+
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:28px}
 
 .card{background:var(--white);border-radius:16px;overflow:hidden;border:2px solid rgba(123,79,191,0.08);box-shadow:0 2px 12px rgba(26,10,46,0.05);transition:all 0.3s;text-decoration:none;color:inherit;display:flex;flex-direction:column}
@@ -195,9 +210,17 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
     <button class="filter-btn" data-filter="health">Health</button>
     <button class="filter-btn" data-filter="wealth">Wealth</button>
     <button class="filter-btn" data-filter="relationships">Relationships</button>
+    <button class="surprise-btn" id="surprise-btn">
+      <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+      Surprise Me
+    </button>
   </div>
   <div class="sub-filter-bar" id="sub-filter-bar">
     <!-- Sub-buttons injected by JS based on active pillar -->
+  </div>
+  <div class="thread-bar" id="thread-bar">
+    <div class="thread-label">Filter by Thread</div>
+    <!-- Thread buttons injected by JS from /api/v1/discovery/tags -->
   </div>
 
   <div class="grid" id="playbook-grid">
@@ -1143,6 +1166,131 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
       container.appendChild(span);
     });
     existing.replaceWith(container);
+  });
+})();
+
+// --- Thread Filter + Surprise Me ---
+(function(){
+  var prefix = '';
+  try { var m = location.pathname.match(/^(\/[^\/]+)\/?(#.*)?$/); if(m && m[1] !== '/') prefix = m[1]; } catch(e){}
+  var threadBar = document.getElementById('thread-bar');
+  var surpriseBtn = document.getElementById('surprise-btn');
+  var grid = document.getElementById('playbook-grid');
+  var cards = Array.from(grid.querySelectorAll('.card'));
+  var noResults = document.getElementById('no-results');
+  var activeThread = null;
+  var tagData = {};  // tag -> [slugs]
+
+  // Fetch tag data from API
+  fetch(prefix + '/api/v1/discovery/tags')
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if(!data.tags || data.tags.length === 0) return;
+
+      // Build tag -> slugs map and inject data-tags on cards
+      data.tags.forEach(function(t){
+        tagData[t.tag] = t.slugs;
+      });
+
+      // Add data-tags attribute to each card
+      cards.forEach(function(card){
+        var href = card.getAttribute('href') || '';
+        var slug = href.replace(/^read\//, '');
+        var cardTags = [];
+        data.tags.forEach(function(t){
+          if(t.slugs.indexOf(slug) !== -1) cardTags.push(t.tag);
+        });
+        card.setAttribute('data-tags', cardTags.join(' '));
+      });
+
+      // Build thread buttons (top 15 tags)
+      var topTags = data.tags.slice(0, 15);
+      topTags.forEach(function(t){
+        var btn = document.createElement('button');
+        btn.className = 'thread-btn';
+        btn.setAttribute('data-thread', t.tag);
+        var label = t.tag.replace(/_/g, ' ');
+        label = label.charAt(0).toUpperCase() + label.slice(1);
+        btn.innerHTML = label + '<span class="thread-count">' + t.count + '</span>';
+
+        btn.addEventListener('click', function(){
+          if(activeThread === t.tag){
+            // Deactivate
+            activeThread = null;
+            btn.classList.remove('active');
+            showAll();
+          } else {
+            // Activate this thread
+            activeThread = t.tag;
+            threadBar.querySelectorAll('.thread-btn').forEach(function(b){ b.classList.remove('active'); });
+            btn.classList.add('active');
+            filterByThread(t.tag, t.slugs);
+          }
+        });
+
+        threadBar.appendChild(btn);
+      });
+
+      // Show the thread bar
+      threadBar.classList.add('open');
+    })
+    .catch(function(){});
+
+  function filterByThread(tag, slugs){
+    var visibleCount = 0;
+    cards.forEach(function(card){
+      var href = card.getAttribute('href') || '';
+      var slug = href.replace(/^read\//, '');
+      if(slugs.indexOf(slug) !== -1){
+        card.classList.remove('hidden');
+        visibleCount++;
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+    noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+    grid.style.display = visibleCount === 0 ? 'none' : '';
+  }
+
+  function showAll(){
+    cards.forEach(function(c){ c.classList.remove('hidden'); });
+    noResults.style.display = 'none';
+    grid.style.display = '';
+  }
+
+  // Clear thread filter when pillar/sub filters are clicked
+  document.querySelectorAll('.filter-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      activeThread = null;
+      threadBar.querySelectorAll('.thread-btn').forEach(function(b){ b.classList.remove('active'); });
+    });
+  });
+
+  // Surprise Me
+  surpriseBtn.addEventListener('click', function(){
+    // Collect read slugs from localStorage (cookie-based journey)
+    var readSlugs = [];
+    try {
+      var journey = JSON.parse(localStorage.getItem('pb_journey') || '[]');
+      readSlugs = journey;
+    } catch(e){}
+
+    var exclude = readSlugs.join(',');
+    fetch(prefix + '/api/v1/discovery/surprise?exclude=' + encodeURIComponent(exclude))
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if(data.slug){
+          window.location.href = prefix + '/read/' + data.slug;
+        }
+      })
+      .catch(function(){
+        // Fallback: pick a random visible card
+        var visible = cards.filter(function(c){ return !c.classList.contains('hidden'); });
+        if(visible.length > 0){
+          var pick = visible[Math.floor(Math.random() * visible.length)];
+          window.location.href = pick.getAttribute('href');
+        }
+      });
   });
 })();
 
