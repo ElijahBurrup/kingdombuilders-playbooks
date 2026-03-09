@@ -97,22 +97,57 @@ The discovery engine connects playbooks through invisible thematic "threads" to 
 ### Database Tables
 - **`playbook_tags`** — Multi-dimensional tags per playbook with weights (0.0 to 1.0). E.g., Ant Network: trust(1.0), decentralization(1.0), money(0.6), faith(0.3)
 - **`playbook_connections`** — Curated relationships with 3 types: `deeper` (same domain), `bridge` (cross-domain), `surprise` (unexpected thematic link). Each has a `teaser` (shown to user) and `reason` (editorial note).
+- **`journey_stamps`** — Achievement badges earned by users. Fields: user_id, stamp_type, stamp_data (JSONB), earned_at.
 
 ### API Endpoints
 - `GET /api/v1/discovery/chain/{slug}` — Returns 3 recommendations (1 deeper, 1 bridge, 1 surprise). Falls back to tag-based matching if curated connections are missing.
 - `POST /api/v1/discovery/chain-click` — Tracks recommendation clicks for analytics.
+- `GET /api/v1/discovery/tags` — Top tags with counts and connected slugs (powers thread filter).
+- `GET /api/v1/discovery/surprise` — Random playbook from unexplored category.
+- `GET /api/v1/discovery/journey` — Reading passport: completed/in-progress playbooks, stamps, stats (requires auth).
+- `POST /api/v1/discovery/journey/complete` — Mark playbook complete + check for new achievement stamps (requires auth).
 
 ### End-of-Playbook Chain Panel
-Injected into every playbook reader page (via `_inject_back_button_and_tracking()` in `legacy.py`). Client-side JS fetches chain data and renders 3 visually distinct cards between the Finale and Footer.
+Injected into every playbook reader page (via `_inject_back_button_and_tracking()` in `legacy.py`). Client-side JS fetches chain data and renders 3 visually distinct cards between the Finale and Footer. Also injects scroll-based completion tracking that fires POST to `/journey/complete` at 90% scroll for logged-in users.
+
+### Journey Dashboard (`/journey`)
+Reading passport page showing: completed/in-progress playbooks, category breakdown, progress bar, and 8 achievement stamps (earned vs locked). Fetches data client-side from `/api/v1/discovery/journey`. Redirects to `/auth` if not logged in.
+
+### Achievement Stamps (8 types)
+- `first_steps` — Complete first playbook
+- `series_scholar` — Complete all playbooks in a series
+- `category_explorer` — Read from 3+ categories
+- `cross_pollinator` — Read from 5+ categories
+- `deep_diver` — 5+ playbooks in one category
+- `all_free` — Read all free playbooks
+- `ten_complete` — Complete 10 playbooks
+- `twenty_five` — Complete 25 playbooks
 
 ### Seed Script
 `python -m scripts.seed_discovery` — Populates tags and connections for all playbooks. Idempotent (safe to re-run).
 
+### Constellation View (`/constellation`)
+Interactive force-directed graph of all playbooks as nodes and connections as edges. Canvas-based with vanilla JS physics simulation. Supports pan, zoom, touch, and category filtering via legend. Click any node to navigate to its playbook. API: `GET /api/v1/discovery/constellation` returns all nodes + edges.
+
+### Reading Paths (`/paths`)
+Pre-curated multi-playbook journeys that cross categories, each connected by a theme. Timeline UI with transition text between steps explaining why each playbook comes next. API: `GET /api/v1/discovery/paths` (list) and `GET /api/v1/discovery/paths/{slug}` (detail).
+
+**Adding new paths**: Edit `scripts/seed_paths.py` — add a dict to the `PATHS` list with slug, title, description, theme_tag, emoji, color, and steps (list of playbook slug + transition text tuples). Run `python -m scripts.seed_paths` to upsert. Idempotent.
+
+### Database Tables (Phase 4)
+- **`reading_paths`** — slug, title, description, theme_tag, emoji, color, display_order
+- **`reading_path_steps`** — path_id, playbook_id, step_order, transition_text
+
 ### Key Files
-- `api/models/discovery.py` — PlaybookTag, PlaybookConnection ORM models
-- `api/routers/discovery.py` — Chain API with tag-based fallback algorithm
-- `api/schemas/discovery.py` — Pydantic response schemas
+- `api/models/discovery.py` — PlaybookTag, PlaybookConnection, JourneyStamp, ReadingPath, ReadingPathStep
+- `api/routers/discovery.py` — All discovery API endpoints (chain, tags, surprise, journey, constellation, paths)
+- `api/schemas/discovery.py` — Pydantic response schemas (Phase 1-4)
+- `api/services/journey_service.py` — Achievement checking logic (check_and_award_stamps)
+- `templates/journey.html` — Reading passport UI
+- `templates/constellation.html` — Force-directed graph visualization
+- `templates/paths.html` — Reading paths UI with timeline view
 - `scripts/seed_discovery.py` — Curated tag/connection data for all 48 playbooks
+- `scripts/seed_paths.py` — Reading path definitions (6 paths, easy to add more)
 
 ## Branches
 - `master` — production (current Flask app, auto-deploys to Render)

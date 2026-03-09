@@ -344,6 +344,23 @@ def _inject_back_button_and_tracking(html: str, slug: str) -> str:
 
   window.addEventListener('beforeunload', sendExit);
   document.addEventListener('visibilitychange', function() {{ if (document.visibilityState === 'hidden') sendExit(); }});
+
+  // Journey completion tracking: mark complete when scroll >= 90%
+  var completionSent = false;
+  function checkCompletion() {{
+    if (completionSent) return;
+    var pct = getScrollPercent();
+    if (pct >= 90) {{
+      completionSent = true;
+      fetch(prefix + '/api/v1/discovery/journey/complete', {{
+        method: 'POST',
+        headers: {{'Content-Type': 'application/json'}},
+        credentials: 'include',
+        body: JSON.stringify({{slug: slug, scroll_percent: pct}})
+      }}).catch(function(){{}});
+    }}
+  }}
+  window.addEventListener('scroll', checkCompletion, {{passive: true}});
 }})();
 </script>
 """
@@ -1186,6 +1203,33 @@ async def download(request: Request, token: str):
 # ============================================================================
 # Legal pages
 # ============================================================================
+@router.get("/journey", include_in_schema=False)
+async def journey_page(request: Request):
+    prefix = settings.URL_PREFIX or ""
+    return templates.TemplateResponse(
+        "journey.html",
+        {"request": request, "prefix": prefix},
+    )
+
+
+@router.get("/constellation", include_in_schema=False)
+async def constellation_page(request: Request):
+    prefix = settings.URL_PREFIX or ""
+    return templates.TemplateResponse(
+        "constellation.html",
+        {"request": request, "prefix": prefix},
+    )
+
+
+@router.get("/paths", include_in_schema=False)
+async def paths_page(request: Request):
+    prefix = settings.URL_PREFIX or ""
+    return templates.TemplateResponse(
+        "paths.html",
+        {"request": request, "prefix": prefix},
+    )
+
+
 @router.get("/terms", include_in_schema=False)
 async def terms():
     return FileResponse(STATIC_DIR / "terms.html")

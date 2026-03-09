@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reading Paths | Kingdom Builders</title>
+<meta name="description" content="Curated multi-playbook journeys across categories. Follow a theme through faith, finance, AI, leadership, and more.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #D4A843;
+  --gold-light: #E8C96A;
+  --purple-deep: #1A0A2E;
+  --purple-dark: #2D1B4E;
+  --purple-mid: #4A2D7A;
+  --purple-accent: #7B4FBF;
+  --cream: #FAF6ED;
+  --white: #FFFFFF;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(165deg, var(--purple-deep) 0%, var(--purple-dark) 40%, var(--purple-mid) 100%);
+  color: var(--white);
+  padding: 0 0 80px;
+}
+
+/* --- Back + Constellation links --- */
+.p-nav {
+  position: fixed; top: 16px; left: 16px; z-index: 100;
+  display: flex; gap: 8px;
+}
+.p-nav a {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 16px 8px 12px;
+  background: rgba(10,6,20,0.75); backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 50px;
+  font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.7);
+  text-decoration: none; transition: all 0.25s;
+}
+.p-nav a:hover { background: rgba(10,6,20,0.9); color: var(--gold); border-color: rgba(212,168,67,0.3); }
+.p-nav a svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+/* --- Header --- */
+.p-header {
+  text-align: center;
+  padding: 80px 24px 40px;
+}
+.p-badge {
+  display: inline-block;
+  padding: 6px 18px;
+  border: 1px solid rgba(212,168,67,0.3);
+  border-radius: 100px;
+  font-size: 11px; font-weight: 500; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--gold);
+  margin-bottom: 16px;
+}
+.p-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 38px; font-weight: 600; line-height: 1.2;
+  margin-bottom: 8px;
+}
+.p-subtitle {
+  font-size: 15px; color: rgba(255,255,255,0.45); line-height: 1.6;
+  max-width: 520px; margin: 0 auto;
+}
+
+/* --- Path Cards (list view) --- */
+.p-list {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.p-card {
+  border-radius: 16px;
+  padding: 28px 24px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  cursor: pointer;
+  transition: all 0.25s;
+  text-decoration: none;
+  color: var(--white);
+  display: block;
+}
+.p-card:hover {
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(255,255,255,0.15);
+  transform: translateY(-2px);
+}
+.p-card-top {
+  display: flex; align-items: center; gap: 14px; margin-bottom: 10px;
+}
+.p-card-emoji { font-size: 32px; }
+.p-card-title { font-size: 20px; font-weight: 700; }
+.p-card-desc {
+  font-family: 'Lora', serif; font-style: italic;
+  font-size: 14px; color: rgba(255,255,255,0.55);
+  line-height: 1.6; margin-bottom: 14px;
+}
+.p-card-meta {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+}
+.p-card-tag {
+  display: inline-block;
+  padding: 3px 12px; border-radius: 50px;
+  font-size: 10px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.p-card-steps {
+  font-size: 11px; color: rgba(255,255,255,0.35);
+  font-weight: 500; letter-spacing: 1px;
+}
+
+/* --- Path Detail (expanded) --- */
+.p-detail {
+  display: none;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.p-detail-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.p-detail-emoji { font-size: 48px; margin-bottom: 8px; }
+.p-detail-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px; font-weight: 600; margin-bottom: 6px;
+}
+.p-detail-desc {
+  font-family: 'Lora', serif; font-style: italic;
+  font-size: 15px; color: rgba(255,255,255,0.5);
+  line-height: 1.6; max-width: 500px; margin: 0 auto;
+}
+.p-detail-back {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 18px; border-radius: 50px;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.5); font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; margin-bottom: 28px;
+}
+.p-detail-back:hover { color: var(--gold); border-color: rgba(212,168,67,0.3); }
+
+/* --- Step Timeline --- */
+.p-steps { position: relative; }
+.p-step {
+  display: flex; gap: 20px; margin-bottom: 0;
+  position: relative;
+}
+.p-step-line {
+  width: 2px; flex-shrink: 0;
+  position: relative;
+  display: flex; flex-direction: column; align-items: center;
+}
+.p-step-dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.15);
+  background: var(--purple-deep);
+  flex-shrink: 0; z-index: 1;
+}
+.p-step-connector {
+  width: 2px; flex: 1; min-height: 20px;
+  background: rgba(255,255,255,0.08);
+}
+.p-step-content { flex: 1; padding-bottom: 32px; }
+.p-step-transition {
+  font-family: 'Lora', serif; font-style: italic;
+  font-size: 13px; color: rgba(255,255,255,0.35);
+  line-height: 1.6; margin-bottom: 14px;
+  padding: 12px 16px;
+  border-left: 2px solid rgba(212,168,67,0.15);
+}
+.p-step-card {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 20px; border-radius: 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  text-decoration: none; color: var(--white);
+  transition: all 0.2s;
+}
+.p-step-card:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.15);
+}
+.p-step-emoji { font-size: 28px; flex-shrink: 0; }
+.p-step-info { min-width: 0; }
+.p-step-title { font-size: 15px; font-weight: 600; }
+.p-step-cat {
+  font-size: 10px; font-weight: 600; letter-spacing: 1px;
+  text-transform: uppercase; margin-top: 2px;
+}
+.p-step-cta {
+  margin-left: auto; flex-shrink: 0;
+  font-size: 10px; font-weight: 700; letter-spacing: 1px;
+  padding: 5px 14px; border-radius: 50px;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.5);
+}
+
+/* --- Loading --- */
+.p-loading {
+  text-align: center; padding: 60px 24px;
+  color: rgba(255,255,255,0.3); font-size: 14px;
+}
+
+@media (max-width: 600px) {
+  .p-title { font-size: 28px; }
+  .p-detail-title { font-size: 26px; }
+  .p-step-card { flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+<div class="p-nav">
+  <a href="{{ prefix }}/"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Playbooks</a>
+  <a href="{{ prefix }}/constellation"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>Constellation</a>
+</div>
+
+<div class="p-header">
+  <div class="p-badge">Curated Journeys</div>
+  <h1 class="p-title">Reading Paths</h1>
+  <p class="p-subtitle">Follow a theme across categories. Each path connects playbooks through a single idea, showing you how it appears in places you would never expect.</p>
+</div>
+
+<div id="p-loading" class="p-loading">Loading paths...</div>
+
+<!-- Path List -->
+<div class="p-list" id="p-list" style="display:none"></div>
+
+<!-- Path Detail -->
+<div class="p-detail" id="p-detail"></div>
+
+<script>
+(function(){
+  var prefix = '{{ prefix }}';
+  var allPaths = [];
+
+  fetch(prefix + '/api/v1/discovery/paths')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      document.getElementById('p-loading').style.display = 'none';
+      allPaths = data.paths;
+      renderList();
+
+      // Check URL hash for direct path link
+      if (location.hash && location.hash.length > 1) {
+        var slug = location.hash.slice(1);
+        openPath(slug);
+      }
+    });
+
+  function renderList() {
+    var container = document.getElementById('p-list');
+    container.style.display = 'flex';
+    container.innerHTML = '';
+
+    allPaths.forEach(function(p) {
+      var card = document.createElement('a');
+      card.href = '#' + p.slug;
+      card.className = 'p-card';
+      card.onclick = function(e) { e.preventDefault(); openPath(p.slug); };
+
+      var catChips = p.category_names.map(function(c) {
+        return '<span class="p-card-tag" style="background:rgba(255,255,255,0.06)">' + c + '</span>';
+      }).join('');
+
+      card.innerHTML =
+        '<div class="p-card-top">' +
+          '<span class="p-card-emoji">' + (p.emoji || '') + '</span>' +
+          '<span class="p-card-title">' + p.title + '</span>' +
+        '</div>' +
+        '<div class="p-card-desc">' + p.description + '</div>' +
+        '<div class="p-card-meta">' +
+          '<span class="p-card-tag" style="background:' + p.color + '22;color:' + p.color + '">' + p.theme_tag + '</span>' +
+          catChips +
+          '<span class="p-card-steps">' + p.step_count + ' playbooks</span>' +
+        '</div>';
+
+      container.appendChild(card);
+    });
+  }
+
+  function openPath(slug) {
+    document.getElementById('p-list').style.display = 'none';
+    var detail = document.getElementById('p-detail');
+    detail.style.display = 'block';
+    detail.innerHTML = '<div class="p-loading">Loading path...</div>';
+    location.hash = slug;
+
+    fetch(prefix + '/api/v1/discovery/paths/' + slug)
+      .then(function(r) {
+        if (!r.ok) throw new Error('not found');
+        return r.json();
+      })
+      .then(function(path) {
+        renderDetail(path);
+      })
+      .catch(function() {
+        detail.innerHTML = '<div class="p-loading">Path not found.</div>';
+      });
+  }
+
+  function renderDetail(path) {
+    var detail = document.getElementById('p-detail');
+    var html =
+      '<div class="p-detail-back" onclick="document.getElementById(\'p-detail\').style.display=\'none\';document.getElementById(\'p-list\').style.display=\'flex\';location.hash=\'\'">&larr; All Paths</div>' +
+      '<div class="p-detail-header">' +
+        '<div class="p-detail-emoji">' + (path.emoji || '') + '</div>' +
+        '<div class="p-detail-title">' + path.title + '</div>' +
+        '<div class="p-detail-desc">' + path.description + '</div>' +
+      '</div>' +
+      '<div class="p-steps">';
+
+    path.steps.forEach(function(step, i) {
+      var isLast = i === path.steps.length - 1;
+      html += '<div class="p-step">';
+      html += '<div class="p-step-line">';
+      html += '<div class="p-step-dot" style="border-color:' + step.category_color + '40;background:' + step.category_color + '20"></div>';
+      if (!isLast) html += '<div class="p-step-connector"></div>';
+      html += '</div>';
+      html += '<div class="p-step-content">';
+      if (step.transition_text) {
+        html += '<div class="p-step-transition">' + step.transition_text + '</div>';
+      }
+      var cta = step.is_free ? 'Read Free' : '$2.50';
+      html += '<a class="p-step-card" href="' + prefix + '/read/' + step.slug + '">' +
+        '<span class="p-step-emoji">' + (step.cover_emoji || '') + '</span>' +
+        '<div class="p-step-info">' +
+          '<div class="p-step-title">' + step.title + '</div>' +
+          '<div class="p-step-cat" style="color:' + step.category_color + '">' + step.category_name + '</div>' +
+        '</div>' +
+        '<span class="p-step-cta">' + cta + '</span>' +
+      '</a>';
+      html += '</div></div>';
+    });
+
+    html += '</div>';
+    detail.innerHTML = html;
+  }
+
+  // Handle browser back
+  window.addEventListener('hashchange', function() {
+    if (!location.hash || location.hash === '#') {
+      document.getElementById('p-detail').style.display = 'none';
+      document.getElementById('p-list').style.display = 'flex';
+    } else {
+      openPath(location.hash.slice(1));
+    }
+  });
+})();
+</script>
+</body>
+</html>
