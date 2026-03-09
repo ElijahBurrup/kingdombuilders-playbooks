@@ -65,9 +65,10 @@ Playbooks/
 - **API Docs**: `/api/docs` (Swagger UI), `/api/redoc`
 
 ## Deployment
-- **Live URL**: https://kingdombuilders-playbooks.onrender.com
-- **GitHub**: https://github.com/ElijahBurrup/kingdombuilders-playbooks (master branch)
-- **GitHub Account**: ElijahBurrup (elijah@kingdombuilders.ai)
+- **Production URL**: https://kingdombuilders.ai/playbooks (Cloudflare Worker → Render)
+- **Render URL**: https://kb-playbooks.onrender.com (URL_PREFIX=/playbooks)
+- **GitHub**: https://github.com/ElijahBurrup/kingdombuilders-playbooks (master branch, auto-deploys to Render)
+- **GitHub Account**: ElijahBurrup (elijah@kingdombuilders.ai) — same login for GitHub, Cloudflare, and Render
 - **Render Service ID**: srv-d6iir8ngi27c738ip9i0
 - **Local dev**: `uvicorn api.main:app --reload --port 5000` → http://localhost:5000
 - **Procfile**: `gunicorn api.main:app --workers 1 --worker-class uvicorn.workers.UvicornWorker`
