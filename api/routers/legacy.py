@@ -20,6 +20,7 @@ from starlette.templating import Jinja2Templates
 
 from api.config import settings
 from api.database import get_db
+from api.models.playbook import Playbook
 from api.models.user import User, OAuthAccount
 from api.models.purchase import Purchase, Subscription, StripeCustomer
 from api.utils.security import hash_password, verify_password
@@ -761,33 +762,35 @@ async def api_version():
 
 
 @router.get("/api/hot", include_in_schema=False)
-async def api_hot(period: str = "all"):
-    from database import get_hot_playbooks
-    hot = get_hot_playbooks(period, limit=3)
+async def api_hot(period: str = "all", db: AsyncSession = Depends(get_db)):
+    result = await db.execute(
+        select(Playbook.slug, Playbook.view_count)
+        .where(Playbook.status == "published")
+        .order_by(Playbook.view_count.desc())
+        .limit(3)
+    )
+    hot = [{"slug": row.slug, "views": row.view_count} for row in result]
     return JSONResponse(hot)
 
 
 @router.post("/api/track/view", include_in_schema=False)
-async def track_view(request: Request):
+async def track_view(request: Request, db: AsyncSession = Depends(get_db)):
     data = await request.json()
     slug = data.get("slug", "").strip()
     if not slug:
         return JSONResponse({"error": "slug required"}, status_code=400)
-    from database import log_playbook_view
-    log_playbook_view(slug, request.client.host if request.client else None, request.headers.get("User-Agent"))
+    result = await db.execute(select(Playbook).where(Playbook.slug == slug))
+    pb = result.scalar_one_or_none()
+    if pb:
+        pb.view_count = (pb.view_count or 0) + 1
+        await db.commit()
     return JSONResponse({"ok": True})
 
 
 @router.post("/api/track/exit", include_in_schema=False)
 async def track_exit(request: Request):
-    data = await request.json()
-    slug = data.get("slug", "").strip()
-    scroll_percent = data.get("scroll_percent", 0)
-    time_spent = data.get("time_spent_secs", 0)
-    if not slug:
-        return JSONResponse({"error": "slug required"}, status_code=400)
-    from database import log_playbook_exit
-    log_playbook_exit(slug, scroll_percent, time_spent, request.client.host if request.client else None)
+    # Exit tracking is handled by the journey completion endpoint for logged-in users.
+    # This endpoint just acknowledges the beacon for backwards compatibility.
     return JSONResponse({"ok": True})
 
 

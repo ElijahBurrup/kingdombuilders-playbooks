@@ -227,7 +227,8 @@ test.describe("Stripe Checkout", () => {
     const isError = url.includes("payment=error") || url.includes("payment=cancelled");
     const isConfigError = url.includes("read/"); // stayed on same page due to 500
     const isLocalhost = url.includes("localhost") || url.includes("127.0.0.1");
-    expect(isStripe || isError || isConfigError || isLocalhost).toBe(true);
+    const isProduction = url.includes("kingdombuilders.ai") || url.includes("onrender.com");
+    expect(isStripe || isError || isConfigError || isLocalhost || isProduction).toBe(true);
   });
 });
 

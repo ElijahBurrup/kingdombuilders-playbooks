@@ -83,11 +83,19 @@ def create_app() -> FastAPI:
     if ASSETS_DIR.is_dir():
         app.mount("/assets", StaticFiles(directory=str(ASSETS_DIR)), name="assets")
 
-    # --- URL_PREFIX: mount legacy routes under prefix for subpath deployment ---
-    # Cloudflare Worker sends /playbooks/* so we mount the legacy router
-    # again under the prefix so routes match both with and without it.
+    # --- URL_PREFIX: mount all routes under prefix for subpath deployment ---
+    # Cloudflare Worker sends /playbooks/* so we mount everything again
+    # under the prefix so routes match both with and without it.
     if settings.URL_PREFIX:
         app.include_router(legacy_router, prefix=settings.URL_PREFIX)
+
+        # API routers under prefix too (e.g. /playbooks/api/v1/...)
+        app.include_router(auth_router, prefix=f"{settings.URL_PREFIX}/api/v1")
+        app.include_router(catalog_router, prefix=f"{settings.URL_PREFIX}/api/v1")
+        app.include_router(payments_router, prefix=f"{settings.URL_PREFIX}/api/v1")
+        app.include_router(subscribe_router, prefix=f"{settings.URL_PREFIX}/api/v1")
+        app.include_router(admin_router, prefix=f"{settings.URL_PREFIX}/api/v1")
+        app.include_router(discovery_router, prefix=f"{settings.URL_PREFIX}/api/v1")
 
         # Also mount static/assets under the prefix
         if STATIC_DIR.is_dir():
