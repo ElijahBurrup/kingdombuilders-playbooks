@@ -881,41 +881,12 @@ async def checkout(
         session = stripe.checkout.Session.create(**session_params)
         return RedirectResponse(url=session.url, status_code=303)
     except Exception as e:
-        import traceback
         print(f"Stripe checkout error: {e}")
-        traceback.print_exc()
         return RedirectResponse(
             url=f"{base}{cancel_path}?payment=error",
             status_code=303,
         )
 
-
-@router.get("/debug-checkout", include_in_schema=False)
-async def debug_checkout(request: Request, db: AsyncSession = Depends(get_db)):
-    """Temporary debug: test Stripe session creation and return error details."""
-    user_id = get_session_user_id(request)
-    if not user_id:
-        return JSONResponse({"error": "not authenticated"})
-    result = await db.execute(select(User).where(User.id == user_id))
-    user = result.scalar_one_or_none()
-    stripe.api_key = settings.STRIPE_SECRET_KEY
-    price_id = settings.STRIPE_PRICE_SINGLE or settings.STRIPE_PRICE_ID
-    base = settings.BASE_URL
-    try:
-        session = stripe.checkout.Session.create(
-            mode="payment",
-            payment_method_types=["card"],
-            line_items=[{"price": price_id, "quantity": 1}],
-            success_url=f"{base}/success?session_id={{CHECKOUT_SESSION_ID}}",
-            cancel_url=f"{base}/read/test?payment=cancelled",
-            metadata={"mode": "single", "slug": "test", "user_id": str(user_id)},
-            customer_email=user.email if user else None,
-            customer_creation="always",
-        )
-        return JSONResponse({"ok": True, "url": session.url[:80]})
-    except Exception as e:
-        import traceback
-        return JSONResponse({"error": str(e), "type": type(e).__name__, "trace": traceback.format_exc()})
 
 
 @router.get("/checkout-redirect", include_in_schema=False)
