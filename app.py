@@ -101,7 +101,7 @@ FREE_SLUGS = {
     "the-wolfs-table",
 }
 
-ADMIN_CODE = "elijahsentme"
+ADMIN_CODE = os.environ.get("ADMIN_UNLOCK_CODE", "elijahsentme")
 
 
 def get_all_slugs():

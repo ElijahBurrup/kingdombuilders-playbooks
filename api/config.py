@@ -37,6 +37,9 @@ class Settings(BaseSettings):
     # Google OAuth
     GOOGLE_CLIENT_ID: str = ""
 
+    # Admin
+    ADMIN_UNLOCK_CODE: str = "elijahsentme"
+
     # CORS
     CORS_ORIGINS: str = "http://localhost:5173,http://localhost:5000"
 

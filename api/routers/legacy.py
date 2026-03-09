@@ -7,6 +7,8 @@ to work without any changes on the client side.
 """
 
 import secrets
+import time
+from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import quote, urlencode
@@ -135,7 +137,24 @@ FREE_SLUGS = {
     "the-wolfs-table",
 }
 
-ADMIN_CODE = "elijahsentme"
+ADMIN_CODE = settings.ADMIN_UNLOCK_CODE
+
+# Simple in-memory rate limiter for checkout (max 5 attempts per IP per 60s)
+_checkout_attempts: dict[str, list[float]] = defaultdict(list)
+_CHECKOUT_RATE_LIMIT = 5
+_CHECKOUT_RATE_WINDOW = 60  # seconds
+
+
+def _is_checkout_rate_limited(ip: str) -> bool:
+    now = time.monotonic()
+    attempts = _checkout_attempts[ip]
+    # Prune old entries
+    _checkout_attempts[ip] = [t for t in attempts if now - t < _CHECKOUT_RATE_WINDOW]
+    if len(_checkout_attempts[ip]) >= _CHECKOUT_RATE_LIMIT:
+        return True
+    _checkout_attempts[ip].append(now)
+    return False
+
 
 # ============================================================================
 # Landing-page routes — maps a URL path to a file inside static/
@@ -806,6 +825,11 @@ async def checkout(
 ):
     prefix = settings.URL_PREFIX or ""
     base = settings.BASE_URL
+
+    # Rate limit checkout attempts
+    client_ip = request.client.host if request.client else "unknown"
+    if _is_checkout_rate_limited(client_ip):
+        return JSONResponse({"error": "Too many checkout attempts. Please wait a minute."}, status_code=429)
 
     # Require authentication before checkout
     user_id = get_session_user_id(request)
