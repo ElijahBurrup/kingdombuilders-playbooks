@@ -126,6 +126,19 @@ class Playbook(Base):
     assets: Mapped[list["PlaybookAsset"]] = relationship(
         back_populates="playbook", cascade="all, delete-orphan"
     )
+    tags: Mapped[list["PlaybookTag"]] = relationship(  # noqa: F821
+        back_populates="playbook", cascade="all, delete-orphan"
+    )
+    outgoing_connections: Mapped[list["PlaybookConnection"]] = relationship(  # noqa: F821
+        foreign_keys="PlaybookConnection.source_id",
+        back_populates="source",
+        cascade="all, delete-orphan",
+    )
+    incoming_connections: Mapped[list["PlaybookConnection"]] = relationship(  # noqa: F821
+        foreign_keys="PlaybookConnection.target_id",
+        back_populates="target",
+        cascade="all, delete-orphan",
+    )
 
 
 class PlaybookAsset(Base):

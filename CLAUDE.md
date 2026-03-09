@@ -91,6 +91,29 @@ Playbooks/
 - **NO HYPHENS/DASHES in playbook text**: Never use em dashes (—), en dashes (–), or hyphens (-) as punctuation in prose. Use commas, periods, or restructure sentences instead. This applies to ALL visible text content in assets/*.html files. CSS properties and HTML attributes with hyphens are fine.
 - URL_PREFIX middleware supports subpath deployment (e.g., /playbooks on Cloudflare Worker)
 
+## Thread System (Discovery Engine)
+The discovery engine connects playbooks through invisible thematic "threads" to enable cross-pollination (e.g., AI reader discovers faith content).
+
+### Database Tables
+- **`playbook_tags`** — Multi-dimensional tags per playbook with weights (0.0 to 1.0). E.g., Ant Network: trust(1.0), decentralization(1.0), money(0.6), faith(0.3)
+- **`playbook_connections`** — Curated relationships with 3 types: `deeper` (same domain), `bridge` (cross-domain), `surprise` (unexpected thematic link). Each has a `teaser` (shown to user) and `reason` (editorial note).
+
+### API Endpoints
+- `GET /api/v1/discovery/chain/{slug}` — Returns 3 recommendations (1 deeper, 1 bridge, 1 surprise). Falls back to tag-based matching if curated connections are missing.
+- `POST /api/v1/discovery/chain-click` — Tracks recommendation clicks for analytics.
+
+### End-of-Playbook Chain Panel
+Injected into every playbook reader page (via `_inject_back_button_and_tracking()` in `legacy.py`). Client-side JS fetches chain data and renders 3 visually distinct cards between the Finale and Footer.
+
+### Seed Script
+`python -m scripts.seed_discovery` — Populates tags and connections for all playbooks. Idempotent (safe to re-run).
+
+### Key Files
+- `api/models/discovery.py` — PlaybookTag, PlaybookConnection ORM models
+- `api/routers/discovery.py` — Chain API with tag-based fallback algorithm
+- `api/schemas/discovery.py` — Pydantic response schemas
+- `scripts/seed_discovery.py` — Curated tag/connection data for all 48 playbooks
+
 ## Branches
 - `master` — production (current Flask app, auto-deploys to Render)
 - `fastapi-rebuild` — Phase 1 FastAPI backend (DO NOT merge to master until Phase 3)

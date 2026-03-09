@@ -347,7 +347,104 @@ def _inject_back_button_and_tracking(html: str, slug: str) -> str:
 }})();
 </script>
 """
-    return html.replace("</body>", back_button + tracking_script + "</body>")
+    chain_panel = f"""
+<style>
+.pb-chain{{max-width:860px;margin:60px auto 0;padding:0 24px 40px;font-family:'Poppins',Helvetica,sans-serif}}
+.pb-chain-label{{text-align:center;font-size:0.55rem;font-weight:700;letter-spacing:5px;
+  color:rgba(255,255,255,0.35);margin-bottom:28px;text-transform:uppercase}}
+.pb-chain-cards{{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}}
+.pb-chain-card{{position:relative;overflow:hidden;border-radius:14px;padding:28px 22px 22px;
+  text-decoration:none;color:#fff;transition:transform 0.25s,box-shadow 0.25s;cursor:pointer;display:block}}
+.pb-chain-card:hover{{transform:translateY(-3px);box-shadow:0 8px 32px rgba(0,0,0,0.4)}}
+.pb-chain-type{{font-size:0.5rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;
+  margin-bottom:12px;display:flex;align-items:center;gap:6px}}
+.pb-chain-type svg{{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}}
+.pb-chain-emoji{{font-size:1.6rem;margin-bottom:8px}}
+.pb-chain-title{{font-size:0.95rem;font-weight:700;margin-bottom:6px;line-height:1.3}}
+.pb-chain-teaser{{font-size:0.78rem;font-weight:400;opacity:0.8;line-height:1.5;
+  font-family:'Lora',Georgia,serif;font-style:italic}}
+.pb-chain-badge{{display:inline-block;font-size:0.55rem;font-weight:700;letter-spacing:1px;
+  padding:3px 10px;border-radius:50px;margin-top:12px;text-transform:uppercase}}
+.pb-chain-cta{{display:inline-block;font-size:0.6rem;font-weight:700;letter-spacing:2px;
+  padding:6px 16px;border-radius:50px;margin-top:14px;text-transform:uppercase;
+  background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.15);transition:all 0.2s}}
+.pb-chain-card:hover .pb-chain-cta{{background:rgba(255,255,255,0.2);border-color:rgba(255,255,255,0.3)}}
+.pb-chain-card--deeper{{background:linear-gradient(135deg,#1a0a2e 0%,#2d1b4e 100%);
+  border:1px solid rgba(232,201,106,0.25)}}
+.pb-chain-card--deeper .pb-chain-type{{color:#E8C96A}}
+.pb-chain-card--bridge{{border:1px solid rgba(255,255,255,0.1)}}
+.pb-chain-card--surprise{{background:linear-gradient(135deg,#0a0a1a 0%,#1a1a2e 100%);
+  border:1px solid rgba(255,255,255,0.08)}}
+.pb-chain-card--surprise::before{{content:'';position:absolute;top:0;left:0;right:0;bottom:0;
+  background:radial-gradient(circle at 30% 20%,rgba(232,201,106,0.06) 0%,transparent 60%),
+  radial-gradient(circle at 70% 80%,rgba(123,79,191,0.06) 0%,transparent 60%);pointer-events:none}}
+.pb-chain-card--surprise .pb-chain-type{{color:rgba(232,201,106,0.7)}}
+@media(max-width:600px){{.pb-chain-cards{{grid-template-columns:1fr}}.pb-chain{{padding:0 16px 32px}}}}
+@media print{{.pb-chain{{display:none}}}}
+</style>
+<section class="pb-chain" id="pb-chain" style="display:none">
+  <div class="pb-chain-label">Continue Your Journey</div>
+  <div class="pb-chain-cards" id="pb-chain-cards"></div>
+</section>
+<script>
+(function(){{
+  var slug = '{slug}';
+  var prefix = '';
+  try {{ var m = location.pathname.match(/^(\\/[^\\/]+)\\/read\\//); if(m) prefix = m[1]; }} catch(e){{}}
+
+  var ICONS = {{
+    deeper: '<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>',
+    bridge: '<svg viewBox="0 0 24 24"><path d="M4 18c0-6 4-10 8-10s8 4 8 10"/><circle cx="4" cy="18" r="1.5"/><circle cx="20" cy="18" r="1.5"/></svg>',
+    surprise: '<svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>'
+  }};
+
+  var LABELS = {{
+    deeper: 'Go Deeper',
+    bridge: 'The Bridge',
+    surprise: 'The Surprise'
+  }};
+
+  fetch(prefix + '/api/v1/discovery/chain/' + slug)
+    .then(function(r) {{ return r.json(); }})
+    .then(function(data) {{
+      if (!data.recommendations || data.recommendations.length === 0) return;
+
+      var container = document.getElementById('pb-chain-cards');
+      data.recommendations.forEach(function(rec) {{
+        var card = document.createElement('a');
+        card.href = prefix + '/read/' + rec.slug;
+        card.className = 'pb-chain-card pb-chain-card--' + rec.connection_type;
+
+        if (rec.connection_type === 'bridge') {{
+          card.style.background = 'linear-gradient(135deg, #1a0a2e 0%, ' + rec.category_color + '22 100%)';
+        }}
+
+        var ctaText = rec.is_free ? 'Read Free' : '$2.50';
+        card.innerHTML =
+          '<div class="pb-chain-type">' + (ICONS[rec.connection_type] || '') + ' ' + (LABELS[rec.connection_type] || rec.connection_type) + '</div>' +
+          '<div class="pb-chain-emoji">' + (rec.cover_emoji || '') + '</div>' +
+          '<div class="pb-chain-title">' + rec.title + '</div>' +
+          '<div class="pb-chain-teaser">' + rec.teaser + '</div>' +
+          '<span class="pb-chain-badge" style="background:' + rec.category_color + '18;color:' + rec.category_color + '">' + rec.category_name + '</span>' +
+          '<br><span class="pb-chain-cta">' + ctaText + '</span>';
+
+        card.addEventListener('click', function() {{
+          var clickData = JSON.stringify({{slug: slug, target_slug: rec.slug, connection_type: rec.connection_type}});
+          if (navigator.sendBeacon) {{
+            navigator.sendBeacon(prefix + '/api/v1/discovery/chain-click', new Blob([clickData], {{type: 'application/json'}}));
+          }}
+        }});
+
+        container.appendChild(card);
+      }});
+
+      document.getElementById('pb-chain').style.display = 'block';
+    }})
+    .catch(function() {{}});
+}})();
+</script>
+"""
+    return html.replace("</body>", back_button + chain_panel + tracking_script + "</body>")
 
 
 @router.get("/read/{slug}", include_in_schema=False)

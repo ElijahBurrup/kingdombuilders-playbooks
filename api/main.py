@@ -64,12 +64,14 @@ def create_app() -> FastAPI:
     from api.routers.payments import router as payments_router
     from api.routers.subscribe import router as subscribe_router
     from api.routers.admin import router as admin_router
+    from api.routers.discovery import router as discovery_router
 
     app.include_router(auth_router, prefix="/api/v1")
     app.include_router(catalog_router, prefix="/api/v1")
     app.include_router(payments_router, prefix="/api/v1")
     app.include_router(subscribe_router, prefix="/api/v1")
     app.include_router(admin_router, prefix="/api/v1")
+    app.include_router(discovery_router, prefix="/api/v1")
 
     # --- Legacy backward-compatible router (serves existing HTML pages) ---
     from api.routers.legacy import router as legacy_router
