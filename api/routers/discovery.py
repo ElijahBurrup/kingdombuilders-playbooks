@@ -21,7 +21,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from api.database import get_db
-from api.dependencies import get_current_user
+from api.dependencies import get_current_user, get_current_user_from_session
 from api.models.activity import ReadingProgress
 from api.models.playbook import Playbook, Category
 from api.models.discovery import PlaybookConnection, PlaybookTag, JourneyStamp, ReadingPath, ReadingPathStep
@@ -280,7 +280,7 @@ async def get_surprise(
 
 @router.get("/journey", response_model=JourneyResponse)
 async def get_journey(
-    user: User = Depends(get_current_user),
+    user: User = Depends(get_current_user_from_session),
     db: AsyncSession = Depends(get_db),
 ):
     """Return the user's reading passport: completed playbooks, stats, stamps."""
@@ -367,7 +367,7 @@ async def get_journey(
 @router.post("/journey/complete", response_model=CompleteResponse)
 async def mark_complete(
     body: CompleteRequest,
-    user: User = Depends(get_current_user),
+    user: User = Depends(get_current_user_from_session),
     db: AsyncSession = Depends(get_db),
 ):
     """Mark a playbook as completed and check for new achievement stamps."""
