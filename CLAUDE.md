@@ -139,11 +139,14 @@ This powers three features: constellation map (`/constellation`), end-of-playboo
   - Each connection: `(type, target_slug, teaser_text, editorial_reason)`
   - Teaser is shown to the reader; reason is internal documentation only
 
-### Step 7: Create Pull Quotes (`scripts/generate_pull_quotes.py`)
-- [ ] Add 3 curated quotes to `CURATED_QUOTES` dict, keyed by asset filename (without .html)
+### Step 7: Generate Pull Quotes (`scripts/generate_pull_quotes.py`)
+**Must run locally (requires Playwright browser). Generated images must be committed and pushed with the code.**
+- [ ] Add 3 curated quotes to `CURATED_QUOTES` dict, keyed by asset filename without extension (e.g., `"The_Hermit_Crabs_Shell"`)
 - [ ] Quote selection: 1 hook (grabs attention), 1 reveal (core insight), 1 finale (closing punch)
-- [ ] Run locally: `python -m scripts.generate_pull_quotes The_Title.html`
+- [ ] Run: `python -m scripts.generate_pull_quotes The_Title.html` (uses Playwright to screenshot the actual cover design)
 - [ ] Verify 6 images generated in `assets/pull-quotes/` (3 quotes x 2 sizes: 1080x1080 square + 1200x675 wide)
+- [ ] File naming: `"Title Words 1.png"`, `"Title Words 1 wide.png"`, `"Title Words 2.png"`, etc.
+- [ ] `git add assets/pull-quotes/` to include generated images in the commit
 
 ### Step 8: Reading Paths (`scripts/seed_paths.py`)
 - [ ] If part of a series: create a reading path for the series (slug, title, description, theme_tag, emoji, color)
@@ -153,7 +156,7 @@ This powers three features: constellation map (`/constellation`), end-of-playboo
 - [ ] If standalone: consider creating a new 3-4 step thematic path that includes it
 
 ### Step 9: Commit & Push
-- [ ] `git add` all changed files (assets, static, api/routers/legacy.py, all seed scripts, CLAUDE.md if changed)
+- [ ] `git add` all changed files: assets/*.html, assets/pull-quotes/*.png, static/*.html, static/index.html, api/routers/legacy.py, all seed scripts, CLAUDE.md
 - [ ] Commit with descriptive message
 - [ ] `git push origin master`
 
