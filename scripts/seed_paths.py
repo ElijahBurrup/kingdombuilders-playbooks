@@ -135,6 +135,22 @@ PATHS = [
              "You have armored up, faced the flame, and learned to grip. Now the final crossing: the transformation that costs everything."),
         ],
     },
+    {
+        "slug": "the-shield-series",
+        "title": "The Shield Series",
+        "description": "Three playbooks that teach you to see narcissistic manipulation, build automatic defenses, and survive when the attack outlasts your energy. Detection. Defense. Endurance.",
+        "theme_tag": "narcissism",
+        "emoji": "\U0001f6e1\ufe0f",
+        "color": "#8B0000",
+        "steps": [
+            ("the-mantis-shrimps-eye",
+             None),
+            ("the-porcupines-quills",
+             "You learned to see the lie. Now build the system that punishes the lie automatically, without spending a single calorie of your own energy."),
+            ("the-tardigrade-protocol",
+             "Your quills are up and your boundaries are live. But what happens when the siege lasts longer than your resources? The tardigrade knows: you shut down everything except what keeps you alive."),
+        ],
+    },
 ]
 
 

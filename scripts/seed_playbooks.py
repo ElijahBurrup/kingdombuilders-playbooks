@@ -62,6 +62,12 @@ SERIES_DEFS = [
         "description": "A 6-part philosophy series exploring how natural processes teach us about living well.",
         "display_order": 2,
     },
+    {
+        "name": "The Shield Series",
+        "slug": "the-shield-series",
+        "description": "A 3-part series on recognizing, defending against, and surviving narcissistic abuse through animal parable.",
+        "display_order": 3,
+    },
 ]
 
 # ---------------------------------------------------------------------------
@@ -104,6 +110,9 @@ PLAYBOOKS_DATA = [
     {"slug": "the-elephants-ground", "title": "The Elephant's Ground", "route": "/theeleophantsground", "category": "philosophy", "series": "a-process-model", "series_order": 4, "landing_file": "the-elephants-ground.html", "asset_file": "The_Elephants_Ground.html", "cover_emoji": "\U0001f418"},
     {"slug": "the-bees-dance", "title": "The Bee's Dance", "route": "/thebeesdance", "category": "philosophy", "series": "a-process-model", "series_order": 5, "landing_file": "the-bees-dance.html", "asset_file": "The_Bees_Dance.html", "cover_emoji": "\U0001f41d"},
     {"slug": "the-otters-play", "title": "The Otter's Play", "route": "/theottersplay", "category": "philosophy", "series": "a-process-model", "series_order": 6, "landing_file": "the-otters-play.html", "asset_file": "The_Otters_Play.html", "cover_emoji": "\U0001f9a6"},
+    {"slug": "the-mantis-shrimps-eye", "title": "The Mantis Shrimp's Eye", "route": "/themantisshrimpseye", "category": "mindset", "series": "the-shield-series", "series_order": 1, "landing_file": "the-mantis-shrimps-eye.html", "asset_file": "The_Mantis_Shrimps_Eye.html", "cover_emoji": "\U0001f990"},
+    {"slug": "the-porcupines-quills", "title": "The Porcupine's Quills", "route": "/theporcupinesquills", "category": "mindset", "series": "the-shield-series", "series_order": 2, "landing_file": "the-porcupines-quills.html", "asset_file": "The_Porcupines_Quills.html", "cover_emoji": "\U0001f994"},
+    {"slug": "the-tardigrade-protocol", "title": "The Tardigrade Protocol", "route": "/thetardigradeprotocol", "category": "resilience", "series": "the-shield-series", "series_order": 3, "landing_file": "the-tardigrade-protocol.html", "asset_file": "The_Tardigrade_Protocol.html", "cover_emoji": "\U0001f9ec"},
 ]
 
 

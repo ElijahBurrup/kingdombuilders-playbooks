@@ -88,8 +88,53 @@ Playbooks/
 - Each playbook has a landing page (static/*.html) and a full reader page (assets/*.html)
 - Legacy routes are data-driven via `LANDING_ROUTES` and `SLUG_TO_FILE` dicts in `api/routers/legacy.py`
 - New playbooks added via admin API or seed script (no more manual route registration)
-- "SetHut" command generates new playbooks as visual experiences
+- "SetHut" command generates new playbooks as visual experiences (see full checklist below)
 - **NO HYPHENS/DASHES in playbook text**: Never use em dashes (—), en dashes (–), or hyphens (-) as punctuation in prose. Use commas, periods, or restructure sentences instead. This applies to ALL visible text content in assets/*.html files. CSS properties and HTML attributes with hyphens are fine.
+
+## SetHut Checklist (New Playbook Creation)
+Every new playbook requires ALL of these steps. Do not skip any.
+
+### Step 1: Create Content
+- [ ] Generate `assets/The_Title.html` (full reader, 1500+ lines, all 9 mandatory elements)
+- [ ] Verify NO hyphens/dashes in prose text
+- [ ] If series: add series progress tracker dots to cover
+
+### Step 2: Create Landing Page
+- [ ] Generate `static/the-slug.html` (sales page with cover, chapters, pricing CTA)
+- [ ] Match the playbook's unique color palette
+- [ ] Include $2.50 single / $10/mo archive pricing + "READ THE PLAYBOOK" button linking to `read/the-slug`
+
+### Step 3: Register Routes
+- [ ] Add to `LANDING_ROUTES` dict in `api/routers/legacy.py`: `"/theslug": "the-slug.html"`
+- [ ] Add to `SLUG_TO_FILE` dict in `api/routers/legacy.py`: `"the-slug": "The_Title.html"`
+
+### Step 4: Register in Database
+- [ ] Add entry to `PLAYBOOKS_DATA` in `scripts/seed_playbooks.py` (slug, title, category, series, pricing, emoji)
+- [ ] Run on server: `python -m scripts.seed_playbooks`
+
+### Step 5: Seed Discovery (Constellation + Suggestions)
+- [ ] Add 8-10 tags with weights (0.3-1.0) to `TAGS` dict in `scripts/seed_discovery.py`
+- [ ] Add 3 connections to `CONNECTIONS` dict: 1 deeper, 1 bridge, 1 surprise (each with teaser + reason)
+- [ ] Run on server: `python -m scripts.seed_discovery`
+- [ ] This powers: constellation map, end-of-playbook chain panel (3 suggestion cards), tag cloud
+
+### Step 6: Create Pull Quotes
+- [ ] Add 3 curated quotes to `CURATED_QUOTES` in `scripts/generate_pull_quotes.py` (hook, reveal, finale)
+- [ ] Run: `python -m scripts.generate_pull_quotes The_Title.html`
+- [ ] Verify 6 images in `assets/pull-quotes/` (3 quotes x 2 sizes: 1080x1080 + 1200x675)
+
+### Step 7: Reading Paths (Optional)
+- [ ] If playbook fits a theme, add to existing path or create new path in `scripts/seed_paths.py`
+- [ ] Include transition text explaining why this playbook comes next
+- [ ] Run on server: `python -m scripts.seed_paths`
+
+### Step 8: Test & Deploy
+- [ ] Test locally: `uvicorn api.main:app --reload --port 5000`
+- [ ] Visit `/read/the-slug`, verify chain panel loads at bottom with 3 suggestions
+- [ ] Visit `/theslug` landing page
+- [ ] Visit `/constellation`, verify new node appears
+- [ ] Commit all files, push to master
+- [ ] Verify Render auto-deploy triggers
 - URL_PREFIX middleware supports subpath deployment (e.g., /playbooks on Cloudflare Worker)
 
 ## Thread System (Discovery Engine)

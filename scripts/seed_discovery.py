@@ -219,6 +219,18 @@ TAGS = {
         ("money", 1.0), ("systems", 0.9), ("discipline", 0.8), ("growth", 0.7),
         ("patience", 0.6), ("strategy", 0.5), ("self_awareness", 0.4),
     ],
+    "the-mantis-shrimps-eye": [
+        ("narcissism", 1.0), ("perception", 1.0), ("manipulation", 0.9), ("self_awareness", 0.8),
+        ("fear", 0.7), ("identity", 0.6), ("courage", 0.5), ("discipline", 0.4),
+    ],
+    "the-porcupines-quills": [
+        ("narcissism", 1.0), ("boundaries", 1.0), ("systems", 0.8), ("discipline", 0.7),
+        ("self_awareness", 0.7), ("fear", 0.6), ("identity", 0.5), ("courage", 0.4),
+    ],
+    "the-tardigrade-protocol": [
+        ("narcissism", 1.0), ("resilience", 1.0), ("survival", 0.9), ("courage", 0.8),
+        ("fear", 0.7), ("self_awareness", 0.6), ("identity", 0.5), ("growth", 0.4),
+    ],
 }
 
 
@@ -783,6 +795,39 @@ CONNECTIONS = {
         ("surprise", "the-tide-pools-echo",
          "Fibonacci spirals in sea shells. The trim follows the same curve as the tide pool.",
          "Financial patterns echo natural ones"),
+    ],
+    "the-mantis-shrimps-eye": [
+        ("deeper", "the-porcupines-quills",
+         "You learned to see the manipulation. Now build the automatic defense system that does not require your energy.",
+         "Detection leads to automated boundaries"),
+        ("bridge", "the-narrator",
+         "The narcissist rewrites your story. The Narrator teaches you to take it back.",
+         "Seeing manipulation clearly meets reclaiming your narrative"),
+        ("surprise", "the-chameleons-code",
+         "The narcissist is the ultimate chameleon. See how adaptation works when it is honest instead of predatory.",
+         "Deceptive adaptation vs authentic adaptation"),
+    ],
+    "the-porcupines-quills": [
+        ("deeper", "the-tardigrade-protocol",
+         "You built the automatic defense. Now learn to survive when the attack outlasts your quills.",
+         "Boundary systems meet survival architecture"),
+        ("bridge", "the-pangolins-armor",
+         "The porcupine strikes back automatically. The pangolin rolls into a ball. Two animals, two defenses, one question: how do you protect what matters?",
+         "Automatic consequence vs passive armor"),
+        ("surprise", "the-elephants-ground",
+         "After building walls, you need to find ground. The elephant never forgets where it stands.",
+         "Defense architecture meets grounded identity"),
+    ],
+    "the-tardigrade-protocol": [
+        ("deeper", "the-mantis-shrimps-eye",
+         "You survived. Now go back and sharpen your detection. See the lies before the damage starts.",
+         "Survival loops back to perception"),
+        ("bridge", "the-bears-winter",
+         "The tardigrade shuts down to survive. The bear sleeps to endure. Both teach the same lesson: sometimes the strongest move is stillness.",
+         "Shutdown survival meets seasonal endurance"),
+        ("surprise", "lay-it-down",
+         "You learned to survive narcissistic abuse. Now the hardest question: can you lay down the identity it gave you?",
+         "Survival meets spiritual surrender"),
     ],
 }
 
