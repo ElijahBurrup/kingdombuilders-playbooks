@@ -94,57 +94,113 @@ Playbooks/
 ## SetHut Checklist (New Playbook Creation)
 Every new playbook requires ALL of these steps. Do not skip any.
 
-### Step 1: Create Content
-- [ ] Generate `assets/The_Title.html` (full reader, 1500+ lines, all 9 mandatory elements)
-- [ ] Verify NO hyphens/dashes in prose text
-- [ ] If series: add series progress tracker dots to cover
+### Step 1: Create Content (`assets/`)
+- [ ] Generate `assets/The_Title.html` (full reader, 1000+ lines, all mandatory elements)
+- [ ] Verify NO hyphens/dashes in prose text (run: `grep -P '[—–]' assets/The_Title.html`)
+- [ ] If series: add series progress dots to finale (3 dots with active state, series label, "Part X of Y")
+- [ ] If series: cross-reference other playbooks in the series (e.g., "Next: The Scorpion's Molt")
+- [ ] Include: cover with animated particles, 4 chapter headers, scenes, viz boxes, think boxes, grand quotes, before/after pairs, breathe gates, final test (10 click-to-reveal questions), footer with scripture
+- [ ] Include all standard JS: progress bar, chapter pill, scroll reveal (IntersectionObserver), final test click handlers
+- [ ] Unique color palette per playbook (CSS custom properties)
 
-### Step 2: Create Landing Page
-- [ ] Generate `static/the-slug.html` (sales page with cover, chapters, pricing CTA)
-- [ ] Match the playbook's unique color palette
+### Step 2: Create Landing Page (`static/`)
+- [ ] Generate `static/the-slug.html` (sales page with cover, chapter previews, pricing CTA)
+- [ ] Match the playbook's unique color palette from Step 1
+- [ ] Include: cover badge (series name + part number), 4 chapter cards, insight quote, concept box, selling points grid
 - [ ] Include $2.50 single / $10/mo archive pricing + "READ THE PLAYBOOK" button linking to `read/the-slug`
+- [ ] Footer with same scripture as the reader page
 
-### Step 3: Register Routes
-- [ ] Add to `LANDING_ROUTES` dict in `api/routers/legacy.py`: `"/theslug": "the-slug.html"`
-- [ ] Add to `SLUG_TO_FILE` dict in `api/routers/legacy.py`: `"the-slug": "The_Title.html"`
+### Step 3: Register Routes (`api/routers/legacy.py`)
+- [ ] Add to `LANDING_ROUTES` dict: `"/theslug": "the-slug.html"` (no hyphens in URL path)
+- [ ] Add to `SLUG_TO_FILE` dict: `"the-slug": "The_Title.html"`
+- [ ] Verify: URL path in LANDING_ROUTES has NO hyphens (e.g., `/thehermitcrabsshell` not `/the-hermit-crabs-shell`)
 
-### Step 4: Add to Catalog Page
-- [ ] Add card to `static/index.html` in the `#playbook-grid` div (hardcoded HTML, not dynamic)
-- [ ] Include: `data-pillar`, `data-sub`, `data-series` (if part of a series) attributes
-- [ ] If new series: add series button to `.series-bar` div with `data-series` attribute and count
-- [ ] Card needs: title, subtitle, tag, description, price ($2.50), "View Playbook" link
+### Step 4: Add to Catalog Page (`static/index.html`)
+**CRITICAL: The catalog page is hardcoded HTML, NOT dynamic from the database. Playbooks will NOT appear on the homepage unless manually added here.**
+- [ ] Add `<a>` card to `static/index.html` inside `#playbook-grid` div
+- [ ] Card requires: `href="read/the-slug"`, `class="card"`, `data-pillar`, `data-sub` attributes
+- [ ] If part of a series: add `data-series="series-key"` attribute matching the series button
+- [ ] Card HTML: `.card-cover` (title + subtitle), `.card-body` (tag + description + footer with price)
+- [ ] If new series: add `<button class="series-btn" data-series="key">` to `.series-bar` div with icon and count
+- [ ] Place card near related playbooks (same series or category)
 
-### Step 5: Register in Database
-- [ ] Add entry to `PLAYBOOKS_DATA` in `scripts/seed_playbooks.py` (slug, title, category, series, pricing, emoji)
-- [ ] If new series: add to `SERIES_DEFS` list in `scripts/seed_playbooks.py`
-- [ ] Run on server: `python -m scripts.seed_playbooks`
+### Step 5: Register in Database (`scripts/seed_playbooks.py`)
+- [ ] Add entry to `PLAYBOOKS_DATA` list: slug, title, route, category, landing_file, asset_file, cover_emoji
+- [ ] If part of a series: include `series` (slug) and `series_order` (1-based) fields
+- [ ] If new series: add to `SERIES_DEFS` list with name, slug, description, display_order
 
-### Step 6: Seed Discovery (Constellation + Suggestions)
-- [ ] Add 8-10 tags with weights (0.3-1.0) to `TAGS` dict in `scripts/seed_discovery.py`
-- [ ] Add 3 connections to `CONNECTIONS` dict: 1 deeper, 1 bridge, 1 surprise (each with teaser + reason)
-- [ ] Run on server: `python -m scripts.seed_discovery`
-- [ ] This powers: constellation map (`/constellation`), end-of-playbook chain panel (3 suggestion cards), tag cloud
+### Step 6: Seed Discovery Engine (`scripts/seed_discovery.py`)
+This powers three features: constellation map (`/constellation`), end-of-playbook chain panel (3 suggestion cards), and tag cloud filter.
+- [ ] Add to `TAGS` dict: 8-10 tags with weights (0.3 to 1.0), keyed by playbook slug
+- [ ] Add to `CONNECTIONS` dict: 3 connections per playbook, keyed by playbook slug:
+  - 1 `deeper` (same domain, goes further into the topic)
+  - 1 `bridge` (cross-domain, connects to different category)
+  - 1 `surprise` (unexpected thematic link)
+  - Each connection: `(type, target_slug, teaser_text, editorial_reason)`
+  - Teaser is shown to the reader; reason is internal documentation only
 
-### Step 7: Create Pull Quotes
-- [ ] Add 3 curated quotes to `CURATED_QUOTES` in `scripts/generate_pull_quotes.py` (hook, reveal, finale)
-- [ ] Run: `python -m scripts.generate_pull_quotes The_Title.html`
-- [ ] Verify 6 images in `assets/pull-quotes/` (3 quotes x 2 sizes: 1080x1080 + 1200x675)
+### Step 7: Create Pull Quotes (`scripts/generate_pull_quotes.py`)
+- [ ] Add 3 curated quotes to `CURATED_QUOTES` dict, keyed by asset filename (without .html)
+- [ ] Quote selection: 1 hook (grabs attention), 1 reveal (core insight), 1 finale (closing punch)
+- [ ] Run locally: `python -m scripts.generate_pull_quotes The_Title.html`
+- [ ] Verify 6 images generated in `assets/pull-quotes/` (3 quotes x 2 sizes: 1080x1080 square + 1200x675 wide)
 
-### Step 8: Reading Paths (Optional)
-- [ ] If playbook fits a theme, add to existing path or create new path in `scripts/seed_paths.py`
-- [ ] Include transition text explaining why this playbook comes next
-- [ ] Run on server: `python -m scripts.seed_paths`
+### Step 8: Reading Paths (`scripts/seed_paths.py`)
+- [ ] If part of a series: create a reading path for the series (slug, title, description, theme_tag, emoji, color)
+- [ ] Each step: `(playbook_slug, transition_text)` — first step has `None` for transition
+- [ ] Transition text explains WHY this playbook comes next in the journey
+- [ ] If playbook fits an existing theme path: add it to that path's steps list
+- [ ] If standalone: consider creating a new 3-4 step thematic path that includes it
 
-### Step 9: Test & Deploy
-- [ ] Test locally: `uvicorn api.main:app --reload --port 5000`
-- [ ] Visit `/read/the-slug`, verify chain panel loads at bottom with 3 suggestions
-- [ ] Visit `/theslug` landing page
-- [ ] Visit `/constellation`, verify new node appears
-- [ ] Visit `/paths`, verify reading path includes new playbook
-- [ ] Verify catalog page (`/`) shows new card and series filter works
-- [ ] Commit all files, push to master
-- [ ] Verify Render auto-deploy triggers
-- [ ] Run seed scripts on production server after deploy
+### Step 9: Commit & Push
+- [ ] `git add` all changed files (assets, static, api/routers/legacy.py, all seed scripts, CLAUDE.md if changed)
+- [ ] Commit with descriptive message
+- [ ] `git push origin master`
+
+### Step 10: Deploy & Seed Production
+**Use Render API to deploy and seed. Do NOT wait for auto-deploy or ask user to do it manually.**
+
+Trigger deploy:
+```bash
+curl -s -X POST \
+  -H "Authorization: Bearer $RENDER_API_KEY" \
+  -H "Content-Type: application/json" \
+  "https://api.render.com/v1/services/srv-d6iir8ngi27c738ip9i0/deploys" \
+  -d '{"clearCache":"do_not_clear"}'
+```
+
+Poll deploy status until `"status":"live"`:
+```bash
+curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
+  "https://api.render.com/v1/services/srv-d6iir8ngi27c738ip9i0/deploys/{deploy_id}"
+```
+
+Run seed scripts as one-off job (can run during deploy, uses current DB):
+```bash
+curl -s -X POST \
+  -H "Authorization: Bearer $RENDER_API_KEY" \
+  -H "Content-Type: application/json" \
+  "https://api.render.com/v1/services/srv-d6iir8ngi27c738ip9i0/jobs" \
+  -d '{"startCommand":"python -m scripts.seed_playbooks && python -m scripts.seed_discovery && python -m scripts.seed_paths"}'
+```
+
+Poll job status until `"status":"succeeded"`:
+```bash
+curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
+  "https://api.render.com/v1/services/srv-d6iir8ngi27c738ip9i0/jobs/{job_id}"
+```
+
+**Render API Key is stored in auto-memory** (`memory/MEMORY.md`). Service ID: `srv-d6iir8ngi27c738ip9i0`.
+
+### Step 11: Verify Production
+- [ ] `GET /theslug` — landing page loads (not 404)
+- [ ] `GET /read/the-slug` — reader page loads (may show paywall, that's OK)
+- [ ] `GET /api/v1/discovery/chain/the-slug` — returns 3 recommendations (deeper, bridge, surprise)
+- [ ] `GET /` — catalog page shows new card, series filter works
+- [ ] `GET /constellation` — new node appears in graph
+- [ ] `GET /paths` — reading path includes new playbook (if applicable)
+
+Use `WebFetch` or `curl` against `https://kb-playbooks.onrender.com` to verify each endpoint.
 
 ## Thread System (Discovery Engine)
 The discovery engine connects playbooks through invisible thematic "threads" to enable cross-pollination (e.g., AI reader discovers faith content).
