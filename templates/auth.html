@@ -248,6 +248,9 @@ body {
         <input type="password" name="password" class="form-input" placeholder="Your password" required>
       </div>
       <button type="submit" class="auth-btn auth-btn-gold">Sign In</button>
+      <div style="text-align:center;margin-top:12px">
+        <a href="{{ prefix }}/auth/forgot-password" style="font-size:13px;color:rgba(255,255,255,0.35);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='rgba(255,255,255,0.6)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Forgot password?</a>
+      </div>
     </form>
   </div>
 
@@ -273,16 +276,31 @@ body {
 
   <div class="auth-divider">or</div>
 
-  <a href="{{ prefix }}/auth/google?next={{ next_url | urlencode }}" class="google-btn">
+  {% if google_client_id %}
+  <!-- Hidden form submitted by Google GSI callback -->
+  <form id="google-auth-form" method="POST" action="{{ prefix }}/auth/google" style="display:none">
+    <input type="hidden" name="credential" id="google-credential">
+    <input type="hidden" name="next" value="{{ next_url }}">
+  </form>
+  <button type="button" id="google-signin-btn" class="google-btn" onclick="googleSignIn()">
     <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
     Continue with Google
-  </a>
+  </button>
+  {% else %}
+  <button type="button" class="google-btn" disabled style="opacity:0.4;cursor:not-allowed">
+    <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+    Google Sign-In (coming soon)
+  </button>
+  {% endif %}
 
   <div class="back-link">
     <a href="{{ prefix }}/">&larr; Back to playbooks</a>
   </div>
 </div>
 
+{% if google_client_id %}
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+{% endif %}
 <script>
 function showTab(tab) {
   document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
@@ -295,6 +313,42 @@ function showTab(tab) {
     document.getElementById('login-panel').classList.add('active');
   }
 }
+
+{% if google_client_id %}
+function handleGoogleCredential(response) {
+  document.getElementById('google-credential').value = response.credential;
+  document.getElementById('google-auth-form').submit();
+}
+
+var _gsiReady = false;
+function _initGsi() {
+  if (_gsiReady) return;
+  _gsiReady = true;
+  google.accounts.id.initialize({
+    client_id: '{{ google_client_id }}',
+    callback: handleGoogleCredential,
+  });
+  /* Render an invisible Google button we can programmatically click */
+  var holder = document.createElement('div');
+  holder.id = 'g-btn-holder';
+  holder.style.cssText = 'position:fixed;top:-9999px;left:-9999px';
+  document.body.appendChild(holder);
+  google.accounts.id.renderButton(holder, {
+    type: 'standard', theme: 'filled_black', size: 'large', width: 400, text: 'continue_with'
+  });
+}
+
+function googleSignIn() {
+  if (typeof google === 'undefined' || !google.accounts) {
+    alert('Google Sign-In is still loading. Please try again in a moment.');
+    return;
+  }
+  _initGsi();
+  /* Click the real Google button to trigger the popup */
+  var gBtn = document.querySelector('#g-btn-holder div[role="button"]');
+  if (gBtn) gBtn.click();
+}
+{% endif %}
 </script>
 </body>
 </html>

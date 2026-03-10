@@ -13,6 +13,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import quote, urlencode
 
+import httpx
 import stripe
 from fastapi import APIRouter, Depends, Form, HTTPException, Request, status
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, RedirectResponse
@@ -23,9 +24,9 @@ from starlette.templating import Jinja2Templates
 from api.config import settings
 from api.database import get_db
 from api.models.playbook import Playbook
-from api.models.user import User, OAuthAccount
+from api.models.user import User, OAuthAccount, VerificationToken
 from api.models.purchase import Purchase, Subscription, StripeCustomer
-from api.utils.security import hash_password, verify_password
+from api.utils.security import hash_password, verify_password, generate_token, hash_token
 from api.utils.session import get_session_user_id, set_session_cookie, clear_session_cookie
 
 # ---------------------------------------------------------------------------
@@ -573,6 +574,7 @@ async def auth_page(request: Request):
             "error": request.query_params.get("error"),
             "tab": request.query_params.get("tab", "login"),
             "email": request.query_params.get("email", ""),
+            "google_client_id": settings.GOOGLE_CLIENT_ID,
         },
     )
 
@@ -663,12 +665,266 @@ async def auth_login(
     return response
 
 
+@router.post("/auth/google", include_in_schema=False)
+async def auth_google(
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+    credential: str = Form(""),
+    next: str = Form(""),
+):
+    """Handle Google Sign-In callback (client-side GSI flow)."""
+    prefix = settings.URL_PREFIX or ""
+    next_url = next or f"{prefix}/"
+
+    if not credential:
+        return RedirectResponse(
+            url=f"{prefix}/auth?error=Google+sign+in+failed&next={quote(next_url)}",
+            status_code=303,
+        )
+
+    # Verify the id_token with Google
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(
+            "https://oauth2.googleapis.com/tokeninfo",
+            params={"id_token": credential},
+        )
+
+    if resp.status_code != 200:
+        return RedirectResponse(
+            url=f"{prefix}/auth?error=Invalid+Google+token&next={quote(next_url)}",
+            status_code=303,
+        )
+
+    token_info = resp.json()
+    google_id = token_info.get("sub")
+    email = token_info.get("email")
+    name = token_info.get("name", "")
+    picture = token_info.get("picture", "")
+
+    if not google_id or not email:
+        return RedirectResponse(
+            url=f"{prefix}/auth?error=Could+not+read+Google+account&next={quote(next_url)}",
+            status_code=303,
+        )
+
+    # Verify audience matches our client ID
+    if settings.GOOGLE_CLIENT_ID and token_info.get("aud") != settings.GOOGLE_CLIENT_ID:
+        return RedirectResponse(
+            url=f"{prefix}/auth?error=Google+token+mismatch&next={quote(next_url)}",
+            status_code=303,
+        )
+
+    # Check if this Google account is already linked
+    result = await db.execute(
+        select(OAuthAccount).where(
+            OAuthAccount.provider == "google",
+            OAuthAccount.provider_id == google_id,
+        )
+    )
+    oauth_account = result.scalar_one_or_none()
+
+    if oauth_account is not None:
+        user_result = await db.execute(
+            select(User).where(User.id == oauth_account.user_id)
+        )
+        user = user_result.scalar_one()
+    else:
+        # Check if a user with this email already exists
+        user_result = await db.execute(
+            select(User).where(User.email == email)
+        )
+        user = user_result.scalar_one_or_none()
+
+        if user is None:
+            user = User(
+                email=email,
+                display_name=name,
+                avatar_url=picture,
+                email_verified=True,
+            )
+            db.add(user)
+            await db.flush()
+
+        # Link the OAuth account
+        oauth_link = OAuthAccount(
+            user_id=user.id,
+            provider="google",
+            provider_id=google_id,
+        )
+        db.add(oauth_link)
+        await db.flush()
+
+    if not user.email_verified:
+        user.email_verified = True
+        await db.flush()
+
+    await db.commit()
+
+    response = RedirectResponse(url=next_url, status_code=303)
+    set_session_cookie(response, str(user.id))
+    return response
+
+
 @router.post("/auth/logout", include_in_schema=False)
 async def auth_logout():
     prefix = settings.URL_PREFIX or ""
     response = RedirectResponse(url=f"{prefix}/", status_code=303)
     clear_session_cookie(response)
     response.delete_cookie("admin_unlocked")
+    return response
+
+
+# ============================================================================
+# Forgot / Reset Password — server-rendered flow
+# ============================================================================
+@router.get("/auth/forgot-password", include_in_schema=False)
+async def forgot_password_page(request: Request):
+    prefix = settings.URL_PREFIX or ""
+    return templates.TemplateResponse(
+        "forgot_password.html",
+        {"request": request, "prefix": prefix, "error": None, "success": None},
+    )
+
+
+@router.post("/auth/forgot-password", include_in_schema=False)
+async def forgot_password_submit(
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+    email: str = Form(""),
+):
+    import resend
+    prefix = settings.URL_PREFIX or ""
+    email = email.strip().lower()
+
+    # Always show success to prevent email enumeration
+    success_msg = "If an account with that email exists, we've sent a reset link. Check your inbox."
+
+    if not email:
+        return templates.TemplateResponse(
+            "forgot_password.html",
+            {"request": request, "prefix": prefix, "error": "Please enter your email.", "success": None},
+        )
+
+    result = await db.execute(select(User).where(User.email == email))
+    user = result.scalar_one_or_none()
+
+    if user is not None:
+        # Generate reset token
+        raw_token = generate_token()
+        token_hash_val = hash_token(raw_token)
+
+        vtoken = VerificationToken(
+            user_id=user.id,
+            token_hash=token_hash_val,
+            token_type="password_reset",
+            expires_at=datetime.now(timezone.utc) + timedelta(hours=1),
+        )
+        db.add(vtoken)
+        await db.commit()
+
+        # Send reset email via Resend
+        base = settings.BASE_URL.rstrip("/")
+        reset_url = f"{base}{prefix}/auth/reset-password?token={raw_token}"
+
+        try:
+            resend.api_key = settings.RESEND_API_KEY
+            resend.Emails.send({
+                "from": "Kingdom Builders AI <playbook@kingdombuilders.ai>",
+                "to": [email],
+                "subject": "Reset Your Password",
+                "html": (
+                    f'<div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:40px 24px">'
+                    f'<h2 style="color:#1A0A2E;margin-bottom:16px">Reset Your Password</h2>'
+                    f'<p style="color:#444;line-height:1.6;margin-bottom:24px">'
+                    f'Someone requested a password reset for your Kingdom Builders account. '
+                    f'Click the button below to set a new password. This link expires in 1 hour.</p>'
+                    f'<a href="{reset_url}" style="display:inline-block;padding:14px 32px;'
+                    f'background:linear-gradient(135deg,#D4A843,#E8C96A);color:#1A0A2E;'
+                    f'text-decoration:none;border-radius:8px;font-weight:600;font-size:15px">'
+                    f'Reset Password</a>'
+                    f'<p style="color:#999;font-size:13px;margin-top:24px;line-height:1.5">'
+                    f'If you didn\'t request this, you can safely ignore this email.</p></div>'
+                ),
+            })
+        except Exception:
+            pass  # Don't leak errors — user still sees success message
+
+    return templates.TemplateResponse(
+        "forgot_password.html",
+        {"request": request, "prefix": prefix, "error": None, "success": success_msg},
+    )
+
+
+@router.get("/auth/reset-password", include_in_schema=False)
+async def reset_password_page(request: Request):
+    prefix = settings.URL_PREFIX or ""
+    token = request.query_params.get("token", "")
+    if not token:
+        return RedirectResponse(
+            url=f"{prefix}/auth/forgot-password", status_code=303
+        )
+    return templates.TemplateResponse(
+        "reset_password.html",
+        {"request": request, "prefix": prefix, "token": token, "error": None},
+    )
+
+
+@router.post("/auth/reset-password", include_in_schema=False)
+async def reset_password_submit(
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+    token: str = Form(""),
+    password: str = Form(""),
+    password_confirm: str = Form(""),
+):
+    prefix = settings.URL_PREFIX or ""
+
+    if not token:
+        return RedirectResponse(
+            url=f"{prefix}/auth/forgot-password", status_code=303
+        )
+
+    if len(password) < 8:
+        return templates.TemplateResponse(
+            "reset_password.html",
+            {"request": request, "prefix": prefix, "token": token, "error": "Password must be at least 8 characters."},
+        )
+
+    if password != password_confirm:
+        return templates.TemplateResponse(
+            "reset_password.html",
+            {"request": request, "prefix": prefix, "token": token, "error": "Passwords do not match."},
+        )
+
+    token_hash_val = hash_token(token)
+    result = await db.execute(
+        select(VerificationToken).where(
+            VerificationToken.token_hash == token_hash_val,
+            VerificationToken.token_type == "password_reset",
+            VerificationToken.used_at == None,  # noqa: E711
+            VerificationToken.expires_at > datetime.now(timezone.utc),
+        )
+    )
+    vtoken = result.scalar_one_or_none()
+
+    if vtoken is None:
+        return templates.TemplateResponse(
+            "reset_password.html",
+            {"request": request, "prefix": prefix, "token": token, "error": "This reset link is invalid or has expired. Please request a new one."},
+        )
+
+    vtoken.used_at = datetime.now(timezone.utc)
+
+    user_result = await db.execute(select(User).where(User.id == vtoken.user_id))
+    user = user_result.scalar_one()
+    user.password_hash = hash_password(password)
+    await db.commit()
+
+    # Log the user in and redirect
+    next_url = f"{prefix}/"
+    response = RedirectResponse(
+        url=f"{prefix}/auth?error=Password+reset+successfully.+Please+sign+in.", status_code=303
+    )
     return response
 
 
