@@ -6,7 +6,7 @@ module.exports = defineConfig({
   timeout: 30000,
   retries: 1,
   use: {
-    baseURL: process.env.BASE_URL || "https://kingdombuilders-playbooks.onrender.com",
+    baseURL: process.env.BASE_URL || "https://kingdombuilders.ai/playbooks",
     ignoreHTTPSErrors: true,
   },
   reporter: [["list"], ["html", { open: "never" }]],
