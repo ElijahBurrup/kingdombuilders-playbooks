@@ -1,0 +1,61 @@
+ACTION ITEM 3: Set Stripe Subscription Price IDs
+=================================================
+Priority: HIGH (subscriptions won't work correctly without this)
+Time: ~10 minutes
+
+WHY: Right now, monthly and yearly subscription checkouts both fall back to the
+same generic STRIPE_PRICE_ID. You need separate prices for each plan so
+customers are charged the right amount.
+
+STEPS:
+
+1. Go to https://dashboard.stripe.com
+   (Make sure you're in LIVE mode, not Test mode -- toggle is top-right)
+
+2. Go to Products -> click "+ Add product"
+   - Name: Kingdom Builders Playbooks - Monthly
+   - Pricing: Recurring
+   - Amount: (your monthly price, e.g. $9.99)
+   - Billing period: Monthly
+   - Click "Save product"
+
+3. On the product page, find the Price ID under the pricing section.
+   It looks like: price_1Oxxxxxxxxxxxxxxx
+   Copy it.
+
+4. Repeat for yearly:
+   - Name: Kingdom Builders Playbooks - Annual
+   - Pricing: Recurring
+   - Amount: (your yearly price, e.g. $99.99)
+   - Billing period: Yearly
+   - Copy the Price ID.
+
+5. Go to Render Dashboard:
+   https://dashboard.render.com
+   -> kb-playbooks service -> Environment -> Add/Edit Environment Variables
+
+   Key:   STRIPE_PRICE_MONTHLY
+   Value: price_1Oxxxxxxx (your monthly price ID)
+
+   Key:   STRIPE_PRICE_YEARLY
+   Value: price_1Oxxxxxxx (your yearly price ID)
+
+6. While you're there, also verify these are set:
+   - STRIPE_SECRET_KEY (starts with sk_live_)
+   - STRIPE_PUBLISHABLE_KEY (starts with pk_live_)
+   - STRIPE_WEBHOOK_SECRET (starts with whsec_)
+
+7. Click "Save Changes"
+
+IF YOU HAVEN'T SET UP THE WEBHOOK YET:
+   - In Stripe Dashboard -> Developers -> Webhooks -> Add endpoint
+   - URL: https://kb-playbooks.onrender.com/api/v1/stripe/webhook
+   - Events to listen to:
+     * checkout.session.completed
+     * customer.subscription.created
+     * customer.subscription.updated
+     * customer.subscription.deleted
+     * invoice.paid
+     * invoice.payment_failed
+     * charge.refunded
+   - Copy the signing secret (whsec_xxx) and add it as STRIPE_WEBHOOK_SECRET

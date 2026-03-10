@@ -501,7 +501,117 @@ def _inject_back_button_and_tracking(html: str, slug: str) -> str:
 <script async src="https://www.googletagmanager.com/gtag/js?id={ga_id}"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','{ga_id}');</script>
 """
-    return html.replace("</body>", back_button + chain_panel + tracking_script + ga_snippet + "</body>")
+    # Email capture slide-in for free playbooks only
+    is_free = slug in FREE_SLUGS
+    email_slidein = ""
+    if is_free:
+        email_slidein = f"""
+<style>
+#pb-email-slide{{position:fixed;bottom:24px;right:24px;z-index:9998;width:320px;max-width:calc(100vw - 48px);
+  background:rgba(10,6,20,0.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid rgba(232,201,106,0.2);border-radius:16px;padding:24px 20px 20px;
+  font-family:'Poppins',Helvetica,sans-serif;color:#fff;
+  transform:translateY(120%);opacity:0;transition:transform 0.45s cubic-bezier(0.16,1,0.3,1),opacity 0.45s ease;
+  box-shadow:0 8px 32px rgba(0,0,0,0.5)}}
+#pb-email-slide.show{{transform:translateY(0);opacity:1}}
+#pb-email-slide .pb-es-close{{position:absolute;top:10px;right:12px;background:none;border:none;color:rgba(255,255,255,0.4);
+  font-size:1.1rem;cursor:pointer;padding:4px 8px;transition:color 0.2s}}
+#pb-email-slide .pb-es-close:hover{{color:#fff}}
+#pb-email-slide .pb-es-emoji{{font-size:1.4rem;margin-bottom:6px}}
+#pb-email-slide .pb-es-heading{{font-size:0.95rem;font-weight:700;margin-bottom:4px;line-height:1.3}}
+#pb-email-slide .pb-es-sub{{font-size:0.78rem;color:rgba(255,255,255,0.6);margin-bottom:14px;line-height:1.5;
+  font-family:'Lora',Georgia,serif}}
+#pb-email-slide .pb-es-form{{display:flex;gap:8px}}
+#pb-email-slide .pb-es-input{{flex:1;padding:9px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.12);
+  background:rgba(255,255,255,0.06);color:#fff;font-size:0.82rem;font-family:'Poppins',Helvetica,sans-serif;
+  outline:none;transition:border-color 0.2s}}
+#pb-email-slide .pb-es-input:focus{{border-color:rgba(212,168,67,0.4)}}
+#pb-email-slide .pb-es-input::placeholder{{color:rgba(255,255,255,0.3)}}
+#pb-email-slide .pb-es-btn{{padding:9px 16px;border-radius:8px;border:none;background:#D4A843;color:#0a0614;
+  font-size:0.78rem;font-weight:700;font-family:'Poppins',Helvetica,sans-serif;cursor:pointer;
+  transition:background 0.2s;white-space:nowrap}}
+#pb-email-slide .pb-es-btn:hover{{background:#E8C96A}}
+#pb-email-slide .pb-es-btn:disabled{{opacity:0.6;cursor:not-allowed}}
+#pb-email-slide .pb-es-msg{{font-size:0.85rem;font-weight:600;text-align:center;padding:8px 0}}
+@media(max-width:600px){{#pb-email-slide{{right:0;bottom:0;width:100%;max-width:100%;
+  border-radius:16px 16px 0 0;border-bottom:none}}}}
+@media print{{#pb-email-slide{{display:none}}}}
+</style>
+<div id="pb-email-slide">
+  <button class="pb-es-close" onclick="document.getElementById('pb-email-slide').classList.remove('show');localStorage.setItem('pb_email_dismissed',Date.now().toString())" aria-label="Close">&times;</button>
+  <div class="pb-es-emoji">\U0001F4EC</div>
+  <div class="pb-es-heading">Enjoying this playbook?</div>
+  <div class="pb-es-sub">Get more like this delivered to your inbox. Free.</div>
+  <div id="pb-es-form-wrap">
+    <form class="pb-es-form" id="pb-es-form" onsubmit="return false">
+      <input class="pb-es-input" type="email" id="pb-es-email" placeholder="Your email" required>
+      <button class="pb-es-btn" type="submit" id="pb-es-submit">Send</button>
+    </form>
+  </div>
+</div>
+<script>
+(function(){{
+  var panel = document.getElementById('pb-email-slide');
+  if (!panel) return;
+
+  // Check localStorage: skip if recently dismissed or already subscribed
+  var dismissed = localStorage.getItem('pb_email_dismissed');
+  if (dismissed) {{
+    var ts = parseInt(dismissed, 10);
+    if (!isNaN(ts) && Date.now() - ts < 7 * 24 * 60 * 60 * 1000) return;
+  }}
+  if (localStorage.getItem('pb_subscribed')) return;
+
+  // Show panel after 60% scroll
+  var slideShown = false;
+  window.addEventListener('scroll', function() {{
+    if (slideShown) return;
+    var h = document.documentElement;
+    var b = document.body;
+    var st = h.scrollTop || b.scrollTop;
+    var sh = (h.scrollHeight || b.scrollHeight) - h.clientHeight;
+    var pct = sh > 0 ? (st / sh) * 100 : 0;
+    if (pct >= 60) {{
+      slideShown = true;
+      panel.classList.add('show');
+    }}
+  }}, {{passive: true}});
+
+  // Form submission
+  var prefix = '';
+  try {{ var m = location.pathname.match(/^(\\/[^\\/]+)\\/read\\//); if(m) prefix = m[1]; }} catch(e){{}}
+  var form = document.getElementById('pb-es-form');
+  var emailInput = document.getElementById('pb-es-email');
+  var submitBtn = document.getElementById('pb-es-submit');
+  var wrap = document.getElementById('pb-es-form-wrap');
+
+  form.addEventListener('submit', function(e) {{
+    e.preventDefault();
+    var email = emailInput.value.trim();
+    if (!email) return;
+    submitBtn.disabled = true;
+    submitBtn.textContent = '...';
+    fetch(prefix + '/api/v1/subscribe', {{
+      method: 'POST',
+      headers: {{'Content-Type': 'application/json'}},
+      body: JSON.stringify({{email: email, source: 'reader-slidein'}})
+    }})
+    .then(function(r) {{ return r.json(); }})
+    .then(function(data) {{
+      localStorage.setItem('pb_subscribed', '1');
+      wrap.innerHTML = '<div class="pb-es-msg" style="color:#E8C96A">Check your inbox \u2709\uFE0F</div>';
+      setTimeout(function() {{ panel.classList.remove('show'); }}, 4000);
+    }})
+    .catch(function() {{
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send';
+      wrap.insertAdjacentHTML('afterbegin', '<div style="color:#e57373;font-size:0.75rem;margin-bottom:8px">Something went wrong. Try again.</div>');
+    }});
+  }});
+}})();
+</script>
+"""
+    return html.replace("</body>", back_button + chain_panel + email_slidein + tracking_script + ga_snippet + "</body>")
 
 
 @router.get("/read/{slug}", include_in_schema=False)
@@ -1569,6 +1679,24 @@ async def my_playbooks_page(request: Request):
     prefix = settings.URL_PREFIX or ""
     return templates.TemplateResponse(
         "my_playbooks.html",
+        {"request": request, "prefix": prefix, "ga_id": settings.GA_MEASUREMENT_ID},
+    )
+
+
+@router.get("/funnel", include_in_schema=False)
+async def funnel_page(request: Request):
+    prefix = settings.URL_PREFIX or ""
+    return templates.TemplateResponse(
+        "funnel.html",
+        {"request": request, "prefix": prefix, "ga_id": settings.GA_MEASUREMENT_ID},
+    )
+
+
+@router.get("/funnel/thank-you", include_in_schema=False)
+async def funnel_thank_you(request: Request):
+    prefix = settings.URL_PREFIX or ""
+    return templates.TemplateResponse(
+        "funnel_thank_you.html",
         {"request": request, "prefix": prefix, "ga_id": settings.GA_MEASUREMENT_ID},
     )
 

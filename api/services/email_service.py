@@ -358,3 +358,281 @@ def send_lead_magnet_email(email: str) -> None:
         })
     except Exception as e:
         print(f"Failed to send lead magnet email to {email}: {e}")
+
+
+# ============================================================================
+# Nurture Email 2: "The Playbook You Didn't Expect" (Day 2)
+# ============================================================================
+def send_nurture_day2(email: str) -> None:
+    """Day 2 nurture: introduce The Narrator playbook (identity/self-story)."""
+    narrator_url = f"{_base_url()}/read/the-narrator"
+
+    html = f"""
+    <div style="max-width:600px;margin:0 auto;font-family:Arial,Helvetica,sans-serif;background:#FAF6ED;padding:40px 24px;">
+      <div style="text-align:center;margin-bottom:32px;">
+        <div style="font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#7B4FBF;">Kingdom Builders AI</div>
+      </div>
+
+      <div style="padding:0 8px;">
+        <h1 style="font-family:Georgia,serif;font-size:24px;color:#1A0A2E;margin:0 0 20px;">The playbook you didn't expect</h1>
+
+        <p style="font-size:15px;color:#3A2A55;line-height:1.8;margin:0 0 20px;">
+          You tell yourself a story about who you are. What if that story is wrong?
+        </p>
+
+        <p style="font-size:15px;color:#3A2A55;line-height:1.8;margin:0 0 20px;">
+          The Narrator is one of our most personal playbooks. It's not about business strategy or productivity. It's about the voice in your head that decides what things mean before you even finish experiencing them.
+        </p>
+
+        <div style="background:#FFFFFF;border-radius:8px;padding:24px;border-left:4px solid #D4A843;margin:24px 0;">
+          <p style="font-size:15px;color:#3A2A55;line-height:1.7;margin:0;">
+            Every decision you make passes through the filter of a story you wrote years ago. The Narrator shows you how to see that story clearly, question it honestly, and rewrite the parts that no longer serve you.
+          </p>
+        </div>
+
+        <p style="font-size:15px;color:#3A2A55;line-height:1.8;margin:0 0 24px;">
+          It's free. It takes about 10 minutes. And it might change the way you see everything else.
+        </p>
+
+        <div style="text-align:center;">
+          <a href="{narrator_url}" style="display:inline-block;padding:16px 48px;background:linear-gradient(135deg,#D4A843 0%,#E8C96A 100%);color:#1A0A2E;font-size:16px;font-weight:700;text-decoration:none;border-radius:4px;">
+            READ THE NARRATOR (FREE)
+          </a>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:32px;font-size:12px;color:#6B5A8A;">
+        <p>Questions? Reply to this email or contact support@kingdombuilders.ai</p>
+        <p style="margin-top:8px;font-size:11px;color:rgba(107,90,138,0.3);">
+          You're receiving this because you signed up at Kingdom Builders AI.<br>
+          <a href="mailto:support@kingdombuilders.ai?subject=Unsubscribe" style="color:rgba(107,90,138,0.4);">Unsubscribe</a>
+        </p>
+      </div>
+    </div>
+    """
+
+    try:
+        resend.Emails.send({
+            "from": FROM_EMAIL_KB,
+            "to": email,
+            "subject": "The playbook you didn't expect",
+            "html": html,
+        })
+    except Exception as e:
+        print(f"Failed to send nurture day 2 email to {email}: {e}")
+
+
+# ============================================================================
+# Nurture Email 3: "Why Animals?" (Day 5)
+# ============================================================================
+def send_nurture_day5(email: str) -> None:
+    """Day 5 nurture: explain the animal parable method, tease The Wolf's Table."""
+    wolfs_table_url = f"{_base_url()}/read/the-wolfs-table"
+
+    html = f"""
+    <div style="max-width:600px;margin:0 auto;font-family:Arial,Helvetica,sans-serif;background:#FAF6ED;padding:40px 24px;">
+      <div style="text-align:center;margin-bottom:32px;">
+        <div style="font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#7B4FBF;">Kingdom Builders AI</div>
+      </div>
+
+      <div style="padding:0 8px;">
+        <h1 style="font-family:Georgia,serif;font-size:24px;color:#1A0A2E;margin:0 0 20px;">Why we teach through animals</h1>
+
+        <p style="font-size:15px;color:#3A2A55;line-height:1.8;margin:0 0 20px;">
+          A salmon doesn't have an ego. A wolf doesn't get defensive. An eagle doesn't argue back.
+        </p>
+
+        <p style="font-size:15px;color:#3A2A55;line-height:1.8;margin:0 0 20px;">
+          That's the point. When you read about an animal navigating a hard situation, your defenses come down. You absorb the lesson before the part of your brain that resists new ideas even notices what happened.
+        </p>
+
+        <div style="background:linear-gradient(135deg,#1A0A2E 0%,#2D1B4E 100%);border-radius:8px;padding:32px;margin:24px 0;">
+          <p style="font-family:Georgia,serif;font-size:18px;color:#FFFFFF;line-height:1.6;font-style:italic;margin:0;">
+            "People don't resist good ideas. They resist being told they need them."
+          </p>
+        </div>
+
+        <p style="font-size:15px;color:#3A2A55;line-height:1.8;margin:0 0 20px;">
+          We've built 54 playbooks across 14 categories: finance, leadership, AI productivity, negotiation, resilience, identity, and more. Each one uses an animal parable to make complex ideas stick without the usual resistance.
+        </p>
+
+        <p style="font-size:15px;color:#3A2A55;line-height:1.8;margin:0 0 24px;">
+          Here's a good one to try next: The Wolf's Table. It's a negotiation framework built around how wolves share a kill. Who eats first, who waits, and why the order matters more than the size of the meal.
+        </p>
+
+        <div style="text-align:center;">
+          <a href="{wolfs_table_url}" style="display:inline-block;padding:16px 48px;background:linear-gradient(135deg,#D4A843 0%,#E8C96A 100%);color:#1A0A2E;font-size:16px;font-weight:700;text-decoration:none;border-radius:4px;">
+            READ THE WOLF'S TABLE (FREE)
+          </a>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:32px;font-size:12px;color:#6B5A8A;">
+        <p>Questions? Reply to this email or contact support@kingdombuilders.ai</p>
+        <p style="margin-top:8px;font-size:11px;color:rgba(107,90,138,0.3);">
+          You're receiving this because you signed up at Kingdom Builders AI.<br>
+          <a href="mailto:support@kingdombuilders.ai?subject=Unsubscribe" style="color:rgba(107,90,138,0.4);">Unsubscribe</a>
+        </p>
+      </div>
+    </div>
+    """
+
+    try:
+        resend.Emails.send({
+            "from": FROM_EMAIL_KB,
+            "to": email,
+            "subject": "Why we teach through animals",
+            "html": html,
+        })
+    except Exception as e:
+        print(f"Failed to send nurture day 5 email to {email}: {e}")
+
+
+# ============================================================================
+# Nurture Email 4: "The 3 Most Popular" (Day 8)
+# ============================================================================
+def send_nurture_day8(email: str) -> None:
+    """Day 8 nurture: preview 3 popular paid playbooks."""
+    base = _base_url()
+    eagle_url = f"{base}/theeagleslens"
+    bear_url = f"{base}/thebearswinter"
+    conductor_url = f"{base}/theconductorsplaybook"
+    catalog_url = f"{base}/"
+
+    html = f"""
+    <div style="max-width:600px;margin:0 auto;font-family:Arial,Helvetica,sans-serif;background:#FAF6ED;padding:40px 24px;">
+      <div style="text-align:center;margin-bottom:32px;">
+        <div style="font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#7B4FBF;">Kingdom Builders AI</div>
+      </div>
+
+      <div style="padding:0 8px;">
+        <h1 style="font-family:Georgia,serif;font-size:24px;color:#1A0A2E;margin:0 0 20px;">Our 3 most-read playbooks</h1>
+
+        <p style="font-size:15px;color:#3A2A55;line-height:1.8;margin:0 0 24px;">
+          You've explored a couple of our free playbooks. Here are the three that readers come back to the most.
+        </p>
+
+        <div style="background:#FFFFFF;border-radius:8px;padding:24px;border-left:4px solid #D4A843;margin:0 0 16px;">
+          <h3 style="font-family:Georgia,serif;font-size:18px;color:#1A0A2E;margin:0 0 8px;">
+            <a href="{eagle_url}" style="color:#1A0A2E;text-decoration:none;">The Eagle's Lens</a>
+          </h3>
+          <p style="font-size:14px;color:#3A2A55;line-height:1.7;margin:0;">
+            How eagles see the whole field before they move. A strategy framework for leaders who keep getting pulled into the weeds.
+          </p>
+        </div>
+
+        <div style="background:#FFFFFF;border-radius:8px;padding:24px;border-left:4px solid #D4A843;margin:0 0 16px;">
+          <h3 style="font-family:Georgia,serif;font-size:18px;color:#1A0A2E;margin:0 0 8px;">
+            <a href="{bear_url}" style="color:#1A0A2E;text-decoration:none;">The Bear's Winter</a>
+          </h3>
+          <p style="font-size:14px;color:#3A2A55;line-height:1.7;margin:0;">
+            How bears prepare for hard seasons and emerge stronger. A resilience playbook for anyone walking through a difficult chapter.
+          </p>
+        </div>
+
+        <div style="background:#FFFFFF;border-radius:8px;padding:24px;border-left:4px solid #D4A843;margin:0 0 24px;">
+          <h3 style="font-family:Georgia,serif;font-size:18px;color:#1A0A2E;margin:0 0 8px;">
+            <a href="{conductor_url}" style="color:#1A0A2E;text-decoration:none;">The Conductor's Playbook</a>
+          </h3>
+          <p style="font-size:14px;color:#3A2A55;line-height:1.7;margin:0;">
+            Our flagship. How to stop prompting AI and start conducting it. The playbook that turns you from a passenger into a pilot.
+          </p>
+        </div>
+
+        <div style="text-align:center;">
+          <a href="{catalog_url}" style="display:inline-block;padding:16px 48px;background:linear-gradient(135deg,#D4A843 0%,#E8C96A 100%);color:#1A0A2E;font-size:16px;font-weight:700;text-decoration:none;border-radius:4px;">
+            BROWSE ALL 54 PLAYBOOKS
+          </a>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:32px;font-size:12px;color:#6B5A8A;">
+        <p>Questions? Reply to this email or contact support@kingdombuilders.ai</p>
+        <p style="margin-top:8px;font-size:11px;color:rgba(107,90,138,0.3);">
+          You're receiving this because you signed up at Kingdom Builders AI.<br>
+          <a href="mailto:support@kingdombuilders.ai?subject=Unsubscribe" style="color:rgba(107,90,138,0.4);">Unsubscribe</a>
+        </p>
+      </div>
+    </div>
+    """
+
+    try:
+        resend.Emails.send({
+            "from": FROM_EMAIL_KB,
+            "to": email,
+            "subject": "Our 3 most-read playbooks",
+            "html": html,
+        })
+    except Exception as e:
+        print(f"Failed to send nurture day 8 email to {email}: {e}")
+
+
+# ============================================================================
+# Nurture Email 5: "Unlock Everything" (Day 12)
+# ============================================================================
+def send_nurture_day12(email: str) -> None:
+    """Day 12 nurture: subscription pitch."""
+    checkout_url = f"{_base_url()}/checkout-redirect?mode=monthly&slug=all"
+
+    html = f"""
+    <div style="max-width:600px;margin:0 auto;font-family:Arial,Helvetica,sans-serif;background:#FAF6ED;padding:40px 24px;">
+      <div style="text-align:center;margin-bottom:32px;">
+        <div style="font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#7B4FBF;">Kingdom Builders AI</div>
+      </div>
+
+      <div style="padding:0 8px;">
+        <h1 style="font-family:Georgia,serif;font-size:24px;color:#1A0A2E;margin:0 0 20px;">One key. 54 playbooks.</h1>
+
+        <p style="font-size:15px;color:#3A2A55;line-height:1.8;margin:0 0 20px;">
+          Over the past two weeks, you've read a few of our playbooks. You've seen how animal parables can shift the way you think about money, leadership, negotiation, and identity.
+        </p>
+
+        <p style="font-size:15px;color:#3A2A55;line-height:1.8;margin:0 0 20px;">
+          The free ones are good. The ones behind the door are the ones people build their businesses around.
+        </p>
+
+        <div style="background:linear-gradient(135deg,#1A0A2E 0%,#2D1B4E 100%);border-radius:8px;padding:32px;margin:24px 0;text-align:center;">
+          <p style="font-family:Georgia,serif;font-size:20px;color:#FFFFFF;line-height:1.6;margin:0 0 24px;">
+            Unlimited access to all 54 playbooks.
+          </p>
+          <div style="display:inline-block;background:rgba(255,255,255,0.08);border-radius:8px;padding:20px 32px;margin:0 8px 12px;">
+            <p style="font-size:14px;color:rgba(255,255,255,0.5);margin:0 0 4px;">Monthly</p>
+            <p style="font-family:Georgia,serif;font-size:28px;color:#D4A843;margin:0;">$10<span style="font-size:14px;color:rgba(255,255,255,0.4);">/mo</span></p>
+          </div>
+          <div style="display:inline-block;background:rgba(255,255,255,0.08);border-radius:8px;padding:20px 32px;margin:0 8px 12px;">
+            <p style="font-size:14px;color:rgba(255,255,255,0.5);margin:0 0 4px;">Yearly</p>
+            <p style="font-family:Georgia,serif;font-size:28px;color:#D4A843;margin:0;">$100<span style="font-size:14px;color:rgba(255,255,255,0.4);">/yr</span></p>
+            <p style="font-size:12px;color:#D4A843;margin:4px 0 0;">Save $20</p>
+          </div>
+        </div>
+
+        <p style="font-size:15px;color:#3A2A55;line-height:1.8;margin:0 0 24px;">
+          Every playbook. Every category. Every new release. One subscription.
+        </p>
+
+        <div style="text-align:center;">
+          <a href="{checkout_url}" style="display:inline-block;padding:16px 48px;background:linear-gradient(135deg,#D4A843 0%,#E8C96A 100%);color:#1A0A2E;font-size:16px;font-weight:700;text-decoration:none;border-radius:4px;">
+            GET UNLIMITED ACCESS
+          </a>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:32px;font-size:12px;color:#6B5A8A;">
+        <p>Questions? Reply to this email or contact support@kingdombuilders.ai</p>
+        <p style="margin-top:8px;font-size:11px;color:rgba(107,90,138,0.3);">
+          You're receiving this because you signed up at Kingdom Builders AI.<br>
+          <a href="mailto:support@kingdombuilders.ai?subject=Unsubscribe" style="color:rgba(107,90,138,0.4);">Unsubscribe</a>
+        </p>
+      </div>
+    </div>
+    """
+
+    try:
+        resend.Emails.send({
+            "from": FROM_EMAIL_KB,
+            "to": email,
+            "subject": "One key. 54 playbooks.",
+            "html": html,
+        })
+    except Exception as e:
+        print(f"Failed to send nurture day 12 email to {email}: {e}")

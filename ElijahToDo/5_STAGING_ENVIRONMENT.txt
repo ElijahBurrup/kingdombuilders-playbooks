@@ -1,0 +1,49 @@
+ACTION ITEM 5: Create Staging/UAT Environment (Optional)
+=========================================================
+Priority: MEDIUM (recommended before heavy ad spend, not blocking)
+Time: ~15 minutes
+
+WHY: Right now, every code push goes straight to production. If you're paying
+for ads driving traffic to the site, a broken deploy means lost money. A staging
+environment lets you test changes before they hit real customers.
+
+STEPS:
+
+1. Go to Render Dashboard -> "New" -> "Web Service"
+
+2. Connect the same GitHub repo:
+   ElijahBurrup/kingdombuilders-playbooks
+
+3. Configure:
+   - Name: kb-playbooks-staging
+   - Branch: master (or create a "staging" branch)
+   - Build Command: pip install -r requirements.txt
+   - Start Command: (same as Procfile)
+   - Instance Type: Free (or Starter for better uptime)
+
+4. Copy ALL environment variables from the production service, BUT change:
+   - DATABASE_URL -> point to a separate staging database
+   - BASE_URL -> the staging URL (e.g. https://kb-playbooks-staging.onrender.com)
+   - STRIPE keys -> use TEST mode keys (sk_test_, pk_test_) so you don't
+     charge real money during testing
+
+5. For the staging database:
+   - Render -> "New" -> "PostgreSQL"
+   - Name: playbooks-staging-db
+   - Plan: Free
+   - Use the Internal Database URL as DATABASE_URL for the staging service
+
+6. After the staging service deploys, run the seed scripts:
+   - Render -> staging service -> Shell
+   - python -m scripts.seed_playbooks
+   - python -m scripts.seed_discovery
+   - python -m scripts.seed_paths
+
+WORKFLOW AFTER SETUP:
+   - Test changes on staging first
+   - Once verified, deploy to production
+   - Or: use a "staging" branch, merge to master when ready
+
+ONCE YOU'VE DONE THIS:
+Tell Claude "staging environment is set up at [URL]" and Claude can update the
+deployment procedure to include staging verification steps.

@@ -1,0 +1,29 @@
+ACTION ITEM 1: Set Up Sentry Error Tracking
+============================================
+Priority: HIGH (do this first -- once done, Claude can verify it's working)
+Time: ~5 minutes
+
+WHY: Without this, if a paying customer hits a crash, you won't know until they
+complain. Sentry catches every error automatically and emails you.
+
+STEPS:
+
+1. Go to https://sentry.io and click "Start for Free"
+2. Sign up with burrupgpt@gmail.com (or whichever you prefer)
+3. Create a new Project:
+   - Platform: Python
+   - Framework: FastAPI
+   - Project name: kb-playbooks
+4. Sentry will show you a DSN string that looks like:
+   https://abc123@o456789.ingest.sentry.io/1234567
+   Copy that entire string.
+5. Go to Render Dashboard:
+   https://dashboard.render.com
+   -> kb-playbooks service -> Environment -> Add Environment Variable
+   Key:   SENTRY_DSN
+   Value: (paste the DSN string from step 4)
+6. Click "Save Changes" (Render will auto-redeploy)
+
+ONCE YOU'VE DONE THIS:
+Tell Claude "I set up Sentry, verify it works" and Claude can trigger a test
+error to confirm it's receiving data.

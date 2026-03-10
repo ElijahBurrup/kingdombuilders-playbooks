@@ -52,6 +52,14 @@ async def subscribe(
     except Exception as e:
         print(f"Lead magnet email failed for {email}: {e}")
 
+    # Schedule nurture drip sequence (emails 2-5)
+    from api.services.scheduler_service import schedule_nurture_sequence
+
+    try:
+        schedule_nurture_sequence(email)
+    except Exception as e:
+        print(f"Nurture schedule failed for {email}: {e}")
+
     return SubscribeResponse(
         message="Thanks for subscribing! Check your email for your free chapter."
     )

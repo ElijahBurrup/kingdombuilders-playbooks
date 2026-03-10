@@ -1,0 +1,42 @@
+ACTION ITEM 4: Verify Resend Email API Key
+==========================================
+Priority: HIGH (password reset and verification emails need this)
+Time: ~5 minutes
+
+WHY: We just wired up password reset emails and email verification on signup.
+Neither will work without a valid Resend API key in production.
+
+STEPS:
+
+1. Go to https://resend.com/api-keys
+   Sign in (or create account if needed)
+
+2. Check if you already have an API key. If yes, verify the domain
+   "kingdombuilders.ai" is verified under Domains.
+
+3. If you need a new key:
+   - Click "Create API Key"
+   - Name: kb-playbooks-production
+   - Permission: Full access
+   - Copy the key (starts with re_)
+
+4. Go to Render Dashboard:
+   https://dashboard.render.com
+   -> kb-playbooks service -> Environment
+
+5. Check if RESEND_API_KEY exists:
+   - If yes: verify it's a valid key (starts with re_)
+   - If no: Add it
+     Key:   RESEND_API_KEY
+     Value: re_xxxxxxxx (your key)
+
+6. Click "Save Changes"
+
+VERIFY YOUR SENDING DOMAIN:
+   - In Resend -> Domains, make sure "kingdombuilders.ai" is verified
+   - If not, you'll need to add DNS records (Resend will tell you which ones)
+   - Emails are sent from: playbook@kingdombuilders.ai
+
+ONCE YOU'VE DONE THIS:
+Tell Claude "Resend is configured, test password reset" and Claude can walk you
+through testing the forgot-password flow on the live site.
