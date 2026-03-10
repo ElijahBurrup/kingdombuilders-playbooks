@@ -165,6 +165,9 @@ def _slug_to_file():
         "lay-it-down-greed": "Lay_It_Down_Greed.html",
         "lay-it-down-gluttony": "Lay_It_Down_Gluttony.html",
         "lay-it-down-lust": "Lay_It_Down_Lust.html",
+        "the-mantis-shrimps-eye": "The_Mantis_Shrimps_Eye.html",
+        "the-porcupines-quills": "The_Porcupines_Quills.html",
+        "the-tardigrade-protocol": "The_Tardigrade_Protocol.html",
     }
 
 

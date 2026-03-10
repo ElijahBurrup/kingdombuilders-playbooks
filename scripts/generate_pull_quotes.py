@@ -341,20 +341,28 @@ def build_pull_quote_html(
     font_links = re.findall(r'<link[^>]+fonts\.googleapis\.com[^>]+>', playbook_html)
     font_html = "\n".join(font_links)
 
-    # Extract cover-content inner HTML (greedy — grab everything up to closing </div> before </section>)
-    cover_match = re.search(
-        r'<div\s+class="cover-content"[^>]*>(.*)</div>\s*</(?:section|div)>',
-        playbook_html,
-        re.DOTALL,
-    )
-    if not cover_match:
-        cover_match = re.search(
-            r'<div\s+class="cover-content"[^>]*>(.*?)</div>',
+    # Extract cover inner HTML — handle cover-content, cover-wrap, or direct children
+    cover_inner = ""
+    for cls in ['cover-content', 'cover-wrap', 'cover-inner']:
+        m = re.search(
+            rf'<div\s+class="{cls}"[^>]*>(.*)</div>\s*</(?:section|div)>',
             playbook_html,
             re.DOTALL,
         )
-
-    cover_inner = cover_match.group(1).strip() if cover_match else f"<h1>{title}</h1>"
+        if m:
+            cover_inner = m.group(1).strip()
+            break
+    if not cover_inner:
+        # Fallback: extract everything inside the cover section/div
+        m = re.search(
+            r'<(?:section|div)\s+class="cover"[^>]*>(.*)</(?:section|div)>',
+            playbook_html,
+            re.DOTALL,
+        )
+        if m:
+            cover_inner = m.group(1).strip()
+    if not cover_inner:
+        cover_inner = f"<h1>{title}</h1>"
 
     # Remove the tagline and author from cover (keep badge + title + art/icon)
     cover_inner = re.sub(r'<p\s+class="cover-tagline"[^>]*>.*?</p>', '', cover_inner, flags=re.DOTALL)
@@ -362,8 +370,21 @@ def build_pull_quote_html(
     cover_inner = re.sub(r'<p\s+class="cover-sub"[^>]*>.*?</p>', '', cover_inner, flags=re.DOTALL)
 
     # Extract SVG <defs> block (symbol definitions for <use href> icons)
-    svg_defs_match = re.search(r'<svg[^>]*>\s*<defs>(.*?)</defs>\s*</svg>', playbook_html, re.DOTALL)
-    svg_defs_html = f'<svg style="display:none"><defs>{svg_defs_match.group(1)}</defs></svg>' if svg_defs_match else ""
+    # Extract SVG symbol/defs blocks — two patterns:
+    # 1. <svg><defs>...</defs></svg>  (standalone defs block)
+    # 2. <svg style="display:none"><symbol>...</symbol></svg>  (hidden symbol sprite)
+    svg_defs_parts = []
+    # Pattern 1: <svg><defs>...</defs></svg>
+    for m in re.finditer(r'<svg[^>]*>\s*<defs>(.*?)</defs>\s*</svg>', playbook_html, re.DOTALL):
+        svg_defs_parts.append(f'<defs>{m.group(1)}</defs>')
+    # Pattern 2: <svg style="display:none">..symbols..</svg>
+    for m in re.finditer(r'<svg[^>]*style="display:\s*none"[^>]*>(.*?)</svg>', playbook_html, re.DOTALL):
+        svg_defs_parts.append(m.group(1))
+    # Pattern 3: <svg ...><defs>...symbols...</defs> (inside larger hidden svg)
+    for m in re.finditer(r'<svg[^>]*>\s*\n?\s*<defs>\s*\n?\s*(?=.*<symbol)', playbook_html, re.DOTALL):
+        # Already captured by pattern 1/2
+        pass
+    svg_defs_html = f'<svg style="display:none">{"".join(svg_defs_parts)}</svg>' if svg_defs_parts else ""
 
     # Detect the heading font family from CSS
     heading_font_match = re.search(r'h1[^{]*\{[^}]*font-family:\s*([^;]+)', combined_css)
@@ -622,7 +643,7 @@ def _extract_h1_inner(cover_inner: str, fallback_title: str) -> str:
 
 def _extract_cover_art(cover_inner: str) -> str:
     """Extract any cover-art div (with SVG) or cover-icon span from the cover content."""
-    # Look for cover-art div — use </svg> as anchor since SVGs don't contain </div>
+    # Pattern 1: <div class="cover-art">...<svg>...</svg></div>
     art_match = re.search(
         r'<div\s+class="cover-art"[^>]*>.*?</svg>\s*</div>',
         cover_inner,
@@ -630,11 +651,23 @@ def _extract_cover_art(cover_inner: str) -> str:
     )
     if art_match:
         return art_match.group(0)
-    # Fallback: simpler cover-art (no svg, maybe just use-href)
+    # Pattern 2: <div class="cover-art">...</div> (simpler, no svg tag)
     art_match2 = re.search(r'<div\s+class="cover-art"[^>]*>.*?</div>', cover_inner, re.DOTALL)
     if art_match2:
         return art_match2.group(0)
-    # Look for cover-icon (emoji or SVG symbol)
+    # Pattern 3: <svg class="cover-art" ...>...</svg> (SVG element IS the cover-art)
+    svg_art = re.search(r'<svg\s+[^>]*class="cover-art"[^>]*>.*?</svg>', cover_inner, re.DOTALL)
+    if svg_art:
+        return f'<div class="cover-art">{svg_art.group(0)}</div>'
+    # Pattern 4: Other art class names (mound-art, crab-icon, etc.)
+    other_art = re.search(
+        r'<(?:div|svg)\s+[^>]*class="(?:mound|crab|cover)-(?:art|icon)"[^>]*>.*?</(?:div|svg)>',
+        cover_inner,
+        re.DOTALL,
+    )
+    if other_art:
+        return f'<div class="cover-art">{other_art.group(0)}</div>'
+    # Pattern 5: cover-icon (emoji or SVG symbol)
     icon_match = re.search(r'<span\s+class="cover-icon"[^>]*>.*?</span>', cover_inner, re.DOTALL)
     if icon_match:
         return icon_match.group(0)

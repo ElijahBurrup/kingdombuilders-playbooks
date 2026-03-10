@@ -62,6 +62,9 @@ const PLAYBOOKS = [
   { title: "The Termite Cathedral", slug: "the-termite-cathedral", tag: "Technology" },
   { title: "The Bonsai Method", slug: "the-bonsai-method", tag: "Finance" },
   { title: "The Fibonacci Trim", slug: "the-fibonacci-trim", tag: "Finance" },
+  { title: "The Mantis Shrimp\u2019s Eye", catalogTitle: "The Mantis Shrimp's Eye", slug: "the-mantis-shrimps-eye", tag: "Resilience" },
+  { title: "The Porcupine\u2019s Quills", catalogTitle: "The Porcupine's Quills", slug: "the-porcupines-quills", tag: "Resilience" },
+  { title: "The Tardigrade Protocol", slug: "the-tardigrade-protocol", tag: "Resilience" },
 ];
 
 const FREE_PLAYBOOKS = PLAYBOOKS.filter((pb) => pb.free);
