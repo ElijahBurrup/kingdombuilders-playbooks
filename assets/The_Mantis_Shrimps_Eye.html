@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Mantis Shrimp's Eye. Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --prism:#00CED1;--prism-bright:#20E8E8;--prism-pale:#80F0F0;--prism-soft:rgba(0,206,209,0.07);
+  --violet:#8B5CF6;--violet-mid:rgba(139,92,246,0.15);--violet-pale:#C4B5FD;
+  --deep:#0A0A1F;--deep-mid:#141428;--deep-dark:#060612;--deep-light:#1E1E3A;
+  --coral:#FF6B6B;--coral-mid:rgba(255,107,107,0.15);
+  --sea:#E8F4F8;--sea-warm:#F0F8FC;--paper:#FAFCFE;--white:#FFFFFF;
+  --text:#0A0A1F;--text-light:#2A2A4A;--text-muted:#5A5A7A;
+  --radius:14px;--shadow:0 2px 16px rgba(10,10,31,0.08);--shadow-deep:0 8px 40px rgba(10,10,31,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--paper);line-height:1.82;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Poppins',sans-serif;line-height:1.2}
+.page{max-width:720px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--deep);font-weight:700}
+.prose em{color:var(--prism);font-style:normal;font-weight:600}
+
+/* PROGRESS BAR */
+#read-progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--prism),var(--violet));width:0%;z-index:1000;transition:width 0.1s}
+
+/* CHAPTER PILL */
+#chapter-pill{position:fixed;bottom:24px;right:24px;background:linear-gradient(135deg,var(--deep-mid),var(--deep));color:var(--prism-pale);font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:8px 16px;border-radius:50px;border:1px solid rgba(0,206,209,0.2);z-index:999;opacity:0;transition:opacity 0.3s;pointer-events:none}
+
+/* COVER */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(175deg,#020210 0%,#060618 20%,#0A0A28 45%,#060618 75%,#020210 100%);position:relative;overflow:hidden}
+.crystal{position:absolute;pointer-events:none;animation:crystal-drift linear infinite}
+.crystal::before{content:'';position:absolute;width:8px;height:8px;transform:rotate(45deg);opacity:0.5}
+.crystal:nth-child(1)::before{background:var(--prism);left:5%;top:15%;animation-duration:14s}
+.crystal:nth-child(2)::before{background:var(--violet);left:20%;top:40%;animation-duration:18s;animation-delay:-5s;width:5px;height:5px}
+.crystal:nth-child(3)::before{background:var(--coral);left:40%;top:20%;animation-duration:11s;animation-delay:-3s;width:6px;height:6px}
+.crystal:nth-child(4)::before{background:var(--prism-bright);left:65%;top:55%;animation-duration:16s;animation-delay:-8s}
+.crystal:nth-child(5)::before{background:var(--violet-pale);left:80%;top:30%;animation-duration:13s;animation-delay:-2s;width:4px;height:4px}
+.crystal:nth-child(6)::before{background:var(--prism);left:15%;top:70%;animation-duration:19s;animation-delay:-11s;width:7px;height:7px}
+.crystal:nth-child(7)::before{background:var(--coral);left:55%;top:80%;animation-duration:12s;animation-delay:-6s;width:5px;height:5px}
+.crystal:nth-child(8)::before{background:var(--prism-bright);left:90%;top:20%;animation-duration:15s;animation-delay:-4s}
+.crystal:nth-child(9)::before{background:var(--violet);left:35%;top:65%;animation-duration:17s;animation-delay:-9s;width:6px;height:6px}
+.crystal:nth-child(10)::before{background:var(--prism);left:72%;top:75%;animation-duration:10s;animation-delay:-7s;width:4px;height:4px}
+@keyframes crystal-drift{0%{transform:translate(0,0) rotate(0deg);opacity:0}10%{opacity:1}90%{opacity:0.4}100%{transform:translate(30px,-100vh) rotate(180deg);opacity:0}}
+.ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.018;mix-blend-mode:overlay;pointer-events:none}
+.cover-content{position:relative;z-index:2;padding:48px 24px;max-width:640px}
+.cover-badge{display:inline-block;padding:6px 22px;border:1px solid rgba(0,206,209,0.3);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--prism-bright);margin-bottom:28px}
+.cover-art{margin:0 auto 28px;animation:cover-breathe 4s ease-in-out infinite;display:block}
+.cover-art svg{width:220px;height:220px;filter:drop-shadow(0 0 24px rgba(0,206,209,0.35)) drop-shadow(0 0 60px rgba(139,92,246,0.2))}
+@keyframes cover-breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+.cover h1{font-family:'Poppins',sans-serif;font-size:clamp(2.2rem,6vw,3.8rem);font-weight:900;color:var(--white);line-height:1.05;margin-bottom:6px}
+.cover h1 strong{font-weight:900;color:var(--prism-bright);display:block;font-size:clamp(2.5rem,7vw,4.2rem);letter-spacing:-0.02em}
+.cover-sub{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.55);margin-top:24px;line-height:1.8;max-width:520px;margin-left:auto;margin-right:auto}
+.cover-sub em{color:var(--prism-pale);font-style:normal;font-weight:600}
+.cover-series{font-family:'Poppins',sans-serif;font-size:0.58rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-top:20px}
+
+/* CHAPTER HEADS */
+.ch-head{background:linear-gradient(170deg,var(--deep-dark),var(--deep-mid));padding:80px 24px 56px;position:relative;overflow:hidden}
+.ch-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 5%,var(--prism) 50%,transparent 95%)}
+.ch-head .page{position:relative;z-index:2}
+.ch-num{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--prism);opacity:0.8;margin-bottom:12px}
+.ch-title{font-family:'Poppins',sans-serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:800;color:var(--white);margin-bottom:8px;letter-spacing:-0.02em}
+.ch-sub{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.45);line-height:1.6}
+
+/* RIBBON */
+.ribbon{text-align:center;padding:20px 24px;background:linear-gradient(135deg,var(--prism-soft),rgba(0,206,209,0.03));border-top:1.5px solid rgba(0,206,209,0.1);border-bottom:1.5px solid rgba(0,206,209,0.1);margin:0 0 40px}
+.ribbon p{font-family:'Lora',serif;font-size:0.9rem;font-style:italic;color:var(--text-muted);max-width:520px;margin:0 auto;line-height:1.7}
+.ribbon cite{display:block;font-family:'Poppins',sans-serif;font-size:0.58rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--prism);opacity:0.7;margin-top:8px;font-style:normal}
+
+/* CAST */
+.char-grid{display:grid;gap:20px;margin:40px 0}
+@media(min-width:640px){.char-grid{grid-template-columns:1fr 1fr 1fr}}
+.char-card{background:var(--white);border:2px solid rgba(0,206,209,0.12);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);transition:all 0.3s}
+.char-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-deep)}
+.char-card.villain{border-color:rgba(255,107,107,0.2)}
+.char-head{padding:18px 20px;border-bottom:1px solid rgba(0,206,209,0.08);display:flex;align-items:center;gap:14px}
+.char-head.villain-head{background:linear-gradient(135deg,rgba(255,107,107,0.06),rgba(255,107,107,0.02))}
+.char-emoji{font-size:2rem;line-height:1}
+.char-name{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:800;color:var(--deep)}
+.char-role{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-top:2px}
+.char-card.villain .char-role{color:var(--coral)}
+.char-body{padding:18px 20px}
+.char-body p{font-size:0.88rem;color:var(--text-light);line-height:1.72;margin:0 0 8px}
+.char-body p:last-child{margin:0}
+.char-quote{font-family:'Lora',serif;font-style:italic;font-size:0.85rem;color:var(--prism);border-left:3px solid var(--prism);padding-left:12px;margin-top:10px;line-height:1.6}
+.char-card.villain .char-quote{color:var(--coral);border-color:var(--coral)}
+
+/* SCENE BLOCKS */
+.scene{margin:36px 0;padding:32px;background:linear-gradient(140deg,var(--deep-mid),var(--deep));border-radius:var(--radius);border:1px solid rgba(0,206,209,0.12);position:relative;overflow:hidden}
+.scene::before{content:'';position:absolute;top:0;right:0;width:180px;height:180px;background:radial-gradient(circle,rgba(0,206,209,0.05) 0%,transparent 70%)}
+.scene-label{font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--prism-bright);margin-bottom:14px;position:relative;z-index:2}
+.scene p{font-family:'Lora',serif;font-size:0.95rem;color:rgba(255,255,255,0.72);line-height:1.82;position:relative;z-index:2;margin-bottom:14px}
+.scene p:last-child{margin-bottom:0}
+.scene em{color:var(--prism-pale);font-style:normal;font-weight:600}
+.scene .coral{color:rgba(255,107,107,0.9)}
+.scene .violet{color:var(--violet-pale)}
+.scene h4{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:var(--white);margin-bottom:14px;position:relative;z-index:2}
+
+/* VIZ BOX */
+.viz{background:linear-gradient(135deg,var(--deep-dark),var(--deep-mid));border-radius:var(--radius);border:2px solid rgba(0,206,209,0.18);margin:48px 0;overflow:hidden;box-shadow:var(--shadow-deep)}
+.viz-top{padding:24px 28px 20px;border-bottom:1px solid rgba(0,206,209,0.1);display:flex;align-items:center;gap:16px}
+.viz-icon-wrap{font-size:2.2rem;line-height:1;flex-shrink:0}
+.viz-meta{flex:1}
+.viz-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--prism);margin-bottom:4px}
+.viz-meta h4{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:var(--white)}
+.viz-body{padding:28px}
+.viz-body p{font-size:0.95rem;color:rgba(255,255,255,0.7);line-height:1.82;margin-bottom:16px}
+.viz-body p:last-of-type{margin-bottom:0}
+.viz-trigger{margin-top:22px;padding:16px 20px;background:rgba(0,206,209,0.08);border:1.5px solid rgba(0,206,209,0.18);border-radius:10px;font-family:'Poppins',sans-serif;font-size:0.78rem;font-weight:700;color:var(--prism-pale);text-align:center}
+
+/* THINK / REFLECTION */
+.think{margin:40px 0;padding:32px;background:linear-gradient(145deg,rgba(0,206,209,0.05),rgba(0,206,209,0.02));border:2.5px dashed rgba(0,206,209,0.25);border-radius:var(--radius)}
+.think-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--prism);text-align:center;margin-bottom:10px}
+.think h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:700;color:var(--deep);text-align:center;margin-bottom:16px}
+.think .q-start{font-family:'Poppins',sans-serif;font-size:0.85rem;font-weight:600;color:var(--text-light);margin-bottom:6px}
+.think-line{border-bottom:1.5px solid rgba(0,206,209,0.15);height:32px;margin-bottom:4px}
+
+/* GRAND QUOTES */
+.gq{margin:48px 0;text-align:center;padding:40px 32px;background:linear-gradient(160deg,var(--deep-mid),var(--deep-dark));border-radius:var(--radius);border:1px solid rgba(0,206,209,0.1);position:relative;overflow:hidden}
+.gq::before{content:'\201C';position:absolute;top:-20px;left:12px;font-size:10rem;font-family:Georgia,serif;color:rgba(0,206,209,0.06);line-height:1;pointer-events:none}
+.gq p{font-family:'Lora',serif;font-size:1.1rem;font-style:italic;color:rgba(255,255,255,0.82);line-height:1.8;position:relative;max-width:560px;margin:0 auto}
+.gq cite{display:block;font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--prism);opacity:0.7;margin-top:16px;font-style:normal}
+
+/* BEFORE/AFTER */
+.ba-pair{display:grid;gap:18px;margin:36px 0}
+@media(min-width:620px){.ba-pair{grid-template-columns:1fr 1fr}}
+.ba-card{border-radius:var(--radius);overflow:hidden}
+.ba-head{padding:12px 20px;font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.ba-before{background:linear-gradient(170deg,#1A0A0A,#280A0A)}
+.ba-before .ba-head{background:rgba(255,107,107,0.12);color:var(--coral)}
+.ba-after{background:linear-gradient(170deg,#021A1A,#042828)}
+.ba-after .ba-head{background:rgba(0,206,209,0.1);color:var(--prism-bright)}
+.ba-dot{width:8px;height:8px;border-radius:50%}
+.ba-before .ba-dot{background:var(--coral)}.ba-after .ba-dot{background:var(--prism)}
+.ba-body{padding:20px;font-size:0.88rem;line-height:1.7}
+.ba-before .ba-body{color:rgba(255,180,180,0.8)}.ba-after .ba-body{color:rgba(160,240,240,0.85)}
+.ba-body ul{list-style:none;padding:0;margin:0}
+.ba-body ul li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04)}.ba-body ul li:last-child{border-bottom:none}
+
+/* ROOT REVIEW */
+.root-review{margin:44px 0;padding:28px 24px;background:linear-gradient(170deg,var(--sea-warm),var(--sea));border-radius:var(--radius);border:1px solid rgba(0,206,209,0.15)}
+.root-label{font-family:'Poppins',sans-serif;font-size:0.42rem;font-weight:800;letter-spacing:6px;text-transform:uppercase;color:var(--prism);opacity:0.6;text-align:center;margin-bottom:16px}
+.root-layer{display:flex;align-items:center;justify-content:center;gap:8px;padding:6px 0;flex-wrap:wrap}
+.root-layer.current{padding:10px 0}
+.root-ch{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);opacity:0.4;width:24px;text-align:right;flex-shrink:0}
+.root-layer.current .root-ch{color:var(--prism);opacity:1}
+.root-items{display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center}
+.root-pill{font-family:'Poppins',sans-serif;font-size:0.62rem;font-weight:600;padding:5px 12px;border-radius:6px;white-space:nowrap}
+.root-pill.rp-dim{background:rgba(0,206,209,0.06);color:var(--text-muted);border:1px solid rgba(0,206,209,0.1)}
+.root-pill.rp-bright{background:linear-gradient(135deg,rgba(0,206,209,0.12),rgba(0,206,209,0.2));color:var(--deep);border:1px solid rgba(0,206,209,0.25)}
+.root-arr{color:var(--text-muted);opacity:0.3;font-size:0.75rem;padding:0 3px}
+.root-layer.current .root-arr{opacity:0.6;color:var(--prism)}
+.root-sep{width:60%;max-width:280px;height:1px;background:linear-gradient(90deg,transparent,rgba(0,206,209,0.15),transparent);margin:4px auto}
+
+/* KNOWLEDGE LAYER */
+dfn.def{text-decoration:underline;text-decoration-style:dotted;text-decoration-color:var(--prism);cursor:help;font-style:normal;position:relative}
+dfn.def::after{content:attr(data-def);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--deep);color:var(--prism-pale);font-family:'Poppins',sans-serif;font-size:0.65rem;font-weight:500;line-height:1.5;padding:8px 14px;border-radius:8px;border:1px solid rgba(0,206,209,0.2);width:220px;white-space:normal;pointer-events:none;opacity:0;transition:opacity 0.2s;z-index:100;text-align:left}
+dfn.def:hover::after{opacity:1}
+
+/* SPECTRUM ANALYZER */
+.spectrum-analyzer{margin:40px 0;padding:32px 24px;background:var(--deep-mid);border-radius:var(--radius);border:2px solid rgba(0,206,209,0.15)}
+.spectrum-title{font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--prism);text-align:center;margin-bottom:24px}
+.spectrum-row{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.spectrum-num{font-family:'Poppins',sans-serif;font-size:0.58rem;font-weight:700;color:rgba(255,255,255,0.3);width:24px;text-align:right;flex-shrink:0}
+.spectrum-bar-wrap{flex:1;height:28px;border-radius:4px;overflow:hidden;position:relative}
+.spectrum-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding:0 12px;font-family:'Poppins',sans-serif;font-size:0.62rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.spectrum-visible{background:linear-gradient(90deg,rgba(0,206,209,0.3),rgba(0,206,209,0.15));color:var(--prism-bright);border:1px solid rgba(0,206,209,0.2)}
+.spectrum-hidden{background:linear-gradient(90deg,rgba(139,92,246,0.25),rgba(139,92,246,0.12));color:var(--violet-pale);border:1px solid rgba(139,92,246,0.2)}
+.spectrum-legend{display:flex;gap:24px;justify-content:center;margin-top:20px;font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:600}
+.legend-item{display:flex;align-items:center;gap:8px}
+.legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.legend-visible{background:rgba(0,206,209,0.4);border:1px solid var(--prism)}
+.legend-hidden{background:rgba(139,92,246,0.4);border:1px solid var(--violet)}
+
+/* POLARIZATION DIAGRAM */
+.polarity-table{margin:36px 0;border-radius:var(--radius);overflow:hidden;border:2px solid rgba(0,206,209,0.12)}
+.polarity-head{display:grid;grid-template-columns:1fr 1fr;background:var(--deep-mid)}
+.polarity-head-cell{padding:14px 20px;font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:3px;text-transform:uppercase}
+.polarity-head-cell:first-child{color:var(--coral);border-right:1px solid rgba(255,255,255,0.06)}
+.polarity-head-cell:last-child{color:var(--prism-bright)}
+.polarity-row{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid rgba(255,255,255,0.04)}
+.polarity-row:nth-child(odd){background:rgba(0,206,209,0.02)}
+.polarity-row:nth-child(even){background:rgba(139,92,246,0.02)}
+.polarity-cell{padding:14px 20px;font-size:0.85rem;line-height:1.6}
+.polarity-cell:first-child{color:rgba(255,160,160,0.85);border-right:1px solid rgba(255,255,255,0.04);font-style:italic}
+.polarity-cell:last-child{color:rgba(128,240,240,0.9);font-weight:600;font-family:'Poppins',sans-serif;font-size:0.78rem}
+
+/* TRINOCULAR GRID */
+.trinocular{margin:36px 0;border-radius:var(--radius);overflow:hidden;border:2px solid rgba(139,92,246,0.15)}
+.tri-head{display:grid;grid-template-columns:1fr 1fr 1fr;background:var(--deep-mid)}
+.tri-head-cell{padding:12px 16px;font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;text-align:center}
+.tri-head-cell:nth-child(1){color:var(--prism-bright);border-right:1px solid rgba(255,255,255,0.06)}
+.tri-head-cell:nth-child(2){color:var(--violet-pale);border-right:1px solid rgba(255,255,255,0.06)}
+.tri-head-cell:nth-child(3){color:var(--coral)}
+.tri-row{display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid rgba(255,255,255,0.04)}
+.tri-row:nth-child(odd){background:rgba(0,206,209,0.02)}
+.tri-cell{padding:14px 16px;font-size:0.82rem;line-height:1.6;vertical-align:top}
+.tri-cell:nth-child(1){color:rgba(200,240,240,0.8);border-right:1px solid rgba(255,255,255,0.04);font-style:italic}
+.tri-cell:nth-child(2){color:var(--violet-pale);border-right:1px solid rgba(255,255,255,0.04);font-size:0.78rem}
+.tri-cell:nth-child(3){color:rgba(255,150,150,0.85);font-weight:600;font-family:'Poppins',sans-serif;font-size:0.75rem}
+.tri-mismatch{background:rgba(255,107,107,0.06)!important}
+.tri-flag{display:inline-block;padding:2px 8px;background:rgba(255,107,107,0.15);color:var(--coral);font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:1px;border-radius:4px;margin-top:4px}
+
+/* CAVITATION CARD */
+.cav-card{margin:40px 0;border-radius:var(--radius);overflow:hidden;border:2px solid rgba(0,206,209,0.2)}
+.cav-head{padding:16px 24px;background:linear-gradient(90deg,var(--deep-dark),var(--deep-mid));border-bottom:1px solid rgba(0,206,209,0.15)}
+.cav-head-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--prism);margin-bottom:4px}
+.cav-head-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:var(--white)}
+.cav-body{background:var(--deep-mid)}
+.cav-row{padding:16px 24px;border-bottom:1px solid rgba(255,255,255,0.04);display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start}
+.cav-row:last-child{border-bottom:none}
+.cav-trigger{font-family:'Poppins',sans-serif;font-size:0.62rem;font-weight:700;color:rgba(255,160,160,0.7);padding-top:2px;min-width:120px}
+.cav-response{font-family:'Lora',serif;font-size:0.88rem;color:rgba(200,240,240,0.9);line-height:1.6;font-style:italic}
+
+/* DATA HEROES */
+.data-heroes{display:grid;gap:16px;margin:36px 0}
+@media(min-width:620px){.data-heroes{grid-template-columns:1fr 1fr 1fr}}
+.data-hero{background:var(--white);border:2px solid rgba(0,206,209,0.1);border-radius:var(--radius);padding:24px 20px;text-align:center;box-shadow:var(--shadow)}
+.data-hero-num{font-family:'Poppins',sans-serif;font-size:2rem;font-weight:900;color:var(--prism);line-height:1;margin-bottom:8px}
+.data-hero-label{font-family:'Poppins',sans-serif;font-size:0.65rem;font-weight:600;color:var(--text-muted);line-height:1.4}
+
+/* FLOW DIAGRAM */
+.flow{margin:40px 0;padding:32px 24px;background:var(--deep-mid);border-radius:var(--radius);border:1px solid rgba(0,206,209,0.1)}
+.flow-title{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--prism);text-align:center;margin-bottom:24px;opacity:0.7}
+.flow-step{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+.flow-node{flex:1;background:linear-gradient(135deg,rgba(0,206,209,0.1),rgba(0,206,209,0.05));border:1px solid rgba(0,206,209,0.18);border-radius:10px;padding:14px 16px;text-align:center}
+.flow-node-label{font-family:'Poppins',sans-serif;font-size:0.7rem;font-weight:700;color:var(--prism-pale);margin-bottom:4px}
+.flow-node-sub{font-family:'Lora',serif;font-size:0.75rem;font-style:italic;color:rgba(255,255,255,0.4)}
+.flow-arr{color:var(--prism);opacity:0.4;font-size:1.2rem;flex-shrink:0}
+.flow-node.alert{background:linear-gradient(135deg,rgba(255,107,107,0.12),rgba(255,107,107,0.05));border-color:rgba(255,107,107,0.2)}
+.flow-node.alert .flow-node-label{color:var(--coral)}
+
+/* BREATHE GATE */
+.breathe{margin:48px 0;text-align:center;padding:56px 24px;background:linear-gradient(160deg,rgba(0,206,209,0.05),rgba(139,92,246,0.04));border-radius:var(--radius);border:2px solid rgba(0,206,209,0.08);position:relative;overflow:hidden}
+.breathe-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1.5px solid rgba(0,206,209,0.07)}
+.breathe-ring:nth-child(1){width:200px;height:200px;animation:breathe-pulse 6s ease-in-out infinite}
+.breathe-ring:nth-child(2){width:140px;height:140px;animation:breathe-pulse 6s ease-in-out infinite 1.5s}
+.breathe-ring:nth-child(3){width:80px;height:80px;animation:breathe-pulse 6s ease-in-out infinite 3s}
+@keyframes breathe-pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.4}50%{transform:translate(-50%,-50%) scale(1.25);opacity:0.08}}
+.breathe-content{position:relative;z-index:2}
+.breathe-label{font-family:'Poppins',sans-serif;font-size:0.48rem;font-weight:800;letter-spacing:6px;text-transform:uppercase;color:var(--prism);opacity:0.5;margin-bottom:10px}
+.breathe h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:700;color:var(--deep);margin-bottom:8px}
+.breathe p{font-family:'Lora',serif;font-size:0.9rem;font-style:italic;color:var(--text-muted);max-width:400px;margin:0 auto;line-height:1.65}
+
+/* BOLD CLAIM / PREGAME */
+.pregame{margin:0;padding:52px 24px;background:linear-gradient(160deg,var(--deep),var(--deep-mid));border-bottom:3px solid rgba(0,206,209,0.2)}
+.pregame-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:6px;text-transform:uppercase;color:var(--prism);opacity:0.7;text-align:center;margin-bottom:20px}
+.pregame h2{font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:800;color:var(--white);text-align:center;line-height:1.4;margin-bottom:24px;max-width:580px;margin-left:auto;margin-right:auto}
+.pregame ul{list-style:none;padding:0;max-width:580px;margin:0 auto}
+.pregame ul li{display:flex;gap:14px;align-items:flex-start;padding:10px 0;border-bottom:1px solid rgba(0,206,209,0.07);font-family:'Lora',serif;font-size:0.9rem;color:rgba(255,255,255,0.65);line-height:1.7}
+.pregame ul li:last-child{border-bottom:none}
+.pregame ul li::before{content:'◆';color:var(--prism);font-size:0.6rem;flex-shrink:0;margin-top:6px}
+
+/* ADVENTURE */
+.adventure{margin:36px 0;border-radius:var(--radius);overflow:hidden;background:var(--white);border:2px solid rgba(0,206,209,0.1);box-shadow:var(--shadow)}
+.adv-head{padding:16px 24px;border-bottom:1px solid rgba(0,206,209,0.08);display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(0,206,209,0.05),rgba(0,206,209,0.02))}
+.adv-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--prism)}
+.adv-title{font-family:'Poppins',sans-serif;font-size:0.9rem;font-weight:700;color:var(--deep)}
+.adv-step{padding:16px 24px;border-bottom:1px solid rgba(0,206,209,0.05)}
+.adv-step:last-child{border-bottom:none}
+.adv-step-num{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--prism);opacity:0.6;margin-bottom:6px}
+.adv-step p{font-size:0.9rem;color:var(--text-light);line-height:1.7;margin:0}
+
+/* DARK PANEL */
+.dark-panel{background:linear-gradient(150deg,var(--deep-dark),var(--deep));border-radius:var(--radius);padding:36px 32px;margin:40px 0;border:1px solid rgba(0,206,209,0.08)}
+.dark-panel p{font-family:'Lora',serif;font-size:0.95rem;color:rgba(255,255,255,0.65);line-height:1.85;margin-bottom:16px}
+.dark-panel p:last-child{margin-bottom:0}
+.dark-panel strong{color:var(--prism-pale);font-weight:700}
+.dark-panel em{color:var(--coral);font-style:normal;font-weight:600}
+
+/* PROMPT CARD */
+.prompt-card{margin:40px 0;padding:36px;background:linear-gradient(150deg,var(--deep),var(--deep-mid));border-radius:var(--radius);border:2px solid var(--prism)}
+.pc-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--prism-bright);margin-bottom:14px}
+.prompt-card h3{font-size:1.05rem;color:var(--white);margin-bottom:14px;font-family:'Poppins',sans-serif;font-weight:700}
+.prompt-card p{font-size:0.88rem;color:rgba(255,255,255,0.55);line-height:1.7;margin-bottom:10px}
+.prompt-card code{display:block;margin:16px 0;padding:18px 22px;background:rgba(0,0,0,0.35);border-radius:10px;font-family:'Lora',serif;font-size:0.88rem;color:var(--prism-pale);line-height:1.75;font-style:italic;white-space:pre-wrap}
+
+/* FINAL TEST */
+.final-test{margin:40px 0;padding:36px;background:linear-gradient(145deg,rgba(0,206,209,0.07),rgba(0,206,209,0.03));border-radius:var(--radius);border:3px solid var(--prism)}
+.ft-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:6px;text-transform:uppercase;color:var(--prism);text-align:center;margin-bottom:16px}
+.final-test h3{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:var(--deep);text-align:center;margin-bottom:24px}
+.dd{padding:20px 24px;margin-bottom:12px;background:var(--white);border-radius:10px;border-left:4px solid var(--prism)}
+.dd:nth-child(even){background:rgba(0,206,209,0.03)}
+.dd h4{font-family:'Poppins',sans-serif;font-size:0.85rem;font-weight:700;color:var(--deep);margin-bottom:6px}
+.dd p{font-size:0.85rem;color:var(--text-muted);line-height:1.6;margin:0}
+
+/* SERIES PROGRESS */
+.series-progress{margin:40px auto;text-align:center;padding:24px}
+.series-label{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px}
+.series-dots{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px}
+.series-dot{width:14px;height:14px;border-radius:50%;background:rgba(0,206,209,0.15);border:2px solid rgba(0,206,209,0.2);display:inline-block;transition:all 0.3s}
+.series-dot.active{background:var(--prism);border-color:var(--prism-bright);box-shadow:0 0 12px rgba(0,206,209,0.5)}
+.series-dot-label{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:600;color:var(--text-muted)}
+
+/* FINALE */
+.finale{text-align:center;padding:80px 24px;background:linear-gradient(170deg,var(--deep),var(--deep-dark));position:relative;overflow:hidden}
+.finale h2{font-family:'Poppins',sans-serif;font-size:clamp(1.6rem,4.5vw,2.4rem);font-weight:800;color:var(--white);margin-bottom:12px;line-height:1.25}
+.finale h2 span{color:var(--prism-bright)}
+.finale p{font-family:'Lora',serif;font-size:0.95rem;color:rgba(255,255,255,0.4);max-width:480px;margin:16px auto;line-height:1.72}
+
+/* FOOTER */
+footer{text-align:center;padding:48px 24px 36px;background:var(--deep-dark);border-top:1px solid rgba(0,206,209,0.08)}
+footer p{font-family:'Lora',serif;font-size:0.85rem;font-style:italic;color:rgba(255,255,255,0.18);margin-bottom:16px;line-height:1.7}
+.brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:rgba(0,206,209,0.25)}
+
+/* SCROLL REVEAL */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease}
+.reveal.visible{opacity:1;transform:none}
+
+/* PRINT */
+@media print{
+  @page{margin:18mm 16mm 22mm 16mm}
+  body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .cover{min-height:auto;padding:80px 24px;break-after:page}
+  .ch-head{break-before:page;padding:60px 24px 44px}
+  .crystal,.ghost-noise,.breathe-ring{animation:none!important;display:none}
+  #read-progress,#chapter-pill{display:none}
+  .think,.viz,.ba-pair,.scene,.cav-card,.trinocular,.polarity-table,.spectrum-analyzer,.final-test,.prompt-card{break-inside:avoid}
+}
+
+/* MOBILE */
+@media(max-width:640px){
+  .page{padding:0 16px}
+  .polarity-head,.polarity-row,.tri-head,.tri-row{font-size:0.75rem}
+  .tri-head-cell,.tri-cell{padding:10px 10px}
+  .cav-row{grid-template-columns:1fr;gap:6px}
+  .cav-trigger{min-width:auto}
+  dfn.def::after{left:0;transform:none;width:200px}
+}
+@media(max-width:620px){
+  .ba-pair{grid-template-columns:1fr}
+  .data-heroes{grid-template-columns:1fr}
+  .char-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div id="read-progress"></div>
+<div id="chapter-pill">Ch 1</div>
+
+<!-- COVER -->
+<section class="cover">
+  <div class="ghost-noise"></div>
+  <div class="crystal"></div><div class="crystal"></div><div class="crystal"></div>
+  <div class="crystal"></div><div class="crystal"></div><div class="crystal"></div>
+  <div class="crystal"></div><div class="crystal"></div><div class="crystal"></div>
+  <div class="crystal"></div>
+
+  <div class="cover-content">
+    <div class="cover-badge">The Shield Series &nbsp;·&nbsp; Part 1 of 3 &nbsp;·&nbsp; Mindset</div>
+
+    <div class="cover-art">
+      <svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="eye-glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="rgba(0,206,209,0.25)"/>
+            <stop offset="100%" stop-color="transparent"/>
+          </radialGradient>
+          <radialGradient id="pupil-grad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#141428"/>
+            <stop offset="100%" stop-color="#0A0A1F"/>
+          </radialGradient>
+        </defs>
+        <!-- Outer glow -->
+        <circle cx="110" cy="110" r="105" fill="url(#eye-glow)" opacity="0.6"/>
+        <!-- Color bands radiating outward, 16 channels -->
+        <g opacity="0.85">
+          <path d="M110,110 L110,10 A100,100 0 0,1 172,38 Z" fill="rgba(255,0,128,0.7)"/>
+          <path d="M110,110 L172,38 A100,100 0 0,1 210,110 Z" fill="rgba(255,100,0,0.7)"/>
+          <path d="M110,110 L210,110 A100,100 0 0,1 172,182 Z" fill="rgba(255,200,0,0.7)"/>
+          <path d="M110,110 L172,182 A100,100 0 0,1 110,210 Z" fill="rgba(100,255,50,0.7)"/>
+          <path d="M110,110 L110,210 A100,100 0 0,1 48,182 Z" fill="rgba(0,206,209,0.85)"/>
+          <path d="M110,110 L48,182 A100,100 0 0,1 10,110 Z" fill="rgba(0,100,255,0.7)"/>
+          <path d="M110,110 L10,110 A100,100 0 0,1 48,38 Z" fill="rgba(100,0,255,0.7)"/>
+          <path d="M110,110 L48,38 A100,100 0 0,1 110,10 Z" fill="rgba(200,0,200,0.7)"/>
+        </g>
+        <!-- Inner color wheel (refined) -->
+        <g opacity="0.9">
+          <path d="M110,110 L110,40 A70,70 0 0,1 150,55 Z" fill="rgba(255,50,150,0.6)"/>
+          <path d="M110,110 L150,55 A70,70 0 0,1 180,110 Z" fill="rgba(255,140,0,0.6)"/>
+          <path d="M110,110 L180,110 A70,70 0 0,1 150,165 Z" fill="rgba(200,255,0,0.6)"/>
+          <path d="M110,110 L150,165 A70,70 0 0,1 110,180 Z" fill="rgba(0,255,128,0.6)"/>
+          <path d="M110,110 L110,180 A70,70 0 0,1 70,165 Z" fill="rgba(0,220,255,0.8)"/>
+          <path d="M110,110 L70,165 A70,70 0 0,1 40,110 Z" fill="rgba(0,80,255,0.6)"/>
+          <path d="M110,110 L40,110 A70,70 0 0,1 70,55 Z" fill="rgba(120,0,255,0.6)"/>
+          <path d="M110,110 L70,55 A70,70 0 0,1 110,40 Z" fill="rgba(255,0,200,0.6)"/>
+        </g>
+        <!-- Mid ring -->
+        <circle cx="110" cy="110" r="42" fill="rgba(10,10,31,0.85)" stroke="rgba(0,206,209,0.3)" stroke-width="2"/>
+        <!-- Pupil: bar shaped like mantis shrimp -->
+        <rect x="82" y="102" width="56" height="16" rx="8" fill="url(#pupil-grad)" stroke="rgba(0,206,209,0.5)" stroke-width="1.5"/>
+        <!-- Pupil shine -->
+        <ellipse cx="96" cy="107" rx="6" ry="3" fill="rgba(0,206,209,0.35)"/>
+        <!-- Center dot -->
+        <circle cx="110" cy="110" r="4" fill="rgba(0,206,209,0.6)"/>
+        <!-- Bioluminescent halo -->
+        <circle cx="110" cy="110" r="38" fill="none" stroke="rgba(0,206,209,0.15)" stroke-width="8"/>
+      </svg>
+    </div>
+
+    <h1>The Mantis<strong>Shrimp's Eye</strong></h1>
+    <p class="cover-sub">You see three colors. The mantis shrimp sees sixteen. Every lie you have ever believed, every manipulation you have ever missed, happened in a color you could not see. <em>This playbook gives you the other thirteen.</em></p>
+    <p class="cover-series">The Shield Series &nbsp;·&nbsp; Part 1: SEE</p>
+  </div>
+</section>
+
+<!-- PREGAME / CHAPTER 00 -->
+<section class="pregame">
+  <div class="page">
+    <div class="pregame-label">Chapter 00 &nbsp;·&nbsp; The Bold Claim</div>
+    <h2>If you finish this playbook, four things will be permanently different.</h2>
+    <ul>
+      <li>You will see manipulation in real time instead of replaying it three days later, wondering what just happened to you.</li>
+      <li>You will understand the exact emotional wavelengths narcissists use that were engineered to be invisible to normal perception.</li>
+      <li>You will build a three-channel verification system that makes <dfn class="def" data-def="Gaslighting: making someone question their own reality, memory, or sanity to avoid accountability.">gaslighting</dfn> structurally impossible.</li>
+      <li>You will install pre-loaded responses that fire before your emotional system can be hijacked, taken over, and turned against you.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- THE CAST -->
+<section class="section" style="background:var(--sea-warm)">
+  <div class="page">
+    <div style="text-align:center;margin-bottom:8px">
+      <span style="font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--prism)">The Cast</span>
+    </div>
+    <h2 style="font-size:1.4rem;text-align:center;margin-bottom:8px;color:var(--deep)">Meet the Characters</h2>
+    <p style="text-align:center;color:var(--text-muted);font-family:'Lora',serif;font-style:italic;font-size:0.9rem;margin-bottom:28px">Every great parable needs a student, a teacher, and a predator.</p>
+    <div class="char-grid">
+      <div class="char-card reveal">
+        <div class="char-head">
+          <div class="char-emoji">🦐</div>
+          <div>
+            <div class="char-name">Iris</div>
+            <div class="char-role">The Mentor</div>
+          </div>
+        </div>
+        <div class="char-body">
+          <p>A mantis shrimp who sees all sixteen color channels. Calm. Precise. Nothing escapes her. She does not argue with what she sees. She acts on it.</p>
+          <div class="char-quote">"The light that wants to fool you always announces itself. You just need the right receptor to hear it."</div>
+        </div>
+      </div>
+      <div class="char-card reveal">
+        <div class="char-head">
+          <div class="char-emoji">🐟</div>
+          <div>
+            <div class="char-name">Mono</div>
+            <div class="char-role">The Student</div>
+          </div>
+        </div>
+        <div class="char-body">
+          <p>A fish who sees three colors and believes that is all there is. Keeps getting caught because he trusts what is visible. He is not foolish. He is undertrained.</p>
+          <div class="char-quote">"I saw the light and swam toward it. How was I supposed to know the light was the trap?"</div>
+        </div>
+      </div>
+      <div class="char-card villain reveal">
+        <div class="char-head villain-head">
+          <div class="char-emoji">🎣</div>
+          <div>
+            <div class="char-name">Lure</div>
+            <div class="char-role" style="color:var(--coral)">The Narcissist</div>
+          </div>
+        </div>
+        <div class="char-body">
+          <p>An anglerfish. Uses bioluminescent light to attract prey. Engineered a beautiful signal attached to a lethal source. Never appears as the villain. Always appears as the light.</p>
+          <div class="char-quote" style="color:var(--coral);border-color:var(--coral)">"I am not hunting you. I am offering you something you have always wanted. Come closer."</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DATA HEROES -->
+<section class="section" style="background:var(--paper)">
+  <div class="page">
+    <div style="text-align:center;margin-bottom:24px">
+      <span style="font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--prism)">The Scope</span>
+      <h2 style="font-size:1.2rem;color:var(--deep);margin-top:8px">This is not rare. This is epidemic.</h2>
+    </div>
+    <div class="data-heroes">
+      <div class="data-hero reveal">
+        <div class="data-hero-num">1 in 6</div>
+        <div class="data-hero-label">Adults have experienced <dfn class="def" data-def="Coercive control: a pattern of behavior used to dominate, isolate, and manipulate a partner or family member.">coercive control</dfn> in a close relationship</div>
+      </div>
+      <div class="data-hero reveal">
+        <div class="data-hero-num">3.7 yrs</div>
+        <div class="data-hero-label">Average time survivors stay before recognizing the pattern and leaving</div>
+      </div>
+      <div class="data-hero reveal">
+        <div class="data-hero-num">94%</div>
+        <div class="data-hero-label">Of survivors report confusion and self-doubt as the primary weapon used against them</div>
+      </div>
+    </div>
+    <p style="text-align:center;font-family:'Lora',serif;font-style:italic;font-size:0.88rem;color:var(--text-muted);margin-top:8px">The confusion is not a character flaw. The confusion is the point. It was manufactured.</p>
+  </div>
+</section>
+
+<!-- CHAPTER 1 -->
+<div class="ch-head" id="ch1">
+  <div class="page">
+    <div class="ch-num">Chapter 01 &nbsp;·&nbsp; The First Receptor</div>
+    <h2 class="ch-title">The Ultraviolet Layer</h2>
+    <p class="ch-sub">Install a UV detector for the specific frequencies of manipulation that were engineered to be invisible.</p>
+  </div>
+</div>
+
+<section class="section" style="background:var(--paper)">
+  <div class="page">
+
+    <div class="ribbon">
+      <p>"The eye is the lamp of the body. If your eyes are healthy, your whole body will be full of light."</p>
+      <cite>Matthew 6:22</cite>
+    </div>
+
+    <div class="scene reveal">
+      <div class="scene-label">The Parable &nbsp;·&nbsp; Scene One</div>
+      <h4>The First Time Mono Saw the Light</h4>
+      <p>The ocean was dark at three hundred feet. Mono had learned that darkness was normal, that most things lived in it, that you adjusted. Then the light appeared.</p>
+      <p>It was soft. <em>Warm.</em> It did not flash like a predator's signal or pulse like a warning. It simply glowed, patient and beautiful, as if it had always been there waiting to be found. Mono swam toward it before he had time to think.</p>
+      <p>Iris appeared beside him. Not startled. Not rushing. Just present, with her sixteen receptor channels reading what Mono could not see.</p>
+      <p>"<span class="violet">Stop</span>," she said.</p>
+      <p>"That light is beautiful," Mono said. "I want to see what it is."</p>
+      <p>"<span class="violet">I know. That is what it was built for.</span>" Iris turned her compound eye toward the glow. In the channels Mono could not access, she saw the frequencies he was blind to: the ultraviolet signature of <span class="coral">Lure's</span> bioluminescence, which pulsed at exactly the rhythm of safety. Not random. Calibrated. "The beauty is not the accident. The beauty is the <em>mechanism</em>."</p>
+      <p>Mono stayed still. For the first time, he did not swim toward the light. He watched it. And slowly, he began to wonder what it was attached to.</p>
+    </div>
+
+    <div class="prose">
+      <p><dfn class="def" data-def="Narcissistic abuse: a pattern of psychological manipulation by someone with narcissistic traits, designed to control and destabilize the victim's sense of reality.">Narcissistic abuse</dfn> operates in frequencies most people cannot see because most people were never taught to look. The compliment that hooks. The concern that surveils. The vulnerability that performs. These are not accidents of communication. They are precision instruments.</p>
+      <p>The mantis shrimp carries sixteen independent photoreceptors. Humans carry three. This is not a metaphor about intelligence. It is a metaphor about <strong>installation</strong>. The mantis shrimp is not smarter. It is equipped differently. This playbook is the installation of thirteen new receptors.</p>
+      <p>Here is what operates in the UV layer, invisible to your three-color vision:</p>
+    </div>
+
+    <!-- SPECTRUM ANALYZER -->
+    <div class="spectrum-analyzer reveal">
+      <div class="spectrum-title">The 16-Channel Spectrum Analyzer</div>
+
+      <div class="spectrum-row">
+        <div class="spectrum-num">01</div>
+        <div class="spectrum-bar-wrap"><div class="spectrum-fill spectrum-visible">Spoken words: what you can hear</div></div>
+      </div>
+      <div class="spectrum-row">
+        <div class="spectrum-num">02</div>
+        <div class="spectrum-bar-wrap"><div class="spectrum-fill spectrum-visible">Tone of voice: warmth, coldness, urgency</div></div>
+      </div>
+      <div class="spectrum-row">
+        <div class="spectrum-num">03</div>
+        <div class="spectrum-bar-wrap"><div class="spectrum-fill spectrum-visible">Facial expression: the surface signal</div></div>
+      </div>
+      <div class="spectrum-row">
+        <div class="spectrum-num">04</div>
+        <div class="spectrum-bar-wrap"><div class="spectrum-fill spectrum-hidden">The compliment with a hook inside it</div></div>
+      </div>
+      <div class="spectrum-row">
+        <div class="spectrum-num">05</div>
+        <div class="spectrum-bar-wrap"><div class="spectrum-fill spectrum-hidden">The concern that is actually surveillance</div></div>
+      </div>
+      <div class="spectrum-row">
+        <div class="spectrum-num">06</div>
+        <div class="spectrum-bar-wrap"><div class="spectrum-fill spectrum-hidden">The vulnerability performed for leverage</div></div>
+      </div>
+      <div class="spectrum-row">
+        <div class="spectrum-num">07</div>
+        <div class="spectrum-bar-wrap"><div class="spectrum-fill spectrum-hidden"><dfn class="def" data-def="Love bombing: overwhelming someone with affection, attention, and gifts early in a relationship to create dependency before control begins.">Love bombing</dfn>: affection as investment, not gift</div></div>
+      </div>
+      <div class="spectrum-row">
+        <div class="spectrum-num">08</div>
+        <div class="spectrum-bar-wrap"><div class="spectrum-fill spectrum-hidden"><dfn class="def" data-def="Intermittent reinforcement: unpredictable alternation between reward and punishment that creates compulsive attachment, similar to gambling.">Intermittent reinforcement</dfn>: random warmth creating compulsion</div></div>
+      </div>
+      <div class="spectrum-row">
+        <div class="spectrum-num">09</div>
+        <div class="spectrum-bar-wrap"><div class="spectrum-fill spectrum-hidden"><dfn class="def" data-def="Future faking: making promises about the future to secure compliance in the present, with no intention of following through.">Future faking</dfn>: promises as control tools, not commitments</div></div>
+      </div>
+      <div class="spectrum-row">
+        <div class="spectrum-num">10</div>
+        <div class="spectrum-bar-wrap"><div class="spectrum-fill spectrum-hidden"><dfn class="def" data-def="DARVO: Deny, Attack, Reverse Victim and Offender. A manipulation pattern where abusers claim victimhood when confronted.">DARVO</dfn>: turning confrontation into your offense</div></div>
+      </div>
+      <div class="spectrum-row">
+        <div class="spectrum-num">11</div>
+        <div class="spectrum-bar-wrap"><div class="spectrum-fill spectrum-hidden"><dfn class="def" data-def="Word salad: deliberately confusing, circular, or incoherent communication used to exhaust and disorient the target.">Word salad</dfn>: confusion as a disorientation weapon</div></div>
+      </div>
+      <div class="spectrum-row">
+        <div class="spectrum-num">12</div>
+        <div class="spectrum-bar-wrap"><div class="spectrum-fill spectrum-hidden"><dfn class="def" data-def="Flying monkeys: people recruited by a narcissist to spy on, pressure, or attack the victim on their behalf.">Flying monkeys</dfn>: recruited enforcers who believe the cover story</div></div>
+      </div>
+      <div class="spectrum-row">
+        <div class="spectrum-num">13</div>
+        <div class="spectrum-bar-wrap"><div class="spectrum-fill spectrum-hidden"><dfn class="def" data-def="Hoovering: attempting to suck a victim back into a relationship after a period of distance, often using false promises.">Hoovering</dfn>: reactivation of the trap after escape</div></div>
+      </div>
+      <div class="spectrum-row">
+        <div class="spectrum-num">14</div>
+        <div class="spectrum-bar-wrap"><div class="spectrum-fill spectrum-hidden"><dfn class="def" data-def="Devaluation: the phase following idealization where the narcissist begins to criticize, demean, and undermine the target.">Devaluation</dfn>: the inevitable slide from idealized to worthless</div></div>
+      </div>
+      <div class="spectrum-row">
+        <div class="spectrum-num">15</div>
+        <div class="spectrum-bar-wrap"><div class="spectrum-fill spectrum-hidden"><dfn class="def" data-def="Trauma bond: a psychological attachment formed through cycles of abuse and reward, similar to Stockholm Syndrome.">Trauma bond</dfn>: the chemistry of captivity mistaken for love</div></div>
+      </div>
+      <div class="spectrum-row">
+        <div class="spectrum-num">16</div>
+        <div class="spectrum-bar-wrap"><div class="spectrum-fill spectrum-hidden"><dfn class="def" data-def="Narcissistic supply: the attention, admiration, or emotional response a narcissist extracts from others to regulate their ego.">Narcissistic supply</dfn>: what you are actually providing, not what you think</div></div>
+      </div>
+
+      <div class="spectrum-legend">
+        <div class="legend-item"><div class="legend-dot legend-visible"></div><span style="color:var(--prism-pale)">Channels 1 to 3: What you currently see</span></div>
+        <div class="legend-item"><div class="legend-dot legend-hidden"></div><span style="color:var(--violet-pale)">Channels 4 to 16: What you were taught to miss</span></div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p>The compliment with a hook inside it sounds like: "You are so much smarter than people realize." The surface is praise. The UV layer contains: I know you feel underestimated, I have located your wound, and I am now standing in front of it with a flashlight.</p>
+      <p>The concern that is surveillance sounds like: "I just worry about you when you are out late. I love you so much." The surface is care. The UV layer contains: I am establishing that your independence is something I have rights over.</p>
+      <p>The vulnerability performed for leverage sounds like: "I have never told anyone this, but I grew up with nothing and I just need people to love me." The surface is intimacy. The UV layer contains: I am now handing you a reason to protect me. If you ever challenge me, you will feel like you are attacking someone wounded.</p>
+    </div>
+
+    <div class="viz reveal">
+      <div class="viz-top">
+        <div class="viz-icon-wrap">👁️</div>
+        <div class="viz-meta">
+          <div class="viz-label">Visualization Exercise</div>
+          <h4>The Compound Eye</h4>
+        </div>
+      </div>
+      <div class="viz-body">
+        <p>Close your eyes. Picture a compound eye with sixteen separate receptors, each tuned to a different wavelength of emotional information. The first three receptors see words, tone, and expression. Everyone has those. Now activate receptor four.</p>
+        <p>Receptor four sees destination. Not what was said. Where it was designed to take you. Every word has a GPS coordinate attached to it. Most people hear the words. You are now seeing the map.</p>
+        <p>Receptor five sees motive. Not what emotion is being displayed, but what emotion is being manufactured in you. Concern manufactures guilt. Vulnerability manufactures protectiveness. Praise manufactures gratitude and obligation. What is this sentence manufacturing in your chest right now?</p>
+        <p>Hold that image. A compound eye. Sixteen channels. The dark water lit up in colors you were never supposed to see. <strong>This is your new default.</strong></p>
+        <div class="viz-trigger">Close your eyes for 60 seconds. Picture the compound eye. Name one conversation where you only had three channels running.</div>
+      </div>
+    </div>
+
+    <div class="ba-pair reveal">
+      <div class="ba-card ba-before">
+        <div class="ba-head"><div class="ba-dot"></div>3-Channel Vision</div>
+        <div class="ba-body">
+          <ul>
+            <li>"That was so sweet. He said I was special."</li>
+            <li>"She cried and I felt terrible for bringing it up."</li>
+            <li>"He said he was worried about me. That feels like love."</li>
+            <li>"She remembered my birthday. She must care."</li>
+          </ul>
+        </div>
+      </div>
+      <div class="ba-card ba-after">
+        <div class="ba-head"><div class="ba-dot"></div>16-Channel Vision</div>
+        <div class="ba-body">
+          <ul>
+            <li>"Special compared to who? What does he get when I feel chosen?"</li>
+            <li>"The tears appeared the moment I raised an issue. Timed response."</li>
+            <li>"His worry appears only when I assert independence. Pattern."</li>
+            <li>"She remembered because she was tracking me. Not the same as caring."</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="think reveal">
+      <div class="think-label">Reflection Well</div>
+      <h4>The Compliment That Felt Off</h4>
+      <p class="q-start">Think of one compliment or kind gesture that felt slightly wrong but you could not explain why. What was the hook inside it?</p>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+      <p class="q-start" style="margin-top:8px">What did it manufacture in you? Gratitude? Obligation? The feeling that you owed something?</p>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+    </div>
+
+    <div class="root-review reveal">
+      <div class="root-label">Root Review &nbsp;·&nbsp; What You Have Installed So Far</div>
+      <div class="root-layer current">
+        <span class="root-ch">01</span>
+        <div class="root-items">
+          <span class="root-pill rp-bright">UV Layer</span>
+          <span class="root-arr">→</span>
+          <span class="root-pill rp-bright">16 Channels</span>
+          <span class="root-arr">→</span>
+          <span class="root-pill rp-bright">Compliment with Hook</span>
+          <span class="root-arr">→</span>
+          <span class="root-pill rp-bright">Concern as Surveillance</span>
+          <span class="root-arr">→</span>
+          <span class="root-pill rp-bright">Vulnerability as Leverage</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CHAPTER 2 -->
+<div class="ch-head" id="ch2">
+  <div class="page">
+    <div class="ch-num">Chapter 02 &nbsp;·&nbsp; The Second Receptor</div>
+    <h2 class="ch-title">The Polarization Filter</h2>
+    <p class="ch-sub">Stop hearing what a narcissist says. Start seeing where their words are designed to take you.</p>
+  </div>
+</div>
+
+<section class="section" style="background:var(--paper)">
+  <div class="page">
+
+    <div class="ribbon">
+      <p>"Test everything; hold fast what is good."</p>
+      <cite>1 Thessalonians 5:21</cite>
+    </div>
+
+    <div class="scene reveal">
+      <div class="scene-label">The Parable &nbsp;·&nbsp; Scene Two</div>
+      <h4>The Question That Was Not a Question</h4>
+      <p>Mono watched <span class="coral">Lure</span> for three days before speaking to Iris again. He had noticed something unsettling. Every sentence <span class="coral">Lure</span> spoke, no matter the subject, seemed to end with Mono feeling smaller.</p>
+      <p>"She asked me how I was doing," Mono told Iris. "That is a kind question."</p>
+      <p>"<span class="violet">What did you feel after you answered it?</span>"</p>
+      <p>Mono paused. "I felt like I should have been doing better. Like my honest answer was embarrassing."</p>
+      <p>"<span class="violet">That was not a question,</span>" Iris said. "<span class="violet">That was a direction. She asked how you were doing so that your answer would reveal a gap. Then she would offer to fill the gap. That is the destination the question was always driving toward.</span>"</p>
+      <p>"She seemed so genuinely curious," Mono said.</p>
+      <p>"<span class="violet">Concern and surveillance look identical from three channels.</span>"</p>
+      <p>Iris showed Mono how to use the polarization filter: not reading the sentence, but tracing the trajectory. Every sentence has a destination. <em>Where is this one taking me?</em> Not where does the speaker claim to be going. Where does the road actually lead.</p>
+    </div>
+
+    <div class="prose">
+      <p>A polarization filter works by revealing the orientation of light that ordinary lenses cannot detect. <dfn class="def" data-def="Cognitive dissonance: the mental discomfort of holding two contradictory beliefs simultaneously, often exploited by abusers to keep victims confused.">Cognitive dissonance</dfn> exists because you are reading two signals at once: what was said and where it is taking you. Those two things frequently point in opposite directions.</p>
+      <p>The filter is a single question applied to every sentence, every gesture, every silence. That question is: <strong>Where is this designed to put me?</strong> Not where does this person say they are trying to go. Where does this sentence, if I believe it fully, leave me standing?</p>
+    </div>
+
+    <div class="gq reveal">
+      <p>"A narcissist does not argue to reach the truth. They argue to reach a position where you are confused, apologizing, or isolated. The destination was always the destination. The argument was just the road."</p>
+      <cite>Iris, on the nature of manufactured conflict</cite>
+    </div>
+
+    <!-- POLARIZATION DIAGRAM -->
+    <div class="polarity-table reveal">
+      <div class="polarity-head">
+        <div class="polarity-head-cell">Surface Signal (What Was Said)</div>
+        <div class="polarity-head-cell">Polarized Signal (Where It Takes You)</div>
+      </div>
+      <div class="polarity-row">
+        <div class="polarity-cell">"I just want you to be happy."</div>
+        <div class="polarity-cell">Your happiness is now their jurisdiction. Dissatisfaction = ingratitude toward them.</div>
+      </div>
+      <div class="polarity-row">
+        <div class="polarity-cell">"I am not like those other people who hurt you."</div>
+        <div class="polarity-cell">You now owe them extra trust as compensation for past damage they did not cause.</div>
+      </div>
+      <div class="polarity-row">
+        <div class="polarity-cell">"No one else would put up with you the way I do."</div>
+        <div class="polarity-cell">You are difficult. You are lucky to be tolerated. Leaving is not a rational option.</div>
+      </div>
+      <div class="polarity-row">
+        <div class="polarity-cell">"You are so sensitive. I was only joking."</div>
+        <div class="polarity-cell">Your emotional response is the problem. Their behavior is off the table as a topic.</div>
+      </div>
+      <div class="polarity-row">
+        <div class="polarity-cell">"Why do you always bring up the past?"</div>
+        <div class="polarity-cell">History is inadmissible. You must respond only to today's version of events, which they control.</div>
+      </div>
+      <div class="polarity-row">
+        <div class="polarity-cell">"I just care so much about you."</div>
+        <div class="polarity-cell">Monitoring your behavior is reframed as love. Resistance is rejecting someone who loves you.</div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p>The polarization filter is not cynicism. It is calibration. You do not apply it to every human being you meet. You apply it when something does not land right. When you feel worse after a kind sentence. When an apology leaves you more confused than before. When a compliment makes you feel vaguely indebted.</p>
+      <p><dfn class="def" data-def="Idealization: the early phase of narcissistic relationships where the target is placed on a pedestal, treated as perfect, to accelerate bonding before control begins.">Idealization</dfn> is the first destination. The narcissist drives you there deliberately. You are perfect. You are special. You are the only person who understands them. This road ends at a cliff: once you have accepted that identity, any failure to perform perfectly becomes a betrayal. The destination was always the <dfn class="def" data-def="Devaluation: the phase following idealization where the narcissist begins to criticize, demean, and undermine the target.">devaluation</dfn>. The idealization was just the on-ramp.</p>
+    </div>
+
+    <!-- FLOW DIAGRAM -->
+    <div class="flow reveal">
+      <div class="flow-title">The Manipulation Detection Pipeline</div>
+      <div class="flow-step">
+        <div class="flow-node">
+          <div class="flow-node-label">Input</div>
+          <div class="flow-node-sub">Word, gesture, or silence</div>
+        </div>
+        <div class="flow-arr">→</div>
+        <div class="flow-node">
+          <div class="flow-node-label">Surface Read</div>
+          <div class="flow-node-sub">What was literally said</div>
+        </div>
+      </div>
+      <div class="flow-step" style="margin-top:10px">
+        <div class="flow-node">
+          <div class="flow-node-label">Polarize</div>
+          <div class="flow-node-sub">Where does this put me?</div>
+        </div>
+        <div class="flow-arr">→</div>
+        <div class="flow-node">
+          <div class="flow-node-label">Trajectory Check</div>
+          <div class="flow-node-sub">Smaller? Confused? Indebted? Isolated?</div>
+        </div>
+      </div>
+      <div class="flow-step" style="margin-top:10px">
+        <div class="flow-node alert">
+          <div class="flow-node-label">ALERT: Mismatch</div>
+          <div class="flow-node-sub">Kind words, diminishing destination</div>
+        </div>
+        <div class="flow-arr">→</div>
+        <div class="flow-node">
+          <div class="flow-node-label">Activate</div>
+          <div class="flow-node-sub">Pre-loaded response (Ch. 04)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="think reveal">
+      <div class="think-label">Reflection Well</div>
+      <h4>The Sentence That Left You Smaller</h4>
+      <p class="q-start">Think of a recent conversation where a kind or caring sentence left you feeling confused, guilty, or indebted. Run the polarization filter: where was that sentence trying to take you?</p>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+      <p class="q-start" style="margin-top:8px">What was the destination the speaker had always been driving toward?</p>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+    </div>
+
+    <div class="root-review reveal">
+      <div class="root-label">Root Review &nbsp;·&nbsp; Cumulative Install</div>
+      <div class="root-layer">
+        <span class="root-ch">01</span>
+        <div class="root-items">
+          <span class="root-pill rp-dim">UV Layer</span>
+          <span class="root-arr">→</span>
+          <span class="root-pill rp-dim">16 Channels</span>
+          <span class="root-arr">→</span>
+          <span class="root-pill rp-dim">Hooks in Compliments</span>
+        </div>
+      </div>
+      <div class="root-sep"></div>
+      <div class="root-layer current">
+        <span class="root-ch">02</span>
+        <div class="root-items">
+          <span class="root-pill rp-bright">Polarization Filter</span>
+          <span class="root-arr">→</span>
+          <span class="root-pill rp-bright">Trajectory Reading</span>
+          <span class="root-arr">→</span>
+          <span class="root-pill rp-bright">Where Does This Put Me?</span>
+          <span class="root-arr">→</span>
+          <span class="root-pill rp-bright">Detect the Destination</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- BREATHE GATE -->
+<div class="breathe">
+  <div class="breathe-ring"></div>
+  <div class="breathe-ring"></div>
+  <div class="breathe-ring"></div>
+  <div class="breathe-content">
+    <div class="breathe-label">Breathe Gate &nbsp;·&nbsp; Before the Deepest Chapter</div>
+    <h4>The next section is the heaviest one. Take a breath first.</h4>
+    <p>What you are about to read is the system that makes gaslighting structurally impossible. It requires you to remember, even briefly, what it felt like when you did not trust yourself. That is not weakness. That is data. Breathe. You earned the right to see this.</p>
+  </div>
+</div>
+
+<!-- CHAPTER 3 -->
+<div class="ch-head" id="ch3">
+  <div class="page">
+    <div class="ch-num">Chapter 03 &nbsp;·&nbsp; The Third Receptor</div>
+    <h2 class="ch-title">Trinocular Depth</h2>
+    <p class="ch-sub">Build three independent assessment channels. When all three disagree, you are in a manipulation field.</p>
+  </div>
+</div>
+
+<section class="section" style="background:var(--paper)">
+  <div class="page">
+
+    <div class="ribbon">
+      <p>"Be wise as serpents and innocent as doves."</p>
+      <cite>Matthew 10:16</cite>
+    </div>
+
+    <div class="scene reveal">
+      <div class="scene-label">The Parable &nbsp;·&nbsp; Scene Three</div>
+      <h4>The Three Readings That Saved Mono</h4>
+      <p><span class="coral">Lure</span> apologized. It was a beautiful apology. Mono had never heard anything like it. Full acknowledgment. Genuine emotion. Even tears. "I know I hurt you," <span class="coral">Lure</span> said. "I am so sorry. I am working on myself. I just love you so much."</p>
+      <p>Mono felt something shift in his chest. The old warmth. The familiar pull. He looked at Iris.</p>
+      <p>"<span class="violet">Run the three channels,</span>" Iris said quietly.</p>
+      <p>Channel one: What was said. An apology. Acknowledgment of harm. Promise of change. Love declaration.</p>
+      <p>Channel two: What was meant. Mono thought carefully. The apology had come the day after he tried to leave. It had appeared the moment she sensed distance. The emotion had scaled precisely with his resistance, not with her remorse. <em>The apology was sized to his exit, not to her guilt.</em></p>
+      <p>Channel three: What behavior followed. Mono looked at the past six months. Three prior apologies. Zero behavioral change. Each apology followed by a period of warmth, then the same patterns returning, louder.</p>
+      <p>All three channels disagreed. The words said sorry. The meaning said control. The behavior said <em>nothing was going to change.</em></p>
+      <p>"<span class="violet">That is a manipulation field,</span>" Iris said. "<span class="violet">Swim away. Now. While the signal is still beautiful.</span>"</p>
+    </div>
+
+    <div class="prose">
+      <p>The mantis shrimp's eyes each independently calculate depth, giving it three-dimensional vision from what looks like a single organ. The three-channel assessment system works the same way: three independent data streams, each one reading a different dimension of truth, combined into a verdict that no single channel could reach alone.</p>
+      <p>The reason <dfn class="def" data-def="Gaslighting: a manipulation tactic where the abuser causes the victim to question their own memory, perception, and sanity.">gaslighting</dfn> works is that it targets only one channel: the memory of what was said. The narcissist rewrites that channel. "I never said that." "You are remembering it wrong." "You are too emotional to see clearly." If you only have one channel running, they can rewrite the whole system.</p>
+      <p>When you run three channels simultaneously, the rewrite becomes structurally impossible. They can deny what was said. They cannot deny what was meant and what behavior followed. Those channels are yours. They cannot touch them.</p>
+    </div>
+
+    <!-- TRINOCULAR GRID -->
+    <div class="trinocular reveal">
+      <div class="tri-head">
+        <div class="tri-head-cell">What Was Said</div>
+        <div class="tri-head-cell">What Was Meant</div>
+        <div class="tri-head-cell">What Followed</div>
+      </div>
+      <div class="tri-row tri-mismatch">
+        <div class="tri-cell">"I am so sorry. I love you. This will never happen again."</div>
+        <div class="tri-cell">The apology appeared when you moved toward the exit. It is sized to your departure, not their remorse.</div>
+        <div class="tri-cell">Same behavior resumed 3 weeks later. Pattern repeats every cycle.<div class="tri-flag">MISMATCH</div></div>
+      </div>
+      <div class="tri-row tri-mismatch">
+        <div class="tri-cell">"I just worry about you. I only ask because I care."</div>
+        <div class="tri-cell">Monitoring reframed as love. Your independence is a problem being surveilled, not supported.</div>
+        <div class="tri-cell">Information you share is later used as ammunition in arguments.<div class="tri-flag">MISMATCH</div></div>
+      </div>
+      <div class="tri-row tri-mismatch">
+        <div class="tri-cell">"You are the most important person in my life."</div>
+        <div class="tri-cell">Said during idealization to accelerate bonding. Affection as investment with expected return.</div>
+        <div class="tri-cell">Replaced by criticism and contempt after you became emotionally dependent.<div class="tri-flag">MISMATCH</div></div>
+      </div>
+      <div class="tri-row tri-mismatch">
+        <div class="tri-cell">"I never said that. You are imagining things."</div>
+        <div class="tri-cell">Channel one is being rewritten. Designed to destabilize your access to your own memory.</div>
+        <div class="tri-cell">You feel confused, then apologize for being upset about something that happened.<div class="tri-flag">MISMATCH</div></div>
+      </div>
+      <div class="tri-row tri-mismatch">
+        <div class="tri-cell">"No one will ever love you the way I do."</div>
+        <div class="tri-cell">Isolation tactic. Your external relationships are threats to control, not competition for affection.</div>
+        <div class="tri-cell">You pull away from friends and family. Your world contracts to their perimeter.<div class="tri-flag">MISMATCH</div></div>
+      </div>
+    </div>
+
+    <div class="dark-panel reveal">
+      <p><strong>When all three channels agree, you are in honest communication.</strong> The words match the meaning. The meaning matches the behavior. This is what integrity looks like from the inside.</p>
+      <p>When all three channels disagree, you are in a manipulation field. The words point one direction. The meaning points another. The behavior confirms a pattern the words never acknowledged.</p>
+      <p>The field generates <dfn class="def" data-def="Emotional flashback: an intense emotional regression to a state of fear or helplessness associated with past trauma, often triggered by current events.">emotional flashbacks</dfn>. Your nervous system recognizes the pattern before your conscious mind does. The anxiety you feel. The tightness in your chest before a conversation. The urge to hide your real feelings before the interaction begins. That is not anxiety. That is <em>data</em>. Your body has been running the three-channel system longer than your conscious mind has. Start listening to it.</p>
+    </div>
+
+    <div class="ba-pair reveal">
+      <div class="ba-card ba-before">
+        <div class="ba-head"><div class="ba-dot"></div>One-Channel Processing</div>
+        <div class="ba-body">
+          <ul>
+            <li>"But they said they were sorry..."</li>
+            <li>"Maybe I am remembering it wrong."</li>
+            <li>"They said they loved me. That must mean something."</li>
+            <li>"I cannot trust my own feelings."</li>
+          </ul>
+        </div>
+      </div>
+      <div class="ba-card ba-after">
+        <div class="ba-head"><div class="ba-dot"></div>Three-Channel Processing</div>
+        <div class="ba-body">
+          <ul>
+            <li>"The apology appeared on my exit. That is data."</li>
+            <li>"Channel two and three both confirm what channel one is trying to deny."</li>
+            <li>"The declaration came before control began. Classic idealization timeline."</li>
+            <li>"My body knew. I am just catching up."</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="think reveal">
+      <div class="think-label">Reflection Well</div>
+      <h4>The Apology That Did Not Add Up</h4>
+      <p class="q-start">Think of a time someone apologized and something still felt wrong. Run all three channels. What was said, what was actually meant by the timing and context, and what behavior followed?</p>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+      <p class="q-start" style="margin-top:8px">Did all three channels agree? If not, what did that mismatch tell you that you were not ready to hear?</p>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+    </div>
+
+    <div class="root-review reveal">
+      <div class="root-label">Root Review &nbsp;·&nbsp; Cumulative Install</div>
+      <div class="root-layer">
+        <span class="root-ch">01</span>
+        <div class="root-items">
+          <span class="root-pill rp-dim">UV Layer</span>
+          <span class="root-arr">→</span>
+          <span class="root-pill rp-dim">16 Channels</span>
+          <span class="root-arr">→</span>
+          <span class="root-pill rp-dim">Hooks in Compliments</span>
+        </div>
+      </div>
+      <div class="root-sep"></div>
+      <div class="root-layer">
+        <span class="root-ch">02</span>
+        <div class="root-items">
+          <span class="root-pill rp-dim">Polarization Filter</span>
+          <span class="root-arr">→</span>
+          <span class="root-pill rp-dim">Trajectory Reading</span>
+          <span class="root-arr">→</span>
+          <span class="root-pill rp-dim">Detect the Destination</span>
+        </div>
+      </div>
+      <div class="root-sep"></div>
+      <div class="root-layer current">
+        <span class="root-ch">03</span>
+        <div class="root-items">
+          <span class="root-pill rp-bright">Trinocular Depth</span>
+          <span class="root-arr">→</span>
+          <span class="root-pill rp-bright">Said / Meant / Followed</span>
+          <span class="root-arr">→</span>
+          <span class="root-pill rp-bright">Mismatch = Manipulation Field</span>
+          <span class="root-arr">→</span>
+          <span class="root-pill rp-bright">Gaslighting Made Impossible</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CHAPTER 4 -->
+<div class="ch-head" id="ch4">
+  <div class="page">
+    <div class="ch-num">Chapter 04 &nbsp;·&nbsp; The Fourth Receptor</div>
+    <h2 class="ch-title">The Cavitation Strike</h2>
+    <p class="ch-sub">Build pre-loaded responses that activate before your emotional system has time to be hijacked.</p>
+  </div>
+</div>
+
+<section class="section" style="background:var(--paper)">
+  <div class="page">
+
+    <div class="ribbon">
+      <p>"The prudent see danger and take refuge, but the simple keep going and pay the penalty."</p>
+      <cite>Proverbs 27:12</cite>
+    </div>
+
+    <div class="scene reveal">
+      <div class="scene-label">The Parable &nbsp;·&nbsp; Scene Four</div>
+      <h4>The Strike That Did Not Hesitate</h4>
+      <p>The third time <span class="coral">Lure</span> tried to reel Mono back, she did not use tears. She used indignation. "<em>After everything I have done for you, this is how you treat me?</em>" The shift was instantaneous. Victim. Wronged. Mono was suddenly the perpetrator of something he could not identify.</p>
+      <p>Before, he would have searched himself. Tried to recall what he had done. Felt the familiar guilt rise up and cloud his thinking. That search would have taken four seconds. In those four seconds, his emotional processing system would have been taken over. He would have started apologizing before he even understood the accusation.</p>
+      <p>But Iris had given him the response three weeks before. Not improvised. Not reactive. Pre-loaded, the way a spring is loaded before you need it.</p>
+      <p>Mono said it without thinking: "<span class="violet">I hear that you feel hurt. I am not able to engage with this right now. I will think about what you have said.</span>"</p>
+      <p>That was all. No argument. No defense. No explanation that could be used as ammunition. The strike fired in under three seconds. <span class="coral">Lure</span> had nothing to work with. The manipulation loop had no entry point.</p>
+      <p>Iris watched from a distance. "<em>Pre-decided,</em>" she said to herself. "<em>Not impulsive. Pre-decided.</em>"</p>
+    </div>
+
+    <div class="prose">
+      <p>The mantis shrimp strikes with a velocity of 23 meters per second. The strike is so fast it creates a cavitation bubble: a pocket of vacuum that collapses with enough force to stun prey even when the shrimp misses. The speed is the weapon. Not strength. <em>Speed.</em></p>
+      <p>The reason manipulation works in the moment is that it exploits the delay between your emotional processing system and your rational response system. That delay is approximately four to eight seconds. In that window, your nervous system floods with <dfn class="def" data-def="Reactive abuse: when a victim reacts emotionally to prolonged provocation, which the abuser uses as evidence that the victim is unstable or abusive.">reactive responses</dfn>: guilt, shame, confusion, the urge to fix or explain. The narcissist lives in those four seconds. That is their operating window.</p>
+      <p>Pre-loaded responses close the window. Not because you have become cold or mechanical. Because you have already done the thinking. The thinking happened three weeks ago, quietly, when you were not in crisis. Now the response fires automatically, before the emotional flood can compromise your judgment.</p>
+      <p>This is not the <dfn class="def" data-def="Grey rock method: making oneself as uninteresting as possible to a narcissist to reduce manipulation. Effective but passive.">grey rock method</dfn>. Grey rock is passive. This is active architecture. You are not becoming a stone. You are building a spring-loaded defense system that works faster than the attack.</p>
+    </div>
+
+    <!-- CAVITATION RESPONSE CARD -->
+    <div class="cav-card reveal">
+      <div class="cav-head">
+        <div class="cav-head-label">Pre-Loaded Response Bank &nbsp;·&nbsp; The Cavitation Strike</div>
+        <div class="cav-head-title">Responses That Fire Before the Emotional Flood</div>
+      </div>
+      <div class="cav-body">
+        <div class="cav-row">
+          <div class="cav-trigger">Guilt Trip</div>
+          <div class="cav-response">"I hear that you feel hurt. I am not able to respond to this right now. I will think about it."</div>
+        </div>
+        <div class="cav-row">
+          <div class="cav-trigger">DARVO Attack</div>
+          <div class="cav-response">"I am not going to accept responsibility for something I did not do. If you would like to talk about what actually happened, I am open to that."</div>
+        </div>
+        <div class="cav-row">
+          <div class="cav-trigger">Gaslighting</div>
+          <div class="cav-response">"I remember it differently. I am not going to debate my own memory. I know what I experienced."</div>
+        </div>
+        <div class="cav-row">
+          <div class="cav-trigger">Silent Treatment</div>
+          <div class="cav-response">"I notice you have gone quiet. I am going to give you space and continue with my day. I will be here when you are ready to talk."</div>
+        </div>
+        <div class="cav-row">
+          <div class="cav-trigger">Emotional Explosion</div>
+          <div class="cav-response">"I can see you are very upset. I am not able to have this conversation at this volume. We can continue when things are calmer."</div>
+        </div>
+        <div class="cav-row">
+          <div class="cav-trigger">Hoovering</div>
+          <div class="cav-response">"I appreciate you reaching out. My answer has not changed. I wish you well."</div>
+        </div>
+        <div class="cav-row">
+          <div class="cav-trigger">Public Shaming</div>
+          <div class="cav-response">"I am not going to engage with this in public. If you want to talk privately, reach out through the right channel."</div>
+        </div>
+        <div class="cav-row">
+          <div class="cav-trigger">Future Faking</div>
+          <div class="cav-response">"I have heard similar promises before. I am watching what happens, not what is said."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p>These responses share three properties. They do not argue. Argument provides material. Every detail you offer in defense becomes a new surface to attack. They do not explain. Explanation assumes the other party is operating in good faith and seeking understanding. They are not. And they do not perform emotion. Performance is what the manipulation is designed to trigger. Flat delivery denies the predator its signal.</p>
+      <p>The <dfn class="def" data-def="Trauma bond: an emotional attachment formed through cycles of abuse and reward, creating compulsive attachment similar to addiction.">trauma bond</dfn> will try to override these responses. It will tell you that you are being cold. That you are being unfair. That this person loves you and you are hurting them. This is the bond talking, not the truth. The bond was installed over time using <dfn class="def" data-def="Intermittent reinforcement: unpredictable alternation between reward and punishment creating compulsive hope and attachment.">intermittent reinforcement</dfn>, the same mechanism that makes gambling compulsive. The warmth was never random. It was a calculated pause in the pain, timed to reset your tolerance.</p>
+    </div>
+
+    <div class="adventure reveal">
+      <div class="adv-head">
+        <div>
+          <div class="adv-label">Real World Application</div>
+          <div class="adv-title">The Cavitation Drill &nbsp;·&nbsp; This Week</div>
+        </div>
+      </div>
+      <div class="adv-step">
+        <div class="adv-step-num">Step 01</div>
+        <p>Write out the three most common manipulation tactics you currently face. Name them in plain language. Not "when they get upset" but "when they use guilt to derail accountability conversations."</p>
+      </div>
+      <div class="adv-step">
+        <div class="adv-step-num">Step 02</div>
+        <p>For each tactic, choose or write one pre-loaded response. Keep it under two sentences. Practice saying it aloud three times today, not in the moment of conflict, but now, while you are calm.</p>
+      </div>
+      <div class="adv-step">
+        <div class="adv-step-num">Step 03</div>
+        <p>When the tactic appears this week, your only job is to deploy the response within four seconds. You do not need to feel it yet. The response fires first. The feeling catches up later.</p>
+      </div>
+      <div class="adv-step">
+        <div class="adv-step-num">Step 04</div>
+        <p>After the interaction, run the three channels: what was said, what was meant, what followed. Note whether the pre-loaded response closed the manipulation window. Adjust the response if needed. The strike gets faster with practice.</p>
+      </div>
+    </div>
+
+    <div class="gq reveal">
+      <p>"You are not broken for having been manipulated. You were operating with three channels in a sixteen-channel world. Now you have more. Use them."</p>
+      <cite>Iris, on the nature of learning to see</cite>
+    </div>
+
+    <div class="think reveal">
+      <div class="think-label">Reflection Well</div>
+      <h4>The Response You Wished You Had Ready</h4>
+      <p class="q-start">Think of the last time you were manipulated and your response made things worse. What four-second window did the manipulation use? What pre-loaded response would have closed it?</p>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+      <p class="q-start" style="margin-top:8px">Write that response here. Practice it once out loud before you finish this page.</p>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+    </div>
+
+    <div class="ribbon" style="margin-top:32px">
+      <p>"You will know the truth, and the truth will set you free."</p>
+      <cite>John 8:32</cite>
+    </div>
+
+    <div class="root-review reveal">
+      <div class="root-label">Root Review &nbsp;·&nbsp; The Full Install</div>
+      <div class="root-layer">
+        <span class="root-ch">01</span>
+        <div class="root-items">
+          <span class="root-pill rp-dim">UV Layer</span>
+          <span class="root-arr">→</span>
+          <span class="root-pill rp-dim">16 Channels</span>
+          <span class="root-arr">→</span>
+          <span class="root-pill rp-dim">Hooks in Compliments</span>
+        </div>
+      </div>
+      <div class="root-sep"></div>
+      <div class="root-layer">
+        <span class="root-ch">02</span>
+        <div class="root-items">
+          <span class="root-pill rp-dim">Polarization Filter</span>
+          <span class="root-arr">→</span>
+          <span class="root-pill rp-dim">Trajectory Reading</span>
+          <span class="root-arr">→</span>
+          <span class="root-pill rp-dim">Detect the Destination</span>
+        </div>
+      </div>
+      <div class="root-sep"></div>
+      <div class="root-layer">
+        <span class="root-ch">03</span>
+        <div class="root-items">
+          <span class="root-pill rp-dim">Trinocular Depth</span>
+          <span class="root-arr">→</span>
+          <span class="root-pill rp-dim">Said / Meant / Followed</span>
+          <span class="root-arr">→</span>
+          <span class="root-pill rp-dim">Mismatch = Manipulation Field</span>
+        </div>
+      </div>
+      <div class="root-sep"></div>
+      <div class="root-layer current">
+        <span class="root-ch">04</span>
+        <div class="root-items">
+          <span class="root-pill rp-bright">Cavitation Strike</span>
+          <span class="root-arr">→</span>
+          <span class="root-pill rp-bright">Pre-Loaded Responses</span>
+          <span class="root-arr">→</span>
+          <span class="root-pill rp-bright">Fire in 4 Seconds</span>
+          <span class="root-arr">→</span>
+          <span class="root-pill rp-bright">Close the Window</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FINAL TEST -->
+<section class="section" style="background:var(--sea-warm)">
+  <div class="page">
+    <div class="final-test reveal">
+      <div class="ft-label">Final Test &nbsp;·&nbsp; 10 Questions</div>
+      <h3>How Much of the Spectrum Can You See Now?</h3>
+
+      <div class="dd">
+        <h4>01 &nbsp;·&nbsp; The UV Layer</h4>
+        <p>A friend says, "You are so much smarter than people give you credit for." You feel warm, then slightly unsettled. Which channel detected the problem, and what was the hook?</p>
+      </div>
+      <div class="dd">
+        <h4>02 &nbsp;·&nbsp; Spectrum Channels</h4>
+        <p>Name the three channels everyone has and three from the invisible spectrum that narcissistic manipulation specifically operates in.</p>
+      </div>
+      <div class="dd">
+        <h4>03 &nbsp;·&nbsp; Polarization Filter</h4>
+        <p>"No one else would put up with you the way I do." Run the polarization filter. What is the destination this sentence is designed to put you in?</p>
+      </div>
+      <div class="dd">
+        <h4>04 &nbsp;·&nbsp; Surveillance vs. Care</h4>
+        <p>How do you distinguish genuine concern from concern that functions as surveillance? What UV-layer signal distinguishes them?</p>
+      </div>
+      <div class="dd">
+        <h4>05 &nbsp;·&nbsp; Trinocular Assessment</h4>
+        <p>Someone apologizes with apparent sincerity. Channel one says: apology. Channel two reveals the apology appeared the moment you moved toward the door. Channel three shows two prior identical apologies with no behavior change. What is your verdict and why?</p>
+      </div>
+      <div class="dd">
+        <h4>06 &nbsp;·&nbsp; The Mismatch Signal</h4>
+        <p>What does it mean when all three trinocular channels disagree? What should you do in the four seconds following that recognition?</p>
+      </div>
+      <div class="dd">
+        <h4>07 &nbsp;·&nbsp; DARVO</h4>
+        <p>You confront someone about a specific behavior. They immediately say, "I cannot believe you would accuse me of that. After everything I have been through, you do this to me?" Identify the DARVO sequence and name the pre-loaded response.</p>
+      </div>
+      <div class="dd">
+        <h4>08 &nbsp;·&nbsp; The Trauma Bond</h4>
+        <p>Explain why intermittent reinforcement creates stronger attachment than consistent kindness. Why does the warmth feel more real after a period of coldness?</p>
+      </div>
+      <div class="dd">
+        <h4>09 &nbsp;·&nbsp; The Cavitation Strike</h4>
+        <p>Why must pre-loaded responses be prepared before the moment of conflict, not improvised during it? What happens in the four-to-eight second emotional processing window?</p>
+      </div>
+      <div class="dd">
+        <h4>10 &nbsp;·&nbsp; The Full System</h4>
+        <p>A person in your life consistently uses kind words that leave you feeling smaller. They apologize when you pull away but return to the same behavior. When challenged, they become the victim. Name all four mental models from this playbook and describe how each one applies to this situation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROMPT CARD -->
+<section class="section" style="background:var(--paper)">
+  <div class="page">
+    <div class="prompt-card reveal">
+      <div class="pc-label">Installation Prompt &nbsp;·&nbsp; AI Companion</div>
+      <h3>Take This Into a Conversation</h3>
+      <p>Copy this prompt into Claude, ChatGPT, or your preferred AI assistant. Use it to analyze a specific interaction or relationship pattern you are trying to understand.</p>
+      <code>I am working through The Mantis Shrimp's Eye playbook on narcissistic abuse awareness. I want to analyze a specific interaction using the four mental models: the UV Layer (hidden frequency of manipulation), the Polarization Filter (trajectory of sentences), Trinocular Depth (what was said vs. meant vs. what behavior followed), and the Cavitation Strike (pre-loaded responses).
+
+Here is the interaction I want to examine: [describe a specific conversation or pattern in detail].
+
+Please help me:
+1. Identify which UV-layer frequencies were operating
+2. Run the polarization filter on the key sentences
+3. Run the trinocular assessment and identify any mismatches
+4. Suggest a pre-loaded response I could have used and can prepare for next time
+
+Do not tell me what to do about the relationship. Just help me see it more clearly.</code>
+      <p>The AI cannot tell you what the right choice is. But it can help you run the four channels on something you have been unable to see clearly because you were inside it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FINALE -->
+<section class="finale">
+  <div class="page">
+    <h2>You came in with<span>three channels.</span></h2>
+    <p>You are leaving with sixteen. The manipulation that happened in the dark did not happen because you were foolish, weak, or broken. It happened because you were operating with the equipment you were given, in a world that never told you the other channels existed.</p>
+    <p>Now you know they exist. Now you have the names for the frequencies. The UV layer. The polarization filter. Trinocular depth. The cavitation strike. These are not abstract concepts. They are new eyes.</p>
+    <p>Iris does not argue with what she sees. She acts on it. So do you, now. The light is still beautiful. But you can see what it is attached to.</p>
+    <p style="margin-top:24px;color:rgba(0,206,209,0.5);font-family:'Poppins',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase">Next: The Porcupine's Quiet &nbsp;·&nbsp; Part 2: SHIELD</p>
+  </div>
+</section>
+
+<!-- SERIES PROGRESS -->
+<div style="background:var(--deep-mid);padding:32px 0">
+  <div class="page">
+    <div class="series-progress">
+      <div class="series-label">The Shield Series</div>
+      <div class="series-dots">
+        <span class="series-dot active" title="The Mantis Shrimp's Eye"></span>
+        <span class="series-dot" title="The Porcupine's Quiet"></span>
+        <span class="series-dot" title="The Tardigrade Protocol"></span>
+      </div>
+      <div class="series-dot-label">Part 1 of 3 &nbsp;·&nbsp; See It</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="page">
+    <p>"You will know the truth, and the truth will set you free." &nbsp;·&nbsp; John 8:32</p>
+    <div class="brand">Kingdom Builders AI &nbsp;·&nbsp; The Shield Series</div>
+  </div>
+</footer>
+
+<script>
+// READ PROGRESS BAR
+const bar = document.getElementById('read-progress');
+const pill = document.getElementById('chapter-pill');
+window.addEventListener('scroll', () => {
+  const scrolled = window.scrollY;
+  const total = document.body.scrollHeight - window.innerHeight;
+  bar.style.width = Math.min(100, (scrolled / total) * 100) + '%';
+
+  // Chapter pill
+  const chapters = [
+    {id:'ch1',label:'Ch 1'},
+    {id:'ch2',label:'Ch 2'},
+    {id:'ch3',label:'Ch 3'},
+    {id:'ch4',label:'Ch 4'}
+  ];
+  let current = '';
+  for (const c of chapters) {
+    const el = document.getElementById(c.id);
+    if (el && el.getBoundingClientRect().top <= 80) current = c.label;
+  }
+  if (current) {
+    pill.textContent = current;
+    pill.style.opacity = '1';
+  } else {
+    pill.style.opacity = '0';
+  }
+}, {passive:true});
+
+// SCROLL REVEAL
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, {threshold: 0.08, rootMargin: '0px 0px -40px 0px'});
+reveals.forEach(r => observer.observe(r));
+</script>
+</body>
+</html>
