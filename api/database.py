@@ -17,7 +17,8 @@ class Base(DeclarativeBase):
 engine = create_async_engine(
     settings.DATABASE_URL,
     echo=False,
-    pool_size=5,
+    pool_size=10,
+    max_overflow=5,
 )
 
 async_session = async_sessionmaker(

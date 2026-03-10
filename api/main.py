@@ -15,6 +15,18 @@ from fastapi.staticfiles import StaticFiles
 from api.config import settings
 
 # ---------------------------------------------------------------------------
+# Sentry error tracking (no-op if DSN not configured)
+# ---------------------------------------------------------------------------
+if settings.SENTRY_DSN:
+    import sentry_sdk
+    sentry_sdk.init(
+        dsn=settings.SENTRY_DSN,
+        traces_sample_rate=0.1,
+        profiles_sample_rate=0.1,
+        environment="production",
+    )
+
+# ---------------------------------------------------------------------------
 # Directory paths
 # ---------------------------------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent  # Playbooks/

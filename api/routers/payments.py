@@ -28,8 +28,8 @@ router = APIRouter(prefix="/stripe", tags=["payments"])
 # These should eventually live in the DB or env vars; hardcoded here for now.
 # ---------------------------------------------------------------------------
 SUBSCRIPTION_PRICES: dict[str, str] = {
-    "monthly": settings.STRIPE_PRICE_ID,   # fallback — replace with real sub price
-    "annual": settings.STRIPE_PRICE_ID,    # fallback — replace with real sub price
+    "monthly": settings.STRIPE_PRICE_MONTHLY or settings.STRIPE_PRICE_ID,
+    "annual": settings.STRIPE_PRICE_YEARLY or settings.STRIPE_PRICE_ID,
 }
 
 
@@ -74,6 +74,22 @@ async def _get_or_create_stripe_customer(
     db.add(new_sc)
     await db.commit()
     return customer.id
+
+
+# ============================================================================
+# GET /stripe/check-purchase — poll for purchase confirmation
+# ============================================================================
+@router.get("/check-purchase")
+async def check_purchase(session_id: str, db: AsyncSession = Depends(get_db)):
+    """Lightweight endpoint for the success page to poll until the webhook
+    has created the Purchase record."""
+    result = await db.execute(
+        select(Purchase).where(Purchase.provider_session_id == session_id)
+    )
+    purchase = result.scalar_one_or_none()
+    if purchase:
+        return {"confirmed": True}
+    return {"confirmed": False}
 
 
 # ============================================================================

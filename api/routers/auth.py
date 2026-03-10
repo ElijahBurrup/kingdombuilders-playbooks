@@ -89,6 +89,21 @@ async def register(body: RegisterRequest, db: AsyncSession = Depends(get_db)):
     db.add(user)
     await db.flush()  # populate user.id before creating tokens
 
+    # Send email verification link
+    raw_token = generate_token()
+    token_hash_val = hash_token(raw_token)
+    vtoken = VerificationToken(
+        user_id=user.id,
+        token_hash=token_hash_val,
+        token_type="email_verify",
+        expires_at=datetime.now(timezone.utc) + timedelta(hours=24),
+    )
+    db.add(vtoken)
+    await db.flush()
+
+    from api.services.email_service import send_verification_email
+    send_verification_email(user.email, raw_token)
+
     return await _create_token_pair(user, db)
 
 
@@ -318,9 +333,9 @@ async def forgot_password(
     db.add(vtoken)
     await db.commit()
 
-    # TODO: Send password reset email via Resend
-    # The raw_token should be included in the reset link sent to the user.
-    # For now, this is a placeholder — the email service will be wired in later.
+    # Send password reset email via Resend
+    from api.services.email_service import send_password_reset_email
+    send_password_reset_email(user.email, raw_token)
 
     return {"detail": "If the email exists, a reset link has been sent"}
 

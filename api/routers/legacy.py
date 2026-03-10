@@ -494,7 +494,14 @@ def _inject_back_button_and_tracking(html: str, slug: str) -> str:
 }})();
 </script>
 """
-    return html.replace("</body>", back_button + chain_panel + tracking_script + "</body>")
+    ga_snippet = ""
+    if settings.GA_MEASUREMENT_ID:
+        ga_id = settings.GA_MEASUREMENT_ID
+        ga_snippet = f"""
+<script async src="https://www.googletagmanager.com/gtag/js?id={ga_id}"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','{ga_id}');</script>
+"""
+    return html.replace("</body>", back_button + chain_panel + tracking_script + ga_snippet + "</body>")
 
 
 @router.get("/read/{slug}", include_in_schema=False)
@@ -532,6 +539,7 @@ async def read_playbook(request: Request, slug: str, db: AsyncSession = Depends(
                     "error": request.query_params.get("error"),
                     "prefix": prefix,
                     "logged_in": user_id is not None,
+                    "ga_id": settings.GA_MEASUREMENT_ID,
                 },
             )
 
@@ -587,6 +595,7 @@ async def auth_page(request: Request):
             "tab": request.query_params.get("tab", "login"),
             "email": request.query_params.get("email", ""),
             "google_client_id": settings.GOOGLE_CLIENT_ID,
+            "ga_id": settings.GA_MEASUREMENT_ID,
         },
     )
 
@@ -794,7 +803,7 @@ async def forgot_password_page(request: Request):
     prefix = settings.URL_PREFIX or ""
     return templates.TemplateResponse(
         "forgot_password.html",
-        {"request": request, "prefix": prefix, "error": None, "success": None},
+        {"request": request, "prefix": prefix, "error": None, "success": None, "ga_id": settings.GA_MEASUREMENT_ID},
     )
 
 
@@ -814,7 +823,7 @@ async def forgot_password_submit(
     if not email:
         return templates.TemplateResponse(
             "forgot_password.html",
-            {"request": request, "prefix": prefix, "error": "Please enter your email.", "success": None},
+            {"request": request, "prefix": prefix, "error": "Please enter your email.", "success": None, "ga_id": settings.GA_MEASUREMENT_ID},
         )
 
     result = await db.execute(select(User).where(User.email == email))
@@ -863,7 +872,7 @@ async def forgot_password_submit(
 
     return templates.TemplateResponse(
         "forgot_password.html",
-        {"request": request, "prefix": prefix, "error": None, "success": success_msg},
+        {"request": request, "prefix": prefix, "error": None, "success": success_msg, "ga_id": settings.GA_MEASUREMENT_ID},
     )
 
 
@@ -877,7 +886,7 @@ async def reset_password_page(request: Request):
         )
     return templates.TemplateResponse(
         "reset_password.html",
-        {"request": request, "prefix": prefix, "token": token, "error": None},
+        {"request": request, "prefix": prefix, "token": token, "error": None, "ga_id": settings.GA_MEASUREMENT_ID},
     )
 
 
@@ -899,13 +908,13 @@ async def reset_password_submit(
     if len(password) < 8:
         return templates.TemplateResponse(
             "reset_password.html",
-            {"request": request, "prefix": prefix, "token": token, "error": "Password must be at least 8 characters."},
+            {"request": request, "prefix": prefix, "token": token, "error": "Password must be at least 8 characters.", "ga_id": settings.GA_MEASUREMENT_ID},
         )
 
     if password != password_confirm:
         return templates.TemplateResponse(
             "reset_password.html",
-            {"request": request, "prefix": prefix, "token": token, "error": "Passwords do not match."},
+            {"request": request, "prefix": prefix, "token": token, "error": "Passwords do not match.", "ga_id": settings.GA_MEASUREMENT_ID},
         )
 
     token_hash_val = hash_token(token)
@@ -922,7 +931,7 @@ async def reset_password_submit(
     if vtoken is None:
         return templates.TemplateResponse(
             "reset_password.html",
-            {"request": request, "prefix": prefix, "token": token, "error": "This reset link is invalid or has expired. Please request a new one."},
+            {"request": request, "prefix": prefix, "token": token, "error": "This reset link is invalid or has expired. Please request a new one.", "ga_id": settings.GA_MEASUREMENT_ID},
         )
 
     vtoken.used_at = datetime.now(timezone.utc)
@@ -1362,7 +1371,11 @@ async def _handle_subscription_deleted(subscription: dict, db: AsyncSession) -> 
 # Success page
 # ============================================================================
 @router.get("/success", include_in_schema=False)
-async def success_page(request: Request, session_id: str | None = None):
+async def success_page(
+    request: Request,
+    session_id: str | None = None,
+    db: AsyncSession = Depends(get_db),
+):
     prefix = settings.URL_PREFIX or ""
     if not session_id:
         return RedirectResponse(url=f"{prefix}/", status_code=303)
@@ -1371,27 +1384,49 @@ async def success_page(request: Request, session_id: str | None = None):
     stripe.api_key = settings.STRIPE_SECRET_KEY
     slug = ""
     mode = "single"
+    email = ""
     try:
         stripe_session = stripe.checkout.Session.retrieve(session_id)
         metadata = stripe_session.get("metadata", {})
-        slug = metadata.get("slug", "")
+        slug = metadata.get("slug", "") or metadata.get("playbook_slug", "")
         mode = metadata.get("mode", "single")
+        # Get email from Stripe customer_details (always available after checkout)
+        customer_details = stripe_session.get("customer_details", {})
+        email = (customer_details or {}).get("email", "")
     except Exception:
         pass
 
-    # Try legacy DB lookup
-    purchase = None
-    try:
-        from database import get_purchase_by_session_id
-        purchase = get_purchase_by_session_id(session_id)
-    except Exception:
-        pass
-
-    email = ""
+    # Look up purchase in PostgreSQL database
+    purchase_confirmed = False
     download_token = ""
+    result = await db.execute(
+        select(Purchase).where(Purchase.provider_session_id == session_id)
+    )
+    purchase = result.scalar_one_or_none()
     if purchase:
-        email = purchase["customer_email"]
-        download_token = purchase["download_token"]
+        purchase_confirmed = True
+        download_token = purchase.download_token or ""
+        # If we didn't get email from Stripe, try from the user record
+        if not email and purchase.user_id:
+            user_result = await db.execute(
+                select(User).where(User.id == purchase.user_id)
+            )
+            user = user_result.scalar_one_or_none()
+            if user:
+                email = user.email or ""
+
+    # For subscriptions, also check the subscription table
+    if not purchase_confirmed and mode in ("monthly", "yearly"):
+        # Subscription checkouts don't create Purchase records;
+        # check if a Subscription was created via the webhook
+        sub_result = await db.execute(
+            select(Subscription).where(
+                Subscription.status == "active"
+            ).order_by(Subscription.created_at.desc()).limit(1)
+        )
+        sub = sub_result.scalar_one_or_none()
+        if sub:
+            purchase_confirmed = True
 
     response = templates.TemplateResponse(
         "success.html",
@@ -1402,6 +1437,9 @@ async def success_page(request: Request, session_id: str | None = None):
             "base_url": settings.BASE_URL,
             "slug": slug,
             "prefix": prefix,
+            "purchase_confirmed": purchase_confirmed,
+            "session_id": session_id,
+            "ga_id": settings.GA_MEASUREMENT_ID,
         },
     )
 
@@ -1504,7 +1542,7 @@ async def journey_page(request: Request):
     prefix = settings.URL_PREFIX or ""
     return templates.TemplateResponse(
         "journey.html",
-        {"request": request, "prefix": prefix},
+        {"request": request, "prefix": prefix, "ga_id": settings.GA_MEASUREMENT_ID},
     )
 
 
@@ -1513,7 +1551,7 @@ async def constellation_page(request: Request):
     prefix = settings.URL_PREFIX or ""
     return templates.TemplateResponse(
         "constellation.html",
-        {"request": request, "prefix": prefix},
+        {"request": request, "prefix": prefix, "ga_id": settings.GA_MEASUREMENT_ID},
     )
 
 
@@ -1522,18 +1560,35 @@ async def paths_page(request: Request):
     prefix = settings.URL_PREFIX or ""
     return templates.TemplateResponse(
         "paths.html",
-        {"request": request, "prefix": prefix},
+        {"request": request, "prefix": prefix, "ga_id": settings.GA_MEASUREMENT_ID},
+    )
+
+
+@router.get("/my-playbooks", include_in_schema=False)
+async def my_playbooks_page(request: Request):
+    prefix = settings.URL_PREFIX or ""
+    return templates.TemplateResponse(
+        "my_playbooks.html",
+        {"request": request, "prefix": prefix, "ga_id": settings.GA_MEASUREMENT_ID},
     )
 
 
 @router.get("/terms", include_in_schema=False)
-async def terms():
-    return FileResponse(STATIC_DIR / "terms.html")
+async def terms(request: Request):
+    prefix = settings.URL_PREFIX or ""
+    return templates.TemplateResponse(
+        "terms.html",
+        {"request": request, "prefix": prefix},
+    )
 
 
 @router.get("/privacy", include_in_schema=False)
-async def privacy():
-    return FileResponse(STATIC_DIR / "privacy.html")
+async def privacy(request: Request):
+    prefix = settings.URL_PREFIX or ""
+    return templates.TemplateResponse(
+        "privacy.html",
+        {"request": request, "prefix": prefix},
+    )
 
 
 @router.get("/refund", include_in_schema=False)

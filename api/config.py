@@ -37,6 +37,12 @@ class Settings(BaseSettings):
     # Google OAuth
     GOOGLE_CLIENT_ID: str = ""
 
+    # Sentry
+    SENTRY_DSN: str = ""
+
+    # Google Analytics
+    GA_MEASUREMENT_ID: str = ""
+
     # Admin
     ADMIN_UNLOCK_CODE: str = "elijahsentme"
 

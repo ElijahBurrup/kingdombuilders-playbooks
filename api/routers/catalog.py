@@ -1,13 +1,15 @@
 import math
+from datetime import datetime, timezone
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
 from api.database import get_db
-from api.dependencies import get_current_user, get_current_user_optional
+from api.dependencies import get_current_user, get_current_user_from_session, get_current_user_optional
 from api.models.playbook import Category, Playbook, Series
+from api.models.purchase import Purchase, Subscription
 from api.models.user import User
 from api.schemas.playbook import (
     CategoryResponse,
@@ -290,3 +292,84 @@ async def list_series(db: AsyncSession = Depends(get_db)):
         )
         for s in series_list
     ]
+
+
+# ---------- 7. GET /my-playbooks ----------
+@router.get("/my-playbooks")
+async def my_playbooks(
+    user: User = Depends(get_current_user_from_session),
+    db: AsyncSession = Depends(get_db),
+):
+    """Return the playbooks owned by the current user (purchased or via subscription)."""
+    now = datetime.now(timezone.utc)
+
+    # Check for active subscription
+    sub_result = await db.execute(
+        select(Subscription.id).where(
+            Subscription.user_id == user.id,
+            Subscription.status == "active",
+            Subscription.current_period_end > now,
+        ).limit(1)
+    )
+    is_subscriber = sub_result.scalar_one_or_none() is not None
+
+    if is_subscriber:
+        # Subscriber gets all published playbooks
+        result = await db.execute(
+            select(Playbook)
+            .options(joinedload(Playbook.category))
+            .where(Playbook.status == "published")
+            .order_by(Playbook.title.asc())
+        )
+        playbooks = result.unique().scalars().all()
+    else:
+        # Get individually purchased playbooks + free playbooks
+        purchased_result = await db.execute(
+            select(Playbook)
+            .options(joinedload(Playbook.category))
+            .join(Purchase, Purchase.playbook_id == Playbook.id)
+            .where(
+                Purchase.user_id == user.id,
+                Purchase.status == "completed",
+                Playbook.status == "published",
+            )
+            .order_by(Playbook.title.asc())
+        )
+        purchased = list(purchased_result.unique().scalars().all())
+
+        # Also include free playbooks
+        free_result = await db.execute(
+            select(Playbook)
+            .options(joinedload(Playbook.category))
+            .where(
+                Playbook.status == "published",
+                Playbook.pricing_type == "free",
+            )
+            .order_by(Playbook.title.asc())
+        )
+        free_playbooks = list(free_result.unique().scalars().all())
+
+        # Merge and deduplicate (preserving order)
+        seen_ids = set()
+        playbooks = []
+        for pb in purchased + free_playbooks:
+            if pb.id not in seen_ids:
+                seen_ids.add(pb.id)
+                playbooks.append(pb)
+
+        playbooks.sort(key=lambda p: p.title)
+
+    items = []
+    for pb in playbooks:
+        items.append({
+            "slug": pb.slug,
+            "title": pb.title,
+            "cover_emoji": pb.cover_emoji or "",
+            "category_name": pb.category.name if pb.category else None,
+        })
+
+    return {
+        "email": user.email,
+        "is_subscriber": is_subscriber,
+        "playbooks": items,
+    }

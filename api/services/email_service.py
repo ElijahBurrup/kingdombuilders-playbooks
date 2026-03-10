@@ -225,6 +225,92 @@ def send_compound_email(customer_email: str, download_token: str) -> None:
 # ============================================================================
 # Email 4: Free chapter lead magnet
 # ============================================================================
+def send_password_reset_email(email: str, raw_token: str) -> None:
+    """Send a password reset link to the user."""
+    reset_url = f"{_base_url()}/reset-password?token={raw_token}"
+
+    html = f"""
+    <div style="max-width:600px;margin:0 auto;font-family:Arial,Helvetica,sans-serif;background:#FAF6ED;padding:40px 24px;">
+      <div style="text-align:center;margin-bottom:32px;">
+        <div style="font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#7B4FBF;">Kingdom Builders AI</div>
+      </div>
+
+      <div style="background:linear-gradient(135deg,#1A0A2E 0%,#2D1B4E 100%);border-radius:8px;padding:40px 32px;text-align:center;">
+        <h1 style="font-family:Georgia,serif;font-size:28px;color:#FFFFFF;margin:0 0 8px;">Reset Your Password</h1>
+        <p style="font-size:15px;color:rgba(255,255,255,0.5);margin:0 0 32px;">We received a request to reset your password. Click the button below to choose a new one.</p>
+
+        <a href="{reset_url}" style="display:inline-block;padding:16px 48px;background:linear-gradient(135deg,#D4A843 0%,#E8C96A 100%);color:#1A0A2E;font-size:16px;font-weight:700;text-decoration:none;border-radius:4px;">
+          RESET PASSWORD
+        </a>
+
+        <p style="font-size:13px;color:rgba(255,255,255,0.3);margin-top:24px;">
+          This link expires in 1 hour. If you didn't request this, you can safely ignore this email.
+        </p>
+      </div>
+
+      <div style="text-align:center;margin-top:32px;font-size:12px;color:#6B5A8A;">
+        <p>Questions? Reply to this email or contact support@kingdombuilders.ai</p>
+      </div>
+    </div>
+    """
+
+    try:
+        resend.Emails.send({
+            "from": FROM_EMAIL_KB,
+            "to": email,
+            "subject": "Reset your password",
+            "html": html,
+        })
+    except Exception as e:
+        print(f"Failed to send password reset email to {email}: {e}")
+
+
+# ============================================================================
+# Email 6: Email verification for new registrations
+# ============================================================================
+def send_verification_email(email: str, raw_token: str) -> None:
+    """Send an email verification link to a newly registered user."""
+    verify_url = f"{_base_url()}/verify-email?token={raw_token}"
+
+    html = f"""
+    <div style="max-width:600px;margin:0 auto;font-family:Arial,Helvetica,sans-serif;background:#FAF6ED;padding:40px 24px;">
+      <div style="text-align:center;margin-bottom:32px;">
+        <div style="font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#7B4FBF;">Kingdom Builders AI</div>
+      </div>
+
+      <div style="background:linear-gradient(135deg,#1A0A2E 0%,#2D1B4E 100%);border-radius:8px;padding:40px 32px;text-align:center;">
+        <h1 style="font-family:Georgia,serif;font-size:28px;color:#FFFFFF;margin:0 0 8px;">Welcome to Kingdom Builders AI</h1>
+        <p style="font-size:15px;color:rgba(255,255,255,0.5);margin:0 0 32px;">Please verify your email address to complete your registration.</p>
+
+        <a href="{verify_url}" style="display:inline-block;padding:16px 48px;background:linear-gradient(135deg,#D4A843 0%,#E8C96A 100%);color:#1A0A2E;font-size:16px;font-weight:700;text-decoration:none;border-radius:4px;">
+          VERIFY EMAIL
+        </a>
+
+        <p style="font-size:13px;color:rgba(255,255,255,0.3);margin-top:24px;">
+          This link expires in 24 hours.
+        </p>
+      </div>
+
+      <div style="text-align:center;margin-top:32px;font-size:12px;color:#6B5A8A;">
+        <p>Questions? Reply to this email or contact support@kingdombuilders.ai</p>
+      </div>
+    </div>
+    """
+
+    try:
+        resend.Emails.send({
+            "from": FROM_EMAIL_KB,
+            "to": email,
+            "subject": "Verify your email address",
+            "html": html,
+        })
+    except Exception as e:
+        print(f"Failed to send verification email to {email}: {e}")
+
+
+# ============================================================================
+# Email 4 (legacy numbering): Free chapter lead magnet
+# ============================================================================
 def send_lead_magnet_email(email: str) -> None:
     """Send free Chapter 1 of The Salmon Journey to a new subscriber."""
     chapter_url = f"{_base_url()}/free/salmon-journey-ch1"

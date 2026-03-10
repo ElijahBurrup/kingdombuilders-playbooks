@@ -115,24 +115,130 @@ h1 span { color: var(--gold); }
   color: rgba(212,168,67,0.4);
   text-decoration: none;
 }
+/* Spinner for confirming state */
+.spinner {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 2px solid rgba(212,168,67,0.2);
+  border-top-color: var(--gold);
+  margin: 0 auto 24px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 </style>
+{% if ga_id %}<script async src="https://www.googletagmanager.com/gtag/js?id={{ ga_id }}"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','{{ ga_id }}');</script>{% endif %}
 </head>
 <body>
 <div class="success-card">
-  <div class="success-badge">Purchase Complete</div>
-  <div class="success-check">&#10003;</div>
-  <h1>Your Access is <span>Ready</span></h1>
-  <p class="success-text">
-    Thank you for your purchase! Your playbook access has been activated.
-    A confirmation has been sent to <strong style="color:var(--gold-light);">{{ email }}</strong>.
-  </p>
-  <a href="{{ base_url }}/" class="download-btn">BROWSE YOUR PLAYBOOKS</a>
-  <div class="success-note">
-    <p><strong>Note:</strong> Your purchased playbooks are now unlocked. Visit any playbook landing page and click "Read Now" to start reading.</p>
+  {% if purchase_confirmed %}
+  <!-- Purchase confirmed: show full success content -->
+  <div id="confirmed-content">
+    <div class="success-badge">Purchase Complete</div>
+    <div class="success-check">&#10003;</div>
+    <h1>Your Access is <span>Ready</span></h1>
+    <p class="success-text">
+      Thank you for your purchase! Your playbook access has been activated.
+      {% if email %}
+      A confirmation has been sent to <strong style="color:var(--gold-light);">{{ email }}</strong>.
+      {% endif %}
+    </p>
+    <a href="{{ base_url }}/" class="download-btn">BROWSE YOUR PLAYBOOKS</a>
+    <div class="success-note">
+      <p><strong>Note:</strong> Your purchased playbooks are now unlocked. Visit any playbook landing page and click "Read Now" to start reading.</p>
+    </div>
+    <div class="success-footer">
+      <p>Questions? Contact <a href="mailto:support@kingdombuilders.ai">support@kingdombuilders.ai</a></p>
+    </div>
   </div>
-  <div class="success-footer">
-    <p>Questions? Contact <a href="mailto:support@kingdombuilders.ai">support@kingdombuilders.ai</a></p>
+  {% else %}
+  <!-- Purchase not yet confirmed: show spinner and poll -->
+  <div id="pending-content">
+    <div class="success-badge">Confirming Purchase</div>
+    <div class="spinner" id="poll-spinner"></div>
+    <h1>Confirming Your <span>Purchase</span></h1>
+    <p class="success-text" id="pending-text">
+      We are confirming your payment. This usually takes just a few seconds...
+    </p>
   </div>
+  <!-- Hidden confirmed content that gets shown after polling succeeds -->
+  <div id="confirmed-content" style="display:none;">
+    <div class="success-badge">Purchase Complete</div>
+    <div class="success-check">&#10003;</div>
+    <h1>Your Access is <span>Ready</span></h1>
+    <p class="success-text">
+      Thank you for your purchase! Your playbook access has been activated.
+      {% if email %}
+      A confirmation has been sent to <strong style="color:var(--gold-light);">{{ email }}</strong>.
+      {% endif %}
+    </p>
+    <a href="{{ base_url }}/" class="download-btn">BROWSE YOUR PLAYBOOKS</a>
+    <div class="success-note">
+      <p><strong>Note:</strong> Your purchased playbooks are now unlocked. Visit any playbook landing page and click "Read Now" to start reading.</p>
+    </div>
+    <div class="success-footer">
+      <p>Questions? Contact <a href="mailto:support@kingdombuilders.ai">support@kingdombuilders.ai</a></p>
+    </div>
+  </div>
+  <!-- Fallback content shown after 30s timeout -->
+  <div id="fallback-content" style="display:none;">
+    <div class="success-badge">Purchase Processing</div>
+    <div class="success-check">&#10003;</div>
+    <h1>Almost <span>There</span></h1>
+    <p class="success-text">
+      Your purchase is being processed. You will receive a confirmation email shortly
+      {% if email %}
+      at <strong style="color:var(--gold-light);">{{ email }}</strong>
+      {% endif %}.
+    </p>
+    <a href="{{ base_url }}/" class="download-btn">BROWSE YOUR PLAYBOOKS</a>
+    <div class="success-note">
+      <p><strong>Note:</strong> If your playbooks are not unlocked within a few minutes, please contact support.</p>
+    </div>
+    <div class="success-footer">
+      <p>Questions? Contact <a href="mailto:support@kingdombuilders.ai">support@kingdombuilders.ai</a></p>
+    </div>
+  </div>
+  <script>
+  (function() {
+    var sessionId = "{{ session_id }}";
+    var prefix = "{{ prefix }}";
+    var pollInterval = 2000;
+    var maxAttempts = 15; // 15 * 2s = 30s
+    var attempts = 0;
+
+    function checkPurchase() {
+      attempts++;
+      fetch(prefix + "/api/v1/stripe/check-purchase?session_id=" + encodeURIComponent(sessionId))
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          if (data.confirmed) {
+            document.getElementById("pending-content").style.display = "none";
+            document.getElementById("confirmed-content").style.display = "block";
+          } else if (attempts >= maxAttempts) {
+            document.getElementById("pending-content").style.display = "none";
+            document.getElementById("fallback-content").style.display = "block";
+          } else {
+            setTimeout(checkPurchase, pollInterval);
+          }
+        })
+        .catch(function() {
+          if (attempts >= maxAttempts) {
+            document.getElementById("pending-content").style.display = "none";
+            document.getElementById("fallback-content").style.display = "block";
+          } else {
+            setTimeout(checkPurchase, pollInterval);
+          }
+        });
+    }
+
+    setTimeout(checkPurchase, pollInterval);
+  })();
+  </script>
+  {% endif %}
 </div>
 </body>
 </html>
