@@ -1,25 +1,24 @@
 #!/usr/bin/env python3
 """
-Kingdom Builders AI — Pull Quote Generator v2
+Kingdom Builders AI — Pull Quote Generator v3
 
-Generates social media pull quote images for playbook marketing.
+Uses Playwright to screenshot each playbook's actual cover design (condensed),
+then composites the quote text below the title. This ensures the pull quote
+images match the real cover look — fonts, gradients, animations and all.
+
 Each playbook gets 3 quotes in 2 sizes (6 images total per playbook).
 
-Output naming: "The Conductors Playbook 1.png" (square), "The Conductors Playbook 1 wide.png" (landscape)
-Sorted alphabetically so all 3 quotes for a playbook appear together for review.
+Output naming: "The Conductors Playbook 1.png" (square), "The Conductors Playbook 1 wide.png" (wide)
 
 Usage:
   python -m scripts.generate_pull_quotes                    # All playbooks
   python -m scripts.generate_pull_quotes The_Arrival.html   # Single playbook
 """
 
-import math
 import re
 import sys
 from pathlib import Path
-
-import numpy as np
-from PIL import Image, ImageDraw, ImageFont
+from playwright.sync_api import sync_playwright
 
 # ---------------------------------------------------------------------------
 # PATHS
@@ -29,265 +28,269 @@ ASSETS_DIR = PROJECT_ROOT / "assets"
 OUTPUT_DIR = ASSETS_DIR / "pull-quotes"
 
 # ---------------------------------------------------------------------------
-# FONTS
-# ---------------------------------------------------------------------------
-SERIF_BOLD = "C:/Windows/Fonts/georgiab.ttf"
-SERIF_ITALIC = "C:/Windows/Fonts/georgiai.ttf"
-SERIF_REGULAR = "C:/Windows/Fonts/georgia.ttf"
-SANS_BOLD = "C:/Windows/Fonts/segoeuib.ttf"
-SANS_REGULAR = "C:/Windows/Fonts/segoeui.ttf"
-SANS_LIGHT = "C:/Windows/Fonts/segoeuil.ttf"
-
-# ---------------------------------------------------------------------------
 # IMAGE SIZES
 # ---------------------------------------------------------------------------
 SQUARE = (1080, 1080)     # Instagram, Facebook
 WIDE = (1200, 675)        # X.com, LinkedIn
-BRAND_TEXT = "KingdomBuilders.ai"
 
 # ---------------------------------------------------------------------------
 # CURATED QUOTES — 3 per playbook: [hook, reveal, finale]
 # ---------------------------------------------------------------------------
 CURATED_QUOTES = {
     "The_Conductors_Playbook": [
-        "Taste is the only skill\nthat cannot be automated.",
-        "You do not produce through effort.\nYou produce through orchestration.",
-        "The blade is forged.\nNow go conduct.",
+        "Taste is the only skill that cannot be automated.",
+        "You do not produce through effort. You produce through orchestration.",
+        "The blade is forged. Now go conduct.",
     ],
     "The_Narrator": [
-        "You are performing for an audience\nthat is no longer watching.",
-        "The story you are living\nwas written by someone else.",
-        "Pick up the pen.\nRewrite the script.",
+        "You are performing for an audience that is no longer watching.",
+        "The story you are living was written by someone else.",
+        "Pick up the pen. Rewrite the script.",
     ],
     "The_Ghost_Frame": [
-        "You have never had a fight\nwith your partner.",
-        "The frame was installed\nbefore you could speak.",
-        "See the frame.\nNow step outside it.",
+        "You have never had a fight with your partner.",
+        "The frame was installed before you could speak.",
+        "See the frame. Now step outside it.",
     ],
     "The_Gravity_Well": [
-        "You did not choose your orbit.\nBut you can change it.",
-        "Purpose is not a feeling.\nIt is a gravitational force.",
-        "Escape velocity reached.\nNow build your own gravity.",
+        "You did not choose your orbit. But you can change it.",
+        "Purpose is not a feeling. It is a gravitational force.",
+        "Escape velocity reached. Now build your own gravity.",
     ],
     "The_Squirrel_Economy_Modified": [
-        "The crash does not punish recklessness.\nIt reveals it.",
-        "Your grandmother was right\nabout saving.",
-        "The economy is a forest.\nPlant accordingly.",
+        "The crash does not punish recklessness. It reveals it.",
+        "Your grandmother was right about saving.",
+        "The economy is a forest. Plant accordingly.",
     ],
     "The_Salmon_Journey": [
-        "The only direction that builds anything\nis upstream.",
-        "Compound interest is not math.\nIt is patience made visible.",
-        "Swim.\nThe current was never the enemy.",
+        "The only direction that builds anything is upstream.",
+        "Compound interest is not math. It is patience made visible.",
+        "Swim. The current was never the enemy.",
     ],
     "The_Wolfs_Table": [
-        "The table is always being set\nbefore you sit down.",
-        "The wolf does not negotiate.\nThe wolf prepares.",
-        "Set your own table.\nInvite deliberately.",
+        "The table is always being set before you sit down.",
+        "The wolf does not negotiate. The wolf prepares.",
+        "Set your own table. Invite deliberately.",
     ],
     "The_Crows_Gambit": [
-        "Every relationship is a repeated game.\nPlay accordingly.",
-        "The Nash equilibrium is not optimal.\nIt is just stable.",
-        "Trust is a strategy.\nNot a feeling.",
+        "Every relationship is a repeated game. Play accordingly.",
+        "The Nash equilibrium is not optimal. It is just stable.",
+        "Trust is a strategy. Not a feeling.",
     ],
     "The_Eagles_Lens": [
-        "Clarity is not seeing more.\nIt is seeing less.",
-        "Strip. Test. Commit. Correct.\nFour moves. Every decision.",
-        "The lens is focused.\nNow act.",
+        "Clarity is not seeing more. It is seeing less.",
+        "Strip. Test. Commit. Correct. Four moves. Every decision.",
+        "The lens is focused. Now act.",
     ],
     "The_Octopus_Protocol": [
-        "One arm at a time.\nNever eight.",
-        "Revenue streams are not built.\nThey are sequenced.",
-        "Eight arms. One brain.\nThat is the protocol.",
+        "One arm at a time. Never eight.",
+        "Revenue streams are not built. They are sequenced.",
+        "Eight arms. One brain. That is the protocol.",
     ],
     "The_Ant_Network": [
-        "No single ant knows the plan.\nThe plan still works.",
-        "Trust is not given.\nIt is networked.",
-        "Build the network.\nThe network builds everything else.",
+        "No single ant knows the plan. The plan still works.",
+        "Trust is not given. It is networked.",
+        "Build the network. The network builds everything else.",
     ],
     "The_Lighthouse_Keepers_Log": [
-        "The storm is not an interruption.\nThe storm is the curriculum.",
-        "The light does not chase ships.\nIt simply stays on.",
-        "Keep the light burning.\nThat is the only job.",
+        "The storm is not an interruption. The storm is the curriculum.",
+        "The light does not chase ships. It simply stays on.",
+        "Keep the light burning. That is the only job.",
     ],
     "The_Cost_Ledger": [
-        "Every yes has a price.\nMost people never read the bill.",
-        "The hidden cost is always\nthe one you feel last.",
-        "Read the ledger.\nPay what you owe.",
+        "Every yes has a price. Most people never read the bill.",
+        "The hidden cost is always the one you feel last.",
+        "Read the ledger. Pay what you owe.",
     ],
     "The_Spiders_Loom": [
-        "The web does not chase.\nThe web waits.",
-        "Every thread is a relationship.\nEvery node is a choice.",
-        "Weave with intention.\nThe web holds.",
+        "The web does not chase. The web waits.",
+        "Every thread is a relationship. Every node is a choice.",
+        "Weave with intention. The web holds.",
     ],
     "The_Chameleons_Code": [
         "Adaptation without identity is extinction.",
-        "You are not pretending.\nYou are translating.",
-        "Know your true color.\nThen shift with purpose.",
+        "You are not pretending. You are translating.",
+        "Know your true color. Then shift with purpose.",
     ],
     "The_Geckos_Grip": [
-        "Recovery is not returning.\nIt is rebuilding from a new surface.",
-        "The grip works on any wall.\nEven the ones you did not choose.",
-        "Fall. Grip. Climb.\nThe surface changed. You adapted.",
+        "Recovery is not returning. It is rebuilding from a new surface.",
+        "The grip works on any wall. Even the ones you did not choose.",
+        "Fall. Grip. Climb. The surface changed. You adapted.",
     ],
     "The_Fireflys_Signal": [
-        "The wrong signal attracts\nthe wrong audience.",
-        "Brightness without frequency\nis just noise.",
-        "Signal clearly.\nThe right ones will come.",
+        "The wrong signal attracts the wrong audience.",
+        "Brightness without frequency is just noise.",
+        "Signal clearly. The right ones will come.",
     ],
     "The_Foxs_Trail": [
-        "The best path is the one\nnothing else is using.",
-        "The fox does not outrun.\nThe fox outthinks.",
-        "Find your trail.\nWalk it alone if you must.",
+        "The best path is the one nothing else is using.",
+        "The fox does not outrun. The fox outthinks.",
+        "Find your trail. Walk it alone if you must.",
     ],
     "The_Moths_Flame": [
-        "Not everything that glows\nis worth burning for.",
-        "The flame does not care\nwho it burns.",
-        "Turn from the flame.\nFind your own light.",
+        "Not everything that glows is worth burning for.",
+        "The flame does not care who it burns.",
+        "Turn from the flame. Find your own light.",
     ],
     "The_Bears_Winter": [
-        "Dormancy is not weakness.\nDormancy is strategy.",
-        "The bear does not fight winter.\nThe bear prepares for it.",
-        "Rest is not retreat.\nRest is reload.",
+        "Dormancy is not weakness. Dormancy is strategy.",
+        "The bear does not fight winter. The bear prepares for it.",
+        "Rest is not retreat. Rest is reload.",
     ],
     "The_Coyotes_Laugh": [
-        "The ones who laugh at the rules\nare the ones rewriting them.",
-        "Chaos is not the enemy.\nRigidity is.",
-        "Laugh.\nThen build something unexpected.",
+        "The ones who laugh at the rules are the ones rewriting them.",
+        "Chaos is not the enemy. Rigidity is.",
+        "Laugh. Then build something unexpected.",
     ],
     "The_Pangolins_Armor": [
-        "The armor you built to survive\nis the weight slowing you down.",
-        "Protection and isolation\nwear the same shell.",
-        "Uncurl.\nThe threat has passed.",
+        "The armor you built to survive is the weight slowing you down.",
+        "Protection and isolation wear the same shell.",
+        "Uncurl. The threat has passed.",
     ],
     "The_Horses_Gait": [
-        "Speed is not a gait.\nRhythm is.",
-        "The horse that wins\nis the one that paces.",
-        "Find your rhythm.\nThe race is long.",
+        "Speed is not a gait. Rhythm is.",
+        "The horse that wins is the one that paces.",
+        "Find your rhythm. The race is long.",
     ],
     "The_Compass_Rose": [
-        "You do not need more options.\nYou need a bearing.",
-        "North is not a direction.\nNorth is a decision.",
-        "Set the bearing.\nWalk.",
+        "You do not need more options. You need a bearing.",
+        "North is not a direction. North is a decision.",
+        "Set the bearing. Walk.",
     ],
     "The_Mockingbirds_Song": [
-        "She never wrote a single song.\nShe wrote all of them.",
-        "Attention is not free.\nAttention is architecture.",
-        "Listen to everything.\nSing what matters.",
+        "She never wrote a single song. She wrote all of them.",
+        "Attention is not free. Attention is architecture.",
+        "Listen to everything. Sing what matters.",
     ],
     "The_Starlings_Murmuration": [
-        "You become the average\nof your seven closest influences.",
-        "The murmuration has no leader.\nIt has alignment.",
-        "Choose your seven.\nThey are choosing your future.",
+        "You become the average of your seven closest influences.",
+        "The murmuration has no leader. It has alignment.",
+        "Choose your seven. They are choosing your future.",
     ],
     "The_Body_Lie": [
-        "Your body has been keeping score\nwhile your mind changed the subject.",
-        "The truth lives in your posture.\nNot in your explanation.",
-        "Listen to your body.\nIt never learned to lie.",
+        "Your body has been keeping score while your mind changed the subject.",
+        "The truth lives in your posture. Not in your explanation.",
+        "Listen to your body. It never learned to lie.",
     ],
     "The_Bonsai_Method": [
-        "The cut is not the wound.\nThe cut is the design.",
-        "A budget is not restriction.\nA budget is sculpture.",
-        "Prune with intention.\nGrow with purpose.",
+        "The cut is not the wound. The cut is the design.",
+        "A budget is not restriction. A budget is sculpture.",
+        "Prune with intention. Grow with purpose.",
     ],
     "The_Fibonacci_Trim": [
-        "Growth without pruning\nis just accumulation.",
-        "The golden ratio is not math.\nIt is nature voting.",
-        "Trim to the ratio.\nBeauty follows structure.",
+        "Growth without pruning is just accumulation.",
+        "The golden ratio is not math. It is nature voting.",
+        "Trim to the ratio. Beauty follows structure.",
     ],
     "The_Arrival": [
-        "You have been everywhere.\nYou have arrived nowhere.",
-        "Presence is not location.\nPresence is attention.",
-        "Arrive.\nFinally, completely, arrive.",
+        "You have been everywhere. You have arrived nowhere.",
+        "Presence is not location. Presence is attention.",
+        "Arrive. Finally, completely, arrive.",
     ],
     "The_Mycelium_Network": [
-        "The most connected organism on Earth\nhas no brain.",
-        "The network does not think.\nThe network transfers.",
-        "Connect. Transfer. Grow.\nThe forest depends on it.",
+        "The most connected organism on Earth has no brain.",
+        "The network does not think. The network transfers.",
+        "Connect. Transfer. Grow. The forest depends on it.",
     ],
     "The_Termite_Cathedral": [
-        "No architect. No blueprint.\nJust a cathedral.",
-        "Emergence does not need a plan.\nIt needs a principle.",
-        "Build your piece.\nThe cathedral builds itself.",
+        "No architect. No blueprint. Just a cathedral.",
+        "Emergence does not need a plan. It needs a principle.",
+        "Build your piece. The cathedral builds itself.",
     ],
     "The_Bees_Dance": [
-        "The dance is the data.\nThe hive is the network.",
-        "Communication is not talking.\nCommunication is moving.",
-        "Dance your discovery.\nThe hive will follow.",
+        "The dance is the data. The hive is the network.",
+        "Communication is not talking. Communication is moving.",
+        "Dance your discovery. The hive will follow.",
     ],
     "The_Otters_Play": [
-        "Play is not the break from work.\nPlay is the work.",
-        "Joy is not the reward.\nJoy is the method.",
-        "Play.\nThe serious ones burn out first.",
+        "Play is not the break from work. Play is the work.",
+        "Joy is not the reward. Joy is the method.",
+        "Play. The serious ones burn out first.",
     ],
     "The_Butterflys_Crossing": [
-        "The crossing is not optional.\nThe wings are.",
-        "Transformation costs everything\nyou were.",
-        "Cross.\nWhat you become is worth what you lose.",
+        "The crossing is not optional. The wings are.",
+        "Transformation costs everything you were.",
+        "Cross. What you become is worth what you lose.",
     ],
     "The_Elephants_Ground": [
-        "Memory is not nostalgia.\nMemory is navigation.",
-        "The elephant never forgets\nbecause forgetting is fatal.",
-        "Remember.\nYour history is your compass.",
+        "Memory is not nostalgia. Memory is navigation.",
+        "The elephant never forgets because forgetting is fatal.",
+        "Remember. Your history is your compass.",
     ],
     "The_Whales_Breath": [
-        "The deepest dive\nrequires the longest breath.",
-        "Silence is not emptiness.\nSilence is preparation.",
-        "Breathe.\nThen go deeper than anyone expects.",
+        "The deepest dive requires the longest breath.",
+        "Silence is not emptiness. Silence is preparation.",
+        "Breathe. Then go deeper than anyone expects.",
     ],
     "The_Tide_Pools_Echo": [
-        "The edge is where\neverything interesting lives.",
-        "The tide pool survives\nbecause it embraces the boundary.",
-        "Live at the edge.\nThat is where growth happens.",
+        "The edge is where everything interesting lives.",
+        "The tide pool survives because it embraces the boundary.",
+        "Live at the edge. That is where growth happens.",
     ],
     "Lay_It_Down": [
-        "You cannot carry it\nand be carried by Him.",
-        "The altar is not punishment.\nThe altar is freedom.",
-        "Lay it down.\nWalk away lighter.",
+        "You cannot carry it and be carried by Him.",
+        "The altar is not punishment. The altar is freedom.",
+        "Lay it down. Walk away lighter.",
     ],
     "Lay_It_Down_Wrath": [
-        "Anger is a fire.\nYou are the house.",
-        "The rage cycle has one exit.\nSurrender.",
-        "Put down the torch.\nYou are standing in gasoline.",
+        "Anger is a fire. You are the house.",
+        "The rage cycle has one exit. Surrender.",
+        "Put down the torch. You are standing in gasoline.",
     ],
     "Lay_It_Down_Envy": [
-        "Envy compares your backstage\nto their highlight reel.",
-        "Celebration is the antidote.\nNot comparison.",
-        "Stay in your lane.\nIt was built for you.",
+        "Envy compares your backstage to their highlight reel.",
+        "Celebration is the antidote. Not comparison.",
+        "Stay in your lane. It was built for you.",
     ],
     "Lay_It_Down_Pride": [
-        "The grip feels like strength.\nIt is just fear holding on.",
-        "Control is the illusion.\nSurrender is the power.",
-        "Open your hands.\nSee what stays.",
+        "The grip feels like strength. It is just fear holding on.",
+        "Control is the illusion. Surrender is the power.",
+        "Open your hands. See what stays.",
     ],
     "Lay_It_Down_Greed": [
-        "Enough was the first word\nyou forgot.",
-        "Accumulation is not security.\nIt is anxiety with a lock.",
-        "You have enough.\nNow live like it.",
+        "Enough was the first word you forgot.",
+        "Accumulation is not security. It is anxiety with a lock.",
+        "You have enough. Now live like it.",
     ],
     "Lay_It_Down_Sloth": [
-        "Stillness chose you.\nYou did not choose it.",
-        "Comfort is the slow poison\nthat tastes like rest.",
-        "Move.\nThe resistance is the point.",
+        "Stillness chose you. You did not choose it.",
+        "Comfort is the slow poison that tastes like rest.",
+        "Move. The resistance is the point.",
     ],
     "Lay_It_Down_Gluttony": [
-        "The hunger was never\nin your stomach.",
-        "Consumption without purpose\nis just noise with a receipt.",
-        "Fast from the excess.\nFind what was hiding underneath.",
+        "The hunger was never in your stomach.",
+        "Consumption without purpose is just noise with a receipt.",
+        "Fast from the excess. Find what was hiding underneath.",
     ],
     "Lay_It_Down_Lust": [
-        "What you chase consumes you\nbefore you catch it.",
-        "Desire is not the enemy.\nDisorder is.",
-        "Redirect the fire.\nIt was meant to build, not burn.",
+        "What you chase consumes you before you catch it.",
+        "Desire is not the enemy. Disorder is.",
+        "Redirect the fire. It was meant to build, not burn.",
     ],
     "Dad_Talks_The_Dopamine_Drought": [
-        "Your phone is a slot machine.\nYou are the pigeon.",
-        "Every notification is a negotiation\nfor your attention.",
-        "Guard your focus.\nIt is the last thing they cannot buy.",
+        "Your phone is a slot machine. You are the pigeon.",
+        "Every notification is a negotiation for your attention.",
+        "Guard your focus. It is the last thing they cannot buy.",
     ],
     "Dad_Talks_The_Mirror_Test": [
-        "Someone told you who you were.\nYou believed them.",
-        "The mirror shows the outside.\nIdentity lives underneath.",
-        "Look again.\nThis time, decide for yourself.",
+        "Someone told you who you were. You believed them.",
+        "The mirror shows the outside. Identity lives underneath.",
+        "Look again. This time, decide for yourself.",
+    ],
+    "The_Mantis_Shrimps_Eye": [
+        "You see three colors. The mantis shrimp sees sixteen. Every lie you missed happened in a color you could not see.",
+        "The apology was sized to his exit, not to her guilt.",
+        "You are not broken for having been manipulated. You were operating with three channels in a sixteen channel world.",
+    ],
+    "The_Porcupines_Quills": [
+        "Everything that bites a porcupine only does it once.",
+        "The moment defense becomes performance, the predator begins auditioning for exceptions.",
+        "You do not have to be harder. You have to build systems that execute in your absence.",
+    ],
+    "The_Tardigrade_Protocol": [
+        "They boiled it. Froze it. Irradiated it. Shot it into space. The tardigrade survived every single one.",
+        "That feeling is not accurate information about whether removing it would kill you.",
+        "You were not destroyed. You were compressed. The structure was always there. Waiting. Preserved.",
     ],
 }
 
@@ -296,300 +299,384 @@ CURATED_QUOTES = {
 # TITLE EXTRACTION
 # ---------------------------------------------------------------------------
 def extract_title(html: str, filename: str) -> str:
-    """Extract the display title from the playbook."""
-    # Try to get from <title> tag
     m = re.search(r'<title>([^<]+)</title>', html)
     if m:
         title = m.group(1)
-        # Clean up common suffixes
         for suffix in [". Kingdom Builders AI", " | Kingdom Builders", " - Kingdom Builders"]:
             title = title.replace(suffix, "")
         title = title.strip().rstrip(".")
         if title and len(title) < 60:
             return title
-
-    # Fallback: convert filename
     name = filename.replace(".html", "").replace("_", " ")
-    if name.startswith("The "):
-        name = "The " + name[4:]
     return name
 
 
+def stem_to_display(stem: str) -> str:
+    name = stem.replace("_Modified", "")
+    return name.replace("_", " ")
+
+
 # ---------------------------------------------------------------------------
-# COLOR EXTRACTION
+# HTML TEMPLATE — Condensed cover + quote
 # ---------------------------------------------------------------------------
-def hex_to_rgb(hex_str: str) -> tuple:
-    hex_str = hex_str.strip().lstrip("#")
-    if len(hex_str) == 3:
-        hex_str = "".join(c * 2 for c in hex_str)
-    return tuple(int(hex_str[i:i+2], 16) for i in (0, 2, 4))
+def build_pull_quote_html(
+    playbook_html: str,
+    title: str,
+    quote: str,
+    width: int,
+    height: int,
+) -> str:
+    """
+    Build a self-contained HTML page that renders the cover design condensed
+    into the top portion, with the quote displayed below the title.
+
+    Strategy: Extract the <style> and cover section from the playbook HTML,
+    then render a condensed version with the quote underneath.
+    """
+    # Extract all <style> blocks
+    styles = re.findall(r'<style[^>]*>(.*?)</style>', playbook_html, re.DOTALL)
+    combined_css = "\n".join(styles)
+
+    # Extract Google Fonts link
+    font_links = re.findall(r'<link[^>]+fonts\.googleapis\.com[^>]+>', playbook_html)
+    font_html = "\n".join(font_links)
+
+    # Extract cover-content inner HTML (greedy — grab everything up to closing </div> before </section>)
+    cover_match = re.search(
+        r'<div\s+class="cover-content"[^>]*>(.*)</div>\s*</(?:section|div)>',
+        playbook_html,
+        re.DOTALL,
+    )
+    if not cover_match:
+        cover_match = re.search(
+            r'<div\s+class="cover-content"[^>]*>(.*?)</div>',
+            playbook_html,
+            re.DOTALL,
+        )
+
+    cover_inner = cover_match.group(1).strip() if cover_match else f"<h1>{title}</h1>"
+
+    # Remove the tagline and author from cover (keep badge + title + art/icon)
+    cover_inner = re.sub(r'<p\s+class="cover-tagline"[^>]*>.*?</p>', '', cover_inner, flags=re.DOTALL)
+    cover_inner = re.sub(r'<p\s+class="cover-author"[^>]*>.*?</p>', '', cover_inner, flags=re.DOTALL)
+    cover_inner = re.sub(r'<p\s+class="cover-sub"[^>]*>.*?</p>', '', cover_inner, flags=re.DOTALL)
+
+    # Extract SVG <defs> block (symbol definitions for <use href> icons)
+    svg_defs_match = re.search(r'<svg[^>]*>\s*<defs>(.*?)</defs>\s*</svg>', playbook_html, re.DOTALL)
+    svg_defs_html = f'<svg style="display:none"><defs>{svg_defs_match.group(1)}</defs></svg>' if svg_defs_match else ""
+
+    # Detect the heading font family from CSS
+    heading_font_match = re.search(r'h1[^{]*\{[^}]*font-family:\s*([^;]+)', combined_css)
+    heading_font = heading_font_match.group(1).strip().rstrip(';') if heading_font_match else "'Poppins', sans-serif"
+
+    # Detect cover background from CSS
+    cover_bg_match = re.search(r'\.cover\s*\{[^}]*background:\s*([^;]+)', combined_css)
+    cover_bg = cover_bg_match.group(1).strip().rstrip(';') if cover_bg_match else "linear-gradient(165deg, #0E0618 0%, #1A0A2E 30%, #2D1B4E 70%, #1A0A2E 100%)"
+
+    # Detect accent/gold color — try multiple variable names
+    gold_color = "#D4A843"
+    for var_name in ['--gold-glow', '--gold', '--amber-glow', '--amber', '--ember',
+                     '--compass-gold', '--fire', '--teal', '--rust-bright']:
+        gm = re.search(var_name.replace('-', r'\-') + r'\s*:\s*(#[0-9A-Fa-f]+)', combined_css)
+        if gm:
+            gold_color = gm.group(1)
+            break
+
+    # Ensure accent color is bright enough for dark backgrounds (min luminance)
+    def _brighten(hex_color: str, min_lum: int = 140) -> str:
+        h = hex_color.lstrip('#')
+        r, g, b = int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
+        lum = r * 0.299 + g * 0.587 + b * 0.114
+        if lum < min_lum:
+            factor = min_lum / max(lum, 1)
+            r = min(int(r * factor), 255)
+            g = min(int(g * factor), 255)
+            b = min(int(b * factor), 255)
+        return f"#{r:02x}{g:02x}{b:02x}"
+
+    gold_color = _brighten(gold_color)
+
+    # Detect serif font for quote
+    serif_match = re.search(r"font-family:\s*'(Lora|Cormorant|Playfair|EB Garamond|Merriweather)[^']*'", combined_css)
+    serif_font = f"'{serif_match.group(1)}'" if serif_match else "'Lora'"
+
+    # Escape quote for HTML
+    quote_html = quote.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+    is_wide = width > height
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+{font_html}
+<style>
+{combined_css}
+
+/* ===== PULL QUOTE OVERRIDES ===== */
+* {{ margin: 0; padding: 0; box-sizing: border-box; }}
+html, body {{
+    width: {width}px;
+    height: {height}px;
+    overflow: hidden;
+}}
+
+.pq-wrapper {{
+    width: {width}px;
+    height: {height}px;
+    background: {cover_bg};
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}}
+
+/* Radial glow effect */
+.pq-wrapper::before {{
+    content: '';
+    position: absolute;
+    top: {'15%' if not is_wide else '10%'};
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: {'520px' if not is_wide else '600px'};
+    height: {'520px' if not is_wide else '400px'};
+    background: radial-gradient(circle, rgba(212,168,67,0.06) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}}
+
+/* Vignette */
+.pq-wrapper::after {{
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.4) 100%);
+    pointer-events: none;
+}}
+
+.pq-content {{
+    position: relative;
+    z-index: 2;
+    padding: {'40px 70px' if not is_wide else '24px 70px'};
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: {'14px' if not is_wide else '10px'};
+}}
+
+/* Condensed cover section — badge + art + title */
+.pq-cover {{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: {'6px' if not is_wide else '4px'};
+}}
+
+.pq-cover .cover-badge {{
+    display: inline-block;
+    padding: 5px 16px;
+    border: 1px solid rgba(212,168,67,0.25);
+    border-radius: 50px;
+    font-family: {heading_font};
+    font-size: {'11px' if not is_wide else '10px'};
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: {gold_color};
+    margin-bottom: 0;
+}}
+
+.pq-cover h1 {{
+    font-family: {heading_font};
+    font-size: {'clamp(1.6rem, 4vw, 2.2rem)' if not is_wide else 'clamp(1.3rem, 3vw, 1.8rem)'};
+    font-weight: 300;
+    color: #FFFFFF;
+    line-height: 1.15;
+    margin: 0;
+}}
+
+.pq-cover h1 strong,
+.pq-cover h1 span,
+.pq-cover h1 em {{
+    font-weight: 700;
+    font-style: normal;
+    color: {gold_color};
+    display: block;
+}}
+
+/* Decorative separator */
+.pq-separator {{
+    width: 120px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, {gold_color}55, transparent);
+    position: relative;
+}}
+.pq-separator::after {{
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 5px;
+    height: 5px;
+    background: {gold_color}55;
+    border-radius: 50%;
+}}
+
+/* Quote text */
+.pq-quote {{
+    font-family: {serif_font}, Georgia, serif;
+    font-size: {'clamp(1.4rem, 3.5vw, 2rem)' if not is_wide else 'clamp(1.1rem, 2.5vw, 1.5rem)'};
+    font-weight: 400;
+    font-style: italic;
+    color: rgba(255,255,255,0.92);
+    line-height: 1.55;
+    max-width: {'700px' if not is_wide else '900px'};
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}}
+
+/* Brand watermark */
+.pq-brand {{
+    position: absolute;
+    bottom: {'28px' if not is_wide else '18px'};
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: {heading_font};
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.15);
+    z-index: 3;
+}}
+
+/* Hide animated bg elements that clutter — keep cover-art SVGs */
+.cover-acorn, .leaf, .firefly, .star,
+.ghost-frame-anim, .cover-frame-reveal, .cover-pulse,
+.gravity-ring, .orbit-particle, .gravity-core,
+.cover-stars, .cover-compass, .particle, .ghost-noise {{ display: none !important; }}
+
+/* Cover art — as large as possible without overlapping text */
+.pq-cover .cover-art {{
+    margin-bottom: {'12px' if not is_wide else '8px'};
+    flex-shrink: 0;
+}}
+.pq-cover .cover-art svg {{
+    width: {'280px' if not is_wide else '200px'};
+    max-height: {'280px' if not is_wide else '180px'};
+    object-fit: contain;
+    filter: drop-shadow(0 0 24px rgba(212,168,67,0.25));
+}}
+
+/* Cover icon (emoji or SVG symbol) */
+.pq-cover .cover-icon {{
+    display: block;
+    margin-bottom: {'8px' if not is_wide else '4px'};
+    font-size: {'5rem' if not is_wide else '3.5rem'};
+    line-height: 1;
+    animation: none !important;
+}}
+.pq-cover .cover-icon .ico {{
+    width: {'100px' if not is_wide else '70px'};
+    height: {'100px' if not is_wide else '70px'};
+    stroke-width: 1.5;
+    color: {gold_color};
+    display: inline-block;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}}
+
+</style>
+</head>
+<body>
+{svg_defs_html}
+<div class="pq-wrapper">
+    <div class="pq-content">
+        <div class="pq-cover">
+            <span class="cover-badge">Kingdom Builders AI</span>
+            {_extract_cover_art(cover_inner)}
+            <h1>{_extract_h1_inner(cover_inner, title)}</h1>
+        </div>
+        <div class="pq-separator"></div>
+        <div class="pq-quote">&ldquo;{quote_html}&rdquo;</div>
+    </div>
+    <div class="pq-brand">KingdomBuilders.ai</div>
+</div>
+</body>
+</html>"""
 
 
-def extract_colors(html: str) -> dict:
-    colors = {
-        "dark": (20, 10, 40),
-        "dark2": (30, 20, 60),
-        "accent": (212, 168, 67),
-        "accent2": (180, 140, 60),
-        "light": (250, 248, 240),
-    }
+def _extract_h1_inner(cover_inner: str, fallback_title: str) -> str:
+    """Extract just the inner HTML of the h1 tag from the cover content."""
+    m = re.search(r'<h1[^>]*>(.*?)</h1>', cover_inner, re.DOTALL)
+    if m:
+        return m.group(1).strip()
+    return fallback_title
 
-    root_match = re.search(r':root\s*\{([^}]+)\}', html)
-    if not root_match:
-        return colors
 
-    root_css = root_match.group(1)
-
-    def find_color(pattern_list):
-        for pattern in pattern_list:
-            m = re.search(pattern + r'\s*:\s*(#[0-9A-Fa-f]{3,8})', root_css)
-            if m:
-                return hex_to_rgb(m.group(1))
-        return None
-
-    dark = find_color([
-        r'--ink', r'--iron-dark', r'--purple-deep', r'--indigo-deep',
-        r'--indigo', r'--navy', r'--deep', r'--forest', r'--canopy',
-        r'--midnight', r'--obsidian', r'--sea', r'--ocean', r'--dusk',
-        r'--soil', r'--saddle', r'--night', r'--ridge', r'--dirt-dark',
-        r'--terra-dark',
-    ])
-    if dark:
-        colors["dark"] = dark
-        colors["dark2"] = tuple(min(c + 25, 255) for c in dark)
-
-    accent = find_color([
-        r'--gold', r'--amber', r'--ember', r'--compass-gold',
-        r'--teal', r'--amber-glow', r'--fire', r'--acorn',
-        r'--ember-glow',
-    ])
-    if accent:
-        colors["accent"] = accent
-        colors["accent2"] = tuple(max(c - 30, 0) for c in accent)
-
-    light = find_color([
-        r'--cream', r'--bone', r'--stone', r'--white',
-        r'--cream-warm', r'--silver-pale',
-    ])
-    if light:
-        colors["light"] = light
-
-    return colors
+def _extract_cover_art(cover_inner: str) -> str:
+    """Extract any cover-art div (with SVG) or cover-icon span from the cover content."""
+    # Look for cover-art div — use </svg> as anchor since SVGs don't contain </div>
+    art_match = re.search(
+        r'<div\s+class="cover-art"[^>]*>.*?</svg>\s*</div>',
+        cover_inner,
+        re.DOTALL,
+    )
+    if art_match:
+        return art_match.group(0)
+    # Fallback: simpler cover-art (no svg, maybe just use-href)
+    art_match2 = re.search(r'<div\s+class="cover-art"[^>]*>.*?</div>', cover_inner, re.DOTALL)
+    if art_match2:
+        return art_match2.group(0)
+    # Look for cover-icon (emoji or SVG symbol)
+    icon_match = re.search(r'<span\s+class="cover-icon"[^>]*>.*?</span>', cover_inner, re.DOTALL)
+    if icon_match:
+        return icon_match.group(0)
+    return ""
 
 
 # ---------------------------------------------------------------------------
 # IMAGE GENERATION
 # ---------------------------------------------------------------------------
-def create_background(w: int, h: int, colors: dict) -> Image.Image:
-    """Gradient + radial glow + vignette + grain."""
-    dark = np.array(colors["dark"], dtype=np.float32)
-    dark2 = np.array(colors["dark2"], dtype=np.float32)
-    accent = np.array(colors["accent"], dtype=np.float32)
-
-    y_coords, x_coords = np.mgrid[0:h, 0:w].astype(np.float32)
-
-    # Diagonal gradient
-    t = (x_coords / w * 0.3 + y_coords / h * 0.7)
-    t = t * t * (3 - 2 * t)
-    img_arr = dark[None, None, :] + (dark2 - dark)[None, None, :] * t[:, :, None]
-
-    # Radial glow
-    cx, cy = w / 2, h * 0.35
-    max_r = max(w, h) * 0.6
-    dist = np.sqrt((x_coords - cx) ** 2 + (y_coords - cy) ** 2)
-    glow_t = np.clip(1 - dist / max_r, 0, 1)
-    glow_t = glow_t * glow_t * 0.08
-    img_arr += accent[None, None, :] * glow_t[:, :, None]
-
-    # Vignette
-    cx2, cy2 = w / 2, h / 2
-    max_dist = math.sqrt(cx2 * cx2 + cy2 * cy2)
-    dist2 = np.sqrt((x_coords - cx2) ** 2 + (y_coords - cy2) ** 2)
-    darken = (dist2 / max_dist) ** 2 * 0.4
-    img_arr *= (1 - darken)[:, :, None]
-
-    # Film grain
-    rng = np.random.RandomState(42)
-    noise = rng.randint(-5, 6, size=(h, w, 1)).astype(np.float32)
-    img_arr += noise
-
-    img_arr = np.clip(img_arr, 0, 255).astype(np.uint8)
-    return Image.fromarray(img_arr, "RGB")
-
-
-def wrap_text(text: str, font: ImageFont.FreeTypeFont, max_width: int) -> list:
-    lines = []
-    for paragraph in text.split("\n"):
-        words = paragraph.split()
-        if not words:
-            lines.append("")
-            continue
-        current = words[0]
-        for word in words[1:]:
-            test = current + " " + word
-            bbox = font.getbbox(test)
-            if bbox[2] - bbox[0] <= max_width:
-                current = test
-            else:
-                lines.append(current)
-                current = word
-        lines.append(current)
-    return lines
-
-
-def draw_accent_line(draw, cx, y, width, color):
-    """Draw a thin decorative line with center diamond."""
-    muted = tuple(int(c * 0.3) for c in color)
-    half = width // 2
-    draw.line([(cx - half, y), (cx + half, y)], fill=muted, width=1)
-    d = 3
-    draw.polygon([(cx, y - d), (cx + d, y), (cx, y + d), (cx - d, y)], fill=muted)
-
-
-def generate_quote_image(
+def generate_images_for_playbook(
+    page,
+    filepath: Path,
+    playbook_html: str,
     title: str,
-    quote_text: str,
-    colors: dict,
-    size: tuple,
-    output_path: Path,
-):
-    """Generate a single pull quote image."""
-    w, h = size
-    is_wide = w > h
-    padding_x = int(w * 0.1)
-    text_width = w - (padding_x * 2)
+    quotes: list,
+    display_name: str,
+) -> list:
+    """Generate all 6 images (3 quotes x 2 sizes) for one playbook."""
+    outputs = []
 
-    img = create_background(w, h, colors)
-    draw = ImageDraw.Draw(img)
+    for idx, quote in enumerate(quotes, 1):
+        for size, suffix in [(SQUARE, ""), (WIDE, " wide")]:
+            w, h = size
+            html_content = build_pull_quote_html(playbook_html, title, quote, w, h)
 
-    accent = colors["accent"]
-    text_color = (250, 245, 230)
-    title_color = tuple(int(c * 0.85 + 40) for c in accent)
+            # Set viewport to exact size
+            page.set_viewport_size({"width": w, "height": h})
+            page.set_content(html_content, wait_until="networkidle")
 
-    # --- BADGE ---
-    try:
-        badge_font = ImageFont.truetype(SANS_REGULAR, 11)
-    except OSError:
-        badge_font = ImageFont.load_default()
-    badge_text = "KINGDOM BUILDERS AI"
-    badge_bbox = badge_font.getbbox(badge_text)
-    badge_w = badge_bbox[2] - badge_bbox[0]
-    badge_x = (w - badge_w) // 2
-    badge_y = int(h * 0.08) if not is_wide else int(h * 0.08)
-    badge_color = tuple(int(c * 0.5) for c in accent)
-    draw.text((badge_x, badge_y), badge_text, font=badge_font, fill=badge_color)
+            # Small wait for fonts to load
+            page.wait_for_timeout(500)
 
-    # --- TITLE ---
-    title_size = 22 if not is_wide else 20
-    try:
-        title_font = ImageFont.truetype(SANS_BOLD, title_size)
-    except OSError:
-        title_font = ImageFont.load_default()
+            out_path = OUTPUT_DIR / f"{display_name} {idx}{suffix}.png"
+            page.screenshot(path=str(out_path), type="png")
+            outputs.append(out_path)
 
-    # Wrap title if needed
-    title_lines = wrap_text(title, title_font, text_width)
-    title_line_h = int(title_size * 1.4)
-    title_y = badge_y + 30
-    for tl in title_lines:
-        tl_bbox = title_font.getbbox(tl)
-        tl_w = tl_bbox[2] - tl_bbox[0]
-        draw.text(((w - tl_w) // 2, title_y), tl, font=title_font, fill=title_color)
-        title_y += title_line_h
-
-    # --- DECORATIVE LINE ---
-    line_y = title_y + 16
-    draw_accent_line(draw, w // 2, line_y, 180, accent)
-
-    # --- QUOTE ---
-    quote_size = 48 if not is_wide else 38
-    try:
-        quote_font = ImageFont.truetype(SERIF_BOLD, quote_size)
-    except OSError:
-        try:
-            quote_font = ImageFont.truetype(SERIF_ITALIC, quote_size)
-        except OSError:
-            quote_font = ImageFont.load_default()
-
-    quote_lines = wrap_text(quote_text, quote_font, text_width)
-    line_height = int(quote_size * 1.55)
-    total_quote_h = len(quote_lines) * line_height
-
-    # Center quote in remaining space
-    space_top = line_y + 20
-    space_bottom = h - int(h * 0.1)
-    quote_start_y = space_top + (space_bottom - space_top - total_quote_h) // 2
-
-    for i, line in enumerate(quote_lines):
-        bbox = quote_font.getbbox(line)
-        lw = bbox[2] - bbox[0]
-        x = (w - lw) // 2
-        y = quote_start_y + i * line_height
-        # Shadow
-        shadow = tuple(max(0, c - 50) for c in colors["dark"])
-        draw.text((x + 2, y + 2), line, font=quote_font, fill=shadow)
-        # Text
-        draw.text((x, y), line, font=quote_font, fill=text_color)
-
-    # --- DECORATIVE LINE below quote ---
-    below_y = quote_start_y + total_quote_h + 20
-    if below_y < h - 60:
-        draw_accent_line(draw, w // 2, below_y, 180, accent)
-
-    # --- BRAND ---
-    try:
-        brand_font = ImageFont.truetype(SANS_REGULAR, 13)
-    except OSError:
-        brand_font = ImageFont.load_default()
-    brand_color = tuple(int(c * 0.35 + colors["dark"][i] * 0.65) for i, c in enumerate(text_color[:3]))
-    brand_bbox = brand_font.getbbox(BRAND_TEXT)
-    brand_w = brand_bbox[2] - brand_bbox[0]
-    draw.text(((w - brand_w) // 2, h - 45), BRAND_TEXT, font=brand_font, fill=brand_color)
-
-    # --- SAVE ---
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    img.save(str(output_path), "PNG", optimize=True)
+    return outputs
 
 
 # ---------------------------------------------------------------------------
 # FILE PROCESSING
 # ---------------------------------------------------------------------------
-def stem_to_display(stem: str) -> str:
-    """Convert file stem to display name: The_Conductors_Playbook -> The Conductors Playbook"""
-    name = stem.replace("_Modified", "")
-    return name.replace("_", " ")
-
-
-def process_playbook(filepath: Path) -> list:
-    """Process a single playbook. Returns list of output paths."""
-    stem = filepath.stem  # e.g. "The_Conductors_Playbook"
-    display_name = stem_to_display(stem)
-
-    html = filepath.read_text(encoding="utf-8", errors="replace")
-    colors = extract_colors(html)
-    title = extract_title(html, filepath.name)
-
-    # Get quotes
-    quotes = CURATED_QUOTES.get(stem)
-    if not quotes:
-        # Fallback: use filename as a single quote
-        print(f"  WARNING: No curated quotes for {stem}, skipping")
-        return []
-
-    outputs = []
-    for idx, quote in enumerate(quotes, 1):
-        # Square (1080x1080)
-        sq_path = OUTPUT_DIR / f"{display_name} {idx}.png"
-        generate_quote_image(title, quote, colors, SQUARE, sq_path)
-        outputs.append(sq_path)
-
-        # Wide (1200x675)
-        wide_path = OUTPUT_DIR / f"{display_name} {idx} wide.png"
-        generate_quote_image(title, quote, colors, WIDE, wide_path)
-        outputs.append(wide_path)
-
-    return outputs
-
-
 def get_active_playbooks() -> list:
     playbooks = []
     for f in ASSETS_DIR.iterdir():
@@ -605,33 +692,55 @@ def get_active_playbooks() -> list:
 def main():
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
+    # Determine which playbooks to process
     if len(sys.argv) > 1:
+        targets = []
         for arg in sys.argv[1:]:
             target = ASSETS_DIR / arg
             if not target.exists():
                 target = ASSETS_DIR / (arg + ".html")
             if not target.exists():
                 print(f"  NOT FOUND: {arg}")
-                continue
-            results = process_playbook(target)
-            for r in results:
-                print(f"  GENERATED: {r.name}")
+            else:
+                targets.append(target)
     else:
-        playbooks = get_active_playbooks()
-        print(f"Found {len(playbooks)} active playbooks.\n")
+        targets = get_active_playbooks()
+
+    if not targets:
+        print("No playbooks to process.")
+        return
+
+    print(f"Processing {len(targets)} playbook(s)...\n")
+
+    with sync_playwright() as pw:
+        browser = pw.chromium.launch()
+        page = browser.new_page()
 
         total = 0
-        for i, pb in enumerate(playbooks, 1):
-            name = pb.stem
-            print(f"  [{i:2d}/{len(playbooks)}] {name}...", end=" ", flush=True)
+        for i, filepath in enumerate(targets, 1):
+            stem = filepath.stem
+            display_name = stem_to_display(stem)
+            quotes = CURATED_QUOTES.get(stem)
+
+            if not quotes:
+                print(f"  [{i:2d}/{len(targets)}] {stem}... SKIP (no quotes)")
+                continue
+
+            print(f"  [{i:2d}/{len(targets)}] {stem}...", end=" ", flush=True)
             try:
-                results = process_playbook(pb)
+                html = filepath.read_text(encoding="utf-8", errors="replace")
+                title = extract_title(html, filepath.name)
+                results = generate_images_for_playbook(
+                    page, filepath, html, title, quotes, display_name,
+                )
                 total += len(results)
                 print(f"OK ({len(results)} images)")
             except Exception as e:
                 print(f"ERROR: {e}")
 
-        print(f"\nDone. {total} images saved to: {OUTPUT_DIR}")
+        browser.close()
+
+    print(f"\nDone. {total} images saved to: {OUTPUT_DIR}")
 
 
 if __name__ == "__main__":
