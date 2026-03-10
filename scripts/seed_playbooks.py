@@ -68,6 +68,12 @@ SERIES_DEFS = [
         "description": "A 3-part series on recognizing, defending against, and surviving narcissistic abuse through animal parable.",
         "display_order": 3,
     },
+    {
+        "name": "The Mirror Series",
+        "slug": "the-mirror-series",
+        "description": "A 3-part series for the narcissist who wants to heal. Recognition, deconstruction, and rebuilding through animal parable.",
+        "display_order": 4,
+    },
 ]
 
 # ---------------------------------------------------------------------------
@@ -113,6 +119,9 @@ PLAYBOOKS_DATA = [
     {"slug": "the-mantis-shrimps-eye", "title": "The Mantis Shrimp's Eye", "route": "/themantisshrimpseye", "category": "mindset", "series": "the-shield-series", "series_order": 1, "landing_file": "the-mantis-shrimps-eye.html", "asset_file": "The_Mantis_Shrimps_Eye.html", "cover_emoji": "\U0001f990"},
     {"slug": "the-porcupines-quills", "title": "The Porcupine's Quills", "route": "/theporcupinesquills", "category": "mindset", "series": "the-shield-series", "series_order": 2, "landing_file": "the-porcupines-quills.html", "asset_file": "The_Porcupines_Quills.html", "cover_emoji": "\U0001f994"},
     {"slug": "the-tardigrade-protocol", "title": "The Tardigrade Protocol", "route": "/thetardigradeprotocol", "category": "resilience", "series": "the-shield-series", "series_order": 3, "landing_file": "the-tardigrade-protocol.html", "asset_file": "The_Tardigrade_Protocol.html", "cover_emoji": "\U0001f9ec"},
+    {"slug": "the-hermit-crabs-shell", "title": "The Hermit Crab's Shell", "route": "/thehermitcrabsshell", "category": "identity", "series": "the-mirror-series", "series_order": 1, "landing_file": "the-hermit-crabs-shell.html", "asset_file": "The_Hermit_Crabs_Shell.html", "cover_emoji": "\U0001f980"},
+    {"slug": "the-scorpions-molt", "title": "The Scorpion's Molt", "route": "/thescorpionsmolt", "category": "mindset", "series": "the-mirror-series", "series_order": 2, "landing_file": "the-scorpions-molt.html", "asset_file": "The_Scorpions_Molt.html", "cover_emoji": "\U0001f982"},
+    {"slug": "the-vampire-squids-light", "title": "The Vampire Squid's Light", "route": "/thevampiresquidslight", "category": "resilience", "series": "the-mirror-series", "series_order": 3, "landing_file": "the-vampire-squids-light.html", "asset_file": "The_Vampire_Squids_Light.html", "cover_emoji": "\U0001f991"},
 ]
 
 

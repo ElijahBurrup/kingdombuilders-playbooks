@@ -212,6 +212,9 @@ LANDING_ROUTES: dict[str, str] = {
     "/themantisshrimpseye": "the-mantis-shrimps-eye.html",
     "/theporcupinesquills": "the-porcupines-quills.html",
     "/thetardigradeprotocol": "the-tardigrade-protocol.html",
+    "/thehermitcrabsshell": "the-hermit-crabs-shell.html",
+    "/thescorpionsmolt": "the-scorpions-molt.html",
+    "/thevampiresquidslight": "the-vampire-squids-light.html",
 }
 
 # ============================================================================
@@ -269,6 +272,9 @@ SLUG_TO_FILE: dict[str, str] = {
     "the-mantis-shrimps-eye": "The_Mantis_Shrimps_Eye.html",
     "the-porcupines-quills": "The_Porcupines_Quills.html",
     "the-tardigrade-protocol": "The_Tardigrade_Protocol.html",
+    "the-hermit-crabs-shell": "The_Hermit_Crabs_Shell.html",
+    "the-scorpions-molt": "The_Scorpions_Molt.html",
+    "the-vampire-squids-light": "The_Vampire_Squids_Light.html",
 }
 
 

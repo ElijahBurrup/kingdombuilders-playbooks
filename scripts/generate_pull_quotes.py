@@ -292,6 +292,21 @@ CURATED_QUOTES = {
         "That feeling is not accurate information about whether removing it would kill you.",
         "You were not destroyed. You were compressed. The structure was always there. Waiting. Preserved.",
     ],
+    "The_Hermit_Crabs_Shell": [
+        "You have never lived in your own body. Every identity you have ever worn was borrowed from someone else's back.",
+        "The hermit crab has no memory of its own body. It only remembers the shells.",
+        "Between the shell you are shedding and the shell you are reaching for, there is a moment where you are just yourself.",
+    ],
+    "The_Scorpions_Molt": [
+        "The armor that protects you is the thing that is killing you. The only way to grow is to become completely soft.",
+        "The scorpion does not choose to molt. The body outgrows the armor and the armor must break.",
+        "The scorpion is not weaker during the molt. It is growing. The softness is not the vulnerability. It is the expansion.",
+    ],
+    "The_Vampire_Squids_Light": [
+        "You were never a vampire. You were something that learned to survive in the dark and got misnamed by everyone, including yourself.",
+        "The vampire squid does not borrow light from the surface. It generates light from its own body, in the deepest dark.",
+        "A creature from the deep dark wrote a letter in sunlight and did not burst into flames.",
+    ],
 }
 
 

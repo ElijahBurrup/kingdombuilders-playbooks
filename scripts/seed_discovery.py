@@ -231,6 +231,18 @@ TAGS = {
         ("narcissism", 1.0), ("resilience", 1.0), ("survival", 0.9), ("courage", 0.8),
         ("fear", 0.7), ("self_awareness", 0.6), ("identity", 0.5), ("growth", 0.4),
     ],
+    "the-hermit-crabs-shell": [
+        ("narcissism", 1.0), ("identity", 1.0), ("self_awareness", 0.9), ("vulnerability", 0.8),
+        ("fear", 0.7), ("perception", 0.6), ("courage", 0.5), ("growth", 0.4),
+    ],
+    "the-scorpions-molt": [
+        ("narcissism", 1.0), ("vulnerability", 1.0), ("courage", 0.9), ("discipline", 0.8),
+        ("self_awareness", 0.7), ("fear", 0.7), ("growth", 0.6), ("identity", 0.5),
+    ],
+    "the-vampire-squids-light": [
+        ("narcissism", 1.0), ("self_awareness", 1.0), ("growth", 0.9), ("identity", 0.8),
+        ("courage", 0.7), ("vulnerability", 0.7), ("resilience", 0.6), ("faith", 0.4),
+    ],
 }
 
 
@@ -828,6 +840,39 @@ CONNECTIONS = {
         ("surprise", "lay-it-down",
          "You learned to survive narcissistic abuse. Now the hardest question: can you lay down the identity it gave you?",
          "Survival meets spiritual surrender"),
+    ],
+    "the-hermit-crabs-shell": [
+        ("deeper", "the-scorpions-molt",
+         "You have seen the shells. Now learn to take them off. Layer by layer. Skin by skin.",
+         "Recognition leads to deconstruction"),
+        ("bridge", "the-narrator",
+         "The hermit crab wears borrowed shells. The Narrator wears borrowed stories. Both need to find what is underneath.",
+         "False identity through objects meets false identity through narrative"),
+        ("surprise", "the-mantis-shrimps-eye",
+         "You built the shells to protect yourself from something. The Mantis Shrimp teaches the person on the other side to see through them.",
+         "The narcissist's mirror meets the survivor's lens"),
+    ],
+    "the-scorpions-molt": [
+        ("deeper", "the-vampire-squids-light",
+         "You shed the armor. Now build something in its place. Not another shell. A light source.",
+         "Deconstruction leads to rebuilding"),
+        ("bridge", "the-pangolins-armor",
+         "The scorpion sheds armor to grow. The pangolin rolls into armor to survive. Two strategies. Same question: what is the armor for?",
+         "Shedding defense meets embracing defense"),
+        ("surprise", "the-body-lie",
+         "The scorpion's molt happens in the body. The Body Lie asks what your body has been telling you that your mind refused to hear.",
+         "Physical shedding meets somatic truth"),
+    ],
+    "the-vampire-squids-light": [
+        ("deeper", "the-hermit-crabs-shell",
+         "The light reveals what the shells were hiding. Go back to the beginning and see the catalog with new eyes.",
+         "Rebuilding illuminates the original architecture"),
+        ("bridge", "the-moths-flame",
+         "The vampire squid generates its own light. The moth chases someone else's. One is the cure. The other is the disease.",
+         "Internal light vs external attraction"),
+        ("surprise", "lay-it-down",
+         "You generated your own light. Now the final question: can you lay down the version of yourself that needed the dark?",
+         "Self-generated light meets spiritual surrender"),
     ],
 }
 

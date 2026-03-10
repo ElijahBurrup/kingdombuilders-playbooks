@@ -136,6 +136,22 @@ PATHS = [
         ],
     },
     {
+        "slug": "the-mirror-series",
+        "title": "The Mirror Series",
+        "description": "Three playbooks for the narcissist who wants to heal. See the shells you wear, shed the armor that imprisons you, and generate your own light in the deep dark.",
+        "theme_tag": "narcissism",
+        "emoji": "\U0001FA9E",
+        "color": "#D4A574",
+        "steps": [
+            ("the-hermit-crabs-shell",
+             None),
+            ("the-scorpions-molt",
+             "You have seen the shells. You have named the species. You have survived the Naked Minute. Now the question changes from 'what am I wearing' to 'how do I take it off.' The Scorpion teaches you to shed on purpose."),
+            ("the-vampire-squids-light",
+             "The shells are cataloged. The armor has doors. But what fills the space where the defenses used to be? The Vampire Squid teaches you to generate your own light so you never need to steal anyone else's again."),
+        ],
+    },
+    {
         "slug": "the-shield-series",
         "title": "The Shield Series",
         "description": "Three playbooks that teach you to see narcissistic manipulation, build automatic defenses, and survive when the attack outlasts your energy. Detection. Defense. Endurance.",
