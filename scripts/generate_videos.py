@@ -7,7 +7,9 @@ Usage:
   export RUNWAYML_API_SECRET=your_key_here
   python scripts/generate_videos.py [--playbook starlings] [--dry-run]
 
-Videos are saved to assets/videos/ and referenced in playbook HTML.
+Videos are saved to assets/videos/ locally and uploaded to Cloudflare R2 for production serving.
+R2 bucket: kb-playbook-videos
+Public URL: https://pub-3be2b691e42247078311064d9672c978.r2.dev/
 """
 
 import os
@@ -15,6 +17,7 @@ import sys
 import json
 import time
 import argparse
+import subprocess
 import requests
 from pathlib import Path
 from datetime import datetime
@@ -29,6 +32,11 @@ except ImportError:
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 ASSETS_DIR = PROJECT_ROOT / "assets"
 VIDEO_DIR = ASSETS_DIR / "videos"
+
+# ── Cloudflare R2 ─────────────────────────────────────────────
+R2_ACCOUNT_ID = "81f3bf31ee69fe657517c485ad8f62b3"
+R2_BUCKET = "kb-playbook-videos"
+R2_PUBLIC_URL = "https://pub-3be2b691e42247078311064d9672c978.r2.dev"
 
 # ── Video specifications ───────────────────────────────────────
 # Each entry: playbook key, video ID, prompt, placement description
@@ -216,44 +224,77 @@ def generate_video(client, spec, dry_run=False):
     )
 
     print(f"    Task ID: {task.id}")
-    print(f"    Polling for completion...")
+    print(f"    Waiting for completion (this takes 2-4 minutes)...")
+    sys.stdout.flush()
 
-    # Poll for completion
+    # Use SDK's built-in polling (handles THROTTLED, RUNNING, etc.)
     start_time = time.time()
-    while True:
+    try:
+        result = task.wait_for_task_output()
+    except Exception as e:
+        print(f"    FAILED: {e}")
+        return None
+
+    elapsed = int(time.time() - start_time)
+    print(f"    Completed in {elapsed}s")
+
+    # Get video URL from result
+    video_url = None
+    if hasattr(result, 'output') and result.output:
+        video_url = result.output[0]
+    elif isinstance(result, list) and len(result) > 0:
+        video_url = result[0]
+    else:
+        # Try retrieving the task directly
         task_detail = client.tasks.retrieve(task.id)
-        status = task_detail.status
-
-        elapsed = int(time.time() - start_time)
-        print(f"    [{elapsed}s] Status: {status}")
-
-        if status == "SUCCEEDED":
+        if hasattr(task_detail, 'output') and task_detail.output:
             video_url = task_detail.output[0]
-            print(f"    Downloading from: {video_url[:80]}...")
 
-            # Download the video
-            response = requests.get(video_url, stream=True)
-            response.raise_for_status()
-            with open(output_path, "wb") as f:
-                for chunk in response.iter_content(chunk_size=8192):
-                    f.write(chunk)
+    if not video_url:
+        print(f"    FAILED: No output URL found. Result: {result}")
+        return None
 
-            size_mb = output_path.stat().st_size / (1024 * 1024)
-            print(f"    Saved: {output_path} ({size_mb:.1f} MB)")
-            return str(output_path)
+    print(f"    Downloading from: {str(video_url)[:80]}...")
 
-        elif status == "FAILED":
-            print(f"    FAILED: {task_detail}")
-            return None
+    # Download the video
+    response = requests.get(str(video_url), stream=True)
+    response.raise_for_status()
+    with open(output_path, "wb") as f:
+        for chunk in response.iter_content(chunk_size=8192):
+            f.write(chunk)
 
-        elif status == "CANCELED":
-            print(f"    CANCELED")
-            return None
+    size_mb = output_path.stat().st_size / (1024 * 1024)
+    print(f"    Saved: {output_path} ({size_mb:.1f} MB)")
 
-        # Wait before polling again (with jitter)
-        import random
-        wait = 5 + random.uniform(0, 2)
-        time.sleep(wait)
+    # Upload to Cloudflare R2
+    upload_to_r2(output_path, spec["id"])
+
+    return str(output_path)
+
+
+def upload_to_r2(file_path, video_id):
+    """Upload a video file to Cloudflare R2 bucket."""
+    r2_token = os.environ.get("CLOUDFLARE_R2_TOKEN")
+    if not r2_token:
+        print(f"    SKIP R2 upload: Set CLOUDFLARE_R2_TOKEN to enable")
+        return False
+
+    filename = f"{video_id}.mp4"
+    url = f"https://api.cloudflare.com/client/v4/accounts/{R2_ACCOUNT_ID}/r2/buckets/{R2_BUCKET}/objects/{filename}"
+
+    print(f"    Uploading to R2: {R2_PUBLIC_URL}/{filename}")
+    with open(file_path, "rb") as f:
+        resp = requests.put(url, headers={
+            "Authorization": f"Bearer {r2_token}",
+            "Content-Type": "video/mp4",
+        }, data=f)
+
+    if resp.status_code == 200:
+        print(f"    R2 upload OK: {R2_PUBLIC_URL}/{filename}")
+        return True
+    else:
+        print(f"    R2 upload FAILED ({resp.status_code}): {resp.text[:200]}")
+        return False
 
 
 def generate_playbook_videos(client, playbook_key, dry_run=False):
@@ -270,9 +311,13 @@ def generate_playbook_videos(client, playbook_key, dry_run=False):
     print(f"{'='*60}")
 
     results = []
-    for video_spec in spec["videos"]:
+    for i, video_spec in enumerate(spec["videos"]):
         result = generate_video(client, video_spec, dry_run)
         results.append({"id": video_spec["id"], "path": result, "spec": video_spec})
+        # Delay between videos to avoid rate limiting
+        if i < len(spec["videos"]) - 1 and not dry_run:
+            print(f"  Waiting 10s before next video...")
+            time.sleep(10)
 
     return results
 
