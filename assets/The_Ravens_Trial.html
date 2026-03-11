@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Raven's Trial | Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+ --slate:#1A1E2A;--slate-deep:#0E1018;--slate-mid:#252A3A;--slate-light:#3A4058;--slate-pale:#5A6078;
+ --raven:#2A2E3E;--raven-deep:#14161E;--raven-mid:#3A3E52;
+ --violet:#6A4DC8;--violet-glow:#8A6DE8;--violet-pale:#C0B0F0;--violet-soft:rgba(106,77,200,0.08);
+ --stone:#9AA0B4;--stone-light:#B8BED0;--stone-pale:#D8DCE8;
+ --cream:#F8F8F5;--cream-warm:#F2F0EA;--cream-deep:#E0DED6;
+ --text:#1A1E2A;--text-light:#3A4058;--text-muted:#6A7088;
+ --white:#FFFFFF;--radius:16px;
+ --shadow-soft:0 2px 16px rgba(26,30,42,0.08);
+ --shadow-mid:0 4px 28px rgba(26,30,42,0.12);
+ --before-bg:#FFF5F0;--before-border:#C85A30;--before-text:#5A2010;
+ --after-bg:#F0F0FF;--after-border:#6A4DC8;--after-text:#2A2050
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--cream);line-height:1.82;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
+.page{max-width:720px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--slate);font-weight:700}
+.prose h2{font-size:1.4rem;color:var(--slate);margin:40px 0 16px;letter-spacing:-0.01em;display:flex;align-items:center;gap:10px}
+
+/* ===== COVER ===== */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;
+ background:linear-gradient(175deg,#08080E 0%,#0E1018 20%,var(--slate) 45%,var(--slate-mid) 70%,#0E1018 100%);
+ position:relative;overflow:hidden}
+/* Puzzle piece particles */
+.puzzle-dot{position:absolute;width:5px;height:5px;border-radius:50%;background:rgba(106,77,200,0.5);animation:puzzle-drift ease-in-out infinite;pointer-events:none}
+.puzzle-dot:nth-child(1){top:15%;left:10%;animation-duration:6s;animation-delay:0s}
+.puzzle-dot:nth-child(2){top:30%;right:15%;animation-duration:8s;animation-delay:-2s;width:3px;height:3px}
+.puzzle-dot:nth-child(3){top:55%;left:25%;animation-duration:7s;animation-delay:-4s}
+.puzzle-dot:nth-child(4){top:40%;right:30%;animation-duration:9s;animation-delay:-1s;width:4px;height:4px}
+.puzzle-dot:nth-child(5){top:75%;left:40%;animation-duration:5.5s;animation-delay:-3s}
+.puzzle-dot:nth-child(6){top:20%;right:42%;animation-duration:10s;animation-delay:-5s;width:3px;height:3px}
+.puzzle-dot:nth-child(7){top:85%;right:20%;animation-duration:7.5s;animation-delay:-2s}
+/* Connecting lines */
+.logic-line{position:absolute;width:100%;height:1px;background:linear-gradient(90deg,transparent 0%,rgba(106,77,200,0.12) 30%,rgba(106,77,200,0.2) 50%,rgba(106,77,200,0.12) 70%,transparent 100%);animation:line-scan linear infinite;pointer-events:none;opacity:0}
+.logic-line:nth-child(8){top:22%;animation-duration:10s;animation-delay:0s}
+.logic-line:nth-child(9){top:45%;animation-duration:14s;animation-delay:-4s}
+.logic-line:nth-child(10){top:68%;animation-duration:12s;animation-delay:-7s}
+.logic-line:nth-child(11){top:82%;animation-duration:11s;animation-delay:-2s}
+@keyframes puzzle-drift{0%,100%{transform:translate(0,0);opacity:0.2}25%{transform:translate(12px,-18px);opacity:1}50%{transform:translate(-6px,10px);opacity:0.3}75%{transform:translate(10px,4px);opacity:0.8}}
+@keyframes line-scan{0%{transform:translateX(-100%);opacity:0}10%{opacity:0.5}90%{opacity:0.4}100%{transform:translateX(100%);opacity:0}}
+.ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.015;mix-blend-mode:overlay;pointer-events:none}
+.cover-content{position:relative;z-index:2;padding:48px 24px}
+.cover-badge{display:inline-block;padding:6px 22px;border:1px solid rgba(106,77,200,0.3);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.67rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--violet-glow);margin-bottom:36px}
+.cover-art{margin-bottom:20px;display:flex;justify-content:center;animation:raven-breathe 4s ease-in-out infinite}
+@keyframes raven-breathe{0%,100%{transform:scale(1) translateY(0)}50%{transform:scale(1.02) translateY(-6px)}}
+.cover h1{font-family:'Nunito',sans-serif;font-size:clamp(2.2rem,6vw,3.8rem);font-weight:900;color:var(--white);line-height:1.08;margin-bottom:4px}
+.cover h1 strong{font-weight:900;color:var(--violet-glow);display:block;font-size:clamp(2.6rem,7vw,4.4rem)}
+.cover-tagline{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.5);margin-top:24px;line-height:1.75}
+.cover-tagline em{color:var(--violet-pale);font-style:normal;font-weight:600}
+.cover-sub{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-top:12px}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.58rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,0.15);margin-top:48px}
+
+/* ===== CHAPTER HEADS ===== */
+.ch-head{background:linear-gradient(170deg,var(--slate-deep),var(--slate-mid));padding:72px 24px 52px;position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%236A4DC8' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.ch-badge{display:inline-block;padding:4px 16px;background:rgba(106,77,200,0.1);border:1px solid rgba(106,77,200,0.25);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;color:var(--violet-pale);margin-bottom:20px}
+.ch-num{font-family:'Nunito',sans-serif;font-size:5.5rem;font-weight:900;line-height:0.9;color:rgba(106,77,200,0.15);margin-bottom:-10px}
+.ch-title{font-family:'Nunito',sans-serif;font-size:2.1rem;font-weight:900;color:var(--white);line-height:1.15;letter-spacing:-0.02em;margin-bottom:10px}
+.ch-sub{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.4);line-height:1.6}
+
+/* ===== RIBBON (scripture) ===== */
+.ribbon{text-align:center;padding:22px 24px;background:linear-gradient(135deg,rgba(106,77,200,0.04),rgba(106,77,200,0.07));border-top:1.5px solid rgba(106,77,200,0.15);border-bottom:1.5px solid rgba(106,77,200,0.15)}
+.ribbon p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:var(--text-muted);max-width:520px;margin:0 auto}
+.ribbon .ref{font-weight:600;color:var(--violet);font-style:normal}
+
+/* ===== CHARACTER CARDS ===== */
+.char-grid{display:grid;gap:24px;margin:40px 0}
+@media(min-width:640px){.char-grid{grid-template-columns:1fr 1fr}}
+.char-card{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft);transition:all 0.3s ease}
+.char-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-mid)}
+.char-head{background:linear-gradient(135deg,var(--violet-soft),rgba(106,77,200,0.03));padding:18px 20px;border-bottom:1px solid var(--cream-deep);display:flex;align-items:center;gap:14px}
+.char-emoji{font-size:2rem;line-height:1;display:flex;align-items:center;justify-content:center}
+.char-name{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;color:var(--slate);line-height:1.25}
+.char-title{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-top:2px}
+.char-body{padding:20px}
+.char-body p{font-size:0.92rem;color:var(--text-light);line-height:1.75;margin:0}
+
+/* ===== SCENE BLOCKS ===== */
+.scene{background:linear-gradient(135deg,var(--cream-warm),var(--cream));border:1px solid var(--cream-deep);border-radius:var(--radius);padding:28px;margin:32px 0;box-shadow:var(--shadow-soft)}
+.scene-label{font-family:'Nunito',sans-serif;font-size:0.68rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--violet);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.scene h4{font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:800;color:var(--slate);margin-bottom:14px;line-height:1.3}
+.scene p{font-size:0.95rem;color:var(--text-light);line-height:1.78;margin-bottom:14px}
+.scene p:last-child{margin-bottom:0}
+
+/* ===== BEFORE / AFTER ===== */
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:36px 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft)}
+@media(max-width:600px){.ba-grid{grid-template-columns:1fr}}
+.ba-col{padding:28px 24px}
+.ba-col.before{background:var(--before-bg);border-right:2px solid var(--cream-deep)}
+.ba-col.after{background:var(--after-bg)}
+@media(max-width:600px){.ba-col.before{border-right:none;border-bottom:2px solid var(--cream-deep)}}
+.ba-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px}
+.ba-col.before .ba-label{color:var(--before-border)}
+.ba-col.after .ba-label{color:var(--after-border)}
+.ba-col h4{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;margin-bottom:10px;line-height:1.3}
+.ba-col.before h4{color:var(--before-text)}
+.ba-col.after h4{color:var(--after-text)}
+.ba-col p{font-size:0.88rem;line-height:1.7;margin-bottom:8px}
+.ba-col.before p{color:#6A3020}
+.ba-col.after p{color:#2A2060}
+.ba-col ul{list-style:none;padding:0;margin:0}
+.ba-col ul li{font-size:0.88rem;line-height:1.7;padding:4px 0 4px 18px;position:relative}
+.ba-col.before ul li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:8px;border-radius:50%;background:var(--before-border);opacity:0.5}
+.ba-col.after ul li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:8px;border-radius:50%;background:var(--after-border);opacity:0.5}
+
+/* ===== DATA BOXES ===== */
+.data-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin:32px 0}
+.data-box{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:24px 16px;text-align:center;box-shadow:var(--shadow-soft)}
+.data-num{font-family:'Nunito',sans-serif;font-size:2rem;font-weight:900;color:var(--violet);line-height:1;margin-bottom:6px}
+.data-label{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+
+/* ===== PUZZLE STEP DIAGRAM ===== */
+.puzzle-flow{display:flex;flex-direction:column;gap:0;margin:32px 0}
+.puzzle-step{display:flex;align-items:flex-start;gap:16px;padding:20px 0}
+.puzzle-num{width:36px;height:36px;min-width:36px;border-radius:50%;background:linear-gradient(135deg,var(--violet),var(--violet-glow));display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:0.8rem;font-weight:900;color:var(--white);box-shadow:0 2px 8px rgba(106,77,200,0.3)}
+.puzzle-line{width:2px;height:20px;background:linear-gradient(to bottom,var(--violet),transparent);margin-left:17px}
+.puzzle-text h4{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:var(--slate);margin-bottom:4px}
+.puzzle-text p{font-size:0.88rem;color:var(--text-light);line-height:1.65}
+
+/* ===== DECISION TREE ===== */
+.decision-tree{margin:32px 0;padding:28px;background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);box-shadow:var(--shadow-soft)}
+.dt-node{padding:14px 20px;border-radius:10px;margin:8px 0;font-size:0.88rem;line-height:1.6}
+.dt-question{background:linear-gradient(135deg,var(--violet-soft),rgba(106,77,200,0.04));border:1.5px solid rgba(106,77,200,0.2);color:var(--slate);font-weight:600}
+.dt-yes{background:rgba(80,160,80,0.08);border:1.5px solid rgba(80,160,80,0.2);color:#2A5A2A;margin-left:24px}
+.dt-no{background:rgba(200,90,48,0.08);border:1.5px solid rgba(200,90,48,0.2);color:#5A2010;margin-left:24px}
+.dt-arrow{margin-left:12px;font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;color:var(--text-muted);letter-spacing:1px}
+
+/* ===== GLOW BOX ===== */
+.glow-box{background:linear-gradient(135deg,var(--slate),var(--slate-mid));border:2px solid rgba(106,77,200,0.2);border-radius:var(--radius);padding:32px;margin:36px 0;position:relative;overflow:hidden;box-shadow:0 4px 24px rgba(26,30,42,0.2)}
+.glow-box::before{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(106,77,200,0.08) 0%,transparent 70%);border-radius:50%}
+.glow-box h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--violet-glow);margin-bottom:14px;position:relative}
+.glow-box p{font-size:0.95rem;color:rgba(255,255,255,0.8);line-height:1.78;position:relative}
+.glow-box strong{color:var(--violet-pale)}
+
+/* ===== GRAND QUOTE ===== */
+.grand-quote{text-align:center;padding:48px 24px;margin:40px 0;position:relative}
+.grand-quote::before{content:'\201C';font-family:'Lora',serif;font-size:8rem;color:rgba(106,77,200,0.12);position:absolute;top:-20px;left:50%;transform:translateX(-50%);line-height:1}
+.grand-quote blockquote{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:var(--slate);line-height:1.7;max-width:520px;margin:0 auto;position:relative}
+.grand-quote cite{display:block;margin-top:16px;font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--violet);font-style:normal}
+
+/* ===== ROOT CHECK ===== */
+.root-ck{margin:40px auto;max-width:720px;padding:36px 32px;background:linear-gradient(135deg,rgba(106,77,200,0.04),rgba(106,77,200,0.08));border-radius:var(--radius);border:2px solid rgba(106,77,200,0.15)}
+.root-ck .rc-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--violet);margin-bottom:12px}
+.root-ck h4{font-size:1.05rem;color:var(--slate);margin-bottom:20px}
+.r-item{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
+.r-item:last-child{margin-bottom:0}
+.r-dot{flex-shrink:0;width:8px;height:8px;border-radius:50%;background:var(--violet);margin-top:7px}
+.r-text{font-size:0.92rem;color:var(--text-light);line-height:1.7}
+
+/* ===== VIZ (visualization box) ===== */
+.viz{margin:32px 0;border-radius:var(--radius);border:2px solid var(--violet);overflow:hidden;box-shadow:0 0 20px rgba(106,77,200,0.08)}
+.viz-inner{padding:0}
+.viz-top{display:flex;align-items:center;gap:16px;padding:20px 28px;background:linear-gradient(135deg,rgba(106,77,200,0.08),rgba(106,77,200,0.03))}
+.viz-icon{flex-shrink:0;width:40px;height:40px;border-radius:50%;background:var(--violet);color:var(--white);display:flex;align-items:center;justify-content:center}
+.viz-icon svg{width:20px;height:20px}
+.viz-meta .viz-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--violet);margin-bottom:4px}
+.viz-meta h4{font-size:1rem;color:var(--slate);margin:0}
+.viz-body{padding:24px 28px}
+.viz-body p{font-size:0.92rem;color:var(--text-light);line-height:1.75;margin-bottom:12px}
+.viz-body p:last-child{margin-bottom:0}
+.viz-trigger{padding:16px 28px;background:linear-gradient(135deg,rgba(106,77,200,0.06),rgba(106,77,200,0.02));border-top:1px solid rgba(106,77,200,0.12);font-size:0.88rem;color:var(--slate);font-style:italic}
+
+/* ===== THINK PROMPT ===== */
+.think{background:linear-gradient(135deg,rgba(106,77,200,0.06),rgba(106,77,200,0.02));border:2px solid rgba(106,77,200,0.15);border-radius:var(--radius);padding:28px;margin:36px 0}
+.think-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--violet);margin-bottom:14px}
+.think p{font-size:0.95rem;color:var(--text-light);line-height:1.78;margin-bottom:12px}
+.think p:last-child{margin-bottom:0}
+
+/* ===== RECOGNITION BOX ===== */
+.recog{background:linear-gradient(135deg,#F5F0FF,#F0F5FF);border:2px solid #D0D0F0;border-radius:var(--radius);padding:28px;margin:36px 0}
+.recog-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:#5A50A0;margin-bottom:14px}
+.recog p{font-size:0.95rem;color:#3A3068;line-height:1.78;margin-bottom:10px}
+.recog p:last-child{margin-bottom:0}
+
+/* ===== TOOL RACK (unique component) ===== */
+.tool-rack{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin:32px 0}
+.tool-item{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:20px;text-align:center;box-shadow:var(--shadow-soft);transition:all 0.3s}
+.tool-item:hover{border-color:var(--violet);transform:translateY(-2px)}
+.tool-icon{font-size:1.8rem;margin-bottom:10px}
+.tool-name{font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:800;color:var(--slate);margin-bottom:6px}
+.tool-desc{font-size:0.78rem;color:var(--text-muted);line-height:1.55}
+
+/* ===== FINAL TEST ===== */
+.final-test{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:36px;margin:40px 0;box-shadow:var(--shadow-soft)}
+.final-test h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--slate);margin-bottom:6px}
+.final-test .test-sub{font-size:0.85rem;color:var(--text-muted);margin-bottom:24px;font-style:italic}
+.test-q{padding:14px 0;border-bottom:1px solid var(--cream-deep)}
+.test-q:last-child{border-bottom:none}
+.test-num{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--violet);margin-bottom:4px}
+.test-q p{font-size:0.92rem;color:var(--text);line-height:1.65}
+.test-reveal{margin-top:8px;padding:10px 14px;background:rgba(106,77,200,0.05);border-radius:8px;font-size:0.85rem;color:var(--violet);cursor:pointer;user-select:none}
+.test-reveal .answer{display:none}
+.test-reveal:active .answer{display:inline}
+.test-reveal::before{content:'Tap to reveal';font-style:italic;color:var(--text-muted);font-size:0.78rem}
+.test-reveal:active::before{display:none}
+
+/* ===== PROMPT CARD ===== */
+.prompt-card{background:linear-gradient(135deg,var(--slate),var(--slate-mid));border-radius:var(--radius);padding:36px;margin:40px 0;box-shadow:0 4px 24px rgba(26,30,42,0.2)}
+.prompt-card h3{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;color:var(--violet-glow);margin-bottom:16px}
+.prompt-card p{font-size:0.88rem;color:rgba(255,255,255,0.65);line-height:1.65;margin-bottom:10px}
+.prompt-card code{background:rgba(255,255,255,0.08);padding:2px 8px;border-radius:4px;font-size:0.82rem;color:var(--violet-pale)}
+
+/* ===== SERIES PROGRESS ===== */
+.series-progress{text-align:center;padding:40px 24px 20px}
+.series-label{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px}
+.series-dots{display:flex;gap:10px;justify-content:center;align-items:center}
+.s-dot{width:10px;height:10px;border-radius:50%;background:var(--cream-deep);transition:all 0.3s}
+.s-dot.done{background:var(--violet);opacity:0.4}
+.s-dot.active{background:var(--violet-glow);box-shadow:0 0 10px rgba(106,77,200,0.4);transform:scale(1.3)}
+.series-titles{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.series-titles span{font-size:0.62rem;color:var(--text-muted);font-family:'Nunito',sans-serif;letter-spacing:0.5px}
+.series-titles span.current{color:var(--violet);font-weight:700}
+
+/* ===== INSTALLATION VIDEO ===== */
+.install-video{margin:36px 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-mid);position:relative}
+.install-video video{width:100%;display:block;background:#0E1018}
+.install-video .iv-caption{padding:14px 20px;background:linear-gradient(135deg,var(--slate),var(--slate-mid));display:flex;align-items:center;gap:12px}
+.install-video .iv-badge{display:inline-block;padding:3px 10px;background:rgba(106,77,200,0.2);border:1px solid rgba(106,77,200,0.3);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--violet-pale);white-space:nowrap}
+.install-video .iv-text{font-family:'Lora',serif;font-size:0.85rem;font-style:italic;color:rgba(255,255,255,0.5);line-height:1.5}
+.install-video .iv-text em{color:var(--violet-pale);font-style:normal;font-weight:600}
+.install-video .iv-placeholder{width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,var(--slate-deep),var(--slate));display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+.install-video .iv-placeholder svg{opacity:0.3}
+.install-video .iv-placeholder p{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.2)}
+
+/* ===== KNOWLEDGE LAYER ===== */
+.def{border-bottom:1.5px dotted rgba(106,77,200,0.4);cursor:help;position:relative;font-style:normal}
+.def::after{content:attr(data-def);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--slate);color:var(--white);padding:8px 14px;border-radius:8px;font-size:0.78rem;line-height:1.5;white-space:normal;width:max-content;max-width:280px;opacity:0;pointer-events:none;transition:opacity 0.2s;z-index:10;box-shadow:0 4px 16px rgba(0,0,0,0.2);font-family:'Lora',serif}
+.def:hover::after{opacity:1}
+
+/* ===== FOOTER ===== */
+.footer{text-align:center;padding:48px 24px;background:var(--slate-deep);color:rgba(255,255,255,0.2);font-family:'Poppins',sans-serif;font-size:0.6rem;letter-spacing:2px;text-transform:uppercase}
+</style>
+</head>
+<body>
+
+<!-- ===== COVER ===== -->
+<section class="cover">
+<div class="puzzle-dot"></div><div class="puzzle-dot"></div><div class="puzzle-dot"></div><div class="puzzle-dot"></div><div class="puzzle-dot"></div><div class="puzzle-dot"></div><div class="puzzle-dot"></div>
+<div class="logic-line"></div><div class="logic-line"></div><div class="logic-line"></div><div class="logic-line"></div>
+<div class="ghost-noise"></div>
+<div class="cover-content">
+ <div class="cover-badge">How AI Works &bull; Part 5</div>
+ <div class="cover-art">
+ <svg width="140" height="140" viewBox="0 0 140 140" fill="none">
+  <defs>
+   <linearGradient id="raven-body" x1="30" y1="20" x2="110" y2="120" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#3A3E52"/><stop offset="50%" stop-color="#1A1E2A"/><stop offset="100%" stop-color="#0E1018"/></linearGradient>
+   <radialGradient id="raven-eye" cx="0.5" cy="0.5" r="0.5"><stop offset="0%" stop-color="#C0B0F0"/><stop offset="60%" stop-color="#6A4DC8"/><stop offset="100%" stop-color="#2A2050"/></radialGradient>
+   <linearGradient id="raven-wing" x1="20" y1="60" x2="120" y2="100"><stop offset="0%" stop-color="#2A2E3E"/><stop offset="100%" stop-color="#14161E"/></linearGradient>
+  </defs>
+  <!-- Body -->
+  <ellipse cx="70" cy="72" rx="32" ry="38" fill="url(#raven-body)"/>
+  <!-- Head -->
+  <circle cx="70" cy="38" r="22" fill="url(#raven-body)"/>
+  <!-- Beak -->
+  <path d="M92 36 L108 40 L92 44 Z" fill="#3A4058" stroke="#5A6078" stroke-width="0.5"/>
+  <path d="M92 40 L106 41 L92 44 Z" fill="#252A3A"/>
+  <!-- Eye -->
+  <circle cx="82" cy="34" r="5" fill="url(#raven-eye)"/>
+  <circle cx="83.5" cy="33" r="1.5" fill="#FFFFFF" opacity="0.8"/>
+  <!-- Wing -->
+  <path d="M42 55 Q30 75 38 100 Q50 110 65 105 Q55 85 50 65 Z" fill="url(#raven-wing)" stroke="#3A3E52" stroke-width="0.5"/>
+  <!-- Feather details -->
+  <path d="M44 70 Q38 80 42 92" stroke="#3A4058" stroke-width="0.5" fill="none" opacity="0.5"/>
+  <path d="M48 68 Q42 78 46 90" stroke="#3A4058" stroke-width="0.5" fill="none" opacity="0.5"/>
+  <path d="M52 66 Q47 76 50 88" stroke="#3A4058" stroke-width="0.5" fill="none" opacity="0.5"/>
+  <!-- Tail -->
+  <path d="M55 105 Q48 120 40 128 Q52 125 62 115 Z" fill="#14161E"/>
+  <path d="M60 108 Q55 122 50 128 Q58 124 65 116 Z" fill="#1A1E2A"/>
+  <!-- Perch branch -->
+  <rect x="20" y="112" width="100" height="4" rx="2" fill="#5A4A38"/>
+  <rect x="20" y="112" width="100" height="2" rx="1" fill="#6A5A48"/>
+  <!-- Talons -->
+  <path d="M60 110 L56 116 M62 110 L62 117 M64 110 L66 116" stroke="#3A4058" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M78 110 L74 116 M80 110 L80 117 M82 110 L84 116" stroke="#3A4058" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Puzzle stone near feet -->
+  <rect x="95" y="106" width="12" height="10" rx="3" fill="#8A7A68" opacity="0.6"/>
+  <rect x="15" y="108" width="10" height="8" rx="2" fill="#7A6A58" opacity="0.5"/>
+  <!-- Iridescent sheen on neck -->
+  <ellipse cx="68" cy="52" rx="12" ry="8" fill="rgba(106,77,200,0.15)" transform="rotate(-10 68 52)"/>
+ </svg>
+ </div>
+ <h1>The Raven's <strong>Trial</strong></h1>
+ <p class="cover-tagline">A story about <em>eight steps, no instructions, and a bird that solves problems by watching them first</em> . . . and why the AI agents reshaping your world work exactly the same way.</p>
+ <p class="cover-sub">How AI Agents &amp; Reasoning Work</p>
+ <p class="cover-author">KingdomBuilders AI</p>
+</div>
+</section>
+
+<!-- ===== PREGAME ===== -->
+<div class="page section prose">
+<p>Eight steps. No instructions. No demonstration. She solved the puzzle by watching it once through the glass.</p>
+
+<p>In a lab in Auckland, a raven named 007 faced an apparatus she had never seen. A piece of food hung from a string inside a box. To reach it, she needed to pull the string with her beak, pin it with her foot, pull again, pin again, and repeat until the food was close enough to grab. <strong>She had never been taught how to pull string.</strong> She had never been rewarded for pinning. She watched a researcher demonstrate the task once, through a window, and then she walked to the apparatus and executed the entire sequence on her first attempt.</p>
+
+<p>This playbook is not about ravens. It is about the machines that reason the way she does.</p>
+
+<p>If you finish this, you will understand <strong>how AI agents plan multiple steps before taking the first action</strong>, why an agent that thinks before it acts outperforms one that acts ten times faster, <strong>how tool selection determines whether an agent solves a problem or confidently fails at it</strong>, and why the difference between a chatbot and an agent is the willingness to be wrong mid-sequence and recover.</p>
+
+<p>You will also learn something remarkable about <dfn class="def" data-def="The family Corvidae, including ravens, crows, jays, and magpies. Corvids demonstrate tool use, planning, social deception, and mirror self-recognition.">corvids</dfn>. They are not parroting solutions. They are reasoning through them. And the architecture that makes that possible is, at a structural level, the same architecture powering the AI agents that are beginning to book your flights, debug your code, and manage your calendar.</p>
+</div>
+
+<!-- ===== THE CAST ===== -->
+<div class="page section">
+<h2 style="font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;color:var(--slate);margin-bottom:24px">The Cast</h2>
+<div class="char-grid">
+ <div class="char-card">
+  <div class="char-head">
+   <div class="char-emoji"><svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="#1A1E2A"/><circle cx="20" cy="13" r="3" fill="#6A4DC8"/><circle cx="21" cy="12" r="1" fill="#FFF" opacity="0.7"/><path d="M24 14 L30 16 L24 18Z" fill="#3A4058"/></svg></div>
+   <div><div class="char-name">Seven</div><div class="char-title">The Raven &bull; The Agent</div></div>
+  </div>
+  <div class="char-body"><p>Named for the famous raven 007 who solved an eight step puzzle on her first attempt. She represents the AI agent: observant, strategic, willing to plan before she moves and recover when a step fails.</p></div>
+ </div>
+ <div class="char-card">
+  <div class="char-head">
+   <div class="char-emoji"><svg width="32" height="32" viewBox="0 0 32 32"><rect x="4" y="8" width="24" height="16" rx="4" fill="#8A7A68"/><rect x="8" y="12" width="6" height="4" rx="1" fill="#5A4A38"/><rect x="18" y="12" width="6" height="4" rx="1" fill="#5A4A38"/><circle cx="11" cy="14" r="1.5" fill="#C0B0F0"/><circle cx="21" cy="14" r="1.5" fill="#C0B0F0"/></svg></div>
+   <div><div class="char-name">The Apparatus</div><div class="char-title">The Problem Space</div></div>
+  </div>
+  <div class="char-body"><p>The multi-step puzzle the raven must solve. Strings to pull, stones to drop, latches to slide. It represents the real world tasks an AI agent faces: each step reveals the next, and no manual exists.</p></div>
+ </div>
+ <div class="char-card">
+  <div class="char-head">
+   <div class="char-emoji"><svg width="32" height="32" viewBox="0 0 32 32"><rect x="6" y="6" width="20" height="20" rx="4" fill="#E8E0D0"/><rect x="10" y="10" width="5" height="5" rx="1" fill="#C85A30" opacity="0.6"/><rect x="17" y="10" width="5" height="5" rx="1" fill="#6A4DC8" opacity="0.6"/><rect x="10" y="17" width="5" height="5" rx="1" fill="#6A4DC8" opacity="0.6"/><rect x="17" y="17" width="5" height="5" rx="1" fill="#C85A30" opacity="0.6"/></svg></div>
+   <div><div class="char-name">The Stone</div><div class="char-title">The Tool</div></div>
+  </div>
+  <div class="char-body"><p>In displacement experiments, ravens select stones of the right size and weight to raise water levels and reach a floating reward. The stone is any tool the agent wields: a search engine, a calculator, a code interpreter, an API call.</p></div>
+ </div>
+ <div class="char-card">
+  <div class="char-head">
+   <div class="char-emoji"><svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="12" fill="none" stroke="#6A4DC8" stroke-width="1.5" stroke-dasharray="4 3"/><circle cx="16" cy="16" r="6" fill="rgba(106,77,200,0.15)"/><circle cx="16" cy="16" r="2" fill="#6A4DC8"/></svg></div>
+   <div><div class="char-name">The Perch</div><div class="char-title">The Reasoning Phase</div></div>
+  </div>
+  <div class="char-body"><p>The quiet pause before action. Ravens sit motionless for up to thirty seconds, scanning the apparatus before their first move. The perch is the planning step where the agent reasons through its approach before committing.</p></div>
+ </div>
+</div>
+</div>
+
+<!-- ===== CHAPTER 1: THE PERCH ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter One</div>
+<div class="ch-num">01</div>
+<div class="ch-title">The Perch</div>
+<div class="ch-sub">Why the best agents spend more time thinking than doing.</div>
+</div>
+</div>
+
+<div class="ribbon">
+<p>"The plans of the diligent lead surely to abundance, but everyone who is hasty comes only to poverty." <span class="ref">Proverbs 21:5</span></p>
+</div>
+
+<div class="page section prose">
+
+<div class="scene">
+<div class="scene-label">SCENE 1</div>
+<h4>Thirty Seconds of Nothing</h4>
+<p>The researchers placed a new apparatus on the table. A transparent tube filled with water. A piece of meat floating on the surface, too deep for a beak to reach. Three heavy stones and three light foam blocks arranged beside it.</p>
+<p>Seven landed on the edge of the table. She did not touch anything. She turned her head left, then right, examining the tube from two angles. She looked at the stones. She looked at the foam. She looked at the water level. Thirty seconds passed. The researchers wrote "no interaction" in their notes.</p>
+<p>Then she picked up a heavy stone, dropped it into the tube, watched the water rise, picked up the second heavy stone, dropped it, watched again, picked up the third, dropped it, and took the meat from the surface. She never touched the foam blocks. She never dropped a stone that was too light. <strong>Her first action was her correct action.</strong></p>
+</div>
+
+<div class="install-video">
+<!-- Replace placeholder with <video> tag once generated -->
+<div class="iv-placeholder">
+ <svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"><circle cx="24" cy="24" r="20"/><path d="M20 16l12 8-12 8V16z" fill="rgba(255,255,255,0.2)"/></svg>
+ <p>Installation video loading</p>
+</div>
+<!-- <video src="videos/raven-perch-observe.mp4" autoplay muted loop playsinline></video> -->
+<div class="iv-caption">
+ <span class="iv-badge">Installation</span>
+ <span class="iv-text">Thirty seconds of stillness. Then <em>flawless execution</em>. The pause is computation.</span>
+</div>
+</div>
+
+<p>This is the most counterintuitive finding in corvid cognition research. <strong>The pause is not hesitation. It is computation.</strong></p>
+
+<p>When a raven faces a novel problem, she does not begin with trial and error. She begins with <dfn class="def" data-def="The mental simulation of possible action sequences before committing to one. Ravens and great apes both demonstrate planning behavior in experimental settings.">planning</dfn>. Her eyes track the components. Her head tilts indicate binocular depth assessment. She is building an internal model of the problem: what connects to what, what moves what, what leads where.</p>
+
+<p>AI agents work the same way. Before an <dfn class="def" data-def="An AI system that can perceive its environment, reason about goals, select and use tools, and take multi-step actions autonomously.">agent</dfn> takes any action, it generates what researchers call a <dfn class="def" data-def="A reasoning technique where the AI writes out its thinking step by step before producing a final answer. This explicit reasoning dramatically improves performance on complex tasks.">chain of thought</dfn>. This is the agent writing out its reasoning: "The user wants to book a flight to Austin. I need to know the dates. I should check their calendar first. Then search for flights. Then compare prices." The chain of thought is the perch. It is the thirty seconds of apparent inaction that makes the first action correct.</p>
+
+<div class="viz">
+<div class="viz-inner">
+<div class="viz-top">
+ <div class="viz-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><path d="M10 6v4l3 3"/></svg></div>
+ <div class="viz-meta"><div class="viz-label">Visualization</div><h4>The Perch in Action</h4></div>
+</div>
+<div class="viz-body">
+<p>Picture a raven on a branch above a puzzle. Her body is still. Her eyes are scanning. Inside her mind, she is running simulations: if I pull the string, the platform moves. If the platform moves, the stone rolls. If the stone rolls, it drops into the tube. She has not moved a muscle, but she has already solved the problem three times in her head.</p>
+<p>Now picture an AI agent receiving a request: "Find me the cheapest direct flight to Austin next Friday and draft a confirmation email to my team." The agent pauses. It writes: "Step 1: Determine the date for next Friday. Step 2: Search flights to Austin on that date. Step 3: Filter for direct flights only. Step 4: Sort by price. Step 5: Draft email with flight details." It has not called a single tool yet. But it has already mapped the sequence.</p>
+</div>
+<div class="viz-trigger">See it: still body, moving eyes, a solved puzzle before the first touch.</div>
+</div>
+</div>
+
+<div class="ba-grid">
+<div class="ba-col before">
+ <div class="ba-label">Before This Chapter</div>
+ <h4>"AI just generates text really fast"</h4>
+ <p>You thought agents were chatbots that typed faster. You assumed more speed meant better performance. You imagined AI tools as sophisticated autocomplete.</p>
+</div>
+<div class="ba-col after">
+ <div class="ba-label">After This Chapter</div>
+ <h4>"The best agents plan before they move"</h4>
+ <p>You now understand that agents spend most of their time reasoning, not acting. The planning phase is where the quality lives. Speed without planning is just fast failure.</p>
+</div>
+</div>
+
+<div class="think">
+<div class="think-label">Don't Skip This</div>
+<p>Think about the last time you rushed into solving a problem at work without pausing to understand it first. How many steps did you have to redo? How much time did the rush actually cost you?</p>
+<p>Now think about a time you paused, mapped the problem, and then executed. Which approach produced better results? The raven already knows the answer.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+<div class="rc-label">Root Check No. 1</div>
+<h4>Water What Was Planted</h4>
+<div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Perch</strong> is the planning phase. Agents reason through their approach before taking any action. The pause is not hesitation. It is computation.</div></div>
+</div>
+
+<!-- ===== CHAPTER 2: THE STONE ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Two</div>
+<div class="ch-num">02</div>
+<div class="ch-title">The Stone</div>
+<div class="ch-sub">Choosing the right tool changes everything. Choosing the wrong tool changes nothing.</div>
+</div>
+</div>
+
+<div class="ribbon">
+<p>"If the iron is blunt, and one does not sharpen the edge, he must use more strength, but wisdom helps one to succeed." <span class="ref">Ecclesiastes 10:10</span></p>
+</div>
+
+<div class="page section prose">
+
+<div class="scene">
+<div class="scene-label">SCENE 2</div>
+<h4>The Weight Test</h4>
+<p>Researchers gave Seven a choice: heavy stones and light foam cubes. Both fit in the tube. Only one displaced enough water. She picked up a foam block, held it for a moment, set it down, and reached for the stone instead. She had never been taught which was heavier. She inferred it from handling.</p>
+</div>
+
+<div class="install-video">
+<!-- Replace placeholder with <video> tag once generated -->
+<div class="iv-placeholder">
+ <svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"><circle cx="24" cy="24" r="20"/><path d="M20 16l12 8-12 8V16z" fill="rgba(255,255,255,0.2)"/></svg>
+ <p>Installation video loading</p>
+</div>
+<!-- <video src="videos/raven-stone-drop.mp4" autoplay muted loop playsinline></video> -->
+<div class="iv-caption">
+ <span class="iv-badge">Installation</span>
+ <span class="iv-text">Watch her <em>evaluate, select, and commit</em>. She never touches the foam.</span>
+</div>
+</div>
+
+<p>This experiment, replicated across dozens of corvids, reveals something profound. Ravens do not just use tools. They <strong>evaluate</strong> tools against the requirements of the specific problem. A stone that worked in one tube might be too large for another. A stick that reached food in one box might be too short for a deeper one. The raven does not simply grab the nearest object. She selects.</p>
+
+<p>AI <dfn class="def" data-def="The ability of an AI agent to call external functions, APIs, or programs to accomplish tasks it cannot do with text generation alone. Examples: web search, code execution, file reading, database queries.">tool use</dfn> works identically. When an agent receives a question, it must decide which tool fits. A math question needs a calculator, not a web search. A question about today's weather needs a search engine, not a knowledge base. A coding task needs a code interpreter, not a text summary.</p>
+
+<div class="tool-rack">
+<div class="tool-item">
+ <div class="tool-icon"><svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="#6A4DC8" stroke-width="1.5"><circle cx="12" cy="12" r="8"/><path d="M18 18l6 6"/></svg></div>
+ <div class="tool-name">Search</div>
+ <div class="tool-desc">Find current information from the web, databases, or documents</div>
+</div>
+<div class="tool-item">
+ <div class="tool-icon"><svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="#6A4DC8" stroke-width="1.5"><rect x="4" y="4" width="20" height="20" rx="3"/><path d="M8 10h12M8 14h8M8 18h10"/></svg></div>
+ <div class="tool-name">Code</div>
+ <div class="tool-desc">Write and execute programs, scripts, data analysis</div>
+</div>
+<div class="tool-item">
+ <div class="tool-icon"><svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="#6A4DC8" stroke-width="1.5"><rect x="4" y="6" width="20" height="16" rx="2"/><path d="M4 12h20"/><path d="M10 12v10"/></svg></div>
+ <div class="tool-name">Calculator</div>
+ <div class="tool-desc">Precise arithmetic, statistics, financial modeling</div>
+</div>
+<div class="tool-item">
+ <div class="tool-icon"><svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="#6A4DC8" stroke-width="1.5"><path d="M4 8l10 8-10 8V8z"/><rect x="16" y="8" width="8" height="16" rx="2"/></svg></div>
+ <div class="tool-name">API Call</div>
+ <div class="tool-desc">Interact with external services, send emails, manage calendars</div>
+</div>
+</div>
+
+<p>The critical insight is that <strong>choosing the wrong tool does not just waste time. It produces confident wrong answers.</strong> If the raven drops foam into the tube, the water does not rise. She gets no food. If an agent uses web search to answer a math problem, it might find a similar problem with a different answer and present it confidently. The tool shapes the output. Wrong tool, wrong shape.</p>
+
+<div class="grand-quote">
+<blockquote>The raven does not try every stone. She evaluates, selects, and commits. The trial is not about effort. It is about judgment.</blockquote>
+<cite>The Second Lesson</cite>
+</div>
+
+<div class="think">
+<div class="think-label">Right Now</div>
+<p>Think about the tools you use at work. Email, spreadsheets, meetings, phone calls. How often do you use a meeting when an email would have been faster? How often do you use a spreadsheet when a conversation would have been clearer? The raven's lesson: the tool must match the problem, not the habit.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+<div class="rc-label">Root Check No. 2</div>
+<h4>Water What Was Planted</h4>
+<div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Perch</strong> is the planning phase. Agents reason before acting.</div></div>
+<div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Stone</strong> is tool selection. Agents evaluate which tool fits the specific problem. Wrong tool, wrong answer.</div></div>
+</div>
+
+<!-- ===== CHAPTER 3: THE STRING ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Three</div>
+<div class="ch-num">03</div>
+<div class="ch-title">The String</div>
+<div class="ch-sub">Each step only becomes visible after the previous one is complete.</div>
+</div>
+</div>
+
+<div class="ribbon">
+<p>"Your word is a lamp to my feet and a light to my path." <span class="ref">Psalm 119:105</span></p>
+</div>
+
+<div class="page section prose">
+
+<div class="scene">
+<div class="scene-label">SCENE 3</div>
+<h4>Pull, Pin, Pull, Pin</h4>
+<p>The food hung from a long string dangling through a hole in the perch. Seven could see it. She could not reach it. She leaned down, gripped the string in her beak, pulled a length up, stepped on the loop to pin it, released her beak, reached down again, pulled another length, pinned it. Four repetitions. Each pull brought the food closer by six inches. She never let go without pinning first. She never pulled without releasing first. <strong>The sequence was flawless because each step created the conditions for the next.</strong></p>
+</div>
+
+<div class="install-video">
+<div class="iv-placeholder">
+ <svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"><circle cx="24" cy="24" r="20"/><path d="M20 16l12 8-12 8V16z" fill="rgba(255,255,255,0.2)"/></svg>
+ <p>Installation video loading</p>
+</div>
+<!-- <video src="videos/raven-string-pull.mp4" autoplay muted loop playsinline></video> -->
+<div class="iv-caption">
+ <span class="iv-badge">Installation</span>
+ <span class="iv-text">Pull, pin, release, reach, pull again. <em>Each step creates the next.</em> This is chain of thought.</span>
+</div>
+</div>
+
+<p>This is <dfn class="def" data-def="Breaking a complex goal into a sequence of smaller, achievable sub-tasks. Each sub-task's output becomes the input for the next, creating a chain that reaches the original goal.">sequential reasoning</dfn>. The raven does not see the solution as one action. She sees it as a chain where each link depends on the one before it. Pull creates slack. Pin preserves slack. Release frees the beak. Pull again extends the gain.</p>
+
+<p>AI agents decompose tasks the same way. "Plan a weekend trip to Austin" is not one action. It is a sequence: <strong>check calendar for open dates, search flights for those dates, search hotels near the conference venue, calculate total budget, compare against spending limit, draft itinerary, send confirmation.</strong> No single step is difficult. The intelligence is in the decomposition.</p>
+
+<div class="puzzle-flow">
+<div class="puzzle-step"><div class="puzzle-num">1</div><div class="puzzle-text"><h4>Observe</h4><p>The agent reads the request and identifies what it needs to accomplish.</p></div></div>
+<div class="puzzle-line"></div>
+<div class="puzzle-step"><div class="puzzle-num">2</div><div class="puzzle-text"><h4>Decompose</h4><p>The complex goal is broken into ordered sub-tasks, each one achievable with a single tool call.</p></div></div>
+<div class="puzzle-line"></div>
+<div class="puzzle-step"><div class="puzzle-num">3</div><div class="puzzle-text"><h4>Execute</h4><p>The first sub-task is performed. The result is observed.</p></div></div>
+<div class="puzzle-line"></div>
+<div class="puzzle-step"><div class="puzzle-num">4</div><div class="puzzle-text"><h4>Integrate</h4><p>The result of step one becomes the input for step two. The chain continues.</p></div></div>
+<div class="puzzle-line"></div>
+<div class="puzzle-step"><div class="puzzle-num">5</div><div class="puzzle-text"><h4>Complete</h4><p>The final sub-task's output satisfies the original goal.</p></div></div>
+</div>
+
+<p>The key principle: <strong>each step only becomes visible after the previous one completes.</strong> The raven cannot see how much string is left until she pulls the first length. The agent cannot search for hotels until it knows the travel dates. The sequence reveals itself one step at a time. This is why chain of thought reasoning is so powerful. By writing out each step explicitly, the agent makes the invisible chain visible.</p>
+
+<div class="viz">
+<div class="viz-inner">
+<div class="viz-top">
+ <div class="viz-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4v12h12"/><path d="M8 12l3-4 3 2 3-6"/></svg></div>
+ <div class="viz-meta"><div class="viz-label">Visualization</div><h4>The String Pull</h4></div>
+</div>
+<div class="viz-body">
+<p>Imagine holding a rope attached to something you cannot see in a dark well. You pull six inches, pin the rope under your foot, and lean down to pull again. You do not know how deep the well is. You do not know how heavy the object is. You only know one thing: each pull brings it closer. The raven's string pull is a perfect model for how agents navigate uncertainty. You do not need to see the whole path. You need to see the next step and trust the sequence.</p>
+</div>
+<div class="viz-trigger">See it: pull, pin, release, reach, pull again. Each step creates the next.</div>
+</div>
+</div>
+
+<div class="recog">
+<div class="recog-label">You Already Know This</div>
+<p>You do this every day. Making breakfast is sequential reasoning: you cannot pour coffee before the water boils, you cannot butter toast before it is toasted. You decompose without thinking about it. AI agents do the same thing, but with tasks like "analyze this quarterly report and email the highlights to the board."</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+<div class="rc-label">Root Check No. 3</div>
+<h4>Water What Was Planted</h4>
+<div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Perch</strong> is the planning phase.</div></div>
+<div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Stone</strong> is tool selection.</div></div>
+<div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The String</strong> is sequential reasoning. Complex goals are decomposed into chains of simple steps, each one revealing the next.</div></div>
+</div>
+
+<!-- ===== CHAPTER 4: THE GLASS ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Four</div>
+<div class="ch-num">04</div>
+<div class="ch-title">The Glass</div>
+<div class="ch-sub">She learned the solution by watching through a window. Not by being told.</div>
+</div>
+</div>
+
+<div class="ribbon">
+<p>"Apply your heart to instruction and your ears to words of knowledge." <span class="ref">Proverbs 23:12</span></p>
+</div>
+
+<div class="page section prose">
+
+<div class="scene">
+<div class="scene-label">SCENE 4</div>
+<h4>The Window</h4>
+<p>In the most famous corvid experiment, a raven watched a researcher demonstrate a multi-step solution through a transparent barrier. She could see the actions but could not interact with the apparatus. When the barrier was removed, she walked directly to the apparatus and replicated the sequence. Not approximately. Exactly. <strong>She learned from observation, not from trial and error.</strong></p>
+</div>
+
+<p>This is the <dfn class="def" data-def="The data an AI model was exposed to during training. For LLMs, this includes text from books, websites, code repositories, and conversations. The training data determines what patterns the model has learned.">training</dfn> question. How did the raven learn without being taught? She observed patterns. She mapped actions to outcomes. She stored the relationship "this action leads to this result" without ever performing the action herself.</p>
+
+<p>AI agents learn the same way. During training, the underlying <dfn class="def" data-def="A large language model, the neural network that powers AI agents. The LLM generates text, reasons through problems, and decides which tools to use. It is the 'brain' of the agent.">language model</dfn> processes billions of examples of human reasoning, problem solving, tool use, and error correction. It never performed these tasks itself. It watched through the glass. When the barrier is removed and a real task arrives, it draws on those observed patterns to generate a plan.</p>
+
+<p>But here is the nuance the raven teaches us: <strong>observation is not imitation.</strong> Seven did not memorize a fixed sequence. She extracted the principle behind the sequence. When researchers changed the apparatus slightly (longer string, heavier food), she adapted her approach. She had learned the concept, not the recipe.</p>
+
+<p>This is exactly what separates a good AI agent from a brittle one. A brittle agent memorizes: "When the user says X, call tool Y." A capable agent extracts the principle: "When the user needs current information, search for it. When the user needs computation, calculate it." The principle generalizes. The recipe breaks the moment the problem changes.</p>
+
+<div class="ba-grid">
+<div class="ba-col before">
+ <div class="ba-label">Before This Chapter</div>
+ <h4>"AI was programmed with rules"</h4>
+ <p>You imagined developers writing if/then statements for every possible situation. You thought agents followed scripts.</p>
+</div>
+<div class="ba-col after">
+ <div class="ba-label">After This Chapter</div>
+ <h4>"AI learned patterns from observation"</h4>
+ <p>You now understand that agents are trained on examples of reasoning, not given rules. They extract principles from patterns, just as the raven extracts the concept from the demonstration.</p>
+</div>
+</div>
+
+<div class="grand-quote">
+<blockquote>She did not memorize the sequence. She understood the principle. That is why she could adapt when the puzzle changed.</blockquote>
+<cite>The Fourth Lesson</cite>
+</div>
+
+</div>
+
+<div class="root-ck">
+<div class="rc-label">Root Check No. 4</div>
+<h4>Water What Was Planted</h4>
+<div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Perch</strong> is the planning phase.</div></div>
+<div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Stone</strong> is tool selection.</div></div>
+<div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The String</strong> is sequential reasoning.</div></div>
+<div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Glass</strong> is learning from observation. Agents learn patterns from training data, not rules from programmers. Principles generalize. Recipes break.</div></div>
+</div>
+
+<!-- ===== CHAPTER 5: THE MISS ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Five</div>
+<div class="ch-num">05</div>
+<div class="ch-title">The Miss</div>
+<div class="ch-sub">When the stone rolls away, she does not start over. She starts from where she is.</div>
+</div>
+</div>
+
+<div class="ribbon">
+<p>"For a righteous man falls seven times and rises again." <span class="ref">Proverbs 24:16</span></p>
+</div>
+
+<div class="page section prose">
+
+<div class="scene">
+<div class="scene-label">SCENE 5</div>
+<h4>The Fallen Stone</h4>
+<p>In one trial, Seven dropped a stone toward the tube and missed. The stone bounced off the rim and rolled across the table. A less sophisticated animal might panic, restart, or abandon the task. Seven walked to where the stone had landed, picked it up, returned to the tube, and dropped it again. This time she positioned herself directly above the opening. <strong>She did not restart from the beginning. She corrected from the current state.</strong></p>
+</div>
+
+<p>This is <dfn class="def" data-def="The ability of an agent to detect that an action has failed, assess the current state, and generate a new plan from that state rather than restarting the entire task.">error recovery</dfn>, and it is the capability that separates agents from scripts.</p>
+
+<p>A script follows a fixed path. If step three fails, the script crashes. It has no concept of "current state." It only knows "expected state." When reality diverges from expectation, the script has nothing to say.</p>
+
+<p>An agent, like Seven, operates differently. When a step fails, the agent does three things. First, it <strong>observes the new state</strong>: the stone is on the table, not in the tube. The water level has not changed. The food is still unreachable. Second, it <strong>diagnoses the failure</strong>: the stone missed because the drop angle was wrong. Third, it <strong>replans from the current position</strong>: walk to the stone, pick it up, reposition, drop again.</p>
+
+<div class="decision-tree">
+<div class="dt-node dt-question">Did the action succeed?</div>
+<div class="dt-arrow">YES</div>
+<div class="dt-node dt-yes">Proceed to the next step in the plan.</div>
+<div class="dt-arrow">NO</div>
+<div class="dt-node dt-no">Observe what actually happened.</div>
+<div class="dt-node dt-question" style="margin-left:24px">Can I recover from here?</div>
+<div class="dt-arrow" style="margin-left:36px">YES</div>
+<div class="dt-node dt-yes" style="margin-left:36px">Adjust the plan and retry from current state.</div>
+<div class="dt-arrow" style="margin-left:36px">NO</div>
+<div class="dt-node dt-no" style="margin-left:36px">Try an entirely different approach.</div>
+</div>
+
+<p>This is what happens when you ask an AI agent to search for information and the search returns no results. A bad agent will say "I couldn't find anything." A good agent will rewrite the search query with different keywords, try a different search tool, or ask you a clarifying question. It recovers from the current state. It does not pretend the failure did not happen, and it does not restart from scratch.</p>
+
+<div class="think">
+<div class="think-label">Something Just Happened</div>
+<p>You have been recovering from failures your entire life without calling it "error recovery." When you take a wrong turn driving, you do not go home and start over. You recalculate from where you are. When a recipe goes wrong, you adjust, you do not throw away all the ingredients and start from the grocery store. The raven's recovery is your recovery. The AI agent's recovery is modeled on both.</p>
+</div>
+
+<div class="glow-box">
+<h3>The Real Cost of Not Recovering</h3>
+<p>Every time an agent restarts a task from the beginning instead of recovering from the failure point, it wastes all the work that came before the failure. If steps one through six succeeded and step seven failed, restarting discards six successful steps. <strong>Recovery preserves progress. Restart destroys it.</strong> This is why the raven walks to the fallen stone instead of going back to her perch. The progress is real. Only the last step needs correction.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+<div class="rc-label">Root Check No. 5</div>
+<h4>Water What Was Planted</h4>
+<div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Perch</strong> is the planning phase.</div></div>
+<div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Stone</strong> is tool selection.</div></div>
+<div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The String</strong> is sequential reasoning.</div></div>
+<div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Glass</strong> is learning from observation.</div></div>
+<div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Miss</strong> is error recovery. When a step fails, agents diagnose, replan, and continue from the current state. They do not restart from the beginning.</div></div>
+</div>
+
+<!-- ===== CHAPTER 6: THE CACHE ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Six</div>
+<div class="ch-num">06</div>
+<div class="ch-title">The Cache</div>
+<div class="ch-sub">She remembers what she hid. She also remembers who was watching when she hid it.</div>
+</div>
+</div>
+
+<div class="ribbon">
+<p>"The heart of the discerning acquires knowledge, for the ears of the wise seek it out." <span class="ref">Proverbs 18:15</span></p>
+</div>
+
+<div class="page section prose">
+
+<div class="scene">
+<div class="scene-label">SCENE 6</div>
+<h4>The Watcher and the Thief</h4>
+<p>Seven buried a piece of food while another raven watched. Later, when the observer left, Seven returned to her cache, dug it up, and re-hid it in a new location. She did not re-hide caches that were buried in private. <strong>She remembered not just where she hid the food, but who was watching when she hid it.</strong></p>
+</div>
+
+<p>Ravens maintain <dfn class="def" data-def="The information an agent retains about what has happened so far in a task. Context includes previous actions, their results, user preferences, and accumulated knowledge. Context is limited by the context window size.">context</dfn> in a way that goes beyond simple memory. They track what happened, who was present, and what that presence implies about future risk. This is not just storing facts. This is reasoning about the social and temporal dimensions of stored information.</p>
+
+<p>AI agents face the same challenge through the <dfn class="def" data-def="The maximum amount of text an AI model can process at once, measured in tokens. A larger context window means the agent can 'remember' more of the conversation and task history.">context window</dfn>. The context window is everything the agent can "see" at once: the conversation history, the results of previous tool calls, the user's original request, and its own reasoning so far. It is the agent's working memory.</p>
+
+<div class="data-row">
+<div class="data-box"><div class="data-num">200K</div><div class="data-label">Tokens in a large context window</div></div>
+<div class="data-box"><div class="data-num">~150K</div><div class="data-label">Words (equivalent)</div></div>
+<div class="data-box"><div class="data-num">~500</div><div class="data-label">Pages of text</div></div>
+</div>
+
+<p>But even 200,000 tokens has limits. On a complex task that spans dozens of tool calls, the context window fills up. Early steps get pushed out. The agent "forgets" what happened at the beginning. This is like a raven that has hidden food in fifty locations but can only remember the last twenty. The forgotten caches are lost.</p>
+
+<p>The best agents manage their context the way Seven manages her caches. They <strong>summarize</strong> early results so the key information survives compression. They <strong>prioritize</strong> what to keep in active memory. And they <strong>know what they have forgotten</strong>. When Seven re-hides a cache, she is managing risk based on context. When an agent asks "Let me re-read the original request to make sure I haven't drifted," it is doing the same thing.</p>
+
+<div class="viz">
+<div class="viz-inner">
+<div class="viz-top">
+ <div class="viz-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="14" height="14" rx="2"/><path d="M7 7h6M7 10h4M7 13h5"/></svg></div>
+ <div class="viz-meta"><div class="viz-label">Visualization</div><h4>The Context Cache</h4></div>
+</div>
+<div class="viz-body">
+<p>Imagine a desk with a fixed surface area. Every document you place on it is visible and usable. But the desk only fits fifty pages. When page fifty-one arrives, page one falls off the edge. You cannot make the desk bigger. You can only decide what stays on it. The agent's context window is that desk. The art of agency is deciding what to keep on the surface and what to let fall.</p>
+</div>
+<div class="viz-trigger">See it: a desk, fifty pages, and the constant decision of what stays visible.</div>
+</div>
+</div>
+
+</div>
+
+<div class="root-ck">
+<div class="rc-label">Root Check No. 6</div>
+<h4>Water What Was Planted</h4>
+<div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Perch</strong> is the planning phase.</div></div>
+<div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Stone</strong> is tool selection.</div></div>
+<div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The String</strong> is sequential reasoning.</div></div>
+<div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Glass</strong> is learning from observation.</div></div>
+<div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Miss</strong> is error recovery.</div></div>
+<div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Cache</strong> is context management. Agents have limited working memory and must decide what to keep, summarize, and let go.</div></div>
+</div>
+
+<!-- ===== CHAPTER 7: THE TRIAL ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Seven</div>
+<div class="ch-num">07</div>
+<div class="ch-title">The Trial</div>
+<div class="ch-sub">Eight steps. No instructions. One attempt. This is how agents reason.</div>
+</div>
+</div>
+
+<div class="ribbon">
+<p>"I have fought the good fight, I have finished the race, I have kept the faith." <span class="ref">2 Timothy 4:7</span></p>
+</div>
+
+<div class="page section prose">
+
+<div class="scene">
+<div class="scene-label">SCENE 7</div>
+<h4>The Eight Step Puzzle</h4>
+<p>The final apparatus combined everything. To reach the food, Seven needed to: (1) pull a short stick from a cage, (2) use that stick to reach a longer stick in a second cage, (3) use the longer stick to push a stone off a ledge, (4) let the stone drop into a tube, (5) watch the water rise, (6) pull the string now within reach, (7) pin the string, (8) take the food. Eight steps. Three tools. Two physics principles. One raven.</p>
+<p>She paused on her perch. She looked at each component. Then she began.</p>
+<p><strong>She did not make a single error.</strong></p>
+</div>
+
+<p>This is the complete <dfn class="def" data-def="The repeated cycle of an agent perceiving its environment, reasoning about what to do, taking an action, observing the result, and deciding the next action. Each loop iteration brings the agent closer to its goal.">agent loop</dfn>. Everything from the previous six chapters converges here. The perch (planning). The stone (tool selection). The string (sequential reasoning). The glass (learned patterns). The miss (error recovery, though she did not need it). The cache (maintaining context across eight steps).</p>
+
+<p>Modern AI agents run this exact loop. A user asks: "Analyze our company's Q3 sales data, identify the three weakest product lines, research what competitors are doing in those categories, and draft a strategy memo for the executive team." The agent does not panic at the complexity. It perches. It plans. It selects tools. It executes step by step. It recovers from errors. It maintains context. And it produces a result that no single tool call could have generated.</p>
+
+<div class="glow-box">
+<h3>Why This Matters for You</h3>
+<p>AI agents are not a future technology. They are here. They are booking travel, writing code, analyzing data, managing email, and coordinating workflows. The question is not whether they will change how you work. The question is whether you understand them well enough to <strong>use them wisely and build with them intelligently.</strong></p>
+<p>The raven's trial is not about a bird solving a puzzle. It is about a pattern of intelligence that works whether the brain is biological or digital: <strong>observe, plan, select, execute, recover, remember, complete.</strong></p>
+</div>
+
+<div class="ba-grid">
+<div class="ba-col before">
+ <div class="ba-label">Before This Playbook</div>
+ <h4>"AI agents are just chatbots with more features"</h4>
+ <ul>
+  <li>Agents are fancy autocomplete</li>
+  <li>They follow scripts someone wrote</li>
+  <li>They crash when something unexpected happens</li>
+  <li>They cannot really "reason"</li>
+ </ul>
+</div>
+<div class="ba-col after">
+ <div class="ba-label">After This Playbook</div>
+ <h4>"AI agents reason, recover, and adapt"</h4>
+ <ul>
+  <li>Agents plan before they act (The Perch)</li>
+  <li>They select the right tool for each sub-task (The Stone)</li>
+  <li>They decompose complex goals into steps (The String)</li>
+  <li>They recover from errors without restarting (The Miss)</li>
+ </ul>
+</div>
+</div>
+
+<div class="think">
+<div class="think-label">This Is Happening To You Right Now</div>
+<p>You just completed seven chapters. Each one built on the previous. You planned your reading (decided to start). You selected tools (this playbook over a textbook). You followed a sequence (chapter by chapter). You recovered from confusion (re-read a paragraph when it did not click). You maintained context (you still remember The Perch from chapter one).</p>
+<p><strong>You ran the agent loop. You are the raven.</strong></p>
+</div>
+
+</div>
+
+<div class="root-ck">
+<div class="rc-label">Root Check No. 7</div>
+<h4>Water What Was Planted</h4>
+<div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Perch</strong> is the planning phase. Think before you act.</div></div>
+<div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Stone</strong> is tool selection. Match the tool to the problem.</div></div>
+<div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The String</strong> is sequential reasoning. Break complexity into chains of simple steps.</div></div>
+<div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Glass</strong> is learning from observation. Principles generalize. Recipes break.</div></div>
+<div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Miss</strong> is error recovery. Correct from where you are, not from where you started.</div></div>
+<div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Cache</strong> is context management. Know what you remember and what you have forgotten.</div></div>
+<div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Trial</strong> is the complete agent loop. Observe, plan, select, execute, recover, remember, complete.</div></div>
+</div>
+
+<!-- ===== FINALE ===== -->
+<div class="ch-head" style="text-align:center;padding:80px 24px 60px">
+<svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+ <circle cx="28" cy="28" r="24" fill="rgba(106,77,200,0.15)" stroke="rgba(106,77,200,0.3)" stroke-width="1"/>
+ <path d="M20 28 L26 34 L38 22" stroke="#8A6DE8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+<div class="ch-title" style="margin-top:24px;font-size:clamp(1.5rem,4vw,2.2rem)">The Raven's Trial Is Complete</div>
+<div class="ch-sub" style="max-width:480px;margin:12px auto 0">Seven mental models. One bird. One loop that powers every AI agent on Earth.</div>
+</div>
+</div>
+
+<div class="page section prose" style="text-align:center">
+<p>Eight steps. No instructions. She solved it by watching once through the glass.</p>
+<p>Now you know how.</p>
+</div>
+
+<!-- ===== FINAL TEST ===== -->
+<div class="page">
+<div class="final-test">
+<h3>The Final Test</h3>
+<p class="test-sub">Can you answer these without looking back?</p>
+
+<div class="test-q">
+<div class="test-num">Question 01</div>
+<p>What does "The Perch" represent in AI agent architecture? Why does planning before acting improve performance?</p>
+</div>
+
+<div class="test-q">
+<div class="test-num">Question 02</div>
+<p>Why does choosing the wrong tool produce confident wrong answers, not just slow answers?</p>
+</div>
+
+<div class="test-q">
+<div class="test-num">Question 03</div>
+<p>What is chain of thought reasoning, and why does writing out each step make agents more capable?</p>
+</div>
+
+<div class="test-q">
+<div class="test-num">Question 04</div>
+<p>How did the raven learn to solve puzzles she had never attempted? How is this similar to how AI agents are trained?</p>
+</div>
+
+<div class="test-q">
+<div class="test-num">Question 05</div>
+<p>What is the difference between an agent that restarts after failure and one that recovers from the current state? Why does this matter?</p>
+</div>
+
+<div class="test-q">
+<div class="test-num">Question 06</div>
+<p>What is a context window, and why does it force agents to make decisions about what to remember?</p>
+</div>
+
+<div class="test-q">
+<div class="test-num">Question 07</div>
+<p>Name the seven mental models from this playbook and explain the agent loop they form when combined.</p>
+</div>
+
+<div class="test-q">
+<div class="test-num">Question 08</div>
+<p>Why is an agent that extracts principles from training data more capable than one that memorizes specific responses?</p>
+</div>
+</div>
+</div>
+
+<!-- ===== PROMPT CARD ===== -->
+<div class="page">
+<div class="prompt-card">
+<h3>Continue Learning</h3>
+<p>Copy and paste any of these into an AI assistant to go deeper:</p>
+<p><code>"Explain how chain of thought prompting improves AI reasoning. Give me a before/after example showing the same question answered with and without chain of thought."</code></p>
+<p><code>"Walk me through how an AI agent would decompose this task into sub-steps: 'Research the top 5 CRM tools for small businesses, compare pricing, and draft a recommendation email for my team.'"</code></p>
+<p><code>"Explain the difference between a scripted automation and an AI agent. What can an agent do that a script cannot? Give me real examples."</code></p>
+<p><code>"What is tool use in AI agents? Explain how an agent decides which tool to call, and what happens when it picks the wrong one."</code></p>
+</div>
+</div>
+
+<!-- ===== SERIES PROGRESS ===== -->
+<div class="series-progress">
+<div class="series-label">How AI Works Series</div>
+<div class="series-dots">
+ <div class="s-dot done"></div>
+ <div class="s-dot done"></div>
+ <div class="s-dot done"></div>
+ <div class="s-dot done"></div>
+ <div class="s-dot active"></div>
+</div>
+<div class="series-titles">
+ <span>LLMs</span>
+ <span>Music</span>
+ <span>Images</span>
+ <span>Video</span>
+ <span class="current">Agents</span>
+</div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<div class="footer">KingdomBuilders AI</div>
+
+</body>
+</html>

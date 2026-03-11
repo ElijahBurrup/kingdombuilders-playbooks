@@ -169,6 +169,9 @@ def _slug_to_file():
         "the-porcupines-quills": "The_Porcupines_Quills.html",
         "the-tardigrade-protocol": "The_Tardigrade_Protocol.html",
         "the-cuttlefishs-canvas": "The_Cuttlefishs_Canvas.html",
+        "the-centipedes-march": "The_Centipedes_March.html",
+        "the-lyrebirds-echo": "The_Lyrebirds_Echo.html",
+        "the-ravens-trial": "The_Ravens_Trial.html",
     }
 
 
