@@ -172,6 +172,8 @@ def _slug_to_file():
         "the-centipedes-march": "The_Centipedes_March.html",
         "the-lyrebirds-echo": "The_Lyrebirds_Echo.html",
         "the-ravens-trial": "The_Ravens_Trial.html",
+        "the-lifted-ceiling": "The_Lifted_Ceiling.html",
+        "the-new-earning": "The_New_Earning.html",
     }
 
 
@@ -422,6 +424,13 @@ def lay_it_down_gluttony():
 @bp.route("/layitdownlust")
 def lay_it_down_lust():
     return send_from_directory("static", "lay-it-down-lust.html")
+
+
+# --- Playbook Videos (serves video files from assets/videos) ---
+@bp.route("/read/videos/<path:filename>")
+def read_video(filename):
+    video_dir = Path(__file__).parent / "assets" / "videos"
+    return send_from_directory(video_dir, filename)
 
 
 # --- Playbook Reader (serves full playbook HTML from assets) ---
