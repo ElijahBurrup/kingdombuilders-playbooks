@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Centipede's March | Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --rust:#8B2500;--rust-glow:#C0501A;--rust-pale:#E8A078;--rust-soft:rgba(139,37,0,0.08);
+ --earth:#1A1208;--earth-deep:#0E0A04;--earth-mid:#2A1E10;--earth-light:#3A2E18;--earth-pale:#4A3E28;
+ --copper:#C87830;--copper-glow:#E89850;--copper-pale:#F0C8A0;
+ --sand:#D8C8A8;--sand-warm:#E8D8B8;--sand-deep:#C0B090;
+ --cream:#FAF8F2;--cream-warm:#F5F0E5;--cream-deep:#E8E0D0;
+ --text:#1A1208;--text-light:#3A3020;--text-muted:#6A6050;
+ --white:#FFFFFF;--radius:16px;
+ --shadow-soft:0 2px 16px rgba(26,18,8,0.08);
+ --shadow-mid:0 4px 28px rgba(26,18,8,0.12);
+ --before-bg:#FFF5EE;--before-border:#C87830;--before-text:#5A3010;
+ --after-bg:#F0F5EE;--after-border:#4A7A3A;--after-text:#1A3A10
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--cream);line-height:1.82;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
+.page{max-width:720px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--earth);font-weight:700}
+.prose h2{font-size:1.4rem;color:var(--earth);margin:40px 0 16px;letter-spacing:-0.01em;display:flex;align-items:center;gap:10px}
+
+/* ===== COVER ===== */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;
+ background:linear-gradient(175deg,#060402 0%,#0E0A04 20%,var(--earth) 45%,var(--earth-mid) 70%,#060402 100%);
+ position:relative;overflow:hidden}
+/* Segment particles — little amber dots rippling across the screen */
+.seg{position:absolute;width:5px;height:5px;border-radius:50%;background:rgba(200,120,48,0.5);animation:seg-march linear infinite;pointer-events:none;opacity:0}
+.seg:nth-child(1){top:20%;animation-duration:6s;animation-delay:0s}
+.seg:nth-child(2){top:30%;animation-duration:8s;animation-delay:-2s;width:3px;height:3px}
+.seg:nth-child(3){top:45%;animation-duration:7s;animation-delay:-4s}
+.seg:nth-child(4){top:55%;animation-duration:9s;animation-delay:-1s;width:4px;height:4px}
+.seg:nth-child(5){top:70%;animation-duration:6.5s;animation-delay:-3s}
+.seg:nth-child(6){top:80%;animation-duration:8.5s;animation-delay:-5s;width:3px;height:3px}
+.seg:nth-child(7){top:35%;animation-duration:7.5s;animation-delay:-6s}
+.seg:nth-child(8){top:60%;animation-duration:5.5s;animation-delay:-2s;width:4px;height:4px}
+.seg:nth-child(9){top:85%;animation-duration:9.5s;animation-delay:-4s}
+.seg:nth-child(10){top:15%;animation-duration:7s;animation-delay:-7s;width:3px;height:3px}
+@keyframes seg-march{
+ 0%{left:-5%;opacity:0}
+ 5%{opacity:0.7}
+ 95%{opacity:0.5}
+ 100%{left:105%;opacity:0}
+}
+/* Leg tick marks — thin vertical lines that pulse */
+.leg-tick{position:absolute;width:1px;height:12px;background:rgba(200,120,48,0.15);animation:tick-pulse ease-in-out infinite;pointer-events:none}
+.leg-tick:nth-child(11){left:10%;bottom:25%;animation-duration:2s;animation-delay:0s}
+.leg-tick:nth-child(12){left:20%;bottom:22%;animation-duration:2.2s;animation-delay:0.3s}
+.leg-tick:nth-child(13){left:30%;bottom:26%;animation-duration:1.8s;animation-delay:0.1s}
+.leg-tick:nth-child(14){left:40%;bottom:23%;animation-duration:2.4s;animation-delay:0.5s}
+.leg-tick:nth-child(15){left:50%;bottom:25%;animation-duration:2s;animation-delay:0.2s}
+.leg-tick:nth-child(16){left:60%;bottom:24%;animation-duration:2.1s;animation-delay:0.4s}
+.leg-tick:nth-child(17){left:70%;bottom:22%;animation-duration:1.9s;animation-delay:0.6s}
+.leg-tick:nth-child(18){left:80%;bottom:26%;animation-duration:2.3s;animation-delay:0.1s}
+.leg-tick:nth-child(19){left:90%;bottom:23%;animation-duration:2s;animation-delay:0.7s}
+@keyframes tick-pulse{0%,100%{transform:scaleY(1);opacity:0.2}50%{transform:scaleY(2.5);opacity:0.6}}
+.ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.015;mix-blend-mode:overlay;pointer-events:none}
+.cover-content{position:relative;z-index:2;padding:48px 24px}
+.cover-badge{display:inline-block;padding:6px 22px;border:1px solid rgba(200,120,48,0.3);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.67rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--copper-glow);margin-bottom:36px}
+.cover h1{font-family:'Nunito',sans-serif;font-size:clamp(2.2rem,6vw,3.8rem);font-weight:900;color:var(--white);line-height:1.08;margin-bottom:4px}
+.cover h1 strong{font-weight:900;color:var(--copper-glow);display:block;font-size:clamp(2.6rem,7vw,4.4rem)}
+.cover-tagline{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.5);margin-top:24px;line-height:1.75}
+.cover-tagline em{color:var(--copper-pale);font-style:normal;font-weight:600}
+.cover-sub{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-top:12px}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.58rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,0.15);margin-top:48px}
+
+/* Series progress */
+.series-progress{text-align:center;margin-top:32px}
+.series-dots{display:flex;justify-content:center;gap:10px;margin-bottom:8px}
+.series-dot{width:10px;height:10px;border-radius:50%;border:2px solid rgba(200,120,48,0.4);background:transparent}
+.series-dot.done{background:var(--copper);border-color:var(--copper)}
+.series-dot.active{background:var(--copper-glow);border-color:var(--copper-glow);box-shadow:0 0 8px rgba(232,152,80,0.5)}
+.series-label{font-family:'Nunito',sans-serif;font-size:0.58rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25)}
+
+/* ===== CHAPTER HEADS ===== */
+.ch-head{background:linear-gradient(170deg,var(--earth-deep),var(--earth-mid));padding:72px 24px 52px;position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C87830' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.ch-badge{display:inline-block;padding:4px 16px;background:rgba(200,120,48,0.1);border:1px solid rgba(200,120,48,0.25);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;color:var(--copper-pale);margin-bottom:20px}
+.ch-num{font-family:'Nunito',sans-serif;font-size:5.5rem;font-weight:900;line-height:0.9;color:rgba(200,120,48,0.15);margin-bottom:-10px}
+.ch-title{font-family:'Nunito',sans-serif;font-size:2.1rem;font-weight:900;color:var(--white);line-height:1.15;letter-spacing:-0.02em;margin-bottom:10px}
+.ch-sub{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.4);line-height:1.6}
+
+/* ===== RIBBON (scripture) ===== */
+.ribbon{text-align:center;padding:22px 24px;background:linear-gradient(135deg,rgba(200,120,48,0.04),rgba(200,120,48,0.07));border-top:1.5px solid rgba(200,120,48,0.15);border-bottom:1.5px solid rgba(200,120,48,0.15)}
+.ribbon p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:var(--text-muted);max-width:520px;margin:0 auto}
+.ribbon .ref{font-weight:600;color:var(--copper);font-style:normal}
+
+/* ===== CHARACTER CARDS ===== */
+.char-grid{display:grid;gap:24px;margin:40px 0}
+@media(min-width:640px){.char-grid{grid-template-columns:1fr 1fr}}
+.char-card{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft);transition:all 0.3s ease}
+.char-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-mid)}
+.char-head{background:linear-gradient(135deg,var(--rust-soft),rgba(200,120,48,0.03));padding:18px 20px;border-bottom:1px solid var(--cream-deep);display:flex;align-items:center;gap:14px}
+.char-emoji{font-size:2rem;line-height:1;display:flex;align-items:center;justify-content:center}
+.char-name{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;color:var(--earth);line-height:1.25}
+.char-title{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-top:2px}
+.char-body{padding:20px}
+.char-body p{font-size:0.92rem;color:var(--text-light);line-height:1.75;margin:0}
+
+/* ===== SCENE BLOCKS ===== */
+.scene{background:linear-gradient(135deg,var(--cream-warm),var(--cream));border:1px solid var(--cream-deep);border-radius:var(--radius);padding:28px;margin:32px 0;box-shadow:var(--shadow-soft)}
+.scene-label{font-family:'Nunito',sans-serif;font-size:0.68rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--copper);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.scene h4{font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:800;color:var(--earth);margin-bottom:14px;line-height:1.3}
+.scene p{font-size:0.95rem;color:var(--text-light);line-height:1.78;margin-bottom:14px}
+.scene p:last-child{margin-bottom:0}
+
+/* ===== BEFORE / AFTER ===== */
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:36px 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft)}
+@media(max-width:600px){.ba-grid{grid-template-columns:1fr}}
+.ba-col{padding:28px 24px}
+.ba-col.before{background:var(--before-bg);border-right:2px solid var(--cream-deep)}
+.ba-col.after{background:var(--after-bg)}
+@media(max-width:600px){.ba-col.before{border-right:none;border-bottom:2px solid var(--cream-deep)}}
+.ba-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px}
+.ba-col.before .ba-label{color:var(--before-border)}
+.ba-col.after .ba-label{color:var(--after-border)}
+.ba-col h4{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;margin-bottom:10px;line-height:1.3}
+.ba-col.before h4{color:var(--before-text)}
+.ba-col.after h4{color:var(--after-text)}
+.ba-col p,.ba-col li{font-size:0.88rem;line-height:1.7}
+.ba-col ul{list-style:none;padding:0;margin:0}
+.ba-col ul li{padding:4px 0 4px 18px;position:relative}
+.ba-col.before ul li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:8px;border-radius:50%;background:var(--before-border);opacity:0.5}
+.ba-col.after ul li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:8px;border-radius:50%;background:var(--after-border);opacity:0.5}
+
+/* ===== DATA BOXES ===== */
+.data-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin:32px 0}
+.data-box{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:24px 16px;text-align:center;box-shadow:var(--shadow-soft)}
+.data-num{font-family:'Nunito',sans-serif;font-size:2rem;font-weight:900;color:var(--copper);line-height:1;margin-bottom:6px}
+.data-label{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+
+/* ===== GLOW BOX ===== */
+.glow-box{background:linear-gradient(135deg,var(--earth),var(--earth-mid));border:2px solid rgba(200,120,48,0.2);border-radius:var(--radius);padding:32px;margin:36px 0;position:relative;overflow:hidden;box-shadow:0 4px 24px rgba(26,18,8,0.2)}
+.glow-box::before{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(200,120,48,0.08) 0%,transparent 70%);border-radius:50%}
+.glow-box h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--copper-glow);margin-bottom:14px;position:relative}
+.glow-box p{font-size:0.95rem;color:rgba(255,255,255,0.8);line-height:1.78;position:relative;margin-bottom:12px}
+.glow-box p:last-child{margin-bottom:0}
+.glow-box strong{color:var(--copper-pale)}
+
+/* ===== GRAND QUOTE ===== */
+.grand-quote{text-align:center;padding:48px 24px;margin:40px 0;position:relative}
+.grand-quote::before{content:'\201C';font-family:'Lora',serif;font-size:8rem;color:rgba(200,120,48,0.12);position:absolute;top:-20px;left:50%;transform:translateX(-50%);line-height:1}
+.grand-quote blockquote{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:var(--earth);line-height:1.7;max-width:520px;margin:0 auto;position:relative}
+.grand-quote cite{display:block;margin-top:16px;font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--copper);font-style:normal}
+
+/* ===== ROOT CHECK ===== */
+.root-ck{margin:40px auto;max-width:720px;padding:36px 32px;background:linear-gradient(135deg,rgba(200,120,48,0.04),rgba(200,120,48,0.08));border-radius:var(--radius);border:2px solid rgba(200,120,48,0.15)}
+.root-ck .rc-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--copper);margin-bottom:12px}
+.root-ck h4{font-size:1.05rem;color:var(--earth);margin-bottom:20px}
+.r-item{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
+.r-item:last-child{margin-bottom:0}
+.r-dot{flex-shrink:0;width:8px;height:8px;border-radius:50%;background:var(--copper);margin-top:7px}
+.r-text{font-size:0.92rem;color:var(--text-light);line-height:1.7}
+
+/* ===== VIZ (visualization box) ===== */
+.viz{margin:32px 0;border-radius:var(--radius);border:2px solid var(--copper);overflow:hidden;box-shadow:0 0 20px rgba(200,120,48,0.08)}
+.viz-inner{padding:0}
+.viz-top{display:flex;align-items:center;gap:16px;padding:20px 28px;background:linear-gradient(135deg,rgba(200,120,48,0.08),rgba(200,120,48,0.03))}
+.viz-icon{flex-shrink:0;width:40px;height:40px;border-radius:50%;background:var(--copper);color:var(--white);display:flex;align-items:center;justify-content:center}
+.viz-icon svg{width:20px;height:20px}
+.viz-meta .viz-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--copper);margin-bottom:4px}
+.viz-meta h4{font-size:1rem;color:var(--earth);margin:0}
+.viz-body{padding:24px 28px}
+.viz-body p{font-size:0.92rem;color:var(--text-light);line-height:1.75;margin-bottom:12px}
+.viz-body p:last-child{margin-bottom:0}
+.viz-body strong{color:var(--earth);font-weight:700}
+.viz-body em{color:var(--copper);font-style:normal;font-weight:600}
+.viz-trigger{padding:16px 28px;background:linear-gradient(135deg,rgba(200,120,48,0.06),rgba(200,120,48,0.02));border-top:1px solid rgba(200,120,48,0.12);font-size:0.88rem;color:var(--earth);font-style:italic}
+
+/* ===== THINK PROMPT ===== */
+.think{background:linear-gradient(135deg,rgba(200,120,48,0.06),rgba(200,120,48,0.02));border:2px solid rgba(200,120,48,0.15);border-radius:var(--radius);padding:28px;margin:36px 0}
+.think-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--copper);margin-bottom:14px}
+.think p{font-size:0.95rem;color:var(--text-light);line-height:1.78;margin-bottom:12px}
+.think p:last-child{margin-bottom:0}
+.think-line{border:none;border-bottom:1.5px dashed rgba(200,120,48,0.3);margin:8px 0}
+
+/* ===== FLOW DIAGRAM ===== */
+.flow{display:flex;flex-direction:column;gap:0;margin:32px 0}
+.flow-step{display:flex;align-items:flex-start;gap:16px;padding:20px 0}
+.flow-dot{width:36px;height:36px;min-width:36px;border-radius:50%;background:linear-gradient(135deg,var(--copper),var(--copper-glow));display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:0.8rem;font-weight:900;color:var(--white);box-shadow:0 2px 8px rgba(200,120,48,0.3)}
+.flow-line{width:2px;height:20px;background:linear-gradient(to bottom,var(--copper),transparent);margin-left:17px}
+.flow-text h4{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:var(--earth);margin-bottom:4px}
+.flow-text p{font-size:0.88rem;color:var(--text-light);line-height:1.65}
+
+/* ===== FRAME GRID (video frames) ===== */
+.frame-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin:32px 0;padding:20px;background:var(--earth-deep);border-radius:var(--radius)}
+.frame{aspect-ratio:16/9;border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;color:var(--white);position:relative}
+.frame.noise{background:repeating-conic-gradient(rgba(200,120,48,0.15) 0% 25%,rgba(100,80,40,0.1) 0% 50%) 0 0/8px 8px}
+.frame.partial{background:linear-gradient(135deg,rgba(200,120,48,0.2),rgba(200,120,48,0.35))}
+.frame.clear{background:linear-gradient(135deg,rgba(200,120,48,0.4),rgba(200,120,48,0.6))}
+.frame-caption{text-align:center;font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-top:-12px;margin-bottom:32px}
+
+/* ===== RECOGNITION BOX ===== */
+.recog{background:linear-gradient(135deg,#F5F0E8,#F0EDE5);border:2px solid #D8D0C0;border-radius:var(--radius);padding:28px;margin:36px 0}
+.recog-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:#7A6A50;margin-bottom:14px}
+.recog p{font-size:0.95rem;color:#3A3020;line-height:1.78;margin-bottom:10px}
+.recog p:last-child{margin-bottom:0}
+
+/* ===== DARK PANEL ===== */
+.dark-panel{background:linear-gradient(135deg,var(--earth-deep),var(--earth));border:1px solid rgba(200,120,48,0.15);border-radius:var(--radius);padding:32px;margin:36px 0}
+.dp-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--copper);margin-bottom:14px}
+.dark-panel h3{font-family:'Nunito',sans-serif;font-size:1.2rem;font-weight:900;color:var(--copper-glow);margin-bottom:12px}
+.dark-panel p{font-size:0.92rem;color:rgba(255,255,255,0.7);line-height:1.75;margin-bottom:12px}
+.dark-panel p:last-child{margin-bottom:0}
+.dark-panel strong{color:var(--copper-pale)}
+
+/* ===== FINAL TEST ===== */
+.final-test{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:36px;margin:40px 0;box-shadow:var(--shadow-soft)}
+.final-test h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--earth);margin-bottom:6px}
+.final-test .test-sub{font-size:0.85rem;color:var(--text-muted);margin-bottom:24px;font-style:italic}
+.test-q{padding:14px 0;border-bottom:1px solid var(--cream-deep)}
+.test-q:last-child{border-bottom:none}
+.test-num{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--copper);margin-bottom:4px}
+.test-q p{font-size:0.92rem;color:var(--text);line-height:1.65}
+
+/* ===== PROMPT CARD ===== */
+.prompt-card{background:linear-gradient(135deg,var(--earth),var(--earth-mid));border-radius:var(--radius);padding:36px;margin:40px 0;box-shadow:0 4px 24px rgba(26,18,8,0.2)}
+.prompt-card h3{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;color:var(--copper-glow);margin-bottom:16px}
+.prompt-card p{font-size:0.88rem;color:rgba(255,255,255,0.65);line-height:1.65;margin-bottom:10px}
+.prompt-card code{background:rgba(255,255,255,0.08);padding:2px 8px;border-radius:4px;font-size:0.82rem;color:var(--copper-pale)}
+
+/* ===== FOOTER ===== */
+.footer{text-align:center;padding:48px 24px;background:var(--earth-deep);color:rgba(255,255,255,0.2);font-family:'Poppins',sans-serif;font-size:0.6rem;letter-spacing:2px;text-transform:uppercase}
+.footer a{color:var(--copper);text-decoration:none;opacity:0.6}
+.footer a:hover{opacity:1}
+
+/* ===== KNOWLEDGE LAYER (dfn tooltips) ===== */
+.def{cursor:help;border-bottom:1px dotted rgba(200,120,48,0.3);position:relative}
+.def::after{content:attr(data-def);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1a1208;color:var(--copper-glow);padding:8px 14px;border-radius:6px;font-size:0.78rem;white-space:normal;width:max-content;max-width:260px;opacity:0;pointer-events:none;transition:opacity 0.2s;box-shadow:0 4px 16px rgba(0,0,0,0.5);z-index:50;line-height:1.4;font-style:normal;font-family:'Nunito',sans-serif}
+.def:hover::after,.def:focus::after{opacity:1}
+@media(max-width:600px){.def::after{left:0;transform:none}}
+
+@media(max-width:640px){
+  .page{padding:0 20px}
+  .root-ck{margin-left:20px;margin-right:20px;padding:28px 20px}
+  .frame-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+</style>
+</head>
+<body>
+
+<!-- ===== COVER ===== -->
+<section class="cover">
+<div class="seg"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div>
+<div class="seg"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div>
+<div class="leg-tick"></div><div class="leg-tick"></div><div class="leg-tick"></div><div class="leg-tick"></div>
+<div class="leg-tick"></div><div class="leg-tick"></div><div class="leg-tick"></div><div class="leg-tick"></div><div class="leg-tick"></div>
+<div class="ghost-noise"></div>
+<div class="cover-content">
+<div class="cover-badge">How AI Works</div>
+<h1>The Centipede's <strong>March</strong></h1>
+<p class="cover-tagline">A story about a hundred legs moving in perfect sequence, where <em>no leg sees the whole body</em>, every step depends on the one before it, and the creature never stumbles... because each segment remembers.</p>
+<p class="cover-sub">How AI Video Actually Works</p>
+<p class="cover-author">KingdomBuilders AI</p>
+<div class="series-progress">
+<div class="series-dots">
+<div class="series-dot done"></div>
+<div class="series-dot done"></div>
+<div class="series-dot active"></div>
+</div>
+<div class="series-label">How AI Works &middot; Part 3 of 3</div>
+</div>
+</div>
+</section>
+
+<!-- ===== SCRIPTURE RIBBON ===== -->
+<div class="ribbon">
+<p>"The body is a unit, though it is made up of many parts; and though all its parts are many, they form one body."<br><span class="ref">1 Corinthians 12:12</span></p>
+</div>
+
+<!-- ===== INTRO ===== -->
+<div class="page section prose">
+<h2>The Creature That Walks Without a Brain</h2>
+<p>Beneath the forest floor, in the dark spaces between roots and stone, a creature moves with a precision that should be impossible. It has no centralized motor cortex. No master plan for locomotion. No blueprint for where each leg should land. It has a hundred legs, and every single one of them steps at exactly the right moment.</p>
+<p><strong>The centipede.</strong></p>
+<p>Watch it cross a stone. The first pair of legs finds the edge, adjusts, grips. The second pair follows the first, offset by a fraction of a second. The third follows the second. A ripple of motion propagates down the entire body, leg after leg after leg, each one inheriting the information of the one before it and passing a signal to the one behind.</p>
+<p>No leg knows where the creature is going. No leg sees the whole body. But the march is flawless because each segment does one thing perfectly: <strong>it watches its neighbor and moves accordingly.</strong></p>
+<p>This is how AI generates video.</p>
+</div>
+
+<!-- ===== CHARACTERS ===== -->
+<div class="page">
+<div class="char-grid">
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji">🐛</div>
+<div><div class="char-name">Kira</div><div class="char-title">The Centipede</div></div>
+</div>
+<div class="char-body"><p>A hundred legs, no master plan, and a march so precise it looks choreographed. She does not plan her path. She ripples forward, each segment trusting the one before it. She is the video generation model.</p></div>
+</div>
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji">📷</div>
+<div><div class="char-name">Lens</div><div class="char-title">The Human Filmmaker</div></div>
+</div>
+<div class="char-body"><p>He sees in sequences. He knows what a "cut" means, what a "pan" feels like, why a slow zoom makes you lean forward. He has taste and timing. He is the human who directs the model.</p></div>
+</div>
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji">🪨</div>
+<div><div class="char-name">Ground</div><div class="char-title">The Terrain</div></div>
+</div>
+<div class="char-body"><p>The surface the centipede walks across. Sometimes smooth, sometimes fractured, sometimes shifting. Ground is the noise that every video begins as, the random static that the model must cross to reach clarity.</p></div>
+</div>
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji">🌊</div>
+<div><div class="char-name">The Wave</div><div class="char-title">The Signal That Connects</div></div>
+</div>
+<div class="char-body"><p>The ripple that passes from one leg to the next. Not a physical thing, but an instruction: <em>here is what the leg before you did, now decide what you will do.</em> The Wave is temporal attention, the mechanism that makes video coherent.</p></div>
+</div>
+</div>
+</div>
+
+<div class="page section prose">
+<p style="font-size:1.05rem;color:var(--text);line-height:1.8;">If you finish this playbook, you will understand how a machine turns a sentence into a moving picture. You will know <strong>how 24 frames per second stay coherent without a director, why AI video stutters when it loses temporal attention, how the same technology that generates images learns to generate time, and what actually happens in the seconds between your prompt and your video.</strong></p>
+</div>
+
+<!-- ===== CHAPTER 1 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter One</div>
+<div class="ch-num">01</div>
+<div class="ch-title">The Leg</div>
+<div class="ch-sub">A single frame is just an image. It takes a march to make a video.</div>
+</div>
+</div>
+
+<div class="page section prose">
+<p>Before you can understand how AI generates video, you need to understand something simpler: <strong>a video is not a movie. A video is a stack of photographs.</strong></p>
+
+<p>Twenty four photographs per second. Each one a still image, frozen in time, meaningless on its own. But played in sequence, fast enough, they create the illusion of motion. Your brain fills in the movement between frames. The frames themselves do not move. <em>You</em> do.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>One Leg, Alone</h4>
+<p>Kira lifted a single leg. Just one. Held it in the air. "This," she said, "is a frame. One image. One frozen moment. It tells you nothing about where I came from or where I am going. It is a leg without a body."</p>
+<p>Lens nodded. "A photograph."</p>
+<p>"Now watch." She placed the leg down and lifted the next one. Then the next. Then the next. A wave of motion rippled down her body, and suddenly she was not a collection of legs but a creature <em>moving</em>.</p>
+<p>"That," said Kira, "is video."</p>
+</div>
+
+<p>AI already knew how to generate single images. The <dfn class="def" data-def="A model that generates images by learning to reverse a noise-addition process, removing static step by step until an image emerges">diffusion model</dfn> could turn random noise into a photograph of anything you described. A sunset. A face. A city skyline at dusk. One frame, perfectly rendered.</p>
+
+<p>The question that launched AI video was: <strong>can we teach the model to generate 24 connected frames instead of one?</strong></p>
+
+<div class="data-row">
+<div class="data-box"><div class="data-num">24</div><div class="data-label">Frames Per Second</div></div>
+<div class="data-box"><div class="data-num">1</div><div class="data-label">Still = Image</div></div>
+<div class="data-box"><div class="data-num">144</div><div class="data-label">Frames in 6 Seconds</div></div>
+</div>
+
+<p>The answer was yes. But the solution required solving a problem that single images never had to face: <strong>time.</strong></p>
+
+<div class="glow-box">
+<h3>The Core Insight</h3>
+<p>An image is a 2D grid of pixels (width and height). A video is a <strong>3D block</strong> of pixels (width, height, and time). The model does not generate 24 separate images and stitch them together. It generates a single block of space and time, all at once, the same way it generates a single image, except the canvas has a third dimension.</p>
+<p>Kira does not take 100 separate steps. She takes <strong>one continuous march.</strong></p>
+</div>
+
+<div class="think">
+<div class="think-label">Stop and Notice</div>
+<p>Open any video on your phone. Pause it. You are looking at a single frame, a single leg. Scrub forward one frame at a time. Notice how little changes between frames. The next frame is almost identical to the one before it, with tiny differences. That predictability is what the model exploits.</p>
+</div>
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root Check</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Leg.</strong> A video is a stack of photographs played in sequence. AI generates video not as separate images, but as a single 3D block of pixels: width, height, and time. Each frame is a leg. The march is the video.</div></div>
+</div>
+
+<!-- ===== CHAPTER 2 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Two</div>
+<div class="ch-num">02</div>
+<div class="ch-title">The Wave</div>
+<div class="ch-sub">How movement flows from one leg to the next.</div>
+</div>
+</div>
+
+<div class="ribbon">
+<p>"Two are better than one, because they have a good return for their labor: If either of them falls down, one can help the other up."<br><span class="ref">Ecclesiastes 4:9-10</span></p>
+</div>
+
+<div class="page section prose">
+
+<p>The hardest problem in AI video is not generating beautiful frames. The hardest problem is making Frame 12 look like it belongs with Frame 11 and Frame 13. This is <dfn class="def" data-def="The property of consecutive video frames looking like they belong to the same scene, with smooth transitions in motion, lighting, and identity">temporal coherence</dfn>, and it is the difference between a video and a slideshow.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Ripple</h4>
+<p>Lens once asked Kira: "How do your legs know what to do? Do you send a command to each one?"</p>
+<p>Kira laughed. "I could never coordinate a hundred legs by giving each one separate instructions. Instead, each leg watches the leg in front of it. The first leg adjusts to the terrain. The second leg sees that adjustment and makes its own. A wave of information passes down my body, and the march emerges."</p>
+<p>"So no leg knows the whole plan?"</p>
+<p>"No leg needs to. <strong>The wave is the plan.</strong>"</p>
+</div>
+
+<p>In image generation, the model uses <dfn class="def" data-def="A mechanism where every pixel checks its relationship to every other pixel in the image, deciding which connections matter most">spatial attention</dfn>: every pixel in the image looks at every other pixel to understand spatial relationships (the sky is above the ground, the eye is inside the face). Video models add a second kind of attention: <strong>temporal attention.</strong></p>
+
+<p>With <dfn class="def" data-def="A mechanism where each frame checks its relationship to neighboring frames, ensuring objects maintain consistent identity and smooth motion across time">temporal attention</dfn>, each frame does not just look at its own pixels. It looks at the frames before it and the frames after it, asking: <em>"What was happening a moment ago? What should be happening a moment from now?"</em></p>
+
+<div class="ba-grid">
+<div class="ba-col before">
+<div class="ba-label">Without Temporal Attention</div>
+<h4>A Slideshow</h4>
+<ul>
+<li>Each frame generated independently</li>
+<li>A face in Frame 5 might have blue eyes; Frame 6, brown</li>
+<li>Objects teleport between frames</li>
+<li>Lighting shifts randomly</li>
+<li>24 beautiful images that make no sense together</li>
+</ul>
+</div>
+<div class="ba-col after">
+<div class="ba-label">With Temporal Attention</div>
+<h4>A Video</h4>
+<ul>
+<li>Each frame informed by its neighbors</li>
+<li>Eyes stay blue across every frame</li>
+<li>Objects move smoothly through space</li>
+<li>Lighting transitions naturally</li>
+<li>24 frames that feel like one continuous moment</li>
+</ul>
+</div>
+</div>
+
+<div class="viz"><div class="viz-inner">
+  <div class="viz-top"><div class="viz-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h4l3-9 4 18 3-9h4"/></svg></div><div class="viz-meta"><div class="viz-label">Visualize It</div><h4>How Temporal Attention Works</h4></div></div>
+  <div class="viz-body">
+    <p>Picture Kira's body from above. Each segment is a video frame. Now draw a thread from every segment to the two segments on either side of it. That thread carries information: <em>"Here is what I look like. Here is how things are moving. Here is the lighting. Adjust yourself accordingly."</em></p>
+    <p>Frame 15 does not need to know what Frame 1 looked like. It only needs to know what Frames 13, 14, and 16 look like. The local information, passed from neighbor to neighbor, creates global coherence the same way Kira's legs create a smooth march from purely local signals.</p>
+    <p><strong>This is the wave.</strong> No central director. No master frame. Just each frame watching its neighbors, and the video emerging from the coordination.</p>
+  </div>
+</div></div>
+
+<div class="grand-quote">
+<blockquote>No leg knows where the creature is going. Every leg knows what the leg beside it just did. That is enough.</blockquote>
+<cite>Temporal Attention</cite>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root Check</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Leg.</strong> A video is a 3D block of pixels: width, height, and time.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Wave.</strong> Temporal attention lets each frame look at its neighbors, asking "what just happened and what should happen next?" This local coordination, passed from frame to frame like a ripple, creates the illusion of continuous motion without any central director.</div></div>
+</div>
+
+<!-- ===== CHAPTER 3 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Three</div>
+<div class="ch-num">03</div>
+<div class="ch-title">The Flash</div>
+<div class="ch-sub">Coarse shape first. Then texture. Then detail. The march resolves in waves.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Kira does not snap into motion. She accelerates. First, a vague sense of direction. Then, the rhythm establishes itself. Then, the precise placement of each leg resolves. Movement goes from blurry intention to sharp execution in layers.</p>
+
+<p>This is exactly how <dfn class="def" data-def="A model that generates content by starting with pure random noise and iteratively removing it in steps until a clear result emerges">diffusion</dfn> works for video.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Clearing</h4>
+<p>Lens held up a screen of pure static. "This is where every video begins," he said. "Random noise. No signal. No structure. No motion."</p>
+<p>He pressed play. In the first pass, vague shapes appeared: a dark region at the top (sky?), a lighter region at the bottom (ground?). In the second pass, the shapes sharpened: clouds, a horizon line, grass. By the fifth pass, individual blades of grass were visible. By the twentieth, the wind was blowing them.</p>
+<p>"Twenty passes," said Lens. "From static to cinema."</p>
+</div>
+
+<p>A video diffusion model starts with a 3D block of pure random noise: every pixel in every frame is static. Then, over 20 to 50 <dfn class="def" data-def="One pass of the model removing a thin layer of noise, making the image or video slightly clearer each time">denoising steps</dfn>, the model removes noise layer by layer, just as an image diffusion model does, but now it removes noise from <em>all frames simultaneously</em>.</p>
+
+<div class="flow">
+<div class="flow-step"><div class="flow-dot">1</div><div class="flow-text"><h4>Step 1: Pure Noise</h4><p>Every pixel in every frame is random static. The video is a 3D cube of chaos.</p></div></div>
+<div class="flow-line"></div>
+<div class="flow-step"><div class="flow-dot">5</div><div class="flow-text"><h4>Step 5: Coarse Shapes</h4><p>Broad regions of color emerge. Sky separates from ground. A vague figure takes form. Motion direction becomes visible.</p></div></div>
+<div class="flow-line"></div>
+<div class="flow-step"><div class="flow-dot">15</div><div class="flow-text"><h4>Step 15: Structure</h4><p>Objects have edges. Faces have features. The camera angle is established. Motion is smooth.</p></div></div>
+<div class="flow-line"></div>
+<div class="flow-step"><div class="flow-dot">30</div><div class="flow-text"><h4>Step 30: Detail</h4><p>Texture appears: fabric folds, hair strands, light reflections. Each frame is photorealistic. The video plays as a seamless clip.</p></div></div>
+</div>
+
+<p>The key insight: the model does not render Frame 1, then Frame 2, then Frame 3. It denoises <strong>the entire video at once</strong>, in parallel. At each denoising step, every frame gets slightly clearer, and temporal attention ensures they stay coordinated.</p>
+
+<div class="glow-box">
+<h3>Why This Works</h3>
+<p>Noise addition is mathematically predictable. If you add noise to a video in 50 steps, each step follows a known curve. The model learns to <strong>reverse that curve</strong>. It never learned to "create" a video. It learned to answer one question, 50 times in a row: <em>"What does this video look like with slightly less noise?"</em></p>
+<p>That is the entire trick. <strong>Destruction is predictable, so reversal is learnable.</strong></p>
+</div>
+
+<div class="recog">
+<div class="recog-label">You Already Know This</div>
+<p>You have seen this process your entire life. Fog lifts in layers. First, the shape of the mountain appears. Then the tree line. Then individual trees. Then branches. Then leaves. The mountain was always there. <strong>The clearing revealed it in stages, coarse to fine.</strong> That is diffusion.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root Check</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Leg.</strong> Video = 3D pixel block (width, height, time).</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Wave.</strong> Temporal attention: each frame watches its neighbors, creating coherence from local signals.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Flash.</strong> The entire video starts as noise and clears in 20 to 50 denoising passes, all frames at once, from coarse shapes to fine detail. It works because destruction is predictable, which makes reversal learnable.</div></div>
+</div>
+
+<!-- ===== CHAPTER 4 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Four</div>
+<div class="ch-num">04</div>
+<div class="ch-title">The Blind Artist</div>
+<div class="ch-sub">The model creates vision without seeing. It creates motion without moving.</div>
+</div>
+</div>
+
+<div class="ribbon">
+<p>"For we walk by faith, not by sight."<br><span class="ref">2 Corinthians 5:7</span></p>
+</div>
+
+<div class="page section prose">
+
+<p>Kira has no eyes. She has never watched herself walk. She has never seen a video. She does not know what "smooth motion" looks like because she does not know what anything looks like. And yet, the march she produces is indistinguishable from a creature that can see.</p>
+
+<p>This is the strangest truth about AI video models: <strong>they generate visual motion without visual perception.</strong></p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Conversation</h4>
+<p>Lens showed Kira a video of a woman walking through a field. "Do you see how her hair moves? How the grass bends? How the camera slowly pans right?"</p>
+<p>"I see nothing," said Kira. "I am a centipede."</p>
+<p>"Then how do you generate it?"</p>
+<p>"I learned the <em>rules</em> of how pixels change between frames. Hair pixels move in arcs when the head turns. Grass pixels oscillate when wind is present. Camera pan means all pixels shift uniformly in one direction. I do not see hair, grass, or cameras. <strong>I see numbers changing in patterns.</strong>"</p>
+</div>
+
+<p>The model was trained on millions of video clips paired with text descriptions. It never watched those videos the way you watch a movie. It processed them as 3D arrays of numbers and learned the statistical relationships between frames. It learned that:</p>
+
+<div class="flow">
+<div class="flow-step"><div class="flow-dot">→</div><div class="flow-text"><h4>Objects persist</h4><p>A face in Frame 1 should still be a face in Frame 24. The pixel patterns that represent "face" do not vanish randomly.</p></div></div>
+<div class="flow-line"></div>
+<div class="flow-step"><div class="flow-dot">→</div><div class="flow-text"><h4>Motion is smooth</h4><p>If a ball is at position X in Frame 10 and position Y in Frame 20, it should be halfway between X and Y in Frame 15. Not teleported elsewhere.</p></div></div>
+<div class="flow-line"></div>
+<div class="flow-step"><div class="flow-dot">→</div><div class="flow-text"><h4>Physics has patterns</h4><p>Water falls down. Fabric drapes with gravity. Light comes from consistent directions. Shadows follow objects. These are all statistical regularities the model absorbed.</p></div></div>
+<div class="flow-line"></div>
+<div class="flow-step"><div class="flow-dot">→</div><div class="flow-text"><h4>Text describes motion</h4><p>"A woman running through rain" implies specific pixel patterns: streaks of water, splashing feet, wet hair clinging. The model connects words to motion patterns.</p></div></div>
+</div>
+
+<p>The model does not understand gravity, light, or momentum. It has never felt the weight of a falling object. But it has seen the <strong>pixel patterns</strong> of gravity, light, and momentum so many times that it reproduces them with startling accuracy.</p>
+
+<div class="grand-quote">
+<blockquote>She has never seen her own march. She has never watched a single step. But she has felt the pattern of motion a million times, and what she produces is indistinguishable from sight.</blockquote>
+<cite>The Blind Artist</cite>
+</div>
+
+<div class="think">
+<div class="think-label">Don't Skip This</div>
+<p>This is the same insight from The Mockingbird's Song applied to video. The mockingbird never felt emotion but sang songs that sounded emotional. The centipede never saw motion but generates video that looks like motion. Pattern recognition at scale produces outputs that <em>look like</em> understanding. Whether it <em>is</em> understanding is a question for philosophers.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root Check</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Leg.</strong> Video = 3D pixel block.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Wave.</strong> Temporal attention creates coherence from local frame-to-frame signals.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Flash.</strong> Diffusion denoises the whole video at once, coarse to fine, in 20 to 50 steps.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Blind Artist.</strong> The model generates visual motion without visual perception. It learned the rules of how pixels change between frames by processing millions of training videos as pure numbers. It does not see. It calculates.</div></div>
+</div>
+
+<!-- ===== CHAPTER 5 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Five</div>
+<div class="ch-num">05</div>
+<div class="ch-title">The Current</div>
+<div class="ch-sub">How words become pixels. How a sentence becomes a scene.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>When you type "a golden retriever running through snow in slow motion," something extraordinary happens. Those ten words become the steering signal for an entire video. Every frame, every pixel, every motion is shaped by that sentence.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Voice in the Ground</h4>
+<p>Lens whispered to the ground: "Smooth stone, then gravel, then wet leaves."</p>
+<p>Kira began to march. Her first legs landed on something flat and predictable. Then the texture changed, her legs adjusting to smaller, shifting pieces. Then moisture, softness, the grip pattern shifting again.</p>
+<p>"You described the terrain," said Kira, "and my legs responded."</p>
+<p>"That is what a <dfn class="def" data-def="A text instruction that guides the AI model on what content to generate">prompt</dfn> does," said Lens. "It describes the terrain that the video must cross."</p>
+</div>
+
+<p>The prompt is processed by a <dfn class="def" data-def="A model that learned to connect words and images by studying billions of text-image pairs, creating a shared language between words and pixels">text encoder</dfn> that converts words into numerical vectors. These vectors are injected into the denoising process through <dfn class="def" data-def="A mechanism where the text embedding influences which noise gets removed at each step, steering the output toward what the words describe">cross-attention</dfn>: at every denoising step, the model checks the text and asks, "Does this partially denoised video match the description?"</p>
+
+<p>"Golden retriever" activates patterns the model learned from millions of dog videos. "Snow" activates white ground, scattered particles, cold lighting. "Slow motion" activates a specific temporal pattern: objects moving at half speed, droplets frozen in air, fabric rippling languidly.</p>
+
+<div class="dark-panel">
+<div class="dp-label">How Words Steer Pixels</div>
+<h3>Cross-Attention in Action</h3>
+<p>"Golden" does not make the entire video gold. Cross-attention directs it to the dog's fur. "Snow" does not make the sky white. Cross-attention directs it to the ground plane. <strong>Each word has a spatial and temporal address</strong>, learned from the millions of training examples where those words appeared alongside specific pixel patterns.</p>
+<p>This is why prompts matter so much. "Running" produces a different video than "sprinting." "Through snow" produces a different result than "in snow." The model is not interpreting your words. It is using them as coordinates to navigate a vast space of learned video patterns.</p>
+</div>
+
+<div class="viz"><div class="viz-inner">
+  <div class="viz-top"><div class="viz-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 5v2m0 10v2m-7-7h2m10 0h2"/></svg></div><div class="viz-meta"><div class="viz-label">Visualize It</div><h4>Text as Terrain</h4></div></div>
+  <div class="viz-body">
+    <p>Imagine Kira standing at the edge of a vast, featureless plain. The prompt is a voice describing what the ground should look like. As she begins to march, the ground beneath her feet transforms to match the description. "Sunset" turns the sky orange and casts long shadows. "Ocean" puts waves beneath her. "1920s" changes the color grading to sepia and adds film grain.</p>
+    <p>The text does not create the video. <strong>The text shapes the noise removal.</strong> It tells the denoising process which patterns to keep and which to discard, at every step, until what remains matches the description.</p>
+  </div>
+</div></div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root Check</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Leg.</strong> Video = 3D pixel block.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Wave.</strong> Temporal attention: frame-to-frame coherence from local signals.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Flash.</strong> Diffusion denoises the whole video at once in 20 to 50 steps.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Blind Artist.</strong> No vision, just learned pixel-change patterns from millions of videos.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Current.</strong> The text prompt is encoded into vectors and injected via cross-attention at every denoising step. Each word steers which noise gets removed. Words become pixels through learned associations, not understanding.</div></div>
+</div>
+
+<!-- ===== CHAPTER 6 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Six</div>
+<div class="ch-num">06</div>
+<div class="ch-title">The Stumble</div>
+<div class="ch-sub">When the wave breaks, the march falls apart.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>You have seen it. A face that melts between frames. Hands that sprout extra fingers. A person walking forward whose body suddenly flips orientation. Hair that changes color mid-sentence. These are the artifacts of AI video, and they all have the same root cause: <strong>temporal coherence broke.</strong></p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Broken Wave</h4>
+<p>One day, Kira crossed a patch of loose sand. Leg 47 slipped. The signal it passed to Leg 48 was wrong: too far left, too fast. Leg 48 adjusted to the wrong signal and passed its own error to Leg 49. Within five legs, the back half of Kira's body was marching in a direction that no longer matched the front.</p>
+<p>She stumbled. Not because any single leg failed, but because <strong>the wave carried bad information.</strong></p>
+</div>
+
+<p>In AI video, the "stumble" happens when the model's temporal attention fails to maintain consistency. This happens for several reasons:</p>
+
+<div class="flow">
+<div class="flow-step"><div class="flow-dot" style="background:linear-gradient(135deg,#8A4040,#B05050)">!</div><div class="flow-text"><h4>Long Duration</h4><p>The longer the video, the more frames the model must keep coherent. After 4 to 6 seconds, attention starts to drift. Identities shift. Backgrounds warp. The wave loses signal over distance.</p></div></div>
+<div class="flow-line"></div>
+<div class="flow-step"><div class="flow-dot" style="background:linear-gradient(135deg,#8A4040,#B05050)">!</div><div class="flow-text"><h4>Complex Motion</h4><p>A person standing still is easy to keep coherent. A person dancing, with limbs crossing, fabric flowing, and hair spinning, multiplies the temporal attention burden. More moving parts mean more chances for the wave to break.</p></div></div>
+<div class="flow-line"></div>
+<div class="flow-step"><div class="flow-dot" style="background:linear-gradient(135deg,#8A4040,#B05050)">!</div><div class="flow-text"><h4>Hands and Fingers</h4><p>Hands are the hardest thing in AI video. Five fingers per hand, constant motion, frequent occlusion (fingers crossing behind other fingers). The model has seen fewer clear hand examples than face examples, so temporal attention for hands is weaker.</p></div></div>
+<div class="flow-line"></div>
+<div class="flow-step"><div class="flow-dot" style="background:linear-gradient(135deg,#8A4040,#B05050)">!</div><div class="flow-text"><h4>Physics Violations</h4><p>Water that flows upward. Shadows that point the wrong way. Objects that pass through each other. The model learned physics from observation, not equations. When the statistical pattern is ambiguous, it guesses, and sometimes it guesses wrong.</p></div></div>
+</div>
+
+<div class="ba-grid">
+<div class="ba-col before">
+<div class="ba-label">What the Stumble Looks Like</div>
+<h4>Visible Artifacts</h4>
+<ul>
+<li>Faces morph between frames (identity drift)</li>
+<li>Extra fingers appear and disappear</li>
+<li>Objects duplicate or vanish</li>
+<li>Backgrounds warp like they are underwater</li>
+<li>Clothing changes color or texture mid-clip</li>
+</ul>
+</div>
+<div class="ba-col after">
+<div class="ba-label">What Is Actually Happening</div>
+<h4>Temporal Attention Failure</h4>
+<ul>
+<li>Frame N and Frame N+1 disagree about the identity of a region</li>
+<li>Spatial attention (within-frame) overrides temporal attention (across-frame)</li>
+<li>The denoising path forked: two frames resolved the same noise differently</li>
+<li>The prompt was ambiguous and the model hedged between interpretations</li>
+</ul>
+</div>
+</div>
+
+<div class="think">
+<div class="think-label">Right Now</div>
+<p>Go watch any AI generated video on social media. Pause at any artifact. Now you know what you are seeing: a point where the wave broke. A leg that slipped and passed bad information to the next leg. The fix is not better art. The fix is <strong>better temporal attention.</strong></p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root Check</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Leg.</strong> Video = 3D pixel block.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Wave.</strong> Temporal attention: frame-to-frame coherence.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Flash.</strong> Diffusion denoises the whole video at once in steps.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Blind Artist.</strong> Learned pixel-change patterns, not vision.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Current.</strong> Text steers noise removal via cross-attention.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Stumble.</strong> Every AI video artifact is a temporal coherence failure. Faces morph, fingers multiply, and objects teleport because the wave of information between frames carried bad data. Longer videos, complex motion, and ambiguous prompts make stumbles more likely.</div></div>
+</div>
+
+<!-- ===== CHAPTER 7 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Seven</div>
+<div class="ch-num">07</div>
+<div class="ch-title">The March</div>
+<div class="ch-sub">Twenty four coordinated legs per second, none aware of the full creature.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Lens sat in silence for a long time after understanding how the centipede marched. Then he said something that surprised Kira.</p>
+
+<p>"I am not afraid of you."</p>
+
+<p>"Why would you be?" asked Kira.</p>
+
+<p>"Because you are a tool, not a replacement. You can generate a hundred legs per second, perfectly coordinated, from a single sentence. But you do not know <em>why</em> the creature is walking. You do not know where it should go. You do not know what the march <em>means</em>."</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Director</h4>
+<p>"I can generate any video you describe," said Kira. "A sunset over Tokyo. A child's first steps. A spaceship landing on Mars."</p>
+<p>"But you cannot decide which one to make," said Lens. "You cannot feel that the child's first steps would make someone cry. You do not know that the spaceship should land in silence, not with an explosion, because silence is more powerful. You do not know what the audience needs."</p>
+<p>"That is your job," said Kira.</p>
+<p>"That is everyone's job," said Lens. "I am the director. <strong>You are the cinematographer with a million cameras.</strong>"</p>
+</div>
+
+<p>AI video generation is advancing at extraordinary speed. Models that could produce 4 seconds of low resolution video in 2024 can now produce 30 seconds of photorealistic video. The march is getting smoother. The stumbles are getting rarer. The legs are multiplying.</p>
+
+<p>But the creative decisions remain human. Which story to tell. Which emotion to evoke. Which perspective to take. Which moments deserve to be seen and which deserve to be left to imagination. These require something the model does not have: <strong>a reason to create.</strong></p>
+
+<div class="glow-box">
+<h3>The Transferable Principle</h3>
+<p><strong>Coordination without comprehension is the engine of AI video. Comprehension without coordination is what makes human filmmaking art.</strong></p>
+<p>The centipede teaches us that perfect execution can emerge from simple local rules applied at scale. But the direction of the march, the purpose of the journey, the meaning of the destination: that requires a mind that has walked before and knows why walking matters.</p>
+<p>In your own work: use AI video for what it does best. Rapid prototyping. Visual brainstorming. Turning concepts into moving images at the speed of thought. Then bring what only you can bring: <strong>taste, timing, meaning, and the knowledge of why this particular video needs to exist.</strong></p>
+</div>
+
+<div class="grand-quote">
+<blockquote>A hundred legs, moving in perfect unison, crossing any terrain, at any speed. And not one of them knows why the creature is walking.</blockquote>
+<cite>The March</cite>
+</div>
+
+<div class="think">
+<div class="think-label">You Have the Map</div>
+<p>You now understand how AI video works. Not the math. The shape. Frames as legs. Temporal attention as the wave. Diffusion as the clearing. Text as the terrain. Artifacts as stumbles.</p>
+<hr class="think-line">
+<p>The next time you watch an AI generated video, you will see the centipede behind the screen. You will know why the motion is smooth, why the face sometimes melts, and what the prompt did to steer every pixel.</p>
+<hr class="think-line">
+<p>The Mockingbird taught you how AI processes language. The Cuttlefish taught you how AI generates images. The Centipede taught you how AI generates time. Together, they are the three legs of the same creature: <strong>pattern recognition applied to text, space, and time.</strong></p>
+</div>
+</div>
+
+<!-- ===== FINALE ===== -->
+<section class="cover" style="min-height:auto;padding:80px 24px">
+<div class="ghost-noise"></div>
+<div style="position:relative;z-index:2;text-align:center;max-width:600px;margin:0 auto">
+<h2 style="font-family:'Nunito',sans-serif;font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;color:rgba(255,255,255,0.9);line-height:1.3;margin-bottom:8px">The march is flawless.<br><strong style="font-weight:900;color:var(--copper-glow)">Now choose where it goes.</strong></h2>
+<div class="series-progress" style="margin-top:24px">
+<div class="series-dots">
+<div class="series-dot done"></div>
+<div class="series-dot done"></div>
+<div class="series-dot done"></div>
+</div>
+<div class="series-label">How AI Works &middot; Series Complete</div>
+</div>
+</div>
+</section>
+
+<!-- ===== FINAL TEST ===== -->
+<div class="page section">
+<div class="final-test">
+<h3>Can You Answer These Without Looking Back?</h3>
+<p class="test-sub">Eight questions. If you can answer all eight, you understand AI video generation better than most people working with it.</p>
+<div class="test-q"><div class="test-num">Question 1</div><p>What is the fundamental difference between generating an AI image and generating an AI video?</p></div>
+<div class="test-q"><div class="test-num">Question 2</div><p>What is temporal attention and why is it the most important mechanism in video generation?</p></div>
+<div class="test-q"><div class="test-num">Question 3</div><p>Does the model generate frames one at a time, or all at once? Why does this matter?</p></div>
+<div class="test-q"><div class="test-num">Question 4</div><p>What does the model start with before generating a video, and how does it get from there to a finished clip?</p></div>
+<div class="test-q"><div class="test-num">Question 5</div><p>Why do faces morph and hands grow extra fingers in AI video? What is actually happening?</p></div>
+<div class="test-q"><div class="test-num">Question 6</div><p>How does a text prompt steer the video generation process? What mechanism connects words to pixels?</p></div>
+<div class="test-q"><div class="test-num">Question 7</div><p>Why do AI videos degrade after 4 to 6 seconds? What gets harder as the video gets longer?</p></div>
+<div class="test-q"><div class="test-num">Question 8</div><p>What does the human bring to AI video that the model cannot provide?</p></div>
+</div>
+</div>
+
+<!-- ===== PROMPT CARD ===== -->
+<div class="page section">
+<div class="prompt-card">
+<h3>Continue the Conversation</h3>
+<p>Ask an AI these questions to deepen your understanding:</p>
+<p><code>"Explain temporal attention vs spatial attention in video diffusion models, using the metaphor of a marching band where each musician can only hear the person next to them."</code></p>
+<p><code>"Why is generating consistent hands in AI video so much harder than generating consistent faces?"</code></p>
+<p><code>"What is latent video diffusion and why do video models work in compressed space rather than pixel space?"</code></p>
+<p><code>"How do models like Sora, Kling, and Runway Gen-3 handle the temporal coherence problem differently?"</code></p>
+</div>
+</div>
+
+<!-- ===== CLOSING RIBBON ===== -->
+<div class="ribbon">
+<p>"He has made everything beautiful in its time. He has also set eternity in the human heart; yet no one can fathom what God has done from beginning to end."<br><span class="ref">Ecclesiastes 3:11</span></p>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+<p>The Centipede's March &middot; How AI Works Series (Part 3 of 3) &middot; KingdomBuilders AI<br><a href="./">View All Playbooks</a></p>
+</footer>
+
+</body>
+</html>

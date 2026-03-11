@@ -167,6 +167,24 @@ PATHS = [
              "Your quills are up and your boundaries are live. But what happens when the siege lasts longer than your resources? The tardigrade knows: you shut down everything except what keeps you alive."),
         ],
     },
+    {
+        "slug": "how-ai-works",
+        "title": "How AI Works",
+        "description": "Four playbooks that explain how artificial intelligence actually works. From text to images to video to music, each through a different animal parable. No jargon without a metaphor.",
+        "theme_tag": "ai",
+        "emoji": "\U0001F9E0",
+        "color": "#008080",
+        "steps": [
+            ("the-mockingbirds-song",
+             None),
+            ("the-cuttlefishs-canvas",
+             "The mockingbird predicts the next word. The cuttlefish predicts the next pixel. Same engine, different canvas."),
+            ("the-centipedes-march",
+             "A single image is a canvas. A hundred images in sequence is a march. The centipede coordinates them all."),
+            ("the-lyrebirds-echo",
+             "You have seen AI generate text, images, and video. Now hear it generate music. The lyrebird learned every sound in the forest. She did not write any of them. She learned to play them all."),
+        ],
+    },
 ]
 
 

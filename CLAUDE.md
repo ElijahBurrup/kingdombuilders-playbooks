@@ -65,8 +65,8 @@ Playbooks/
 - **API Docs**: `/api/docs` (Swagger UI), `/api/redoc`
 
 ## Deployment
-- **Production URL**: https://kingdombuilders.ai/playbooks (Cloudflare Worker → Render)
-- **Render URL**: https://kb-playbooks.onrender.com (URL_PREFIX=/playbooks)
+- **Production URL**: https://kingdombuilders.ai/playbooks (Cloudflare Worker → Render) — ALWAYS use this URL, never the onrender.com URL
+- **Render internal URL**: https://kb-playbooks.onrender.com (URL_PREFIX=/playbooks) — internal only, never share
 - **GitHub**: https://github.com/ElijahBurrup/kingdombuilders-playbooks (master branch, auto-deploys to Render)
 - **GitHub Account**: ElijahBurrup (elijah@kingdombuilders.ai) — same login for GitHub, Cloudflare, and Render
 - **Render Service ID**: srv-d6iir8ngi27c738ip9i0
@@ -76,7 +76,7 @@ Playbooks/
 ## Database
 - **Local**: `playbooks_development` (PostgreSQL, postgres:postgres123@localhost:5432)
 - **Migrations**: `python -m alembic upgrade head`
-- **Seeding**: `python -m scripts.seed_playbooks` (14 categories, 2 series, 35 playbooks, admin user)
+- **Seeding**: `python -m scripts.seed_playbooks` (14 categories, 5 series, 51 playbooks, admin user)
 - **SQLite migration**: `python -m scripts.migrate_sqlite_to_pg` (one-time migration from old data)
 
 ## Pre-Commit Checklist
@@ -203,7 +203,7 @@ curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
 - [ ] `GET /constellation` — new node appears in graph
 - [ ] `GET /paths` — reading path includes new playbook (if applicable)
 
-Use `WebFetch` or `curl` against `https://kb-playbooks.onrender.com` to verify each endpoint.
+Use `WebFetch` or `curl` against `https://kingdombuilders.ai/playbooks` to verify each endpoint.
 
 ## Thread System (Discovery Engine)
 The discovery engine connects playbooks through invisible thematic "threads" to enable cross-pollination (e.g., AI reader discovers faith content).

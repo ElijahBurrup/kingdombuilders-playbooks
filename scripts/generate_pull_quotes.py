@@ -307,6 +307,21 @@ CURATED_QUOTES = {
         "The vampire squid does not borrow light from the surface. It generates light from its own body, in the deepest dark.",
         "A creature from the deep dark wrote a letter in sunlight and did not burst into flames.",
     ],
+    "The_Cuttlefishs_Canvas": [
+        "The cuttlefish does not see color. She becomes it.",
+        "Diffusion does not create an image. It discovers one that was always hiding in the noise.",
+        "You will never look at an AI image the same way. You will see the noise it started from.",
+    ],
+    "The_Centipedes_March": [
+        "One image is a canvas. A hundred images in sequence is a march.",
+        "The centipede does not plan the next hundred steps. It plans the next one, perfectly, a hundred times.",
+        "Video is not a movie played fast. It is a prediction sustained.",
+    ],
+    "The_Lyrebirds_Echo": [
+        "Every song in the forest lives inside one bird. She did not write any of them.",
+        "The model does not compose music. It subtracts noise until music remains.",
+        "You typed a sentence. Thirty seconds later, a song played back. Now you know how.",
+    ],
 }
 
 

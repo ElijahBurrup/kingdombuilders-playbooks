@@ -168,6 +168,7 @@ def _slug_to_file():
         "the-mantis-shrimps-eye": "The_Mantis_Shrimps_Eye.html",
         "the-porcupines-quills": "The_Porcupines_Quills.html",
         "the-tardigrade-protocol": "The_Tardigrade_Protocol.html",
+        "the-cuttlefishs-canvas": "The_Cuttlefishs_Canvas.html",
     }
 
 

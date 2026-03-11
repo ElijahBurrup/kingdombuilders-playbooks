@@ -243,6 +243,19 @@ TAGS = {
         ("narcissism", 1.0), ("self_awareness", 1.0), ("growth", 0.9), ("identity", 0.8),
         ("courage", 0.7), ("vulnerability", 0.7), ("resilience", 0.6), ("faith", 0.4),
     ],
+    # --- How AI Works series ---
+    "the-cuttlefishs-canvas": [
+        ("ai", 1.0), ("technology", 1.0), ("creativity", 0.9), ("perception", 0.8),
+        ("systems", 0.7), ("mastery", 0.5), ("communication", 0.4),
+    ],
+    "the-centipedes-march": [
+        ("ai", 1.0), ("technology", 1.0), ("creativity", 0.8), ("systems", 0.8),
+        ("perception", 0.7), ("mastery", 0.5), ("discipline", 0.4),
+    ],
+    "the-lyrebirds-echo": [
+        ("ai", 1.0), ("technology", 1.0), ("creativity", 0.9), ("systems", 0.8),
+        ("mastery", 0.7), ("perception", 0.6), ("communication", 0.5), ("discipline", 0.4),
+    ],
 }
 
 
@@ -873,6 +886,40 @@ CONNECTIONS = {
         ("surprise", "lay-it-down",
          "You generated your own light. Now the final question: can you lay down the version of yourself that needed the dark?",
          "Self-generated light meets spiritual surrender"),
+    ],
+    # --- How AI Works series ---
+    "the-cuttlefishs-canvas": [
+        ("deeper", "the-mockingbirds-song",
+         "The cuttlefish paints with light. The mockingbird sings with pattern. Same engine, different canvas.",
+         "Both explain AI generation through animal mimicry"),
+        ("bridge", "the-chameleons-code",
+         "The cuttlefish changes what you see. The chameleon changes how you hear. Both are masters of controlled transformation.",
+         "Visual adaptation meets communication adaptation"),
+        ("surprise", "the-eagles-lens",
+         "The cuttlefish generates images. The eagle decides which ones matter. Creation without curation is noise.",
+         "AI generation meets decision making and leadership"),
+    ],
+    "the-centipedes-march": [
+        ("deeper", "the-cuttlefishs-canvas",
+         "Video is just images marching in time. The canvas came first. Now watch it move.",
+         "Image generation is the foundation of video generation"),
+        ("bridge", "the-horses-gait",
+         "The centipede coordinates a hundred legs. The horse finds rhythm in four. Both know that timing is everything.",
+         "Temporal coordination in AI meets physical rhythm"),
+        ("surprise", "the-spiders-loom",
+         "The centipede marches frame by frame. The spider weaves thread by thread. Both build something larger than any single step.",
+         "Sequential construction in video meets systematic weaving"),
+    ],
+    "the-lyrebirds-echo": [
+        ("deeper", "the-mockingbirds-song",
+         "The mockingbird predicts the next word. The lyrebird predicts the next sound. Same principle, different forest.",
+         "LLM text generation and music generation share core architecture"),
+        ("bridge", "the-bees-dance",
+         "The lyrebird encodes sound into spectrograms. The bee encodes location into dance. Both translate meaning between worlds.",
+         "AI audio encoding meets natural communication encoding"),
+        ("surprise", "the-tide-pools-echo",
+         "The lyrebird echoes every sound in the forest. The tide pool echoes every process in nature. Both teach that listening is the beginning of creation.",
+         "AI music learning meets philosophical process models"),
     ],
 }
 

@@ -74,6 +74,12 @@ SERIES_DEFS = [
         "description": "A 3-part series for the narcissist who wants to heal. Recognition, deconstruction, and rebuilding through animal parable.",
         "display_order": 4,
     },
+    {
+        "name": "How AI Works",
+        "slug": "how-ai-works",
+        "description": "A 4-part series explaining how AI actually works: LLMs, images, video, and music, each through a different animal parable.",
+        "display_order": 5,
+    },
 ]
 
 # ---------------------------------------------------------------------------
@@ -86,7 +92,7 @@ PLAYBOOKS_DATA = [
     {"slug": "the-cost-ledger", "title": "The Cost Ledger", "route": "/thecostledger", "category": "mindset", "landing_file": "the-cost-ledger.html", "asset_file": "The_Cost_Ledger.html", "cover_emoji": "\U0001f4d2"},
     {"slug": "the-ghost-frame", "title": "The Ghost Frame", "route": "/theghostframe", "category": "mindset", "landing_file": "the-ghost-frame.html", "asset_file": "The_Ghost_Frame.html", "cover_emoji": "\U0001f47b"},
     {"slug": "the-gravity-well", "title": "The Gravity Well", "route": "/thegravitywell", "category": "productivity", "landing_file": "the-gravity-well.html", "asset_file": "The_Gravity_Well.html", "cover_emoji": "\U0001fa90"},
-    {"slug": "the-mockingbirds-song", "title": "The Mockingbird\u2019s Song", "route": "/themockingbirdssong", "category": "technology", "landing_file": "the-mockingbirds-song.html", "asset_file": "The_Mockingbirds_Song.html", "cover_emoji": "\U0001f426"},
+    {"slug": "the-mockingbirds-song", "title": "The Mockingbird\u2019s Song", "route": "/themockingbirdssong", "category": "technology", "series": "how-ai-works", "series_order": 1, "landing_file": "the-mockingbirds-song.html", "asset_file": "The_Mockingbirds_Song.html", "cover_emoji": "\U0001f426"},
     {"slug": "the-narrator", "title": "The Narrator", "route": "/thenarrator", "category": "identity", "landing_file": "the-narrator.html", "asset_file": "The_Narrator.html", "cover_emoji": "\U0001f4d6"},
     {"slug": "the-salmon-journey", "title": "The Salmon Journey", "route": "/thesalmonjourney", "category": "finance", "landing_file": "the-salmon-journey.html", "asset_file": "The_Salmon_Journey.html", "cover_emoji": "\U0001f41f"},
     {"slug": "the-squirrel-economy", "title": "The Squirrel Economy", "route": "/thesquirreleconomy", "category": "economics", "landing_file": "the-squirrel-economy.html", "asset_file": "The_Squirrel_Economy_Modified.html", "cover_emoji": "\U0001f43f\ufe0f"},
@@ -122,6 +128,9 @@ PLAYBOOKS_DATA = [
     {"slug": "the-hermit-crabs-shell", "title": "The Hermit Crab's Shell", "route": "/thehermitcrabsshell", "category": "identity", "series": "the-mirror-series", "series_order": 1, "landing_file": "the-hermit-crabs-shell.html", "asset_file": "The_Hermit_Crabs_Shell.html", "cover_emoji": "\U0001f980"},
     {"slug": "the-scorpions-molt", "title": "The Scorpion's Molt", "route": "/thescorpionsmolt", "category": "mindset", "series": "the-mirror-series", "series_order": 2, "landing_file": "the-scorpions-molt.html", "asset_file": "The_Scorpions_Molt.html", "cover_emoji": "\U0001f982"},
     {"slug": "the-vampire-squids-light", "title": "The Vampire Squid's Light", "route": "/thevampiresquidslight", "category": "resilience", "series": "the-mirror-series", "series_order": 3, "landing_file": "the-vampire-squids-light.html", "asset_file": "The_Vampire_Squids_Light.html", "cover_emoji": "\U0001f991"},
+    {"slug": "the-cuttlefishs-canvas", "title": "The Cuttlefish\u2019s Canvas", "route": "/thecuttlefishscanvas", "category": "technology", "series": "how-ai-works", "series_order": 2, "landing_file": "the-cuttlefishs-canvas.html", "asset_file": "The_Cuttlefishs_Canvas.html", "cover_emoji": "\U0001f9ac"},
+    {"slug": "the-centipedes-march", "title": "The Centipede\u2019s March", "route": "/thecentipedesmarch", "category": "technology", "series": "how-ai-works", "series_order": 3, "landing_file": "the-centipedes-march.html", "asset_file": "The_Centipedes_March.html", "cover_emoji": "\U0001fab1"},
+    {"slug": "the-lyrebirds-echo", "title": "The Lyrebird\u2019s Echo", "route": "/thelyrebirdsecho", "category": "technology", "series": "how-ai-works", "series_order": 4, "landing_file": "the-lyrebirds-echo.html", "asset_file": "The_Lyrebirds_Echo.html", "cover_emoji": "\U0001f426"},
 ]
 
 

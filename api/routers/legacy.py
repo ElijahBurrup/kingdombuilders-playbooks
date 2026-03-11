@@ -48,8 +48,21 @@ router = APIRouter(tags=["legacy"])
 # ============================================================================
 # Version & Release Notes
 # ============================================================================
-APP_VERSION = "2.6.0"
+APP_VERSION = "2.7.0"
 RELEASE_NOTES = [
+    {
+        "version": "2.7.0",
+        "date": "2026-03-11",
+        "title": "How AI Works Series Launch",
+        "changes": [
+            "New series: How AI Works (4 parts)",
+            "New playbook: The Lyrebird\u2019s Echo (How AI Music Works, Part 4 of 4)",
+            "New playbook: The Cuttlefish\u2019s Canvas (How AI Images Work, Part 2 of 4)",
+            "New playbook: The Centipede\u2019s March (How AI Video Works, Part 3 of 4)",
+            "The Mockingbird\u2019s Song now Part 1 of How AI Works series",
+            "51 playbooks now live",
+        ],
+    },
     {
         "version": "2.6.0",
         "date": "2026-03-08",
@@ -215,6 +228,9 @@ LANDING_ROUTES: dict[str, str] = {
     "/thehermitcrabsshell": "the-hermit-crabs-shell.html",
     "/thescorpionsmolt": "the-scorpions-molt.html",
     "/thevampiresquidslight": "the-vampire-squids-light.html",
+    "/thecuttlefishscanvas": "the-cuttlefishs-canvas.html",
+    "/thelyrebirdsecho": "the-lyrebirds-echo.html",
+    "/thecentipedesmarch": "the-centipedes-march.html",
 }
 
 # ============================================================================
@@ -275,6 +291,9 @@ SLUG_TO_FILE: dict[str, str] = {
     "the-hermit-crabs-shell": "The_Hermit_Crabs_Shell.html",
     "the-scorpions-molt": "The_Scorpions_Molt.html",
     "the-vampire-squids-light": "The_Vampire_Squids_Light.html",
+    "the-cuttlefishs-canvas": "The_Cuttlefishs_Canvas.html",
+    "the-lyrebirds-echo": "The_Lyrebirds_Echo.html",
+    "the-centipedes-march": "The_Centipedes_March.html",
 }
 
 

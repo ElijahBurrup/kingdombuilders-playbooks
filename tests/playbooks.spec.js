@@ -65,6 +65,12 @@ const PLAYBOOKS = [
   { title: "The Mantis Shrimp\u2019s Eye", catalogTitle: "The Mantis Shrimp's Eye", slug: "the-mantis-shrimps-eye", tag: "Resilience" },
   { title: "The Porcupine\u2019s Quills", catalogTitle: "The Porcupine's Quills", slug: "the-porcupines-quills", tag: "Resilience" },
   { title: "The Tardigrade Protocol", slug: "the-tardigrade-protocol", tag: "Resilience" },
+  { title: "The Hermit Crab\u2019s Shell", catalogTitle: "The Hermit Crab's Shell", slug: "the-hermit-crabs-shell", tag: "Identity" },
+  { title: "The Scorpion\u2019s Molt", catalogTitle: "The Scorpion's Molt", slug: "the-scorpions-molt", tag: "Mindset" },
+  { title: "The Vampire Squid\u2019s Light", catalogTitle: "The Vampire Squid's Light", slug: "the-vampire-squids-light", tag: "Resilience" },
+  { title: "The Cuttlefish\u2019s Canvas", catalogTitle: "The Cuttlefish's Canvas", slug: "the-cuttlefishs-canvas", tag: "Technology" },
+  { title: "The Centipede\u2019s March", catalogTitle: "The Centipede's March", slug: "the-centipedes-march", tag: "Technology" },
+  { title: "The Lyrebird\u2019s Echo", catalogTitle: "The Lyrebird's Echo", slug: "the-lyrebirds-echo", tag: "Technology" },
 ];
 
 const FREE_PLAYBOOKS = PLAYBOOKS.filter((pb) => pb.free);
