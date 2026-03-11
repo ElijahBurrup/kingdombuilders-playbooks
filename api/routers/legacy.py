@@ -231,6 +231,7 @@ LANDING_ROUTES: dict[str, str] = {
     "/thecuttlefishscanvas": "the-cuttlefishs-canvas.html",
     "/thelyrebirdsecho": "the-lyrebirds-echo.html",
     "/thecentipedesmarch": "the-centipedes-march.html",
+    "/theravenstrial": "the-ravens-trial.html",
     "/theliftedceiling": "the-lifted-ceiling.html",
     "/thenewearning": "the-new-earning.html",
 }
@@ -296,6 +297,7 @@ SLUG_TO_FILE: dict[str, str] = {
     "the-cuttlefishs-canvas": "The_Cuttlefishs_Canvas.html",
     "the-lyrebirds-echo": "The_Lyrebirds_Echo.html",
     "the-centipedes-march": "The_Centipedes_March.html",
+    "the-ravens-trial": "The_Ravens_Trial.html",
     "the-lifted-ceiling": "The_Lifted_Ceiling.html",
     "the-new-earning": "The_New_Earning.html",
 }
