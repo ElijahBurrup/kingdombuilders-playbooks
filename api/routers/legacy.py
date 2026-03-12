@@ -1763,6 +1763,34 @@ async def my_playbooks_page(request: Request):
     )
 
 
+@router.post("/manage-subscription", include_in_schema=False)
+async def manage_subscription(request: Request, db: AsyncSession = Depends(get_db)):
+    """Redirect subscriber to Stripe Customer Portal to manage/cancel subscription."""
+    prefix = settings.URL_PREFIX or ""
+    user_id = get_session_user_id(request)
+    if not user_id:
+        return RedirectResponse(url=f"{prefix}/auth?next={prefix}/my-playbooks", status_code=303)
+
+    # Find Stripe customer ID
+    result = await db.execute(
+        select(StripeCustomer).where(StripeCustomer.user_id == user_id)
+    )
+    sc = result.scalar_one_or_none()
+    if not sc:
+        return RedirectResponse(url=f"{prefix}/my-playbooks", status_code=303)
+
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    try:
+        portal = stripe.billing_portal.Session.create(
+            customer=sc.stripe_customer_id,
+            return_url=f"{settings.BASE_URL}/my-playbooks",
+        )
+        return RedirectResponse(url=portal.url, status_code=303)
+    except Exception as e:
+        print(f"Stripe portal error: {e}")
+        return RedirectResponse(url=f"{prefix}/my-playbooks", status_code=303)
+
+
 @router.get("/funnel", include_in_schema=False)
 async def funnel_page(request: Request):
     prefix = settings.URL_PREFIX or ""

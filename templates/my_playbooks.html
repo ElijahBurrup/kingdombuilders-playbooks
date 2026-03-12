@@ -269,7 +269,13 @@ body {
 
   <div class="mp-sub-banner" id="mp-sub-banner">
     <span class="mp-sub-banner-icon">&#x2728;</span>
-    All Access Subscriber. Every playbook is yours to read.
+    <span id="mp-sub-text">All Access Subscriber. Every playbook is yours to read.</span>
+    <div id="mp-sub-details" style="margin-top:10px;font-size:13px;color:rgba(255,255,255,0.4);display:none">
+      <span id="mp-sub-plan"></span> &middot; <span id="mp-sub-renews"></span>
+    </div>
+    <div style="margin-top:12px">
+      <a id="mp-manage-sub" href="#" style="display:none;padding:8px 24px;border-radius:50px;border:1px solid rgba(212,168,67,0.3);color:var(--gold);font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;text-decoration:none;transition:all 0.2s" onmouseover="this.style.background='rgba(212,168,67,0.1)'" onmouseout="this.style.background='transparent'">Manage Subscription</a>
+    </div>
   </div>
 
   <div class="mp-stats">
@@ -321,6 +327,28 @@ body {
       // Subscriber banner
       if (data.is_subscriber) {
         document.getElementById('mp-sub-banner').style.display = 'block';
+        var manageBtn = document.getElementById('mp-manage-sub');
+        manageBtn.style.display = 'inline-block';
+        manageBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          var form = document.createElement('form');
+          form.method = 'POST';
+          form.action = prefix + '/manage-subscription';
+          document.body.appendChild(form);
+          form.submit();
+        });
+        if (data.subscription) {
+          var sub = data.subscription;
+          var planLabel = sub.plan_type === 'monthly' ? '$10/mo' : sub.plan_type === 'yearly' ? '$100/yr' : sub.plan_type;
+          var renewDate = sub.current_period_end ? new Date(sub.current_period_end).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}) : '';
+          var renewText = sub.cancel_at_period_end ? 'Cancels ' + renewDate : 'Renews ' + renewDate;
+          document.getElementById('mp-sub-plan').textContent = planLabel;
+          document.getElementById('mp-sub-renews').textContent = renewText;
+          document.getElementById('mp-sub-details').style.display = 'block';
+          if (sub.cancel_at_period_end) {
+            document.getElementById('mp-sub-text').textContent = 'Subscription active until ' + renewDate + '.';
+          }
+        }
       }
 
       var playbooks = data.playbooks || [];

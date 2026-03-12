@@ -305,13 +305,14 @@ async def my_playbooks(
 
     # Check for active subscription
     sub_result = await db.execute(
-        select(Subscription.id).where(
+        select(Subscription).where(
             Subscription.user_id == user.id,
             Subscription.status == "active",
             Subscription.current_period_end > now,
         ).limit(1)
     )
-    is_subscriber = sub_result.scalar_one_or_none() is not None
+    subscription = sub_result.scalar_one_or_none()
+    is_subscriber = subscription is not None
 
     if is_subscriber:
         # Subscriber gets all published playbooks
@@ -368,8 +369,19 @@ async def my_playbooks(
             "category_name": pb.category.name if pb.category else None,
         })
 
-    return {
+    response = {
         "email": user.email,
         "is_subscriber": is_subscriber,
         "playbooks": items,
     }
+
+    if subscription:
+        response["subscription"] = {
+            "plan_type": subscription.plan_type,
+            "price_cents": subscription.price_cents,
+            "status": subscription.status,
+            "current_period_end": subscription.current_period_end.isoformat() if subscription.current_period_end else None,
+            "cancel_at_period_end": subscription.cancel_at_period_end,
+        }
+
+    return response
