@@ -94,11 +94,14 @@ bp = Blueprint("main", __name__)
 
 
 FREE_SLUGS = {
+    "conductors-playbook",
     "lay-it-down",
-    "the-narrator",
-    "the-crows-gambit",
-    "the-salmon-journey",
-    "the-wolfs-table",
+    "the-mockingbirds-song",
+    "the-lifted-ceiling",
+    "the-tide-pools-echo",
+    "dad-talks-the-dopamine-drought",
+    "the-mantis-shrimps-eye",
+    "the-hermit-crabs-shell",
 }
 
 ADMIN_CODE = os.environ.get("ADMIN_UNLOCK_CODE", "elijahsentme")
