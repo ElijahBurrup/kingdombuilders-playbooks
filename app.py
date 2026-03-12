@@ -177,6 +177,9 @@ def _slug_to_file():
         "the-ravens-trial": "The_Ravens_Trial.html",
         "the-lifted-ceiling": "The_Lifted_Ceiling.html",
         "the-new-earning": "The_New_Earning.html",
+        "the-hermit-crabs-shell": "The_Hermit_Crabs_Shell.html",
+        "the-scorpions-molt": "The_Scorpions_Molt.html",
+        "the-vampire-squids-light": "The_Vampire_Squids_Light.html",
     }
 
 
