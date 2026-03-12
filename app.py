@@ -455,7 +455,8 @@ def read_playbook(slug):
                 slug=slug,
                 title=_slug_to_title(slug),
                 error=request.args.get("error"),
-                prefix=config.URL_PREFIX or ""
+                prefix=config.URL_PREFIX or "",
+                google_client_id=os.environ.get("GOOGLE_CLIENT_ID", ""),
             )
 
     # Read the HTML and inject tracking script before </body>

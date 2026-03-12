@@ -176,6 +176,39 @@ body {
 }
 .back-link a:hover { color: rgba(255,255,255,0.6); }
 
+/* --- Google Sign-In --- */
+.google-section {
+  text-align: center;
+  margin-bottom: 28px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.google-section p {
+  font-size: 13px;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 14px;
+}
+.google-user {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 18px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+}
+.google-user img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+}
+.google-user.show { display: inline-flex; }
+#g_id_signin { display: inline-block; }
+#g_id_signin.hide { display: none; }
+
 /* --- Admin Code Section --- */
 .admin-section {
   border-top: 1px solid rgba(255,255,255,0.06);
@@ -299,6 +332,17 @@ body {
     </div>
   </div>
 
+  {% if google_client_id %}
+  <div class="google-section">
+    <p>Sign in to track your purchases</p>
+    <div id="g_id_signin"></div>
+    <div class="google-user" id="google-user">
+      <img id="google-avatar" src="" alt="">
+      <span id="google-name"></span>
+    </div>
+  </div>
+  {% endif %}
+
   <div class="back-link">
     <a href="{{ prefix }}/">&larr; Back to all playbooks</a>
   </div>
@@ -317,6 +361,52 @@ body {
 <script>
 document.getElementById('admin-error').style.display = 'block';
 document.querySelector('.admin-form').classList.add('show');
+</script>
+{% endif %}
+
+{% if google_client_id %}
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+function handleGoogleCredential(response) {
+  var idToken = response.credential;
+  // Send to our backend
+  fetch('{{ prefix }}/api/v1/auth/google', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id_token: idToken })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.access_token) {
+      // Store JWT for future API calls
+      localStorage.setItem('kb_access_token', data.access_token);
+      localStorage.setItem('kb_refresh_token', data.refresh_token);
+      // Decode the Google credential to show user info
+      var payload = JSON.parse(atob(idToken.split('.')[1]));
+      document.getElementById('google-avatar').src = payload.picture || '';
+      document.getElementById('google-name').textContent = payload.name || payload.email;
+      document.getElementById('google-user').classList.add('show');
+      document.getElementById('g_id_signin').classList.add('hide');
+    }
+  })
+  .catch(function(err) { console.error('Google auth error:', err); });
+}
+
+window.onload = function() {
+  google.accounts.id.initialize({
+    client_id: '{{ google_client_id }}',
+    callback: handleGoogleCredential,
+    auto_select: true
+  });
+  google.accounts.id.renderButton(
+    document.getElementById('g_id_signin'),
+    { theme: 'filled_black', size: 'large', text: 'signin_with', shape: 'pill', width: 280 }
+  );
+  // Check if already signed in
+  if (localStorage.getItem('kb_access_token')) {
+    google.accounts.id.prompt();
+  }
+};
 </script>
 {% endif %}
 </body>
