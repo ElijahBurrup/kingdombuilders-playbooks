@@ -124,6 +124,12 @@ h1,h2,h3,h4{font-family:'Poppins',sans-serif;line-height:1.2}
 .series-badge.sb-how-ai-works{background:rgba(6,182,212,0.85);color:#fff}
 .series-badge.sb-ai-economy{background:rgba(212,168,67,0.9);color:#1A0A2E}
 
+/* === SERIES OUTCOME BANNER === */
+.series-outcome{display:none;max-width:900px;margin:0 auto 32px;padding:28px 32px;border-radius:14px;background:linear-gradient(135deg,var(--purple-deep),var(--purple-dark));border:1.5px solid rgba(212,168,67,0.2);text-align:center}
+.series-outcome.show{display:block}
+.series-outcome p{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:var(--white);line-height:1.6;margin:0}
+.series-outcome p span{color:var(--gold);font-weight:700}
+
 .card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid rgba(123,79,191,0.06)}
 .card-price{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:var(--purple-deep)}
 .card-price.free{color:#16A34A}
@@ -343,6 +349,8 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
 
 <div class="catalog">
   <div class="lens-no-results" id="lens-no-results"><h3>No playbooks found</h3><p>Try a different search term or clear filters.</p></div>
+
+  <div class="series-outcome" id="series-outcome"><p></p></div>
 
   <div class="grid" id="playbook-grid">
 
@@ -1389,6 +1397,17 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
     'ai-economy': {name:'AI Economy', badge:'sb-ai-economy'}
   };
 
+  var seriesOutcome = {
+    'how-ai-works': 'When you finish this series, you will <span>understand exactly how AI generates text, images, video, and music</span> well enough to explain it to anyone.',
+    'ai-economy': 'When you finish this series, you will <span>see the 15+ new income categories AI is creating</span> and know exactly where you fit in the economy that is coming.',
+    'process-model': 'When you finish this series, you will <span>understand Gendlin\'s Process Model</span>, the philosophy that explains how your body thinks before your mind does, and how to live from that knowing.',
+    'dad-talks': 'When you finish this series, you will have <span>the language to talk to your kids about the hardest topics</span> they are facing, using science they will actually believe.',
+    'narcissist': 'When you finish this series, you will <span>see every narcissistic pattern before it reaches you</span> and carry a defense system that operates automatically.',
+    'mirror': 'When you finish this series, you will <span>know which identities are yours and which were borrowed</span>, and have the tools to build a self that belongs to you.'
+  };
+
+  var seriesOutcomeEl = document.getElementById('series-outcome');
+
   var subCategories = {
     health: [{key:'all',label:'All Health'},{key:'mental',label:'Mental'},{key:'spiritual',label:'Spiritual'},{key:'resilience',label:'Resilience'}],
     wealth: [{key:'all',label:'All Wealth'},{key:'money',label:'Money'},{key:'strategy',label:'Strategy'},{key:'systems',label:'Systems'},{key:'leadership',label:'Leadership'}],
@@ -1478,6 +1497,12 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
     countEl.textContent = visibleCount + ' playbook' + (visibleCount !== 1 ? 's' : '');
     noResults.style.display = visibleCount === 0 ? 'block' : 'none';
     grid.style.display = visibleCount === 0 ? 'none' : '';
+    if(state.series && seriesOutcome[state.series]){
+      seriesOutcomeEl.querySelector('p').innerHTML = seriesOutcome[state.series];
+      seriesOutcomeEl.classList.add('show');
+    } else {
+      seriesOutcomeEl.classList.remove('show');
+    }
     updateChips();
     updateBadge();
   }
