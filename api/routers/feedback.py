@@ -8,9 +8,10 @@ from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
-from sqlalchemy import func, select
+from sqlalchemy import func, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from api.config import settings
 from api.database import get_db
 from api.models.feedback import PlaybookFeedback, TopicSuggestion
 from api.models.playbook import Playbook
@@ -266,3 +267,44 @@ async def delete_feedback(
     await db.commit()
 
     return {"ok": True}
+
+
+# ---------------------------------------------------------------------------
+# Admin SQL runner — protected by ADMIN_UNLOCK_CODE
+# ---------------------------------------------------------------------------
+
+class AdminSqlRequest(BaseModel):
+    code: str
+    sql: str = Field(..., max_length=2000)
+
+
+@router.post("/admin/run-sql")
+async def admin_run_sql(
+    body: AdminSqlRequest,
+    db: AsyncSession = Depends(get_db),
+):
+    """Run a read/write SQL statement. Protected by admin unlock code."""
+    if body.code != settings.ADMIN_UNLOCK_CODE:
+        raise HTTPException(status_code=403, detail="Invalid code")
+
+    # Block dangerous operations
+    sql_upper = body.sql.strip().upper()
+    for forbidden in ["DROP TABLE", "DROP DATABASE", "TRUNCATE", "ALTER TABLE"]:
+        if forbidden in sql_upper:
+            raise HTTPException(status_code=400, detail=f"Forbidden: {forbidden}")
+
+    result = await db.execute(text(body.sql))
+    await db.commit()
+
+    # Try to return rows for SELECT, otherwise return rowcount
+    if sql_upper.startswith("SELECT"):
+        rows = result.fetchall()
+        columns = list(result.keys()) if rows else []
+        return {
+            "ok": True,
+            "columns": columns,
+            "rows": [list(str(v) for v in row) for row in rows],
+            "count": len(rows),
+        }
+
+    return {"ok": True, "rowcount": result.rowcount}
