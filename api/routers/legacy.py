@@ -1153,7 +1153,7 @@ async def _user_has_access(user_id: str, slug: str, db: AsyncSession) -> bool:
                 Purchase.user_id == uid,
                 Purchase.playbook_id == playbook_id,
                 Purchase.status == "completed",
-            )
+            ).limit(1)
         )
         if result.scalar_one_or_none():
             return True
@@ -1164,7 +1164,7 @@ async def _user_has_access(user_id: str, slug: str, db: AsyncSession) -> bool:
             Purchase.user_id == uid,
             Purchase.provider_payment_id == f"single:{slug}",
             Purchase.status == "completed",
-        )
+        ).limit(1)
     )
     if result.scalar_one_or_none():
         return True
