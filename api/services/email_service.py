@@ -634,3 +634,156 @@ def send_nurture_day12(email: str) -> None:
         })
     except Exception as e:
         print(f"Failed to send nurture day 12 email to {email}: {e}")
+
+
+# ============================================================================
+# Referral emails (5 types)
+# ============================================================================
+
+def send_referral_signup_email(referrer_email: str, referred_name: str) -> None:
+    """Notify a referrer that someone signed up through their link."""
+    display = referred_name or "Someone"
+    html = f"""
+    <div style="max-width:600px;margin:0 auto;font-family:Arial,Helvetica,sans-serif;background:#FAF6ED;padding:40px 24px;">
+      <div style="text-align:center;margin-bottom:32px;">
+        <div style="font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#7B4FBF;">Kingdom Builders AI</div>
+      </div>
+      <div style="background:linear-gradient(135deg,#1A0A2E 0%,#2D1B4E 100%);border-radius:8px;padding:40px 32px;text-align:center;">
+        <h1 style="font-family:Georgia,serif;font-size:28px;color:#FFFFFF;margin:0 0 8px;">Your Link is Working</h1>
+        <p style="font-size:15px;color:rgba(255,255,255,0.7);margin:0 0 24px;">{display} just signed up through your referral link.</p>
+        <p style="font-size:14px;color:rgba(255,255,255,0.5);">When they subscribe or purchase a playbook, you will earn a commission automatically. Keep sharing.</p>
+        <a href="{_base_url()}/referrals" style="display:inline-block;margin-top:24px;padding:14px 40px;background:linear-gradient(135deg,#D4A843 0%,#E8C96A 100%);color:#1A0A2E;font-size:15px;font-weight:700;text-decoration:none;border-radius:4px;">VIEW YOUR REFERRALS</a>
+      </div>
+      <div style="text-align:center;margin-top:32px;font-size:12px;color:#6B5A8A;">
+        <p>Questions? Reply to this email or contact support@kingdombuilders.ai</p>
+      </div>
+    </div>
+    """
+    try:
+        resend.Emails.send({
+            "from": FROM_EMAIL_KB,
+            "to": referrer_email,
+            "subject": "Someone signed up through your link",
+            "html": html,
+        })
+    except Exception as e:
+        print(f"Failed to send referral signup email to {referrer_email}: {e}")
+
+
+def send_commission_earned_email(referrer_email: str, amount_cents: int, referred_name: str) -> None:
+    """Notify a referrer they earned a commission."""
+    amount_str = f"${amount_cents / 100:.2f}"
+    display = referred_name or "A referred user"
+    html = f"""
+    <div style="max-width:600px;margin:0 auto;font-family:Arial,Helvetica,sans-serif;background:#FAF6ED;padding:40px 24px;">
+      <div style="text-align:center;margin-bottom:32px;">
+        <div style="font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#7B4FBF;">Kingdom Builders AI</div>
+      </div>
+      <div style="background:linear-gradient(135deg,#1A0A2E 0%,#2D1B4E 100%);border-radius:8px;padding:40px 32px;text-align:center;">
+        <h1 style="font-family:Georgia,serif;font-size:28px;color:#FFFFFF;margin:0 0 8px;">You Earned {amount_str}</h1>
+        <p style="font-size:15px;color:rgba(255,255,255,0.7);margin:0 0 24px;">{display} just made a payment, and your commission has been recorded.</p>
+        <p style="font-size:14px;color:rgba(255,255,255,0.5);">Commissions are paid out monthly when your balance reaches $10. Connect your bank account in your referral dashboard to receive payouts.</p>
+        <a href="{_base_url()}/referrals" style="display:inline-block;margin-top:24px;padding:14px 40px;background:linear-gradient(135deg,#D4A843 0%,#E8C96A 100%);color:#1A0A2E;font-size:15px;font-weight:700;text-decoration:none;border-radius:4px;">VIEW EARNINGS</a>
+      </div>
+      <div style="text-align:center;margin-top:32px;font-size:12px;color:#6B5A8A;">
+        <p>Questions? Reply to this email or contact support@kingdombuilders.ai</p>
+      </div>
+    </div>
+    """
+    try:
+        resend.Emails.send({
+            "from": FROM_EMAIL_KB,
+            "to": referrer_email,
+            "subject": f"You earned {amount_str} from a referral",
+            "html": html,
+        })
+    except Exception as e:
+        print(f"Failed to send commission earned email to {referrer_email}: {e}")
+
+
+def send_payout_sent_email(referrer_email: str, amount_cents: int, bank_last4: str = "****") -> None:
+    """Notify a referrer that a payout has been sent."""
+    amount_str = f"${amount_cents / 100:.2f}"
+    html = f"""
+    <div style="max-width:600px;margin:0 auto;font-family:Arial,Helvetica,sans-serif;background:#FAF6ED;padding:40px 24px;">
+      <div style="text-align:center;margin-bottom:32px;">
+        <div style="font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#7B4FBF;">Kingdom Builders AI</div>
+      </div>
+      <div style="background:linear-gradient(135deg,#1A0A2E 0%,#2D1B4E 100%);border-radius:8px;padding:40px 32px;text-align:center;">
+        <h1 style="font-family:Georgia,serif;font-size:28px;color:#FFFFFF;margin:0 0 8px;">Payout Sent: {amount_str}</h1>
+        <p style="font-size:15px;color:rgba(255,255,255,0.7);margin:0 0 24px;">Your referral commission payout of {amount_str} has been sent to your bank account ending in {bank_last4}.</p>
+        <p style="font-size:14px;color:rgba(255,255,255,0.5);">Funds typically arrive within 2 business days. You can view your full payout history in your referral dashboard.</p>
+        <a href="{_base_url()}/referrals" style="display:inline-block;margin-top:24px;padding:14px 40px;background:linear-gradient(135deg,#D4A843 0%,#E8C96A 100%);color:#1A0A2E;font-size:15px;font-weight:700;text-decoration:none;border-radius:4px;">VIEW PAYOUTS</a>
+      </div>
+      <div style="text-align:center;margin-top:32px;font-size:12px;color:#6B5A8A;">
+        <p>Questions? Reply to this email or contact support@kingdombuilders.ai</p>
+      </div>
+    </div>
+    """
+    try:
+        resend.Emails.send({
+            "from": FROM_EMAIL_KB,
+            "to": referrer_email,
+            "subject": f"Payout sent: {amount_str}",
+            "html": html,
+        })
+    except Exception as e:
+        print(f"Failed to send payout email to {referrer_email}: {e}")
+
+
+def send_tax_info_needed_email(referrer_email: str) -> None:
+    """Notify a referrer approaching the $600 threshold that tax info is needed."""
+    html = f"""
+    <div style="max-width:600px;margin:0 auto;font-family:Arial,Helvetica,sans-serif;background:#FAF6ED;padding:40px 24px;">
+      <div style="text-align:center;margin-bottom:32px;">
+        <div style="font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#7B4FBF;">Kingdom Builders AI</div>
+      </div>
+      <div style="background:linear-gradient(135deg,#1A0A2E 0%,#2D1B4E 100%);border-radius:8px;padding:40px 32px;text-align:center;">
+        <h1 style="font-family:Georgia,serif;font-size:28px;color:#FFFFFF;margin:0 0 8px;">Great News (and One Small Step)</h1>
+        <p style="font-size:15px;color:rgba(255,255,255,0.7);margin:0 0 24px;">You are earning great commissions. To continue receiving payouts, we need to verify your identity and tax information.</p>
+        <p style="font-size:14px;color:rgba(255,255,255,0.5);">This is required by law for anyone earning $600 or more per year. It takes about 2 minutes through our payment partner Stripe.</p>
+        <a href="{_base_url()}/referrals" style="display:inline-block;margin-top:24px;padding:14px 40px;background:linear-gradient(135deg,#D4A843 0%,#E8C96A 100%);color:#1A0A2E;font-size:15px;font-weight:700;text-decoration:none;border-radius:4px;">COMPLETE TAX INFO</a>
+      </div>
+      <div style="text-align:center;margin-top:32px;font-size:12px;color:#6B5A8A;">
+        <p>Questions? Reply to this email or contact support@kingdombuilders.ai</p>
+      </div>
+    </div>
+    """
+    try:
+        resend.Emails.send({
+            "from": FROM_EMAIL_KB,
+            "to": referrer_email,
+            "subject": "Complete your tax info to keep earning",
+            "html": html,
+        })
+    except Exception as e:
+        print(f"Failed to send tax info email to {referrer_email}: {e}")
+
+
+def send_payouts_paused_email(referrer_email: str) -> None:
+    """Notify a referrer that payouts are paused until tax info is provided."""
+    html = f"""
+    <div style="max-width:600px;margin:0 auto;font-family:Arial,Helvetica,sans-serif;background:#FAF6ED;padding:40px 24px;">
+      <div style="text-align:center;margin-bottom:32px;">
+        <div style="font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#7B4FBF;">Kingdom Builders AI</div>
+      </div>
+      <div style="background:linear-gradient(135deg,#1A0A2E 0%,#2D1B4E 100%);border-radius:8px;padding:40px 32px;text-align:center;">
+        <h1 style="font-family:Georgia,serif;font-size:28px;color:#FFFFFF;margin:0 0 8px;">Payouts Paused</h1>
+        <p style="font-size:15px;color:rgba(255,255,255,0.7);margin:0 0 24px;">Your referral commissions are still accruing, but payouts are temporarily paused because we need your tax information on file.</p>
+        <p style="font-size:14px;color:rgba(255,255,255,0.5);">Once you complete the verification, your full accumulated balance will be included in the next monthly payout.</p>
+        <a href="{_base_url()}/referrals" style="display:inline-block;margin-top:24px;padding:14px 40px;background:linear-gradient(135deg,#D4A843 0%,#E8C96A 100%);color:#1A0A2E;font-size:15px;font-weight:700;text-decoration:none;border-radius:4px;">COMPLETE TAX INFO</a>
+      </div>
+      <div style="text-align:center;margin-top:32px;font-size:12px;color:#6B5A8A;">
+        <p>Questions? Reply to this email or contact support@kingdombuilders.ai</p>
+      </div>
+    </div>
+    """
+    try:
+        resend.Emails.send({
+            "from": FROM_EMAIL_KB,
+            "to": referrer_email,
+            "subject": "Payouts paused — complete your tax info to resume",
+            "html": html,
+        })
+    except Exception as e:
+        print(f"Failed to send payouts paused email to {referrer_email}: {e}")

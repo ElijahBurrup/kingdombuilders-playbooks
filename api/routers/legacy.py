@@ -28,6 +28,13 @@ from api.models.user import User, OAuthAccount, VerificationToken
 from api.models.purchase import Purchase, Subscription, StripeCustomer
 from api.utils.security import hash_password, verify_password, generate_token, hash_token
 from api.utils.session import get_session_user_id, set_session_cookie, clear_session_cookie
+from api.services.referral_service import (
+    ensure_referral_code,
+    process_referral_cookie,
+    process_commissions,
+    cancel_pending_commissions,
+    handle_refund_commissions,
+)
 
 # ---------------------------------------------------------------------------
 # Directory paths — BASE_DIR is the Playbooks project root
@@ -789,8 +796,19 @@ async def auth_register(
     await db.commit()
     await db.refresh(user)
 
+    # Referral attribution + code generation
+    try:
+        await ensure_referral_code(user.id, db)
+        ref_code = request.cookies.get("ref")
+        if ref_code:
+            await process_referral_cookie(user.id, ref_code, db)
+    except Exception as e:
+        print(f"Referral processing failed (non-critical): {e}")
+
     response = RedirectResponse(url=next_url, status_code=303)
     set_session_cookie(response, str(user.id))
+    if request.cookies.get("ref"):
+        response.delete_cookie("ref")
     return response
 
 
@@ -902,6 +920,7 @@ async def auth_google(
         )
         user = user_result.scalar_one_or_none()
 
+        is_new_user = user is None
         if user is None:
             user = User(
                 email=email,
@@ -920,6 +939,8 @@ async def auth_google(
         )
         db.add(oauth_link)
         await db.flush()
+    else:
+        is_new_user = False
 
     if not user.email_verified:
         user.email_verified = True
@@ -927,8 +948,20 @@ async def auth_google(
 
     await db.commit()
 
+    # Referral attribution for new users + ensure code for all
+    try:
+        await ensure_referral_code(user.id, db)
+        if is_new_user:
+            ref_code = request.cookies.get("ref")
+            if ref_code:
+                await process_referral_cookie(user.id, ref_code, db)
+    except Exception as e:
+        print(f"Referral processing failed (non-critical): {e}")
+
     response = RedirectResponse(url=next_url, status_code=303)
     set_session_cookie(response, str(user.id))
+    if is_new_user and request.cookies.get("ref"):
+        response.delete_cookie("ref")
     return response
 
 
@@ -939,6 +972,37 @@ async def auth_logout():
     clear_session_cookie(response)
     response.delete_cookie("admin_unlocked")
     return response
+
+
+# ============================================================================
+# Referral link and dashboard
+# ============================================================================
+@router.get("/r/{code}", include_in_schema=False)
+async def referral_redirect(code: str):
+    """Set referral cookie and redirect to funnel."""
+    prefix = settings.URL_PREFIX or ""
+    response = RedirectResponse(url=f"{prefix}/funnel", status_code=302)
+    response.set_cookie(
+        "ref", code, max_age=30 * 24 * 3600, httponly=False, samesite="lax"
+    )
+    return response
+
+
+@router.get("/referrals", include_in_schema=False)
+async def referrals_page(request: Request, db: AsyncSession = Depends(get_db)):
+    """Serve the referral dashboard page."""
+    prefix = settings.URL_PREFIX or ""
+    user_id = get_session_user_id(request)
+    if not user_id:
+        return RedirectResponse(
+            url=f"{prefix}/auth?next={quote(prefix + '/referrals')}",
+            status_code=303,
+        )
+    return templates.TemplateResponse("referrals.html", {
+        "request": request,
+        "prefix": prefix,
+        "config": settings,
+    })
 
 
 # ============================================================================
@@ -1368,6 +1432,28 @@ async def stripe_webhook(request: Request, db: AsyncSession = Depends(get_db)):
         await _handle_subscription_updated(obj, db)
     elif event_type == "customer.subscription.deleted":
         await _handle_subscription_deleted(obj, db)
+    elif event_type == "invoice.paid":
+        # Subscription renewal — process referral commissions
+        sub_id = obj.get("subscription")
+        if sub_id:
+            try:
+                result = await db.execute(
+                    select(Subscription).where(
+                        Subscription.provider_subscription_id == sub_id
+                    )
+                )
+                sub = result.scalar_one_or_none()
+                if sub and sub.status == "active":
+                    billing_month = datetime.now(timezone.utc).strftime("%Y-%m")
+                    await process_commissions(
+                        referred_user_id=sub.user_id,
+                        billing_period=billing_month,
+                        db=db,
+                        subscription_id=sub.id,
+                        plan_type=sub.plan_type,
+                    )
+            except Exception as e:
+                print(f"Invoice commission processing failed (non-critical): {e}")
     elif event_type == "charge.refunded":
         # Mark matching purchase as refunded
         payment_intent_id = obj.get("payment_intent")
@@ -1388,6 +1474,17 @@ async def stripe_webhook(request: Request, db: AsyncSession = Depends(get_db)):
             for p in result2.scalars().all():
                 p.status = "refunded"
             await db.commit()
+            # Handle referral commission refunds
+            try:
+                billing_period = f"one-time:{payment_intent_id}"
+                await handle_refund_commissions(
+                    purchase_id=None,
+                    subscription_id=None,
+                    billing_period=billing_period,
+                    db=db,
+                )
+            except Exception as e:
+                print(f"Refund commission handling failed (non-critical): {e}")
 
     return {"status": "ok"}
 
@@ -1462,6 +1559,27 @@ async def _handle_checkout_completed(session: dict, db: AsyncSession) -> None:
                 db.add(StripeCustomer(user_id=uid, stripe_customer_id=stripe_customer_id))
 
     await db.commit()
+
+    # Process referral commissions
+    try:
+        if mode == "single":
+            await process_commissions(
+                referred_user_id=uid,
+                billing_period=f"one-time:{session_id}",
+                db=db,
+                purchase_id=purchase.id if mode == "single" else None,
+                plan_type="single",
+            )
+        elif mode in ("monthly", "yearly"):
+            billing_month = datetime.now(timezone.utc).strftime("%Y-%m")
+            await process_commissions(
+                referred_user_id=uid,
+                billing_period=billing_month,
+                db=db,
+                plan_type=mode,
+            )
+    except Exception as e:
+        print(f"Commission processing failed (non-critical): {e}")
 
     # Send delivery email with playbook details
     try:
@@ -1554,6 +1672,11 @@ async def _handle_subscription_deleted(subscription: dict, db: AsyncSession) -> 
     if sub:
         sub.status = "canceled"
         sub.updated_at = datetime.now(timezone.utc)
+        # Cancel pending referral commissions
+        try:
+            await cancel_pending_commissions(sub.user_id, db)
+        except Exception as e:
+            print(f"Commission cancellation failed (non-critical): {e}")
         await db.commit()
 
 
