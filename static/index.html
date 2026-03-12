@@ -308,6 +308,7 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
       <a href="paths" style="display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:50px;border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.55);font-family:'Poppins',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:1px;text-decoration:none;transition:all 0.2s" onmouseover="this.style.borderColor='rgba(212,168,67,0.3)';this.style.color='#E8C96A'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(255,255,255,0.55)'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>READING PATHS</a>
       <a href="journey" style="display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:50px;border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.55);font-family:'Poppins',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:1px;text-decoration:none;transition:all 0.2s" onmouseover="this.style.borderColor='rgba(212,168,67,0.3)';this.style.color='#E8C96A'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(255,255,255,0.55)'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-5"/></svg>YOUR JOURNEY</a>
       <a href="my-playbooks" style="display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:50px;border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.55);font-family:'Poppins',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:1px;text-decoration:none;transition:all 0.2s" onmouseover="this.style.borderColor='rgba(212,168,67,0.3)';this.style.color='#E8C96A'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(255,255,255,0.55)'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>MY PLAYBOOKS</a>
+      <a href="#" onclick="document.getElementById('suggest-modal').classList.add('show');return false" style="display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:50px;border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.55);font-family:'Poppins',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:1px;text-decoration:none;transition:all 0.2s" onmouseover="this.style.borderColor='rgba(212,168,67,0.3)';this.style.color='#E8C96A'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(255,255,255,0.55)'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>SUGGEST A TOPIC</a>
     </div>
   </div>
 </section>
@@ -1726,6 +1727,82 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
 
   // --- Init ---
   applyFilters();
+})();
+</script>
+
+<!-- ===== SUGGEST A TOPIC MODAL ===== -->
+<style>
+#suggest-modal{display:none;position:fixed;inset:0;z-index:10000;align-items:center;justify-content:center;background:rgba(10,6,20,0.8);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+#suggest-modal.show{display:flex}
+.suggest-card{width:420px;max-width:calc(100vw - 40px);background:linear-gradient(165deg,#1A0A2E,#2D1B4E);border:1px solid rgba(232,201,106,0.2);border-radius:20px;padding:32px 28px 28px;position:relative;font-family:'Poppins',sans-serif;color:#fff;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.suggest-close{position:absolute;top:12px;right:16px;background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.3rem;cursor:pointer;padding:4px 8px;transition:color 0.2s}
+.suggest-close:hover{color:#fff}
+.suggest-emoji{font-size:1.6rem;margin-bottom:8px}
+.suggest-heading{font-size:1.1rem;font-weight:700;margin-bottom:4px}
+.suggest-sub{font-size:0.8rem;color:rgba(255,255,255,0.5);margin-bottom:20px;line-height:1.5;font-family:'Lora',Georgia,serif}
+.suggest-label{font-size:0.7rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:6px;display:block}
+.suggest-input,.suggest-textarea{width:100%;padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#fff;font-size:0.85rem;font-family:'Poppins',sans-serif;outline:none;transition:border-color 0.2s;margin-bottom:14px}
+.suggest-input:focus,.suggest-textarea:focus{border-color:rgba(212,168,67,0.4)}
+.suggest-input::placeholder,.suggest-textarea::placeholder{color:rgba(255,255,255,0.25)}
+.suggest-textarea{min-height:80px;resize:vertical}
+.suggest-btn{width:100%;padding:12px;border-radius:10px;border:none;background:#D4A843;color:#0a0614;font-size:0.85rem;font-weight:700;font-family:'Poppins',sans-serif;cursor:pointer;transition:background 0.2s;letter-spacing:0.5px}
+.suggest-btn:hover{background:#E8C96A}
+.suggest-btn:disabled{opacity:0.6;cursor:not-allowed}
+.suggest-msg{font-size:0.9rem;font-weight:600;text-align:center;padding:16px 0;color:#E8C96A}
+@media(max-width:500px){.suggest-card{padding:24px 20px 20px}}
+</style>
+<div id="suggest-modal" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="suggest-card">
+    <button class="suggest-close" onclick="document.getElementById('suggest-modal').classList.remove('show')">&times;</button>
+    <div class="suggest-emoji">&#x1F4A1;</div>
+    <div class="suggest-heading">Suggest a Topic</div>
+    <div class="suggest-sub">What playbook should we build next? We read every suggestion.</div>
+    <div id="suggest-form-wrap">
+      <form id="suggest-form" onsubmit="return false">
+        <label class="suggest-label">Your Email <span style="opacity:0.5">(optional)</span></label>
+        <input class="suggest-input" type="email" id="suggest-email" placeholder="you@example.com">
+        <label class="suggest-label">Topic *</label>
+        <input class="suggest-input" type="text" id="suggest-topic" placeholder="e.g. How to build a second brain" required>
+        <label class="suggest-label">Details <span style="opacity:0.5">(optional)</span></label>
+        <textarea class="suggest-textarea" id="suggest-detail" placeholder="Any context, angles, or questions you'd like covered..."></textarea>
+        <button class="suggest-btn" type="submit" id="suggest-submit">Submit Suggestion</button>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var form = document.getElementById('suggest-form');
+  if (!form) return;
+  var prefix = '';
+  try { var p = location.pathname; if (p !== '/' && p.length > 1) { var seg = p.split('/').filter(Boolean); if (seg.length > 0) prefix = '/' + seg[0]; } } catch(e){}
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var topic = document.getElementById('suggest-topic').value.trim();
+    if (!topic) return;
+    var btn = document.getElementById('suggest-submit');
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    fetch(prefix + '/api/v1/suggestions', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        topic: topic,
+        email: document.getElementById('suggest-email').value.trim() || null,
+        detail: document.getElementById('suggest-detail').value.trim() || null
+      })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      document.getElementById('suggest-form-wrap').innerHTML = '<div class="suggest-msg">Thank you! We\'ll review your suggestion.</div>';
+      setTimeout(function(){ document.getElementById('suggest-modal').classList.remove('show'); }, 2500);
+    })
+    .catch(function(){
+      btn.disabled = false;
+      btn.textContent = 'Submit Suggestion';
+    });
+  });
 })();
 </script>
 

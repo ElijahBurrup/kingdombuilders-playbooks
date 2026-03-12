@@ -5,6 +5,7 @@ from api.models.activity import DownloadLog, ReadingProgress, UserFavorite
 from api.models.discovery import PlaybookTag, PlaybookConnection, JourneyStamp, ReadingPath, ReadingPathStep
 from api.models.email import Subscriber, EmailLog, EmailCampaign, PromoCode
 from api.models.referral import ReferralCode, Referral, Commission, Payout, ReferrerProfile
+from api.models.feedback import TopicSuggestion, PlaybookFeedback
 
 __all__ = [
     "User",
@@ -36,4 +37,6 @@ __all__ = [
     "Commission",
     "Payout",
     "ReferrerProfile",
+    "TopicSuggestion",
+    "PlaybookFeedback",
 ]

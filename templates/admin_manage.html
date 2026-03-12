@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage | Playbooks Admin</title>
+<meta name="robots" content="noindex, nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#D4A843;--gold-glow:#E8C96A;--purple-deep:#1A0A2E;--purple-dark:#2D1B4E;--purple-mid:#4A2D7A;--purple-accent:#7B4FBF;--cream:#FDFAF3;--text:#2A1A3E;--text-light:#5A4A6E;--text-muted:#8A7A9E;--white:#FFFFFF;--green:#22C55E;--red:#EF4444;--blue:#3B82F6;--amber:#F59E0B}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--cream);line-height:1.6}
+h1,h2,h3,h4{font-family:'Poppins',sans-serif;line-height:1.2}
+
+.header{padding:32px 24px 24px;background:linear-gradient(165deg,#0E0618,var(--purple-deep),var(--purple-dark));text-align:center}
+.header h1{font-size:1.5rem;color:var(--white);font-weight:300;margin-bottom:4px}
+.header h1 strong{font-weight:700;color:var(--gold)}
+.header p{font-family:'Poppins',sans-serif;font-size:0.7rem;color:rgba(255,255,255,0.3);letter-spacing:3px;text-transform:uppercase}
+.back-link{display:inline-block;margin-top:12px;font-family:'Poppins',sans-serif;font-size:0.72rem;color:var(--gold);text-decoration:none;opacity:0.6;transition:opacity 0.2s}
+.back-link:hover{opacity:1}
+
+.tabs{display:flex;justify-content:center;gap:0;margin:24px auto 0;max-width:400px;border-radius:10px;overflow:hidden;border:1.5px solid rgba(123,79,191,0.12)}
+.tab-btn{flex:1;padding:10px 20px;font-family:'Poppins',sans-serif;font-size:0.75rem;font-weight:600;letter-spacing:0.5px;border:none;background:var(--white);color:var(--text-muted);cursor:pointer;transition:all 0.2s}
+.tab-btn.active{background:var(--purple-deep);color:var(--gold)}
+.tab-btn:hover:not(.active){background:rgba(123,79,191,0.05)}
+
+.dashboard{max-width:1100px;margin:0 auto;padding:20px 24px 60px}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+.filter-bar{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.filter-bar select{padding:8px 12px;border-radius:8px;border:1.5px solid rgba(123,79,191,0.12);font-family:'Poppins',sans-serif;font-size:0.75rem;background:var(--white);color:var(--text);outline:none}
+.filter-bar select:focus{border-color:var(--purple-accent)}
+.stat-pill{font-family:'Poppins',sans-serif;font-size:0.72rem;font-weight:600;padding:6px 14px;border-radius:50px;background:rgba(212,168,67,0.1);color:var(--gold);border:1px solid rgba(212,168,67,0.15)}
+
+table{width:100%;border-collapse:collapse;background:var(--white);border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(26,10,46,0.04);border:1.5px solid rgba(123,79,191,0.08)}
+th{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);text-align:left;padding:14px 14px;background:rgba(123,79,191,0.03);border-bottom:1.5px solid rgba(123,79,191,0.08)}
+td{padding:12px 14px;font-size:0.82rem;border-bottom:1px solid rgba(123,79,191,0.05);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(212,168,67,0.03)}
+
+.badge{display:inline-block;padding:3px 10px;border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:0.5px;text-transform:uppercase}
+.badge-pending{background:rgba(59,130,246,0.1);color:var(--blue)}
+.badge-created{background:rgba(34,197,94,0.1);color:var(--green)}
+.badge-saved{background:rgba(212,168,67,0.12);color:var(--gold)}
+.badge-deleted{background:rgba(239,68,68,0.08);color:rgba(239,68,68,0.5)}
+
+.action-btn{padding:5px 12px;border-radius:6px;border:1px solid;font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:600;cursor:pointer;transition:all 0.15s;background:transparent;letter-spacing:0.3px}
+.action-btn:hover{filter:brightness(1.1)}
+.btn-created{border-color:rgba(34,197,94,0.3);color:var(--green)}
+.btn-created:hover{background:rgba(34,197,94,0.08)}
+.btn-saved{border-color:rgba(212,168,67,0.3);color:var(--gold)}
+.btn-saved:hover{background:rgba(212,168,67,0.08)}
+.btn-delete{border-color:rgba(239,68,68,0.3);color:var(--red)}
+.btn-delete:hover{background:rgba(239,68,68,0.08)}
+
+.stars{display:inline-flex;gap:1px}
+.stars svg{width:14px;height:14px}
+
+.email-cell{font-family:'Poppins',sans-serif;font-size:0.72rem;color:var(--text-light)}
+.date-cell{font-family:'Poppins',sans-serif;font-size:0.7rem;color:var(--text-muted);white-space:nowrap}
+.topic-cell{font-weight:500;max-width:300px}
+.detail-cell{font-size:0.78rem;color:var(--text-light);max-width:250px;overflow:hidden;text-overflow:ellipsis}
+.comment-cell{font-size:0.78rem;color:var(--text-light);max-width:300px}
+.playbook-cell{font-family:'Poppins',sans-serif;font-weight:600;font-size:0.78rem;color:var(--purple-deep)}
+
+.empty-state{text-align:center;padding:60px 24px;color:var(--text-muted)}
+.empty-state h3{font-size:1.1rem;margin-bottom:8px;color:var(--text-light)}
+.loading{text-align:center;padding:40px;color:var(--text-muted);font-size:0.85rem}
+
+@media(max-width:800px){
+  table{font-size:0.75rem}
+  th,td{padding:10px 8px}
+  .detail-cell,.comment-cell{max-width:150px}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Playbook <strong>Manage</strong></h1>
+  <p>Kingdom Builders AI</p>
+  <a href="{{ prefix }}/" class="back-link">&larr; Back to Catalog</a>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('suggestions')">Topic Suggestions</button>
+  <button class="tab-btn" onclick="switchTab('feedback')">Playbook Feedback</button>
+</div>
+
+<div class="dashboard">
+
+  <!-- ===== SUGGESTIONS TAB ===== -->
+  <div class="tab-panel active" id="panel-suggestions">
+    <div class="filter-bar">
+      <select id="sug-filter" onchange="loadSuggestions()">
+        <option value="">All Statuses</option>
+        <option value="pending">Pending</option>
+        <option value="created">Created</option>
+        <option value="saved">Saved</option>
+        <option value="deleted">Deleted</option>
+      </select>
+      <span class="stat-pill" id="sug-count">0 suggestions</span>
+    </div>
+    <div id="sug-loading" class="loading">Loading suggestions...</div>
+    <table id="sug-table" style="display:none">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Email</th>
+          <th>Topic</th>
+          <th>Details</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="sug-body"></tbody>
+    </table>
+    <div id="sug-empty" class="empty-state" style="display:none">
+      <h3>No suggestions yet</h3>
+      <p>Suggestions from users will appear here.</p>
+    </div>
+  </div>
+
+  <!-- ===== FEEDBACK TAB ===== -->
+  <div class="tab-panel" id="panel-feedback">
+    <div class="filter-bar">
+      <span class="stat-pill" id="fb-count">0 ratings</span>
+      <span class="stat-pill" id="fb-avg">Avg: --</span>
+    </div>
+    <div id="fb-loading" class="loading">Loading feedback...</div>
+    <table id="fb-table" style="display:none">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Playbook</th>
+          <th>Rating</th>
+          <th>Comment</th>
+          <th>Email</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="fb-body"></tbody>
+    </table>
+    <div id="fb-empty" class="empty-state" style="display:none">
+      <h3>No feedback yet</h3>
+      <p>Playbook ratings from readers will appear here.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var prefix = '{{ prefix }}';
+
+  // Tab switching
+  window.switchTab = function(tab) {
+    document.querySelectorAll('.tab-btn').forEach(function(b,i){
+      b.classList.toggle('active', (tab==='suggestions' && i===0) || (tab==='feedback' && i===1));
+    });
+    document.getElementById('panel-suggestions').classList.toggle('active', tab==='suggestions');
+    document.getElementById('panel-feedback').classList.toggle('active', tab==='feedback');
+    if (tab === 'feedback' && !fbLoaded) loadFeedback();
+  };
+
+  // --- Suggestions ---
+  window.loadSuggestions = function() {
+    var status = document.getElementById('sug-filter').value;
+    var url = prefix + '/api/v1/admin/suggestions?per_page=200';
+    if (status) url += '&status=' + status;
+
+    fetch(url, {credentials: 'include'})
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        document.getElementById('sug-loading').style.display = 'none';
+        var items = data.items || [];
+        document.getElementById('sug-count').textContent = data.total + ' suggestion' + (data.total !== 1 ? 's' : '');
+
+        if (items.length === 0) {
+          document.getElementById('sug-table').style.display = 'none';
+          document.getElementById('sug-empty').style.display = 'block';
+          return;
+        }
+        document.getElementById('sug-table').style.display = 'table';
+        document.getElementById('sug-empty').style.display = 'none';
+
+        var tbody = document.getElementById('sug-body');
+        tbody.innerHTML = '';
+        items.forEach(function(s){
+          var tr = document.createElement('tr');
+          tr.id = 'sug-' + s.id;
+          var d = s.created_at ? new Date(s.created_at) : null;
+          var dateStr = d ? d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+          tr.innerHTML =
+            '<td class="date-cell">' + dateStr + '</td>' +
+            '<td class="email-cell">' + (s.email || '<span style="opacity:0.3">anonymous</span>') + '</td>' +
+            '<td class="topic-cell">' + escHtml(s.topic) + '</td>' +
+            '<td class="detail-cell">' + (s.detail ? escHtml(s.detail) : '<span style="opacity:0.3">--</span>') + '</td>' +
+            '<td><span class="badge badge-' + s.status + '" id="badge-' + s.id + '">' + s.status + '</span></td>' +
+            '<td style="white-space:nowrap">' +
+              '<button class="action-btn btn-created" onclick="updateSug(\'' + s.id + '\',\'created\')">Created</button> ' +
+              '<button class="action-btn btn-saved" onclick="updateSug(\'' + s.id + '\',\'saved\')">Save</button> ' +
+              '<button class="action-btn btn-delete" onclick="updateSug(\'' + s.id + '\',\'deleted\')">Delete</button>' +
+            '</td>';
+          tbody.appendChild(tr);
+        });
+      })
+      .catch(function(){ document.getElementById('sug-loading').textContent = 'Failed to load suggestions.'; });
+  };
+
+  window.updateSug = function(id, newStatus) {
+    fetch(prefix + '/api/v1/admin/suggestions/' + id, {
+      method: 'PATCH',
+      headers: {'Content-Type': 'application/json'},
+      credentials: 'include',
+      body: JSON.stringify({status: newStatus})
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if (data.ok) {
+        var badge = document.getElementById('badge-' + id);
+        if (badge) {
+          badge.className = 'badge badge-' + newStatus;
+          badge.textContent = newStatus;
+        }
+      }
+    });
+  };
+
+  // --- Feedback ---
+  var fbLoaded = false;
+  window.loadFeedback = function() {
+    fbLoaded = true;
+    fetch(prefix + '/api/v1/admin/feedback-list?per_page=200', {credentials: 'include'})
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        document.getElementById('fb-loading').style.display = 'none';
+        var items = data.items || [];
+        document.getElementById('fb-count').textContent = data.total + ' rating' + (data.total !== 1 ? 's' : '');
+        document.getElementById('fb-avg').textContent = 'Avg: ' + (data.avg_rating || '--') + ' / 5';
+
+        if (items.length === 0) {
+          document.getElementById('fb-table').style.display = 'none';
+          document.getElementById('fb-empty').style.display = 'block';
+          return;
+        }
+        document.getElementById('fb-table').style.display = 'table';
+        document.getElementById('fb-empty').style.display = 'none';
+
+        var tbody = document.getElementById('fb-body');
+        tbody.innerHTML = '';
+        items.forEach(function(f){
+          var tr = document.createElement('tr');
+          tr.id = 'fb-' + f.id;
+          var d = f.created_at ? new Date(f.created_at) : null;
+          var dateStr = d ? d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+          var starsHtml = '';
+          for (var i = 1; i <= 5; i++) {
+            starsHtml += '<svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01L12 2z" fill="' + (i <= f.rating ? '#D4A843' : 'rgba(0,0,0,0.08)') + '" stroke="none"/></svg>';
+          }
+          tr.innerHTML =
+            '<td class="date-cell">' + dateStr + '</td>' +
+            '<td class="playbook-cell">' + escHtml(f.playbook_title || f.slug) + '</td>' +
+            '<td><span class="stars">' + starsHtml + '</span></td>' +
+            '<td class="comment-cell">' + (f.comment ? escHtml(f.comment) : '<span style="opacity:0.3">--</span>') + '</td>' +
+            '<td class="email-cell">' + (f.email || '<span style="opacity:0.3">anonymous</span>') + '</td>' +
+            '<td><button class="action-btn btn-delete" onclick="deleteFb(\'' + f.id + '\')">Delete</button></td>';
+          tbody.appendChild(tr);
+        });
+      })
+      .catch(function(){ document.getElementById('fb-loading').textContent = 'Failed to load feedback.'; });
+  };
+
+  window.deleteFb = function(id) {
+    fetch(prefix + '/api/v1/admin/feedback-list/' + id, {
+      method: 'DELETE',
+      credentials: 'include'
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if (data.ok) {
+        var row = document.getElementById('fb-' + id);
+        if (row) row.remove();
+      }
+    });
+  };
+
+  function escHtml(str) {
+    var d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  // Initial load
+  loadSuggestions();
+})();
+</script>
+</body>
+</html>

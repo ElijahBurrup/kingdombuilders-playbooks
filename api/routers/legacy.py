@@ -646,7 +646,173 @@ def _inject_back_button_and_tracking(html: str, slug: str) -> str:
 }})();
 </script>
 """
-    return html.replace("</body>", back_button + chain_panel + email_slidein + tracking_script + ga_snippet + "</body>")
+    rating_popup = f"""
+<style>
+#pb-rate-popup{{position:fixed;bottom:24px;left:24px;z-index:9997;width:340px;max-width:calc(100vw - 48px);
+  background:rgba(10,6,20,0.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid rgba(232,201,106,0.2);border-radius:16px;padding:24px 20px 20px;
+  font-family:'Poppins',Helvetica,sans-serif;color:#fff;
+  transform:translateY(120%);opacity:0;transition:transform 0.45s cubic-bezier(0.16,1,0.3,1),opacity 0.45s ease;
+  box-shadow:0 8px 32px rgba(0,0,0,0.5)}}
+#pb-rate-popup.show{{transform:translateY(0);opacity:1}}
+#pb-rate-popup .pb-rate-close{{position:absolute;top:10px;right:12px;background:none;border:none;color:rgba(255,255,255,0.4);
+  font-size:1.1rem;cursor:pointer;padding:4px 8px;transition:color 0.2s}}
+#pb-rate-popup .pb-rate-close:hover{{color:#fff}}
+#pb-rate-popup .pb-rate-heading{{font-size:0.95rem;font-weight:700;margin-bottom:12px;line-height:1.3}}
+#pb-rate-popup .pb-rate-stars{{display:flex;gap:4px;margin-bottom:14px}}
+#pb-rate-popup .pb-rate-star{{cursor:pointer;transition:transform 0.15s}}
+#pb-rate-popup .pb-rate-star:hover{{transform:scale(1.15)}}
+#pb-rate-popup .pb-rate-star svg{{width:28px;height:28px}}
+#pb-rate-popup .pb-rate-star svg path{{transition:fill 0.15s,stroke 0.15s}}
+#pb-rate-popup .pb-rate-textarea{{width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.05);color:#fff;font-size:0.78rem;font-family:'Poppins',Helvetica,sans-serif;
+  outline:none;resize:vertical;min-height:70px;transition:border-color 0.2s;margin-bottom:12px}}
+#pb-rate-popup .pb-rate-textarea:focus{{border-color:rgba(212,168,67,0.4)}}
+#pb-rate-popup .pb-rate-textarea::placeholder{{color:rgba(255,255,255,0.25)}}
+#pb-rate-popup .pb-rate-btn{{width:100%;padding:10px;border-radius:10px;border:none;background:#D4A843;color:#0a0614;
+  font-size:0.78rem;font-weight:700;font-family:'Poppins',Helvetica,sans-serif;cursor:pointer;
+  transition:background 0.2s;letter-spacing:0.5px}}
+#pb-rate-popup .pb-rate-btn:hover{{background:#E8C96A}}
+#pb-rate-popup .pb-rate-btn:disabled{{opacity:0.6;cursor:not-allowed}}
+#pb-rate-popup .pb-rate-msg{{font-size:0.85rem;font-weight:600;text-align:center;padding:8px 0;color:#E8C96A}}
+@media(max-width:600px){{#pb-rate-popup{{left:0;bottom:0;width:100%;max-width:100%;border-radius:16px 16px 0 0;border-bottom:none}}}}
+@media print{{#pb-rate-popup{{display:none}}}}
+</style>
+<div id="pb-rate-popup">
+  <button class="pb-rate-close" onclick="document.getElementById('pb-rate-popup').classList.remove('show');localStorage.setItem('pb_rate_dismissed_{slug}','1')" aria-label="Close">&times;</button>
+  <div class="pb-rate-heading">Rate This Playbook</div>
+  <div class="pb-rate-stars" id="pb-rate-stars"></div>
+  <div id="pb-rate-form-wrap">
+    <form id="pb-rate-form" onsubmit="return false">
+      <textarea class="pb-rate-textarea" id="pb-rate-comment" placeholder="Please provide any edits, corrections, suggestions to extend or modify here and we'll review to improve the content."></textarea>
+      <button class="pb-rate-btn" type="submit" id="pb-rate-submit">Submit Feedback</button>
+    </form>
+  </div>
+</div>
+<script>
+(function(){{
+  var popup = document.getElementById('pb-rate-popup');
+  if (!popup) return;
+  var slug = '{slug}';
+
+  // Skip if already rated or dismissed
+  if (localStorage.getItem('pb_rated_' + slug) || localStorage.getItem('pb_rate_dismissed_' + slug)) return;
+
+  var prefix = '';
+  try {{ var m = location.pathname.match(/^(\\/[^\\/]+)\\/read\\//); if(m) prefix = m[1]; }} catch(e){{}}
+
+  // Build star SVGs
+  var starsWrap = document.getElementById('pb-rate-stars');
+  var selectedRating = 0;
+  var starEls = [];
+  for (var i = 1; i <= 5; i++) {{
+    (function(n){{
+      var span = document.createElement('span');
+      span.className = 'pb-rate-star';
+      span.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01L12 2z" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/></svg>';
+      span.onclick = function(){{
+        selectedRating = n;
+        updateStars();
+      }};
+      starsWrap.appendChild(span);
+      starEls.push(span);
+    }})(i);
+  }}
+
+  function updateStars(){{
+    for (var j = 0; j < starEls.length; j++){{
+      var path = starEls[j].querySelector('path');
+      if (j < selectedRating){{
+        path.setAttribute('fill', '#D4A843');
+        path.setAttribute('stroke', '#E8C96A');
+      }} else {{
+        path.setAttribute('fill', 'rgba(255,255,255,0.1)');
+        path.setAttribute('stroke', 'rgba(255,255,255,0.2)');
+      }}
+    }}
+  }}
+
+  // Show after 80% scroll with 3s delay
+  var rateShown = false;
+  window.addEventListener('scroll', function(){{
+    if (rateShown) return;
+    var h = document.documentElement;
+    var b = document.body;
+    var st = h.scrollTop || b.scrollTop;
+    var sh = (h.scrollHeight || b.scrollHeight) - h.clientHeight;
+    var pct = sh > 0 ? (st / sh) * 100 : 0;
+    if (pct >= 80){{
+      rateShown = true;
+      setTimeout(function(){{
+        // Skip if email slide-in is showing
+        var emailSlide = document.getElementById('pb-email-slide');
+        if (emailSlide && emailSlide.classList.contains('show')) {{
+          // Wait for it to dismiss, then show
+          var check = setInterval(function(){{
+            if (!emailSlide.classList.contains('show')){{
+              clearInterval(check);
+              popup.classList.add('show');
+            }}
+          }}, 1000);
+        }} else {{
+          popup.classList.add('show');
+        }}
+      }}, 3000);
+    }}
+  }}, {{passive: true}});
+
+  // Submit
+  var form = document.getElementById('pb-rate-form');
+  var submitBtn = document.getElementById('pb-rate-submit');
+  var wrap = document.getElementById('pb-rate-form-wrap');
+
+  form.addEventListener('submit', function(e){{
+    e.preventDefault();
+    if (selectedRating === 0) {{
+      // Flash stars to indicate selection needed
+      starsWrap.style.outline = '2px solid rgba(212,168,67,0.6)';
+      starsWrap.style.borderRadius = '8px';
+      setTimeout(function(){{ starsWrap.style.outline = 'none'; }}, 1500);
+      return;
+    }}
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+
+    var startTime = window._pbStartTime || Date.now();
+    var h2 = document.documentElement;
+    var b2 = document.body;
+    var st2 = h2.scrollTop || b2.scrollTop;
+    var sh2 = (h2.scrollHeight || b2.scrollHeight) - h2.clientHeight;
+    var scrollPct = sh2 > 0 ? Math.round((st2 / sh2) * 100) : 0;
+
+    fetch(prefix + '/api/v1/feedback', {{
+      method: 'POST',
+      headers: {{'Content-Type': 'application/json'}},
+      body: JSON.stringify({{
+        slug: slug,
+        rating: selectedRating,
+        comment: document.getElementById('pb-rate-comment').value.trim() || null,
+        scroll_percent: scrollPct,
+        time_spent_secs: Math.round((Date.now() - startTime) / 1000)
+      }})
+    }})
+    .then(function(r){{ return r.json(); }})
+    .then(function(data){{
+      localStorage.setItem('pb_rated_' + slug, '1');
+      wrap.innerHTML = '<div class="pb-rate-msg">Thank you for your feedback!</div>';
+      document.querySelector('.pb-rate-stars').style.display = 'none';
+      setTimeout(function(){{ popup.classList.remove('show'); }}, 3000);
+    }})
+    .catch(function(){{
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit Feedback';
+    }});
+  }});
+}})();
+</script>
+"""
+
+    return html.replace("</body>", back_button + chain_panel + email_slidein + rating_popup + tracking_script + ga_snippet + "</body>")
 
 
 @router.get("/read/{slug}", include_in_schema=False)
@@ -1001,6 +1167,25 @@ async def referrals_page(request: Request, db: AsyncSession = Depends(get_db)):
         "request": request,
         "prefix": prefix,
         "config": settings,
+    })
+
+
+# ============================================================================
+# Admin Management — /admin/manage
+# ============================================================================
+@router.get("/admin/manage", include_in_schema=False)
+async def admin_manage_page(request: Request, db: AsyncSession = Depends(get_db)):
+    prefix = settings.URL_PREFIX or ""
+    user_id = get_session_user_id(request)
+    if not user_id:
+        return RedirectResponse(url=f"{prefix}/", status_code=303)
+    result = await db.execute(select(User).where(User.id == user_id))
+    user = result.scalar_one_or_none()
+    if not user or user.role != "admin":
+        return RedirectResponse(url=f"{prefix}/", status_code=303)
+    return templates.TemplateResponse("admin_manage.html", {
+        "request": request,
+        "prefix": prefix,
     })
 
 
