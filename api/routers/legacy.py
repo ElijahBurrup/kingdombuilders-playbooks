@@ -144,11 +144,14 @@ RELEASE_NOTES = [
 # Free slugs & admin access
 # ============================================================================
 FREE_SLUGS = {
+    "conductors-playbook",
     "lay-it-down",
-    "the-narrator",
-    "the-crows-gambit",
-    "the-salmon-journey",
-    "the-wolfs-table",
+    "the-mockingbirds-song",
+    "the-lifted-ceiling",
+    "the-tide-pools-echo",
+    "dad-talks-the-dopamine-drought",
+    "the-mantis-shrimps-eye",
+    "the-hermit-crabs-shell",
 }
 
 ADMIN_CODE = settings.ADMIN_UNLOCK_CODE
