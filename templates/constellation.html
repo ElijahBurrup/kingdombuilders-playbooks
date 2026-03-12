@@ -133,7 +133,7 @@ canvas:active { cursor: grabbing; }
   <div class="c-tooltip-title" id="tt-title"></div>
   <div class="c-tooltip-subtitle" id="tt-subtitle"></div>
   <div class="c-tooltip-cat" id="tt-cat"></div>
-  <div class="c-tooltip-hint">Click to read</div>
+  <div class="c-tooltip-hint">Click to read &middot; Hold to open on mobile</div>
 </div>
 
 <a class="c-paths-btn" href="{{ prefix }}/paths">Reading Paths &rarr;</a>
@@ -425,10 +425,10 @@ canvas:active { cursor: grabbing; }
         clearTimeout(longPressTimer);
         longPressTimer = setTimeout(function() {
           if (longPressNode === node) {
-            hoverNode = node; needsRedraw = true;
-            showTooltip(node, t.clientX, t.clientY);
+            // Long-press: navigate to playbook
+            window.location.href = prefix + '/read/' + node.slug;
           }
-        }, 400);
+        }, 500);
       } else {
         isPanning = true;
         panStart = { x: t.clientX - panX, y: t.clientY - panY };
@@ -479,10 +479,11 @@ canvas:active { cursor: grabbing; }
         hoverNode = null; needsRedraw = true;
         tooltip.style.display = 'none';
       } else if (longPressNode) {
-        // Quick tap on a node — navigate
+        // Quick tap on a node — show tooltip
         var node = findNode(t.clientX, t.clientY);
         if (node === longPressNode) {
-          window.location.href = prefix + '/read/' + node.slug;
+          hoverNode = node; needsRedraw = true;
+          showTooltip(node, t.clientX, t.clientY);
         }
       }
     }
