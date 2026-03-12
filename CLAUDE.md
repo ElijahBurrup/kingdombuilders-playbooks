@@ -9,8 +9,8 @@ Interactive animal-parable sales playbooks for Kingdom Builders AI. Each playboo
 - **ORM**: SQLAlchemy 2.0 with async sessions
 - **Migrations**: Alembic
 - **Auth**: JWT (PyJWT) with refresh token rotation, bcrypt password hashing
-- **Payments**: Stripe Checkout (individual + subscription)
-- **Email**: Resend API
+- **Payments**: Stripe Checkout (individual $2.50 + subscription $10/mo) — LIVE mode configured on Render
+- **Email**: Resend API (key configured on Render, from: elijah@kingdombuilders.ai)
 - **Scheduler**: APScheduler (background follow-up emails)
 - **Hosting**: Render (auto-deploy from master branch via gunicorn + uvicorn)
 - **Tests**: Playwright (Node.js)
@@ -90,6 +90,47 @@ Playbooks/
 - New playbooks added via admin API or seed script (no more manual route registration)
 - "SetHut" command generates new playbooks as visual experiences (see full checklist below)
 - **NO HYPHENS/DASHES in playbook text**: Never use em dashes (—), en dashes (–), or hyphens (-) as punctuation in prose. Use commas, periods, or restructure sentences instead. This applies to ALL visible text content in assets/*.html files. CSS properties and HTML attributes with hyphens are fine.
+
+## Installation Videos (Cloudflare R2)
+Playbook "installation videos" are short AI-generated clips embedded in `assets/*.html` reader pages. They reinforce key concepts visually.
+
+### R2 Storage
+- **Bucket**: `kb-playbook-videos` on Cloudflare account `81f3bf31ee69fe657517c485ad8f62b3`
+- **Public URL prefix**: `https://pub-3be2b691e42247078311064d9672c978.r2.dev/`
+- **Upload API**: `PUT https://api.cloudflare.com/client/v4/accounts/{account_id}/r2/buckets/kb-playbook-videos/objects/{filename}`
+- **Auth**: Bearer token via `CLOUDFLARE_R2_TOKEN` env var
+- Videos are **never stored in git** — always served from R2 (zero egress fees, CDN-backed)
+
+### Video Generation (Runway Gen-4.5)
+- **Script**: `scripts/generate_videos.py` — generates videos via Runway API and auto-uploads to R2
+- **SDK**: `runwayml` Python package
+- **Key params**: `model='gen4.5'`, `prompt_text=` (NOT `prompt=`), `ratio='1280:720'` (NOT `16:9`), `duration=5`
+- **API key**: env var `RUNWAYML_API_SECRET`
+- **Cost**: Credits-based; check balance before bulk generation
+
+### Embed Pattern in assets/*.html
+```html
+<div class="install-video">
+<video src="https://pub-3be2b691e42247078311064d9672c978.r2.dev/{video-id}.mp4" autoplay muted loop playsinline></video>
+<div class="iv-caption">
+ <span class="iv-badge">Installation</span>
+ <span class="iv-text">Caption describing what the viewer is seeing.</span>
+</div>
+</div>
+```
+Each playbook needs matching `.install-video` CSS using that playbook's color palette (border-color, badge background, caption gradient).
+
+## Google Sign-In (GSI)
+- Uses **client-side Google Identity Services** (ID token flow), NOT server-side OAuth redirect
+- Frontend posts ID token → backend verifies via `https://oauth2.googleapis.com/tokeninfo`
+- Only `GOOGLE_CLIENT_ID` env var is needed (no client secret required for this flow)
+- Auth endpoints: `POST /auth/google` (legacy) and `POST /api/v1/auth/google` (API)
+- Google Cloud Console must have: Authorized JS origins = `https://kingdombuilders.ai`, Authorized redirect URI = `https://kingdombuilders.ai/playbooks/auth/google`
+
+## Catalog Filter UI (static/index.html)
+- Filter panel auto-closes on selection via `closePanel()` JS function (critical for mobile UX)
+- `closePanel()` is called after every filter click: category pills, sub-pills, series buttons, thread buttons
+- Filter element sizes are intentionally large for touch targets (pills 0.92rem/12px 28px, series 0.88rem/12px 24px)
 
 ## SetHut Checklist (New Playbook Creation)
 Every new playbook requires ALL of these steps. Do not skip any.
@@ -193,7 +234,7 @@ curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
   "https://api.render.com/v1/services/srv-d6iir8ngi27c738ip9i0/jobs/{job_id}"
 ```
 
-**Render API Key is stored in auto-memory** (`memory/MEMORY.md`). Service ID: `srv-d6iir8ngi27c738ip9i0`.
+**Render API Key**: `rnd_GE9eGvcpwlHI7VDn3Km0Fyj1TsRS`. Service ID: `srv-d6iir8ngi27c738ip9i0`.
 
 ### Step 11: Verify Production
 - [ ] `GET /theslug` — landing page loads (not 404)
@@ -264,5 +305,14 @@ Pre-curated multi-playbook journeys that cross categories, each connected by a t
 - `scripts/seed_paths.py` — Reading path definitions (6 paths, easy to add more)
 
 ## Branches
-- `master` — production (current Flask app, auto-deploys to Render)
-- `fastapi-rebuild` — Phase 1 FastAPI backend (DO NOT merge to master until Phase 3)
+- `master` — production (FastAPI app, auto-deploys to Render)
+
+## Render Env Vars (Production)
+All 16+ env vars set on Render service `srv-d6iir8ngi27c738ip9i0`:
+- `DATABASE_URL`, `URL_PREFIX=/playbooks`, `SECRET_KEY`, `ADMIN_PASSWORD`
+- `STRIPE_SECRET_KEY` (live), `STRIPE_PUBLISHABLE_KEY` (live), `STRIPE_WEBHOOK_SECRET`
+- `STRIPE_PRICE_SINGLE`, `STRIPE_PRICE_SUBSCRIPTION`
+- `RESEND_API_KEY`, `GOOGLE_CLIENT_ID`
+- `CLOUDFLARE_R2_TOKEN` (for video uploads)
+- `RUNWAYML_API_SECRET` (for video generation)
+- **CRITICAL**: `PUT /v1/services/{id}/env-vars` REPLACES ALL env vars — always include ALL existing vars when adding new ones

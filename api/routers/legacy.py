@@ -1141,20 +1141,21 @@ async def _user_has_access(user_id: str, slug: str, db: AsyncSession) -> bool:
     if result.scalar_one_or_none():
         return True
 
-    # Check single playbook purchase (by slug in metadata — stored in provider_payment_id field)
-    # We store slug in Purchase metadata, so check by provider_session_id or a custom field
-    # For now, check purchases where the slug matches
-    result = await db.execute(
-        select(Purchase).where(
-            Purchase.user_id == uid,
-            Purchase.status == "completed",
-        )
+    # Check single playbook purchase by playbook_id (via slug → playbook lookup)
+    from api.models.playbook import Playbook
+    playbook_result = await db.execute(
+        select(Playbook.id).where(Playbook.slug == slug)
     )
-    purchases = result.scalars().all()
-    # Check if any purchase metadata contains this slug
-    # Since we don't have a slug column, we'll add slug to provider_payment_id as "single:{slug}"
-    for p in purchases:
-        if p.provider_payment_id and p.provider_payment_id == f"single:{slug}":
+    playbook_id = playbook_result.scalar_one_or_none()
+    if playbook_id:
+        result = await db.execute(
+            select(Purchase).where(
+                Purchase.user_id == uid,
+                Purchase.playbook_id == playbook_id,
+                Purchase.status == "completed",
+            )
+        )
+        if result.scalar_one_or_none():
             return True
 
     return False
