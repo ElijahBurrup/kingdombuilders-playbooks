@@ -153,29 +153,15 @@ canvas:active { cursor: grabbing; }
   var W, H;
   var nodes = [], edges = [];
   var categoryColors = {};
-  var categoryFilter = null; // null = show all
-
-  // Physics — tuned to settle within 3 seconds
-  var REPULSION = 1800;
-  var SPRING_K = 0.02;
-  var SPRING_LEN = 100;
-  var DAMPING = 0.82;
-  var GRAVITY = 0.05;
-  var MAX_SETTLE_MS = 3000;
-
-  // Interaction
-  var dragNode = null;
+  var categoryFilter = null;
   var hoverNode = null;
   var panX = 0, panY = 0;
   var zoom = 1;
   var isPanning = false;
   var panStart = {x:0, y:0};
-  var animating = true;
-  var settled = false;
-  var settleCount = 0;
-  var simStartTime = 0;
   var longPressTimer = null;
   var longPressNode = null;
+  var needsRedraw = true;
 
   function resize() {
     W = window.innerWidth;
@@ -185,8 +171,9 @@ canvas:active { cursor: grabbing; }
     canvas.style.width = W + 'px';
     canvas.style.height = H + 'px';
     ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+    needsRedraw = true;
   }
-  window.addEventListener('resize', resize);
+  window.addEventListener('resize', function() { resize(); if (nodes.length) layout(); });
   resize();
 
   fetch(prefix + '/api/v1/discovery/constellation')
@@ -194,50 +181,64 @@ canvas:active { cursor: grabbing; }
     .then(function(data) {
       document.getElementById('c-loading').style.display = 'none';
       initGraph(data);
-      simStartTime = performance.now();
-      animate();
+      layout();
+      renderLoop();
     });
 
   function initGraph(data) {
     var slugIndex = {};
-    // Spread nodes in a circle initially
-    var n = data.nodes.length;
-    data.nodes.forEach(function(d, i) {
-      var angle = (2 * Math.PI * i) / n;
-      var r = Math.min(W, H) * 0.3;
+    data.nodes.forEach(function(d) {
       var node = {
-        slug: d.slug,
-        title: d.title,
-        subtitle: d.subtitle || '',
-        emoji: d.cover_emoji || '',
-        catName: d.category_name,
-        catColor: d.category_color,
-        catSlug: d.category_slug,
-        isFree: d.is_free,
-        x: W/2 + r * Math.cos(angle) + (Math.random() - 0.5) * 40,
-        y: H/2 + r * Math.sin(angle) + (Math.random() - 0.5) * 40,
-        vx: 0, vy: 0,
-        radius: 8
+        slug: d.slug, title: d.title, subtitle: d.subtitle || '',
+        emoji: d.cover_emoji || '', catName: d.category_name,
+        catColor: d.category_color, catSlug: d.category_slug,
+        isFree: d.is_free, x: 0, y: 0
       };
       nodes.push(node);
       slugIndex[d.slug] = node;
-      if (!categoryColors[d.category_name]) {
-        categoryColors[d.category_name] = d.category_color;
-      }
+      if (!categoryColors[d.category_name]) categoryColors[d.category_name] = d.category_color;
     });
-
     data.edges.forEach(function(e) {
       if (slugIndex[e.source] && slugIndex[e.target]) {
-        edges.push({
-          source: slugIndex[e.source],
-          target: slugIndex[e.target],
-          type: e.connection_type,
-          strength: e.strength
-        });
+        edges.push({ source: slugIndex[e.source], target: slugIndex[e.target],
+          type: e.connection_type, strength: e.strength });
       }
     });
-
     buildLegend();
+  }
+
+  // --- Instant layout: categories in a ring, nodes clustered around their category center ---
+  function layout() {
+    var groups = {};
+    nodes.forEach(function(n) {
+      if (!groups[n.catName]) groups[n.catName] = [];
+      groups[n.catName].push(n);
+    });
+    var catNames = Object.keys(groups).sort();
+    var numCats = catNames.length;
+    var ringR = Math.min(W, H) * 0.32;
+    var cx = W / 2, cy = H / 2;
+
+    catNames.forEach(function(cat, ci) {
+      var angle = (2 * Math.PI * ci) / numCats - Math.PI / 2;
+      var gcx = cx + ringR * Math.cos(angle);
+      var gcy = cy + ringR * Math.sin(angle);
+      var members = groups[cat];
+      var count = members.length;
+      // Spread members in a small cluster around the group center
+      var clusterR = Math.min(60, 18 * Math.sqrt(count));
+      members.forEach(function(n, mi) {
+        if (count === 1) {
+          n.x = gcx; n.y = gcy;
+        } else {
+          var a = (2 * Math.PI * mi) / count;
+          var r = clusterR * (0.5 + 0.5 * (mi % 2)); // stagger inner/outer
+          n.x = gcx + r * Math.cos(a);
+          n.y = gcy + r * Math.sin(a);
+        }
+      });
+    });
+    needsRedraw = true;
   }
 
   function buildLegend() {
@@ -258,64 +259,10 @@ canvas:active { cursor: grabbing; }
           });
           item.classList.remove('dimmed');
         }
+        needsRedraw = true;
       });
       el.appendChild(item);
     });
-  }
-
-  function simulate() {
-    var totalV = 0;
-    // Repulsion (all pairs)
-    for (var i = 0; i < nodes.length; i++) {
-      for (var j = i + 1; j < nodes.length; j++) {
-        var dx = nodes[j].x - nodes[i].x;
-        var dy = nodes[j].y - nodes[i].y;
-        var dist = Math.sqrt(dx*dx + dy*dy) || 1;
-        var f = REPULSION / (dist * dist);
-        var fx = (dx / dist) * f;
-        var fy = (dy / dist) * f;
-        nodes[i].vx -= fx;
-        nodes[i].vy -= fy;
-        nodes[j].vx += fx;
-        nodes[j].vy += fy;
-      }
-    }
-    // Spring (edges)
-    edges.forEach(function(e) {
-      var dx = e.target.x - e.source.x;
-      var dy = e.target.y - e.source.y;
-      var dist = Math.sqrt(dx*dx + dy*dy) || 1;
-      var f = SPRING_K * (dist - SPRING_LEN) * e.strength;
-      var fx = (dx / dist) * f;
-      var fy = (dy / dist) * f;
-      e.source.vx += fx;
-      e.source.vy += fy;
-      e.target.vx -= fx;
-      e.target.vy -= fy;
-    });
-    // Gravity toward center
-    nodes.forEach(function(n) {
-      n.vx += (W/2 - n.x) * GRAVITY;
-      n.vy += (H/2 - n.y) * GRAVITY;
-    });
-    // Apply velocities
-    nodes.forEach(function(n) {
-      if (n === dragNode) return;
-      n.vx *= DAMPING;
-      n.vy *= DAMPING;
-      n.x += n.vx;
-      n.y += n.vy;
-      totalV += Math.abs(n.vx) + Math.abs(n.vy);
-    });
-    // Check if settled (or 3s cap reached)
-    var elapsed = performance.now() - simStartTime;
-    if (elapsed > MAX_SETTLE_MS || totalV < 0.5 * nodes.length) {
-      settleCount++;
-      if (settleCount > 30 || elapsed > MAX_SETTLE_MS) settled = true;
-    } else {
-      settleCount = 0;
-      settled = false;
-    }
   }
 
   function draw() {
@@ -326,19 +273,15 @@ canvas:active { cursor: grabbing; }
 
     // Edges
     edges.forEach(function(e) {
-      var sVisible = !categoryFilter || e.source.catName === categoryFilter;
-      var tVisible = !categoryFilter || e.target.catName === categoryFilter;
-      var alpha = (sVisible && tVisible) ? 0.12 : 0.02;
-
+      var sV = !categoryFilter || e.source.catName === categoryFilter;
+      var tV = !categoryFilter || e.target.catName === categoryFilter;
+      var alpha = (sV && tV) ? 0.12 : 0.02;
       ctx.beginPath();
       ctx.moveTo(e.source.x, e.source.y);
       ctx.lineTo(e.target.x, e.target.y);
-
-      var edgeColor = 'rgba(255,255,255,' + alpha + ')';
-      if (e.type === 'bridge' && alpha > 0.05) {
-        edgeColor = 'rgba(212,168,67,' + (alpha * 1.5) + ')';
-      }
-      ctx.strokeStyle = edgeColor;
+      ctx.strokeStyle = (e.type === 'bridge' && alpha > 0.05)
+        ? 'rgba(212,168,67,' + (alpha * 1.5) + ')'
+        : 'rgba(255,255,255,' + alpha + ')';
       ctx.lineWidth = e.type === 'bridge' ? 1.2 : 0.6;
       ctx.stroke();
     });
@@ -350,7 +293,6 @@ canvas:active { cursor: grabbing; }
       var alpha = visible ? 1 : 0.12;
       var r = isHover ? 14 : (visible ? 10 : 6);
 
-      // Glow
       if (visible) {
         var grd = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, r * 3);
         grd.addColorStop(0, n.catColor + (isHover ? '40' : '15'));
@@ -361,26 +303,18 @@ canvas:active { cursor: grabbing; }
         ctx.fill();
       }
 
-      // Circle
       ctx.beginPath();
       ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
       ctx.fillStyle = hexToRgba(n.catColor, alpha * 0.9);
       ctx.fill();
-      if (isHover) {
-        ctx.strokeStyle = n.catColor;
-        ctx.lineWidth = 2;
-        ctx.stroke();
-      }
+      if (isHover) { ctx.strokeStyle = n.catColor; ctx.lineWidth = 2; ctx.stroke(); }
 
-      // Emoji (only if visible and zoomed enough or hovered)
       if (visible && (zoom > 0.7 || isHover)) {
         ctx.font = (isHover ? '16px' : '12px') + ' sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
         ctx.fillText(n.emoji, n.x, n.y);
       }
 
-      // Title label on hover (small canvas label)
       if (isHover) {
         ctx.font = '600 13px Outfit, sans-serif';
         ctx.textAlign = 'center';
@@ -399,10 +333,9 @@ canvas:active { cursor: grabbing; }
     return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
   }
 
-  function animate() {
-    if (!settled || dragNode) simulate();
-    draw();
-    requestAnimationFrame(animate);
+  function renderLoop() {
+    if (needsRedraw) { draw(); needsRedraw = false; }
+    requestAnimationFrame(renderLoop);
   }
 
   // --- Interaction ---
@@ -420,59 +353,6 @@ canvas:active { cursor: grabbing; }
     return best;
   }
 
-  canvas.addEventListener('mousedown', function(e) {
-    tooltip.style.display = 'none';
-    var node = findNode(e.clientX, e.clientY);
-    if (node) {
-      dragNode = node;
-      settled = false;
-      settleCount = 0;
-    } else {
-      isPanning = true;
-      panStart = { x: e.clientX - panX, y: e.clientY - panY };
-    }
-  });
-
-  canvas.addEventListener('mousemove', function(e) {
-    if (dragNode) {
-      var p = screenToWorld(e.clientX, e.clientY);
-      dragNode.x = p.x;
-      dragNode.y = p.y;
-      dragNode.vx = 0;
-      dragNode.vy = 0;
-    } else if (isPanning) {
-      panX = e.clientX - panStart.x;
-      panY = e.clientY - panStart.y;
-    } else {
-      var node = findNode(e.clientX, e.clientY);
-      hoverNode = node;
-      canvas.style.cursor = node ? 'pointer' : 'grab';
-      showTooltip(node, e.clientX, e.clientY);
-    }
-  });
-
-  canvas.addEventListener('mouseup', function(e) {
-    if (dragNode) {
-      // If barely moved, treat as click
-      var node = findNode(e.clientX, e.clientY);
-      if (node === dragNode) {
-        window.location.href = prefix + '/read/' + node.slug;
-      }
-      dragNode = null;
-    }
-    isPanning = false;
-  });
-
-  canvas.addEventListener('wheel', function(e) {
-    e.preventDefault();
-    var factor = e.deltaY < 0 ? 1.08 : 0.92;
-    var mx = e.clientX, my = e.clientY;
-    panX = mx - factor * (mx - panX);
-    panY = my - factor * (my - panY);
-    zoom *= factor;
-    zoom = Math.max(0.3, Math.min(3, zoom));
-  }, { passive: false });
-
   // --- Tooltip ---
   var tooltip = document.getElementById('c-tooltip');
   var ttEmoji = document.getElementById('tt-emoji');
@@ -489,8 +369,7 @@ canvas:active { cursor: grabbing; }
     ttCat.textContent = node.catName;
     ttCat.style.color = node.catColor;
     tooltip.style.display = 'block';
-    var tx = cx + 16;
-    var ty = cy - 10;
+    var tx = cx + 16, ty = cy - 10;
     if (tx + 310 > W) tx = cx - 320;
     if (ty + 120 > H) ty = cy - 120;
     if (ty < 8) ty = 8;
@@ -498,21 +377,55 @@ canvas:active { cursor: grabbing; }
     tooltip.style.top = ty + 'px';
   }
 
-  // Touch support
+  // --- Mouse ---
+  canvas.addEventListener('mousedown', function(e) {
+    tooltip.style.display = 'none';
+    var node = findNode(e.clientX, e.clientY);
+    if (node) {
+      window.location.href = prefix + '/read/' + node.slug;
+    } else {
+      isPanning = true;
+      panStart = { x: e.clientX - panX, y: e.clientY - panY };
+    }
+  });
+
+  canvas.addEventListener('mousemove', function(e) {
+    if (isPanning) {
+      panX = e.clientX - panStart.x;
+      panY = e.clientY - panStart.y;
+      needsRedraw = true;
+    } else {
+      var node = findNode(e.clientX, e.clientY);
+      if (node !== hoverNode) { hoverNode = node; needsRedraw = true; }
+      canvas.style.cursor = node ? 'pointer' : 'grab';
+      showTooltip(node, e.clientX, e.clientY);
+    }
+  });
+
+  canvas.addEventListener('mouseup', function() { isPanning = false; });
+
+  canvas.addEventListener('wheel', function(e) {
+    e.preventDefault();
+    var factor = e.deltaY < 0 ? 1.08 : 0.92;
+    panX = e.clientX - factor * (e.clientX - panX);
+    panY = e.clientY - factor * (e.clientY - panY);
+    zoom *= factor;
+    zoom = Math.max(0.3, Math.min(3, zoom));
+    needsRedraw = true;
+  }, { passive: false });
+
+  // --- Touch ---
   var lastTouchDist = 0;
   canvas.addEventListener('touchstart', function(e) {
     if (e.touches.length === 1) {
       var t = e.touches[0];
       var node = findNode(t.clientX, t.clientY);
       if (node) {
-        dragNode = node;
-        settled = false;
-        // Long-press: show tooltip after 400ms
         longPressNode = node;
         clearTimeout(longPressTimer);
         longPressTimer = setTimeout(function() {
           if (longPressNode === node) {
-            hoverNode = node;
+            hoverNode = node; needsRedraw = true;
             showTooltip(node, t.clientX, t.clientY);
           }
         }, 400);
@@ -533,13 +446,10 @@ canvas:active { cursor: grabbing; }
     longPressNode = null;
     if (e.touches.length === 1) {
       var t = e.touches[0];
-      if (dragNode) {
-        var p = screenToWorld(t.clientX, t.clientY);
-        dragNode.x = p.x; dragNode.y = p.y;
-        dragNode.vx = 0; dragNode.vy = 0;
-      } else if (isPanning) {
+      if (isPanning) {
         panX = t.clientX - panStart.x;
         panY = t.clientY - panStart.y;
+        needsRedraw = true;
       }
     } else if (e.touches.length === 2) {
       var dx = e.touches[0].clientX - e.touches[1].clientX;
@@ -553,6 +463,7 @@ canvas:active { cursor: grabbing; }
         panY = cy - factor * (cy - panY);
         zoom *= factor;
         zoom = Math.max(0.3, Math.min(3, zoom));
+        needsRedraw = true;
       }
       lastTouchDist = dist;
     }
@@ -561,18 +472,20 @@ canvas:active { cursor: grabbing; }
 
   canvas.addEventListener('touchend', function(e) {
     clearTimeout(longPressTimer);
-    if (dragNode && e.changedTouches.length === 1) {
+    if (e.changedTouches.length === 1) {
       var t = e.changedTouches[0];
-      var node = findNode(t.clientX, t.clientY);
-      // If tooltip is showing (long-press happened), don't navigate — just dismiss
-      if (hoverNode && hoverNode === dragNode) {
-        hoverNode = null;
+      if (hoverNode) {
+        // Tooltip was showing — dismiss it
+        hoverNode = null; needsRedraw = true;
         tooltip.style.display = 'none';
-      } else if (node === dragNode) {
-        window.location.href = prefix + '/read/' + node.slug;
+      } else if (longPressNode) {
+        // Quick tap on a node — navigate
+        var node = findNode(t.clientX, t.clientY);
+        if (node === longPressNode) {
+          window.location.href = prefix + '/read/' + node.slug;
+        }
       }
     }
-    dragNode = null;
     isPanning = false;
     lastTouchDist = 0;
     longPressNode = null;
