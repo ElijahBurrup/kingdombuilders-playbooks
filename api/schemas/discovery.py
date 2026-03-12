@@ -87,6 +87,7 @@ class CompleteResponse(BaseModel):
 class ConstellationNode(BaseModel):
     slug: str
     title: str
+    subtitle: str = ""
     cover_emoji: str | None = None
     category_name: str = ""
     category_color: str = "#7B4FBF"

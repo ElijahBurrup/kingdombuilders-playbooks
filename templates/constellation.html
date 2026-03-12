@@ -75,13 +75,14 @@ canvas:active { cursor: grabbing; }
 /* --- Tooltip --- */
 .c-tooltip {
   display: none; position: fixed; z-index: 200;
-  padding: 14px 18px; border-radius: 12px;
+  padding: 16px 20px; border-radius: 14px;
   background: rgba(10,6,20,0.95); border: 1px solid rgba(255,255,255,0.12);
   backdrop-filter: blur(8px); pointer-events: none;
-  max-width: 260px;
+  max-width: 300px;
 }
 .c-tooltip-emoji { font-size: 24px; margin-bottom: 4px; }
-.c-tooltip-title { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.c-tooltip-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; color: #fff; }
+.c-tooltip-subtitle { font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: var(--gold-light); line-height: 1.4; margin-bottom: 6px; }
 .c-tooltip-cat { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
 .c-tooltip-hint { font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 6px; }
 
@@ -130,6 +131,7 @@ canvas:active { cursor: grabbing; }
 <div class="c-tooltip" id="c-tooltip">
   <div class="c-tooltip-emoji" id="tt-emoji"></div>
   <div class="c-tooltip-title" id="tt-title"></div>
+  <div class="c-tooltip-subtitle" id="tt-subtitle"></div>
   <div class="c-tooltip-cat" id="tt-cat"></div>
   <div class="c-tooltip-hint">Click to read</div>
 </div>
@@ -153,12 +155,13 @@ canvas:active { cursor: grabbing; }
   var categoryColors = {};
   var categoryFilter = null; // null = show all
 
-  // Physics
-  var REPULSION = 2800;
-  var SPRING_K = 0.008;
-  var SPRING_LEN = 120;
-  var DAMPING = 0.88;
-  var GRAVITY = 0.02;
+  // Physics — tuned to settle within 3 seconds
+  var REPULSION = 1800;
+  var SPRING_K = 0.02;
+  var SPRING_LEN = 100;
+  var DAMPING = 0.82;
+  var GRAVITY = 0.05;
+  var MAX_SETTLE_MS = 3000;
 
   // Interaction
   var dragNode = null;
@@ -170,6 +173,9 @@ canvas:active { cursor: grabbing; }
   var animating = true;
   var settled = false;
   var settleCount = 0;
+  var simStartTime = 0;
+  var longPressTimer = null;
+  var longPressNode = null;
 
   function resize() {
     W = window.innerWidth;
@@ -188,6 +194,7 @@ canvas:active { cursor: grabbing; }
     .then(function(data) {
       document.getElementById('c-loading').style.display = 'none';
       initGraph(data);
+      simStartTime = performance.now();
       animate();
     });
 
@@ -201,6 +208,7 @@ canvas:active { cursor: grabbing; }
       var node = {
         slug: d.slug,
         title: d.title,
+        subtitle: d.subtitle || '',
         emoji: d.cover_emoji || '',
         catName: d.category_name,
         catColor: d.category_color,
@@ -299,10 +307,11 @@ canvas:active { cursor: grabbing; }
       n.y += n.vy;
       totalV += Math.abs(n.vx) + Math.abs(n.vy);
     });
-    // Check if settled
-    if (totalV < 0.5 * nodes.length) {
+    // Check if settled (or 3s cap reached)
+    var elapsed = performance.now() - simStartTime;
+    if (elapsed > MAX_SETTLE_MS || totalV < 0.5 * nodes.length) {
       settleCount++;
-      if (settleCount > 60) settled = true;
+      if (settleCount > 30 || elapsed > MAX_SETTLE_MS) settled = true;
     } else {
       settleCount = 0;
       settled = false;
@@ -371,15 +380,12 @@ canvas:active { cursor: grabbing; }
         ctx.fillText(n.emoji, n.x, n.y);
       }
 
-      // Title label on hover
+      // Title label on hover (small canvas label)
       if (isHover) {
         ctx.font = '600 13px Outfit, sans-serif';
         ctx.textAlign = 'center';
         ctx.fillStyle = 'rgba(255,255,255,0.9)';
         ctx.fillText(n.title, n.x, n.y + r + 16);
-        ctx.font = '500 10px Outfit, sans-serif';
-        ctx.fillStyle = n.catColor;
-        ctx.fillText(n.catName, n.x, n.y + r + 30);
       }
     });
 
@@ -415,6 +421,7 @@ canvas:active { cursor: grabbing; }
   }
 
   canvas.addEventListener('mousedown', function(e) {
+    tooltip.style.display = 'none';
     var node = findNode(e.clientX, e.clientY);
     if (node) {
       dragNode = node;
@@ -440,6 +447,7 @@ canvas:active { cursor: grabbing; }
       var node = findNode(e.clientX, e.clientY);
       hoverNode = node;
       canvas.style.cursor = node ? 'pointer' : 'grab';
+      showTooltip(node, e.clientX, e.clientY);
     }
   });
 
@@ -465,6 +473,31 @@ canvas:active { cursor: grabbing; }
     zoom = Math.max(0.3, Math.min(3, zoom));
   }, { passive: false });
 
+  // --- Tooltip ---
+  var tooltip = document.getElementById('c-tooltip');
+  var ttEmoji = document.getElementById('tt-emoji');
+  var ttTitle = document.getElementById('tt-title');
+  var ttSubtitle = document.getElementById('tt-subtitle');
+  var ttCat = document.getElementById('tt-cat');
+
+  function showTooltip(node, cx, cy) {
+    if (!node) { tooltip.style.display = 'none'; return; }
+    ttEmoji.textContent = node.emoji;
+    ttTitle.textContent = node.title;
+    ttSubtitle.textContent = node.subtitle;
+    ttSubtitle.style.display = node.subtitle ? 'block' : 'none';
+    ttCat.textContent = node.catName;
+    ttCat.style.color = node.catColor;
+    tooltip.style.display = 'block';
+    var tx = cx + 16;
+    var ty = cy - 10;
+    if (tx + 310 > W) tx = cx - 320;
+    if (ty + 120 > H) ty = cy - 120;
+    if (ty < 8) ty = 8;
+    tooltip.style.left = tx + 'px';
+    tooltip.style.top = ty + 'px';
+  }
+
   // Touch support
   var lastTouchDist = 0;
   canvas.addEventListener('touchstart', function(e) {
@@ -474,6 +507,15 @@ canvas:active { cursor: grabbing; }
       if (node) {
         dragNode = node;
         settled = false;
+        // Long-press: show tooltip after 400ms
+        longPressNode = node;
+        clearTimeout(longPressTimer);
+        longPressTimer = setTimeout(function() {
+          if (longPressNode === node) {
+            hoverNode = node;
+            showTooltip(node, t.clientX, t.clientY);
+          }
+        }, 400);
       } else {
         isPanning = true;
         panStart = { x: t.clientX - panX, y: t.clientY - panY };
@@ -487,6 +529,8 @@ canvas:active { cursor: grabbing; }
   }, { passive: false });
 
   canvas.addEventListener('touchmove', function(e) {
+    clearTimeout(longPressTimer);
+    longPressNode = null;
     if (e.touches.length === 1) {
       var t = e.touches[0];
       if (dragNode) {
@@ -516,16 +560,22 @@ canvas:active { cursor: grabbing; }
   }, { passive: false });
 
   canvas.addEventListener('touchend', function(e) {
+    clearTimeout(longPressTimer);
     if (dragNode && e.changedTouches.length === 1) {
       var t = e.changedTouches[0];
       var node = findNode(t.clientX, t.clientY);
-      if (node === dragNode) {
+      // If tooltip is showing (long-press happened), don't navigate — just dismiss
+      if (hoverNode && hoverNode === dragNode) {
+        hoverNode = null;
+        tooltip.style.display = 'none';
+      } else if (node === dragNode) {
         window.location.href = prefix + '/read/' + node.slug;
       }
     }
     dragNode = null;
     isPanning = false;
     lastTouchDist = 0;
+    longPressNode = null;
   });
 })();
 </script>

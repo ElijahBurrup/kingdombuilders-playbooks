@@ -439,6 +439,7 @@ async def get_constellation(db: AsyncSession = Depends(get_db)):
         nodes.append(ConstellationNode(
             slug=pb.slug,
             title=pb.title,
+            subtitle=pb.subtitle or "",
             cover_emoji=pb.cover_emoji,
             category_name=cat.name if cat else "",
             category_color=cat.color_text if cat else "#7B4FBF",
