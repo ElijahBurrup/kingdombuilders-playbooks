@@ -36,11 +36,13 @@ def _log_email_for_purchase(download_token: str, email_type: str, resend_id: str
 
 
 # ============================================================================
-# Email 1: Immediate delivery with download link
+# Email 1: Purchase confirmation with direct link to the playbook
 # ============================================================================
-def send_delivery_email(customer_email: str, download_token: str) -> None:
-    """Send the purchase confirmation with a download button."""
-    download_url = f"{_base_url()}/download/{download_token}"
+def send_delivery_email(customer_email: str, download_token: str, playbook_title: str = "", playbook_slug: str = "") -> None:
+    """Send the purchase confirmation with a direct link to read the playbook."""
+    base = _base_url()
+    read_url = f"{base}/read/{playbook_slug}" if playbook_slug else base
+    title_display = playbook_title or "Your Playbook"
 
     html = f"""
     <div style="max-width:600px;margin:0 auto;font-family:Arial,Helvetica,sans-serif;background:#FAF6ED;padding:40px 24px;">
@@ -49,29 +51,25 @@ def send_delivery_email(customer_email: str, download_token: str) -> None:
       </div>
 
       <div style="background:linear-gradient(135deg,#1A0A2E 0%,#2D1B4E 100%);border-radius:8px;padding:40px 32px;text-align:center;">
-        <h1 style="font-family:Georgia,serif;font-size:28px;color:#FFFFFF;margin:0 0 8px;">Your Playbook is Ready</h1>
-        <p style="font-size:15px;color:rgba(255,255,255,0.5);margin:0 0 32px;">Thank you for your purchase. Here's your download link.</p>
+        <h1 style="font-family:Georgia,serif;font-size:28px;color:#FFFFFF;margin:0 0 8px;">{title_display} is Yours</h1>
+        <p style="font-size:15px;color:rgba(255,255,255,0.5);margin:0 0 32px;">Thank you for your purchase. Your playbook is ready to read now.</p>
 
-        <a href="{download_url}" style="display:inline-block;padding:16px 48px;background:linear-gradient(135deg,#D4A843 0%,#E8C96A 100%);color:#1A0A2E;font-size:16px;font-weight:700;text-decoration:none;border-radius:4px;">
-          DOWNLOAD YOUR PLAYBOOK
+        <a href="{read_url}" style="display:inline-block;padding:16px 48px;background:linear-gradient(135deg,#D4A843 0%,#E8C96A 100%);color:#1A0A2E;font-size:16px;font-weight:700;text-decoration:none;border-radius:4px;">
+          READ YOUR PLAYBOOK
         </a>
-
-        <p style="font-size:13px;color:rgba(255,255,255,0.3);margin-top:24px;">
-          You have 5 downloads available over the next 30 days.
-        </p>
       </div>
 
       <div style="margin-top:32px;padding:24px;background:#FFFFFF;border-radius:8px;border:1px solid rgba(74,45,122,0.08);">
         <h2 style="font-family:Georgia,serif;font-size:20px;color:#1A0A2E;margin:0 0 12px;">What to do first</h2>
         <p style="font-size:15px;color:#3A2A55;line-height:1.7;margin:0;">
-          Start with <strong>Model 01: The Conductor Model</strong>. Read through the identity shift framework, then try the 80/20 Inversion on your very next AI session. You'll feel the difference immediately.
+          Open the playbook, read through all four chapters, and try each exercise before moving on. The insights compound when you apply them in order.
         </p>
       </div>
 
       <div style="text-align:center;margin-top:32px;font-size:12px;color:#6B5A8A;">
         <p>Questions? Reply to this email or contact support@kingdombuilders.ai</p>
         <p style="margin-top:16px;font-style:italic;color:rgba(107,90,138,0.5);">
-          "Whatever you do, work at it with all your heart." — Colossians 3:23
+          "Whatever you do, work at it with all your heart." &mdash; Colossians 3:23
         </p>
       </div>
     </div>
@@ -81,7 +79,7 @@ def send_delivery_email(customer_email: str, download_token: str) -> None:
         result = resend.Emails.send({
             "from": FROM_EMAIL,
             "to": customer_email,
-            "subject": "Your Conductor's Playbook is ready",
+            "subject": f"{title_display} is ready for you",
             "html": html,
         })
         resend_id = result.get("id") if isinstance(result, dict) else None

@@ -1158,6 +1158,17 @@ async def _user_has_access(user_id: str, slug: str, db: AsyncSession) -> bool:
         if result.scalar_one_or_none():
             return True
 
+    # Fallback: check legacy purchases stored with "single:{slug}" in provider_payment_id
+    result = await db.execute(
+        select(Purchase).where(
+            Purchase.user_id == uid,
+            Purchase.provider_payment_id == f"single:{slug}",
+            Purchase.status == "completed",
+        )
+    )
+    if result.scalar_one_or_none():
+        return True
+
     return False
 
 
@@ -1398,9 +1409,16 @@ async def _handle_checkout_completed(session: dict, db: AsyncSession) -> None:
 
     if mode == "single":
         slug = metadata.get("slug", "")
+        # Look up playbook_id from slug
+        from api.models.playbook import Playbook as _Playbook
+        pb_result = await db.execute(
+            select(_Playbook.id).where(_Playbook.slug == slug)
+        )
+        pb_id = pb_result.scalar_one_or_none()
         # Create Purchase record in PostgreSQL
         purchase = Purchase(
             user_id=uid,
+            playbook_id=pb_id,
             payment_provider="stripe",
             provider_payment_id=f"single:{slug}",
             provider_session_id=session_id,
@@ -1425,10 +1443,15 @@ async def _handle_checkout_completed(session: dict, db: AsyncSession) -> None:
 
     await db.commit()
 
-    # Send delivery email
+    # Send delivery email with playbook details
     try:
         from api.services.email_service import send_delivery_email
-        send_delivery_email(customer_email, "")
+        slug = metadata.get("slug", "")
+        # Look up playbook title
+        from api.models.playbook import Playbook as _PB
+        pb_result = await db.execute(select(_PB.title).where(_PB.slug == slug))
+        pb_title = pb_result.scalar_one_or_none() or _slug_to_title(slug)
+        send_delivery_email(customer_email, "", playbook_title=pb_title, playbook_slug=slug)
     except Exception as e:
         print(f"Delivery email failed: {e}")
 
