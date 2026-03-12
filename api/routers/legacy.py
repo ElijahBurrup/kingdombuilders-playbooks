@@ -714,6 +714,14 @@ async def unlock_playbook(request: Request, slug: str, code: str = Form("")):
 # ============================================================================
 # Authentication — server-rendered sign in / sign up
 # ============================================================================
+
+@router.get("/auth/status", include_in_schema=False)
+async def auth_status(request: Request):
+    """Lightweight check: is the user signed in via session cookie?"""
+    user_id = get_session_user_id(request)
+    return JSONResponse({"signed_in": user_id is not None})
+
+
 @router.get("/auth", include_in_schema=False)
 async def auth_page(request: Request):
     prefix = settings.URL_PREFIX or ""
