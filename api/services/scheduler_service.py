@@ -39,7 +39,18 @@ def get_scheduler() -> BackgroundScheduler | None:
 def init_scheduler() -> None:
     """Initialize the scheduler on app startup."""
     try:
-        get_scheduler()
+        scheduler = get_scheduler()
+        if scheduler:
+            # Monthly referral payout job — 1st of each month at 6 AM UTC
+            scheduler.add_job(
+                func="api.services.referral_service:run_monthly_payouts_sync",
+                trigger="cron",
+                day=1,
+                hour=6,
+                minute=0,
+                id="monthly_referral_payouts",
+                replace_existing=True,
+            )
     except Exception as e:
         print(f"Scheduler startup failed (non-fatal): {e}")
 

@@ -77,6 +77,7 @@ def create_app() -> FastAPI:
     from api.routers.subscribe import router as subscribe_router
     from api.routers.admin import router as admin_router
     from api.routers.discovery import router as discovery_router
+    from api.routers.referrals import router as referrals_router
 
     app.include_router(auth_router, prefix="/api/v1")
     app.include_router(catalog_router, prefix="/api/v1")
@@ -84,6 +85,7 @@ def create_app() -> FastAPI:
     app.include_router(subscribe_router, prefix="/api/v1")
     app.include_router(admin_router, prefix="/api/v1")
     app.include_router(discovery_router, prefix="/api/v1")
+    app.include_router(referrals_router, prefix="/api/v1")
 
     # --- Legacy backward-compatible router (serves existing HTML pages) ---
     from api.routers.legacy import router as legacy_router
@@ -108,6 +110,7 @@ def create_app() -> FastAPI:
         app.include_router(subscribe_router, prefix=f"{settings.URL_PREFIX}/api/v1")
         app.include_router(admin_router, prefix=f"{settings.URL_PREFIX}/api/v1")
         app.include_router(discovery_router, prefix=f"{settings.URL_PREFIX}/api/v1")
+        app.include_router(referrals_router, prefix=f"{settings.URL_PREFIX}/api/v1")
 
         # Also mount static/assets under the prefix
         if STATIC_DIR.is_dir():

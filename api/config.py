@@ -46,6 +46,10 @@ class Settings(BaseSettings):
     # Admin
     ADMIN_UNLOCK_CODE: str = "elijahsentme"
 
+    # Referrals
+    REFERRAL_MIN_PAYOUT_CENTS: int = 1000  # $10 minimum
+    REFERRAL_TAX_THRESHOLD_CENTS: int = 50000  # $500 warning threshold
+
     # CORS
     CORS_ORIGINS: str = "http://localhost:5173,http://localhost:5000"
 

@@ -913,6 +913,7 @@ async def auth_google(
             select(User).where(User.id == oauth_account.user_id)
         )
         user = user_result.scalar_one()
+        is_new_user = False
     else:
         # Check if a user with this email already exists
         user_result = await db.execute(
@@ -939,8 +940,6 @@ async def auth_google(
         )
         db.add(oauth_link)
         await db.flush()
-    else:
-        is_new_user = False
 
     if not user.email_verified:
         user.email_verified = True
