@@ -6,8 +6,11 @@ load_dotenv()
 
 from flask import Flask, Blueprint, send_from_directory, redirect, request, render_template, url_for, jsonify, session
 
+import stripe
 import config
 from database import initialize_db
+
+stripe.api_key = config.STRIPE_SECRET_KEY
 
 # --- Version & Release Notes ---
 APP_VERSION = "2.6.0"
@@ -651,8 +654,25 @@ def success():
             message="We couldn't find your purchase. Your payment may still be processing — please check your email in a few minutes."
         ), 404
 
-    # Grant session-level access so the user can read immediately
-    session["admin_unlocked"] = True
+    # Grant session-level access based on what was purchased
+    try:
+        stripe_session = stripe.checkout.Session.retrieve(session_id)
+        meta = stripe_session.get("metadata", {})
+        mode = meta.get("mode", "single")
+        purchased_slug = meta.get("slug", "")
+    except Exception:
+        mode = "single"
+        purchased_slug = ""
+
+    if mode in ("monthly", "yearly"):
+        # Subscription: unlock all
+        session["admin_unlocked"] = True
+    elif purchased_slug:
+        # Single purchase: unlock only the purchased slug
+        unlocked = session.get("unlocked_slugs", [])
+        if purchased_slug not in unlocked:
+            unlocked.append(purchased_slug)
+            session["unlocked_slugs"] = unlocked
 
     return render_template("success.html",
         download_token=purchase["download_token"],

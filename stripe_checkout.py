@@ -15,13 +15,16 @@ from database import (
 
 stripe.api_key = config.STRIPE_SECRET_KEY
 
-# Free playbook slugs (no payment required)
+# Free playbook slugs (no payment required) — must match app.py FREE_SLUGS
 FREE_SLUGS = {
+    "conductors-playbook",
     "lay-it-down",
-    "the-narrator",
-    "the-crows-gambit",
-    "the-salmon-journey",
-    "the-wolfs-table",
+    "the-mockingbirds-song",
+    "the-lifted-ceiling",
+    "the-tide-pools-echo",
+    "dad-talks-the-dopamine-drought",
+    "the-mantis-shrimps-eye",
+    "the-hermit-crabs-shell",
 }
 
 
