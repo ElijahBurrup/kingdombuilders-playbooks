@@ -1368,6 +1368,26 @@ async def stripe_webhook(request: Request, db: AsyncSession = Depends(get_db)):
         await _handle_subscription_updated(obj, db)
     elif event_type == "customer.subscription.deleted":
         await _handle_subscription_deleted(obj, db)
+    elif event_type == "charge.refunded":
+        # Mark matching purchase as refunded
+        payment_intent_id = obj.get("payment_intent")
+        if payment_intent_id:
+            result = await db.execute(
+                select(Purchase).where(
+                    Purchase.provider_payment_id.contains(payment_intent_id)
+                )
+            )
+            for p in result.scalars().all():
+                p.status = "refunded"
+            # Also check by provider_session_id → payment_intent mapping
+            result2 = await db.execute(
+                select(Purchase).where(
+                    Purchase.provider_payment_id == f"single:{payment_intent_id}"
+                )
+            )
+            for p in result2.scalars().all():
+                p.status = "refunded"
+            await db.commit()
 
     return {"status": "ok"}
 
