@@ -889,10 +889,17 @@ async def unlock_playbook(request: Request, slug: str, code: str = Form("")):
 # ============================================================================
 
 @router.get("/auth/status", include_in_schema=False)
-async def auth_status(request: Request):
+async def auth_status(request: Request, db: AsyncSession = Depends(get_db)):
     """Lightweight check: is the user signed in via session cookie?"""
     user_id = get_session_user_id(request)
-    return JSONResponse({"signed_in": user_id is not None})
+    if not user_id:
+        return JSONResponse({"signed_in": False, "is_admin": False})
+    result = await db.execute(select(User).where(User.id == user_id))
+    user = result.scalar_one_or_none()
+    return JSONResponse({
+        "signed_in": user is not None,
+        "is_admin": user is not None and user.role == "admin",
+    })
 
 
 @router.get("/auth", include_in_schema=False)
