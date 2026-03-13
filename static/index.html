@@ -320,25 +320,29 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
 <body>
 
 <a href="auth" id="signin-btn" style="position:fixed;top:16px;right:16px;z-index:9999;display:none;align-items:center;gap:6px;padding:8px 18px 8px 14px;background:rgba(10,6,20,0.75);backdrop-filter:blur(8px);border:1px solid rgba(212,168,67,0.25);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:1px;color:var(--gold);text-decoration:none;transition:all 0.25s;text-transform:uppercase"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Sign In</a>
-<a href="#" id="signout-btn" onclick="localStorage.removeItem('kb_access_token');localStorage.removeItem('kb_refresh_token');fetch('auth/logout',{method:'POST',credentials:'same-origin',redirect:'manual'}).finally(function(){window.location.href=window.location.pathname});return false" style="position:fixed;top:16px;right:16px;z-index:9999;display:none;align-items:center;gap:6px;padding:8px 18px 8px 14px;background:rgba(10,6,20,0.75);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.12);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:1px;color:rgba(255,255,255,0.5);text-decoration:none;transition:all 0.25s;text-transform:uppercase"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out</a>
+<a href="#" id="signout-btn" onclick="return false" style="position:fixed;top:16px;right:16px;z-index:9999;display:none;align-items:center;gap:6px;padding:8px 18px 8px 14px;background:rgba(10,6,20,0.75);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.12);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:1px;color:rgba(255,255,255,0.5);text-decoration:none;transition:all 0.25s;text-transform:uppercase"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out</a>
 <a href="admin/manage" id="admin-btn" style="position:fixed;top:16px;right:120px;z-index:9999;display:none;align-items:center;gap:6px;padding:8px 16px 8px 12px;background:rgba(10,6,20,0.75);backdrop-filter:blur(8px);border:1px solid rgba(212,168,67,0.3);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:1px;color:#E8C96A;text-decoration:none;transition:all 0.25s;text-transform:uppercase" onmouseover="this.style.background='rgba(10,6,20,0.9)';this.style.borderColor='rgba(212,168,67,0.5)'" onmouseout="this.style.background='rgba(10,6,20,0.75)';this.style.borderColor='rgba(212,168,67,0.3)'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Admin</a>
 <script>
 (function(){
+  var p='';try{var m=location.pathname.match(/^(\/[^\/]+)\/?(#.*)?$/);if(m&&m[1]!=='/')p=m[1];}catch(e){}
   var signIn = document.getElementById('signin-btn');
   var signOut = document.getElementById('signout-btn');
   var adminBtn = document.getElementById('admin-btn');
+  /* Fix relative hrefs with prefix */
+  if(p){signIn.href=p+'/auth';adminBtn.href=p+'/admin/manage';}
   function show(el) { el.style.display = 'inline-flex'; }
+  function doSignOut(){ localStorage.removeItem('kb_access_token');localStorage.removeItem('kb_refresh_token');fetch(p+'/auth/logout',{method:'POST',credentials:'same-origin',redirect:'manual'}).finally(function(){ window.location.href=window.location.pathname; }); return false; }
+  signOut.onclick = doSignOut;
   // Check localStorage token first (Google sign-in on purchase gate)
   if (localStorage.getItem('kb_access_token')) {
     show(signOut);
   } else {
     // Check server session cookie (email/password or Google via /auth)
-    fetch('auth/status', {credentials:'same-origin'})
+    fetch(p+'/auth/status', {credentials:'same-origin'})
       .then(function(r){ return r.json(); })
       .then(function(d){
         if (d.signed_in) {
           show(signOut);
-          signOut.onclick = function(){ localStorage.removeItem('kb_access_token');localStorage.removeItem('kb_refresh_token');fetch('auth/logout',{method:'POST',credentials:'same-origin',redirect:'manual'}).finally(function(){ window.location.href=window.location.pathname; }); return false; };
           if (d.is_admin) { show(adminBtn); }
         }
         else { show(signIn); }
