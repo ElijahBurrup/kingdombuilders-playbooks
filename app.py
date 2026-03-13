@@ -161,6 +161,11 @@ def _slug_to_file():
         "the-mockingbirds-song": "The_Mockingbirds_Song.html",
         "dad-talks-the-dopamine-drought": "Dad_Talks_The_Dopamine_Drought.html",
         "dad-talks-the-mirror-test": "Dad_Talks_The_Mirror_Test.html",
+        "dad-talks-the-flinch": "Dad_Talks_The_Flinch.html",
+        "dad-talks-the-two-wallets": "Dad_Talks_The_Two_Wallets.html",
+        "dad-talks-the-invisible-contract": "Dad_Talks_The_Invisible_Contract.html",
+        "dad-talks-the-scoreboard-lie": "Dad_Talks_The_Scoreboard_Lie.html",
+        "dad-talks-the-first-punch": "Dad_Talks_The_First_Punch.html",
         "the-arrival": "The_Arrival.html",
         "the-body-lie": "The_Body_Lie.html",
         "the-mycelium-network": "The_Mycelium_Network.html",
@@ -384,6 +389,31 @@ def dad_talks_the_dopamine_drought():
 @bp.route("/dadtalksthemirrortest")
 def dad_talks_the_mirror_test():
     return send_from_directory("static", "dad-talks-the-mirror-test.html")
+
+
+@bp.route("/dadtalkstheflinch")
+def dad_talks_the_flinch():
+    return send_from_directory("static", "dad-talks-the-flinch.html")
+
+
+@bp.route("/dadtalksthetwowallets")
+def dad_talks_the_two_wallets():
+    return send_from_directory("static", "dad-talks-the-two-wallets.html")
+
+
+@bp.route("/dadtalkstheinvisiblecontract")
+def dad_talks_the_invisible_contract():
+    return send_from_directory("static", "dad-talks-the-invisible-contract.html")
+
+
+@bp.route("/dadtalksthescoreboardlie")
+def dad_talks_the_scoreboard_lie():
+    return send_from_directory("static", "dad-talks-the-scoreboard-lie.html")
+
+
+@bp.route("/dadtalksthefirstpunch")
+def dad_talks_the_first_punch():
+    return send_from_directory("static", "dad-talks-the-first-punch.html")
 
 
 # --- Additional Playbooks ---
