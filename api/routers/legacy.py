@@ -155,6 +155,7 @@ FREE_SLUGS = {
     "conductors-playbook",
     "lay-it-down",
     "the-mockingbirds-song",
+    "the-lifted-ceiling",
     "the-tide-pools-echo",
     "dad-talks-the-dopamine-drought",
     "the-mantis-shrimps-eye",
@@ -1338,8 +1339,7 @@ async def auth_google(
 
 @router.post("/auth/logout", include_in_schema=False)
 async def auth_logout():
-    prefix = settings.URL_PREFIX or ""
-    response = RedirectResponse(url=f"{prefix}/", status_code=303)
+    response = JSONResponse({"detail": "Logged out"})
     clear_session_cookie(response)
     response.delete_cookie("admin_unlocked")
     return response
