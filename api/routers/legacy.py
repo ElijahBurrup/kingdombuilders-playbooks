@@ -324,6 +324,27 @@ SLUG_TO_FILE: dict[str, str] = {
 }
 
 
+def _redirect_with_cookie(url: str, response: HTMLResponse = None) -> HTMLResponse:
+    """Return a 200 HTML page that redirects via JS.
+
+    Cloudflare follows 303 redirects server-side, which strips Set-Cookie
+    headers before they reach the browser.  Returning a 200 with an HTML
+    redirect preserves cookies reliably.
+    """
+    if response is None:
+        response = HTMLResponse(content="", status_code=200)
+    html = (
+        '<!DOCTYPE html><html><head>'
+        f'<meta http-equiv="refresh" content="0;url={url}">'
+        f'<script>window.location.href="{url}";</script>'
+        '</head><body></body></html>'
+    )
+    response.body = html.encode()
+    response.headers["content-type"] = "text/html; charset=utf-8"
+    response.headers["content-length"] = str(len(response.body))
+    return response
+
+
 # ============================================================================
 # Catalog (index)
 # ============================================================================
@@ -1078,10 +1099,10 @@ async def download_pdf(request: Request, slug: str, format: str = "standard", db
 async def unlock_playbook(request: Request, slug: str, code: str = Form("")):
     prefix = settings.URL_PREFIX or ""
     if code.strip() == ADMIN_CODE:
-        response = RedirectResponse(url=f"{prefix}/read/{slug}", status_code=303)
+        response = HTMLResponse(content="", status_code=200)
         response.set_cookie("admin_unlocked", "1", max_age=86400, httponly=True, samesite="lax")
-        return response
-    return RedirectResponse(url=f"{prefix}/read/{slug}?error=1", status_code=303)
+        return _redirect_with_cookie(f"{prefix}/read/{slug}", response)
+    return _redirect_with_cookie(f"{prefix}/read/{slug}?error=1")
 
 
 # ============================================================================
@@ -1178,11 +1199,11 @@ async def auth_register(
     except Exception as e:
         print(f"Referral processing failed (non-critical): {e}")
 
-    response = RedirectResponse(url=next_url, status_code=303)
+    response = HTMLResponse(content="", status_code=200)
     set_session_cookie(response, str(user.id))
     if request.cookies.get("ref"):
         response.delete_cookie("ref")
-    return response
+    return _redirect_with_cookie(next_url, response)
 
 
 @router.post("/auth/login", include_in_schema=False)
@@ -1218,9 +1239,9 @@ async def auth_login(
             status_code=303,
         )
 
-    response = RedirectResponse(url=next_url, status_code=303)
+    response = HTMLResponse(content="", status_code=200)
     set_session_cookie(response, str(user.id))
-    return response
+    return _redirect_with_cookie(next_url, response)
 
 
 @router.post("/auth/google", include_in_schema=False)
@@ -1330,11 +1351,11 @@ async def auth_google(
     except Exception as e:
         print(f"Referral processing failed (non-critical): {e}")
 
-    response = RedirectResponse(url=next_url, status_code=303)
+    response = HTMLResponse(content="", status_code=200)
     set_session_cookie(response, str(user.id))
     if is_new_user and request.cookies.get("ref"):
         response.delete_cookie("ref")
-    return response
+    return _redirect_with_cookie(next_url, response)
 
 
 @router.post("/auth/logout", include_in_schema=False)
@@ -1349,14 +1370,32 @@ async def auth_logout():
 # Referral link and dashboard
 # ============================================================================
 @router.get("/r/{code}", include_in_schema=False)
-async def referral_redirect(code: str):
-    """Set referral cookie and redirect to funnel."""
+async def referral_redirect(code: str, db: AsyncSession = Depends(get_db)):
+    """Set referral cookie and redirect to funnel.
+
+    Only sets the cookie if the referral code actually exists in the DB,
+    preventing poisoning with bogus codes that block legitimate attribution.
+    """
+    import re
     prefix = settings.URL_PREFIX or ""
-    response = RedirectResponse(url=f"{prefix}/funnel", status_code=302)
-    response.set_cookie(
-        "ref", code, max_age=30 * 24 * 3600, httponly=False, samesite="lax"
-    )
-    return response
+    redirect_url = f"{prefix}/funnel"
+
+    # Validate format and existence before setting cookie
+    clean_code = code.strip().upper()
+    if re.match(r"^[A-Z0-9]{6}$", clean_code):
+        from api.models.referral import ReferralCode
+        result = await db.execute(
+            select(ReferralCode.id).where(ReferralCode.code == clean_code)
+        )
+        if result.scalar_one_or_none() is not None:
+            response = HTMLResponse(content="", status_code=200)
+            response.set_cookie(
+                "ref", clean_code, max_age=30 * 24 * 3600,
+                httponly=True, samesite="lax",
+            )
+            return _redirect_with_cookie(redirect_url, response)
+
+    return _redirect_with_cookie(redirect_url)
 
 
 @router.get("/referrals", include_in_schema=False)
@@ -1378,12 +1417,41 @@ async def referrals_page(request: Request, db: AsyncSession = Depends(get_db)):
 
 @router.get("/referrals/confirm-claim", include_in_schema=False)
 async def confirm_claim_page(request: Request, token: str = "", db: AsyncSession = Depends(get_db)):
-    """Handle the confirmation link clicked from the referrer's email."""
+    """Handle the confirmation link clicked from the referrer's email.
+
+    Security: requires the referrer to be logged in so a stolen/guessed
+    token cannot be used by an unauthenticated attacker to hijack the
+    referral tree.
+    """
     from api.services.referral_service import confirm_referral_claim
+    from api.models.referral import ReferralClaim
 
     prefix = settings.URL_PREFIX or ""
 
+    # Must be logged in
+    user_id = get_session_user_id(request)
+    if not user_id:
+        # Redirect to login, then back here
+        return_url = f"{prefix}/referrals/confirm-claim?token={quote(token)}"
+        return RedirectResponse(
+            url=f"{prefix}/auth?next={quote(return_url)}",
+            status_code=303,
+        )
+
     if not token:
+        return templates.TemplateResponse("claim_result.html", {
+            "request": request,
+            "prefix": prefix,
+            "status": "invalid",
+            "config": settings,
+        })
+
+    # Verify the logged-in user is actually the referrer on this claim
+    claim_result = await db.execute(
+        select(ReferralClaim).where(ReferralClaim.token == token)
+    )
+    claim = claim_result.scalar_one_or_none()
+    if claim and str(claim.referrer_id) != str(user_id):
         return templates.TemplateResponse("claim_result.html", {
             "request": request,
             "prefix": prefix,
