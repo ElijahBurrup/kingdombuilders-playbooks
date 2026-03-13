@@ -113,13 +113,11 @@ async def submit_feedback(
     request: Request,
     db: AsyncSession = Depends(get_db),
 ):
-    # Look up playbook_id from slug
+    # Look up playbook_id from slug (optional — feedback still saved if not seeded)
     result = await db.execute(
         select(Playbook.id).where(Playbook.slug == body.slug)
     )
     playbook_id = result.scalar_one_or_none()
-    if not playbook_id:
-        raise HTTPException(status_code=404, detail="Playbook not found")
 
     ip = _get_client_ip(request)
 
@@ -223,7 +221,7 @@ async def list_feedback(
 
     query = (
         select(PlaybookFeedback, Playbook.title)
-        .join(Playbook, PlaybookFeedback.playbook_id == Playbook.id)
+        .outerjoin(Playbook, PlaybookFeedback.playbook_id == Playbook.id)
         .order_by(PlaybookFeedback.created_at.desc())
         .offset((page - 1) * per_page)
         .limit(per_page)

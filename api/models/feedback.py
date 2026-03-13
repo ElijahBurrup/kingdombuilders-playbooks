@@ -36,10 +36,10 @@ class PlaybookFeedback(Base):
         primary_key=True,
         server_default=text("gen_random_uuid()"),
     )
-    playbook_id: Mapped[uuid.UUID] = mapped_column(
+    playbook_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("playbooks.id", ondelete="CASCADE"),
-        nullable=False,
+        nullable=True,
         index=True,
     )
     slug: Mapped[str] = mapped_column(String, nullable=False)
