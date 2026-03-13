@@ -995,6 +995,11 @@ async def read_playbook(request: Request, slug: str, db: AsyncSession = Depends(
 
         if not admin_unlocked and not db_access:
             prefix = settings.URL_PREFIX or ""
+            # Serve the landing/sales page if one exists for this slug
+            landing_file = STATIC_DIR / f"{slug}.html"
+            if landing_file.is_file():
+                return FileResponse(landing_file)
+            # Fallback to generic purchase gate
             return templates.TemplateResponse(
                 "purchase_gate.html",
                 {
