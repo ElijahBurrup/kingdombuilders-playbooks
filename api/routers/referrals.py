@@ -45,8 +45,8 @@ async def get_my_referral_stats(
     db: AsyncSession = Depends(get_db),
 ) -> ReferralStatsResponse:
     """Return the current user's referral code, link, and high-level stats."""
-    await ensure_referral_code(current_user, db)
-    return await get_referral_stats(current_user, db)
+    await ensure_referral_code(current_user.id, db)
+    return await get_referral_stats(current_user.id, db)
 
 
 # ============================================================================
@@ -58,7 +58,7 @@ async def get_my_referral_tree(
     db: AsyncSession = Depends(get_db),
 ) -> ReferralTreeResponse:
     """Return the current user's referral tree with level details."""
-    return await get_referral_tree(current_user, db)
+    return await get_referral_tree(current_user.id, db)
 
 
 # ============================================================================
@@ -70,7 +70,7 @@ async def get_my_earnings(
     db: AsyncSession = Depends(get_db),
 ) -> EarningsResponse:
     """Return monthly earnings breakdown and balance summary."""
-    return await get_earnings_breakdown(current_user, db)
+    return await get_earnings_breakdown(current_user.id, db)
 
 
 # ============================================================================
