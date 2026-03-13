@@ -124,6 +124,43 @@ h1,h2,h3,h4{font-family:'Poppins',sans-serif;line-height:1.2}
 .series-badge.sb-how-ai-works{background:rgba(6,182,212,0.85);color:#fff}
 .series-badge.sb-ai-economy{background:rgba(212,168,67,0.9);color:#1A0A2E}
 
+/* === VIEW TOGGLE === */
+.view-toggle{display:flex;gap:4px}
+.view-toggle-btn{width:36px;height:36px;border-radius:8px;border:1.5px solid rgba(123,79,191,0.15);background:var(--white);color:var(--text-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.view-toggle-btn:hover{border-color:var(--gold);color:var(--gold)}
+.view-toggle-btn.active{background:linear-gradient(135deg,var(--purple-deep),var(--purple-dark));color:var(--white);border-color:transparent}
+.view-toggle-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+
+/* === TABLE VIEW === */
+.table-controls{display:none;max-width:900px;margin:0 auto 16px;padding:0 24px;align-items:center;gap:12px;flex-wrap:wrap}
+.table-controls.show{display:flex}
+.table-status-filter{padding:8px 14px;border:1.5px solid rgba(123,79,191,0.15);border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.72rem;color:var(--text);background:var(--white);cursor:pointer;outline:none}
+.table-status-filter:focus{border-color:var(--gold)}
+.table-status-label{font-family:'Poppins',sans-serif;font-size:0.65rem;font-weight:600;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase}
+
+.table-wrap{display:none;max-width:900px;margin:0 auto;padding:0 24px 80px;overflow-x:auto}
+.table-wrap.show{display:block}
+.pb-table{width:100%;border-collapse:separate;border-spacing:0;border:1.5px solid rgba(123,79,191,0.1);border-radius:12px;overflow:hidden;background:var(--white);box-shadow:0 2px 12px rgba(26,10,46,0.05)}
+.pb-table th{position:sticky;top:0;padding:12px 14px;font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);background:var(--cream);border-bottom:2px solid rgba(123,79,191,0.1);text-align:left;white-space:nowrap;cursor:pointer;user-select:none;transition:color 0.2s}
+.pb-table th:hover{color:var(--gold)}
+.pb-table th .sort-arrow{display:inline-block;margin-left:4px;font-size:0.5rem;opacity:0.4;transition:opacity 0.2s}
+.pb-table th.sorted .sort-arrow{opacity:1;color:var(--gold)}
+.pb-table td{padding:10px 14px;font-size:0.82rem;color:var(--text);border-bottom:1px solid rgba(123,79,191,0.06);vertical-align:middle}
+.pb-table tr:last-child td{border-bottom:none}
+.pb-table tr:hover td{background:rgba(212,168,67,0.04)}
+.pb-table td a{color:var(--purple-accent);text-decoration:none;font-weight:500;transition:color 0.2s}
+.pb-table td a:hover{color:var(--gold)}
+.pb-table .status-badge{display:inline-block;padding:3px 10px;border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;white-space:nowrap}
+.pb-table .status-not-started{background:rgba(138,122,158,0.1);color:var(--text-muted)}
+.pb-table .status-opened{background:rgba(59,130,246,0.1);color:#3B82F6}
+.pb-table .status-in-progress{background:rgba(245,158,11,0.1);color:#D97706}
+.pb-table .status-completed{background:rgba(34,197,94,0.1);color:#16A34A}
+.pb-table .status-select{padding:4px 8px;border:1px solid rgba(123,79,191,0.12);border-radius:6px;font-family:'Poppins',sans-serif;font-size:0.6rem;color:var(--text);background:var(--white);cursor:pointer;outline:none;transition:border-color 0.2s}
+.pb-table .status-select:focus{border-color:var(--gold)}
+.pb-table .price-cell{font-family:'Poppins',sans-serif;font-weight:600;font-size:0.82rem}
+.pb-table .price-free{color:#16A34A}
+@media(max-width:600px){.pb-table{font-size:0.75rem}.pb-table th,.pb-table td{padding:8px 10px}.table-controls{padding:0 16px}}
+
 /* === SERIES OUTCOME BANNER === */
 .series-outcome{display:none;max-width:900px;margin:0 auto 32px;padding:28px 32px;border-radius:14px;background:linear-gradient(135deg,var(--purple-deep),var(--purple-dark));border:1.5px solid rgba(212,168,67,0.2);text-align:center}
 .series-outcome.show{display:block}
@@ -329,6 +366,10 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
     <div class="lens-chips" id="lens-chips"></div>
     <div class="lens-actions">
       <span class="lens-count" id="lens-count"></span>
+      <div class="view-toggle" id="view-toggle">
+        <button class="view-toggle-btn active" data-view="cards" title="Card View"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></button>
+        <button class="view-toggle-btn" data-view="table" title="Table View"><svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3" y2="18"/><line x1="9" y1="6" x2="9" y2="18"/></svg></button>
+      </div>
       <button class="lens-surprise" id="lens-surprise" title="Surprise Me">
         <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
       </button>
@@ -1412,6 +1453,33 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
   </div>
 </div>
 
+<!-- ===== TABLE VIEW ===== -->
+<div class="table-controls" id="table-controls">
+  <span class="table-status-label">Status:</span>
+  <select class="table-status-filter" id="table-status-filter">
+    <option value="all">All</option>
+    <option value="not-started">Not Started</option>
+    <option value="opened">Opened</option>
+    <option value="in-progress">In Progress</option>
+    <option value="completed">Completed</option>
+  </select>
+</div>
+<div class="table-wrap" id="table-wrap">
+  <table class="pb-table" id="pb-table">
+    <thead>
+      <tr>
+        <th data-sort="title">Title <span class="sort-arrow">&#9650;</span></th>
+        <th data-sort="series">Series <span class="sort-arrow">&#9650;</span></th>
+        <th data-sort="tag">Category <span class="sort-arrow">&#9650;</span></th>
+        <th data-sort="rating">Avg Rating <span class="sort-arrow">&#9650;</span></th>
+        <th data-sort="price">Price <span class="sort-arrow">&#9650;</span></th>
+        <th data-sort="status">Status <span class="sort-arrow">&#9650;</span></th>
+      </tr>
+    </thead>
+    <tbody id="pb-table-body"></tbody>
+  </table>
+</div>
+
 <!-- ===== SUBSCRIPTION BANNER ===== -->
 <section class="sub-banner">
   <div class="sub-inner">
@@ -1806,6 +1874,188 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
       localStorage.setItem('pb_last_version', ver);
       if(!lastSeen || lastSeen < ver) document.getElementById('wn-overlay').classList.add('show');
     }).catch(function(){});
+
+  // --- View Toggle (Card / Table) ---
+  var viewBtns = document.querySelectorAll('.view-toggle-btn');
+  var catalogEl = document.querySelector('.catalog');
+  var tableWrap = document.getElementById('table-wrap');
+  var tableControls = document.getElementById('table-controls');
+  var tableBody = document.getElementById('pb-table-body');
+  var statusFilter = document.getElementById('table-status-filter');
+  var currentView = 'cards';
+  var tableRows = [];
+  var tableSortCol = 'title';
+  var tableSortAsc = true;
+
+  function getStatus(slug){
+    return localStorage.getItem('pb_status_' + slug) || 'not-started';
+  }
+  function setStatus(slug, val){
+    localStorage.setItem('pb_status_' + slug, val);
+  }
+
+  function statusLabel(s){
+    if(s === 'not-started') return 'Not Started';
+    if(s === 'opened') return 'Opened';
+    if(s === 'in-progress') return 'In Progress';
+    if(s === 'completed') return 'Completed';
+    return s;
+  }
+  function statusClass(s){
+    if(s === 'not-started') return 'status-not-started';
+    if(s === 'opened') return 'status-opened';
+    if(s === 'in-progress') return 'status-in-progress';
+    if(s === 'completed') return 'status-completed';
+    return '';
+  }
+
+  function buildTableData(){
+    tableRows = [];
+    cards.forEach(function(c){
+      var href = c.getAttribute('href') || '';
+      var slug = href.replace(/^read\//, '');
+      var title = (c.querySelector('.card-title') || {}).textContent || '';
+      var seriesKey = c.getAttribute('data-series') || '';
+      var seriesName = seriesInfo[seriesKey] ? seriesInfo[seriesKey].name : '';
+      var tagEl = c.querySelector('.card-tag');
+      var tag = tagEl ? tagEl.textContent : '';
+      var priceEl = c.querySelector('.card-price');
+      var price = priceEl ? priceEl.textContent.trim() : '$2.50';
+      var isFree = c.getAttribute('data-free') === 'true';
+      var status = getStatus(slug);
+      tableRows.push({
+        slug: slug, href: href, title: title, series: seriesName,
+        tag: tag, price: isFree ? 'Free' : price, isFree: isFree,
+        status: status, rating: null, ratingCount: 0, card: c
+      });
+    });
+  }
+
+  function renderTable(){
+    var filter = statusFilter.value;
+    var rows = tableRows.filter(function(r){
+      if(filter !== 'all' && r.status !== filter) return false;
+      if(r.card.classList.contains('hidden')) return false;
+      return true;
+    });
+
+    rows.sort(function(a, b){
+      var va, vb;
+      if(tableSortCol === 'title'){ va = a.title.toLowerCase(); vb = b.title.toLowerCase(); }
+      else if(tableSortCol === 'series'){ va = a.series.toLowerCase(); vb = b.series.toLowerCase(); }
+      else if(tableSortCol === 'tag'){ va = a.tag.toLowerCase(); vb = b.tag.toLowerCase(); }
+      else if(tableSortCol === 'price'){
+        va = a.isFree ? 0 : parseFloat(a.price.replace('$','')) || 99;
+        vb = b.isFree ? 0 : parseFloat(b.price.replace('$','')) || 99;
+      }
+      else if(tableSortCol === 'rating'){
+        va = a.rating || 0; vb = b.rating || 0;
+      }
+      else if(tableSortCol === 'status'){
+        var order = {'not-started':0,'opened':1,'in-progress':2,'completed':3};
+        va = order[a.status] || 0; vb = order[b.status] || 0;
+      }
+      else { va = a.title.toLowerCase(); vb = b.title.toLowerCase(); }
+      if(va < vb) return tableSortAsc ? -1 : 1;
+      if(va > vb) return tableSortAsc ? 1 : -1;
+      return 0;
+    });
+
+    var html = '';
+    rows.forEach(function(r){
+      var stars = '';
+      if(r.rating !== null){
+        for(var i = 1; i <= 5; i++){
+          stars += i <= Math.round(r.rating) ? '&#9733;' : '&#9734;';
+        }
+        stars += ' <span style="font-size:0.65rem;color:var(--text-muted)">(' + r.rating.toFixed(1) + ')</span>';
+      } else {
+        stars = '<span style="color:var(--text-muted);font-size:0.7rem">&mdash;</span>';
+      }
+      html += '<tr>' +
+        '<td><a href="' + r.href + '">' + r.title + '</a></td>' +
+        '<td>' + (r.series || '<span style="color:var(--text-muted)">&mdash;</span>') + '</td>' +
+        '<td>' + r.tag + '</td>' +
+        '<td style="color:#D4A843;font-size:0.85rem">' + stars + '</td>' +
+        '<td class="price-cell' + (r.isFree ? ' price-free' : '') + '">' + r.price + '</td>' +
+        '<td><select class="status-select" data-slug="' + r.slug + '">' +
+          '<option value="not-started"' + (r.status==='not-started'?' selected':'') + '>Not Started</option>' +
+          '<option value="opened"' + (r.status==='opened'?' selected':'') + '>Opened</option>' +
+          '<option value="in-progress"' + (r.status==='in-progress'?' selected':'') + '>In Progress</option>' +
+          '<option value="completed"' + (r.status==='completed'?' selected':'') + '>Completed</option>' +
+        '</select></td>' +
+      '</tr>';
+    });
+    tableBody.innerHTML = html;
+
+    tableBody.querySelectorAll('.status-select').forEach(function(sel){
+      sel.addEventListener('change', function(){
+        var slug = sel.getAttribute('data-slug');
+        setStatus(slug, sel.value);
+        tableRows.forEach(function(r){ if(r.slug === slug) r.status = sel.value; });
+      });
+    });
+
+    document.querySelectorAll('.pb-table th').forEach(function(th){
+      th.classList.toggle('sorted', th.getAttribute('data-sort') === tableSortCol);
+      var arrow = th.querySelector('.sort-arrow');
+      if(arrow && th.getAttribute('data-sort') === tableSortCol){
+        arrow.innerHTML = tableSortAsc ? '&#9650;' : '&#9660;';
+      }
+    });
+  }
+
+  function fetchRatings(){
+    fetch(prefix + '/api/v1/feedback-summary')
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if(!data.ratings) return;
+        tableRows.forEach(function(r){
+          var info = data.ratings[r.slug];
+          if(info){ r.rating = info.avg; r.ratingCount = info.count; }
+        });
+        if(currentView === 'table') renderTable();
+      }).catch(function(){});
+  }
+
+  function switchView(view){
+    currentView = view;
+    viewBtns.forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-view') === view); });
+    if(view === 'cards'){
+      catalogEl.style.display = '';
+      tableWrap.classList.remove('show');
+      tableControls.classList.remove('show');
+    } else {
+      catalogEl.style.display = 'none';
+      tableControls.classList.add('show');
+      tableWrap.classList.add('show');
+      buildTableData();
+      renderTable();
+      fetchRatings();
+    }
+  }
+
+  viewBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){ switchView(btn.getAttribute('data-view')); });
+  });
+
+  statusFilter.addEventListener('change', function(){ renderTable(); });
+
+  document.querySelectorAll('.pb-table th[data-sort]').forEach(function(th){
+    th.addEventListener('click', function(){
+      var col = th.getAttribute('data-sort');
+      if(tableSortCol === col){ tableSortAsc = !tableSortAsc; }
+      else { tableSortCol = col; tableSortAsc = true; }
+      renderTable();
+    });
+  });
+
+  // Re-render table when card filters change
+  var origApply = applyFilters;
+  applyFilters = function(){
+    origApply();
+    if(currentView === 'table'){ buildTableData(); renderTable(); }
+  };
 
   // --- Init ---
   applyFilters();

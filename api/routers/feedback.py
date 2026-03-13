@@ -107,6 +107,24 @@ async def submit_suggestion(
     return {"ok": True, "message": "Thank you for your suggestion!"}
 
 
+@router.get("/feedback-summary")
+async def feedback_summary(
+    db: AsyncSession = Depends(get_db),
+):
+    """Return average rating and count per slug (public, no auth)."""
+    result = await db.execute(
+        select(
+            PlaybookFeedback.slug,
+            func.avg(PlaybookFeedback.rating),
+            func.count(PlaybookFeedback.id),
+        ).group_by(PlaybookFeedback.slug)
+    )
+    ratings = {}
+    for slug, avg, count in result.all():
+        ratings[slug] = {"avg": round(float(avg), 1), "count": count}
+    return {"ratings": ratings}
+
+
 @router.post("/feedback")
 async def submit_feedback(
     body: FeedbackRequest,
