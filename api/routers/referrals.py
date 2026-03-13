@@ -24,10 +24,13 @@ from api.schemas.referral import (
     ReferralTreeResponse,
 )
 from api.services.referral_service import (
+    confirm_referral_claim,
+    create_referral_claim,
     ensure_referral_code,
     get_earnings_breakdown,
     get_referral_stats,
     get_referral_tree,
+    has_referral_attribution,
 )
 
 router = APIRouter(prefix="/referrals", tags=["referrals"])
@@ -195,3 +198,58 @@ async def refresh_connect_onboarding(
         )
 
     return ConnectResponse(onboarding_url=link.url)
+
+
+# ============================================================================
+# GET /referrals/attribution-status — check if user has referral attribution
+# ============================================================================
+@router.get("/attribution-status")
+async def get_attribution_status(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> dict:
+    """Check whether the current user has referral attribution."""
+    has_attr = await has_referral_attribution(current_user.id, db)
+
+    # Also check for pending claim
+    from api.models.referral import ReferralClaim
+    result = await db.execute(
+        select(ReferralClaim).where(
+            ReferralClaim.claimant_id == current_user.id,
+            ReferralClaim.status == "pending",
+        )
+    )
+    pending_claim = result.scalar_one_or_none()
+
+    return {
+        "has_attribution": has_attr,
+        "has_pending_claim": pending_claim is not None,
+    }
+
+
+# ============================================================================
+# POST /referrals/claim — submit a referral claim
+# ============================================================================
+@router.post("/claim")
+async def submit_referral_claim(
+    body: dict,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> dict:
+    """Submit a referral claim with the referrer's code."""
+    code = body.get("referral_code", "").strip()
+    if not code:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Referral code is required.",
+        )
+
+    try:
+        claim = await create_referral_claim(current_user.id, code, db)
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        )
+
+    return {"status": "pending", "message": "Claim submitted. The referrer has been emailed to confirm."}

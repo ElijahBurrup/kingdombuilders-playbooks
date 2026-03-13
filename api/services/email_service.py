@@ -787,3 +787,73 @@ def send_payouts_paused_email(referrer_email: str) -> None:
         })
     except Exception as e:
         print(f"Failed to send payouts paused email to {referrer_email}: {e}")
+
+
+# ---------------------------------------------------------------------------
+# Referral Claim emails
+# ---------------------------------------------------------------------------
+
+def send_referral_claim_request_email(
+    referrer_email: str,
+    claimant_display_name: str,
+    claimant_email_masked: str,
+    confirm_url: str,
+) -> None:
+    """Ask a referrer to confirm that they referred the claimant."""
+    html = f"""
+    <div style="max-width:600px;margin:0 auto;font-family:Arial,Helvetica,sans-serif;background:#FAF6ED;padding:40px 24px;">
+      <div style="text-align:center;margin-bottom:32px;">
+        <div style="font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#7B4FBF;">Kingdom Builders AI</div>
+      </div>
+      <div style="background:linear-gradient(135deg,#1A0A2E 0%,#2D1B4E 100%);border-radius:8px;padding:40px 32px;text-align:center;">
+        <h1 style="font-family:Georgia,serif;font-size:26px;color:#FFFFFF;margin:0 0 16px;">Someone Says You Referred Them</h1>
+        <p style="font-size:16px;color:rgba(255,255,255,0.8);margin:0 0 8px;"><strong style="color:#E8C96A;">{claimant_display_name}</strong> ({claimant_email_masked})</p>
+        <p style="font-size:15px;color:rgba(255,255,255,0.65);margin:0 0 28px;line-height:1.6;">says they learned about Kingdom Builders from you. If that's true, click the button below and you'll start earning from their activity.</p>
+        <a href="{confirm_url}" style="display:inline-block;padding:14px 40px;background:linear-gradient(135deg,#D4A843 0%,#E8C96A 100%);color:#1A0A2E;font-size:15px;font-weight:700;text-decoration:none;border-radius:4px;">YES, I REFERRED THEM</a>
+        <p style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:24px;">This link expires in 7 days. If you don't recognize this person, simply ignore this email.</p>
+      </div>
+      <div style="text-align:center;margin-top:32px;font-size:12px;color:#6B5A8A;">
+        <p>Questions? Reply to this email or contact support@kingdombuilders.ai</p>
+      </div>
+    </div>
+    """
+    try:
+        resend.Emails.send({
+            "from": FROM_EMAIL_KB,
+            "to": referrer_email,
+            "subject": f"{claimant_display_name} says you referred them — confirm to earn",
+            "html": html,
+        })
+    except Exception as e:
+        print(f"Failed to send referral claim request email to {referrer_email}: {e}")
+
+
+def send_referral_claim_confirmed_email(
+    claimant_email: str,
+    referrer_display_name: str,
+) -> None:
+    """Notify the claimant that their referral claim was confirmed."""
+    html = f"""
+    <div style="max-width:600px;margin:0 auto;font-family:Arial,Helvetica,sans-serif;background:#FAF6ED;padding:40px 24px;">
+      <div style="text-align:center;margin-bottom:32px;">
+        <div style="font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#7B4FBF;">Kingdom Builders AI</div>
+      </div>
+      <div style="background:linear-gradient(135deg,#1A0A2E 0%,#2D1B4E 100%);border-radius:8px;padding:40px 32px;text-align:center;">
+        <h1 style="font-family:Georgia,serif;font-size:26px;color:#FFFFFF;margin:0 0 16px;">Referral Confirmed</h1>
+        <p style="font-size:15px;color:rgba(255,255,255,0.7);margin:0 0 16px;line-height:1.6;"><strong style="color:#E8C96A;">{referrer_display_name}</strong> confirmed that they referred you to Kingdom Builders. Your accounts are now linked.</p>
+        <p style="font-size:14px;color:rgba(255,255,255,0.5);">No action needed on your end. Thanks for being part of the family.</p>
+      </div>
+      <div style="text-align:center;margin-top:32px;font-size:12px;color:#6B5A8A;">
+        <p>Questions? Reply to this email or contact support@kingdombuilders.ai</p>
+      </div>
+    </div>
+    """
+    try:
+        resend.Emails.send({
+            "from": FROM_EMAIL_KB,
+            "to": claimant_email,
+            "subject": "Your referral has been confirmed",
+            "html": html,
+        })
+    except Exception as e:
+        print(f"Failed to send referral claim confirmed email to {claimant_email}: {e}")

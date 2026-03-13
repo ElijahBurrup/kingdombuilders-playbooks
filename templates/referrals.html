@@ -610,6 +610,82 @@ body {
 .ref-tax-banner.visible { display: block; }
 .ref-tax-banner strong { font-weight: 600; }
 
+/* --- Claim Banner --- */
+.ref-claim-banner {
+  display: none;
+  max-width: 900px;
+  margin: 0 auto 20px;
+  padding: 24px 28px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(45,27,78,0.6) 0%, rgba(26,10,46,0.8) 100%);
+  border: 1px solid rgba(123,79,191,0.3);
+  text-align: center;
+}
+.ref-claim-banner.visible { display: block; }
+.ref-claim-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+.ref-claim-desc {
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+.ref-claim-form {
+  display: flex;
+  gap: 0;
+  max-width: 420px;
+  margin: 0 auto;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(123,79,191,0.3);
+  background: rgba(0,0,0,0.25);
+}
+.ref-claim-input {
+  flex: 1;
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  color: var(--white);
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  outline: none;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.ref-claim-input::placeholder {
+  color: rgba(255,255,255,0.25);
+  text-transform: none;
+  letter-spacing: 0;
+}
+.ref-claim-submit {
+  padding: 12px 22px;
+  background: var(--purple-accent);
+  color: var(--white);
+  border: none;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.ref-claim-submit:hover { background: #8B5FCF; }
+.ref-claim-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+.ref-claim-msg {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  margin-top: 12px;
+  display: none;
+}
+.ref-claim-msg.success { color: #2ECC71; display: block; }
+.ref-claim-msg.error { color: #E74C3C; display: block; }
+.ref-claim-msg.pending { color: var(--gold); display: block; }
+
 /* --- Empty State --- */
 .ref-empty {
   text-align: center;
@@ -663,6 +739,9 @@ body {
   .ref-payouts-table { font-size: 12px; }
   .ref-payouts-table th, .ref-payouts-table td { padding: 10px 12px; }
   .ref-tax-banner { margin: 16px; }
+  .ref-claim-banner { margin-left: 16px; margin-right: 16px; }
+  .ref-claim-form { flex-direction: column; }
+  .ref-claim-submit { width: 100%; }
   .ref-philosophy { margin-left: 16px; margin-right: 16px; padding: 28px 20px 24px; }
   .ref-philosophy-title { font-size: 19px; }
   .ref-philosophy p { font-size: 15px; }
@@ -680,6 +759,23 @@ body {
     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
   </a>
   <h1 class="ref-header-title">Refer & Earn</h1>
+</div>
+
+<!-- Claim Banner (shown if user has no referral attribution) -->
+<div class="ref-claim-banner" id="claimBanner">
+  <div class="ref-claim-title">Were you referred by someone?</div>
+  <div class="ref-claim-desc">If someone told you about Kingdom Builders, enter their referral code below so they get credit.</div>
+  <div class="ref-claim-form">
+    <input type="text" class="ref-claim-input" id="claimCodeInput" placeholder="Enter referral code" maxlength="6">
+    <button class="ref-claim-submit" id="claimSubmitBtn" onclick="submitClaim()">Submit</button>
+  </div>
+  <div class="ref-claim-msg" id="claimMsg"></div>
+</div>
+
+<!-- Pending Claim Banner -->
+<div class="ref-claim-banner" id="claimPendingBanner" style="border-color:rgba(212,168,67,0.3);">
+  <div class="ref-claim-title" style="color:var(--gold);">Referral Claim Pending</div>
+  <div class="ref-claim-desc">You've submitted a referral claim. The person who referred you has been emailed to confirm. This link expires in 7 days.</div>
 </div>
 
 <!-- How It Works -->
@@ -894,6 +990,57 @@ body {
     if (s === 'pending' || s === 'trialing') return 'ref-badge ref-badge-pending';
     return 'ref-badge ref-badge-cancelled';
   }
+
+  // --- Check attribution status ---
+  apiFetch('/api/v1/referrals/attribution-status').then(function(data) {
+    if (!data.has_attribution && !data.has_pending_claim) {
+      document.getElementById('claimBanner').classList.add('visible');
+    } else if (!data.has_attribution && data.has_pending_claim) {
+      document.getElementById('claimPendingBanner').classList.add('visible');
+    }
+  }).catch(function() {});
+
+  // --- Submit Claim ---
+  window.submitClaim = function() {
+    var code = document.getElementById('claimCodeInput').value.trim();
+    var btn = document.getElementById('claimSubmitBtn');
+    var msg = document.getElementById('claimMsg');
+
+    if (!code) {
+      msg.className = 'ref-claim-msg error';
+      msg.textContent = 'Please enter a referral code.';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
+    msg.className = 'ref-claim-msg';
+    msg.style.display = 'none';
+
+    fetch(PREFIX + '/api/v1/referrals/claim', {
+      method: 'POST',
+      headers: HEADERS,
+      body: JSON.stringify({ referral_code: code })
+    }).then(function(r) {
+      return r.json().then(function(data) {
+        if (!r.ok) throw new Error(data.detail || 'Failed to submit claim');
+        return data;
+      });
+    }).then(function(data) {
+      msg.className = 'ref-claim-msg success';
+      msg.textContent = data.message || 'Claim submitted! Check back soon.';
+      // Hide claim form after success, show pending
+      setTimeout(function() {
+        document.getElementById('claimBanner').classList.remove('visible');
+        document.getElementById('claimPendingBanner').classList.add('visible');
+      }, 2000);
+    }).catch(function(err) {
+      msg.className = 'ref-claim-msg error';
+      msg.textContent = err.message;
+      btn.disabled = false;
+      btn.textContent = 'Submit';
+    });
+  };
 
   // --- Init: Fetch /me ---
   apiFetch('/api/v1/referrals/me').then(function(data) {

@@ -1177,6 +1177,31 @@ async def referrals_page(request: Request, db: AsyncSession = Depends(get_db)):
     })
 
 
+@router.get("/referrals/confirm-claim", include_in_schema=False)
+async def confirm_claim_page(request: Request, token: str = "", db: AsyncSession = Depends(get_db)):
+    """Handle the confirmation link clicked from the referrer's email."""
+    from api.services.referral_service import confirm_referral_claim
+
+    prefix = settings.URL_PREFIX or ""
+
+    if not token:
+        return templates.TemplateResponse("claim_result.html", {
+            "request": request,
+            "prefix": prefix,
+            "status": "invalid",
+            "config": settings,
+        })
+
+    result = await confirm_referral_claim(token, db)
+
+    return templates.TemplateResponse("claim_result.html", {
+        "request": request,
+        "prefix": prefix,
+        "status": result,
+        "config": settings,
+    })
+
+
 # ============================================================================
 # Admin Management — /admin/manage
 # ============================================================================

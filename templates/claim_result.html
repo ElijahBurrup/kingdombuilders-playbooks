@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Referral Claim | Kingdom Builders</title>
+<meta name="robots" content="noindex, nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lora:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --purple-deep: #1A0A2E;
+  --purple-dark: #2D1B4E;
+  --purple-mid: #4A2D7A;
+  --gold: #D4A843;
+  --gold-light: #E8C96A;
+  --white: #FFFFFF;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Lora', serif;
+  min-height: 100vh;
+  background: linear-gradient(165deg, var(--purple-deep) 0%, var(--purple-dark) 40%, var(--purple-mid) 100%);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+.claim-card {
+  max-width: 520px;
+  width: 100%;
+  padding: 48px 36px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(45,27,78,0.6) 0%, rgba(26,10,46,0.8) 100%);
+  border: 1px solid rgba(212,168,67,0.2);
+  text-align: center;
+}
+.claim-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+.claim-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.claim-title.success { color: #2ECC71; }
+.claim-title.error { color: #E74C3C; }
+.claim-title.info { color: var(--gold); }
+.claim-msg {
+  font-size: 16px;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 28px;
+}
+.claim-btn {
+  display: inline-block;
+  padding: 14px 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+  color: var(--purple-deep);
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.15s;
+}
+.claim-btn:hover { transform: translateY(-1px); }
+</style>
+</head>
+<body>
+
+{% if status == "confirmed" %}
+<div class="claim-card">
+  <div class="claim-icon">&#10003;</div>
+  <div class="claim-title success">Referral Confirmed</div>
+  <p class="claim-msg">You've confirmed the referral. The accounts are now linked and you'll earn commissions from their activity. They've been notified.</p>
+  <a href="{{ prefix }}/referrals" class="claim-btn">View My Referrals</a>
+</div>
+
+{% elif status == "expired" %}
+<div class="claim-card">
+  <div class="claim-icon">&#9200;</div>
+  <div class="claim-title error">Link Expired</div>
+  <p class="claim-msg">This confirmation link has expired. The person who submitted the claim can request a new one from their Refer & Earn page.</p>
+  <a href="{{ prefix }}/" class="claim-btn">Back to Catalog</a>
+</div>
+
+{% elif status == "already_processed" %}
+<div class="claim-card">
+  <div class="claim-icon">&#9989;</div>
+  <div class="claim-title info">Already Handled</div>
+  <p class="claim-msg">This referral claim has already been processed. No further action needed.</p>
+  <a href="{{ prefix }}/referrals" class="claim-btn">View My Referrals</a>
+</div>
+
+{% elif status == "already_attributed" %}
+<div class="claim-card">
+  <div class="claim-icon">&#128279;</div>
+  <div class="claim-title info">Already Linked</div>
+  <p class="claim-msg">This user already has a referral attribution from another source. No changes were made.</p>
+  <a href="{{ prefix }}/referrals" class="claim-btn">View My Referrals</a>
+</div>
+
+{% else %}
+<div class="claim-card">
+  <div class="claim-icon">&#10060;</div>
+  <div class="claim-title error">Invalid Link</div>
+  <p class="claim-msg">This confirmation link is not valid. It may have been used already or the URL may be incorrect.</p>
+  <a href="{{ prefix }}/" class="claim-btn">Back to Catalog</a>
+</div>
+{% endif %}
+
+</body>
+</html>

@@ -24,6 +24,7 @@ from api.models.referral import (
     Commission,
     Payout,
     Referral,
+    ReferralClaim,
     ReferralCode,
     ReferrerProfile,
 )
@@ -764,3 +765,229 @@ def run_monthly_payouts_sync() -> dict:
             return await process_monthly_payouts(db)
 
     return asyncio.run(_run())
+
+
+# ============================================================================
+# 13. Check if user has referral attribution
+# ============================================================================
+async def has_referral_attribution(user_id: UUID, db: AsyncSession) -> bool:
+    """Return True if *user_id* already has at least one Referral record as the referred party."""
+    result = await db.execute(
+        select(Referral.id).where(Referral.referred_id == user_id).limit(1)
+    )
+    return result.scalar_one_or_none() is not None
+
+
+# ============================================================================
+# 14. Create a referral claim
+# ============================================================================
+async def create_referral_claim(
+    claimant_id: UUID,
+    referral_code: str,
+    db: AsyncSession,
+) -> ReferralClaim:
+    """
+    Create a pending claim for *claimant_id* to be attributed to the owner
+    of *referral_code*.  Sends a confirmation email to the referrer.
+
+    Raises ValueError with a user-friendly message on any guard failure.
+    """
+    # Guard: claimant must not already be attributed
+    if await has_referral_attribution(claimant_id, db):
+        raise ValueError("You already have a referral attribution and cannot submit a claim.")
+
+    # Guard: no existing pending claim for this claimant
+    existing = await db.execute(
+        select(ReferralClaim).where(
+            and_(
+                ReferralClaim.claimant_id == claimant_id,
+                ReferralClaim.status == "pending",
+            )
+        )
+    )
+    if existing.scalar_one_or_none() is not None:
+        raise ValueError("You already have a pending referral claim. Please wait for it to be confirmed or expire.")
+
+    # Look up code
+    code_result = await db.execute(
+        select(ReferralCode).where(ReferralCode.code == referral_code.upper().strip())
+    )
+    code_row = code_result.scalar_one_or_none()
+    if code_row is None:
+        raise ValueError("Referral code not found. Please check the code and try again.")
+
+    referrer_id = code_row.user_id
+
+    # Self-referral guard
+    if referrer_id == claimant_id:
+        raise ValueError("You cannot claim your own referral code.")
+
+    # Generate a secure token
+    token = secrets.token_urlsafe(48)
+    expires_at = datetime.now(timezone.utc) + timedelta(days=7)
+
+    claim = ReferralClaim(
+        claimant_id=claimant_id,
+        referrer_id=referrer_id,
+        token=token,
+        status="pending",
+        expires_at=expires_at,
+    )
+    db.add(claim)
+    await db.flush()
+
+    # Send email to referrer
+    from api.services.email_service import send_referral_claim_request_email
+
+    referrer_result = await db.execute(
+        select(User).where(User.id == referrer_id)
+    )
+    referrer = referrer_result.scalar_one()
+
+    claimant_result = await db.execute(
+        select(User).where(User.id == claimant_id)
+    )
+    claimant = claimant_result.scalar_one()
+
+    claimant_name = claimant.display_name or claimant.email.split("@")[0]
+    # Mask email: first 2 chars + ***@domain
+    email = claimant.email
+    at_idx = email.index("@")
+    masked = email[:2] + "***" + email[at_idx:]
+
+    base = settings.BASE_URL.rstrip("/")
+    prefix = settings.URL_PREFIX
+    confirm_url = f"{base}{prefix}/referrals/confirm-claim?token={token}"
+
+    send_referral_claim_request_email(
+        referrer_email=referrer.email,
+        claimant_display_name=claimant_name,
+        claimant_email_masked=masked,
+        confirm_url=confirm_url,
+    )
+
+    await db.commit()
+    return claim
+
+
+# ============================================================================
+# 15. Confirm a referral claim (via token from email)
+# ============================================================================
+async def confirm_referral_claim(token: str, db: AsyncSession) -> str:
+    """
+    Confirm a pending referral claim identified by *token*.
+    Backfills the referral chain and notifies the claimant.
+
+    Returns a status message string.
+    """
+    result = await db.execute(
+        select(ReferralClaim).where(ReferralClaim.token == token)
+    )
+    claim = result.scalar_one_or_none()
+
+    if claim is None:
+        return "invalid"
+
+    if claim.status != "pending":
+        return "already_processed"
+
+    now = datetime.now(timezone.utc)
+    if claim.expires_at < now:
+        claim.status = "expired"
+        await db.commit()
+        return "expired"
+
+    # Guard: claimant must still not have attribution (race condition check)
+    if await has_referral_attribution(claim.claimant_id, db):
+        claim.status = "cancelled"
+        await db.commit()
+        return "already_attributed"
+
+    # Backfill the referral chain using process_referral_cookie logic
+    await _backfill_referral_chain(claim.claimant_id, claim.referrer_id, db)
+
+    claim.status = "confirmed"
+    claim.confirmed_at = now
+    await db.flush()
+
+    # Send confirmation to claimant
+    from api.services.email_service import send_referral_claim_confirmed_email
+
+    claimant_result = await db.execute(
+        select(User).where(User.id == claim.claimant_id)
+    )
+    claimant = claimant_result.scalar_one()
+
+    referrer_result = await db.execute(
+        select(User).where(User.id == claim.referrer_id)
+    )
+    referrer = referrer_result.scalar_one()
+
+    referrer_name = referrer.display_name or referrer.email.split("@")[0]
+    send_referral_claim_confirmed_email(
+        claimant_email=claimant.email,
+        referrer_display_name=referrer_name,
+    )
+
+    await db.commit()
+    return "confirmed"
+
+
+async def _backfill_referral_chain(
+    referred_id: UUID,
+    referrer_id: UUID,
+    db: AsyncSession,
+) -> None:
+    """
+    Create Referral rows for all 3 levels, same logic as process_referral_cookie
+    but takes a referrer_id directly instead of a code string.
+    """
+    root_referrer_id = referrer_id
+
+    # Level 1
+    level1 = Referral(
+        referrer_id=referrer_id,
+        referred_id=referred_id,
+        level=1,
+        root_referrer_id=root_referrer_id,
+    )
+    db.add(level1)
+
+    # Walk up: who referred the referrer?
+    l1_result = await db.execute(
+        select(Referral).where(
+            and_(Referral.referred_id == referrer_id, Referral.level == 1)
+        )
+    )
+    l1_parent = l1_result.scalar_one_or_none()
+
+    if l1_parent is not None:
+        level2 = Referral(
+            referrer_id=l1_parent.referrer_id,
+            referred_id=referred_id,
+            level=2,
+            root_referrer_id=root_referrer_id,
+        )
+        db.add(level2)
+
+        # Walk up again for level 3
+        l2_result = await db.execute(
+            select(Referral).where(
+                and_(
+                    Referral.referred_id == l1_parent.referrer_id,
+                    Referral.level == 1,
+                )
+            )
+        )
+        l2_parent = l2_result.scalar_one_or_none()
+
+        if l2_parent is not None:
+            level3 = Referral(
+                referrer_id=l2_parent.referrer_id,
+                referred_id=referred_id,
+                level=3,
+                root_referrer_id=root_referrer_id,
+            )
+            db.add(level3)
+
+    await db.flush()
