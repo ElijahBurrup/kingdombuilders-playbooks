@@ -93,14 +93,14 @@ async def seed():
         # Clean previous test data
         await db.execute(text(
             "DELETE FROM commissions WHERE referrer_id = :uid OR referred_id IN "
-            "(SELECT id FROM users WHERE email LIKE 'test.%.example.com')"
+            "(SELECT id FROM users WHERE email LIKE 'test.%@example.com')"
         ), {"uid": str(admin_id)})
         await db.execute(text("DELETE FROM payouts WHERE referrer_id = :uid"), {"uid": str(admin_id)})
         await db.execute(text(
             "DELETE FROM referrals WHERE referrer_id = :uid OR referred_id IN "
-            "(SELECT id FROM users WHERE email LIKE 'test.%.example.com')"
+            "(SELECT id FROM users WHERE email LIKE 'test.%@example.com')"
         ), {"uid": str(admin_id)})
-        await db.execute(text("DELETE FROM users WHERE email LIKE 'test.%.example.com'"))
+        await db.execute(text("DELETE FROM users WHERE email LIKE 'test.%@example.com'"))
         await db.flush()
         print("Cleaned previous test data.")
 
@@ -149,60 +149,79 @@ async def seed():
             db.add(ref)
 
         # Level 2: L1 users referred L2 users (distribute evenly)
+        # The referral table tracks (referrer, referred) pairs.
+        # For admin's view: admin->L1 at level 1, admin->L2 at level 2, admin->L3 at level 3
+        # For each L2 user, L1_user is their direct referrer (level 1 from L1's perspective)
         l2_idx = 0
         for i, l1_user in enumerate(l1_users):
-            # Each L1 user refers ~2-3 L2 users
             share = L2_COUNT // L1_COUNT + (1 if i < L2_COUNT % L1_COUNT else 0)
             for j in range(share):
                 if l2_idx >= len(l2_users):
                     break
                 l2_user = l2_users[l2_idx]
                 days_ago = 150 - (l2_idx * 3)
+                ts = NOW - timedelta(days=max(days_ago, 5))
 
-                # L1 user -> L2 user (level 1 for the L1 user)
+                # L1 user -> L2 user (L1 user's direct referral)
                 db.add(Referral(
                     referrer_id=l1_user.id,
                     referred_id=l2_user.id,
                     level=1,
-                    root_referrer_id=l1_user.id,
-                    created_at=NOW - timedelta(days=max(days_ago, 5)),
+                    root_referrer_id=admin_id,
+                    created_at=ts,
                 ))
-                # Admin -> L2 user (level 2 for admin)
+                # Admin -> L2 user at level 2 (admin is 2 hops away)
                 db.add(Referral(
                     referrer_id=admin_id,
                     referred_id=l2_user.id,
                     level=2,
                     root_referrer_id=admin_id,
-                    created_at=NOW - timedelta(days=max(days_ago, 5)),
+                    created_at=ts,
                 ))
                 l2_idx += 1
 
-        # Level 3: L2 users referred L3 users
+        # Level 3: some L2 users referred L3 users
         l3_idx = 0
         for i, l2_user in enumerate(l2_users):
             if l3_idx >= len(l3_users):
                 break
-            # Only some L2 users refer L3 users
             if i % 2 != 0:
                 continue
             l3_user = l3_users[l3_idx]
             days_ago = 90 - (l3_idx * 2)
+            ts = NOW - timedelta(days=max(days_ago, 3))
 
-            # L2 user -> L3 user (level 1 for L2)
+            # L2 user -> L3 user (L2 user's direct referral)
             db.add(Referral(
                 referrer_id=l2_user.id,
                 referred_id=l3_user.id,
                 level=1,
-                root_referrer_id=l2_user.id,
-                created_at=NOW - timedelta(days=max(days_ago, 3)),
+                root_referrer_id=admin_id,
+                created_at=ts,
             ))
-            # Admin -> L3 user (level 3 for admin)
+            # Find which L1 user referred this L2 user, they get level 2
+            l1_parent_idx = 0
+            count = 0
+            for k, l1u in enumerate(l1_users):
+                share = L2_COUNT // L1_COUNT + (1 if k < L2_COUNT % L1_COUNT else 0)
+                if count + share > i:
+                    l1_parent_idx = k
+                    break
+                count += share
+            db.add(Referral(
+                referrer_id=l1_users[l1_parent_idx].id,
+                referred_id=l3_user.id,
+                level=2,
+                root_referrer_id=admin_id,
+                created_at=ts,
+            ))
+            # Admin -> L3 user at level 3
             db.add(Referral(
                 referrer_id=admin_id,
                 referred_id=l3_user.id,
                 level=3,
                 root_referrer_id=admin_id,
-                created_at=NOW - timedelta(days=max(days_ago, 3)),
+                created_at=ts,
             ))
             l3_idx += 1
 
@@ -216,7 +235,8 @@ async def seed():
             if hash(str(u.id)) % 10 < 7:
                 sub = Subscription(
                     user_id=u.id,
-                    stripe_subscription_id=f"sub_test_{str(u.id)[:8]}",
+                    provider_subscription_id=f"sub_test_{str(u.id)[:8]}",
+                    payment_provider="stripe",
                     plan_type="monthly",
                     status="active",
                     price_cents=1000,
