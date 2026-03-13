@@ -486,6 +486,11 @@ def read_playbook(slug):
     if slug not in FREE_SLUGS:
         unlocked = session.get("admin_unlocked") or slug in session.get("unlocked_slugs", [])
         if not unlocked:
+            buy_mode = request.args.get("buy") == "1"
+            # Serve landing page if one exists (unless ?buy=1 → go to purchase gate)
+            landing_file = Path(__file__).parent / "static" / f"{slug}.html"
+            if landing_file.is_file() and not buy_mode:
+                return send_from_directory("static", f"{slug}.html")
             return render_template("purchase_gate.html",
                 slug=slug,
                 title=_slug_to_title(slug),
@@ -566,7 +571,7 @@ def unlock_playbook(slug):
     if code == ADMIN_CODE:
         session["admin_unlocked"] = True
         return redirect(url_for("main.read_playbook", slug=slug))
-    return redirect(url_for("main.read_playbook", slug=slug, error="1"))
+    return redirect(url_for("main.read_playbook", slug=slug, error="1", buy="1"))
 
 
 # --- Analytics Tracking ---

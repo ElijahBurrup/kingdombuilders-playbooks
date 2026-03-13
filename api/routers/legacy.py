@@ -995,9 +995,10 @@ async def read_playbook(request: Request, slug: str, db: AsyncSession = Depends(
 
         if not admin_unlocked and not db_access:
             prefix = settings.URL_PREFIX or ""
-            # Serve the landing/sales page if one exists for this slug
+            buy_mode = request.query_params.get("buy") == "1"
+            # Serve the landing/sales page if one exists (unless ?buy=1 → go to purchase gate)
             landing_file = STATIC_DIR / f"{slug}.html"
-            if landing_file.is_file():
+            if landing_file.is_file() and not buy_mode:
                 return FileResponse(landing_file)
             # Fallback to generic purchase gate
             return templates.TemplateResponse(
@@ -1028,6 +1029,45 @@ async def read_playbook(request: Request, slug: str, db: AsyncSession = Depends(
     html = file_path.read_text(encoding="utf-8")
     html = _inject_back_button_and_tracking(html, slug)
     return HTMLResponse(html)
+
+
+# ============================================================================
+# PDF download — /read/{slug}/pdf
+# ============================================================================
+@router.get("/read/{slug}/pdf", include_in_schema=False)
+async def download_pdf(request: Request, slug: str, format: str = "standard", db: AsyncSession = Depends(get_db)):
+    filename = SLUG_TO_FILE.get(slug)
+    if not filename:
+        raise HTTPException(status_code=404, detail="Playbook not found")
+
+    # Purchase gate for PDFs too
+    if slug not in FREE_SLUGS:
+        admin_unlocked = request.cookies.get("admin_unlocked") == "1"
+        user_id = get_session_user_id(request)
+        db_access = False
+        if user_id:
+            db_access = await _user_has_access(user_id, slug, db)
+        if not admin_unlocked and not db_access:
+            raise HTTPException(status_code=403, detail="Purchase required")
+
+    stem = Path(filename).stem
+    if format == "bookcut":
+        pdf_path = ASSETS_DIR / "pdf-bookcut" / f"{stem}_bookcut.pdf"
+    else:
+        pdf_path = ASSETS_DIR / "pdf" / f"{stem}.pdf"
+
+    if not pdf_path.is_file():
+        raise HTTPException(status_code=404, detail="PDF not yet generated")
+
+    download_name = f"{stem.replace('_', '-')}-KingdomBuildersAI.pdf"
+    if format == "bookcut":
+        download_name = f"{stem.replace('_', '-')}-BookCut-KingdomBuildersAI.pdf"
+
+    return FileResponse(
+        path=pdf_path,
+        filename=download_name,
+        media_type="application/pdf",
+    )
 
 
 # ============================================================================

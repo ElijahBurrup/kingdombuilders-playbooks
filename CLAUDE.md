@@ -23,12 +23,15 @@ Playbooks/
     config.py                   # Pydantic Settings (env-driven)
     database.py                 # Async SQLAlchemy engine + sessions
     dependencies.py             # get_db, get_current_user, get_admin_user
-    models/                     # 19 SQLAlchemy ORM tables
+    models/                     # SQLAlchemy ORM tables
+      activity.py               # ReadingProgress (last_chapter, downloaded, completed)
+      feedback.py               # TopicSuggestion, PlaybookFeedback
     schemas/                    # Pydantic request/response models
     routers/                    # FastAPI route modules
       auth.py                   # 10 endpoints (register, login, OAuth, etc.)
       catalog.py                # 6 endpoints (playbooks, categories, series)
-      legacy.py                 # Backward-compatible Flask routes
+      legacy.py                 # Reader, landing pages, checkout, admin, tracking
+      feedback.py               # Suggestions, ratings, progress, downloads
       payments.py               # Stripe checkout + subscription + webhook
       subscribe.py              # Email subscription (JSON API)
       admin.py                  # Admin CRUD (playbooks, users, promo codes)
@@ -36,32 +39,49 @@ Playbooks/
     utils/security.py           # JWT, bcrypt, token generation
     migrations/                 # Alembic migrations
   scripts/
-    seed_playbooks.py           # Seed 14 categories, 2 series, 35 playbooks
-    migrate_sqlite_to_pg.py     # SQLite → PostgreSQL data migration
+    seed_playbooks.py           # Seed 14 categories, 5 series, 51+ playbooks
+    seed_discovery.py           # Tags + connections for all playbooks
+    seed_paths.py               # Reading path definitions
+    generate_pull_quotes.py     # Playwright-based pull quote image generator
+    generate_pdfs.py            # Playwright-based PDF generator (standard + book-cut)
+    pdf_quality_test.py         # Validates PDF whitespace waste and page breaks
+    update_landing_pages.py     # Batch updater for landing page HTML
+    migrate_sqlite_to_pg.py     # SQLite → PostgreSQL data migration (one-time)
   app.py                        # Legacy Flask app (kept for reference)
   static/                       # Landing pages + catalog
   assets/                       # Full playbook content HTML
-  tests/                        # Playwright test suite
+    pdf/                        # Generated standard PDFs (8.5x11)
+    pdf-bookcut/                # Generated book-cut PDFs (two 5.5x8.5 per sheet)
+    pull-quotes/                # Generated pull quote images
+  tests/
+    playbooks.spec.js           # Playwright E2E test suite
+    readability-check.js        # Color contrast + formatting validator
 ```
 
 ## Key Files
 - `api/main.py` — FastAPI app factory with all router mounts, CORS, static files
-- `api/routers/legacy.py` — Backward-compatible routes (all 35 landing pages, reader, checkout, etc.)
+- `api/routers/legacy.py` — Reader routes, landing pages, purchase gate, checkout, tracking, admin, PDF download
+- `api/routers/feedback.py` — Topic suggestions, playbook ratings, user progress, download tracking
 - `api/config.py` — All env vars via Pydantic Settings
 - `api/database.py` — Async SQLAlchemy engine + Base class
-- `api/models/` — 19 ORM tables (User, Playbook, Category, Series, Purchase, Subscription, etc.)
-- `static/index.html` — Product catalog (main landing page)
-- `static/*.html` — Individual playbook landing pages
+- `api/models/activity.py` — ReadingProgress (scroll_percent, last_chapter, downloaded, completed)
+- `api/models/feedback.py` — TopicSuggestion, PlaybookFeedback
+- `static/index.html` — Product catalog (grid + table view with progress tracking, PDF download)
+- `static/*.html` — Individual playbook landing pages (sales pages with floating CTA)
 - `assets/*.html` — Full playbook content (served via /read/<slug>)
-- `tests/playbooks.spec.js` — Playwright test suite (173/173 passing)
+- `tests/playbooks.spec.js` — Playwright E2E test suite
+- `tests/readability-check.js` — Pre-deploy color contrast and formatting validator
+- `scripts/generate_pdfs.py` — Playwright PDF generator (standard + book-cut formats)
+- `scripts/pdf_quality_test.py` — PDF whitespace waste validator
 - `alembic.ini` + `api/migrations/` — Database migrations
 
 ## API Endpoints
-- **Legacy routes** (no prefix): `/`, `/thesalmonjourney`, `/read/{slug}`, `/subscribe`, `/create-checkout-session`, etc.
+- **Legacy routes** (no prefix): `/`, `/thesalmonjourney`, `/read/{slug}`, `/read/{slug}/pdf`, `/subscribe`, `/create-checkout-session`, etc.
 - **Auth API**: `/api/v1/auth/` — register, login, refresh, logout, google, verify-email, forgot-password, reset-password, me
 - **Catalog API**: `/api/v1/playbooks`, `/api/v1/categories`, `/api/v1/series`
 - **Payments API**: `/api/v1/stripe/checkout`, `/api/v1/stripe/subscription`, `/api/v1/stripe/portal`
-- **Admin API**: `/api/v1/admin/dashboard`, `/api/v1/admin/playbooks`, `/api/v1/admin/users`, etc.
+- **Feedback API**: `/api/v1/suggestions`, `/api/v1/feedback`, `/api/v1/feedback-summary`, `/api/v1/user/progress`, `/api/v1/track-download`
+- **Admin API**: `/api/v1/admin/dashboard`, `/api/v1/admin/playbooks`, `/api/v1/admin/users`, `/api/v1/admin/suggestions`, `/api/v1/admin/feedback-list`
 - **API Docs**: `/api/docs` (Swagger UI), `/api/redoc`
 
 ## Deployment
@@ -76,13 +96,15 @@ Playbooks/
 ## Database
 - **Local**: `playbooks_development` (PostgreSQL, postgres:postgres123@localhost:5432)
 - **Migrations**: `python -m alembic upgrade head`
-- **Seeding**: `python -m scripts.seed_playbooks` (14 categories, 5 series, 51 playbooks, admin user)
+- **Seeding**: `python -m scripts.seed_playbooks` (14 categories, 6 series, 58+ playbooks, admin user)
+- **Series**: AI Economy (3), Lay It Down (8), Dad Talks (7), A Process Model (6), plus standalone playbooks
 - **SQLite migration**: `python -m scripts.migrate_sqlite_to_pg` (one-time migration from old data)
 
 ## Pre-Commit Checklist
 1. Update this CLAUDE.md if architecture, key files, or deployment details changed
-2. Run locally: `uvicorn api.main:app --reload --port 5000`
-3. Run Playwright tests: `BASE_URL=http://localhost:5000 npx playwright test`
+2. Run readability test: `node tests/readability-check.js` (checks ALL assets/*.html)
+3. Run locally: `uvicorn api.main:app --reload --port 5000`
+4. Run Playwright tests: `BASE_URL=http://localhost:5000 npx playwright test`
 
 ## Architecture Notes
 - Each playbook has a landing page (static/*.html) and a full reader page (assets/*.html)
@@ -90,6 +112,36 @@ Playbooks/
 - New playbooks added via admin API or seed script (no more manual route registration)
 - "SetHut" command generates new playbooks as visual experiences (see full checklist below)
 - **NO HYPHENS/DASHES in playbook text**: Never use em dashes (—), en dashes (–), or hyphens (-) as punctuation in prose. Use commas, periods, or restructure sentences instead. This applies to ALL visible text content in assets/*.html files. CSS properties and HTML attributes with hyphens are fine.
+
+## Reading Progress & Downloads
+- **ReadingProgress** model tracks: `scroll_percent`, `last_chapter` (h2 heading text), `downloaded` (bool), `completed` (bool)
+- Chapter detection: JS tracks which `<h2>` heading the user has scrolled past, sends via `navigator.sendBeacon()` on exit
+- Completion: auto-set at 90%+ scroll depth
+- Progress API: `GET /api/v1/user/progress` returns status for all playbooks (not-started, opened, chapter name, downloaded, completed)
+- Table view in catalog shows chapter-level progress instead of generic "In Progress"
+
+## PDF Generation System
+- **Standard PDF** (8.5x11 portrait): `assets/pdf/{stem}.pdf` — preserves all visual formatting, smart page breaks
+- **Book-cut PDF** (landscape letter, two 5.5x8.5 pages per sheet): `assets/pdf-bookcut/{stem}_bookcut.pdf` — includes instruction cover page with cut/stack/bind diagram and materials list
+- Generated via Playwright `page.pdf()` with print CSS for `break-inside: avoid`, background preservation, animation removal
+- Book-cut uses `pypdf` for page imposition (two half-letter pages per landscape sheet)
+- Download route: `GET /read/{slug}/pdf?format=standard|bookcut` (respects purchase gate)
+- Scripts: `python -m scripts.generate_pdfs [file.html] [--force]`, `python -m scripts.pdf_quality_test [file.html]`
+- PDFs are committed to git (like pull quotes), not generated at runtime
+
+## Landing Page Design (static/*.html)
+- **Cover**: Shrunk to 60vh (not full-screen) so sales copy is visible sooner
+- **No hero CTA button** on cover — removed to reduce clutter
+- **Floating "Get the Playbook" button**: Fixed bottom-right gold pill (`class="fab-cta"`), always visible, links to `read/{slug}` (purchase gate)
+- **Bottom CTA section**: Dual pricing ($2.50 single / $10/mo archive) without a separate "READ THE PLAYBOOK" button (the floating CTA handles this)
+- **Purchase gate**: When non-free, non-purchased playbook accessed via `/read/{slug}`, serves the landing page (`static/{slug}.html`) if it exists, otherwise falls back to generic `purchase_gate.html`
+- **Batch updates**: Use `scripts/update_landing_pages.py` to apply structural changes across all 61 landing pages
+
+## Feedback & Suggestions System
+- **Topic suggestions**: Users can suggest new playbook topics via `POST /api/v1/suggestions` (rate-limited)
+- **Playbook ratings**: 1-5 star ratings + comments via `POST /api/v1/feedback`, triggered after 80%+ scroll
+- **Admin management**: `/admin/manage` page with two tabs (suggestions + feedback), status updates via PATCH
+- Models: `TopicSuggestion` (status: pending/created/saved/deleted), `PlaybookFeedback` (rating, comment, scroll_percent)
 
 ## Installation Videos (Cloudflare R2)
 Playbook "installation videos" are short AI-generated clips embedded in `assets/*.html` reader pages. They reinforce key concepts visually.
@@ -127,7 +179,12 @@ Each playbook needs matching `.install-video` CSS using that playbook's color pa
 - Auth endpoints: `POST /auth/google` (legacy) and `POST /api/v1/auth/google` (API)
 - Google Cloud Console must have: Authorized JS origins = `https://kingdombuilders.ai`, Authorized redirect URI = `https://kingdombuilders.ai/playbooks/auth/google`
 
-## Catalog Filter UI (static/index.html)
+## Catalog UI (static/index.html)
+- **Grid view**: Card-based layout with cover gradients, descriptions, and pricing
+- **Table view**: Sortable/filterable table with cover swatch, title (series label underneath), category, rating stars, reading status, PDF download button
+- **Reading status**: Fetched from `GET /api/v1/user/progress`, shows chapter name (e.g., "The Lever Rats") instead of generic "In Progress"
+- **PDF download**: Button in table calls `POST /api/v1/track-download` then opens `/read/{slug}/pdf`
+- **Series display**: Title shown without series prefix, "(Series Name X of N)" shown underneath
 - Filter panel auto-closes on selection via `closePanel()` JS function (critical for mobile UX)
 - `closePanel()` is called after every filter click: category pills, sub-pills, series buttons, thread buttons
 - Filter element sizes are intentionally large for touch targets (pills 0.92rem/12px 28px, series 0.88rem/12px 24px)
@@ -143,13 +200,24 @@ Every new playbook requires ALL of these steps. Do not skip any.
 - [ ] Include: cover with animated particles, 4 chapter headers, scenes, viz boxes, think boxes, grand quotes, before/after pairs, breathe gates, final test (10 click-to-reveal questions), footer with scripture
 - [ ] Include all standard JS: progress bar, chapter pill, scroll reveal (IntersectionObserver), final test click handlers
 - [ ] Unique color palette per playbook (CSS custom properties)
+- [ ] **Run readability test**: `node tests/readability-check.js assets/The_Title.html` — fix ALL failures before proceeding
+
+#### Formatting Rules (Mandatory)
+1. **Consistent margins**: ALL visual blocks (`.memory`, `.scene`, `.viz`, `.wisdom`, `.reflect`, `.dad-voice`, `.root-ck`, `.compare-table`, `.prompt`, `.final-test`) must use `margin: 40px 0`. No exceptions.
+2. **No deep nesting**: Maximum ONE level of card-in-card, and ONLY for small, contained content (under ~5 lines). For longer content, use a simple divider (border-top) instead of a nested card. Example: `.memory-lesson` uses `border-top` separator, NOT a bordered/backgrounded card inside `.memory-inner`.
+3. **Ribbon/scripture readability**: Ribbon backgrounds must have enough opacity to be clearly distinguishable (minimum `rgba(..., 0.08)`). Ribbon text must use `var(--text-light)` (#3A3A3A) or darker, NEVER `var(--text-muted)` (#6A6A6A) which is too faint.
+4. **No stacking 3+ heavy blocks**: Avoid placing more than 2 heavy visual blocks (`.memory`, `.viz`, `.scene`) back-to-back without a prose section or breathing room between them. Ribbons and root-checks are lightweight and do not count.
+5. **Color contrast**: ALL text must have a contrast ratio of at least 4.5:1 against its background. Dark text on dark backgrounds is a show-stopping bug. Light text on light backgrounds is a show-stopping bug. When in doubt, run the readability test.
 
 ### Step 2: Create Landing Page (`static/`)
 - [ ] Generate `static/the-slug.html` (sales page with cover, chapter previews, pricing CTA)
 - [ ] Match the playbook's unique color palette from Step 1
-- [ ] Include: cover badge (series name + part number), 4 chapter cards, insight quote, concept box, selling points grid
-- [ ] Include $2.50 single / $10/mo archive pricing + "READ THE PLAYBOOK" button linking to `read/the-slug`
+- [ ] Cover: `min-height:60vh` (NOT 100vh), cover badge, title, tagline, author — NO hero CTA button, NO cover-price span
+- [ ] Include: 4 chapter cards, insight quote, concept box, selling points grid
+- [ ] Bottom CTA section: dual pricing ($2.50 single / $10/mo archive) — NO "READ THE PLAYBOOK" button
+- [ ] Floating CTA: `<a href="read/the-slug" class="fab-cta">` with eye SVG icon, fixed bottom-right, gold pill (see `.fab-cta` CSS in existing landing pages)
 - [ ] Footer with same scripture as the reader page
+- [ ] Or run `python scripts/update_landing_pages.py` after creation to auto-apply the standard structure
 
 ### Step 3: Register Routes (`api/routers/legacy.py`)
 - [ ] Add to `LANDING_ROUTES` dict: `"/theslug": "the-slug.html"` (no hyphens in URL path)
@@ -189,19 +257,27 @@ This powers three features: constellation map (`/constellation`), end-of-playboo
 - [ ] File naming: `"Title Words 1.png"`, `"Title Words 1 wide.png"`, `"Title Words 2.png"`, etc.
 - [ ] `git add assets/pull-quotes/` to include generated images in the commit
 
-### Step 8: Reading Paths (`scripts/seed_paths.py`)
+### Step 8: Generate PDFs (`scripts/generate_pdfs.py`)
+**Must run locally (requires Playwright browser). Generated PDFs must be committed and pushed with the code.**
+- [ ] Run: `python -m scripts.generate_pdfs The_Title.html`
+- [ ] Verify standard PDF in `assets/pdf/The_Title.pdf` (8.5x11 portrait, backgrounds preserved)
+- [ ] Verify book-cut PDF in `assets/pdf-bookcut/The_Title_bookcut.pdf` (landscape, two half-letter pages per sheet, instruction cover page)
+- [ ] Run quality test: `python -m scripts.pdf_quality_test The_Title.html` (must pass <20% whitespace waste)
+- [ ] `git add assets/pdf/ assets/pdf-bookcut/` to include generated PDFs in the commit
+
+### Step 9: Reading Paths (`scripts/seed_paths.py`)
 - [ ] If part of a series: create a reading path for the series (slug, title, description, theme_tag, emoji, color)
 - [ ] Each step: `(playbook_slug, transition_text)` — first step has `None` for transition
 - [ ] Transition text explains WHY this playbook comes next in the journey
 - [ ] If playbook fits an existing theme path: add it to that path's steps list
 - [ ] If standalone: consider creating a new 3-4 step thematic path that includes it
 
-### Step 9: Commit & Push
-- [ ] `git add` all changed files: assets/*.html, assets/pull-quotes/*.png, static/*.html, static/index.html, api/routers/legacy.py, all seed scripts, CLAUDE.md
+### Step 10: Commit & Push
+- [ ] `git add` all changed files: assets/*.html, assets/pull-quotes/*.png, assets/pdf/*.pdf, assets/pdf-bookcut/*.pdf, static/*.html, static/index.html, api/routers/legacy.py, all seed scripts, CLAUDE.md
 - [ ] Commit with descriptive message
 - [ ] `git push origin master`
 
-### Step 10: Deploy & Seed Production
+### Step 11: Deploy & Seed Production
 **Use Render API to deploy and seed. Do NOT wait for auto-deploy or ask user to do it manually.**
 
 Trigger deploy:
@@ -236,11 +312,13 @@ curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
 
 **Render API Key**: `rnd_GE9eGvcpwlHI7VDn3Km0Fyj1TsRS`. Service ID: `srv-d6iir8ngi27c738ip9i0`.
 
-### Step 11: Verify Production
-- [ ] `GET /theslug` — landing page loads (not 404)
-- [ ] `GET /read/the-slug` — reader page loads (may show paywall, that's OK)
+### Step 12: Verify Production
+- [ ] `GET /theslug` — landing page loads with floating CTA (not 404)
+- [ ] `GET /read/the-slug` — reader page loads (may show paywall/landing page, that's OK)
+- [ ] `GET /read/the-slug/pdf` — standard PDF downloads (may require auth)
+- [ ] `GET /read/the-slug/pdf?format=bookcut` — book-cut PDF downloads (may require auth)
 - [ ] `GET /api/v1/discovery/chain/the-slug` — returns 3 recommendations (deeper, bridge, surprise)
-- [ ] `GET /` — catalog page shows new card, series filter works
+- [ ] `GET /` — catalog page shows new card, series filter works, table view has download button
 - [ ] `GET /constellation` — new node appears in graph
 - [ ] `GET /paths` — reading path includes new playbook (if applicable)
 
