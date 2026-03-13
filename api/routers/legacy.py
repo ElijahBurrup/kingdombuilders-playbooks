@@ -1102,7 +1102,7 @@ async def unlock_playbook(request: Request, slug: str, code: str = Form("")):
         response = HTMLResponse(content="", status_code=200)
         response.set_cookie("admin_unlocked", "1", max_age=86400, httponly=True, samesite="lax")
         return _redirect_with_cookie(f"{prefix}/read/{slug}", response)
-    return _redirect_with_cookie(f"{prefix}/read/{slug}?error=1")
+    return _redirect_with_cookie(f"{prefix}/read/{slug}?buy=1&error=1")
 
 
 # ============================================================================

@@ -127,7 +127,7 @@ test.describe("Catalog Page", () => {
 test.describe("Purchase Gate", () => {
   test("paid playbook shows purchase gate via ?buy=1", async ({ page }) => {
     const pb = PAID_PLAYBOOKS[0];
-    await page.goto(`/read/${pb.slug}?buy=1`);
+    await page.goto(`read/${pb.slug}?buy=1`);
 
     // Should show the gate, not the playbook
     await expect(page.locator(".gate-badge")).toContainText("Premium Playbook");
@@ -140,7 +140,7 @@ test.describe("Purchase Gate", () => {
 
   test("paid playbook without ?buy=1 shows landing page", async ({ page }) => {
     const pb = PAID_PLAYBOOKS[0];
-    const response = await page.goto(`/read/${pb.slug}`);
+    const response = await page.goto(`read/${pb.slug}`);
     expect(response.status()).toBe(200);
 
     // Should show landing page (fab-cta button), not purchase gate
@@ -150,7 +150,7 @@ test.describe("Purchase Gate", () => {
 
   test("free playbook bypasses purchase gate", async ({ page }) => {
     for (const pb of FREE_PLAYBOOKS) {
-      const response = await page.goto(`/read/${pb.slug}`);
+      const response = await page.goto(`read/${pb.slug}`);
       expect(response.status()).toBe(200);
 
       // Should NOT show purchase gate
@@ -165,7 +165,7 @@ test.describe("Purchase Gate", () => {
 
   test("admin code unlocks playbook", async ({ page }) => {
     const pb = PAID_PLAYBOOKS[0];
-    await page.goto(`/read/${pb.slug}?buy=1`);
+    await page.goto(`read/${pb.slug}?buy=1`);
 
     // Should see gate
     await expect(page.locator(".gate-badge")).toBeVisible();
@@ -186,7 +186,7 @@ test.describe("Purchase Gate", () => {
 
   test("wrong admin code shows error", async ({ page }) => {
     const pb = PAID_PLAYBOOKS[0];
-    await page.goto(`/read/${pb.slug}?buy=1`);
+    await page.goto(`read/${pb.slug}?buy=1`);
     await page.locator(".admin-toggle").click();
     await page.fill('input[name="code"]', "wrongcode");
     await Promise.all([
@@ -202,7 +202,7 @@ test.describe("Purchase Gate", () => {
   test("admin unlock persists across paid playbooks in same session", async ({ page }) => {
     // Unlock via first paid playbook
     const pb1 = PAID_PLAYBOOKS[0];
-    await page.goto(`/read/${pb1.slug}?buy=1`);
+    await page.goto(`read/${pb1.slug}?buy=1`);
     await page.locator(".admin-toggle").click();
     await page.fill('input[name="code"]', "elijahsentme");
     await Promise.all([
@@ -213,7 +213,7 @@ test.describe("Purchase Gate", () => {
 
     // Navigate to a different paid playbook — should be unlocked too
     const pb2 = PAID_PLAYBOOKS[1];
-    await page.goto(`/read/${pb2.slug}`);
+    await page.goto(`read/${pb2.slug}`);
     await expect(page.locator(".gate-badge")).not.toBeVisible();
     const html = await page.content();
     expect(html.length).toBeGreaterThan(10000);
@@ -225,7 +225,7 @@ test.describe("Purchase Gate", () => {
 test.describe("Stripe Checkout", () => {
   test("single purchase button posts to create-checkout-session", async ({ page }) => {
     const pb = PAID_PLAYBOOKS[0];
-    await page.goto(`/read/${pb.slug}?buy=1`);
+    await page.goto(`read/${pb.slug}?buy=1`);
 
     // Check form has correct hidden fields
     const singleForm = page.locator('form:has(input[value="single"])');
@@ -242,7 +242,7 @@ test.describe("Stripe Checkout", () => {
 
   test("checkout redirects to Stripe (or errors without key)", async ({ page }) => {
     const pb = PAID_PLAYBOOKS[0];
-    await page.goto(`/read/${pb.slug}?buy=1`);
+    await page.goto(`read/${pb.slug}?buy=1`);
 
     // Click the single purchase button and intercept the response
     const [response] = await Promise.all([
@@ -267,7 +267,7 @@ test.describe("Reader Pages", () => {
   // Free playbooks — direct access
   for (const pb of FREE_PLAYBOOKS) {
     test(`${pb.title} loads directly (free)`, async ({ page }) => {
-      await page.goto(`/read/${pb.slug}`);
+      await page.goto(`read/${pb.slug}`);
       await expect(page.locator(".gate-badge")).not.toBeVisible();
       const html = await page.content();
       expect(html.length).toBeGreaterThan(10000);
@@ -278,7 +278,7 @@ test.describe("Reader Pages", () => {
   test("all paid playbooks load after admin unlock", async ({ page }) => {
     // Unlock once via ?buy=1 to reach purchase gate
     const first = PAID_PLAYBOOKS[0];
-    await page.goto(`/read/${first.slug}?buy=1`);
+    await page.goto(`read/${first.slug}?buy=1`);
     await page.locator(".admin-toggle").click();
     await page.fill('input[name="code"]', "elijahsentme");
     await Promise.all([
@@ -288,7 +288,7 @@ test.describe("Reader Pages", () => {
 
     // Now check each paid playbook loads
     for (const pb of PAID_PLAYBOOKS) {
-      await page.goto(`/read/${pb.slug}`);
+      await page.goto(`read/${pb.slug}`);
       await expect(page.locator(".gate-badge")).not.toBeVisible();
       const html = await page.content();
       expect(html.length).toBeGreaterThan(10000);
@@ -301,7 +301,7 @@ test.describe("Reader Pages", () => {
 test.describe("Back Button", () => {
   test("playbook has fixed back button", async ({ page }) => {
     const pb = FREE_PLAYBOOKS[0];
-    await page.goto(`/read/${pb.slug}`);
+    await page.goto(`read/${pb.slug}`);
     const back = page.locator(".pb-back");
     await expect(back).toBeVisible();
     await expect(back).toContainText("Playbooks");
@@ -309,7 +309,7 @@ test.describe("Back Button", () => {
 
   test("back button navigates to catalog", async ({ page }) => {
     const pb = FREE_PLAYBOOKS[0];
-    await page.goto(`/read/${pb.slug}`);
+    await page.goto(`read/${pb.slug}`);
     await Promise.all([
       page.waitForURL("**/"),
       page.locator(".pb-back").click(),
@@ -338,7 +338,7 @@ test.describe("Full Flow: Catalog → Landing → Gate → Unlock → Read", () 
     await expect(page.locator(".fab-cta")).toBeVisible();
 
     // Step 3: Navigate directly to purchase gate (?buy=1)
-    await page.goto(`/read/${pb.slug}?buy=1`);
+    await page.goto(`read/${pb.slug}?buy=1`);
     await expect(page.locator(".gate-badge")).toBeVisible();
 
     // Step 4: Unlock
