@@ -23,6 +23,7 @@ from starlette.templating import Jinja2Templates
 
 from api.config import settings
 from api.database import get_db
+from api.models.activity import ReadingProgress
 from api.models.playbook import Playbook
 from api.models.user import User, OAuthAccount, VerificationToken
 from api.models.purchase import Purchase, Subscription, StripeCustomer
@@ -154,7 +155,6 @@ FREE_SLUGS = {
     "conductors-playbook",
     "lay-it-down",
     "the-mockingbirds-song",
-    "the-lifted-ceiling",
     "the-tide-pools-echo",
     "dad-talks-the-dopamine-drought",
     "the-mantis-shrimps-eye",
@@ -390,6 +390,7 @@ def _inject_back_button_and_tracking(html: str, slug: str) -> str:
   try {{ var m = location.pathname.match(/^(\\/[^\\/]+)\\/read\\//); if(m) prefix = m[1]; }} catch(e){{}}
   var startTime = Date.now();
   var tracked = false;
+  var lastChapter = null;
 
   fetch(prefix + '/api/track/view', {{
     method: 'POST',
@@ -405,13 +406,41 @@ def _inject_back_button_and_tracking(html: str, slug: str) -> str:
     return sh > 0 ? Math.round((st / sh) * 100) : 0;
   }}
 
+  /* Detect chapter headings (h2 elements) the user has scrolled past */
+  function getCurrentChapter() {{
+    var headings = document.querySelectorAll('.page h2, .section h2');
+    var current = null;
+    var scrollY = window.scrollY || window.pageYOffset;
+    for (var i = 0; i < headings.length; i++) {{
+      if (headings[i].getBoundingClientRect().top + scrollY <= scrollY + 120) {{
+        current = headings[i].textContent.trim();
+      }}
+    }}
+    return current;
+  }}
+
+  /* Update lastChapter on scroll */
+  var chapterTimer = null;
+  function trackChapter() {{
+    if (chapterTimer) return;
+    chapterTimer = setTimeout(function() {{
+      chapterTimer = null;
+      var ch = getCurrentChapter();
+      if (ch) lastChapter = ch;
+    }}, 300);
+  }}
+  window.addEventListener('scroll', trackChapter, {{passive: true}});
+
   function sendExit() {{
     if (tracked) return;
     tracked = true;
+    var ch = getCurrentChapter();
+    if (ch) lastChapter = ch;
     var data = JSON.stringify({{
       slug: slug,
       scroll_percent: getScrollPercent(),
-      time_spent_secs: Math.round((Date.now() - startTime) / 1000)
+      time_spent_secs: Math.round((Date.now() - startTime) / 1000),
+      last_chapter: lastChapter
     }});
     if (navigator.sendBeacon) {{
       navigator.sendBeacon(prefix + '/api/track/exit', new Blob([data], {{type: 'application/json'}}));
@@ -822,7 +851,122 @@ def _inject_back_button_and_tracking(html: str, slug: str) -> str:
 </script>
 """
 
-    return html.replace("</body>", back_button + chain_panel + email_slidein + rating_popup + tracking_script + ga_snippet + "</body>")
+    # ---- Print / PDF stylesheet + auto-print trigger ----
+    print_css = """
+<style id="pb-print-css">
+@media print {
+  @page {
+    size: letter;
+    margin: 16mm 14mm 20mm 14mm;
+  }
+
+  /* --- Hide interactive / overlay elements --- */
+  .pb-back, .chain-panel, .email-slidein, .rating-popup,
+  .pb-print-trigger, nav, .cookie-banner,
+  script, .spark, .ghost-noise { display: none !important; }
+
+  /* --- Base resets --- */
+  html { font-size: 16px; }
+  body { background: white !important; color: #1A1A1A !important;
+         -webkit-print-color-adjust: exact !important;
+         print-color-adjust: exact !important; }
+
+  /* --- Cover: full first page --- */
+  .cover { min-height: auto; padding: 60px 30px; break-after: page;
+           background: linear-gradient(175deg,#0A1218,#1A2A38 40%,#2A3A48 70%,#1A2A38) !important;
+           -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  .cover-art svg { filter: none !important; }
+  .cover * { animation: none !important; }
+
+  /* --- Page layout --- */
+  .page { max-width: 100%; padding: 0; }
+  .section { padding: 28px 0; }
+
+  /* --- Prevent these visual blocks from splitting across pages --- */
+  .scene, .memory, .wisdom, .dad-voice, .viz, .adventure,
+  .taste-recipe, .reflect, .compare-table, .final-test,
+  .prompt, .think, .insight, .mission, .root-ck, .root-check,
+  .gear, .meter, .cut, .ba-pair, .invert-pair, .gq,
+  .tl-item, .rm-item, .dd, .deep-dive, .inst, .id-card,
+  .ribbon, .flow { break-inside: avoid; }
+
+  /* --- Chapter headers start new page --- */
+  .ch-head { break-before: page; }
+
+  /* --- Finale: own page --- */
+  .finale { break-before: page; padding: 60px 20px;
+            background: linear-gradient(175deg,#0A1218,#1A2A38) !important;
+            -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  .finale * { animation: none !important; }
+
+  /* --- Footer --- */
+  footer { break-before: avoid; margin-top: 20px; }
+
+  /* --- Kill all animations --- */
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* --- Box styling: preserve backgrounds & borders --- */
+  .memory { background: linear-gradient(135deg,#0A1218,#1A2838) !important;
+             -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  .memory-inner { border-color: rgba(200,74,48,0.25) !important; }
+
+  .viz { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  .viz-glow, .memory-glow { display: none !important; }
+
+  .scene { box-shadow: none; border-left: 4px solid #C84A30; }
+  .wisdom { box-shadow: none; }
+  .dad-voice { box-shadow: none; }
+  .compare-table { box-shadow: none; }
+  .prompt { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  .reflect { box-shadow: none; }
+
+  .ribbon { break-inside: avoid; margin: 16px 0;
+            -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+  /* --- Breathing room between sections for natural page flow --- */
+  .section + .memory, .section + .viz, .section + .scene,
+  .section + .wisdom, .section + .compare-table,
+  .section + .ribbon, .section + .reflect, .section + .prompt,
+  .section + .dad-voice, .section + .root-ck {
+    margin-top: 20px;
+  }
+
+  /* --- Decorative page-break transition borders --- */
+  .memory, .viz, .scene, .wisdom, .dad-voice, .compare-table,
+  .prompt, .reflect, .adventure, .insight, .mission, .gear,
+  .think, .taste-recipe, .root-ck, .id-card, .ba-pair {
+    border-bottom: 2px solid rgba(123,79,191,0.08);
+    padding-bottom: 18px;
+    margin-bottom: 18px;
+  }
+
+  /* --- Prose: orphans/widows control --- */
+  .prose p { orphans: 3; widows: 3; }
+
+  /* --- Links: no underline in print --- */
+  a { text-decoration: none !important; }
+}
+</style>
+"""
+
+    pdf_trigger = """
+<script>
+(function(){
+  if(location.search.indexOf('pdf=1') === -1) return;
+  /* Hide injected overlays immediately */
+  document.querySelectorAll('.pb-back,.chain-panel,.email-slidein,.rating-popup').forEach(function(el){el.style.display='none'});
+  /* Wait for fonts & images, then trigger print */
+  window.addEventListener('load', function(){
+    setTimeout(function(){ window.print(); }, 600);
+  });
+})();
+</script>
+"""
+
+    return html.replace("</body>", back_button + chain_panel + email_slidein + rating_popup + print_css + pdf_trigger + tracking_script + ga_snippet + "</body>")
 
 
 @router.get("/read/{slug}", include_in_schema=False)
@@ -1532,9 +1676,53 @@ async def track_view(request: Request, db: AsyncSession = Depends(get_db)):
 
 
 @router.post("/api/track/exit", include_in_schema=False)
-async def track_exit(request: Request):
-    # Exit tracking is handled by the journey completion endpoint for logged-in users.
-    # This endpoint just acknowledges the beacon for backwards compatibility.
+async def track_exit(request: Request, db: AsyncSession = Depends(get_db)):
+    """Save reading progress (scroll_percent, last_chapter) for logged-in users."""
+    try:
+        data = await request.json()
+    except Exception:
+        return JSONResponse({"ok": True})
+
+    slug = data.get("slug", "").strip()
+    if not slug:
+        return JSONResponse({"ok": True})
+
+    user_id = get_session_user_id(request)
+    if not user_id:
+        return JSONResponse({"ok": True})
+
+    scroll_pct = data.get("scroll_percent", 0)
+    last_chapter = data.get("last_chapter")
+
+    result = await db.execute(select(Playbook).where(Playbook.slug == slug))
+    pb = result.scalar_one_or_none()
+    if not pb:
+        return JSONResponse({"ok": True})
+
+    rp_result = await db.execute(
+        select(ReadingProgress)
+        .where(ReadingProgress.user_id == user_id)
+        .where(ReadingProgress.playbook_id == pb.id)
+    )
+    rp = rp_result.scalar_one_or_none()
+
+    if rp:
+        rp.scroll_percent = max(rp.scroll_percent, float(scroll_pct))
+        if last_chapter:
+            rp.last_chapter = last_chapter
+        if scroll_pct >= 90:
+            rp.completed = True
+    else:
+        rp = ReadingProgress(
+            user_id=user_id,
+            playbook_id=pb.id,
+            scroll_percent=float(scroll_pct),
+            last_chapter=last_chapter,
+            completed=scroll_pct >= 90,
+        )
+        db.add(rp)
+
+    await db.commit()
     return JSONResponse({"ok": True})
 
 

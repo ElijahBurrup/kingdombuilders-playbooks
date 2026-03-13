@@ -13,6 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.config import settings
 from api.database import get_db
+from api.models.activity import DownloadLog, ReadingProgress
 from api.models.feedback import PlaybookFeedback, TopicSuggestion
 from api.models.playbook import Playbook
 from api.models.user import User
@@ -123,6 +124,95 @@ async def feedback_summary(
     for slug, avg, count in result.all():
         ratings[slug] = {"avg": round(float(avg), 1), "count": count}
     return {"ratings": ratings}
+
+
+@router.get("/user/progress")
+async def user_progress(
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+):
+    """Return reading progress for all playbooks for the logged-in user."""
+    user_id = get_session_user_id(request)
+    if not user_id:
+        return {"progress": {}}
+
+    result = await db.execute(
+        select(ReadingProgress, Playbook.slug)
+        .join(Playbook, ReadingProgress.playbook_id == Playbook.id)
+        .where(ReadingProgress.user_id == user_id)
+    )
+    progress = {}
+    for rp, slug in result.all():
+        if rp.completed:
+            status = "completed"
+        elif rp.downloaded:
+            status = "downloaded"
+        elif rp.last_chapter:
+            status = rp.last_chapter
+        elif rp.scroll_percent > 0:
+            status = "opened"
+        else:
+            status = "not-started"
+        progress[slug] = {
+            "status": status,
+            "scroll_percent": rp.scroll_percent,
+            "last_chapter": rp.last_chapter,
+            "completed": rp.completed,
+            "downloaded": rp.downloaded,
+        }
+    return {"progress": progress}
+
+
+class DownloadTrackRequest(BaseModel):
+    slug: str
+
+
+@router.post("/track-download")
+async def track_download(
+    body: DownloadTrackRequest,
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+):
+    """Record a PDF download and mark progress as downloaded."""
+    result = await db.execute(
+        select(Playbook).where(Playbook.slug == body.slug)
+    )
+    pb = result.scalar_one_or_none()
+
+    user_id = get_session_user_id(request)
+    ip = _get_client_ip(request)
+    ua = request.headers.get("user-agent")
+
+    # Log the download
+    dl = DownloadLog(
+        user_id=user_id,
+        playbook_id=pb.id if pb else None,
+        ip_address=ip,
+        user_agent=ua,
+        platform="pdf",
+    )
+    db.add(dl)
+
+    # Update reading progress for logged-in users
+    if user_id and pb:
+        rp_result = await db.execute(
+            select(ReadingProgress)
+            .where(ReadingProgress.user_id == user_id)
+            .where(ReadingProgress.playbook_id == pb.id)
+        )
+        rp = rp_result.scalar_one_or_none()
+        if rp:
+            rp.downloaded = True
+        else:
+            rp = ReadingProgress(
+                user_id=user_id,
+                playbook_id=pb.id,
+                downloaded=True,
+            )
+            db.add(rp)
+
+    await db.commit()
+    return {"ok": True}
 
 
 @router.post("/feedback")

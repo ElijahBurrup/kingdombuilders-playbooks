@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import ForeignKey, PrimaryKeyConstraint, UniqueConstraint, text
+from sqlalchemy import ForeignKey, PrimaryKeyConstraint, String, UniqueConstraint, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -69,6 +69,12 @@ class ReadingProgress(Base):
     )
     completed: Mapped[bool] = mapped_column(
         default=False, server_default=text("false")
+    )
+    downloaded: Mapped[bool] = mapped_column(
+        default=False, server_default=text("false")
+    )
+    last_chapter: Mapped[str | None] = mapped_column(
+        String, nullable=True
     )
     last_read_at: Mapped[datetime] = mapped_column(
         TIMESTAMPTZ, server_default=text("now()")

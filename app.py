@@ -100,7 +100,6 @@ FREE_SLUGS = {
     "conductors-playbook",
     "lay-it-down",
     "the-mockingbirds-song",
-    "the-lifted-ceiling",
     "the-tide-pools-echo",
     "dad-talks-the-dopamine-drought",
     "the-mantis-shrimps-eye",
