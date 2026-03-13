@@ -1770,7 +1770,7 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
       data.tags.forEach(function(t){ tagData[t.tag] = t.slugs; });
       cards.forEach(function(card){
         var href = card.getAttribute('href') || '';
-        var slug = href.replace(/^read\//, '');
+        var slug = href.replace(/^.*\/read\//, '').replace(/^read\//, '');
         var ct = [];
         data.tags.forEach(function(t){ if(t.slugs.indexOf(slug) !== -1) ct.push(t.tag); });
         card.setAttribute('data-tags', ct.join(' '));
@@ -1817,7 +1817,7 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
         var hotCards = [];
         cards.forEach(function(card){
           var href = card.getAttribute('href') || '';
-          var slug = href.replace(/^read\//, '');
+          var slug = href.replace(/^.*\/read\//, '').replace(/^read\//, '');
           if(hotSlugs.indexOf(slug) !== -1){
             card.classList.add('hot');
             var cover = card.querySelector('.card-cover');
@@ -1932,7 +1932,7 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
       seriesCounts[sk] = byKey[sk].length;
       byKey[sk].forEach(function(c, i){
         var href = c.getAttribute('href') || '';
-        var slug = href.replace(/^read\//, '');
+        var slug = href.replace(/^.*\/read\//, '').replace(/^read\//, '');
         seriesIndexes[slug] = i + 1;
       });
     });
@@ -1942,7 +1942,7 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
     tableRows = [];
     cards.forEach(function(c){
       var href = c.getAttribute('href') || '';
-      var slug = href.replace(/^read\//, '');
+      var slug = href.replace(/^.*\/read\//, '').replace(/^read\//, '');
       var rawTitle = (c.querySelector('.card-title') || {}).textContent || '';
       var seriesKey = c.getAttribute('data-series') || '';
       var seriesName = seriesInfo[seriesKey] ? seriesInfo[seriesKey].name : '';
