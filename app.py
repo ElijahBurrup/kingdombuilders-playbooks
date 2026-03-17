@@ -4,11 +4,18 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+import time
+from collections import defaultdict
 from flask import Flask, Blueprint, send_from_directory, redirect, request, render_template, url_for, jsonify, session
 
 import stripe
 import config
 from database import initialize_db
+
+# Rate limiter for admin unlock attempts (max 5 per IP per 60 seconds)
+_unlock_attempts: dict[str, list[float]] = defaultdict(list)
+_UNLOCK_RATE_LIMIT = 5
+_UNLOCK_RATE_WINDOW = 60
 
 stripe.api_key = config.STRIPE_SECRET_KEY
 
@@ -100,6 +107,7 @@ FREE_SLUGS = {
     "conductors-playbook",
     "lay-it-down",
     "the-mockingbirds-song",
+    "the-lifted-ceiling",
     "the-tide-pools-echo",
     "dad-talks-the-dopamine-drought",
     "the-mantis-shrimps-eye",
@@ -567,8 +575,18 @@ def read_playbook(slug):
 # --- Playbook Unlock (admin code) ---
 @bp.route("/read/<slug>/unlock", methods=["POST"])
 def unlock_playbook(slug):
+    ip = request.remote_addr or "unknown"
+    now = time.monotonic()
+    # Prune old attempts
+    _unlock_attempts[ip] = [t for t in _unlock_attempts[ip] if now - t < _UNLOCK_RATE_WINDOW]
+    if len(_unlock_attempts[ip]) >= _UNLOCK_RATE_LIMIT:
+        return redirect(url_for("main.read_playbook", slug=slug, error="rate_limited", buy="1"))
+    _unlock_attempts[ip].append(now)
+
     code = request.form.get("code", "").strip()
     if code == ADMIN_CODE:
+        # Clear failed attempts on success
+        _unlock_attempts.pop(ip, None)
         session["admin_unlocked"] = True
         return redirect(url_for("main.read_playbook", slug=slug))
     return redirect(url_for("main.read_playbook", slug=slug, error="1", buy="1"))
@@ -602,6 +620,8 @@ def track_exit():
 # --- Admin Dashboard ---
 @bp.route("/admin")
 def admin_dashboard():
+    if not session.get("admin_unlocked"):
+        return redirect(url_for("main.catalog"))
     from database import get_playbook_analytics
     analytics = get_playbook_analytics()
     return render_template("admin.html", analytics=analytics)

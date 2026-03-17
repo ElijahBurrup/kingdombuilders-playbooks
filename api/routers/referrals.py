@@ -5,8 +5,12 @@ Handles referral stats, tree visualization, earnings breakdown,
 payout history, and Stripe Connect onboarding for referrers.
 """
 
+import re
+import time
+from collections import defaultdict
+
 import stripe
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -34,6 +38,11 @@ from api.services.referral_service import (
 )
 
 router = APIRouter(prefix="/referrals", tags=["referrals"])
+
+# Rate limiter for claim submissions (per user_id)
+_claim_attempts: dict[str, list[float]] = defaultdict(list)
+_CLAIM_RATE_LIMIT = 3  # max attempts
+_CLAIM_RATE_WINDOW = 300  # 5 minutes
 
 
 # ============================================================================
@@ -237,11 +246,29 @@ async def submit_referral_claim(
     db: AsyncSession = Depends(get_db),
 ) -> dict:
     """Submit a referral claim with the referrer's code."""
-    code = body.get("referral_code", "").strip()
+    # Rate limit: 3 claims per user per 5 minutes
+    uid = str(current_user.id)
+    now = time.monotonic()
+    _claim_attempts[uid] = [t for t in _claim_attempts[uid] if now - t < _CLAIM_RATE_WINDOW]
+    if len(_claim_attempts[uid]) >= _CLAIM_RATE_LIMIT:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Too many claim attempts. Please try again later.",
+        )
+    _claim_attempts[uid].append(now)
+
+    code = body.get("referral_code", "").strip().upper()
     if not code:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Referral code is required.",
+        )
+
+    # Validate code format: exactly 6 alphanumeric characters
+    if not re.match(r"^[A-Z0-9]{6}$", code):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid referral code format.",
         )
 
     try:

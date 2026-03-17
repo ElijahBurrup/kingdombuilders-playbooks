@@ -34,6 +34,10 @@ def create_checkout_session():
     mode = data.get("mode", "single")  # single | monthly | yearly
     slug = data.get("slug", "")
 
+    # Block checkout for free playbooks (prevent accidental charges)
+    if mode == "single" and slug in FREE_SLUGS:
+        return redirect(f"{config.BASE_URL}/read/{slug}")
+
     # Pick the right price ID and Stripe mode
     if mode == "monthly":
         price_id = config.STRIPE_PRICE_MONTHLY

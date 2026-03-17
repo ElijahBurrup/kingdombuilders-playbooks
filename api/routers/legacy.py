@@ -250,6 +250,7 @@ LANDING_ROUTES: dict[str, str] = {
     "/theravenstrial": "the-ravens-trial.html",
     "/theliftedceiling": "the-lifted-ceiling.html",
     "/thenewearning": "the-new-earning.html",
+    "/thethreetables": "the-three-tables.html",
 }
 
 # ============================================================================
@@ -321,6 +322,7 @@ SLUG_TO_FILE: dict[str, str] = {
     "the-ravens-trial": "The_Ravens_Trial.html",
     "the-lifted-ceiling": "The_Lifted_Ceiling.html",
     "the-new-earning": "The_New_Earning.html",
+    "the-three-tables": "The_Three_Tables.html",
 }
 
 
@@ -979,7 +981,7 @@ def _inject_back_button_and_tracking(html: str, slug: str) -> str:
 (function(){
   if(location.search.indexOf('pdf=1') === -1) return;
   /* Hide injected overlays immediately */
-  document.querySelectorAll('.pb-back,.chain-panel,.email-slidein,.rating-popup').forEach(function(el){el.style.display='none'});
+  document.querySelectorAll('.pb-back,.chain-panel,.email-slidein,.rating-popup,.tts-fab').forEach(function(el){el.style.display='none'});
   /* Wait for fonts & images, then trigger print */
   window.addEventListener('load', function(){
     setTimeout(function(){ window.print(); }, 600);
@@ -988,7 +990,218 @@ def _inject_back_button_and_tracking(html: str, slug: str) -> str:
 </script>
 """
 
-    return html.replace("</body>", back_button + chain_panel + email_slidein + rating_popup + print_css + pdf_trigger + tracking_script + ga_snippet + "</body>")
+    tts_controls = """
+<style>
+.tts-fab{position:fixed;top:16px;right:16px;z-index:9999;display:flex;align-items:center;gap:0;
+  background:rgba(10,6,20,0.75);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,0.1);border-radius:50px;
+  font-family:'Poppins',Helvetica,sans-serif;font-size:0.7rem;font-weight:600;color:rgba(255,255,255,0.7);
+  cursor:pointer;transition:all 0.25s;box-shadow:0 2px 12px rgba(0,0,0,0.3);overflow:hidden}
+.tts-fab:hover{background:rgba(10,6,20,0.9);color:#E8C96A;border-color:rgba(212,168,67,0.3)}
+.tts-fab.playing{border-color:rgba(232,201,106,0.4);color:#E8C96A}
+.tts-fab.playing .tts-pulse{animation:tts-glow 1.5s ease-in-out infinite}
+@keyframes tts-glow{0%,100%{box-shadow:0 2px 12px rgba(0,0,0,0.3)}50%{box-shadow:0 2px 12px rgba(232,201,106,0.5)}}
+.tts-btn{display:flex;align-items:center;justify-content:center;padding:8px 12px;background:none;border:none;
+  color:inherit;cursor:pointer;font-family:inherit;font-size:inherit;font-weight:inherit}
+.tts-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tts-btn.active{color:#E8C96A}
+.tts-divider{width:1px;height:20px;background:rgba(255,255,255,0.15)}
+.tts-speed{padding:4px 10px;font-size:0.6rem;letter-spacing:1px;white-space:nowrap}
+.tts-progress{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,#7b4fbf,#E8C96A);
+  z-index:10000;transition:width 0.3s;pointer-events:none}
+@media print{.tts-fab,.tts-progress{display:none}}
+@media(max-width:600px){.tts-fab{top:auto;bottom:16px;right:16px}}
+</style>
+<div class="tts-progress" id="tts-progress" style="width:0"></div>
+<div class="tts-fab" id="tts-fab">
+  <button class="tts-btn" id="tts-play" title="Listen to playbook">
+    <svg id="tts-icon-play" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+    <svg id="tts-icon-pause" viewBox="0 0 24 24" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+  </button>
+  <div class="tts-divider"></div>
+  <button class="tts-btn" id="tts-stop" title="Stop">
+    <svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+  </button>
+  <div class="tts-divider"></div>
+  <button class="tts-btn" id="tts-skip" title="Skip forward">
+    <svg viewBox="0 0 24 24"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+  </button>
+  <div class="tts-divider"></div>
+  <button class="tts-btn tts-speed" id="tts-rate">1x</button>
+</div>
+<script>
+(function(){
+  if(!window.speechSynthesis) { document.getElementById('tts-fab').style.display='none'; return; }
+  var synth = window.speechSynthesis;
+  var fab = document.getElementById('tts-fab');
+  var playBtn = document.getElementById('tts-play');
+  var stopBtn = document.getElementById('tts-stop');
+  var skipBtn = document.getElementById('tts-skip');
+  var rateBtn = document.getElementById('tts-rate');
+  var iconPlay = document.getElementById('tts-icon-play');
+  var iconPause = document.getElementById('tts-icon-pause');
+  var progressBar = document.getElementById('tts-progress');
+
+  var chunks = [];
+  var currentIdx = 0;
+  var rate = 1.0;
+  var rates = [0.75, 1.0, 1.25, 1.5, 1.75, 2.0];
+  var rateIdx = 1;
+  var isPlaying = false;
+  var isPaused = false;
+  var preferredVoice = null;
+
+  /* Collect text chunks from playbook content */
+  function collectChunks() {
+    chunks = [];
+    var selectors = '.page, .section, .prose, .scene, .think, .viz-body, .prompt-body, .memory, .wisdom, .reflect, .adventure, .insight, .mission, .gear, .root-ck, .cover-content';
+    var sections = document.querySelectorAll(selectors);
+    if (sections.length === 0) sections = document.querySelectorAll('body');
+    sections.forEach(function(sec) {
+      var els = sec.querySelectorAll('h1, h2, h3, h4, h5, h6, p, li, blockquote, .ribbon, .gq, .grand-quote, figcaption, dt, dd');
+      els.forEach(function(el) {
+        var text = el.textContent.trim();
+        if (text.length > 2 && !text.startsWith('KingdomBuilders')) {
+          chunks.push({ text: text, el: el });
+        }
+      });
+    });
+    /* Deduplicate by removing chunks whose text is identical to the previous */
+    var deduped = [];
+    var seen = {};
+    chunks.forEach(function(c) {
+      if (!seen[c.text]) { deduped.push(c); seen[c.text] = true; }
+    });
+    chunks = deduped;
+  }
+
+  /* Pick a good English voice */
+  function pickVoice() {
+    var voices = synth.getVoices();
+    /* Prefer natural/enhanced voices */
+    var pref = voices.filter(function(v) { return v.lang.startsWith('en') && /natural|enhanced|premium/i.test(v.name); });
+    if (pref.length > 0) { preferredVoice = pref[0]; return; }
+    /* Fallback to any English voice */
+    var en = voices.filter(function(v) { return v.lang.startsWith('en'); });
+    if (en.length > 0) preferredVoice = en[0];
+  }
+  synth.addEventListener('voiceschanged', pickVoice);
+  pickVoice();
+
+  function updateProgress() {
+    if (chunks.length === 0) { progressBar.style.width = '0'; return; }
+    var pct = Math.round((currentIdx / chunks.length) * 100);
+    progressBar.style.width = pct + '%';
+  }
+
+  function highlightChunk(idx) {
+    /* Remove previous highlight */
+    var prev = document.querySelector('.tts-active');
+    if (prev) { prev.style.outline = ''; prev.classList.remove('tts-active'); }
+    if (idx < chunks.length && chunks[idx].el) {
+      var el = chunks[idx].el;
+      el.classList.add('tts-active');
+      el.style.outline = '2px solid rgba(232,201,106,0.4)';
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+  function speakChunk(idx) {
+    if (idx >= chunks.length) { stopAll(); return; }
+    currentIdx = idx;
+    updateProgress();
+    highlightChunk(idx);
+
+    var utt = new SpeechSynthesisUtterance(chunks[idx].text);
+    utt.rate = rate;
+    if (preferredVoice) utt.voice = preferredVoice;
+    utt.onend = function() {
+      if (isPlaying && !isPaused) speakChunk(idx + 1);
+    };
+    utt.onerror = function(e) {
+      if (e.error !== 'canceled' && isPlaying) speakChunk(idx + 1);
+    };
+    synth.speak(utt);
+  }
+
+  function startPlaying() {
+    if (chunks.length === 0) collectChunks();
+    if (chunks.length === 0) return;
+    isPlaying = true; isPaused = false;
+    fab.classList.add('playing');
+    iconPlay.style.display = 'none';
+    iconPause.style.display = '';
+    speakChunk(currentIdx);
+  }
+
+  function pausePlaying() {
+    isPaused = true;
+    synth.pause();
+    fab.classList.remove('playing');
+    iconPlay.style.display = '';
+    iconPause.style.display = 'none';
+  }
+
+  function resumePlaying() {
+    isPaused = false;
+    fab.classList.add('playing');
+    iconPlay.style.display = 'none';
+    iconPause.style.display = '';
+    synth.resume();
+  }
+
+  function stopAll() {
+    isPlaying = false; isPaused = false;
+    synth.cancel();
+    currentIdx = 0;
+    fab.classList.remove('playing');
+    iconPlay.style.display = '';
+    iconPause.style.display = 'none';
+    updateProgress();
+    highlightChunk(-1);
+  }
+
+  playBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (!isPlaying) { startPlaying(); }
+    else if (isPaused) { resumePlaying(); }
+    else { pausePlaying(); }
+  });
+
+  stopBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    stopAll();
+  });
+
+  skipBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (!isPlaying) return;
+    synth.cancel();
+    currentIdx = Math.min(currentIdx + 1, chunks.length);
+    speakChunk(currentIdx);
+  });
+
+  rateBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    rateIdx = (rateIdx + 1) % rates.length;
+    rate = rates[rateIdx];
+    rateBtn.textContent = rate + 'x';
+    /* Restart current chunk at new speed if playing */
+    if (isPlaying && !isPaused) {
+      synth.cancel();
+      speakChunk(currentIdx);
+    }
+  });
+
+  /* Chrome workaround: synth stops after ~15s, keep-alive */
+  setInterval(function() {
+    if (synth.speaking && !synth.paused) { synth.pause(); synth.resume(); }
+  }, 10000);
+})();
+</script>
+"""
+
+    return html.replace("</body>", back_button + chain_panel + email_slidein + rating_popup + tts_controls + print_css + pdf_trigger + tracking_script + ga_snippet + "</body>")
 
 
 @router.get("/read/{slug}", include_in_schema=False)
@@ -1953,65 +2166,68 @@ async def stripe_webhook(request: Request, db: AsyncSession = Depends(get_db)):
     event_type = event["type"]
     obj = event["data"]["object"]
 
-    if event_type == "checkout.session.completed":
-        await _handle_checkout_completed(obj, db)
-    elif event_type in ("customer.subscription.created", "customer.subscription.updated"):
-        await _handle_subscription_updated(obj, db)
-    elif event_type == "customer.subscription.deleted":
-        await _handle_subscription_deleted(obj, db)
-    elif event_type == "invoice.paid":
-        # Subscription renewal — process referral commissions
-        sub_id = obj.get("subscription")
-        if sub_id:
-            try:
+    try:
+        if event_type == "checkout.session.completed":
+            await _handle_checkout_completed(obj, db)
+        elif event_type in ("customer.subscription.created", "customer.subscription.updated"):
+            await _handle_subscription_updated(obj, db)
+        elif event_type == "customer.subscription.deleted":
+            await _handle_subscription_deleted(obj, db)
+        elif event_type == "invoice.paid":
+            # Subscription renewal — process referral commissions
+            sub_id = obj.get("subscription")
+            if sub_id:
+                try:
+                    result = await db.execute(
+                        select(Subscription).where(
+                            Subscription.provider_subscription_id == sub_id
+                        )
+                    )
+                    sub = result.scalar_one_or_none()
+                    if sub and sub.status == "active":
+                        billing_month = datetime.now(timezone.utc).strftime("%Y-%m")
+                        await process_commissions(
+                            referred_user_id=sub.user_id,
+                            billing_period=billing_month,
+                            db=db,
+                            subscription_id=sub.id,
+                            plan_type=sub.plan_type,
+                        )
+                except Exception as e:
+                    print(f"Invoice commission processing failed (non-critical): {e}")
+        elif event_type == "charge.refunded":
+            # Mark matching purchase as refunded
+            payment_intent_id = obj.get("payment_intent")
+            if payment_intent_id:
                 result = await db.execute(
-                    select(Subscription).where(
-                        Subscription.provider_subscription_id == sub_id
+                    select(Purchase).where(
+                        Purchase.provider_payment_id.contains(payment_intent_id)
                     )
                 )
-                sub = result.scalar_one_or_none()
-                if sub and sub.status == "active":
-                    billing_month = datetime.now(timezone.utc).strftime("%Y-%m")
-                    await process_commissions(
-                        referred_user_id=sub.user_id,
-                        billing_period=billing_month,
+                for p in result.scalars().all():
+                    p.status = "refunded"
+                # Also check by provider_session_id → payment_intent mapping
+                result2 = await db.execute(
+                    select(Purchase).where(
+                        Purchase.provider_payment_id == f"single:{payment_intent_id}"
+                    )
+                )
+                for p in result2.scalars().all():
+                    p.status = "refunded"
+                await db.commit()
+                # Handle referral commission refunds
+                try:
+                    billing_period = f"one-time:{payment_intent_id}"
+                    await handle_refund_commissions(
+                        purchase_id=None,
+                        subscription_id=None,
+                        billing_period=billing_period,
                         db=db,
-                        subscription_id=sub.id,
-                        plan_type=sub.plan_type,
                     )
-            except Exception as e:
-                print(f"Invoice commission processing failed (non-critical): {e}")
-    elif event_type == "charge.refunded":
-        # Mark matching purchase as refunded
-        payment_intent_id = obj.get("payment_intent")
-        if payment_intent_id:
-            result = await db.execute(
-                select(Purchase).where(
-                    Purchase.provider_payment_id.contains(payment_intent_id)
-                )
-            )
-            for p in result.scalars().all():
-                p.status = "refunded"
-            # Also check by provider_session_id → payment_intent mapping
-            result2 = await db.execute(
-                select(Purchase).where(
-                    Purchase.provider_payment_id == f"single:{payment_intent_id}"
-                )
-            )
-            for p in result2.scalars().all():
-                p.status = "refunded"
-            await db.commit()
-            # Handle referral commission refunds
-            try:
-                billing_period = f"one-time:{payment_intent_id}"
-                await handle_refund_commissions(
-                    purchase_id=None,
-                    subscription_id=None,
-                    billing_period=billing_period,
-                    db=db,
-                )
-            except Exception as e:
-                print(f"Refund commission handling failed (non-critical): {e}")
+                except Exception as e:
+                    print(f"Refund commission handling failed (non-critical): {e}")
+    except Exception as e:
+        print(f"Stripe webhook handler error for {event_type}: {e}")
 
     return {"status": "ok"}
 
@@ -2108,15 +2324,19 @@ async def _handle_checkout_completed(session: dict, db: AsyncSession) -> None:
     except Exception as e:
         print(f"Commission processing failed (non-critical): {e}")
 
-    # Send delivery email with playbook details
+    # Send delivery email with playbook details (in background thread
+    # so we don't block the event loop and cause Stripe webhook timeouts)
     try:
+        import asyncio as _aio
         from api.services.email_service import send_delivery_email
         slug = metadata.get("slug", "")
         # Look up playbook title
         from api.models.playbook import Playbook as _PB
         pb_result = await db.execute(select(_PB.title).where(_PB.slug == slug))
         pb_title = pb_result.scalar_one_or_none() or _slug_to_title(slug)
-        send_delivery_email(customer_email, "", playbook_title=pb_title, playbook_slug=slug)
+        _aio.get_running_loop().run_in_executor(
+            None, send_delivery_email, customer_email, "", pb_title, slug
+        )
     except Exception as e:
         print(f"Delivery email failed: {e}")
 

@@ -6,6 +6,7 @@ customer portal sessions, and an expanded webhook that processes subscription
 lifecycle events in addition to one-time purchases.
 """
 
+import asyncio
 import secrets
 from datetime import datetime, timedelta, timezone
 
@@ -80,11 +81,21 @@ async def _get_or_create_stripe_customer(
 # GET /stripe/check-purchase — poll for purchase confirmation
 # ============================================================================
 @router.get("/check-purchase")
-async def check_purchase(session_id: str, db: AsyncSession = Depends(get_db)):
+async def check_purchase(
+    session_id: str,
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+):
     """Lightweight endpoint for the success page to poll until the webhook
-    has created the Purchase record."""
+    has created the Purchase record.  Requires authentication so attackers
+    cannot probe arbitrary session IDs."""
+    user_id = await _get_current_user_id(request)
+
     result = await db.execute(
-        select(Purchase).where(Purchase.provider_session_id == session_id)
+        select(Purchase).where(
+            Purchase.provider_session_id == session_id,
+            Purchase.user_id == user_id,
+        )
     )
     purchase = result.scalar_one_or_none()
     if purchase:
@@ -237,20 +248,23 @@ async def stripe_webhook(
     event_type = event["type"]
     data_object = event["data"]["object"]
 
-    if event_type == "checkout.session.completed":
-        await _handle_checkout_completed(data_object, db)
-    elif event_type == "customer.subscription.created":
-        await _handle_subscription_event("created", data_object, db)
-    elif event_type == "customer.subscription.updated":
-        await _handle_subscription_event("updated", data_object, db)
-    elif event_type == "customer.subscription.deleted":
-        await _handle_subscription_event("deleted", data_object, db)
-    elif event_type == "invoice.paid":
-        await _handle_invoice_paid(data_object, db)
-    elif event_type == "invoice.payment_failed":
-        await _handle_invoice_payment_failed(data_object, db)
-    elif event_type == "charge.refunded":
-        await _handle_charge_refunded(data_object, db)
+    try:
+        if event_type == "checkout.session.completed":
+            await _handle_checkout_completed(data_object, db)
+        elif event_type == "customer.subscription.created":
+            await _handle_subscription_event("created", data_object, db)
+        elif event_type == "customer.subscription.updated":
+            await _handle_subscription_event("updated", data_object, db)
+        elif event_type == "customer.subscription.deleted":
+            await _handle_subscription_event("deleted", data_object, db)
+        elif event_type == "invoice.paid":
+            await _handle_invoice_paid(data_object, db)
+        elif event_type == "invoice.payment_failed":
+            await _handle_invoice_payment_failed(data_object, db)
+        elif event_type == "charge.refunded":
+            await _handle_charge_refunded(data_object, db)
+    except Exception as e:
+        print(f"Stripe webhook handler error for {event_type}: {e}")
 
     return {"status": "ok"}
 
@@ -296,12 +310,14 @@ async def _handle_checkout_completed(session: dict, db: AsyncSession) -> None:
         db.add(purchase)
         await db.commit()
 
-        # Send delivery email and schedule follow-ups
+        # Send delivery email and schedule follow-ups (in background thread
+        # so we don't block the event loop and cause Stripe webhook timeouts)
         from api.services.email_service import send_delivery_email
         from api.services.scheduler_service import schedule_followup_emails
 
-        send_delivery_email(customer_email, download_token)
-        schedule_followup_emails(customer_email, download_token)
+        loop = asyncio.get_running_loop()
+        loop.run_in_executor(None, send_delivery_email, customer_email, download_token)
+        loop.run_in_executor(None, schedule_followup_emails, customer_email, download_token)
 
     # For subscription checkouts, the subscription.created event handles it
 
