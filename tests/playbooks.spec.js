@@ -82,6 +82,7 @@ const PLAYBOOKS = [
   { title: "The Raven's Trial", slug: "the-ravens-trial", tag: "Technology" },
   { title: "The Lifted Ceiling", slug: "the-lifted-ceiling", tag: "Finance", free: true },
   { title: "The New Earning", slug: "the-new-earning", tag: "Finance" },
+  { title: "The Three Tables", slug: "the-three-tables", tag: "Faith" },
 ];
 
 const FREE_PLAYBOOKS = PLAYBOOKS.filter((pb) => pb.free);

@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Three Tables | Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1A0A0E;
+  --ink-mid:#2E1214;
+  --ink-soft:#3D2228;
+  --steel:#5A3840;
+  --steel-light:#8A6870;
+  --fog:#B09098;
+  --wine:#8B2252;
+  --wine-mid:rgba(139,34,82,0.18);
+  --wine-pale:rgba(139,34,82,0.07);
+  --bread:#D4A030;
+  --bread-mid:rgba(212,160,48,0.18);
+  --ash:#E85050;
+  --ash-mid:rgba(232,80,80,0.15);
+  --green:#2D8A4E;
+  --green-mid:rgba(45,138,78,0.15);
+  --cream:#FFF8F0;
+  --cream-warm:#FFF4E8;
+  --paper:#FFFBF5;
+  --white:#FFFFFF;
+  --radius:10px;
+  --shadow:0 2px 16px rgba(26,10,14,0.09);
+  --shadow-deep:0 8px 40px rgba(26,10,14,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.78;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.label{font-family:'Poppins',sans-serif}
+.page{max-width:700px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--ink-mid);font-weight:600;font-family:'Poppins',sans-serif}
+
+/* === COVER === */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(160deg,#0A0408 0%,#1A0A0E 40%,#120610 100%);position:relative;overflow:hidden}
+.cover-grain{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:0.5}
+.cover-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 25%,rgba(10,4,8,0.7) 100%)}
+.wine-ring{position:absolute;border-radius:50%;border:1px solid rgba(139,34,82,0.06);animation:wine-expand 7s ease-out infinite}
+.wine-ring:nth-child(3){width:180px;height:180px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:0s}
+.wine-ring:nth-child(4){width:360px;height:360px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:1.8s}
+.wine-ring:nth-child(5){width:540px;height:540px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:3.6s}
+@keyframes wine-expand{0%{opacity:0.6;transform:translate(-50%,-50%) scale(0.85)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.25)}}
+.cover-content{position:relative;z-index:2;padding:60px 24px 40px}
+.cover-badge{display:inline-block;padding:5px 18px;border:1px solid rgba(139,34,82,0.3);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.67rem;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:var(--wine);margin-bottom:40px;background:rgba(139,34,82,0.07)}
+.cover h1{font-family:'Poppins',sans-serif;font-size:clamp(3rem,9vw,5.5rem);font-weight:300;color:#FFFFFF;line-height:0.95;margin-bottom:6px;letter-spacing:-0.02em}
+.cover h1 em{display:block;color:var(--wine);font-style:normal;font-weight:700;font-size:0.5em;margin-top:12px;letter-spacing:0.01em}
+.cover-sub{font-family:'Lora',Georgia,serif;font-size:clamp(0.95rem,2.5vw,1.15rem);font-style:italic;color:rgba(255,255,255,0.45);margin-top:28px;line-height:1.7;max-width:480px;margin-left:auto;margin-right:auto}
+.cover-sub em{color:rgba(139,34,82,0.85);font-style:normal;font-weight:600}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.5rem;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-top:52px}
+.cover-verse{margin-top:28px;padding:14px 24px;display:inline-block;background:rgba(139,34,82,0.06);border:1px solid rgba(139,34,82,0.12);border-radius:8px;font-family:'Lora',Georgia,serif;font-size:0.82rem;font-style:italic;color:rgba(255,255,255,0.35);line-height:1.6}
+.cover-art{width:200px;height:190px;margin:0 auto 28px;display:block;animation:cover-breathe 5s ease-in-out infinite}
+.cover-art svg{width:100%;height:100%;filter:drop-shadow(0 0 24px rgba(139,34,82,0.2)) drop-shadow(0 0 50px rgba(139,34,82,0.08))}
+@keyframes cover-breathe{0%,100%{transform:scale(1);opacity:0.9}50%{transform:scale(1.04);opacity:1}}
+
+/* === CHAPTER HEADS === */
+.ch-head{background:linear-gradient(160deg,#0A0408 0%,#1A0A12 100%);padding:72px 24px 52px;position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 50%,rgba(139,34,82,0.04) 0%,transparent 50%)}
+.ch-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 5%,var(--wine) 50%,transparent 95%);opacity:0.5}
+.ch-head .page{position:relative;z-index:2}
+.ch-num{font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--wine);opacity:0.9;margin-bottom:8px}
+.ch-title{font-family:'Poppins',sans-serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:700;color:#FFFFFF;margin:10px 0 8px;letter-spacing:-0.01em}
+.ch-sub{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:rgba(212,160,48,0.7)}
+
+/* === RIBBON (Scripture) === */
+.ribbon{text-align:center;padding:20px 24px;background:var(--cream-warm);border-top:1px solid rgba(26,10,14,0.06);border-bottom:1px solid rgba(26,10,14,0.06)}
+.ribbon p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:var(--steel-light);max-width:540px;margin:0 auto;line-height:1.6}
+
+/* === MISSION === */
+.mission{text-align:center;padding:36px 32px;margin:36px 0;background:linear-gradient(140deg,rgba(139,34,82,0.08),rgba(139,34,82,0.03));border-radius:14px;border:2px solid rgba(139,34,82,0.2);box-shadow:0 0 0 1px rgba(139,34,82,0.06),var(--shadow)}
+.mission-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--wine);margin-bottom:12px}
+.mission p{font-family:'Poppins',sans-serif;font-size:clamp(0.88rem,2.2vw,1.05rem);font-weight:500;color:var(--ink-mid);line-height:1.65}
+.mission p em{color:var(--wine);font-style:normal;font-weight:700}
+
+/* === INSIGHT === */
+.insight{margin:30px 0;padding:28px 32px;background:linear-gradient(140deg,#1A0A0E,#1A0A14);border-radius:14px;border:2px solid rgba(139,34,82,0.25);border-left:5px solid var(--wine);position:relative;overflow:hidden;box-shadow:var(--shadow-deep)}
+.insight::before{content:'';position:absolute;top:-40%;right:-10%;width:200px;height:200px;background:radial-gradient(circle,rgba(139,34,82,0.07) 0%,transparent 70%);border-radius:50%}
+.insight p{font-family:'Lora',Georgia,serif;font-size:1.02rem;font-style:italic;color:rgba(255,255,255,0.9);line-height:1.72;position:relative;z-index:2}
+.insight em{color:var(--wine);font-style:normal;font-weight:700}
+
+/* === GUIDED QUOTE === */
+.gq{margin:32px 0;text-align:center;padding:32px 24px;position:relative;background:linear-gradient(160deg,rgba(139,34,82,0.04),rgba(139,34,82,0.07));border-radius:14px;border:1.5px solid rgba(139,34,82,0.15)}
+.gq::before,.gq::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:48px;height:2px;background:linear-gradient(90deg,transparent,var(--wine),transparent)}
+.gq::before{top:0}.gq::after{bottom:0}
+.gq p{font-family:'Lora',Georgia,serif;font-size:1.05rem;font-style:italic;color:var(--ink-soft);line-height:1.6;max-width:520px;margin:0 auto}
+
+/* === SCENE ANALYSIS === */
+.scene{margin:36px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(139,34,82,0.25);box-shadow:var(--shadow-deep);background:var(--white)}
+.scene-question{padding:20px 26px 16px;background:linear-gradient(135deg,rgba(139,34,82,0.1),rgba(139,34,82,0.04));border-bottom:1px solid rgba(139,34,82,0.12);font-family:'Poppins',sans-serif;font-size:0.92rem;font-weight:500;color:var(--ink-mid);line-height:1.6;font-style:italic}
+.scene-question svg{width:18px;height:18px;stroke:var(--wine);fill:none;stroke-width:2;vertical-align:middle;margin-right:6px;margin-top:-2px}
+.scene-head{padding:14px 26px 10px;background:linear-gradient(135deg,rgba(139,34,82,0.06),rgba(139,34,82,0.02));border-bottom:1px solid rgba(139,34,82,0.08)}
+.scene-title{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:700;color:var(--ink-mid);margin-bottom:2px}
+.scene-meta{font-family:'Poppins',sans-serif;font-size:0.68rem;color:var(--steel-light);line-height:1.5}
+.scene-body{padding:22px 26px 18px}
+.scene-body p{font-size:0.93rem;color:var(--steel);line-height:1.78;margin-bottom:14px}
+.scene-body p:last-child{margin-bottom:0}
+.scene-quote{margin:14px 0;padding:12px 20px;background:rgba(139,34,82,0.06);border-left:3px solid var(--wine);border-radius:0 8px 8px 0;font-family:'Lora',Georgia,serif;font-size:0.9rem;font-style:italic;color:var(--ink-soft);line-height:1.65}
+
+/* === VIZ CARDS === */
+.viz{margin:44px 0 32px;border-radius:14px;overflow:hidden;border:2px solid rgba(139,34,82,0.22);box-shadow:var(--shadow-deep);position:relative;background:var(--white)}
+.viz-top{background:linear-gradient(135deg,rgba(139,34,82,0.1),rgba(139,34,82,0.04));padding:20px 26px 18px;display:flex;align-items:center;gap:14px;border-bottom:1px solid rgba(139,34,82,0.12)}
+.viz-icon{width:48px;height:48px;border-radius:50%;border:2px solid rgba(139,34,82,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(145deg,#fff,rgba(255,244,240,0.6));font-size:1.3rem}
+.viz-meta{flex:1}
+.viz-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--wine);margin-bottom:2px}
+.viz h4{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:var(--ink-mid)}
+.viz-body{padding:26px 26px 22px;background:linear-gradient(170deg,#FFFDF8 0%,#FFF8F0 100%)}
+.viz-body p{font-size:0.95rem;color:var(--steel);line-height:1.78;margin-bottom:14px}
+.viz-body p:last-child{margin-bottom:0}
+
+/* === BEFORE/AFTER === */
+.ba-pair{margin:32px 0;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:620px){.ba-pair{grid-template-columns:1fr}}
+.ba-card{border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.ba-head{padding:11px 18px;font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.ba-before{background:linear-gradient(170deg,#FFF0F0,#FFE8E8)}
+.ba-before .ba-head{background:rgba(232,80,80,0.12);color:#8B1F1F}
+.ba-after{background:linear-gradient(170deg,#FFF0F4,#FFE8EE)}
+.ba-after .ba-head{background:rgba(139,34,82,0.12);color:#5A1030}
+.ba-dot{width:7px;height:7px;border-radius:50%}
+.ba-before .ba-dot{background:var(--ash)}
+.ba-after .ba-dot{background:var(--wine)}
+.ba-body{padding:16px 18px;font-size:0.88rem;line-height:1.65}
+.ba-body ul{list-style:none;padding:0;margin:0}
+.ba-body ul li{padding:6px 0;border-bottom:1px solid rgba(0,0,0,0.05);font-family:'Poppins',sans-serif;font-size:0.8rem}
+.ba-body ul li:last-child{border-bottom:none}
+
+/* === DD CARDS === */
+.dd{margin:24px 0;padding:22px 26px;border-radius:12px;border-left:4px solid var(--wine);background:var(--white);box-shadow:var(--shadow)}
+.dd:nth-of-type(even){background:var(--cream)}
+.dd h4{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--ink-mid);margin-bottom:4px}
+.dd .sub{font-family:'Poppins',sans-serif;font-size:0.54rem;font-weight:700;color:var(--wine);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.dd p{font-size:0.95rem;color:var(--steel);line-height:1.78;margin-bottom:8px}
+.dd p:last-child{margin-bottom:0}
+
+/* === THINK / EXERCISE === */
+.think{margin:16px 0 36px;padding:30px;background:linear-gradient(145deg,rgba(139,34,82,0.08),rgba(139,34,82,0.04));border:2px dashed rgba(139,34,82,0.35);border-radius:14px;position:relative;box-shadow:0 4px 16px rgba(139,34,82,0.08)}
+.think::before{content:'';position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--paper);padding:0 12px;width:28px;height:28px;display:block;margin-left:-14px;background:var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238B2252' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22c-2 0-4-1.5-4-4 0-2 2-3 4-3s4 1 4 3c0 2.5-2 4-4 4z'/%3E%3Cpath d='M12 15c-1.5-2-5-4-5-8a5 5 0 0 1 10 0c0 4-3.5 6-5 8z'/%3E%3Cpath d='M9.5 9c.3-1.8 1.5-3 2.5-3'/%3E%3C/svg%3E") center/contain no-repeat}
+.think-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--wine);text-align:center;margin-bottom:10px}
+.think-label svg{width:14px;height:14px;stroke:var(--wine);fill:none;stroke-width:2;vertical-align:middle;margin-right:4px}
+.think h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--ink-mid);text-align:center;margin-bottom:14px}
+.think p{font-size:0.86rem;color:var(--steel);margin-bottom:8px;font-family:'Poppins',sans-serif}
+.think-line{border-bottom:1.5px solid rgba(139,34,82,0.25);height:30px;margin-bottom:4px;cursor:text}
+.think p.q-start{font-family:'Poppins',sans-serif;font-weight:500;color:var(--ink-soft);font-size:0.82rem;text-align:left;margin-top:14px;margin-bottom:4px}
+.think p.q-start svg{width:14px;height:14px;stroke:var(--wine);fill:none;stroke-width:2;vertical-align:middle;margin-right:4px}
+
+/* === BREATHE === */
+.breathe{margin:44px 0;text-align:center;padding:52px 24px;position:relative;background:linear-gradient(160deg,rgba(139,34,82,0.08),rgba(139,34,82,0.04));border-radius:16px;border:2px solid rgba(139,34,82,0.15)}
+.breathe-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1.5px solid rgba(139,34,82,0.1)}
+.breathe-ring:nth-child(1){width:140px;height:140px;animation:breathe-pulse 6s ease-in-out infinite}
+.breathe-ring:nth-child(2){width:90px;height:90px;animation:breathe-pulse 6s ease-in-out infinite 1.5s}
+.breathe-ring:nth-child(3){width:45px;height:45px;animation:breathe-pulse 6s ease-in-out infinite 3s}
+@keyframes breathe-pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.5}50%{transform:translate(-50%,-50%) scale(1.25);opacity:0.1}}
+.breathe-content{position:relative;z-index:2}
+.breathe-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--wine);margin-bottom:8px}
+.breathe h4{font-family:'Poppins',sans-serif;font-size:0.94rem;font-weight:600;color:var(--ink-mid);margin-bottom:8px}
+.breathe p{font-family:'Lora',Georgia,serif;font-size:0.88rem;font-style:italic;color:var(--steel);max-width:420px;margin:0 auto;line-height:1.65}
+
+/* === PRAYER BOX === */
+.prayer{margin:32px 0;padding:28px 30px;background:linear-gradient(160deg,#1A0A0E,#140810);border-radius:14px;border:2px solid rgba(212,160,48,0.25);position:relative;overflow:hidden}
+.prayer::before{content:'';position:absolute;top:-20%;left:-10%;width:160px;height:160px;background:radial-gradient(circle,rgba(212,160,48,0.06) 0%,transparent 70%);border-radius:50%}
+.prayer-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--bread);margin-bottom:12px;position:relative;z-index:2}
+.prayer p{font-family:'Lora',Georgia,serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.85);line-height:1.8;position:relative;z-index:2;margin-bottom:8px}
+.prayer p:last-child{margin-bottom:0}
+.prayer strong{color:var(--bread);font-style:normal;font-weight:700}
+
+/* === STACK === */
+.stack{margin:38px 0;text-align:center}
+.stack-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--wine);opacity:0.7;margin-bottom:16px}
+.stack-flow{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap}
+.stack-node{display:inline-flex;align-items:center;justify-content:center;padding:10px 18px;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.68rem;font-weight:600;line-height:1.35;white-space:nowrap}
+.sn-dark{background:var(--ink-mid);color:#FFFFFF;border:1.5px solid rgba(139,34,82,0.2)}
+.sn-wine{background:rgba(139,34,82,0.13);color:var(--ink-mid);border:1.5px solid rgba(139,34,82,0.25)}
+.sn-bread{background:rgba(212,160,48,0.13);color:var(--ink-soft);border:1.5px solid rgba(212,160,48,0.28)}
+.sn-red{background:rgba(232,80,80,0.1);color:#5A1818;border:1.5px solid rgba(232,80,80,0.2)}
+.sn-green{background:rgba(45,138,78,0.1);color:#1A3A28;border:1.5px solid rgba(45,138,78,0.2)}
+.stack-arr{font-size:1rem;color:rgba(139,34,82,0.45);padding:0 7px}
+
+/* === INST === */
+.inst{margin:26px 0;padding:18px 22px;background:linear-gradient(90deg,rgba(139,34,82,0.07),rgba(139,34,82,0.03));border-left:4px solid var(--wine);border-radius:0 12px 12px 0;box-shadow:var(--shadow)}
+.inst p{font-family:'Poppins',sans-serif;font-size:0.8rem;color:var(--steel);line-height:1.6;margin:0}
+.inst strong{color:var(--ink-mid);font-weight:600}
+
+/* === PROMPT === */
+.prompt{margin:32px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(139,34,82,0.22);box-shadow:var(--shadow-deep)}
+.prompt-head{padding:12px 20px;background:linear-gradient(90deg,#1A0A0E,#1A0A14);font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--wine)}
+.prompt-body{padding:24px 26px;background:#0E060A;color:#C0B0B8;font-family:'Poppins',sans-serif;font-size:0.82rem;line-height:1.8}
+.prompt-body strong{color:var(--wine)}
+
+/* === MEDITATION ART === */
+.med-art{margin:48px 0;border-radius:16px;overflow:hidden;border:2px solid rgba(139,34,82,0.2);box-shadow:var(--shadow-deep);background:linear-gradient(160deg,#0A0408,#120610)}
+.med-art-canvas{padding:48px 24px 28px;display:flex;justify-content:center;align-items:center;position:relative}
+.med-art-canvas svg{max-width:340px;width:100%;height:auto;filter:drop-shadow(0 0 20px rgba(139,34,82,0.12))}
+.med-art-prompt{text-align:center;padding:0 24px 20px;font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:rgba(139,34,82,0.4)}
+.med-art-depths{padding:0 28px 32px}
+.med-depth{margin-bottom:18px;padding:18px 22px;border-radius:10px;cursor:pointer;transition:all 0.35s ease;position:relative;overflow:hidden}
+.med-depth[data-level="surface"]{background:rgba(212,160,48,0.06);border:1px solid rgba(212,160,48,0.15)}
+.med-depth[data-level="central"]{background:rgba(139,34,82,0.06);border:1px solid rgba(139,34,82,0.15)}
+.med-depth[data-level="root"]{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08)}
+.med-depth-label{font-family:'Poppins',sans-serif;font-size:0.42rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.med-depth[data-level="surface"] .med-depth-label{color:var(--bread)}
+.med-depth[data-level="central"] .med-depth-label{color:var(--wine)}
+.med-depth[data-level="root"] .med-depth-label{color:rgba(255,255,255,0.5)}
+.med-depth-label .med-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.med-depth[data-level="surface"] .med-dot{background:var(--bread)}
+.med-depth[data-level="central"] .med-dot{background:var(--wine)}
+.med-depth[data-level="root"] .med-dot{background:rgba(255,255,255,0.5)}
+.med-depth p{font-family:'Lora',Georgia,serif;font-size:0.88rem;color:rgba(255,255,255,0.7);line-height:1.72;max-height:0;overflow:hidden;transition:max-height 0.5s ease,opacity 0.4s ease;opacity:0;margin:0}
+.med-depth.open p{max-height:300px;opacity:1}
+.med-depth em{color:var(--wine);font-style:normal;font-weight:600}
+.med-depth strong{color:var(--bread);font-weight:600}
+.med-depth-hint{font-family:'Poppins',sans-serif;font-size:0.6rem;color:rgba(255,255,255,0.2);transition:opacity 0.3s}
+.med-depth.open .med-depth-hint{opacity:0}
+
+/* === H2 ICON === */
+.h2-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--ink-mid),var(--ink-soft));margin-right:10px;vertical-align:middle;box-shadow:0 2px 8px rgba(26,10,14,0.2)}
+.h2-icon svg{width:16px;height:16px;stroke:var(--wine);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.viz-icon svg{width:24px;height:24px;stroke:var(--wine);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.prose h2{font-family:'Poppins',sans-serif;font-size:1.3rem;color:var(--ink-mid);margin:36px 0 14px;letter-spacing:-0.01em;display:flex;align-items:center}
+
+/* === FINALE === */
+.finale{text-align:center;padding:80px 24px;background:linear-gradient(160deg,#0A0408 0%,#1A0A12 100%);position:relative;overflow:hidden}
+.finale::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 50% 50%,rgba(139,34,82,0.04) 0%,transparent 50%)}
+.finale h2{font-family:'Poppins',sans-serif;font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;color:#FFFFFF;margin-bottom:8px;position:relative;z-index:2}
+.finale h2 span{color:var(--wine)}
+.finale p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.38);max-width:460px;margin:16px auto;line-height:1.65;position:relative;z-index:2}
+
+/* === FOOTER === */
+footer{text-align:center;padding:36px 24px;background:#060204}
+footer p{font-family:'Lora',Georgia,serif;font-size:0.8rem;font-style:italic;color:rgba(139,34,82,0.2);margin-bottom:12px}
+footer .brand{font-family:'Poppins',sans-serif;font-size:0.67rem;font-style:normal;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.12)}
+
+/* === SCROLL REVEAL === */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.65s ease,transform 0.65s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.stagger-children > *{opacity:0;transform:translateY(18px);transition:opacity 0.5s ease,transform 0.5s ease}
+.stagger-children.visible > *:nth-child(1){opacity:1;transform:none;transition-delay:0s}
+.stagger-children.visible > *:nth-child(2){opacity:1;transform:none;transition-delay:0.12s}
+
+.think:hover{box-shadow:0 0 0 2px rgba(139,34,82,0.25),0 8px 32px rgba(139,34,82,0.1)}
+.think{transition:box-shadow 0.3s ease}
+@keyframes insight-border{0%,100%{border-left-color:var(--wine)}50%{border-left-color:rgba(139,34,82,0.3)}}
+.insight{animation:insight-border 4s ease-in-out infinite}
+
+#read-progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--wine),rgba(139,34,82,0.4));z-index:9999;pointer-events:none;transition:width 0.08s linear}
+#chapter-pill{position:fixed;bottom:24px;right:24px;background:var(--ink);border:1px solid rgba(139,34,82,0.25);color:var(--wine);font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:8px 18px;border-radius:50px;opacity:0;transition:opacity 0.35s ease;pointer-events:none;z-index:1000;box-shadow:0 4px 24px rgba(0,0,0,0.4)}
+#chapter-pill.show{opacity:1}
+
+@media(max-width:620px){.stack-node{font-size:0.6rem;padding:8px 12px}}
+@media(max-width:640px){.page{padding:0 16px}}
+@media print{
+  @page{margin:18mm 16mm 22mm 16mm}
+  body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .cover{min-height:auto;padding:80px 24px;break-after:page}
+  .ch-head{break-before:page;padding:56px 24px 40px}
+  .think,.viz,.ba-pair,.mission,.insight,.dd,.breathe,.prayer,.prompt,.stack,.scene,.med-art{break-inside:avoid}
+  .wine-ring,.cover-grain,.breathe-ring,.cover-vignette{animation:none!important;display:none}
+  .section{padding:36px 0}
+  #read-progress,#chapter-pill,.no-print{display:none!important}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+</style>
+</head>
+<body>
+
+<!-- SVG Sprite Sheet -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="ico-cup" viewBox="0 0 24 24"><path d="M6 4h12v2a6 6 0 0 1-12 0V4z"/><path d="M18 6c2 0 3 1.5 3 3s-1 3-3 3"/><path d="M6 6c-2 0-3 1.5-3 3s1 3 3 3"/><path d="M12 14v4"/><path d="M8 22h8"/></symbol>
+  <symbol id="ico-bread" viewBox="0 0 24 24"><path d="M5 8c0-3 3-5 7-5s7 2 7 5c1 0 2 1 2 3s-1 3-3 3H6c-2 0-3-1-3-3s1-3 2-3z"/><path d="M6 14v4c0 1 2 2 6 2s6-1 6-2v-4"/></symbol>
+  <symbol id="ico-flame" viewBox="0 0 24 24"><path d="M12 22c-2 0-4-1.5-4-4 0-2 2-3 4-3s4 1 4 3c0 2.5-2 4-4 4z"/><path d="M12 15c-1.5-2-5-4-5-8a5 5 0 0 1 10 0c0 4-3.5 6-5 8z"/></symbol>
+  <symbol id="ico-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="ico-crown" viewBox="0 0 24 24"><path d="M2 18h20"/><path d="M4 18V8l4 4 4-6 4 6 4-4v10"/></symbol>
+  <symbol id="ico-shield" viewBox="0 0 24 24"><path d="M12 2l8 4v5c0 5.5-3.8 10.7-8 12-4.2-1.3-8-6.5-8-12V6l8-4z"/><path d="M9 12l2 2 4-4"/></symbol>
+  <symbol id="ico-temple" viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V7"/><path d="M19 21V7"/><path d="M3 7h18"/><path d="M12 3l9 4"/><path d="M12 3L3 7"/><path d="M9 21v-6h6v6"/></symbol>
+  <symbol id="ico-scale" viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M4 7h16"/><path d="M4 7l-2 7h8L8 7"/><path d="M16 7l-2 7h8l-2-7"/><circle cx="12" cy="3" r="1"/></symbol>
+  <symbol id="ico-heart" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></symbol>
+  <symbol id="ico-brain" viewBox="0 0 24 24"><path d="M12 4a4 4 0 0 0-4 4c0 1 .4 2 1 2.7C7.8 11.5 7 13 7 14.5 7 17 9 19 12 20c3-1 5-3 5-5.5 0-1.5-.8-3-2-3.8.6-.7 1-1.7 1-2.7a4 4 0 0 0-4-4z"/><path d="M12 4v16"/></symbol>
+  <symbol id="ico-sunrise" viewBox="0 0 24 24"><path d="M12 2v4"/><path d="M4.93 10.93l2.83 2.83"/><path d="M2 18h4"/><path d="M18 18h4"/><path d="M16.24 13.76l2.83-2.83"/><path d="M18 18a6 6 0 0 0-12 0"/></symbol>
+  <symbol id="ico-prayer" viewBox="0 0 24 24"><path d="M12 3v4"/><path d="M8 9l4-2 4 2"/><path d="M8 9c-1 1-2 3-2 5l2 3"/><path d="M16 9c1 1 2 3 2 5l-2 3"/><path d="M8 17l4 4 4-4"/></symbol>
+  <symbol id="ico-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+  <symbol id="ico-cycle" viewBox="0 0 24 24"><path d="M21.5 2v6h-6"/><path d="M2.5 22v-6h6"/><path d="M21.5 8A10 10 0 0 0 5 5l-2.5 3"/><path d="M2.5 16A10 10 0 0 0 19 19l2.5-3"/></symbol>
+  <symbol id="ico-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></symbol>
+</svg>
+
+<!-- ===== COVER ===== -->
+<section class="cover">
+  <div class="cover-grain"></div>
+  <div class="cover-vignette"></div>
+  <div class="wine-ring"></div>
+  <div class="wine-ring"></div>
+  <div class="wine-ring"></div>
+  <div class="cover-content">
+    <div class="cover-badge">Kingdom Builders AI</div>
+    <div class="cover-art">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 190" aria-label="Three tables illustration">
+        <defs>
+          <linearGradient id="tt-wine" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B2252"/><stop offset="100%" stop-color="#5A1030"/></linearGradient>
+          <linearGradient id="tt-bread" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#D4A030"/><stop offset="100%" stop-color="#A07820"/></linearGradient>
+          <radialGradient id="tt-glow" cx="50%" cy="40%" r="50%"><stop offset="0%" stop-color="#8B2252" stop-opacity="0.25"/><stop offset="60%" stop-color="#8B2252" stop-opacity="0.05"/><stop offset="100%" stop-color="#8B2252" stop-opacity="0"/></radialGradient>
+        </defs>
+        <ellipse cx="100" cy="80" rx="65" ry="55" fill="url(#tt-glow)"/>
+        <!-- Center table (God's table, illuminated) -->
+        <rect x="70" y="75" width="60" height="6" rx="2" fill="url(#tt-bread)" opacity="0.9"/>
+        <rect x="76" y="81" width="4" height="30" fill="#A07820" opacity="0.6"/>
+        <rect x="120" y="81" width="4" height="30" fill="#A07820" opacity="0.6"/>
+        <!-- Bread on center table -->
+        <ellipse cx="92" cy="72" rx="8" ry="5" fill="#D4A030" opacity="0.8"/>
+        <!-- Cup on center table -->
+        <path d="M106,67 L104,73 L112,73 L110,67Z" fill="url(#tt-wine)" opacity="0.85"/>
+        <ellipse cx="108" cy="67" rx="4" ry="1.5" fill="#8B2252" opacity="0.6"/>
+        <!-- Light rays from center table -->
+        <path d="M100,65 L100,25" fill="none" stroke="#D4A030" stroke-width="1" opacity="0.2"/>
+        <path d="M90,68 L75,35" fill="none" stroke="#D4A030" stroke-width="0.8" opacity="0.15"/>
+        <path d="M110,68 L125,35" fill="none" stroke="#D4A030" stroke-width="0.8" opacity="0.15"/>
+        <path d="M85,70 L60,45" fill="none" stroke="#D4A030" stroke-width="0.6" opacity="0.1"/>
+        <path d="M115,70 L140,45" fill="none" stroke="#D4A030" stroke-width="0.6" opacity="0.1"/>
+        <!-- Gold particles above center -->
+        <circle cx="100" cy="30" r="2" fill="#D4A030" opacity="0.5"/>
+        <circle cx="92" cy="40" r="1.5" fill="#D4A030" opacity="0.4"/>
+        <circle cx="108" cy="38" r="1.8" fill="#D4A030" opacity="0.45"/>
+        <circle cx="96" cy="22" r="1.2" fill="#D4A030" opacity="0.3"/>
+        <circle cx="104" cy="18" r="1" fill="#D4A030" opacity="0.25"/>
+        <!-- Left table (world's table, dim) -->
+        <rect x="15" y="90" width="40" height="4" rx="1" fill="#5A3840" opacity="0.4"/>
+        <rect x="20" y="94" width="3" height="22" fill="#3D2228" opacity="0.3"/>
+        <rect x="48" y="94" width="3" height="22" fill="#3D2228" opacity="0.3"/>
+        <!-- Right table (enemy's table, dark) -->
+        <rect x="145" y="90" width="40" height="4" rx="1" fill="#2E1214" opacity="0.5"/>
+        <rect x="150" y="94" width="3" height="22" fill="#1A0A0E" opacity="0.4"/>
+        <rect x="178" y="94" width="3" height="22" fill="#1A0A0E" opacity="0.4"/>
+        <!-- Smoke/shadow from right table -->
+        <path d="M165,88 Q163,80 166,72 Q168,65 164,58" fill="none" stroke="#1A0A0E" stroke-width="1.5" opacity="0.2"/>
+      </svg>
+    </div>
+    <h1>The Three<br><em>Tables</em></h1>
+    <p class="cover-sub">Every bite seats you somewhere.<br>The question is not <em>what</em> you eat. It is <em>who you eat with.</em></p>
+    <p class="cover-author">Kingdom Builders AI</p>
+    <div class="cover-verse">"Whether you eat or drink, or whatever you do, do all to the glory of God."<br>1 Corinthians 10:31 NKJV</div>
+  </div>
+</section>
+
+<!-- ===== CHAPTER 1: The First Sin Was a Meal ===== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-num">Chapter One</div>
+    <h2 class="ch-title">The First Sin Was a Meal</h2>
+    <p class="ch-sub">Everything began at a table. Everything still does.</p>
+  </div>
+</div>
+
+<div class="ribbon"><p>"So when the woman saw that the tree was good for food, that it was pleasant to the eyes, and a tree desirable to make one wise, she took of its fruit and ate." Genesis 3:6 NKJV</p></div>
+
+<div class="section"><div class="page prose">
+
+<div class="mission"><div class="mission-label">The Premise</div>
+<p>The first sin in human history was not murder. It was not theft. It was not adultery. <em>It was eating.</em> And the most sacred act of Christian worship is not singing. It is not preaching. It is not tithing. <em>It is eating.</em> This is not a coincidence. Food is the original battleground. It always has been. And three times a day, you walk back onto it.</p>
+</div>
+
+<p>Read Genesis 3:6 slowly. The woman saw that the tree was <strong>good for food.</strong> It was <strong>pleasant to the eyes.</strong> It was <strong>desirable to make one wise.</strong> Three observations. Three hooks. And every food temptation you have ever experienced in your entire life follows this exact same pattern. It tastes good. It looks good. It promises something beyond the taste.</p>
+
+<p>The serpent did not offer Eve poison. He offered her fruit. Something beautiful. Something appealing. Something that looked like it would give her more than she already had. And the moment she ate it, everything broke. Not because the fruit was inherently evil. Because the fruit was eaten outside of God's instruction. The act of eating became the act of choosing self over God.</p>
+
+<div class="scene">
+  <div class="scene-question"><svg><use href="#ico-book"/></svg> What if the pattern of every temptation you face today was already written in the first three chapters of the Bible?</div>
+  <div class="scene-head">
+    <div class="scene-title">Genesis 3:1-6</div>
+    <div class="scene-meta">The Garden of Eden &middot; Eve, the Serpent, the Forbidden Fruit</div>
+  </div>
+  <div class="scene-body">
+    <p>The serpent approaches Eve with a question, not a command. "Has God indeed said, 'You shall not eat of every tree of the garden'?" Notice the technique. He does not deny God. He questions God's restriction. He makes the boundary seem unreasonable. Then he makes the alternative seem empowering: "You will be like God."</p>
+    <div class="scene-quote">"You will not surely die. For God knows that in the day you eat of it your eyes will be opened, and you will be like God, knowing good and evil." Genesis 3:4-5 NKJV</div>
+    <p>Eve responds with three observations that map perfectly onto modern food temptation. <strong>Good for food:</strong> this is appetite. The physical craving. <strong>Pleasant to the eyes:</strong> this is marketing. The packaging, the presentation, the Instagram shot of the dessert. <strong>Desirable to make one wise:</strong> this is the false promise. The idea that consuming this thing will give you something you do not already have. Energy. Comfort. Status. Relief.</p>
+    <p>Every drive-through, every vending machine, every late night binge follows the Genesis 3:6 pattern. It looks good. It tastes good. It promises something it cannot deliver. And the cost is always more than the menu shows.</p>
+  </div>
+</div>
+
+<div class="insight"><p>The first sin was not about the fruit. It was about the <em>table.</em> God had prepared a table with every tree that was pleasant to the sight and good for food (Genesis 2:9). Every tree. The entire garden was a feast. And the serpent's only job was to convince Eve that God's table was not enough. That there was a better table. That she was missing out. <em>The enemy has been using the same strategy for every meal since.</em></p></div>
+
+<div class="med-art reveal">
+  <div class="med-art-canvas">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 260" aria-label="The Tipping Scale: a single fruit outweighs an entire garden">
+      <defs>
+        <linearGradient id="ms-gold" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#D4A030"/><stop offset="100%" stop-color="#A07820"/></linearGradient>
+        <linearGradient id="ms-wine" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B2252"/><stop offset="100%" stop-color="#5A1030"/></linearGradient>
+        <radialGradient id="ms-glow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#D4A030" stop-opacity="0.12"/><stop offset="100%" stop-color="#D4A030" stop-opacity="0"/></radialGradient>
+        <radialGradient id="ms-fruit-glow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#8B2252" stop-opacity="0.3"/><stop offset="100%" stop-color="#8B2252" stop-opacity="0"/></radialGradient>
+      </defs>
+      <!-- Fulcrum -->
+      <polygon points="170,190 160,210 180,210" fill="url(#ms-gold)" opacity="0.6"/>
+      <line x1="170" y1="140" x2="170" y2="190" stroke="#D4A030" stroke-width="2" opacity="0.4"/>
+      <!-- Beam (tilted: left/garden side UP, right/fruit side DOWN) -->
+      <line x1="50" y1="120" x2="290" y2="160" stroke="#D4A030" stroke-width="2.5" opacity="0.7"/>
+      <!-- LEFT pan: entire garden (high, light) -->
+      <path d="M30,120 Q40,132 50,120" fill="none" stroke="#D4A030" stroke-width="1.2" opacity="0.5"/>
+      <line x1="30" y1="120" x2="40" y2="108" stroke="#D4A030" stroke-width="1" opacity="0.4"/>
+      <line x1="50" y1="120" x2="40" y2="108" stroke="#D4A030" stroke-width="1" opacity="0.4"/>
+      <!-- Garden: many trees, abundance -->
+      <g opacity="0.55">
+        <circle cx="28" cy="90" r="7" fill="#2D8A4E" opacity="0.5"/><rect x="27" y="96" width="2" height="10" fill="#5A3840" opacity="0.4"/>
+        <circle cx="40" cy="82" r="9" fill="#2D8A4E" opacity="0.6"/><rect x="39" y="90" width="2" height="12" fill="#5A3840" opacity="0.4"/>
+        <circle cx="52" cy="86" r="8" fill="#2D8A4E" opacity="0.55"/><rect x="51" y="93" width="2" height="11" fill="#5A3840" opacity="0.4"/>
+        <circle cx="34" cy="72" r="6" fill="#2D8A4E" opacity="0.45"/><rect x="33" y="77" width="2" height="9" fill="#5A3840" opacity="0.35"/>
+        <circle cx="46" cy="74" r="7" fill="#2D8A4E" opacity="0.5"/><rect x="45" y="80" width="2" height="10" fill="#5A3840" opacity="0.35"/>
+        <!-- Tiny fruits on the garden trees -->
+        <circle cx="24" cy="87" r="2" fill="#D4A030" opacity="0.6"/>
+        <circle cx="32" cy="85" r="2" fill="#D4A030" opacity="0.5"/>
+        <circle cx="44" cy="78" r="2" fill="#D4A030" opacity="0.6"/>
+        <circle cx="38" cy="80" r="1.5" fill="#D4A030" opacity="0.5"/>
+        <circle cx="48" cy="83" r="2" fill="#D4A030" opacity="0.55"/>
+        <circle cx="56" cy="82" r="1.8" fill="#D4A030" opacity="0.5"/>
+        <circle cx="36" cy="69" r="1.5" fill="#D4A030" opacity="0.45"/>
+        <circle cx="50" cy="71" r="1.8" fill="#D4A030" opacity="0.5"/>
+      </g>
+      <!-- RIGHT pan: single fruit (low, heavy) -->
+      <path d="M270,160 Q280,172 290,160" fill="none" stroke="#8B2252" stroke-width="1.2" opacity="0.6"/>
+      <line x1="270" y1="160" x2="280" y2="148" stroke="#8B2252" stroke-width="1" opacity="0.5"/>
+      <line x1="290" y1="160" x2="280" y2="148" stroke="#8B2252" stroke-width="1" opacity="0.5"/>
+      <!-- Single forbidden fruit, glowing, dominant -->
+      <ellipse cx="280" cy="148" rx="10" ry="10" fill="url(#ms-fruit-glow)"/>
+      <circle cx="280" cy="143" r="7" fill="url(#ms-wine)" opacity="0.9"/>
+      <path d="M280,136 Q282,132 285,134" fill="none" stroke="#2D8A4E" stroke-width="1.2" opacity="0.6"/>
+      <!-- Ambient glow beneath the fruit -->
+      <ellipse cx="280" cy="175" rx="20" ry="6" fill="#8B2252" opacity="0.06"/>
+      <!-- Text anchors for visual -->
+      <text x="40" y="114" font-family="Poppins,sans-serif" font-size="7" fill="#D4A030" opacity="0.35" text-anchor="middle" font-weight="600" letter-spacing="2">EVERY TREE</text>
+      <text x="280" y="178" font-family="Poppins,sans-serif" font-size="7" fill="#8B2252" opacity="0.4" text-anchor="middle" font-weight="600" letter-spacing="2">ONE FRUIT</text>
+    </svg>
+  </div>
+  <div class="med-art-prompt">Study this image. Then read below.</div>
+  <div class="med-art-depths">
+    <div class="med-depth" data-level="surface" onclick="this.classList.toggle('open')">
+      <div class="med-depth-label"><span class="med-dot"></span>Surface — What You See First</div>
+      <p>A balance scale. On the left, an entire garden overflowing with trees and golden fruit. On the right, a single small fruit. The scale tips toward the single fruit. One fruit outweighs an entire garden. The physics are impossible.</p>
+    </div>
+    <div class="med-depth" data-level="central" onclick="this.classList.toggle('open')">
+      <div class="med-depth-label"><span class="med-dot"></span>Central — What Reveals Itself</div>
+      <p>God gave <em>every tree.</em> Genesis 2:9 says every tree pleasant to the sight and good for food. Thousands of options. Total abundance. And the enemy's entire strategy was to make the <em>one thing withheld</em> seem heavier, more desirable, more important than the thousands of things given. The scale is rigged. It always has been. The forbidden thing weighs more in your mind than everything God already provided. This is the lie beneath every craving.</p>
+    </div>
+    <div class="med-depth" data-level="root" onclick="this.classList.toggle('open')">
+      <div class="med-depth-label"><span class="med-dot"></span>Root — What Changes You</div>
+      <p>You are living in the garden right now. God has given you a body that works, air that fills your lungs, food that nourishes, people who love you, purpose that calls you. <strong>Thousands of trees.</strong> And the enemy's only move is to put one thing on the other side of the scale and whisper: <em>but what about this?</em> That junk food. That craving. That comfort you keep reaching for. It is always one fruit against an entire garden. And every time you choose it, you are declaring that God's table is not enough. The scale only tips because you believed the lie about the weight.</p>
+    </div>
+  </div>
+</div>
+
+<p>Now hold this next to the New Testament. Jesus, after fasting forty days, stands face to face with the same enemy. And what is the first temptation?</p>
+
+<div class="scene">
+  <div class="scene-question"><svg><use href="#ico-flame"/></svg> Jesus was starving. Genuinely starving. And He still said no. What does that tell you about the power source available to you?</div>
+  <div class="scene-head">
+    <div class="scene-title">Matthew 4:1-4</div>
+    <div class="scene-meta">The Wilderness Temptation &middot; Jesus, Satan</div>
+  </div>
+  <div class="scene-body">
+    <p>Forty days without food. The human body at the edge of survival. And the enemy appears with the most reasonable suggestion in history: "If You are the Son of God, command that these stones become bread." It is not a trick question. Jesus has the power to do it. He is hungry. The bread would be real bread. It would nourish Him. There is nothing inherently sinful about eating.</p>
+    <div class="scene-quote">"Man shall not live by bread alone, but by every word that proceeds from the mouth of God." Matthew 4:4 NKJV</div>
+    <p>Jesus does not say bread is bad. He says bread is not enough. He says there is something that sustains life more fundamentally than food. And He says this while He is starving. Not from a comfortable kitchen. From a desert. The point is not that you should never eat. The point is that food is not your highest source of sustenance. God's word is. And when you reach for food to fill a hunger that only God can satisfy, you are replaying the garden. You are reaching for the wrong fruit.</p>
+  </div>
+</div>
+
+<div class="dd"><div class="sub">Mental Model</div><h4>The Genesis 3:6 Filter</h4>
+<p>Before you eat anything, run it through the filter. Is this <strong>good for food</strong> in the way God designed food to be good? Or is it engineered to exploit my appetite? Is it <strong>pleasant to the eyes</strong> because of God's natural design? Or because a corporation spent millions making the packaging irresistible? Is it <strong>desirable to make me wise</strong> in the sense that it genuinely serves my body? Or am I believing a lie that this will give me comfort, energy, or relief that it cannot actually deliver?</p>
+<p>The filter is not about guilt. It is about clarity. When you see the pattern, you cannot unsee it. And the serpent loses his power the moment you recognize his menu.</p>
+</div>
+
+<div class="prayer"><div class="prayer-label">Prayer</div>
+<p>Father, I have been eating without thinking. I have been sitting at tables without asking who prepared them. I have been replaying Genesis 3:6 three times a day and calling it lunch. <strong>Open my eyes.</strong> Show me the pattern. Show me the serpent's menu for what it is. And remind me, every time I sit down to eat, that Your table has always been enough. In Jesus' name, Amen.</p>
+</div>
+
+</div></div>
+
+
+<!-- ===== CHAPTER 2: The Three Tables ===== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-num">Chapter Two</div>
+    <h2 class="ch-title">The Three Tables</h2>
+    <p class="ch-sub">There are only three. Every bite seats you at one.</p>
+  </div>
+</div>
+
+<div class="ribbon"><p>"You prepare a table before me in the presence of my enemies; You anoint my head with oil; my cup runs over." Psalm 23:5 NKJV</p></div>
+
+<div class="section"><div class="page prose">
+
+<p>David wrote Psalm 23 while enemies surrounded him. And in the middle of that threat, God prepared a table. Not a fortress. Not a weapon. A table. A meal. The most intimate, vulnerable act you can perform in the presence of danger is to sit down and eat. And God says: sit. Eat. I am here. This is My table.</p>
+
+<p>Paul draws a harder line. He writes to the Corinthians and says something most people skip over too quickly:</p>
+
+<div class="gq"><p>"You cannot drink the cup of the Lord and the cup of demons; you cannot partake of the Lord's table and of the table of demons." 1 Corinthians 10:21 NKJV</p></div>
+
+<p>Read that again. Paul does not say you <em>should not.</em> He says you <em>cannot.</em> The two are incompatible. You are always seated at a table. And there are only three.</p>
+
+<div class="med-art reveal">
+  <div class="med-art-canvas">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 240" aria-label="Three identical chairs with different shadows beneath">
+      <defs>
+        <radialGradient id="ch-light" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#D4A030" stop-opacity="0.25"/><stop offset="80%" stop-color="#D4A030" stop-opacity="0.03"/><stop offset="100%" stop-color="#D4A030" stop-opacity="0"/></radialGradient>
+        <radialGradient id="ch-void" cx="50%" cy="30%" r="60%"><stop offset="0%" stop-color="#000000" stop-opacity="0.6"/><stop offset="100%" stop-color="#000000" stop-opacity="0"/></radialGradient>
+        <radialGradient id="ch-neutral" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#5A3840" stop-opacity="0.1"/><stop offset="100%" stop-color="#5A3840" stop-opacity="0"/></radialGradient>
+      </defs>
+      <!-- Chair 1: God's table — golden glow beneath -->
+      <ellipse cx="70" cy="185" rx="40" ry="12" fill="url(#ch-light)"/>
+      <g opacity="0.75" transform="translate(70,100)">
+        <rect x="-18" y="20" width="4" height="50" rx="1" fill="#B09098" opacity="0.5"/>
+        <rect x="14" y="20" width="4" height="50" rx="1" fill="#B09098" opacity="0.5"/>
+        <rect x="-18" y="-25" width="4" height="48" rx="1" fill="#B09098" opacity="0.5"/>
+        <rect x="14" y="-25" width="4" height="48" rx="1" fill="#B09098" opacity="0.5"/>
+        <rect x="-20" y="18" width="40" height="5" rx="2" fill="#B09098" opacity="0.6"/>
+        <path d="M-18,-25 Q0,-32 18,-25" fill="none" stroke="#B09098" stroke-width="3" opacity="0.5"/>
+      </g>
+      <!-- Warm upward rays from beneath chair 1 -->
+      <line x1="70" y1="180" x2="70" y2="165" stroke="#D4A030" stroke-width="0.8" opacity="0.15"/>
+      <line x1="55" y1="178" x2="52" y2="163" stroke="#D4A030" stroke-width="0.6" opacity="0.1"/>
+      <line x1="85" y1="178" x2="88" y2="163" stroke="#D4A030" stroke-width="0.6" opacity="0.1"/>
+      <!-- Chair 2: World's table — faint gray nothing -->
+      <ellipse cx="170" cy="185" rx="40" ry="12" fill="url(#ch-neutral)"/>
+      <g opacity="0.75" transform="translate(170,100)">
+        <rect x="-18" y="20" width="4" height="50" rx="1" fill="#B09098" opacity="0.5"/>
+        <rect x="14" y="20" width="4" height="50" rx="1" fill="#B09098" opacity="0.5"/>
+        <rect x="-18" y="-25" width="4" height="48" rx="1" fill="#B09098" opacity="0.5"/>
+        <rect x="14" y="-25" width="4" height="48" rx="1" fill="#B09098" opacity="0.5"/>
+        <rect x="-20" y="18" width="40" height="5" rx="2" fill="#B09098" opacity="0.6"/>
+        <path d="M-18,-25 Q0,-32 18,-25" fill="none" stroke="#B09098" stroke-width="3" opacity="0.5"/>
+      </g>
+      <!-- Chair 3: Enemy's table — dark void beneath -->
+      <ellipse cx="270" cy="185" rx="40" ry="18" fill="url(#ch-void)"/>
+      <g opacity="0.75" transform="translate(270,100)">
+        <rect x="-18" y="20" width="4" height="50" rx="1" fill="#B09098" opacity="0.5"/>
+        <rect x="14" y="20" width="4" height="50" rx="1" fill="#B09098" opacity="0.5"/>
+        <rect x="-18" y="-25" width="4" height="48" rx="1" fill="#B09098" opacity="0.5"/>
+        <rect x="14" y="-25" width="4" height="48" rx="1" fill="#B09098" opacity="0.5"/>
+        <rect x="-20" y="18" width="40" height="5" rx="2" fill="#B09098" opacity="0.6"/>
+        <path d="M-18,-25 Q0,-32 18,-25" fill="none" stroke="#B09098" stroke-width="3" opacity="0.5"/>
+      </g>
+      <!-- Labels -->
+      <text x="70" y="218" font-family="Poppins,sans-serif" font-size="7" fill="#D4A030" opacity="0.5" text-anchor="middle" font-weight="600" letter-spacing="2">LIGHT</text>
+      <text x="170" y="218" font-family="Poppins,sans-serif" font-size="7" fill="#5A3840" opacity="0.35" text-anchor="middle" font-weight="600" letter-spacing="2">EMPTY</text>
+      <text x="270" y="218" font-family="Poppins,sans-serif" font-size="7" fill="#8B2252" opacity="0.4" text-anchor="middle" font-weight="600" letter-spacing="2">VOID</text>
+    </svg>
+  </div>
+  <div class="med-art-prompt">Sit with this image. The chairs are identical.</div>
+  <div class="med-art-depths">
+    <div class="med-depth" data-level="surface" onclick="this.classList.toggle('open')">
+      <div class="med-depth-label"><span class="med-dot"></span>Surface — What You See First</div>
+      <p>Three identical chairs. Same design, same material, same height. But the ground beneath each one is different. Under the first, warm golden light rises upward. Under the second, nothing. Under the third, a void, a pit of darkness that seems to pull the floor down.</p>
+    </div>
+    <div class="med-depth" data-level="central" onclick="this.classList.toggle('open')">
+      <div class="med-depth-label"><span class="med-dot"></span>Central — What Reveals Itself</div>
+      <p>The chairs are identical because <em>you</em> are the same person at every table. You do not become a different person when you sit at the enemy's table. You bring the same body, the same soul, the same temple. The difference is not in you. It is in <em>what is beneath you.</em> The table you choose determines the ground you stand on. God's table has a foundation of light. The world's table has no foundation at all. The enemy's table has a trapdoor.</p>
+    </div>
+    <div class="med-depth" data-level="root" onclick="this.classList.toggle('open')">
+      <div class="med-depth-label"><span class="med-dot"></span>Root — What Changes You</div>
+      <p>Nobody sees the shadow beneath their own chair while sitting in it. <strong>That is the danger.</strong> You feel the same sitting at the enemy's table as you do at God's table, at least at first. The meal tastes the same. The conversation feels the same. You do not feel the void beneath you until the legs give way. This image is asking one question: do you know what is beneath your chair right now? Because by the time you feel it, you are already falling.</p>
+    </div>
+  </div>
+</div>
+
+<div class="viz">
+  <div class="viz-top"><div class="viz-icon"><svg><use href="#ico-cup"/></svg></div><div class="viz-meta"><div class="viz-label">The Framework</div><h4>Three Tables. Three Masters. Every Meal.</h4></div></div>
+  <div class="viz-body">
+    <p><strong>Table One: God's Table.</strong> Food eaten with gratitude. Food that nourishes. Food received as provision and consumed as worship. This table looks like a meal prepared with intention, eaten with awareness, followed by energy to serve. The identifying mark of God's table is thanksgiving. If your meal begins with genuine gratitude, not routine habit, you are at the right table.</p>
+    <p><strong>Table Two: The World's Table.</strong> Food eaten for comfort, entertainment, or image. Emotional eating. Boredom eating. Eating to impress. Eating to numb. This table is not evil in the way the third table is evil. It is just empty. You eat and eat and are never satisfied because the table was never designed to fill you. It promises fullness and delivers bloating.</p>
+    <p><strong>Table Three: The Enemy's Table.</strong> Food that actively destroys the temple God built. Food consumed in addiction, compulsion, or defiance. The identifying mark of the enemy's table is this: you know it is harming you and you eat it anyway. That is not weakness. That is worship of the wrong master. The enemy dressed destruction as dessert and you accepted the invitation.</p>
+  </div>
+</div>
+
+<div class="ba-pair">
+  <div class="ba-card ba-before"><div class="ba-head"><div class="ba-dot"></div> THE WORLD'S TABLE</div><div class="ba-body"><ul>
+    <li>Eating because you are bored</li>
+    <li>Eating because you are sad</li>
+    <li>Eating for the Instagram photo</li>
+    <li>Eating to reward yourself</li>
+    <li>Eating to fit in socially</li>
+    <li>Mindless snacking over a screen</li>
+  </ul></div></div>
+  <div class="ba-card ba-after"><div class="ba-head"><div class="ba-dot"></div> GOD'S TABLE</div><div class="ba-body"><ul>
+    <li>Eating with genuine thanksgiving</li>
+    <li>Eating what nourishes the temple</li>
+    <li>Eating to fuel God's assignment</li>
+    <li>Eating in community and fellowship</li>
+    <li>Eating with awareness and presence</li>
+    <li>Stopping when the body says enough</li>
+  </ul></div></div>
+</div>
+
+<div class="inst"><p><strong>The Table Check:</strong> Before your next meal, pause for three seconds. Ask one question: whose table am I sitting at right now? The answer is not in the food. It is in your motivation. The same salad can be eaten at God's table in gratitude or at the world's table in vanity. The same piece of cake can be eaten at God's table in celebration or at the enemy's table in compulsion. <strong>The table is determined by the heart, not the menu.</strong></p></div>
+
+<div class="think"><div class="think-label"><svg><use href="#ico-flame"/></svg> Table Audit</div><h4>Where have you been eating?</h4>
+ <p class="q-start"><svg><use href="#ico-cup"/></svg> Think about your last five meals. How many were eaten at God's table with genuine gratitude and intention?</p><div class="think-line"></div>
+ <p class="q-start"><svg><use href="#ico-eye"/></svg> When you eat out of emotion (stress, sadness, boredom), whose table are you sitting at?</p><div class="think-line"></div>
+ <p class="q-start"><svg><use href="#ico-target"/></svg> Is there a specific food or eating pattern that you know is destroying the temple? Name it.</p><div class="think-line"></div>
+</div>
+
+<div class="prayer"><div class="prayer-label">Prayer</div>
+<p>Lord, I have been eating at tables You did not prepare. I have been accepting invitations from the world and the enemy and calling it normal. <strong>Show me Your table.</strong> Teach me to recognize it by the gratitude in my heart, not the food on my plate. And give me the courage to get up from the wrong table, even when everyone else is still seated. In Jesus' name, Amen.</p>
+</div>
+
+</div></div>
+
+
+<!-- ===== CHAPTER 3: The Birthright Bowl ===== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-num">Chapter Three</div>
+    <h2 class="ch-title">The Birthright Bowl</h2>
+    <p class="ch-sub">Name what you are trading. Then decide if the stew is worth it.</p>
+  </div>
+</div>
+
+<div class="ribbon"><p>"And Esau said, 'Look, I am about to die; so what is this birthright to me?' Then Jacob gave Esau bread and stew of lentils; then he ate and drank, arose, and went his way. Thus Esau despised his birthright." Genesis 25:32-34 NKJV</p></div>
+
+<div class="section"><div class="page prose">
+
+<p>Esau came in from the field. He was hungry. Not dying. Hungry. Uncomfortable. And in that moment of physical discomfort, he made a trade that echoes across four thousand years of human history: his birthright for a bowl of stew.</p>
+
+<div class="scene">
+  <div class="scene-question"><svg><use href="#ico-scale"/></svg> Esau was not starving. He was uncomfortable. What have you traded for the temporary relief of a single meal?</div>
+  <div class="scene-head">
+    <div class="scene-title">Genesis 25:29-34</div>
+    <div class="scene-meta">The Esau Exchange &middot; Esau, Jacob, a Bowl of Red Stew</div>
+  </div>
+  <div class="scene-body">
+    <p>The birthright was not a trophy. It was the double portion of inheritance. It was the leadership of the family. It was the covenant line through which God's promises would flow. It was Esau's future, his children's future, and his legacy. And he traded it for lentil soup because his stomach was growling.</p>
+    <div class="scene-quote">"Look, I am about to die; so what is this birthright to me?"</div>
+    <p>He was not about to die. He was exaggerating. He was dramatizing his discomfort to justify his decision. And we do this every single day. "I deserve this." "I had a hard week." "Just this once won't matter." "Life is too short to worry about food." These are Esau's words in modern clothing. They are the rationalizations we use to trade what matters for what tastes good right now.</p>
+    <p>The most devastating line in the passage is the last one: "Thus Esau despised his birthright." He did not lose it. He did not have it stolen. He <strong>despised</strong> it. He looked at his eternal inheritance and decided it was worth less than a bowl of soup. And the text says he ate, drank, got up, and walked away. No pause. No reflection. Just consumption and departure. That is what the wrong table does. You eat, you leave, and you do not realize what you traded until it is too late.</p>
+  </div>
+</div>
+
+<p>Hebrews 12:16-17 calls Esau a "profane person" and adds this gut punch: <em>"For you know that afterward, when he wanted to inherit the blessing, he was rejected, for he found no place for repentance, though he sought it diligently with tears."</em> (NKJV) He cried. He wanted it back. But some trades cannot be reversed. The stew was digested. The birthright was gone.</p>
+
+<div class="med-art reveal">
+  <div class="med-art-canvas">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 280" aria-label="The Evaporating Crown: steam from a bowl forms and dissolves a crown">
+      <defs>
+        <radialGradient id="ec-bowl" cx="50%" cy="30%" r="60%"><stop offset="0%" stop-color="#8B2252" stop-opacity="0.15"/><stop offset="100%" stop-color="#8B2252" stop-opacity="0"/></radialGradient>
+        <linearGradient id="ec-stew" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#A0522D" stop-opacity="0.7"/><stop offset="100%" stop-color="#5A2D0C" stop-opacity="0.5"/></linearGradient>
+      </defs>
+      <!-- Bowl -->
+      <ellipse cx="170" cy="220" rx="55" ry="12" fill="none" stroke="#A0522D" stroke-width="2" opacity="0.4"/>
+      <path d="M115,210 Q115,245 170,248 Q225,245 225,210" fill="none" stroke="#A0522D" stroke-width="2" opacity="0.35"/>
+      <!-- Stew surface -->
+      <ellipse cx="170" cy="210" rx="53" ry="10" fill="url(#ec-stew)" opacity="0.5"/>
+      <!-- Steam rising — lower strands are thick and visible -->
+      <path d="M145,200 Q142,185 148,170 Q152,158 146,145" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="2.5"/>
+      <path d="M170,198 Q165,180 172,162 Q178,145 170,128" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2.5"/>
+      <path d="M195,200 Q198,185 192,170 Q188,155 194,140" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="2.5"/>
+      <!-- Crown formed by steam — visible but dissolving at the top -->
+      <g opacity="0.65">
+        <!-- Crown base band -->
+        <path d="M130,105 L210,105" fill="none" stroke="#D4A030" stroke-width="2" opacity="0.5"/>
+        <!-- Crown points -->
+        <path d="M130,105 L135,80 L150,95 L160,70 L170,95 L180,70 L190,95 L205,80 L210,105" fill="none" stroke="#D4A030" stroke-width="1.8" opacity="0.45"/>
+        <!-- Jewel dots at peaks -->
+        <circle cx="160" cy="70" r="3" fill="#D4A030" opacity="0.4"/>
+        <circle cx="180" cy="70" r="3" fill="#D4A030" opacity="0.4"/>
+        <circle cx="170" cy="95" r="2" fill="#D4A030" opacity="0.3"/>
+      </g>
+      <!-- Crown dissolving into wisps at top — particles breaking apart -->
+      <circle cx="135" cy="78" r="1.5" fill="#D4A030" opacity="0.2"/>
+      <circle cx="140" cy="65" r="1" fill="#D4A030" opacity="0.12"/>
+      <circle cx="155" cy="58" r="1.2" fill="#D4A030" opacity="0.1"/>
+      <circle cx="165" cy="52" r="1" fill="#D4A030" opacity="0.08"/>
+      <circle cx="175" cy="55" r="1.3" fill="#D4A030" opacity="0.09"/>
+      <circle cx="185" cy="50" r="1" fill="#D4A030" opacity="0.07"/>
+      <circle cx="195" cy="60" r="1.2" fill="#D4A030" opacity="0.1"/>
+      <circle cx="205" cy="68" r="1" fill="#D4A030" opacity="0.12"/>
+      <circle cx="170" cy="40" r="0.8" fill="#D4A030" opacity="0.05"/>
+      <circle cx="160" cy="42" r="0.8" fill="#D4A030" opacity="0.04"/>
+      <circle cx="180" cy="38" r="0.7" fill="#D4A030" opacity="0.03"/>
+      <!-- Faint upward arrows showing irreversibility -->
+      <path d="M148,55 L148,35" fill="none" stroke="#D4A030" stroke-width="0.5" opacity="0.08"/>
+      <path d="M192,55 L192,35" fill="none" stroke="#D4A030" stroke-width="0.5" opacity="0.08"/>
+    </svg>
+  </div>
+  <div class="med-art-prompt">Watch the crown. It is not falling. It is evaporating.</div>
+  <div class="med-art-depths">
+    <div class="med-depth" data-level="surface" onclick="this.classList.toggle('open')">
+      <div class="med-depth-label"><span class="med-dot"></span>Surface — What You See First</div>
+      <p>A bowl of stew with steam rising. The steam, as it rises, forms the outline of a crown. But the crown is dissolving. Its peaks are breaking into particles that drift upward and disappear.</p>
+    </div>
+    <div class="med-depth" data-level="central" onclick="this.classList.toggle('open')">
+      <div class="med-depth-label"><span class="med-dot"></span>Central — What Reveals Itself</div>
+      <p>The crown is made of the same substance as the steam. <em>The birthright was always in the bowl.</em> The moment Esau consumed the stew, his inheritance literally rose out of the bowl and evaporated. He did not just trade something for something. He destroyed the thing he was trading by the very act of consuming the trade. The crown does not fall to the ground where you could pick it back up. It becomes vapor. Gone. Irretrievable.</p>
+    </div>
+    <div class="med-depth" data-level="root" onclick="this.classList.toggle('open')">
+      <div class="med-depth-label"><span class="med-dot"></span>Root — What Changes You</div>
+      <p>Look at the direction of the particles. <strong>They only move up.</strong> Steam does not fall back into the bowl. Time does not reverse. Esau sought it with tears and could not get it back. Every destructive meal you eat does not just cost you something today. It sends particles of your birthright upward, irreversibly. The years you could have had with your grandchildren. The energy you could have used to serve God. The clarity you could have brought to prayer. They are not waiting on a shelf for you to reclaim. They are vapor. And the bowl is still warm. That is the cruelest part. The stew is still being served and you are still choosing to eat it.</p>
+    </div>
+  </div>
+</div>
+
+<div class="dd"><div class="sub">Mental Model</div><h4>The Esau Exchange</h4>
+<p>Every meal has a cost beyond the price tag. When you eat food that destroys your energy, you are trading your ability to serve God with full strength. When you eat food that clouds your mind, you are trading your clarity in prayer. When you eat food that shortens your life, you are trading years of presence with your family, years of ministry, years of testimony.</p>
+<p>Name the trade. Every time. Before you eat something you know is not from God's table, force yourself to complete this sentence: "I am trading __________ for this." Your energy. Your health. Your focus at work. Your example to your children. Your years. Name it. Then decide if the stew is worth it.</p>
+</div>
+
+<div class="dd"><div class="sub">Mental Model</div><h4>The Proverbs Knife</h4>
+<p>Proverbs 23:1-3 says something so aggressive most people assume it is metaphorical: <em>"When you sit down to eat with a ruler, consider carefully what is before you; and put a knife to your throat if you are a man given to appetite. Do not desire his delicacies, for they are deceptive food."</em> (NKJV)</p>
+<p>A knife to your throat. That is not gentle pastoral guidance. That is a warning with the urgency of a life-or-death situation. Because it is one. The ruler's table (the world's table, the enemy's table) serves "deceptive food." Food that looks like a gift but functions as a trap. Food that promises satisfaction and delivers bondage. The knife is not punishment. It is the level of seriousness required to break free from appetite that has become your master.</p>
+</div>
+
+<div class="think"><div class="think-label"><svg><use href="#ico-flame"/></svg> The Trade Ledger</div><h4>What have you been trading?</h4>
+ <p class="q-start"><svg><use href="#ico-scale"/></svg> Name one food habit that is costing you energy, health, or clarity. What is the birthright you are trading for it?</p><div class="think-line"></div>
+ <p class="q-start"><svg><use href="#ico-heart"/></svg> When was the last time you said "I deserve this" to justify eating something destructive? What were you actually feeling?</p><div class="think-line"></div>
+ <p class="q-start"><svg><use href="#ico-brain"/></svg> If you continue your current eating patterns for 20 years, what will you have traded?</p><div class="think-line"></div>
+</div>
+
+<div class="prayer"><div class="prayer-label">Prayer</div>
+<p>Father, I have been Esau. I have traded my birthright for comfort food and called it living. I have despised the body You gave me by filling it with things that destroy it. <strong>Forgive me.</strong> Open my eyes to the cost of every trade I make at the table. And give me the strength to choose my inheritance over the stew, even when my stomach is screaming. In Jesus' name, Amen.</p>
+</div>
+
+</div></div>
+
+
+<!-- ===== CHAPTER 4: The Temple Inspection ===== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-num">Chapter Four</div>
+    <h2 class="ch-title">The Temple Inspection</h2>
+    <p class="ch-sub">He flipped tables over lesser offenses than this.</p>
+  </div>
+</div>
+
+<div class="ribbon"><p>"Do you not know that your body is the temple of the Holy Spirit who is in you, whom you have from God, and you are not your own? For you were bought at a price; therefore glorify God in your body and in your spirit, which are God's." 1 Corinthians 6:19-20 NKJV</p></div>
+
+<div class="section"><div class="page prose">
+
+<p>Your body is a temple. You have heard this verse a hundred times. But you have probably never followed the logic to its uncomfortable conclusion. If your body is a temple, then your mouth is the front door. Your stomach is the inner court. And the Holy Spirit dwelling inside you is in the Holy of Holies.</p>
+
+<p>Now picture this: you are carrying a bag of food into the temple. You walk through the outer gate. Past the altar of sacrifice. Through the Holy Place. Past the golden lampstand and the table of showbread. You pull back the veil. You are standing in the presence of God. And you open the bag.</p>
+
+<p><strong>Would you open that bag there?</strong></p>
+
+<div class="insight"><p>This is not a guilt exercise. It is a <em>clarity</em> exercise. If you would not carry it into the Holy of Holies, why would you carry it into the temple that the Holy Spirit actually lives in? The building in Jerusalem was a shadow. <em>You are the reality.</em> The consecration standards should be higher, not lower.</p></div>
+
+<div class="med-art reveal">
+  <div class="med-art-canvas">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 320" aria-label="The Living Temple: a human silhouette as temple cross-section">
+      <defs>
+        <linearGradient id="tp-wall" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#5A3840" stop-opacity="0.3"/><stop offset="50%" stop-color="#5A3840" stop-opacity="0.1"/><stop offset="100%" stop-color="#5A3840" stop-opacity="0.3"/></linearGradient>
+        <radialGradient id="tp-holy" cx="50%" cy="50%" r="45%"><stop offset="0%" stop-color="#D4A030" stop-opacity="0.4"/><stop offset="60%" stop-color="#D4A030" stop-opacity="0.1"/><stop offset="100%" stop-color="#D4A030" stop-opacity="0"/></radialGradient>
+        <radialGradient id="tp-flame" cx="50%" cy="70%" r="40%"><stop offset="0%" stop-color="#D4A030" stop-opacity="0.9"/><stop offset="100%" stop-color="#8B2252" stop-opacity="0.3"/></radialGradient>
+      </defs>
+      <!-- Human silhouette as architectural cross-section -->
+      <!-- Head (dome) -->
+      <path d="M140,55 Q140,25 170,25 Q200,25 200,55" fill="none" stroke="#B09098" stroke-width="1.5" opacity="0.4"/>
+      <!-- Shoulders -->
+      <path d="M120,95 L140,55 L200,55 L220,95" fill="none" stroke="#B09098" stroke-width="1.5" opacity="0.4"/>
+      <!-- Body walls -->
+      <line x1="120" y1="95" x2="125" y2="260" stroke="#B09098" stroke-width="1.5" opacity="0.4"/>
+      <line x1="220" y1="95" x2="215" y2="260" stroke="#B09098" stroke-width="1.5" opacity="0.4"/>
+      <!-- Feet/base -->
+      <path d="M125,260 L110,290 L230,290 L215,260" fill="none" stroke="#B09098" stroke-width="1.5" opacity="0.35"/>
+      <!-- Inner temple divisions -->
+      <!-- Mouth = gate (at neck level) -->
+      <line x1="145" y1="68" x2="195" y2="68" stroke="#B09098" stroke-width="1" opacity="0.3" stroke-dasharray="4,3"/>
+      <text x="170" y="63" font-family="Poppins,sans-serif" font-size="5.5" fill="#B09098" opacity="0.4" text-anchor="middle" letter-spacing="2" font-weight="600">THE GATE</text>
+      <!-- Outer Court (throat to chest) -->
+      <text x="170" y="85" font-family="Poppins,sans-serif" font-size="5" fill="#5A3840" opacity="0.3" text-anchor="middle" letter-spacing="2">OUTER COURT</text>
+      <!-- Dividing veil at mid-chest -->
+      <line x1="130" y1="115" x2="210" y2="115" stroke="#8B2252" stroke-width="1.2" opacity="0.4" stroke-dasharray="6,4"/>
+      <text x="170" y="110" font-family="Poppins,sans-serif" font-size="5" fill="#8B2252" opacity="0.45" text-anchor="middle" letter-spacing="2" font-weight="600">THE VEIL</text>
+      <!-- Holy of Holies (heart area) -->
+      <ellipse cx="170" cy="145" rx="30" ry="25" fill="url(#tp-holy)"/>
+      <!-- The flame of the Holy Spirit -->
+      <path d="M170,155 Q165,142 170,132 Q175,142 170,155Z" fill="url(#tp-flame)" opacity="0.8"/>
+      <circle cx="170" cy="140" r="4" fill="#D4A030" opacity="0.6"/>
+      <text x="170" y="175" font-family="Poppins,sans-serif" font-size="5.5" fill="#D4A030" opacity="0.5" text-anchor="middle" letter-spacing="2" font-weight="600">HOLY OF HOLIES</text>
+      <!-- Inner Court / Stomach area -->
+      <line x1="128" y1="190" x2="212" y2="190" stroke="#B09098" stroke-width="1" opacity="0.25" stroke-dasharray="4,3"/>
+      <text x="170" y="210" font-family="Poppins,sans-serif" font-size="5" fill="#5A3840" opacity="0.3" text-anchor="middle" letter-spacing="2">INNER COURT</text>
+      <!-- Question mark in the stomach area — what are you carrying in? -->
+      <text x="170" y="235" font-family="Lora,serif" font-size="28" fill="#8B2252" opacity="0.15" text-anchor="middle" font-style="italic">?</text>
+    </svg>
+  </div>
+  <div class="med-art-prompt">Trace the path from the gate to the flame.</div>
+  <div class="med-art-depths">
+    <div class="med-depth" data-level="surface" onclick="this.classList.toggle('open')">
+      <div class="med-depth-label"><span class="med-dot"></span>Surface — What You See First</div>
+      <p>A human silhouette drawn as an architectural floor plan. The body is a building. The mouth is labeled "The Gate." There are courts, a veil, and deep inside the chest, a golden flame burns in a chamber labeled "Holy of Holies." In the stomach below, a question mark.</p>
+    </div>
+    <div class="med-depth" data-level="central" onclick="this.classList.toggle('open')">
+      <div class="med-depth-label"><span class="med-dot"></span>Central — What Reveals Itself</div>
+      <p>Everything you eat passes through the gate, through the outer court, past the veil, and into the presence of the flame. <em>There is no bypass.</em> The temple in Jerusalem had restricted access. Only the high priest could enter the Holy of Holies, and only once a year, after extensive purification. But you walk food past the veil three times a day without thinking. The question mark in your stomach is not asking what you ate. It is asking: would you have carried that past the veil if you could see the flame?</p>
+    </div>
+    <div class="med-depth" data-level="root" onclick="this.classList.toggle('open')">
+      <div class="med-depth-label"><span class="med-dot"></span>Root — What Changes You</div>
+      <p>The Jerusalem temple was a shadow. <strong>You are the reality.</strong> The priests purified themselves for days before entering. They wore specific garments. They brought specific offerings. The reverence was absolute because the Presence was real. The Holy Spirit's presence inside you is not less real than the Shekinah glory in that stone building. It is more real. More permanent. More personal. And every time you eat without awareness, you are walking past the Ark of the Covenant with a bag from a drive-through. Not because drive-throughs are sinful. Because you forgot where you are standing.</p>
+    </div>
+  </div>
+</div>
+
+<div class="scene">
+  <div class="scene-question"><svg><use href="#ico-temple"/></svg> Jesus flipped tables and drove out merchants with a whip. What would He find if He inspected your temple's kitchen?</div>
+  <div class="scene-head">
+    <div class="scene-title">John 2:14-16</div>
+    <div class="scene-meta">The Cleansing of the Temple &middot; Jesus, the Money Changers, the Merchants</div>
+  </div>
+  <div class="scene-body">
+    <p>Jesus walks into the temple and finds it filled with merchants. They are not committing obvious sins. They are selling animals for sacrifice and exchanging currency for temple coins. These were legitimate temple services. The problem was not what they were doing. It was where they were doing it and what it had become. Commerce had invaded sacred space. Convenience had replaced reverence. The house of prayer had become a marketplace.</p>
+    <div class="scene-quote">"Take these things away! Do not make My Father's house a house of merchandise!" John 2:16 NKJV</div>
+    <p>Jesus did not politely ask them to leave. He made a whip. He overturned tables. He drove out animals. He was furious. Not because buying and selling are wrong. Because the sacred space had been profaned by things that did not belong there.</p>
+    <p>Your body is that temple now. And the question is not whether you have turned it into a den of robbers. The question is whether you have turned it into a house of merchandise, a place where convenience and comfort have replaced reverence and intention. Jesus did not tolerate legitimate commerce in the wrong location. What would He do with the processed food, the sugar addictions, and the mindless consumption that has set up shop in His temple?</p>
+  </div>
+</div>
+
+<div class="scene">
+  <div class="scene-question"><svg><use href="#ico-shield"/></svg> Daniel was a teenager in captivity. He had every reason to comply. He refused. What is your reason for not refusing?</div>
+  <div class="scene-head">
+    <div class="scene-title">Daniel 1:8-16</div>
+    <div class="scene-meta">The Babylonian Court &middot; Daniel, Ashpenaz the Chief Eunuch, King Nebuchadnezzar</div>
+  </div>
+  <div class="scene-body">
+    <p>Daniel is a captive in Babylon. A teenager ripped from his homeland, surrounded by a foreign culture, under pressure to assimilate. The king offers his best food and wine. Everyone else at the table accepts it. It would be easy, sensible, and politically wise to eat what the king serves. Nobody would blame him.</p>
+    <div class="scene-quote">"But Daniel purposed in his heart that he would not defile himself with the portion of the king's delicacies, nor with the wine which he drank." Daniel 1:8 NKJV</div>
+    <p>He "purposed in his heart." This was not a spontaneous decision. It was a conviction established before the food arrived. Daniel decided which table he would eat at before anyone set the plate down. He asked for vegetables and water. Ten days. And at the end, he and his friends appeared healthier and better nourished than all the young men who ate the royal food.</p>
+    <p>The world's table had the finest food in the empire. God's table had vegetables. And God's table won. Not because vegetables are magic. Because obedience is. Daniel did not just refuse food. He refused the table. He refused the system. He refused to let Babylon decide what went into God's temple. And God honored it with health, wisdom, and influence that outlasted the empire.</p>
+  </div>
+</div>
+
+<div class="breathe">
+  <div class="breathe-ring"></div>
+  <div class="breathe-ring"></div>
+  <div class="breathe-ring"></div>
+  <div class="breathe-content">
+    <div class="breathe-label">Pause</div>
+    <h4>Before you continue, sit with this:</h4>
+    <p>You are not choosing a diet. You are choosing which table to worship at. Daniel did not have a nutritionist. He had a conviction. That is the only thing you need.</p>
+  </div>
+</div>
+
+<div class="think"><div class="think-label"><svg><use href="#ico-flame"/></svg> Temple Walk</div><h4>Inspect your own temple.</h4>
+ <p class="q-start"><svg><use href="#ico-temple"/></svg> If Jesus walked through your body's temple today, what would He find that does not belong there?</p><div class="think-line"></div>
+ <p class="q-start"><svg><use href="#ico-shield"/></svg> What is the "king's food" in your life: the culturally acceptable thing everyone eats that you know defiles the temple?</p><div class="think-line"></div>
+ <p class="q-start"><svg><use href="#ico-heart"/></svg> Can you "purpose in your heart" one change this week? Not a diet. A conviction.</p><div class="think-line"></div>
+</div>
+
+<div class="prayer"><div class="prayer-label">Prayer</div>
+<p>Lord Jesus, You flipped tables over lesser offenses than what I have brought into Your temple. <strong>Cleanse me.</strong> Give me Daniel's conviction. Not a diet plan. Not willpower. A settled decision in my heart before the food arrives. I want Your temple to be a house of prayer, not a house of convenience. Help me honor what You paid for. In Your name, Amen.</p>
+</div>
+
+</div></div>
+
+
+<!-- ===== CHAPTER 5: The Bread of Life ===== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-num">Chapter Five</div>
+    <h2 class="ch-title">The Bread of Life</h2>
+    <p class="ch-sub">The hunger beneath the hunger is not for food.</p>
+  </div>
+</div>
+
+<div class="ribbon"><p>"And Jesus said to them, 'I am the bread of life. He who comes to Me shall never hunger, and he who believes in Me shall never thirst.'" John 6:35 NKJV</p></div>
+
+<div class="section"><div class="page prose">
+
+<p>Jesus says He is the bread of life. He says if you come to Him you will <strong>never hunger.</strong> But you do still hunger, do you not? You ate breakfast and by noon you were hungry again. So what does He mean?</p>
+
+<p>He means there is a hunger beneath the hunger. There is a craving underneath the craving. And every time you reach for food to satisfy that deeper hunger, you are putting bread into a hole that is shaped like God. It will never fit. It will never fill. You will keep eating and keep hungry because the hunger was never about food.</p>
+
+<div class="insight"><p>Think about when you eat the worst. Not when you are physically hungry. When you are <em>emotionally</em> hungry. When you are stressed. Lonely. Anxious. Bored. Rejected. Overwhelmed. You are not reaching for calories. You are reaching for comfort. For control. For a feeling of fullness that has nothing to do with your stomach. <em>You are trying to feed a spiritual hunger with physical bread.</em> And it will never work.</p></div>
+
+<div class="scene">
+  <div class="scene-question"><svg><use href="#ico-bread"/></svg> Five loaves. Two fish. Five thousand people. What did Jesus do before He broke the bread?</div>
+  <div class="scene-head">
+    <div class="scene-title">Matthew 14:15-21</div>
+    <div class="scene-meta">The Feeding of the 5,000 &middot; Jesus, the Disciples, Five Thousand Men (Plus Women and Children)</div>
+  </div>
+  <div class="scene-body">
+    <p>The disciples see the crowd and panic. There is not enough food. Send them away, they say. Jesus says no. Bring me what you have. Five loaves. Two fish. Barely enough for a single family. And then Jesus does something that should redefine every meal you ever eat again.</p>
+    <div class="scene-quote">"And He took the five loaves and the two fish, and looking up to heaven, He blessed and broke and gave the loaves to the disciples." Matthew 14:19 NKJV</div>
+    <p>He <strong>looked up to heaven.</strong> He <strong>blessed.</strong> He <strong>broke.</strong> He <strong>gave.</strong> Four actions. Look up: acknowledge where the food comes from. Bless: give thanks. Break: prepare it with intention. Give: share it generously. And five loaves became enough for thousands with twelve baskets left over.</p>
+    <p>Gratitude over food is not just polite. It is supernatural. What you bless, God multiplies. What you consume mindlessly, without acknowledgment, without thanks, without looking up, the enemy diminishes. The same meal can produce abundance or leave you empty. The difference is not the food. It is the posture of the person eating it.</p>
+  </div>
+</div>
+
+<div class="med-art reveal">
+  <div class="med-art-canvas">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 260" aria-label="The Breaking Light: bread broken open with light and multiplication pouring from the fracture">
+      <defs>
+        <radialGradient id="bl-center" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#D4A030" stop-opacity="0.5"/><stop offset="40%" stop-color="#D4A030" stop-opacity="0.15"/><stop offset="100%" stop-color="#D4A030" stop-opacity="0"/></radialGradient>
+        <linearGradient id="bl-bread-l" x1="100%" y1="50%" x2="0%" y2="50%"><stop offset="0%" stop-color="#D4A030" stop-opacity="0.7"/><stop offset="100%" stop-color="#A07820" stop-opacity="0.5"/></linearGradient>
+        <linearGradient id="bl-bread-r" x1="0%" y1="50%" x2="100%" y2="50%"><stop offset="0%" stop-color="#D4A030" stop-opacity="0.7"/><stop offset="100%" stop-color="#A07820" stop-opacity="0.5"/></linearGradient>
+      </defs>
+      <!-- Central radiance from the break point -->
+      <ellipse cx="170" cy="130" rx="80" ry="80" fill="url(#bl-center)"/>
+      <!-- Light rays emanating from center break -->
+      <g stroke="#D4A030" fill="none" stroke-linecap="round">
+        <line x1="170" y1="130" x2="170" y2="40" stroke-width="1.5" opacity="0.3"/>
+        <line x1="170" y1="130" x2="100" y2="65" stroke-width="1.2" opacity="0.2"/>
+        <line x1="170" y1="130" x2="240" y2="65" stroke-width="1.2" opacity="0.2"/>
+        <line x1="170" y1="130" x2="80" y2="100" stroke-width="1" opacity="0.15"/>
+        <line x1="170" y1="130" x2="260" y2="100" stroke-width="1" opacity="0.15"/>
+        <line x1="170" y1="130" x2="60" y2="140" stroke-width="0.8" opacity="0.1"/>
+        <line x1="170" y1="130" x2="280" y2="140" stroke-width="0.8" opacity="0.1"/>
+        <line x1="170" y1="130" x2="110" y2="55" stroke-width="0.8" opacity="0.12"/>
+        <line x1="170" y1="130" x2="230" y2="55" stroke-width="0.8" opacity="0.12"/>
+      </g>
+      <!-- Left half of bread (pulling away left) -->
+      <path d="M100,115 Q110,100 140,105 L160,120 L160,140 Q140,150 110,145 Q95,140 100,115Z" fill="url(#bl-bread-l)" stroke="#A07820" stroke-width="1" opacity="0.7"/>
+      <!-- Right half of bread (pulling away right) -->
+      <path d="M240,115 Q230,100 200,105 L180,120 L180,140 Q200,150 230,145 Q245,140 240,115Z" fill="url(#bl-bread-r)" stroke="#A07820" stroke-width="1" opacity="0.7"/>
+      <!-- Bright light core at break point -->
+      <ellipse cx="170" cy="130" rx="8" ry="10" fill="#D4A030" opacity="0.5"/>
+      <ellipse cx="170" cy="130" rx="4" ry="5" fill="#FFFFFF" opacity="0.3"/>
+      <!-- Small bread fragments multiplying outward -->
+      <g fill="#D4A030" opacity="0.4">
+        <ellipse cx="70" cy="85" rx="6" ry="4" transform="rotate(-15,70,85)"/>
+        <ellipse cx="55" cy="115" rx="5" ry="3.5" transform="rotate(10,55,115)"/>
+        <ellipse cx="80" cy="155" rx="5.5" ry="3.8" transform="rotate(-8,80,155)"/>
+        <ellipse cx="270" cy="85" rx="6" ry="4" transform="rotate(15,270,85)"/>
+        <ellipse cx="285" cy="115" rx="5" ry="3.5" transform="rotate(-10,285,115)"/>
+        <ellipse cx="260" cy="155" rx="5.5" ry="3.8" transform="rotate(8,260,155)"/>
+        <ellipse cx="120" cy="60" rx="4.5" ry="3" transform="rotate(-20,120,60)"/>
+        <ellipse cx="220" cy="60" rx="4.5" ry="3" transform="rotate(20,220,60)"/>
+        <ellipse cx="90" cy="180" rx="4" ry="2.8"/>
+        <ellipse cx="250" cy="180" rx="4" ry="2.8"/>
+        <ellipse cx="140" cy="45" rx="3.5" ry="2.5"/>
+        <ellipse cx="200" cy="45" rx="3.5" ry="2.5"/>
+      </g>
+      <!-- Even smaller fragments at edges (the multiplication) -->
+      <g fill="#D4A030" opacity="0.2">
+        <circle cx="40" cy="90" r="2.5"/>
+        <circle cx="300" cy="90" r="2.5"/>
+        <circle cx="50" cy="140" r="2"/>
+        <circle cx="290" cy="140" r="2"/>
+        <circle cx="105" cy="40" r="2"/>
+        <circle cx="235" cy="40" r="2"/>
+        <circle cx="170" cy="25" r="2.5"/>
+      </g>
+      <!-- Hands (simplified, pulling bread apart) -->
+      <g stroke="#B09098" fill="none" stroke-width="1.5" opacity="0.35">
+        <path d="M95,135 Q85,128 80,140 Q78,150 88,148"/>
+        <path d="M95,125 Q88,118 82,128"/>
+        <path d="M245,135 Q255,128 260,140 Q262,150 252,148"/>
+        <path d="M245,125 Q252,118 258,128"/>
+      </g>
+    </svg>
+  </div>
+  <div class="med-art-prompt">The light does not come from the whole loaf. It comes from the break.</div>
+  <div class="med-art-depths">
+    <div class="med-depth" data-level="surface" onclick="this.classList.toggle('open')">
+      <div class="med-depth-label"><span class="med-dot"></span>Surface — What You See First</div>
+      <p>Two hands pulling bread apart. From the fracture point between the halves, intense golden light radiates outward. Small bread fragments multiply in every direction, growing smaller and more numerous as they move away from the center.</p>
+    </div>
+    <div class="med-depth" data-level="central" onclick="this.classList.toggle('open')">
+      <div class="med-depth-label"><span class="med-dot"></span>Central — What Reveals Itself</div>
+      <p>Jesus looked up, blessed, <em>broke,</em> and gave. The abundance did not come from the whole loaf. It came from the breaking. Five thousand people were fed not by a loaf that stayed intact but by a loaf that was torn open. The light lives inside the break. The multiplication begins at the fracture. This is the opposite of how we think about food: we hoard, we keep whole, we protect. Jesus broke, and the breaking released more than the whole ever contained.</p>
+    </div>
+    <div class="med-depth" data-level="root" onclick="this.classList.toggle('open')">
+      <div class="med-depth-label"><span class="med-dot"></span>Root — What Changes You</div>
+      <p>This is the body of Christ. <strong>"This is My body, broken for you."</strong> The most abundant act in human history, the salvation of all mankind, came through a body that was broken. Not preserved. Not protected. Broken. The cross was the fracture point, and from that break, light has been radiating for two thousand years, multiplying into billions of lives. When you break bread with gratitude, you are participating in that pattern. When you eat selfishly, hoarding and consuming without giving, you are trying to keep the loaf whole. And a whole loaf feeds one person. A broken loaf feeds five thousand. <em>Your abundance is locked inside your willingness to break.</em></p>
+    </div>
+  </div>
+</div>
+
+<div class="dd"><div class="sub">Mental Model</div><h4>The Hunger Beneath the Hunger</h4>
+<p>Next time you feel the urge to eat and you are not physically hungry, stop. Ask: what am I actually hungry for right now? Connection. Rest. Purpose. Comfort. Peace. Control. Name the real hunger. Then bring that hunger to God instead of to the refrigerator. Pray the actual need. "Lord, I am lonely." "Lord, I am anxious." "Lord, I feel out of control." Let Him feed the real hunger. Then decide if you still need the food.</p>
+<p>Nine times out of ten, you will not. Because the real hunger was never about food. And once you start feeding it with the right bread, the compulsive eating begins to dissolve. Not through discipline. Through <strong>satisfaction.</strong></p>
+</div>
+
+<div class="stack">
+<div class="stack-label">The Worship Meal Pattern</div>
+<div class="stack-flow">
+<span class="stack-node sn-dark">Look Up</span><span class="stack-arr">&rarr;</span>
+<span class="stack-node sn-wine">Bless</span><span class="stack-arr">&rarr;</span>
+<span class="stack-node sn-bread">Break</span><span class="stack-arr">&rarr;</span>
+<span class="stack-node sn-green">Give</span><span class="stack-arr">&rarr;</span>
+<span class="stack-node sn-bread">Abundance</span>
+</div>
+</div>
+
+<div class="think"><div class="think-label"><svg><use href="#ico-flame"/></svg> The Real Hunger</div><h4>What are you actually craving?</h4>
+ <p class="q-start"><svg><use href="#ico-heart"/></svg> When you eat late at night or binge on comfort food, what emotion is driving it?</p><div class="think-line"></div>
+ <p class="q-start"><svg><use href="#ico-prayer"/></svg> What would happen if you prayed that emotion to God before opening the refrigerator?</p><div class="think-line"></div>
+ <p class="q-start"><svg><use href="#ico-bread"/></svg> Can you practice the four actions (look up, bless, break, give) at your next meal?</p><div class="think-line"></div>
+</div>
+
+<div class="prayer"><div class="prayer-label">Prayer</div>
+<p>Jesus, You are the bread of life. I have been trying to fill a God-shaped hunger with food-shaped substitutes and wondering why I am never satisfied. <strong>Feed me with Yourself.</strong> Teach me to recognize the hunger beneath the hunger. When I reach for comfort, redirect my hands toward prayer. When I reach for control, redirect my heart toward surrender. You are enough. Help me believe it in my stomach, not just my theology. In Your name, Amen.</p>
+</div>
+
+</div></div>
+
+
+<!-- ===== CHAPTER 6: The Daily Altar ===== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-num">Chapter Six</div>
+    <h2 class="ch-title">The Daily Altar</h2>
+    <p class="ch-sub">Three meals a day. Three acts of worship. The table is set.</p>
+  </div>
+</div>
+
+<div class="ribbon"><p>"And He took bread, gave thanks and broke it, and gave it to them, saying, 'This is My body which is given for you; do this in remembrance of Me.'" Luke 22:19 NKJV</p></div>
+
+<div class="section"><div class="page prose">
+
+<p>"Do this in remembrance of Me." We read that verse and picture a Sunday morning communion tray. Grape juice in tiny cups. A cracker on a silver plate. Once a month, maybe once a quarter. A ritual inside a building.</p>
+
+<p>But Jesus said it at a dinner table. Over a real meal. With friends. He did not say "do this during a formal church service." He said "do this." Eat. Remember. Every meal is an invitation to remember whose table you are sitting at.</p>
+
+<div class="scene">
+  <div class="scene-question"><svg><use href="#ico-cup"/></svg> What if communion was not a monthly ritual but a daily practice? What if every meal was sacred?</div>
+  <div class="scene-head">
+    <div class="scene-title">Luke 22:14-20</div>
+    <div class="scene-meta">The Last Supper &middot; Jesus, the Twelve Disciples</div>
+  </div>
+  <div class="scene-body">
+    <p>This is the final meal before the cross. Jesus knows He is about to die. And His last act before the most important event in human history is to eat a meal with the people He loves. He does not deliver a sermon. He does not perform a miracle. He breaks bread. He pours wine. He says: remember Me when you do this.</p>
+    <div class="scene-quote">"This is My body which is given for you; do this in remembrance of Me." Luke 22:19 NKJV</div>
+    <p>The bread is His body, broken for you. The cup is His blood, poured for you. And every time you eat with awareness, every time you pause and acknowledge that the food in front of you came from the hand of a God who gave His own body to save yours, you are participating in communion. Not the ritual. The reality. The sacred act of receiving provision from the one who provided everything, including Himself.</p>
+    <p>This means your Tuesday morning oatmeal can be communion. Your lunch at your desk can be communion. Your family dinner can be communion. Not because the food is special. Because the remembrance is. "Do this in remembrance of Me" is not limited to a church service. It is an invitation that applies every time food touches your lips.</p>
+  </div>
+</div>
+
+<div class="scene">
+  <div class="scene-question"><svg><use href="#ico-sunrise"/></svg> God provided exactly what was needed. Daily. Those who hoarded found rot. What does that say about your relationship with food?</div>
+  <div class="scene-head">
+    <div class="scene-title">Exodus 16:14-20</div>
+    <div class="scene-meta">Manna in the Wilderness &middot; Israel, Moses, God's Daily Provision</div>
+  </div>
+  <div class="scene-body">
+    <p>Every morning, the ground was covered with manna. A thin, flake-like substance that tasted like wafers made with honey. God's instruction was precise: gather what you need for the day. No more. Those who gathered extra found that it bred worms and rotted by morning. God was not being stingy. He was teaching a principle that applies to every meal you will ever eat.</p>
+    <div class="scene-quote">"Let no one leave any of it till morning." Exodus 16:19 NKJV</div>
+    <p>The principle: <strong>daily dependence.</strong> God wants you to come back tomorrow. He wants the act of receiving food to be a daily act of trust. Not stockpiling. Not hoarding. Not consuming in fear that there will not be enough. Enough for today. Trust for tomorrow. That is the manna rhythm.</p>
+    <p>Our culture does the opposite. We stockpile. We overeat. We consume in excess because we are afraid of scarcity, real or imagined. The manna principle says: God will provide again tomorrow. You do not need to eat as if tomorrow is not coming. You do not need to stuff yourself tonight because you are anxious about what tomorrow holds. Gather what you need. Eat it with gratitude. Trust God for the next meal.</p>
+  </div>
+</div>
+
+<div class="viz">
+  <div class="viz-top"><div class="viz-icon"><svg><use href="#ico-flame"/></svg></div><div class="viz-meta"><div class="viz-label">The Practice</div><h4>The Daily Altar: Seven Principles</h4></div></div>
+  <div class="viz-body">
+    <p><strong>1. Every meal is worship.</strong> Not metaphorically. Literally. You are either worshiping God, worshiping your appetite, or worshiping the enemy's counterfeit comfort. There is no neutral eating.</p>
+    <p><strong>2. Gratitude is the gatekeeper.</strong> A three second pause of genuine thanks before eating seats you at God's table. Without it, you default to the world's table by gravity.</p>
+    <p><strong>3. Name the real hunger.</strong> Before you eat, ask if you are physically hungry or emotionally hungry. Feed physical hunger with food. Feed emotional hunger with prayer.</p>
+    <p><strong>4. Your plate is an altar.</strong> Would you place this offering before God? If not, it does not belong in His temple.</p>
+    <p><strong>5. The Esau Exchange is always in effect.</strong> Every destructive food choice costs you something. Name the cost before you pay it.</p>
+    <p><strong>6. Enough is a discipline.</strong> Gather what you need. Not more. The manna that was hoarded rotted. The body that is overfed breaks down. Enough is not deprivation. Enough is trust.</p>
+    <p><strong>7. Do this in remembrance.</strong> Every bite is an opportunity to remember whose table you are at, whose temple you are feeding, and whose body was broken so yours could be whole.</p>
+  </div>
+</div>
+
+<div class="med-art reveal">
+  <div class="med-art-canvas">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 300" aria-label="The Plate Altar: a dinner plate with flames at the rim and utensils forming a cross">
+      <defs>
+        <radialGradient id="pa-plate" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FFFBF5" stop-opacity="0.08"/><stop offset="70%" stop-color="#B09098" stop-opacity="0.04"/><stop offset="100%" stop-color="#B09098" stop-opacity="0"/></radialGradient>
+        <radialGradient id="pa-center" cx="50%" cy="50%" r="40%"><stop offset="0%" stop-color="#D4A030" stop-opacity="0.15"/><stop offset="100%" stop-color="#D4A030" stop-opacity="0"/></radialGradient>
+      </defs>
+      <!-- Plate (top-down view) -->
+      <circle cx="170" cy="150" r="105" fill="none" stroke="#B09098" stroke-width="1.5" opacity="0.2"/>
+      <circle cx="170" cy="150" r="95" fill="none" stroke="#B09098" stroke-width="1" opacity="0.15"/>
+      <circle cx="170" cy="150" r="70" fill="url(#pa-plate)" stroke="#B09098" stroke-width="0.5" opacity="0.15"/>
+      <!-- Center glow -->
+      <circle cx="170" cy="150" r="35" fill="url(#pa-center)"/>
+      <!-- Flames around the rim — like altar fire -->
+      <g opacity="0.5">
+        <path d="M170,45 Q168,38 170,30 Q172,38 170,45Z" fill="#D4A030" opacity="0.6"/>
+        <path d="M170,50 Q167,42 170,34 Q173,42 170,50Z" fill="#8B2252" opacity="0.3"/>
+        <path d="M220,55 Q222,47 225,40 Q224,48 220,55Z" fill="#D4A030" opacity="0.5" transform="rotate(25,220,55)"/>
+        <path d="M120,55 Q118,47 115,40 Q116,48 120,55Z" fill="#D4A030" opacity="0.5" transform="rotate(-25,120,55)"/>
+        <path d="M260,80 Q263,72 265,64 Q262,73 260,80Z" fill="#D4A030" opacity="0.45" transform="rotate(50,260,80)"/>
+        <path d="M80,80 Q77,72 75,64 Q78,73 80,80Z" fill="#D4A030" opacity="0.45" transform="rotate(-50,80,80)"/>
+        <path d="M275,120 Q278,112 280,105 Q277,113 275,120Z" fill="#D4A030" opacity="0.4" transform="rotate(70,275,120)"/>
+        <path d="M65,120 Q62,112 60,105 Q63,113 65,120Z" fill="#D4A030" opacity="0.4" transform="rotate(-70,65,120)"/>
+        <path d="M278,155 Q282,147 283,140 Q280,148 278,155Z" fill="#D4A030" opacity="0.35"/>
+        <path d="M62,155 Q58,147 57,140 Q60,148 62,155Z" fill="#D4A030" opacity="0.35"/>
+        <path d="M270,190 Q274,183 275,176 Q272,184 270,190Z" fill="#D4A030" opacity="0.4" transform="rotate(-20,270,190)"/>
+        <path d="M70,190 Q66,183 65,176 Q68,184 70,190Z" fill="#D4A030" opacity="0.4" transform="rotate(20,70,190)"/>
+        <path d="M250,225 Q254,218 254,210 Q252,219 250,225Z" fill="#D4A030" opacity="0.4" transform="rotate(-40,250,225)"/>
+        <path d="M90,225 Q86,218 86,210 Q88,219 90,225Z" fill="#D4A030" opacity="0.4" transform="rotate(40,90,225)"/>
+        <path d="M210,250 Q213,243 214,236 Q211,244 210,250Z" fill="#D4A030" opacity="0.45" transform="rotate(-60,210,250)"/>
+        <path d="M130,250 Q127,243 126,236 Q129,244 130,250Z" fill="#D4A030" opacity="0.45" transform="rotate(60,130,250)"/>
+        <path d="M170,258 Q168,250 170,243 Q172,250 170,258Z" fill="#D4A030" opacity="0.5"/>
+      </g>
+      <!-- Fork (left, vertical) forming the vertical bar of cross -->
+      <g stroke="#B09098" fill="none" stroke-width="1.8" opacity="0.5">
+        <line x1="170" y1="90" x2="170" y2="210"/>
+        <line x1="163" y1="90" x2="163" y2="110"/>
+        <line x1="170" y1="90" x2="170" y2="108"/>
+        <line x1="177" y1="90" x2="177" y2="110"/>
+        <line x1="156" y1="90" x2="156" y2="105"/>
+      </g>
+      <!-- Knife (horizontal) forming the horizontal bar of cross -->
+      <g stroke="#B09098" fill="none" stroke-width="1.8" opacity="0.5">
+        <line x1="110" y1="150" x2="230" y2="150"/>
+        <path d="M230,150 Q240,148 240,150 Q240,152 230,150Z" fill="#B09098" opacity="0.4"/>
+      </g>
+      <!-- Small cross glow at intersection -->
+      <circle cx="170" cy="150" r="6" fill="#D4A030" opacity="0.25"/>
+      <circle cx="170" cy="150" r="3" fill="#D4A030" opacity="0.4"/>
+      <!-- Three time markers (like a clock: breakfast, lunch, dinner) -->
+      <text x="170" y="78" font-family="Poppins,sans-serif" font-size="5.5" fill="#D4A030" opacity="0.35" text-anchor="middle" letter-spacing="2" font-weight="600">MORNING</text>
+      <text x="248" y="153" font-family="Poppins,sans-serif" font-size="5.5" fill="#D4A030" opacity="0.35" text-anchor="start" letter-spacing="2" font-weight="600">MIDDAY</text>
+      <text x="170" y="232" font-family="Poppins,sans-serif" font-size="5.5" fill="#D4A030" opacity="0.35" text-anchor="middle" letter-spacing="2" font-weight="600">EVENING</text>
+    </svg>
+  </div>
+  <div class="med-art-prompt">A plate. An altar. A clock. A cross. All at once.</div>
+  <div class="med-art-depths">
+    <div class="med-depth" data-level="surface" onclick="this.classList.toggle('open')">
+      <div class="med-depth-label"><span class="med-dot"></span>Surface — What You See First</div>
+      <p>A dinner plate viewed from above. Small flames line the rim like candles on an altar. A fork and knife are laid across the plate, and they intersect at the center to form a cross. Three positions around the rim are marked: morning, midday, evening.</p>
+    </div>
+    <div class="med-depth" data-level="central" onclick="this.classList.toggle('open')">
+      <div class="med-depth-label"><span class="med-dot"></span>Central — What Reveals Itself</div>
+      <p>The plate is four things at once. It is a <em>plate</em> (the practical object of every meal). It is an <em>altar</em> (the flames around the rim make it sacrificial). It is a <em>clock</em> (the three time markers show your day is structured around these moments). And at the center, the utensils form a <em>cross</em> (the foundation of every act of worship). Your three daily meals are three daily worship services. The plate is the altar. The cross is always at the center.</p>
+    </div>
+    <div class="med-depth" data-level="root" onclick="this.classList.toggle('open')">
+      <div class="med-depth-label"><span class="med-dot"></span>Root — What Changes You</div>
+      <p>Look at the flames. They burn at the rim, not the center. <strong>The fire is at the boundary.</strong> The altar's edge is where the offering meets the flame. Every time you pick up your fork and knife, you are picking up the cross. Every time you place food on your plate, you are placing an offering on an altar. And three times a day, the clock brings you back to this moment of decision. Morning. Midday. Evening. The question is never whether you will worship. You worship three times a day whether you intend to or not. The only question is whether the offering on the altar is worthy of the flame that receives it.</p>
+    </div>
+  </div>
+</div>
+
+<div class="think"><div class="think-label"><svg><use href="#ico-flame"/></svg> The Final Test</div><h4>Can you answer these without looking back?</h4>
+ <p class="q-start"><svg><use href="#ico-cup"/></svg> What are the three tables and how do you identify which one you are at?</p><div class="think-line"></div>
+ <p class="q-start"><svg><use href="#ico-scale"/></svg> What is the Esau Exchange and what are you trading for your worst food habit?</p><div class="think-line"></div>
+ <p class="q-start"><svg><use href="#ico-temple"/></svg> Would you carry your last meal into the Holy of Holies?</p><div class="think-line"></div>
+ <p class="q-start"><svg><use href="#ico-bread"/></svg> What is the hunger beneath your hunger?</p><div class="think-line"></div>
+</div>
+
+</div></div>
+
+<div class="prompt"><div class="prompt-head">THE THREE TABLES. OPERATING PROMPT</div><div class="prompt-body"><strong>I just read "The Three Tables."</strong> The model: every meal is an act of worship at one of three tables. God's table (gratitude, nourishment, stewardship), the world's table (comfort, image, mindlessness), or the enemy's table (destruction disguised as pleasure).<br><br><strong>My biggest food struggle:</strong> [name it]<br><strong>Which table I usually eat at:</strong> [God's / World's / Enemy's]<br><strong>What I am trading (my Esau Exchange):</strong> [name the birthright]<br><strong>My hunger beneath the hunger:</strong> [what I actually crave]<br><br>Help me build my Daily Altar practice. Walk me through the seven principles. Help me identify which table I am at for each meal this week. When I reach for food emotionally, redirect me to prayer. When I rationalize destructive eating, remind me of the Esau Exchange. When I eat mindlessly, ask me: would you carry this into the Holy of Holies?<br><br><strong>Do not give me a diet. Give me a conviction.</strong></div></div>
+
+<section class="finale">
+  <h2>Every bite seats you<br><span>somewhere.</span></h2>
+  <p>The table is set. God prepared it before the foundation of the world. The bread is broken. The cup is poured. The only question left is the one you answer three times a day: whose table will you sit at?</p>
+  <p style="margin-top:28px;font-style:normal;font-family:'Poppins',sans-serif;font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;color:rgba(139,34,82,0.25)">The altar is your plate. The worship is your choice.</p>
+</section>
+
+<footer>
+  <p>"Whether you eat or drink, or whatever you do, do all to the glory of God." 1 Corinthians 10:31 NKJV</p>
+  <div class="brand">KingdomBuilders AI</div>
+  <p style="margin-top:12px">kingdombuilders.ai</p>
+</footer>
+
+<div style="text-align:center;padding:18px 24px 28px;background:#060204;border-top:1px solid rgba(139,34,82,0.06);font-family:'Poppins',sans-serif;font-size:0.6rem;color:rgba(255,255,255,0.2);line-height:1.6" class="no-print">
+  To save as PDF: Open in browser &rarr; File &rarr; Print &rarr; "Save as PDF" &middot; Works on desktop and mobile.
+</div>
+
+<div id="read-progress"></div>
+<div id="chapter-pill">Cover</div>
+
+<script>
+// Scroll reveal
+const revealObs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.classList.add('visible');revealObs.unobserve(el.target)}})},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.mission,.viz,.think,.insight,.gq,.dd,.breathe,.prayer,.prompt,.stack,.inst,.scene,.med-art').forEach(el=>{el.classList.add('reveal');revealObs.observe(el)});
+document.querySelectorAll('.ba-pair').forEach(el=>{el.classList.add('stagger-children');revealObs.observe(el)});
+
+// Progress bar
+const bar=document.getElementById('read-progress');
+window.addEventListener('scroll',()=>{const p=(window.scrollY/(document.documentElement.scrollHeight-window.innerHeight))*100;bar.style.width=Math.min(100,p)+'%'},{passive:true});
+
+// Chapter pill
+const pill=document.getElementById('chapter-pill');
+const chEls=[{el:document.querySelector('.cover'),label:'Cover'},...Array.from(document.querySelectorAll('.ch-head')).map((el,i)=>({el,label:el.querySelector('.ch-num')?.textContent?.trim()||('Ch '+(i+1))}))].filter(c=>c.el);
+let pillHide;
+const pillObs=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){const c=chEls.find(x=>x.el===en.target);if(c){pill.textContent=c.label;pill.classList.add('show');clearTimeout(pillHide);pillHide=setTimeout(()=>pill.classList.remove('show'),2400)}}})},{threshold:0.5});
+chEls.forEach(c=>pillObs.observe(c.el));
+
+// Think line click glow
+document.querySelectorAll('.think-line').forEach(l=>{l.addEventListener('click',()=>{l.style.borderBottomColor='rgba(139,34,82,0.7)';setTimeout(()=>{l.style.borderBottomColor=''},1800)})});
+</script>
+</body>
+</html>
