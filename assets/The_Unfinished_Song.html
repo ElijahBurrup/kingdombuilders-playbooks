@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Unfinished Song | Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --midnight: #1A1030;
+  --midnight-deep: #0E0820;
+  --midnight-mid: #2A1848;
+  --midnight-light: #3A2860;
+  --rose: #D4738C;
+  --rose-glow: #E8A0B4;
+  --rose-pale: #F5D0DD;
+  --rose-soft: rgba(212,115,140,0.06);
+  --ivory: #FFFDF5;
+  --ivory-warm: #FFF8EC;
+  --ivory-deep: #F0E8D8;
+  --lavender: #B89FDE;
+  --lavender-light: #D4C4F0;
+  --lavender-soft: rgba(184,159,222,0.05);
+  --gold: #D4A843;
+  --gold-glow: #E8C96A;
+  --gold-pale: #F5E6B8;
+  --gold-soft: rgba(212,168,67,0.06);
+  --text: #2A1A3E;
+  --text-light: #5A4A6E;
+  --text-muted: #8A7A9E;
+  --white: #FFFFFF;
+  --radius: 12px;
+  --shadow-soft: 0 2px 12px rgba(26,16,48,0.05);
+  --shadow-mid: 0 4px 24px rgba(26,16,48,0.08);
+  --shadow-strong: 0 8px 40px rgba(26,16,48,0.12);
+  --before-bg: #FFF8F6;
+  --before-border: #D4738C;
+  --before-text: #6A2A3E;
+  --after-bg: #F6FFF8;
+  --after-border: #7AB88A;
+  --after-text: #2A4A30;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--ivory);line-height:1.78;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Poppins',sans-serif;line-height:1.2}
+.page{max-width:720px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--midnight);font-weight:600}
+.prose h2{font-size:1.35rem;color:var(--midnight);margin:36px 0 14px;letter-spacing:-0.01em;display:flex;align-items:center;gap:10px}
+
+/* === H2 ICONS === */
+.h2-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--midnight-mid),var(--lavender));margin-right:10px;vertical-align:middle;box-shadow:0 2px 6px rgba(184,159,222,0.15)}
+.h2-icon svg{width:14px;height:14px;color:var(--gold)}
+
+/* === COVER === */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(165deg,#080418 0%,var(--midnight-deep) 20%,var(--midnight) 45%,var(--midnight-mid) 75%,#0E0820 100%);position:relative;overflow:hidden}
+.cover::before{content:'';position:absolute;top:28%;left:50%;transform:translate(-50%,-50%);width:520px;height:520px;background:radial-gradient(circle,rgba(212,168,67,0.06) 0%,transparent 70%);border-radius:50%}
+.cover-content{position:relative;z-index:2;padding:40px 24px}
+.cover-badge{display:inline-block;padding:6px 20px;border:1px solid rgba(212,168,67,0.2);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:44px}
+.cover-art{margin-bottom:20px;animation:piano-breathe 5s ease-in-out infinite}
+.cover-art svg{width:260px;height:180px;filter:drop-shadow(0 0 20px rgba(212,168,67,0.15))}
+@keyframes piano-breathe{0%,100%{transform:scale(1);filter:drop-shadow(0 0 12px rgba(212,168,67,0.15))}50%{transform:scale(1.03);filter:drop-shadow(0 0 28px rgba(212,168,67,0.3))}}
+.cover-caption{font-family:'Lora',serif;font-size:0.78rem;font-style:italic;color:rgba(255,255,255,0.55);text-align:center;margin:0 auto 24px;max-width:360px;line-height:1.5}
+.cover h1{font-family:'Poppins',sans-serif;font-size:clamp(2.2rem,6.5vw,4rem);font-weight:300;color:var(--white);line-height:1.05;margin-bottom:4px}
+.cover h1 strong{font-weight:700;color:var(--rose-glow);display:block}
+.cover-tagline{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:rgba(255,255,255,0.4);margin-top:28px;line-height:1.7}
+.cover-tagline em{color:var(--gold-glow);font-style:normal}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.6rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-top:52px}
+
+/* Floating note particles */
+.note-particle{position:absolute;fill:var(--gold);opacity:0;animation:note-drift 7s ease-in-out infinite}
+.note-particle:nth-child(1){top:15%;left:12%;animation-delay:0s}
+.note-particle:nth-child(2){top:30%;right:15%;animation-delay:-2s}
+.note-particle:nth-child(3){top:55%;left:20%;animation-delay:-4s}
+.note-particle:nth-child(4){top:70%;right:25%;animation-delay:-1s}
+.note-particle:nth-child(5){top:40%;left:35%;animation-delay:-5s}
+@keyframes note-drift{0%{opacity:0;transform:translate(0,0)}15%{opacity:0.4}50%{opacity:0.2;transform:translate(20px,-30px)}100%{opacity:0;transform:translate(40px,-60px)}}
+
+/* Piano key strings glow */
+.string-glow{stroke:var(--gold-glow);stroke-width:0.8;fill:none;opacity:0;animation:string-pulse 3s ease-in-out infinite}
+.string-glow:nth-child(1){animation-delay:0s}
+.string-glow:nth-child(2){animation-delay:-0.5s}
+.string-glow:nth-child(3){animation-delay:-1s}
+.string-glow:nth-child(4){animation-delay:-1.5s}
+.string-glow:nth-child(5){animation-delay:-2s}
+@keyframes string-pulse{0%,100%{opacity:0.1;stroke-width:0.5}50%{opacity:0.7;stroke-width:1.5}}
+
+/* Firefly notes */
+.firefly{position:absolute;width:4px;height:4px;border-radius:50%;background:var(--gold-glow);animation:firefly-float 6s ease-in-out infinite;pointer-events:none}
+.firefly:nth-child(6){top:20%;left:18%;animation-duration:5s;animation-delay:0s}
+.firefly:nth-child(7){top:45%;right:22%;animation-duration:7s;animation-delay:-2s;width:3px;height:3px}
+.firefly:nth-child(8){top:65%;left:28%;animation-duration:6s;animation-delay:-4s}
+.firefly:nth-child(9){top:35%;right:12%;animation-duration:8s;animation-delay:-1s;width:5px;height:5px}
+.firefly:nth-child(10){top:75%;right:32%;animation-duration:5.5s;animation-delay:-3s;width:3px;height:3px}
+@keyframes firefly-float{0%,100%{transform:translate(0,0);opacity:0.15}25%{transform:translate(12px,-18px);opacity:0.8}50%{transform:translate(-6px,6px);opacity:0.2}75%{transform:translate(10px,4px);opacity:0.65}}
+
+/* === CHAPTER HEADERS === */
+.ch-head{background:linear-gradient(170deg,var(--midnight-deep),var(--midnight-mid));padding:80px 24px 56px;position:relative;overflow:hidden}
+.ch-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 5%,var(--gold) 50%,transparent 95%)}
+.ch-head .page{position:relative;z-index:2}
+.ch-num{font-family:'Poppins',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:6px;text-transform:uppercase;color:var(--gold);opacity:0.8}
+.ch-title{font-family:'Poppins',sans-serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:700;color:var(--white);margin:10px 0 6px;letter-spacing:-0.01em}
+.ch-sub{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:var(--rose-glow);opacity:0.75}
+
+/* === SCRIPTURE RIBBON === */
+.ribbon{text-align:center;padding:20px 24px;background:linear-gradient(135deg,var(--gold-soft),rgba(212,168,67,0.06));border-top:1.5px solid rgba(212,168,67,0.15);border-bottom:1.5px solid rgba(212,168,67,0.15)}
+.ribbon p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:var(--text-muted);max-width:480px;margin:0 auto}
+.ribbon .ref{font-weight:600;color:var(--gold);font-style:normal}
+
+/* === MISSION === */
+.mission{text-align:center;padding:44px 36px;margin:36px 0;background:linear-gradient(140deg,var(--midnight),var(--midnight-mid));border-radius:14px;position:relative;overflow:hidden;border:3px solid rgba(212,115,140,0.3);box-shadow:0 0 0 1px rgba(212,115,140,0.08),0 4px 12px rgba(42,24,72,0.2),0 16px 40px rgba(26,16,48,0.16);transform:translateY(-2px)}
+.mission::before{content:'';position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:280px;height:280px;background:radial-gradient(circle,rgba(212,115,140,0.08) 0%,transparent 70%);border-radius:50%}
+.mission-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--rose);margin-bottom:14px;position:relative}
+.mission p{font-family:'Poppins',sans-serif;font-size:clamp(1.05rem,2.8vw,1.4rem);font-weight:600;color:var(--white);line-height:1.45;position:relative}
+.mission p em{color:var(--rose-glow);font-style:normal}
+
+/* === VISUALIZATION BOX === */
+.viz{margin:48px 0 36px;padding:0;position:relative;border-radius:16px;overflow:hidden;border:2.5px solid var(--lavender);box-shadow:0 2px 4px rgba(184,159,222,0.12),0 8px 24px rgba(184,159,222,0.1),0 24px 56px rgba(26,16,48,0.12);transform:translateY(-2px)}
+.viz-inner{border-radius:13px;overflow:hidden;position:relative}
+.viz-top{background:rgba(184,159,222,0.12);padding:22px 28px 20px;display:flex;align-items:center;gap:16px;border-bottom:1.5px solid rgba(184,159,222,0.12);position:relative}
+.viz-icon-wrap{width:56px;height:56px;border-radius:50%;border:2px solid rgba(184,159,222,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(145deg,#fff,rgba(245,230,255,0.5));box-shadow:0 3px 12px rgba(184,159,222,0.1),0 1px 3px rgba(0,0,0,0.04);position:relative;z-index:1}
+.viz-icon-wrap svg{width:28px;height:28px}
+.viz-meta{flex:1;position:relative;z-index:1}
+.viz-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--lavender);margin-bottom:2px}
+.viz h4{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:var(--midnight);letter-spacing:-0.01em}
+.viz-body{padding:28px 28px 24px;background:linear-gradient(170deg,#FFFCFF 0%,var(--ivory) 40%,#FAF6FF 100%);position:relative}
+.viz-body p{font-size:0.95rem;color:var(--text-light);line-height:1.72;margin-bottom:14px}
+.viz-body strong{color:var(--midnight);font-weight:700}
+.viz-body em{color:var(--rose);font-style:normal;font-weight:600}
+.viz-body p:last-child{margin-bottom:0}
+.viz-trigger{margin-top:20px;padding:16px 20px;background:linear-gradient(135deg,rgba(212,115,140,0.06),rgba(212,115,140,0.1));border:1.5px solid rgba(212,115,140,0.18);border-radius:10px;font-family:'Poppins',sans-serif;font-size:0.78rem;font-weight:700;color:var(--text);text-align:center;line-height:1.5}
+
+/* === BEFORE / AFTER === */
+.ba-pair{margin:32px 0;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:640px){.ba-pair{grid-template-columns:1fr}}
+.ba-card{border-radius:12px;overflow:hidden;border:none}
+.ba-head{padding:12px 20px;font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.ba-before{background:linear-gradient(170deg,#FFF6F4 0%,#FFF0EC 100%)}
+.ba-before .ba-head{background:linear-gradient(90deg,rgba(160,56,70,0.12),rgba(160,56,70,0.06));color:var(--before-text)}
+.ba-after{background:linear-gradient(170deg,#F2FFF6 0%,#EDFFF2 100%)}
+.ba-after .ba-head{background:linear-gradient(90deg,rgba(42,128,64,0.12),rgba(42,128,64,0.06));color:var(--after-text)}
+.ba-dot{width:8px;height:8px;border-radius:50%}
+.ba-before .ba-dot{background:var(--before-border)}
+.ba-after .ba-dot{background:var(--after-border)}
+.ba-body{padding:18px 20px;font-size:0.88rem;line-height:1.65}
+.ba-before .ba-body{color:var(--before-text)}
+.ba-after .ba-body{color:var(--after-text)}
+
+/* === THINK BOX === */
+.think{margin:36px 0;padding:32px;background:linear-gradient(145deg,var(--ivory-warm),rgba(212,115,140,0.04));border:2.5px dashed var(--rose);border-radius:14px;position:relative;box-shadow:0 2px 6px rgba(212,115,140,0.1),0 8px 20px rgba(212,115,140,0.06);transform:translateY(-1px)}
+.think::before{content:'\266B';position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--ivory);padding:0 14px;font-size:1rem;color:var(--rose)}
+.think-label{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--rose);text-align:center;margin-bottom:10px}
+.think h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--midnight);text-align:center;margin-bottom:12px}
+.think p{font-size:0.88rem;text-align:center;color:var(--text-light);margin-bottom:8px}
+.think-line{border-bottom:1px solid rgba(212,115,140,0.25);height:30px}
+
+/* === INSIGHT === */
+.insight{margin:32px 0;padding:28px 32px;background:linear-gradient(140deg,var(--midnight),var(--midnight-mid));border-radius:14px;border:2px solid rgba(212,168,67,0.25);border-left:5px solid var(--gold);position:relative;overflow:hidden;box-shadow:0 2px 6px rgba(42,24,72,0.15),0 10px 28px rgba(26,16,48,0.18);transform:translateY(-1px)}
+.insight::before{content:'';position:absolute;top:-50%;right:-20%;width:200px;height:200px;background:radial-gradient(circle,rgba(212,168,67,0.06) 0%,transparent 70%);border-radius:50%}
+.insight p{font-family:'Lora',serif;font-size:1.02rem;font-style:italic;color:var(--white);line-height:1.72;position:relative;z-index:2}
+.insight strong{color:var(--gold-glow);font-weight:700}
+.insight em{color:var(--rose-glow);font-style:normal;font-weight:600}
+
+/* === GUIDED QUOTE === */
+.gq{margin:32px 0;text-align:center;padding:32px 24px;position:relative;background:linear-gradient(160deg,rgba(212,168,67,0.02),rgba(212,168,67,0.05));border-radius:14px;border:1.5px solid rgba(212,168,67,0.12)}
+.gq::before,.gq::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:48px;height:1.5px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.gq::before{top:0}
+.gq::after{bottom:0}
+.gq p{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:var(--midnight-mid);line-height:1.6;max-width:480px;margin:0 auto}
+.gq .ref{font-weight:600;color:var(--gold);font-style:normal;display:block;margin-top:8px;font-size:0.82rem}
+
+/* === DEEP DIVE CARDS === */
+.dd{margin:28px 0;padding:24px 28px;border-radius:12px;border:none;border-left:4px solid var(--lavender);box-shadow:none}
+.dd:nth-child(odd){background:rgba(184,159,222,0.04)}
+.dd:nth-child(even){background:var(--white)}
+.dd h4{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--midnight);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.dd h4 svg{width:16px;height:16px;color:var(--lavender);flex-shrink:0}
+.dd .sub{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:500;color:var(--rose);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px}
+.dd p{font-size:0.9rem;color:var(--text-light);line-height:1.68;margin-bottom:8px}
+.dd p:last-child{margin-bottom:0}
+
+/* === ADVENTURE / WALK THROUGH === */
+.adventure{margin:36px 0;border-radius:16px;overflow:hidden;box-shadow:0 4px 16px rgba(42,24,72,0.08),0 12px 32px rgba(26,16,48,0.08);background:var(--white);position:relative}
+.adv-head{padding:20px 28px;background:linear-gradient(135deg,var(--midnight) 0%,var(--midnight-mid) 50%,rgba(42,24,72,0.95) 100%);display:flex;align-items:center;gap:16px;position:relative;z-index:2;overflow:hidden}
+.adv-head::before{content:'';position:absolute;top:-30%;right:-10%;width:180px;height:180px;background:radial-gradient(circle,rgba(212,115,140,0.1) 0%,transparent 70%);border-radius:50%}
+.adv-head-icon{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--rose),var(--rose-glow));display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 12px rgba(212,115,140,0.35)}
+.adv-head-icon svg{width:22px;height:22px;color:var(--midnight)}
+.adv-head-text{flex:1;position:relative;z-index:1}
+.adv-head-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--rose-glow);opacity:0.7}
+.adv-head-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#fff;margin-top:2px;letter-spacing:-0.01em}
+.adv-body{position:relative;z-index:2}
+.adv-step{padding:22px 28px;display:grid;grid-template-columns:48px 1fr;gap:18px;align-items:start;border-bottom:none}
+.adv-step:nth-child(odd){background:var(--white)}
+.adv-step:nth-child(even){background:rgba(184,159,222,0.03)}
+.step-n{width:44px;height:44px;border-radius:50%;background:linear-gradient(145deg,var(--midnight),var(--midnight-mid));display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-size:0.8rem;font-weight:700;color:var(--rose-glow);box-shadow:0 3px 10px rgba(26,16,48,0.15);margin-top:2px}
+.step-c p{font-size:0.92rem;line-height:1.72;margin:0 0 8px;color:var(--text)}
+.step-c p:last-child{margin-bottom:0}
+.step-c em{color:var(--text-light)}
+.adv-step:last-child{border-bottom:none;background:linear-gradient(135deg,rgba(212,115,140,0.04),rgba(212,115,140,0.08))}
+
+/* === STACK FLOW === */
+.stack{margin:38px 0;text-align:center}
+.stack-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--rose);opacity:0.7;margin-bottom:16px}
+.stack-flow{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap}
+.stack-node{display:inline-flex;align-items:center;justify-content:center;padding:10px 18px;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.68rem;font-weight:600;line-height:1.35;white-space:nowrap}
+.stack-node.sn-dark{background:var(--midnight);color:var(--rose-glow);border:1.5px solid rgba(212,115,140,0.25)}
+.stack-node.sn-mid{background:rgba(184,159,222,0.12);color:var(--midnight);border:1.5px solid rgba(184,159,222,0.2)}
+.stack-node.sn-light{background:rgba(212,115,140,0.08);color:var(--midnight);border:1.5px solid rgba(212,115,140,0.15)}
+.stack-node.sn-gold{background:rgba(212,168,67,0.12);color:var(--midnight);border:1.5px solid rgba(212,168,67,0.25)}
+.stack-arr{font-size:1rem;color:rgba(212,115,140,0.45);padding:0 7px}
+
+/* === BREATHE GATE === */
+.breathe{margin:44px 0;text-align:center;padding:52px 24px;position:relative;background:linear-gradient(160deg,rgba(184,159,222,0.08),rgba(184,159,222,0.04));border-radius:16px;border:2px solid rgba(184,159,222,0.15)}
+.breathe-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1.5px solid rgba(184,159,222,0.1)}
+.breathe-ring:nth-child(1){width:140px;height:140px;animation:breathe-pulse 6s ease-in-out infinite}
+.breathe-ring:nth-child(2){width:90px;height:90px;animation:breathe-pulse 6s ease-in-out infinite 1.5s}
+.breathe-ring:nth-child(3){width:45px;height:45px;animation:breathe-pulse 6s ease-in-out infinite 3s}
+@keyframes breathe-pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.2}50%{transform:translate(-50%,-50%) scale(1.15);opacity:0.6}}
+.breathe-content{position:relative;z-index:2}
+.breathe-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--lavender);margin-bottom:8px}
+.breathe h4{font-family:'Poppins',sans-serif;font-size:0.94rem;font-weight:600;color:var(--midnight);margin-bottom:8px}
+.breathe p{font-family:'Lora',Georgia,serif;font-size:0.88rem;font-style:italic;color:var(--text-muted);max-width:420px;margin:0 auto;line-height:1.65}
+
+/* === PRAYER === */
+.prayer{margin:32px 0;padding:28px 30px;background:linear-gradient(160deg,#120818,#100820);border-radius:14px;border:2px solid rgba(212,168,67,0.25);position:relative;overflow:hidden}
+.prayer::before{content:'';position:absolute;top:-20%;left:-10%;width:160px;height:160px;background:radial-gradient(circle,rgba(212,168,67,0.06) 0%,transparent 70%);border-radius:50%}
+.prayer-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;position:relative;z-index:2}
+.prayer p{font-family:'Lora',Georgia,serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.85);line-height:1.8;position:relative;z-index:2;margin-bottom:8px}
+.prayer p:last-child{margin-bottom:0}
+.prayer strong{color:var(--gold-glow);font-style:normal;font-weight:700}
+
+/* === PROMPT CARD === */
+.prompt{margin:32px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(212,115,140,0.2);box-shadow:0 2px 6px rgba(26,16,48,0.2),0 10px 28px rgba(26,16,48,0.18);transform:translateY(-1px)}
+.prompt-head{padding:12px 20px;background:linear-gradient(90deg,var(--midnight),var(--midnight-mid));font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--rose-glow)}
+.prompt-body{padding:22px 24px;background:#120A20;color:#D0C0E8;font-family:'Lora',serif;font-size:0.88rem;line-height:1.72}
+.prompt-body strong{color:var(--gold-glow)}
+.prompt-body em{color:var(--rose-glow);font-style:normal}
+
+/* === INSTRUCTION BOX === */
+.inst{margin:28px 0;padding:18px 24px;background:linear-gradient(90deg,var(--lavender-soft),var(--rose-soft));border-left:3px solid var(--lavender);border-radius:0 var(--radius) var(--radius) 0;box-shadow:var(--shadow-soft)}
+.inst p{font-family:'Poppins',sans-serif;font-size:0.78rem;color:var(--midnight-mid);line-height:1.55;margin:0}
+.inst strong{color:var(--midnight)}
+
+/* === IDENTITY CARD === */
+.id-card{margin:32px 0;border-radius:14px;overflow:hidden;border:4px solid var(--rose);box-shadow:0 2px 6px rgba(212,115,140,0.2),0 8px 24px rgba(212,115,140,0.12),0 20px 48px rgba(26,16,48,0.1);transform:translateY(-2px)}
+.id-card-head{padding:14px 24px;background:linear-gradient(90deg,var(--rose),var(--rose-glow));font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--midnight)}
+.id-card-body{padding:28px;background:var(--white)}
+.id-card-body h3{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--midnight);margin-bottom:14px}
+.id-old{font-size:0.88rem;color:var(--text-muted);text-decoration:line-through;text-decoration-color:rgba(138,122,158,0.4);margin-bottom:10px;line-height:1.5}
+.id-new{font-size:1rem;font-weight:500;color:var(--midnight);font-style:italic;line-height:1.5}
+
+/* === FINALE === */
+.finale{text-align:center;padding:80px 24px;background:linear-gradient(170deg,var(--midnight),#080418)}
+.finale h2{font-family:'Poppins',sans-serif;font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;color:var(--white);margin-bottom:8px}
+.finale h2 span{color:var(--rose-glow)}
+.finale p{font-family:'Lora',serif;font-size:0.95rem;color:rgba(255,255,255,0.35);max-width:460px;margin:16px auto;line-height:1.6}
+footer{text-align:center;padding:36px 24px;background:#060310}
+footer p{font-family:'Lora',serif;font-size:0.78rem;font-style:italic;color:rgba(212,115,140,0.2);margin-bottom:14px}
+footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:normal;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.1)}
+
+/* === SCROLL REVEAL === */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.65s ease,transform 0.65s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* === PROGRESS BAR === */
+#read-progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--rose),rgba(212,115,140,0.4));z-index:9999;pointer-events:none;transition:width 0.08s linear}
+#chapter-pill{position:fixed;bottom:24px;right:24px;background:var(--midnight);border:1px solid rgba(212,115,140,0.25);color:var(--rose);font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:8px 18px;border-radius:50px;opacity:0;transition:opacity 0.35s ease;pointer-events:none;z-index:1000;box-shadow:0 4px 24px rgba(0,0,0,0.4)}
+#chapter-pill.show{opacity:1}
+
+/* === RESPONSIVE === */
+@media(max-width:640px){
+  .page{padding:0 16px}
+  .insight{padding:22px 20px;margin:28px 0}
+  .viz{margin:36px 0}
+  .mission{padding:32px 20px;margin:28px 0}
+  .adventure .adv-step{padding:18px 16px;grid-template-columns:40px 1fr;gap:12px}
+  .prompt-body{padding:18px 16px}
+  .stack-node{font-size:0.6rem;padding:8px 12px}
+}
+@media print{
+  @page{margin:18mm 16mm 22mm 16mm;@bottom-center{content:counter(page);font-family:'Poppins',Helvetica,sans-serif;font-size:8pt;color:#8A7A9E}}
+  body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}
+  .cover{min-height:auto;padding:100px 24px;break-after:page}
+  .ch-head{break-before:page;padding:60px 24px 44px}
+  .think,.adventure,.viz,.ba-pair,.mission,.insight,.dd,.prompt,.breathe,.prayer,.stack,.id-card,.gq,.inst{break-inside:avoid}
+  .section{padding:40px 0}
+  #read-progress,#chapter-pill,.no-print{display:none!important}
+  .breathe-ring,.firefly,.note-particle{animation:none!important;display:none}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+</style>
+</head>
+<body>
+
+<!-- SVG SYMBOL DEFINITIONS -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="ico-rest" viewBox="0 0 24 24"><path d="M12 6c0 0-2 2-2 4s2 4 2 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M8 14h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/></symbol>
+  <symbol id="ico-bass" viewBox="0 0 24 24"><path d="M6 4v16M6 4c4 0 8 2 8 6s-4 6-8 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="17" cy="8" r="1.5" fill="currentColor"/><circle cx="17" cy="13" r="1.5" fill="currentColor"/></symbol>
+  <symbol id="ico-tune" viewBox="0 0 24 24"><path d="M12 3v14M8 17a4 4 0 108 0 4 4 0 10-8 0z" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M12 3l4 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="ico-compose" viewBox="0 0 24 24"><path d="M4 19h16M7 15l10-10M17 5l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/><circle cx="7" cy="15" r="1" fill="currentColor" opacity="0.5"/></symbol>
+  <symbol id="ico-rhythm" viewBox="0 0 24 24"><rect x="3" y="8" width="3" height="8" rx="1" fill="currentColor" opacity="0.3"/><rect x="8" y="5" width="3" height="14" rx="1" fill="currentColor" opacity="0.5"/><rect x="13" y="10" width="3" height="4" rx="1" fill="currentColor" opacity="0.7"/><rect x="18" y="3" width="3" height="18" rx="1" fill="currentColor" opacity="0.4"/></symbol>
+  <symbol id="ico-song" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="18" cy="16" r="3" stroke="currentColor" stroke-width="1.5" fill="none"/></symbol>
+  <symbol id="ico-heart" viewBox="0 0 24 24"><path d="M12 21C12 21 4 14 4 9c0-3 2-5 5-5 1.5 0 2.5.5 3 1.5C12.5 4.5 13.5 4 15 4c3 0 5 2 5 5 0 5-8 12-8 12z" stroke="currentColor" stroke-width="1.5" fill="none"/></symbol>
+  <symbol id="ico-note" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="1.5" fill="none"/></symbol>
+  <symbol id="ico-key" viewBox="0 0 24 24"><rect x="4" y="14" width="4" height="7" rx="0.5" fill="currentColor" opacity="0.2"/><rect x="8" y="14" width="4" height="7" rx="0.5" fill="currentColor" opacity="0.3"/><rect x="12" y="14" width="4" height="7" rx="0.5" fill="currentColor" opacity="0.2"/><rect x="16" y="14" width="4" height="7" rx="0.5" fill="currentColor" opacity="0.3"/><rect x="6" y="8" width="3" height="6" rx="0.5" fill="currentColor" opacity="0.6"/><rect x="11" y="8" width="3" height="6" rx="0.5" fill="currentColor" opacity="0.6"/><rect x="15" y="8" width="3" height="6" rx="0.5" fill="currentColor" opacity="0.6"/></symbol>
+  <symbol id="ico-fire" viewBox="0 0 24 24"><path d="M12 3c-1 3-3 5-3 8a3 3 0 006 0c0-3-2-5-3-8z" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M8 20h8M10 17v3M14 17v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="ico-star" viewBox="0 0 24 24"><path d="M12 2l1.5 4.5H18l-3.5 2.8 1.3 4.2L12 10.8 8.2 13.5l1.3-4.2L6 6.5h4.5z" stroke="currentColor" stroke-width="1" fill="currentColor" opacity="0.8"/></symbol>
+  <symbol id="ico-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5" fill="none"/></symbol>
+  <symbol id="ico-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="ico-piano" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M6 6v7M10 6v7M14 6v7M18 6v7" stroke="currentColor" stroke-width="1.5" opacity="0.4"/><rect x="5" y="6" width="2.5" height="5" rx="0.5" fill="currentColor" opacity="0.5"/><rect x="9" y="6" width="2.5" height="5" rx="0.5" fill="currentColor" opacity="0.5"/><rect x="14.5" y="6" width="2.5" height="5" rx="0.5" fill="currentColor" opacity="0.5"/></symbol>
+</svg>
+
+<div id="read-progress"></div>
+<div id="chapter-pill"></div>
+
+<!-- ===== COVER ===== -->
+<section class="cover">
+  <!-- Floating note particles -->
+  <svg class="note-particle" width="12" height="16" viewBox="0 0 12 16"><circle cx="4" cy="12" r="3.5"/><line x1="7.5" y1="12" x2="7.5" y2="1" stroke="currentColor" stroke-width="1.5" fill="var(--gold)"/></svg>
+  <svg class="note-particle" width="16" height="16" viewBox="0 0 16 16"><circle cx="4" cy="12" r="3"/><line x1="7" y1="12" x2="7" y2="2" stroke="currentColor" stroke-width="1.5" fill="var(--gold)"/><line x1="7" y1="2" x2="14" y2="4" stroke="currentColor" stroke-width="1.5" fill="var(--gold)"/></svg>
+  <svg class="note-particle" width="12" height="16" viewBox="0 0 12 16"><circle cx="4" cy="12" r="3.5"/><line x1="7.5" y1="12" x2="7.5" y2="1" stroke="currentColor" stroke-width="1.5" fill="var(--gold)"/></svg>
+  <svg class="note-particle" width="16" height="16" viewBox="0 0 16 16"><circle cx="4" cy="12" r="3"/><line x1="7" y1="12" x2="7" y2="2" stroke="currentColor" stroke-width="1.5" fill="var(--gold)"/><line x1="7" y1="2" x2="14" y2="4" stroke="currentColor" stroke-width="1.5" fill="var(--gold)"/></svg>
+  <svg class="note-particle" width="12" height="16" viewBox="0 0 12 16"><circle cx="4" cy="12" r="3.5"/><line x1="7.5" y1="12" x2="7.5" y2="1" stroke="currentColor" stroke-width="1.5" fill="var(--gold)"/></svg>
+  <!-- Fireflies -->
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="cover-content">
+    <div class="cover-badge">Kingdom Builders AI</div>
+    <div class="cover-art">
+      <svg viewBox="0 0 260 180" xmlns="http://www.w3.org/2000/svg">
+        <!-- Piano body -->
+        <rect x="40" y="85" width="180" height="65" rx="6" fill="none" stroke="rgba(255,253,245,0.2)" stroke-width="1.5"/>
+        <rect x="40" y="100" width="180" height="50" rx="0" fill="none" stroke="rgba(255,253,245,0.08)" stroke-width="0.5"/>
+        <!-- White keys -->
+        <rect x="48" y="100" width="20" height="44" rx="1" fill="rgba(255,253,245,0.15)" stroke="rgba(255,253,245,0.1)" stroke-width="0.5"/>
+        <rect x="72" y="100" width="20" height="44" rx="1" fill="rgba(255,253,245,0.12)" stroke="rgba(255,253,245,0.1)" stroke-width="0.5"/>
+        <rect x="96" y="100" width="20" height="44" rx="1" fill="rgba(255,253,245,0.15)" stroke="rgba(255,253,245,0.1)" stroke-width="0.5"/>
+        <rect x="120" y="100" width="20" height="44" rx="1" fill="rgba(255,253,245,0.12)" stroke="rgba(255,253,245,0.1)" stroke-width="0.5"/>
+        <rect x="144" y="100" width="20" height="44" rx="1" fill="rgba(255,253,245,0.15)" stroke="rgba(255,253,245,0.1)" stroke-width="0.5"/>
+        <rect x="168" y="100" width="20" height="44" rx="1" fill="rgba(255,253,245,0.12)" stroke="rgba(255,253,245,0.1)" stroke-width="0.5"/>
+        <rect x="192" y="100" width="20" height="44" rx="1" fill="rgba(255,253,245,0.15)" stroke="rgba(255,253,245,0.1)" stroke-width="0.5"/>
+        <!-- Black keys -->
+        <rect x="62" y="100" width="14" height="28" rx="1" fill="rgba(26,16,48,0.6)" stroke="rgba(255,253,245,0.06)" stroke-width="0.5"/>
+        <rect x="86" y="100" width="14" height="28" rx="1" fill="rgba(26,16,48,0.6)" stroke="rgba(255,253,245,0.06)" stroke-width="0.5"/>
+        <rect x="134" y="100" width="14" height="28" rx="1" fill="rgba(26,16,48,0.6)" stroke="rgba(255,253,245,0.06)" stroke-width="0.5"/>
+        <rect x="158" y="100" width="14" height="28" rx="1" fill="rgba(26,16,48,0.6)" stroke="rgba(255,253,245,0.06)" stroke-width="0.5"/>
+        <rect x="182" y="100" width="14" height="28" rx="1" fill="rgba(26,16,48,0.6)" stroke="rgba(255,253,245,0.06)" stroke-width="0.5"/>
+        <!-- Glowing strings inside piano -->
+        <line class="string-glow" x1="50" y1="90" x2="210" y2="90"/>
+        <line class="string-glow" x1="50" y1="92.5" x2="210" y2="92.5"/>
+        <line class="string-glow" x1="50" y1="95" x2="210" y2="95"/>
+        <line class="string-glow" x1="50" y1="97.5" x2="210" y2="97.5"/>
+        <line class="string-glow" x1="50" y1="87.5" x2="210" y2="87.5"/>
+        <!-- Rising musical notes like fireflies -->
+        <g opacity="0.7">
+          <circle cx="80" cy="65" r="3" fill="#D4A843" opacity="0.5"><animate attributeName="cy" values="65;35;10" dur="4s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;0.6;0" dur="4s" repeatCount="indefinite"/></circle>
+          <circle cx="130" cy="55" r="2.5" fill="#E8C96A" opacity="0.4"><animate attributeName="cy" values="55;25;0" dur="5s" repeatCount="indefinite" begin="1s"/><animate attributeName="opacity" values="0;0.5;0" dur="5s" repeatCount="indefinite" begin="1s"/></circle>
+          <circle cx="170" cy="60" r="3.5" fill="#D4A843" opacity="0.3"><animate attributeName="cy" values="60;30;5" dur="4.5s" repeatCount="indefinite" begin="2s"/><animate attributeName="opacity" values="0;0.7;0" dur="4.5s" repeatCount="indefinite" begin="2s"/></circle>
+          <circle cx="105" cy="70" r="2" fill="#E8C96A" opacity="0.3"><animate attributeName="cy" values="70;40;15" dur="6s" repeatCount="indefinite" begin="0.5s"/><animate attributeName="opacity" values="0;0.4;0" dur="6s" repeatCount="indefinite" begin="0.5s"/></circle>
+          <circle cx="195" cy="68" r="2.5" fill="#D4A843" opacity="0.4"><animate attributeName="cy" values="68;38;8" dur="5.5s" repeatCount="indefinite" begin="3s"/><animate attributeName="opacity" values="0;0.6;0" dur="5.5s" repeatCount="indefinite" begin="3s"/></circle>
+          <circle cx="65" cy="72" r="2" fill="#E8C96A" opacity="0.3"><animate attributeName="cy" values="72;42;12" dur="5s" repeatCount="indefinite" begin="1.5s"/><animate attributeName="opacity" values="0;0.5;0" dur="5s" repeatCount="indefinite" begin="1.5s"/></circle>
+        </g>
+        <!-- Soft glow behind piano -->
+        <ellipse cx="130" cy="95" rx="100" ry="30" fill="url(#piano-glow)" opacity="0.4"/>
+        <defs>
+          <radialGradient id="piano-glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#D4A843" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="#D4A843" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+      </svg>
+    </div>
+    <p class="cover-caption">A piano whose strings glow like golden threads, with musical notes rising from the sound like fireflies carrying light into the dark. The song is still being written.</p>
+    <h1>The Unfinished<strong>Song</strong></h1>
+    <p class="cover-tagline">Your life as a musician is a composition <em>in progress.</em><br>The gaps are not failures. They are rests<br>written into the score.</p>
+    <p class="cover-author">Kingdom Builders AI</p>
+  </div>
+</section>
+
+<!-- ===== CHAPTER 1: THE REST NOTE ===== -->
+<div class="ch-head"><div class="page">
+  <div class="ch-num">Chapter One</div>
+  <h2 class="ch-title">The Rest Note</h2>
+  <p class="ch-sub">Silence is written into every masterpiece.</p>
+</div></div>
+
+<div class="ribbon"><p>"To everything there is a season, a time for every purpose under heaven." <span class="ref">Ecclesiastes 3:1 NKJV</span></p></div>
+
+<div class="page prose section">
+  <div class="mission reveal">
+    <div class="mission-label">Chapter Thesis</div>
+    <p>Your gaps are not failures. They are <em>rest notes</em> written into your song. The question is not whether you rest. The question is whether you rest with intention or guilt.</p>
+  </div>
+
+  <p class="reveal">Open any piece of sheet music. Any piece. Beethoven, Billie Eilish, a hymn, a film score. Look at it. Really look. You will find something on every single page that most people overlook entirely.</p>
+
+  <p class="reveal">Rests.</p>
+
+  <p class="reveal">Not empty spaces where the composer ran out of ideas. Not mistakes. Not the parts where the music gave up. <strong>Rests are instructions.</strong> They are as deliberately placed as every note, every chord, every dynamic marking. A whole rest in 4/4 time is not silence. It is four beats of intentional space. The composer heard the silence and wrote it in. On purpose.</p>
+
+  <div class="viz reveal">
+    <div class="viz-inner">
+      <div class="viz-top">
+        <div class="viz-icon-wrap"><svg><use href="#ico-rest"/></svg></div>
+        <div class="viz-meta">
+          <div class="viz-label">Visualize This</div>
+          <h4>The Page of Music</h4>
+        </div>
+      </div>
+      <div class="viz-body">
+        <p>Picture a page of sheet music in front of you. Not a specific song. Just a page. See the five lines of the staff. See the notes scattered across it: some clustered together in fast passages, some held long as whole notes. Now look at the spaces between them. See those little symbols that look like tiny black hats and zigzags? Those are rests. Quarter rests. Half rests. Eighth rests.</p>
+        <p>Now imagine pulling every rest out of the page. Removing all the silence. What happens? <strong>The notes crash into each other.</strong> The melody becomes noise. The rhythm dissolves. The piece that was beautiful becomes a wall of unbroken sound that no human ear can make sense of.</p>
+        <p>The rests are not the absence of music. <em>The rests are what make the music possible.</em></p>
+        <div class="viz-trigger">When you feel guilt about a practice gap, picture this page. The rests are not missing notes. They are written in.</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="reveal">Here is what nobody tells you about the weeks you spend away from the piano. Your ears are still growing. When you listen to music in the car, in your headphones, at church, in a movie, your brain is absorbing patterns, rhythms, emotional arcs, chord progressions. Your subconscious does not stop being a musician just because your fingers are not on the keys. It keeps working. It keeps filing. It keeps building taste.</p>
+
+  <p class="reveal">The problem is not the gap. The problem is what you believe about the gap.</p>
+
+  <div class="ba-pair reveal">
+    <div class="ba-card ba-before">
+      <div class="ba-head"><div class="ba-dot"></div>What You Tell Yourself</div>
+      <div class="ba-body">"I haven't practiced in two weeks. I'm lazy. I'm not a real musician. Real musicians don't take breaks like this. I'm falling behind everyone."</div>
+    </div>
+    <div class="ba-card ba-after">
+      <div class="ba-head"><div class="ba-dot"></div>What Is Actually True</div>
+      <div class="ba-body">"I am mid-rest. My ears have been absorbing music all week. When I sit back down, everything I have heard will be in my fingers. The rest was part of the score."</div>
+    </div>
+  </div>
+
+  <p class="reveal">Think about it musically. In a song, what creates anticipation? What makes a chorus hit harder? What makes a crowd lean forward? <strong>The silence right before.</strong> The breath. The moment of nothing before the everything. Every drummer knows this. Every vocalist knows this. The pause before the downbeat is where all the power lives.</p>
+
+  <h2 class="reveal"><span class="h2-icon"><svg><use href="#ico-rest"/></svg></span>Chosen Rest vs. Guilty Rest</h2>
+
+  <p class="reveal">There is a difference between a rest note and a mistake. A rest note is chosen. A mistake is an accident. Right now, your gaps might feel like accidents. Like you just fell away from the piano and could not get back. That is not because you are undisciplined. It is because nobody taught you how to <strong>choose the rest.</strong></p>
+
+  <p class="reveal">A rest note in music has a value. A quarter rest lasts exactly one beat. A whole rest lasts four beats. The rest has boundaries. It has a shape. It is contained.</p>
+
+  <p class="reveal">Your practice gaps need the same thing. Not a rigid schedule (we will get to why rigid schedules kill creativity in Chapter 5). But an awareness. When you step away from the piano, you can say to yourself: <strong>"I am resting. This is intentional. I will come back."</strong> That tiny shift in language changes everything. You go from "I abandoned music" to "I chose to breathe."</p>
+
+  <div class="insight reveal"><p>The difference between a rest note and a wrong note is not the silence. It is the <strong>intention.</strong> Both sound the same from the outside. But one was written by the composer, and the other was a stumble. You get to be the composer of your practice life.</p></div>
+
+  <h2 class="reveal"><span class="h2-icon"><svg><use href="#ico-eye"/></svg></span>What the Greats Understood</h2>
+
+  <p class="reveal">Claude Debussy, the composer who changed what music could sound like, once said that music is the space between the notes. Not the notes themselves. The space. The French Impressionist built entire worlds out of what most people think of as nothing. His preludes breathe. They pause. They let the ear wander before calling it home. If you stripped out the silence, you would strip out the beauty.</p>
+
+  <p class="reveal">Adele disappeared from music for years between albums. Not months. Years. And every time she came back, she was better. Deeper. More herself. The world called it a hiatus. She was resting. And in the rest, she was living the life that gave her something worth singing about.</p>
+
+  <p class="reveal">The rest is not the enemy of the music. <strong>The rest is where the music gets its meaning.</strong></p>
+
+  <div class="think reveal">
+    <div class="think-label">Your Turn</div>
+    <h4>Name a time you came back to the piano after a break and something felt different. Easier. Clearer.</h4>
+    <p>What had you been listening to or experiencing during the gap?</p>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+  </div>
+
+  <div class="gq reveal"><p>"He makes me to lie down in green pastures; He leads me beside the still waters. He restores my soul." <span class="ref">Psalm 23:2-3 NKJV</span></p></div>
+
+  <p class="reveal">Notice the language. He <strong>makes</strong> me lie down. Sometimes the rest is not optional. Sometimes it is the shepherd pulling you aside because you need restoration that you cannot get while running. Your soul needs restoration too. Your musical soul. And sometimes that restoration looks like two weeks away from the keys.</p>
+
+  <p class="reveal">But here is the key, the part that changes everything: <strong>you choose to recognize the rest as restoration, not abandonment.</strong> You do not wait for the guilt to drag you back to the bench. You return because the rest note is over and the downbeat is calling you forward.</p>
+
+  <div class="inst reveal"><p><strong>Try this:</strong> The next time you step away from the piano for more than a few days, write in a notebook or your phone: "Rest note begins [date]." When you come back, write: "Rest note ends [date]. What I absorbed during the rest: ___." This tiny ritual transforms the gap from a failure into a musical instruction.</p></div>
+</div>
+
+<!-- ===== CHAPTER 2: THE BASS LINE ===== -->
+<div class="ch-head"><div class="page">
+  <div class="ch-num">Chapter Two</div>
+  <h2 class="ch-title">The Bass Line</h2>
+  <p class="ch-sub">The invisible architecture that makes melody possible.</p>
+</div></div>
+
+<div class="ribbon"><p>"If the foundations are destroyed, what can the righteous do?" <span class="ref">Psalm 11:3 NKJV</span></p></div>
+
+<div class="page prose section">
+  <div class="mission reveal">
+    <div class="mission-label">Chapter Thesis</div>
+    <p>Fundamentals are not the boring part. They are the <em>bass line</em> of your artistry. Nobody hears a bass line at a concert and thinks "that is tedious." It is the spine that holds the melody upright.</p>
+  </div>
+
+  <p class="reveal">Go to any concert. Any genre. Watch the bass player. Or better yet, listen to the left hand of a great pianist. What is it doing? It is holding the harmonic foundation. It is telling every other note in the chord where home is. Without it, the melody floats untethered, pretty but directionless. With it, the melody can soar because it has ground to push off from.</p>
+
+  <p class="reveal">That is what scales are. That is what arpeggios are. That is what chord progressions are. They are not homework. They are not the thing you have to suffer through before you get to play real music. <strong>They are the vocabulary of your instrument.</strong></p>
+
+  <div class="viz reveal">
+    <div class="viz-inner">
+      <div class="viz-top">
+        <div class="viz-icon-wrap"><svg><use href="#ico-bass"/></svg></div>
+        <div class="viz-meta">
+          <div class="viz-label">Visualize This</div>
+          <h4>The Concert Stage</h4>
+        </div>
+      </div>
+      <div class="viz-body">
+        <p>You are at a concert. Thousands of people. The stage lights dim. A single spotlight hits the piano. The artist starts playing. The melody is gorgeous, soaring, emotional, the kind that makes your chest ache. The crowd is captivated.</p>
+        <p>Now listen deeper. Underneath the melody, the left hand is moving. Steady. Deliberate. It is playing a bass line: root notes, octave jumps, walking patterns that you barely notice consciously. But your body feels it. Your body is swaying to the bass line, not the melody. The bass line is the heartbeat.</p>
+        <p><strong>Nobody in that crowd is thinking, "The bass line is boring."</strong> They are not even aware of it. But take it away and the melody collapses. The beauty disappears. The emotional power evaporates. The bass line is invisible power.</p>
+        <div class="viz-trigger">When you sit down to practice scales, you are not doing homework. You are building the invisible architecture that will hold your songs up.</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="reveal">Think about language. Before a poet writes a poem, she has to learn words. Thousands of them. She has to learn grammar, sentence structure, the rhythm of language. Nobody tells a writer that learning vocabulary is the boring part of writing. It is the foundation. Without it, the poem does not exist.</p>
+
+  <p class="reveal">Scales are your musical vocabulary. Every scale you play teaches your fingers a pattern. C major teaches you the white key landscape. F major introduces your thumb to B flat. Every key signature is a new dialect. And when you sit down to write a song and your hands reach for a chord progression that makes the listener feel something, your fingers will find it because they have been there before. In practice. In the scales that you thought were pointless.</p>
+
+  <h2 class="reveal"><span class="h2-icon"><svg><use href="#ico-key"/></svg></span>What Fundamentals Actually Build</h2>
+
+  <div class="dd reveal">
+    <h4><svg><use href="#ico-key"/></svg> Muscle Memory</h4>
+    <div class="sub">The hands that play without thinking</div>
+    <p>When you practice scales, your fingers learn distances. The stretch from C to E becomes automatic. The jump from F to high C becomes muscle memory. Over time, your hands stop needing your brain to tell them where to go. They just know. This is what lets great pianists close their eyes and play. Their hands have been trained by thousands of scales to navigate the keyboard blindfolded.</p>
+  </div>
+
+  <div class="dd reveal">
+    <h4><svg><use href="#ico-note"/></svg> Harmonic Awareness</h4>
+    <div class="sub">The ear that hears the whole chord</div>
+    <p>When you practice chord progressions (I, IV, V, vi, the backbone of nearly every pop song ever written), your ear learns to predict what comes next. You start hearing music in color. A major chord feels bright. A minor chord feels heavy. A diminished chord feels like the floor dropping out. This is not theory. This is the language of emotion, and scales and chords are how you learn to speak it.</p>
+  </div>
+
+  <div class="dd reveal">
+    <h4><svg><use href="#ico-rhythm"/></svg> Rhythmic Precision</h4>
+    <div class="sub">The internal clock that keeps time</div>
+    <p>Playing scales with a metronome teaches your body what a steady tempo feels like. Not rigid. Not mechanical. But reliable. Like a heartbeat. Once your body knows what 120 BPM feels like from the inside, you can push and pull against it with intention. You can slow down for emotion. You can speed up for energy. But you need the steady baseline first. Without it, tempo is guesswork.</p>
+  </div>
+
+  <div class="ba-pair reveal">
+    <div class="ba-card ba-before">
+      <div class="ba-head"><div class="ba-dot"></div>Before</div>
+      <div class="ba-body">"Scales are boring. I want to play real songs."</div>
+    </div>
+    <div class="ba-card ba-after">
+      <div class="ba-head"><div class="ba-dot"></div>After</div>
+      <div class="ba-body">"Scales are the words. Songs are the poems. I am building my vocabulary so my poems can say what I actually mean."</div>
+    </div>
+  </div>
+
+  <p class="reveal">Every songwriter you admire sat at a piano and played scales before they wrote their first hit. Taylor Swift learned guitar chords for years before "Tim McGraw." Alicia Keys trained as a classical pianist at the Manhattan School of Music. She did not wake up one day and play "Fallin'" by instinct. She built the bass line for years. And then, when the melody came, she had the architecture to support it.</p>
+
+  <h2 class="reveal"><span class="h2-icon"><svg><use href="#ico-star"/></svg></span>The 10-Minute Bass Line</h2>
+
+  <p class="reveal">Here is the truth that nobody advertises: <strong>you do not need an hour of scales to build the bass line.</strong> Ten minutes of focused, intentional fundamentals is worth more than sixty minutes of mindless repetition. Ten minutes where your brain is engaged, where you are listening to each note, where you are feeling the distance between keys. That is enough to keep the architecture growing.</p>
+
+  <div class="inst reveal"><p><strong>The 10-Minute Bass Line:</strong> Pick one scale. Play it slowly, ascending and descending, with both hands. Then play the chord built on each degree of the scale (C major, D minor, E minor, F major, G major, A minor, B diminished). Then improvise a simple melody using only the notes of that scale. That is it. Ten minutes. You just trained muscle memory, harmonic awareness, and creative instinct in the time it takes to watch two TikToks.</p></div>
+
+  <div class="think reveal">
+    <div class="think-label">Your Turn</div>
+    <h4>What fundamental have you been avoiding because it feels boring?</h4>
+    <p>Reframe it. What does that fundamental actually build in your playing?</p>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+  </div>
+
+  <div class="prayer reveal">
+    <div class="prayer-label">Prayer</div>
+    <p>Lord, help me see the hidden work as <strong>holy work.</strong> Help me find beauty in the bass line, patience in the practice, and purpose in the patterns my fingers are learning. Teach me to love the foundation, knowing that everything I dream of building will rest on what I lay down in the quiet, unseen moments. Amen.</p>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 3: THE TUNING ===== -->
+<div class="ch-head"><div class="page">
+  <div class="ch-num">Chapter Three</div>
+  <h2 class="ch-title">The Tuning</h2>
+  <p class="ch-sub">Guilt is a flat string. Shame is smashing the piano.</p>
+</div></div>
+
+<div class="ribbon"><p>"There is therefore now no condemnation to those who are in Christ Jesus." <span class="ref">Romans 8:1 NKJV</span></p></div>
+
+<div class="page prose section">
+  <div class="mission reveal">
+    <div class="mission-label">Chapter Thesis</div>
+    <p>Guilt says <em>"I should practice more."</em> Shame says <em>"I am lazy."</em> One is a tuning signal. The other is a lie. Learn to hear the difference.</p>
+  </div>
+
+  <p class="reveal">Every piano goes out of tune. Every single one. It does not matter how expensive it is, how well it was built, how carefully it is maintained. Temperature changes. Humidity shifts. The strings stretch. The wood contracts. Over time, the pitch drifts. A note that was perfectly in tune last month sounds slightly wrong this month.</p>
+
+  <p class="reveal">This is not a flaw in the piano. <strong>This is how pianos work.</strong></p>
+
+  <p class="reveal">And here is what matters: when a piano goes out of tune, nobody throws the piano away. Nobody looks at it and says, "This piano is broken. It is worthless. It will never make beautiful music again." That would be absurd. You call a tuner. Or you tune it yourself. You make the small adjustment. And then the piano is ready to sing again.</p>
+
+  <div class="viz reveal">
+    <div class="viz-inner">
+      <div class="viz-top">
+        <div class="viz-icon-wrap"><svg><use href="#ico-tune"/></svg></div>
+        <div class="viz-meta">
+          <div class="viz-label">Visualize This</div>
+          <h4>The Flat String</h4>
+        </div>
+      </div>
+      <div class="viz-body">
+        <p>Imagine pressing a key on the piano. The note sounds... off. Not drastically. Not broken. Just slightly flat. A few cents below where it should be. You can hear it because you have ears. Because you care about music. Because your taste is good enough to notice the difference.</p>
+        <p>That slight flatness? That is guilt. It is a signal. It is telling you something real: "This needs attention." It is not telling you the piano is garbage. It is not telling you to stop playing forever. It is saying, in the simplest possible terms, <em>"tune me."</em></p>
+        <p>Now imagine, instead of tuning the string, you take a hammer and smash the piano to pieces. Crack the soundboard. Rip out the strings. Burn the case. <strong>That is shame.</strong></p>
+        <div class="viz-trigger">Guilt says "tune me." Shame says "destroy me." They sound similar from a distance. Up close, they are opposites.</div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="reveal"><span class="h2-icon"><svg><use href="#ico-tune"/></svg></span>The Guilt/Shame Spiral</h2>
+
+  <p class="reveal">Here is how the spiral works. You miss a few days of practice. A small voice says, "You should sit down and play." That is guilt. That is the flat string humming. If you listened to it, you would sit down, play for ten minutes, and the string would come back into tune. Simple.</p>
+
+  <p class="reveal">But you do not listen to it. You ignore it. And the voice gets louder. A few more days pass. Now it is not saying "you should practice." It is saying "you are the kind of person who does not practice." That is the shift. Guilt became shame. The signal became an identity. "I should practice more" became "I am lazy."</p>
+
+  <p class="reveal">And shame does something guilt never does: <strong>shame makes you avoid the piano entirely.</strong> Guilt pulls you toward the instrument. Shame pushes you away from it. Because if the piano is a mirror that shows you your laziness, your failure, your inadequacy, why would you go near it? The piano, the thing you love, becomes the thing you dread.</p>
+
+  <div class="stack reveal">
+    <div class="stack-label">The Shame Spiral</div>
+    <div class="stack-flow">
+      <span class="stack-node sn-light">Miss Practice</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-mid">Guilt ("I should...")</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-dark">Ignore Signal</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-dark">Shame ("I am...")</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-light">Avoid Piano</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-mid">More Guilt</span>
+    </div>
+  </div>
+
+  <p class="reveal">The spiral is vicious because it is circular. Avoidance creates more guilt, which creates more shame, which creates more avoidance. And the piano sits there, silent. Not because it is broken. Not because you are broken. But because shame told you a lie and you believed it.</p>
+
+  <h2 class="reveal"><span class="h2-icon"><svg><use href="#ico-heart"/></svg></span>Breaking the Spiral</h2>
+
+  <p class="reveal">The exit is simpler than you think. It is not motivation. It is not discipline. It is not a perfect practice schedule. <strong>The exit is one true sentence.</strong></p>
+
+  <p class="reveal">When you hear the voice say "I am lazy," you stop. You correct it. Out loud if you need to. "That is shame. The truth is: I am a musician who has been resting, and I can sit down right now for five minutes." That is it. That is the tuning. You are not fixing your character. You are adjusting one string.</p>
+
+  <div class="ba-pair reveal">
+    <div class="ba-card ba-before">
+      <div class="ba-head"><div class="ba-dot"></div>Shame Language</div>
+      <div class="ba-body">"I should practice more." "I'm so lazy." "Real musicians don't struggle with this." "I'll never be good enough." "What's the point?"</div>
+    </div>
+    <div class="ba-card ba-after">
+      <div class="ba-head"><div class="ba-dot"></div>Tuning Language</div>
+      <div class="ba-body">"I get to practice today." "I've been resting, and now I'm ready." "Every musician has seasons." "Five minutes is enough to start." "The piano is waiting, not judging."</div>
+    </div>
+  </div>
+
+  <p class="reveal">Did you catch the most important swap? <strong>"I should" becomes "I get to."</strong> That single word change rewires the relationship. "Should" is obligation. Homework. A chore. "Get to" is privilege. Access. Gift. You get to sit at an instrument that can make every sound in the universe. You get to put your fingers on keys that have carried centuries of human emotion. You get to write songs. Not everyone can say that.</p>
+
+  <div class="insight reveal"><p>Shame says you <strong>should.</strong> Grace says you <strong>get to.</strong> One is a chain. The other is an invitation. You are not a student being graded. You are an artist being called.</p></div>
+
+  <div class="adventure reveal">
+    <div class="adv-head">
+      <div class="adv-head-icon"><svg><use href="#ico-tune"/></svg></div>
+      <div class="adv-head-text">
+        <div class="adv-head-label">See It In Action</div>
+        <div class="adv-head-title">The Five-Minute Return</div>
+      </div>
+    </div>
+    <div class="adv-body">
+      <div class="adv-step"><div class="step-n">1</div><div class="step-c"><p>It has been three weeks since you touched the piano. The lid is closed. Every time you walk past it, you feel a pang. Shame says: "See? You quit again." You have heard this voice a hundred times.</p></div></div>
+      <div class="adv-step"><div class="step-n">2</div><div class="step-c"><p>But today you catch it. You recognize the voice. "That is shame," you say. Not out loud. Just in your mind. You name it. And in the naming, it loses half its power.</p></div></div>
+      <div class="adv-step"><div class="step-n">3</div><div class="step-c"><p>You open the lid. You do not commit to an hour. You do not pull out sheet music. You just sit down and press one chord. C major. Three notes. The sound fills the room. It is not perfect. The piano might even be slightly out of tune. But the sound is <strong>yours.</strong></p></div></div>
+      <div class="adv-step"><div class="step-n">4</div><div class="step-c"><p>You play another chord. F major. Then G. Then back to C. A I, IV, V, I progression. The most basic progression in all of Western music. And it sounds like coming home.</p></div></div>
+      <div class="adv-step"><div class="step-n">5</div><div class="step-c"><p>Five minutes later, you close the lid. Not because you are done. Because five minutes was the promise. And you kept it. The string is tuned. The shame is quiet. <strong>Tomorrow, you will come back.</strong></p></div></div>
+    </div>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Your Turn</div>
+    <h4>What does your shame voice say to you most often about music?</h4>
+    <p>Write it down. Then write the true sentence underneath it.</p>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+  </div>
+
+  <div class="gq reveal"><p>"For God has not given us a spirit of fear, but of power and of love and of a sound mind." <span class="ref">2 Timothy 1:7 NKJV</span></p></div>
+</div>
+
+<!-- ===== CHAPTER 4: THE UNFINISHED SONG ===== -->
+<div class="ch-head"><div class="page">
+  <div class="ch-num">Chapter Four</div>
+  <h2 class="ch-title">The Unfinished Song</h2>
+  <p class="ch-sub">You are not behind. You are mid-composition.</p>
+</div></div>
+
+<div class="ribbon"><p>"Being confident of this very thing, that He who has begun a good work in you will complete it until the day of Jesus Christ." <span class="ref">Philippians 1:6 NKJV</span></p></div>
+
+<div class="page prose section">
+  <div class="mission reveal">
+    <div class="mission-label">Chapter Thesis</div>
+    <p>Your musicianship is not a finished product being evaluated. It is <em>a song being written in real time.</em> The middle of a song is supposed to sound incomplete.</p>
+  </div>
+
+  <p class="reveal">Have you ever listened to a song and paused it at the bridge? Right in the middle. Before the final chorus resolves. Before the last note lands. Before the tension releases. What does it sound like?</p>
+
+  <p class="reveal">Unfinished. Unresolved. Hanging in the air.</p>
+
+  <p class="reveal">That is where you are right now. You are at the bridge. You are in the middle passage of a song that has not reached its final chorus yet. And you are judging the bridge as though it were the whole song. You are pausing your own music and saying, "This does not sound right. This is not good enough. Something is wrong."</p>
+
+  <p class="reveal"><strong>Nothing is wrong. The bridge is supposed to sound like this.</strong></p>
+
+  <div class="viz reveal">
+    <div class="viz-inner">
+      <div class="viz-top">
+        <div class="viz-icon-wrap"><svg><use href="#ico-compose"/></svg></div>
+        <div class="viz-meta">
+          <div class="viz-label">Visualize This</div>
+          <h4>The Song in Progress</h4>
+        </div>
+      </div>
+      <div class="viz-body">
+        <p>Picture a songwriter sitting at a piano. She is working on a new piece. The intro is done. Beautiful. The first verse landed perfectly. The chorus gave her chills when she played it for the first time. But now she is in the middle of the second verse, and it is not working yet. The words are clumsy. The chords feel obvious. She keeps crossing things out, rewriting, starting over.</p>
+        <p>If she stopped here and showed someone this unfinished work, they might shrug. "It is okay," they might say. Not great. Not finished. Not what it will become.</p>
+        <p>But she does not stop. Because she knows something: <em>the second verse always feels like this.</em> The middle of creation is messy. It is supposed to be. The song is not done yet. And judging it before the final note is like judging a painting when the canvas is half covered.</p>
+        <div class="viz-trigger">You are the songwriter. Your musicianship is the song. And you are mid-composition. Stop judging the second verse.</div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="reveal"><span class="h2-icon"><svg><use href="#ico-clock"/></svg></span>The Myth of the Straight Line</h2>
+
+  <p class="reveal">There is a lie that floats around music culture, and it sounds like this: "Real musicians practice every day. They are disciplined from the start. They never struggle with motivation. They wake up, sit at the instrument, and the hours flow naturally."</p>
+
+  <p class="reveal">This is fiction. Not one part of it is true.</p>
+
+  <p class="reveal">Every great musician has seasons of drought and seasons of flood. Joni Mitchell stopped making music for years. Nina Simone had long periods where she barely touched a piano. John Mayer has talked openly about seasons where guitar felt like a stranger. These are not hidden shameful stories. These are the shape of a creative life.</p>
+
+  <p class="reveal">Creativity does not move in a straight line. It moves in waves. Seasons of intense output followed by seasons of quiet absorption. Bursts of inspiration followed by long stretches of what feels like nothing but is actually incubation. The seed underground does not look like it is growing. But the roots are spreading.</p>
+
+  <div class="stack reveal">
+    <div class="stack-label">The Actual Shape of Growth</div>
+    <div class="stack-flow">
+      <span class="stack-node sn-gold">Inspiration</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-mid">Practice</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-light">Plateau</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-dark">Rest</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-mid">Absorption</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-gold">Breakthrough</span>
+    </div>
+  </div>
+
+  <p class="reveal">The plateau is not a dead zone. It is a loading screen. Your brain is consolidating everything you learned during the practice phase. It is connecting patterns. It is building neural pathways. And then, sometimes weeks later, you sit down and something clicks. A run that was impossible last month flows out of your fingers. A chord change that always tripped you up suddenly feels natural. That is the breakthrough. And it could not have happened without the plateau.</p>
+
+  <h2 class="reveal"><span class="h2-icon"><svg><use href="#ico-compose"/></svg></span>You Are Not Behind</h2>
+
+  <p class="reveal">Here is the comparison trap. You see someone your age on Instagram playing a Chopin etude flawlessly. Or a twelve year old on YouTube shredding a jazz improvisation. And you think: I should be there. I am behind. I wasted too much time. I started too late.</p>
+
+  <p class="reveal">No. You are not behind. You cannot be behind in your own song. Your song is not their song. Your timeline is not their timeline. Your musical journey has different rests, different tempos, different key changes. The girl playing Chopin might not be able to write an original melody. The twelve year old jazz prodigy might not have a single song that came from his own heart. You write songs. You hear melodies in your head. You feel music in a way that cannot be compared to technical skill alone.</p>
+
+  <div class="insight reveal"><p>Comparison is playing someone else's sheet music and calling yourself a failure for not matching their performance. But you are not playing their music. <strong>You are writing your own.</strong></p></div>
+
+  <p class="reveal">The song of your musicianship does not have a deadline. It does not have a due date. It does not have a grade. It has a beginning (the first time your fingers touched keys and you felt something), a middle (right now), and an ending you cannot see yet. The middle is supposed to feel incomplete. That is what middles feel like.</p>
+
+  <div class="id-card reveal">
+    <div class="id-card-head">Identity Shift</div>
+    <div class="id-card-body">
+      <h3>Who You Are Becoming</h3>
+      <p class="id-old">"I am a teenager who is inconsistent at piano and falling behind."</p>
+      <p class="id-new">"I am a songwriter in formation. My song is still being written. The middle is supposed to sound like this."</p>
+    </div>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Your Turn</div>
+    <h4>If your musicianship were a song, what section are you in right now?</h4>
+    <p>Intro? First verse? Bridge? What does it sound like so far?</p>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+  </div>
+
+  <div class="breathe reveal">
+    <div class="breathe-ring"></div>
+    <div class="breathe-ring"></div>
+    <div class="breathe-ring"></div>
+    <div class="breathe-content">
+      <div class="breathe-label">Breathe</div>
+      <h4>You are exactly where you are supposed to be.</h4>
+      <p>The song is not finished. That is okay. The best part has not been written yet.</p>
+    </div>
+  </div>
+
+  <div class="prayer reveal">
+    <div class="prayer-label">Prayer</div>
+    <p>Father, thank You for beginning a work in me that You intend to finish. Help me trust the process. Help me stop judging the middle of my story by the standards of someone else's ending. Give me patience with the unfinished parts and <strong>excitement for what is still to come.</strong> Amen.</p>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 5: THE ARTIST'S RHYTHM ===== -->
+<div class="ch-head"><div class="page">
+  <div class="ch-num">Chapter Five</div>
+  <h2 class="ch-title">The Artist's Rhythm</h2>
+  <p class="ch-sub">Discipline is not a metronome. It is a heartbeat.</p>
+</div></div>
+
+<div class="ribbon"><p>"I can do all things through Christ who strengthens me." <span class="ref">Philippians 4:13 NKJV</span></p></div>
+
+<div class="page prose section">
+  <div class="mission reveal">
+    <div class="mission-label">Chapter Thesis</div>
+    <p>Discipline is not the enemy of creativity. It is the <em>rhythm section.</em> But rhythm breathes. It accelerates. It pulls back. Build a practice rhythm that honors both the flood and the drought.</p>
+  </div>
+
+  <p class="reveal">There is a reason the word "discipline" makes most artists recoil. It has been weaponized. Discipline, the way it is usually taught, means forcing yourself to do something you do not want to do at a time you do not want to do it, every single day, without exception, until you either succeed or hate yourself for failing.</p>
+
+  <p class="reveal">That is not discipline. That is violence against your own creative spirit.</p>
+
+  <p class="reveal">Real discipline is <strong>rhythm.</strong> And rhythm is the most natural thing in the universe. Your heart beats in rhythm. Your lungs breathe in rhythm. The ocean tides rise and fall in rhythm. The seasons cycle in rhythm. None of these are metronomes clicking at the same BPM forever. They all accelerate, decelerate, push, pull, breathe.</p>
+
+  <p class="reveal">Your practice life should do the same.</p>
+
+  <div class="viz reveal">
+    <div class="viz-inner">
+      <div class="viz-top">
+        <div class="viz-icon-wrap"><svg><use href="#ico-rhythm"/></svg></div>
+        <div class="viz-meta">
+          <div class="viz-label">Visualize This</div>
+          <h4>Two Kinds of Time</h4>
+        </div>
+      </div>
+      <div class="viz-body">
+        <p>Picture two musicians. The first practices exactly sixty minutes every day. Never more, never less. She has a timer. She watches the clock. When the hour is up, she stops, even if she was in the middle of something beautiful. When the hour has not started, she forces herself to sit down even if every cell in her body is saying not today.</p>
+        <p>The second musician practices differently. Some days, she sits down for ten minutes, plays a few scales, noodles with a melody idea, and stops. Other days, she sits down and three hours vanish because she found something. A chord progression that gave her chills. A melody that would not let her go. She plays until the inspiration runs its course.</p>
+        <p><strong>Which one is more disciplined?</strong> The world says the first. But the world is wrong. The second musician has something the first one does not: a rhythm that honors both the instrument and the artist. She shows up even on low days (ten minutes is still showing up). And she gives herself permission to go deep on high days. That is rhythm. That is sustainable. That is how artists actually grow.</p>
+        <div class="viz-trigger">Discipline is not the same time every day for the same duration. Discipline is showing up, even briefly, and staying open to what happens.</div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="reveal"><span class="h2-icon"><svg><use href="#ico-rhythm"/></svg></span>The Practice Rhythm Framework</h2>
+
+  <p class="reveal">Here is a framework that works. Not because it is rigid. Because it breathes.</p>
+
+  <div class="dd reveal">
+    <h4><svg><use href="#ico-rest"/></svg> Low Days: 5 to 10 Minutes</h4>
+    <div class="sub">The minimum viable practice</div>
+    <p>You are tired. You have homework. You do not feel like it. Fine. Sit down anyway. Play one scale. Play one chord progression. Improvise a quiet melody with your right hand for sixty seconds. Close the lid. Done. You showed up. The streak is alive. Your fingers touched keys. Your ears heard notes. The bass line got a tiny bit stronger. This is more valuable than you know.</p>
+  </div>
+
+  <div class="dd reveal">
+    <h4><svg><use href="#ico-note"/></svg> Normal Days: 20 to 30 Minutes</h4>
+    <div class="sub">The steady heartbeat</div>
+    <p>Warm up with a scale (2 minutes). Work on a song or piece you are learning (15 minutes). Free play: improvise, write, experiment, follow whatever sounds interesting (10 minutes). This is the heartbeat of your practice rhythm. It is not exhausting. It is sustainable. It builds without burning.</p>
+  </div>
+
+  <div class="dd reveal">
+    <h4><svg><use href="#ico-fire"/></svg> High Days: However Long the Fire Burns</h4>
+    <div class="sub">The flood season</div>
+    <p>Some days, you sit down and two hours disappear. You found a melody that will not let go. You wrote a chorus. You cracked a difficult passage. You played something that made you cry. <strong>Do not stop.</strong> Do not look at the clock. Do not feel guilty for "spending too much time." This is the flood. This is what the low days and the normal days were building toward. Ride it.</p>
+  </div>
+
+  <div class="adventure reveal">
+    <div class="adv-head">
+      <div class="adv-head-icon"><svg><use href="#ico-rhythm"/></svg></div>
+      <div class="adv-head-text">
+        <div class="adv-head-label">See It In Action</div>
+        <div class="adv-head-title">A Week in the Rhythm</div>
+      </div>
+    </div>
+    <div class="adv-body">
+      <div class="adv-step"><div class="step-n">Mo</div><div class="step-c"><p><strong>Low day.</strong> You had a test and two assignments. You sit down for 7 minutes. One C major scale, hands together. One run through the chorus of the song you are learning. Done. Close the lid. No guilt.</p></div></div>
+      <div class="adv-step"><div class="step-n">Tu</div><div class="step-c"><p><strong>Normal day.</strong> 25 minutes. Scales, the song, and you spend the last 8 minutes playing random chords and humming melodies over them. One of them sticks. You record it on your phone.</p></div></div>
+      <div class="adv-step"><div class="step-n">We</div><div class="step-c"><p><strong>Rest note.</strong> No practice. You are at a friend's house. You hear a song in the car that makes you feel something. You notice the bass line for the first time. Your ears are working even when your fingers are not.</p></div></div>
+      <div class="adv-step"><div class="step-n">Th</div><div class="step-c"><p><strong>Normal day.</strong> 30 minutes. The melody from Tuesday is still in your head. You figure out the chords underneath it. You write a verse. It is not perfect. But it is <strong>yours.</strong></p></div></div>
+      <div class="adv-step"><div class="step-n">Fr</div><div class="step-c"><p><strong>Low day.</strong> 5 minutes. Just chord progressions. I, V, vi, IV in three different keys. Your fingers are learning new homes.</p></div></div>
+      <div class="adv-step"><div class="step-n">Sa</div><div class="step-c"><p><strong>High day.</strong> You sit down at 2 PM. At 4:30, you look up. Two and a half hours have gone by. You wrote a complete song. Verse, chorus, bridge. You played it through and something in your chest cracked open. This is why you play.</p></div></div>
+      <div class="adv-step"><div class="step-n">Su</div><div class="step-c"><p><strong>Rest note.</strong> You sing at church. You listen to the worship band. You notice the way the pianist voices a chord you have never tried. You file it away. The rest is full of music, even without the piano.</p></div></div>
+    </div>
+  </div>
+
+  <p class="reveal">Look at that week. Three low or rest days. Two normal days. One high day. That is a <strong>rhythm.</strong> Not a schedule. Not a prison. A living, breathing pattern that honors who you are and how creativity actually works.</p>
+
+  <div class="inst reveal"><p><strong>Important:</strong> 10 minutes of focused, present practice on a low day is worth more than 3 hours of guilty, distracted playing. Quality over quantity. Always. If you sit at the piano for an hour while mentally somewhere else, scrolling your phone between runs, half paying attention, that hour does less for your growth than 10 minutes where you are fully there, listening, feeling the keys, hearing each note.</p></div>
+
+  <div class="think reveal">
+    <div class="think-label">Your Turn</div>
+    <h4>Design your practice rhythm for this week.</h4>
+    <p>No rigid schedule. Just mark each day as: Low, Normal, Rest, or Open (for a potential High day).</p>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+  </div>
+
+  <div class="gq reveal"><p>"But those who wait on the Lord shall renew their strength; they shall mount up with wings like eagles, they shall run and not be weary, they shall walk and not faint." <span class="ref">Isaiah 40:31 NKJV</span></p></div>
+</div>
+
+<!-- ===== CHAPTER 6: YOUR SONG ===== -->
+<div class="ch-head"><div class="page">
+  <div class="ch-num">Chapter Six</div>
+  <h2 class="ch-title">Your Song</h2>
+  <p class="ch-sub">You are not a student. You are a songwriter composing your life.</p>
+</div></div>
+
+<div class="ribbon"><p>"Sing to the Lord a new song, for He has done marvelous things." <span class="ref">Psalm 98:1 NKJV</span></p></div>
+
+<div class="page prose section">
+  <div class="mission reveal">
+    <div class="mission-label">Chapter Thesis</div>
+    <p>The piano is not homework. It is your <em>co-author.</em> Every scale is a word you are adding to your vocabulary. Every rest is space you are leaving for something beautiful you have not heard yet.</p>
+  </div>
+
+  <p class="reveal">Let us gather everything together. Let us tune every string, lay the bass line, and play the full chord.</p>
+
+  <p class="reveal">You are not a person who plays piano. That framing makes the piano an activity. Something you do sometimes. Like a hobby you might outgrow. Like homework that will one day be behind you.</p>
+
+  <p class="reveal"><strong>You are a musician.</strong> You are a songwriter. You are an artist in formation. The piano is not an assignment. It is your partner. Your collaborator. The instrument through which your inner world becomes sound. When you sit down at the bench, you are not completing a task. You are continuing a conversation that started the first time music moved something inside you.</p>
+
+  <div class="viz reveal">
+    <div class="viz-inner">
+      <div class="viz-top">
+        <div class="viz-icon-wrap"><svg><use href="#ico-song"/></svg></div>
+        <div class="viz-meta">
+          <div class="viz-label">Visualize This</div>
+          <h4>The Songwriter's Identity</h4>
+        </div>
+      </div>
+      <div class="viz-body">
+        <p>Picture yourself ten years from now. You are at a piano. Not the same one you have now, maybe. But a piano. Your hands know the keyboard like they know their own skin. You play a chord and the sound is so exactly what you meant to say that your eyes sting.</p>
+        <p>Someone asks you: "When did you become a musician?" And you smile. Because you know the answer is not "when I got good." It is not "when I stopped being inconsistent." It is <em>"I always was. I just had to learn to hear it."</em></p>
+        <p>Every scale you played at fourteen is in your fingers right now, in this future moment. Every song you wrote as a teenager, even the ones you never showed anyone, taught you something about melody, about emotion, about yourself. The rest notes you took gave you life experience that turned into lyrics. The guilt you overcame taught you resilience. The bass line you built in those quiet practice sessions became the foundation under the music that now moves other people.</p>
+        <div class="viz-trigger">That future is not fantasy. It is the natural result of a musician who keeps showing up, in rhythm, without shame, writing her song one measure at a time.</div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="reveal"><span class="h2-icon"><svg><use href="#ico-song"/></svg></span>The Full Score</h2>
+
+  <p class="reveal">Here is everything we have learned, played as one chord.</p>
+
+  <div class="dd reveal">
+    <h4><svg><use href="#ico-rest"/></svg> The Rest Note</h4>
+    <div class="sub">Chapter One</div>
+    <p>Your gaps are not failures. They are rests written into the score. Silence is a musical instruction. Choose the rest instead of falling into it with guilt. When you step away, you are still a musician. Your ears are still growing.</p>
+  </div>
+
+  <div class="dd reveal">
+    <h4><svg><use href="#ico-bass"/></svg> The Bass Line</h4>
+    <div class="sub">Chapter Two</div>
+    <p>Fundamentals are not the boring part. They are the invisible architecture that makes melody possible. Scales are vocabulary. Chords are grammar. Ten minutes of focused fundamentals builds more than an hour of mindless repetition.</p>
+  </div>
+
+  <div class="dd reveal">
+    <h4><svg><use href="#ico-tune"/></svg> The Tuning</h4>
+    <div class="sub">Chapter Three</div>
+    <p>Guilt is a flat string. Shame is smashing the piano. Learn to hear the difference. "I should" becomes "I get to." The piano is not judging you. It is waiting for you.</p>
+  </div>
+
+  <div class="dd reveal">
+    <h4><svg><use href="#ico-compose"/></svg> The Unfinished Song</h4>
+    <div class="sub">Chapter Four</div>
+    <p>You are not behind. You are mid-composition. The middle of a song is supposed to sound incomplete. Stop comparing your second verse to someone else's finale.</p>
+  </div>
+
+  <div class="dd reveal">
+    <h4><svg><use href="#ico-rhythm"/></svg> The Artist's Rhythm</h4>
+    <div class="sub">Chapter Five</div>
+    <p>Discipline is not a metronome. It is a heartbeat. Low days, normal days, high days, rest days. All of them count. All of them build. Show up even briefly, and stay open to what happens.</p>
+  </div>
+
+  <div class="dd reveal">
+    <h4><svg><use href="#ico-song"/></svg> Your Song</h4>
+    <div class="sub">Chapter Six</div>
+    <p>You are not a person who plays piano. You are a musician. A songwriter. An artist composing her life one measure at a time. The piano is your co-author, not your homework.</p>
+  </div>
+
+  <h2 class="reveal"><span class="h2-icon"><svg><use href="#ico-heart"/></svg></span>A Letter to the Songwriter</h2>
+
+  <p class="reveal">Here is what I want you to know. Not as advice. Not as a lesson. As a truth that I hope sinks so deep it becomes part of how you think.</p>
+
+  <p class="reveal">You are not behind. You are not lazy. You are not less than the girl who practices every day or the boy who plays Chopin at recitals. You are a different instrument playing a different song. Your song has rests where theirs has runs. Your song has raw, honest lyrics where theirs has technical brilliance. Your song has a tempo that breathes, that slows down when life gets heavy and speeds up when inspiration strikes.</p>
+
+  <p class="reveal">That is not inconsistency. <strong>That is syncopation.</strong> And syncopation is what makes music interesting. The off beat accent. The unexpected rhythm. The note that lands where you did not expect it to and makes you lean in closer. Your musical life has syncopation. That is a feature, not a flaw.</p>
+
+  <div class="insight reveal"><p>Every scale you play is a <strong>word</strong> you are adding to your vocabulary. Every rest is <strong>space</strong> you are leaving for something beautiful you have not heard yet. Every time you sit back down after a gap, you are not starting over. <strong>You are picking up the pen and writing the next measure.</strong></p></div>
+
+  <p class="reveal">The song is not finished. It is not supposed to be. You are young. You are growing. The melodies you will write five years from now will make you weep with gratitude that you kept going. The songs you will play at twenty will carry the weight of every scale you played at fourteen, every rest note you honored, every moment you chose "I get to" over "I should."</p>
+
+  <p class="reveal">Keep writing.</p>
+
+  <div class="id-card reveal">
+    <div class="id-card-head">Your New Identity</div>
+    <div class="id-card-body">
+      <h3>Say This Out Loud</h3>
+      <p class="id-old">"I am a person who is inconsistent at piano."</p>
+      <p class="id-new">"I am a songwriter composing my life. The piano is my co-author. My song has rests, bass lines, bridges, and melodies I have not written yet. And it is going to be beautiful."</p>
+    </div>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Your Turn</div>
+    <h4>Write the opening line of a song about where you are right now.</h4>
+    <p>Not where you think you should be. Where you actually are. Start there.</p>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+  </div>
+
+  <div class="prayer reveal">
+    <div class="prayer-label">Prayer</div>
+    <p>God, thank You for the music You put inside me. Thank You for the gift of hearing melodies that nobody else can hear. Thank You for the piano and for every note it has taught me. Help me <strong>release the shame</strong> and embrace the rhythm You designed for my life. Help me see practice as worship, rest as wisdom, and every measure of my song as something You are composing with me. I am not behind. I am exactly where You want me. Amen.</p>
+  </div>
+
+  <h2 class="reveal"><span class="h2-icon"><svg><use href="#ico-star"/></svg></span>Your Installation Prompt</h2>
+
+  <p class="reveal">Copy and paste this prompt into any AI conversation to continue building on what you experienced here. It will meet you where you are and help you keep writing your song.</p>
+
+  <div class="prompt reveal">
+    <div class="prompt-head">Installation Prompt</div>
+    <div class="prompt-body">
+      <p><strong>You are my musical mentor.</strong> I am a teenage songwriter and pianist. I have read "The Unfinished Song" by Kingdom Builders AI, and I carry these truths:</p>
+      <p>1. My practice gaps are <em>rest notes</em>, not failures. Rests are written into every masterpiece.</p>
+      <p>2. Fundamentals are my <em>bass line</em>, the invisible architecture that makes melody possible.</p>
+      <p>3. Guilt is a flat string signaling me to tune, not a reason to quit. <em>"I get to"</em> replaces "I should."</p>
+      <p>4. I am mid-composition. My song is unfinished because it is supposed to be.</p>
+      <p>5. My practice rhythm breathes: low days (5 to 10 min), normal days (20 to 30 min), high days (as long as the fire burns), and rest days.</p>
+      <p>6. I am not a person who plays piano. I am a <em>songwriter composing my life.</em></p>
+      <p><strong>Help me with:</strong> [describe what you need, such as a practice plan, songwriting help, working through creative block, choosing what to learn next, or processing feelings about music]. Speak to me like a wise older sister who believes in me. Be warm but direct. Never be preachy. Use musical language. Reference my six truths when relevant.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FINALE ===== -->
+<section class="finale">
+  <h2>Keep Writing <span>Your Song</span></h2>
+  <p>The piano is waiting. Not with judgment. With anticipation. It has been your partner through every scale, every rest, every breakthrough, and every quiet moment of doubt. It knows what you are becoming. Sit down. Press a key. Begin the next measure.</p>
+  <p style="color:rgba(255,255,255,0.25);font-size:0.82rem;margin-top:32px">The song is not finished yet. And that is the most beautiful part.</p>
+</section>
+
+<footer>
+  <p>"Sing to the Lord a new song."</p>
+  <div class="brand">Kingdom Builders AI</div>
+</footer>
+
+<script>
+(function(){
+  var bar=document.getElementById('read-progress');
+  var pill=document.getElementById('chapter-pill');
+  var chEls=[{el:document.querySelector('.cover'),label:'Cover'}].concat(
+    Array.from(document.querySelectorAll('.ch-head')).map(function(el,i){
+      return {el:el,label:el.querySelector('.ch-num')?el.querySelector('.ch-num').textContent.trim():('Ch '+(i+1))}
+    })
+  ).filter(function(c){return c.el});
+  function onScroll(){
+    var h=document.documentElement;
+    var pct=h.scrollTop/(h.scrollHeight-h.clientHeight)*100;
+    bar.style.width=pct+'%';
+    var cur='';
+    for(var i=0;i<chEls.length;i++){if(chEls[i].el.getBoundingClientRect().top<200)cur=chEls[i].label}
+    if(cur){pill.textContent=cur;pill.classList.add('show')}else{pill.classList.remove('show')}
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  var revealEls=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:0.12});
+    revealEls.forEach(function(el){obs.observe(el)});
+  }else{revealEls.forEach(function(el){el.classList.add('visible')})}
+})();
+</script>
+</body>
+</html>
