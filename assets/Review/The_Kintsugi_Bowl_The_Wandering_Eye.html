@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Kintsugi Bowl: The Wandering Eye | Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1A0E06;
+  --ink-mid:#2E1E10;
+  --ink-soft:#3D2E1A;
+  --steel:#5A4428;
+  --steel-light:#8A7650;
+  --fog:#B0A080;
+  --gold:#C9A84C;
+  --gold-mid:rgba(201,168,76,0.18);
+  --gold-pale:rgba(201,168,76,0.07);
+  --clay:#8B6914;
+  --clay-mid:rgba(139,105,20,0.15);
+  --ash:#E85050;
+  --ash-mid:rgba(232,80,80,0.15);
+  --green:#2D8A4E;
+  --green-mid:rgba(45,138,78,0.15);
+  --cream:#FFFBF2;
+  --cream-warm:#FFF8E8;
+  --paper:#FFFCF5;
+  --white:#FFFFFF;
+  --radius:10px;
+  --shadow:0 2px 16px rgba(26,14,6,0.09);
+  --shadow-deep:0 8px 40px rgba(26,14,6,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.78;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.label{font-family:'Poppins',sans-serif}
+.page{max-width:700px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--ink-mid);font-weight:600;font-family:'Poppins',sans-serif}
+
+/* === COVER === */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(160deg,#0E0804 0%,#1A0E06 40%,#12080A 100%);position:relative;overflow:hidden}
+.cover-grain{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:0.5}
+.cover-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 25%,rgba(10,5,2,0.7) 100%)}
+.gold-ring{position:absolute;border-radius:50%;border:1px solid rgba(201,168,76,0.06);animation:gold-expand 7s ease-out infinite}
+.gold-ring:nth-child(3){width:180px;height:180px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:0s}
+.gold-ring:nth-child(4){width:360px;height:360px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:1.8s}
+.gold-ring:nth-child(5){width:540px;height:540px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:3.6s}
+@keyframes gold-expand{0%{opacity:0.6;transform:translate(-50%,-50%) scale(0.85)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.25)}}
+.cover-content{position:relative;z-index:2;padding:60px 24px 40px}
+.cover-badge{display:inline-block;padding:5px 18px;border:1px solid rgba(201,168,76,0.3);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.67rem;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:40px;background:rgba(201,168,76,0.07)}
+.cover h1{font-family:'Poppins',sans-serif;font-size:clamp(3rem,9vw,5.5rem);font-weight:300;color:#FFFFFF;line-height:0.95;margin-bottom:6px;letter-spacing:-0.02em}
+.cover h1 em{display:block;color:var(--gold);font-style:normal;font-weight:700;font-size:0.5em;margin-top:12px;letter-spacing:0.01em}
+.cover-series{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:rgba(201,168,76,0.5);margin-bottom:8px}
+.cover-sub{font-family:'Lora',Georgia,serif;font-size:clamp(0.95rem,2.5vw,1.15rem);font-style:italic;color:rgba(255,255,255,0.75);margin-top:28px;line-height:1.7;max-width:480px;margin-left:auto;margin-right:auto}
+.cover-sub em{color:rgba(201,168,76,0.85);font-style:normal;font-weight:600}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.5rem;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-top:52px}
+.cover-verse{margin-top:28px;padding:14px 24px;display:inline-block;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.12);border-radius:8px;font-family:'Lora',Georgia,serif;font-size:0.82rem;font-style:italic;color:rgba(255,255,255,0.6);line-height:1.6}
+.cover-art{width:200px;height:190px;margin:0 auto 28px;display:block;animation:cover-breathe 5s ease-in-out infinite}
+.cover-art svg{width:100%;height:100%;filter:drop-shadow(0 0 24px rgba(201,168,76,0.2)) drop-shadow(0 0 50px rgba(201,168,76,0.08))}
+@keyframes cover-breathe{0%,100%{transform:scale(1);opacity:0.9}50%{transform:scale(1.04);opacity:1}}
+
+/* === CHAPTER HEADS === */
+.ch-head{background:linear-gradient(160deg,#0E0804 0%,#18100A 100%);padding:72px 24px 52px;position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 50%,rgba(201,168,76,0.04) 0%,transparent 50%)}
+.ch-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 5%,var(--gold) 50%,transparent 95%);opacity:0.5}
+.ch-head .page{position:relative;z-index:2}
+.ch-num{font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--gold);opacity:0.9;margin-bottom:8px}
+.ch-title{font-family:'Poppins',sans-serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:700;color:#FFFFFF;margin:10px 0 8px;letter-spacing:-0.01em}
+.ch-sub{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:rgba(201,168,76,0.85)}
+
+/* === RIBBON (Scripture) === */
+.ribbon{text-align:center;padding:20px 24px;background:var(--cream-warm);border-top:1px solid rgba(26,14,6,0.06);border-bottom:1px solid rgba(26,14,6,0.06)}
+.ribbon p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:var(--steel-light);max-width:540px;margin:0 auto;line-height:1.6}
+
+/* === MISSION === */
+.mission{text-align:center;padding:36px 32px;margin:36px 0;background:linear-gradient(140deg,rgba(201,168,76,0.08),rgba(201,168,76,0.03));border-radius:14px;border:2px solid rgba(201,168,76,0.2);box-shadow:0 0 0 1px rgba(201,168,76,0.06),var(--shadow)}
+.mission-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.mission p{font-family:'Poppins',sans-serif;font-size:clamp(0.88rem,2.2vw,1.05rem);font-weight:500;color:var(--ink-mid);line-height:1.65}
+.mission p em{color:var(--gold);font-style:normal;font-weight:700}
+
+/* === INSIGHT === */
+.insight{margin:30px 0;padding:28px 32px;background:linear-gradient(140deg,#1A0E06,#18100A);border-radius:14px;border:2px solid rgba(201,168,76,0.25);border-left:5px solid var(--gold);position:relative;overflow:hidden;box-shadow:var(--shadow-deep)}
+.insight::before{content:'';position:absolute;top:-40%;right:-10%;width:200px;height:200px;background:radial-gradient(circle,rgba(201,168,76,0.07) 0%,transparent 70%);border-radius:50%}
+.insight p{font-family:'Lora',Georgia,serif;font-size:1.02rem;font-style:italic;color:rgba(255,255,255,0.9);line-height:1.72;position:relative;z-index:2}
+.insight em{color:var(--gold);font-style:normal;font-weight:700}
+
+/* === GUIDED QUOTE === */
+.gq{margin:32px 0;text-align:center;padding:32px 24px;position:relative;background:linear-gradient(160deg,rgba(201,168,76,0.04),rgba(201,168,76,0.07));border-radius:14px;border:1.5px solid rgba(201,168,76,0.15)}
+.gq::before,.gq::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:48px;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.gq::before{top:0}.gq::after{bottom:0}
+.gq p{font-family:'Lora',Georgia,serif;font-size:1.05rem;font-style:italic;color:var(--ink-soft);line-height:1.6;max-width:520px;margin:0 auto}
+
+/* === VIZ CARDS === */
+.viz{margin:44px 0 32px;border-radius:14px;overflow:hidden;border:2px solid rgba(201,168,76,0.22);box-shadow:var(--shadow-deep);position:relative;background:var(--white)}
+.viz-top{background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(201,168,76,0.04));padding:20px 26px 18px;display:flex;align-items:center;gap:14px;border-bottom:1px solid rgba(201,168,76,0.12)}
+.viz-icon{width:48px;height:48px;border-radius:50%;border:2px solid rgba(201,168,76,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(145deg,#fff,rgba(255,248,232,0.6));font-size:1.3rem}
+.viz-meta{flex:1}
+.viz-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:2px}
+.viz h4{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:var(--ink-mid)}
+.viz-body{padding:26px 26px 22px;background:linear-gradient(170deg,#FFFDF8 0%,#FFF8F0 100%)}
+.viz-body p{font-size:0.95rem;color:var(--steel);line-height:1.78;margin-bottom:14px}
+.viz-body p:last-child{margin-bottom:0}
+
+/* === SCENE ANALYSIS === */
+.scene{margin:36px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(201,168,76,0.25);box-shadow:var(--shadow-deep);background:var(--white)}
+.scene-question{padding:20px 26px 16px;background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(201,168,76,0.04));border-bottom:1px solid rgba(201,168,76,0.12);font-family:'Poppins',sans-serif;font-size:0.92rem;font-weight:500;color:var(--ink-mid);line-height:1.6;font-style:italic}
+.scene-question svg{width:18px;height:18px;stroke:var(--gold);fill:none;stroke-width:2;vertical-align:middle;margin-right:6px;margin-top:-2px}
+.scene-head{padding:14px 26px 10px;background:linear-gradient(135deg,rgba(201,168,76,0.06),rgba(201,168,76,0.02));border-bottom:1px solid rgba(201,168,76,0.08)}
+.scene-title{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:700;color:var(--ink-mid);margin-bottom:2px}
+.scene-meta{font-family:'Poppins',sans-serif;font-size:0.68rem;color:var(--steel-light);line-height:1.5}
+.scene-body{padding:22px 26px 18px}
+.scene-body p{font-size:0.93rem;color:var(--steel);line-height:1.78;margin-bottom:14px}
+.scene-body p:last-child{margin-bottom:0}
+.scene-quote{margin:14px 0;padding:12px 20px;background:rgba(201,168,76,0.06);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;font-family:'Lora',Georgia,serif;font-size:0.9rem;font-style:italic;color:var(--ink-soft);line-height:1.65}
+.scene-search{padding:10px 26px;font-family:'Poppins',sans-serif;font-size:0.65rem;color:var(--fog);text-align:center;background:rgba(201,168,76,0.03);border-top:1px solid rgba(201,168,76,0.06)}
+.scene-search span{color:var(--steel-light);font-weight:600}
+
+/* === THE BIT (Comedy Break) === */
+.bit{margin:36px 0;border-radius:20px;border:2.5px dashed var(--gold);background:#FFF8E7 url("data:image/svg+xml,%3Csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='3' cy='3' r='1.2' fill='rgba(201,168,76,0.06)'/%3E%3C/svg%3E");overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.06);position:relative}
+.bit-head{display:flex;align-items:center;gap:10px;padding:16px 24px 12px;border-bottom:1.5px dashed rgba(0,0,0,0.08);flex-wrap:wrap}
+.bit-icon{font-size:1.8rem;transform:rotate(-12deg);display:inline-block;line-height:1}
+.bit-tag{font-family:'Baloo 2',cursive;font-size:0.6rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);background:rgba(201,168,76,0.12);padding:3px 10px;border-radius:50px}
+.bit-title{font-family:'Baloo 2',cursive;font-size:1.05rem;font-weight:700;color:var(--ink-mid)}
+.bit-body{padding:18px 24px;font-size:0.95rem;line-height:1.7;color:var(--ink)}
+.bit-body .bit-line{display:flex;gap:8px;margin-bottom:8px;align-items:baseline}
+.bit-body .bit-who{font-family:'Baloo 2',cursive;font-weight:700;white-space:nowrap;min-width:70px;color:var(--ink-mid);flex-shrink:0}
+.bit-body .bit-said{flex:1}
+.bit-body .bit-stage{font-size:0.8rem;font-style:italic;color:var(--steel-light);margin-bottom:10px}
+.bit-anchor{padding:14px 24px;background:rgba(0,0,0,0.04);border-top:1.5px dashed rgba(0,0,0,0.08);font-size:0.88rem;font-style:italic;color:var(--ink-soft);font-family:'Lora',Georgia,serif;line-height:1.6}
+
+/* === BEFORE/AFTER === */
+.ba-pair{margin:32px 0;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:620px){.ba-pair{grid-template-columns:1fr}}
+.ba-card{border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.ba-head{padding:11px 18px;font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.ba-before{background:linear-gradient(170deg,#FFF0F0,#FFE8E8)}
+.ba-before .ba-head{background:rgba(232,80,80,0.12);color:#8B1F1F}
+.ba-after{background:linear-gradient(170deg,#FFF8EE,#FFF2E0)}
+.ba-after .ba-head{background:rgba(201,168,76,0.12);color:#5A3800}
+.ba-dot{width:7px;height:7px;border-radius:50%}
+.ba-before .ba-dot{background:var(--ash)}
+.ba-after .ba-dot{background:var(--gold)}
+.ba-body{padding:16px 18px;font-size:0.88rem;line-height:1.65}
+.ba-body ul{list-style:none;padding:0;margin:0}
+.ba-body ul li{padding:6px 0;border-bottom:1px solid rgba(0,0,0,0.05);font-family:'Poppins',sans-serif;font-size:0.8rem}
+.ba-body ul li:last-child{border-bottom:none}
+
+/* === DD CARDS === */
+.dd{margin:24px 0;padding:22px 26px;border-radius:12px;border-left:4px solid var(--gold);background:var(--white);box-shadow:var(--shadow)}
+.dd:nth-of-type(even){background:var(--cream)}
+.dd h4{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--ink-mid);margin-bottom:4px}
+.dd .sub{font-family:'Poppins',sans-serif;font-size:0.54rem;font-weight:700;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.dd p{font-size:0.95rem;color:var(--steel);line-height:1.78;margin-bottom:8px}
+.dd p:last-child{margin-bottom:0}
+
+/* === THINK / EXERCISE === */
+.think{margin:16px 0 36px;padding:30px;background:linear-gradient(145deg,rgba(201,168,76,0.08),rgba(201,168,76,0.04));border:2px dashed rgba(201,168,76,0.35);border-radius:14px;position:relative;box-shadow:0 4px 16px rgba(201,168,76,0.08)}
+.think::before{content:'';position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--paper);padding:0 12px;width:28px;height:28px;display:block;margin-left:-14px;background:var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C9A84C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22c-2 0-4-1.5-4-4 0-2 2-3 4-3s4 1 4 3c0 2.5-2 4-4 4z'/%3E%3Cpath d='M12 15c-1.5-2-5-4-5-8a5 5 0 0 1 10 0c0 4-3.5 6-5 8z'/%3E%3Cpath d='M9.5 9c.3-1.8 1.5-3 2.5-3'/%3E%3C/svg%3E") center/contain no-repeat}
+.think-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);text-align:center;margin-bottom:10px}
+.think-label svg{width:14px;height:14px;stroke:var(--gold);fill:none;stroke-width:2;vertical-align:middle;margin-right:4px}
+.think h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--ink-mid);text-align:center;margin-bottom:14px}
+.think p{font-size:0.86rem;color:var(--steel);margin-bottom:8px;font-family:'Poppins',sans-serif}
+.think-line{border-bottom:1.5px solid rgba(201,168,76,0.25);height:30px;margin-bottom:4px;cursor:text}
+.think p.q-start{font-family:'Poppins',sans-serif;font-weight:500;color:var(--ink-soft);font-size:0.82rem;text-align:left;margin-top:14px;margin-bottom:4px}
+.think p.q-start svg{width:14px;height:14px;stroke:var(--gold);fill:none;stroke-width:2;vertical-align:middle;margin-right:4px}
+
+/* === BREATHE === */
+.breathe{margin:44px 0;text-align:center;padding:52px 24px;position:relative;background:linear-gradient(160deg,rgba(201,168,76,0.08),rgba(201,168,76,0.04));border-radius:16px;border:2px solid rgba(201,168,76,0.15)}
+.breathe-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1.5px solid rgba(201,168,76,0.1)}
+.breathe-ring:nth-child(1){width:140px;height:140px;animation:breathe-pulse 6s ease-in-out infinite}
+.breathe-ring:nth-child(2){width:90px;height:90px;animation:breathe-pulse 6s ease-in-out infinite 1.5s}
+.breathe-ring:nth-child(3){width:45px;height:45px;animation:breathe-pulse 6s ease-in-out infinite 3s}
+@keyframes breathe-pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.5}50%{transform:translate(-50%,-50%) scale(1.25);opacity:0.1}}
+.breathe-content{position:relative;z-index:2}
+.breathe-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.breathe h4{font-family:'Poppins',sans-serif;font-size:0.94rem;font-weight:600;color:var(--ink-mid);margin-bottom:8px}
+.breathe p{font-family:'Lora',Georgia,serif;font-size:0.88rem;font-style:italic;color:var(--steel);max-width:420px;margin:0 auto;line-height:1.65}
+
+/* === PRAYER BOX === */
+.prayer{margin:32px 0;padding:28px 30px;background:linear-gradient(160deg,#1A0E06,#14080E);border-radius:14px;border:2px solid rgba(201,168,76,0.25);position:relative;overflow:hidden}
+.prayer::before{content:'';position:absolute;top:-20%;left:-10%;width:160px;height:160px;background:radial-gradient(circle,rgba(201,168,76,0.06) 0%,transparent 70%);border-radius:50%}
+.prayer-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;position:relative;z-index:2}
+.prayer p{font-family:'Lora',Georgia,serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.85);line-height:1.8;position:relative;z-index:2;margin-bottom:8px}
+.prayer p:last-child{margin-bottom:0}
+.prayer strong{color:var(--gold);font-style:normal;font-weight:700}
+
+/* === ADVENTURE / STORY === */
+.adventure{margin:36px 0;border-radius:14px;overflow:hidden;box-shadow:var(--shadow-deep);background:var(--white);border:1.5px solid rgba(26,14,6,0.08)}
+.adv-head{padding:14px 26px 12px;display:flex;align-items:center;gap:12px;border-bottom:1.5px solid rgba(201,168,76,0.1);background:linear-gradient(135deg,rgba(201,168,76,0.05),rgba(201,168,76,0.02))}
+.adv-head-icon{width:36px;height:36px;border-radius:50%;background:rgba(201,168,76,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1.5px solid rgba(201,168,76,0.2);font-size:1rem}
+.adv-head-text{flex:1}
+.adv-head-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--gold);opacity:0.7}
+.adv-head-title{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--ink-mid)}
+.adv-step{padding:14px 26px;border-bottom:1px solid rgba(26,14,6,0.05)}
+.adv-step:last-child{border-bottom:none}
+.adv-step:nth-child(odd){background:var(--white)}
+.adv-step:nth-child(even){background:rgba(201,168,76,0.02)}
+.step-c p{font-family:'Source Serif 4',Georgia,serif;font-size:0.93rem;line-height:1.75;margin:0 0 6px;color:var(--ink-soft)}
+.step-c p:last-child{margin-bottom:0}
+
+/* === STACK === */
+.stack{margin:38px 0;text-align:center}
+.stack-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);opacity:0.7;margin-bottom:16px}
+.stack-flow{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap}
+.stack-node{display:inline-flex;align-items:center;justify-content:center;padding:10px 18px;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.68rem;font-weight:600;line-height:1.35;white-space:nowrap}
+.sn-dark{background:var(--ink-mid);color:#FFFFFF;border:1.5px solid rgba(201,168,76,0.2)}
+.sn-gold{background:rgba(201,168,76,0.13);color:var(--ink-mid);border:1.5px solid rgba(201,168,76,0.25)}
+.sn-red{background:rgba(232,80,80,0.1);color:#5A1818;border:1.5px solid rgba(232,80,80,0.2)}
+.sn-green{background:rgba(45,138,78,0.1);color:#1A3A28;border:1.5px solid rgba(45,138,78,0.2)}
+.stack-arr{font-size:1rem;color:rgba(201,168,76,0.45);padding:0 7px}
+
+/* === PROMPT === */
+.prompt{margin:32px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(201,168,76,0.22);box-shadow:var(--shadow-deep)}
+.prompt-head{padding:12px 20px;background:linear-gradient(90deg,#1A0E06,#18100A);font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--gold)}
+.prompt-body{padding:24px 26px;background:#120A04;color:#C0B8A8;font-family:'Poppins',sans-serif;font-size:0.82rem;line-height:1.8}
+.prompt-body strong{color:var(--gold)}
+
+/* === INST === */
+.inst{margin:26px 0;padding:18px 22px;background:linear-gradient(90deg,rgba(201,168,76,0.07),rgba(201,168,76,0.03));border-left:4px solid var(--gold);border-radius:0 12px 12px 0;box-shadow:var(--shadow)}
+.inst p{font-family:'Poppins',sans-serif;font-size:0.8rem;color:var(--steel);line-height:1.6;margin:0}
+.inst strong{color:var(--ink-mid);font-weight:600}
+
+/* === H2 ICON === */
+.h2-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--ink-mid),var(--ink-soft));margin-right:10px;vertical-align:middle;box-shadow:0 2px 8px rgba(26,14,6,0.2);font-size:0.7rem}
+.h2-icon svg{width:16px;height:16px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.viz-icon svg{width:24px;height:24px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.adv-head-icon svg{width:18px;height:18px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.prose h2{font-family:'Poppins',sans-serif;font-size:1.3rem;color:var(--ink-mid);margin:36px 0 14px;letter-spacing:-0.01em;display:flex;align-items:center}
+
+/* === FINALE === */
+.finale{text-align:center;padding:80px 24px;background:linear-gradient(160deg,#0E0804 0%,#18100A 100%);position:relative;overflow:hidden}
+.finale::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 50% 50%,rgba(201,168,76,0.04) 0%,transparent 50%)}
+.finale h2{font-family:'Poppins',sans-serif;font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;color:#FFFFFF;margin-bottom:8px;position:relative;z-index:2}
+.finale h2 span{color:var(--gold)}
+.finale p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.38);max-width:460px;margin:16px auto;line-height:1.65;position:relative;z-index:2}
+
+/* === FOOTER === */
+footer{text-align:center;padding:36px 24px;background:#060402}
+footer p{font-family:'Lora',Georgia,serif;font-size:0.8rem;font-style:italic;color:rgba(201,168,76,0.2);margin-bottom:12px}
+footer .brand{font-family:'Poppins',sans-serif;font-size:0.67rem;font-style:normal;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.12)}
+
+/* === SCROLL REVEAL === */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.65s ease,transform 0.65s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.stagger-children > *{opacity:0;transform:translateY(18px);transition:opacity 0.5s ease,transform 0.5s ease}
+.stagger-children.visible > *:nth-child(1){opacity:1;transform:none;transition-delay:0s}
+.stagger-children.visible > *:nth-child(2){opacity:1;transform:none;transition-delay:0.12s}
+
+.think:hover{box-shadow:0 0 0 2px rgba(201,168,76,0.25),0 8px 32px rgba(201,168,76,0.1)}
+.think{transition:box-shadow 0.3s ease}
+.adv-step{transition:background 0.2s ease}
+.adv-step:hover{background:rgba(201,168,76,0.04)!important}
+@keyframes insight-border{0%,100%{border-left-color:var(--gold)}50%{border-left-color:rgba(201,168,76,0.3)}}
+.insight{animation:insight-border 4s ease-in-out infinite}
+
+#read-progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--gold),rgba(201,168,76,0.4));z-index:9999;pointer-events:none;transition:width 0.08s linear}
+#chapter-pill{position:fixed;bottom:24px;right:24px;background:var(--ink);border:1px solid rgba(201,168,76,0.25);color:var(--gold);font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:8px 18px;border-radius:50px;opacity:0;transition:opacity 0.35s ease;pointer-events:none;z-index:1000;box-shadow:0 4px 24px rgba(0,0,0,0.4)}
+#chapter-pill.show{opacity:1}
+
+@media(max-width:620px){.stack-node{font-size:0.6rem;padding:8px 12px}}
+@media(max-width:640px){.page{padding:0 16px}}
+@media print{
+  @page{margin:18mm 16mm 22mm 16mm}
+  body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .cover{min-height:auto;padding:80px 24px;break-after:page}
+  .ch-head{break-before:page;padding:56px 24px 40px}
+  .think,.adventure,.viz,.ba-pair,.mission,.insight,.dd,.breathe,.prayer,.prompt,.stack,.scene,.bit{break-inside:avoid}
+  .gold-ring,.cover-grain,.breathe-ring,.cover-vignette{animation:none!important;display:none}
+  .section{padding:36px 0}
+  .scene-search{display:none}
+  #read-progress,#chapter-pill,.no-print{display:none!important}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+</style>
+</head>
+<body>
+
+<!-- SVG Sprite Sheet -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="ico-bowl" viewBox="0 0 24 24"><path d="M3 12c0 5 4 8 9 8s9-3 9-8"/><path d="M3 12c0-1 2-2 9-2s9 1 9 2"/><path d="M7 12v2c0 3 2 5 5 5s5-2 5-5v-2"/><path d="M10 12l-1 4"/><path d="M14 12l1 4"/></symbol>
+  <symbol id="ico-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="ico-mask" viewBox="0 0 24 24"><path d="M3 5c0 8 4 14 9 14s9-6 9-14"/><path d="M3 5c0-1 2-2 9-2s9 1 9 2"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><path d="M9 15c1.5 2 4.5 2 6 0"/></symbol>
+  <symbol id="ico-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16.24 7.76l-2.12 6.36-6.36 2.12 2.12-6.36 6.36-2.12z"/></symbol>
+  <symbol id="ico-bell" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></symbol>
+  <symbol id="ico-heart" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></symbol>
+  <symbol id="ico-crown" viewBox="0 0 24 24"><path d="M2 18h20"/><path d="M4 18V8l4 4 4-6 4 6 4-4v10"/></symbol>
+  <symbol id="ico-brain" viewBox="0 0 24 24"><path d="M12 4a4 4 0 0 0-4 4c0 1 .4 2 1 2.7C7.8 11.5 7 13 7 14.5 7 17 9 19 12 20c3-1 5-3 5-5.5 0-1.5-.8-3-2-3.8.6-.7 1-1.7 1-2.7a4 4 0 0 0-4-4z"/><path d="M12 4v16"/></symbol>
+  <symbol id="ico-shield" viewBox="0 0 24 24"><path d="M12 2l8 4v5c0 5.5-3.8 10.7-8 12-4.2-1.3-8-6.5-8-12V6l8-4z"/><path d="M9 12l2 2 4-4"/></symbol>
+  <symbol id="ico-sunrise" viewBox="0 0 24 24"><path d="M12 2v4"/><path d="M4.93 10.93l2.83 2.83"/><path d="M2 18h4"/><path d="M18 18h4"/><path d="M16.24 13.76l2.83-2.83"/><path d="M18 18a6 6 0 0 0-12 0"/></symbol>
+  <symbol id="ico-sword" viewBox="0 0 24 24"><path d="M14.5 17.5L3 6V3h3l11.5 11.5"/><path d="M13 19l6-6"/><path d="M16 16l4 4"/><path d="M19 21l2-2"/></symbol>
+  <symbol id="ico-prayer" viewBox="0 0 24 24"><path d="M12 3v4"/><path d="M8 9l4-2 4 2"/><path d="M8 9c-1 1-2 3-2 5l2 3"/><path d="M16 9c1 1 2 3 2 5l-2 3"/><path d="M8 17l4 4 4-4"/></symbol>
+  <symbol id="ico-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+  <symbol id="ico-mirror" viewBox="0 0 24 24"><ellipse cx="12" cy="10" rx="7" ry="8"/><path d="M12 18v4"/><path d="M8 22h8"/><path d="M9.5 7c.8-1.5 2-2.5 3.5-2.5"/></symbol>
+  <symbol id="ico-fire" viewBox="0 0 24 24"><path d="M12 22c-2 0-4-1.5-4-4 0-2 2-3 4-3s4 1 4 3c0 2.5-2 4-4 4z"/><path d="M12 15c-1.5-2-5-4-5-8a5 5 0 0 1 10 0c0 4-3.5 6-5 8z"/></symbol>
+  <symbol id="ico-cycle" viewBox="0 0 24 24"><path d="M21.5 2v6h-6"/><path d="M2.5 22v-6h6"/><path d="M21.5 8A10 10 0 0 0 5 5l-2.5 3"/><path d="M2.5 16A10 10 0 0 0 19 19l2.5-3"/></symbol>
+</svg>
+
+<!-- ===== COVER ===== -->
+<section class="cover">
+  <div class="cover-grain"></div>
+  <div class="cover-vignette"></div>
+  <div class="gold-ring"></div>
+  <div class="gold-ring"></div>
+  <div class="gold-ring"></div>
+  <div class="cover-content">
+    <div class="cover-badge">Kingdom Builders AI</div>
+    <div class="cover-art">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 190" aria-label="Kintsugi bowl illustration">
+        <defs>
+          <linearGradient id="kb-gold" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#C9A84C"/><stop offset="100%" stop-color="#8B6914"/></linearGradient>
+          <radialGradient id="kb-glow" cx="50%" cy="40%" r="50%"><stop offset="0%" stop-color="#C9A84C" stop-opacity="0.3"/><stop offset="50%" stop-color="#C9A84C" stop-opacity="0.1"/><stop offset="100%" stop-color="#C9A84C" stop-opacity="0"/></radialGradient>
+          <linearGradient id="kb-clay" x1="50%" y1="0%" x2="50%" y2="100%"><stop offset="0%" stop-color="#5A4428"/><stop offset="100%" stop-color="#3D2E1A"/></linearGradient>
+        </defs>
+        <ellipse cx="100" cy="80" rx="65" ry="55" fill="url(#kb-glow)"/>
+        <!-- Bowl body -->
+        <path d="M35,85 Q35,65 50,55 Q65,45 100,42 Q135,45 150,55 Q165,65 165,85 Q165,110 140,120 Q115,128 100,128 Q85,128 60,120 Q35,110 35,85Z" fill="url(#kb-clay)" opacity="0.85"/>
+        <!-- Bowl rim -->
+        <ellipse cx="100" cy="52" rx="66" ry="14" fill="none" stroke="#5A4428" stroke-width="3" opacity="0.7"/>
+        <!-- Gold crack lines -->
+        <path d="M70,55 L65,75 L72,95 L68,115" fill="none" stroke="url(#kb-gold)" stroke-width="2.5" stroke-linecap="round" opacity="0.9"/>
+        <path d="M100,42 L98,62 L105,80 L100,100 L103,120" fill="none" stroke="url(#kb-gold)" stroke-width="2" stroke-linecap="round" opacity="0.85"/>
+        <path d="M130,55 L135,72 L128,92 L133,112" fill="none" stroke="url(#kb-gold)" stroke-width="2.5" stroke-linecap="round" opacity="0.9"/>
+        <path d="M65,75 L98,62" fill="none" stroke="url(#kb-gold)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+        <path d="M105,80 L135,72" fill="none" stroke="url(#kb-gold)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+        <path d="M72,95 L100,100 L128,92" fill="none" stroke="url(#kb-gold)" stroke-width="1.5" stroke-linecap="round" opacity="0.65"/>
+        <!-- Gold particles rising from cracks -->
+        <circle cx="68" cy="65" r="2" fill="#C9A84C" opacity="0.6"/>
+        <circle cx="100" cy="35" r="2.5" fill="#C9A84C" opacity="0.5"/>
+        <circle cx="132" cy="62" r="1.8" fill="#C9A84C" opacity="0.55"/>
+        <circle cx="95" cy="25" r="1.5" fill="#C9A84C" opacity="0.35"/>
+        <circle cx="105" cy="20" r="2" fill="#C9A84C" opacity="0.3"/>
+        <circle cx="88" cy="48" r="1.2" fill="#C9A84C" opacity="0.45"/>
+        <circle cx="115" cy="45" r="1.5" fill="#C9A84C" opacity="0.4"/>
+        <circle cx="75" cy="50" r="1" fill="#C9A84C" opacity="0.3"/>
+        <circle cx="125" cy="50" r="1.3" fill="#C9A84C" opacity="0.35"/>
+        <!-- Light rays from the gold -->
+        <path d="M100,42 L100,15" fill="none" stroke="#C9A84C" stroke-width="1" opacity="0.2"/>
+        <path d="M70,55 L60,30" fill="none" stroke="#C9A84C" stroke-width="0.8" opacity="0.15"/>
+        <path d="M130,55 L140,30" fill="none" stroke="#C9A84C" stroke-width="0.8" opacity="0.15"/>
+      </svg>
+    </div>
+    <p style="font-family:'Lora',Georgia,serif;font-size:0.78rem;font-style:italic;color:rgba(255,255,255,0.55);text-align:center;margin:0 auto 24px;max-width:360px;line-height:1.5">A bowl broken and repaired with gold. The crack is not hidden. It is the most beautiful part.</p>
+    <div class="cover-series">THE KINTSUGI BOWL SERIES &middot; PART 1</div>
+    <h1>The Wandering<br><em>Eye</em></h1>
+    <p class="cover-sub">Your cracks are where the <em>gold</em> goes.<br>Stop trying to hide the break. Let Him fill it.</p>
+    <p class="cover-author">Kingdom Builders AI</p>
+    <div class="cover-verse">"My grace is sufficient for you, for My strength is made perfect in weakness."<br>2 Corinthians 12:9 NKJV</div>
+  </div>
+</section>
+
+<!-- ===== CHAPTER 1: The Crack That Keeps Returning ===== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-num">Chapter One</div>
+    <h2 class="ch-title">The Crack That Keeps Returning</h2>
+    <p class="ch-sub">You have tried everything. It keeps coming back. Good.</p>
+  </div>
+</div>
+
+<div class="ribbon"><p>"And He said to me, 'My grace is sufficient for you, for My strength is made perfect in weakness.' Therefore most gladly I will rather boast in my infirmities, that the power of Christ may rest upon me." 2 Corinthians 12:9 NKJV</p></div>
+
+<div class="section"><div class="page prose">
+
+<div class="mission"><div class="mission-label">The Premise</div>
+<p>You have tried willpower. You have tried discipline apps and accountability partners and 21 day challenges and motivational podcasts. You have promised yourself <em>this is the last time</em> more times than you can count. And yet here it is again. The same distraction. The same wandering. The same inability to stay focused on the task, the calling, the person, the life God placed directly in front of you.</p>
+<p>What if that recurring crack is not a sign that you are broken beyond repair? What if it is <em>the invitation</em>?</p>
+</div>
+
+<p>There is a craft called Kintsugi. When a bowl shatters, instead of throwing it away or gluing it back together and pretending the break never happened, the artisan fills every crack with gold. The bowl becomes more beautiful because it broke. More valuable because it was repaired with something precious.</p>
+
+<div class="bit">
+  <div class="bit-head">
+    <span class="bit-icon">🏺</span>
+    <span class="bit-tag">THE BIT</span>
+    <span class="bit-title">★★★★★ Review of "Gold Crack Repair Kit"</span>
+  </div>
+  <div class="bit-body">
+    <p class="bit-stage">[Posted by BrokenButMakeItFashion, verified purchaser]</p>
+    <p>"Dropped my favorite bowl. Tried superglue. Tried duct tape. Tried pretending it was a 'design choice.' Then I found kintsugi. Now the bowl is worth more than before I dropped it. My therapist says the same thing applies to me but I am choosing to focus on the bowl for now."</p>
+  </div>
+  <div class="bit-anchor">You keep trying to hide the crack. God keeps trying to fill it with gold. One of you is going to win eventually, and it will not be you.</div>
+</div>
+
+<p>Christian artist Makoto Fujimura, who has spent decades studying this craft, puts it in terms that should stop you cold: <em>"We come to Christ in fragments; He lovingly puts us back together. The scars remain, but like His, they shine."</em> Like His. The scars on the hands of Jesus are not hidden. They are the proof of what He did. And the gold in your cracks is the proof of what He is doing in you right now.</p>
+
+<p>That is what God does with your weakness. He does not remove it. He fills it with Himself.</p>
+
+<div class="insight"><p>The world says: <em>fix your weakness.</em> God says: <em>bring it to Me.</em> The world says: <em>be stronger.</em> God says: <em>let Me be strong where you are not.</em> The crack is not the enemy. The crack is the channel through which His gold flows into your life.</p></div>
+
+<p>Paul begged God three times to remove his "thorn in the flesh." Three times. And God said no. Not because God could not remove it. Because the thorn was the very thing keeping Paul close. The weakness was the anchor. Remove the weakness and Paul might wander. Keep the weakness and Paul keeps coming back to the only source of actual strength.</p>
+
+<div class="gq"><p>"For when I am weak, then I am strong." 2 Corinthians 12:10 NKJV</p></div>
+
+<p>Read that again. Not "when I am weak, I eventually become strong." Not "when I am weak, I work harder until I am strong." When I am weak, <strong>then</strong> I am strong. The weakness IS the mechanism. Not the obstacle to strength. The pathway to it.</p>
+
+<div class="bit">
+  <div class="bit-head">
+    <span class="bit-icon">🚲</span>
+    <span class="bit-tag">THE BIT</span>
+    <span class="bit-title">⚠️ Surgeon General's Warning</span>
+  </div>
+  <div class="bit-body">
+    <p>"Daydreaming about a better life while operating your current one may cause: sudden loss of direction, unexpected collisions with reality, and the bewildering experience of crashing into something you would have easily avoided if you had simply been looking where you were going. Side effects include regret, confusion, and the phrase 'I have no idea how that happened' spoken by a person who absolutely knows how that happened."</p>
+  </div>
+  <div class="bit-anchor">You cannot steer toward what you are not looking at. Every second your eyes wander toward the fantasy is a second nobody is driving your actual life.</div>
+</div>
+
+<div class="dd"><div class="sub">Mental Model</div><h4>The Turned Head Principle</h4>
+<p>You cannot steer toward what you are not looking at. Every moment your eyes wander toward a fantasy job, a fantasy relationship, a fantasy version of your life, you are actively steering away from the assignment God gave you. The crash is not random. It is the natural result of looking at the wrong thing.</p>
+<p>Proverbs 4:25 says, <em>"Let your eyes look straight ahead, and your eyelids look right before you."</em> (NKJV) God is not asking for superhuman focus. He is asking you to stop turning your head.</p>
+</div>
+
+<div class="think"><div class="think-label"><svg><use href="#ico-fire"/></svg> Honest Inventory</div><h4>Where is your head turned right now?</h4>
+ <p class="q-start"><svg><use href="#ico-eye"/></svg> What job, relationship, or lifestyle have you been fantasizing about instead of being present?</p><div class="think-line"></div>
+ <p class="q-start"><svg><use href="#ico-brain"/></svg> When did you first start looking sideways instead of forward?</p><div class="think-line"></div>
+ <p class="q-start"><svg><use href="#ico-target"/></svg> What has that distraction cost you in the work God placed directly in front of you?</p><div class="think-line"></div>
+</div>
+
+<div class="prayer"><div class="prayer-label">Prayer</div>
+<p>Lord, I confess that my eyes have wandered. I have spent more time imagining a different life than investing in the one You gave me. I have lusted after other roads while crashing on the one You set before me. <strong>Forgive me.</strong> Help me see the assignment in front of me as the gift it is. Turn my eyes back to the path. Fill the cracks this wandering has created with Your gold. In Jesus' name, Amen.</p>
+</div>
+
+</div></div>
+
+
+<!-- ===== CHAPTER 2: The Mask Collection ===== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-num">Chapter Two</div>
+    <h2 class="ch-title">The Mask Collection</h2>
+    <p class="ch-sub">The walls you built to protect yourself are the same walls keeping love out.</p>
+  </div>
+</div>
+
+<div class="ribbon"><p>"But if we walk in the light as He is in the light, we have fellowship with one another, and the blood of Jesus Christ His Son cleanses us from all sin." 1 John 1:7 NKJV</p></div>
+
+<div class="section"><div class="page prose">
+
+<p>You have a collection. Not stamps. Not coins. Masks. You have one for work where you pretend to have it all together. One for church where you smile on cue and say "I'm blessed" when someone asks how you are doing. One for social media where your life looks curated and intentional. One for your family where you perform competence even when you feel like you are drowning.</p>
+
+<p>And here is the brutal irony: <strong>the masks you wear to earn love are the very walls preventing you from receiving it.</strong></p>
+
+<div class="insight"><p>You cannot be <em>fully loved</em> if you are not <em>fully known.</em> Every mask you wear is a bet that the real you is not enough. Every performance is an announcement that you believe God made a mistake when He made you. And the love you receive while wearing the mask? It is not for you. It is for the character you are playing.</p></div>
+
+<div class="bit">
+  <div class="bit-head">
+    <span class="bit-icon">🎭</span>
+    <span class="bit-tag">THE BIT</span>
+    <span class="bit-title">Overheard in Every Meeting Ever</span>
+  </div>
+  <div class="bit-body">
+    <div class="bit-line"><span class="bit-who">Boss:</span> <span class="bit-said">"We need to synergize our core competencies around the deliverables."</span></div>
+    <div class="bit-line"><span class="bit-who">You:</span> <span class="bit-said">"Absolutely. One hundred percent."</span></div>
+    <div class="bit-line"><span class="bit-who">Boss:</span> <span class="bit-said">"Great. Can you summarize what I just said?"</span></div>
+    <div class="bit-line"><span class="bit-who">You:</span> <span class="bit-said">[long pause] "...Synergy."</span></div>
+    <div class="bit-line"><span class="bit-who">Boss:</span> <span class="bit-said">"That is not even close."</span></div>
+    <div class="bit-line"><span class="bit-who">You:</span> <span class="bit-said">"It was close enough for the last six meetings."</span></div>
+  </div>
+  <div class="bit-anchor">The mask of competence survives exactly until someone asks a follow-up question. And God always asks a follow-up question.</div>
+</div>
+
+<p>We do this every single day. At work, pretending we understand the project when we do not. In relationships, pretending we are fine when we are falling apart. In prayer, pretending to be holy when we feel hollow.</p>
+
+<div class="bit">
+  <div class="bit-head">
+    <span class="bit-icon">🪞</span>
+    <span class="bit-tag">THE BIT</span>
+    <span class="bit-title">Your Identity Has Exceeded Its API Rate Limit</span>
+  </div>
+  <div class="bit-body">
+    <p class="bit-stage">[System notification]</p>
+    <p>WARNING: You are currently running 4 versions of yourself simultaneously (Work You, Church You, Social Media You, Home You). This exceeds the recommended limit of 1. Performance degradation detected. Memory conflicts found: "Church You" promised to pray more. "Work You" scheduled a meeting during that time. "Social Media You" posted about balance. "Home You" fell asleep on the couch at 7pm. System crash imminent. Would you like to merge all instances into one honest person? <strong>[Yes]</strong> <strong>[Pretend I Did Not See This]</strong></p>
+  </div>
+  <div class="bit-anchor">You cannot be fully loved if you are not fully known. Every mask is a bet that the real you is not enough. It is a bet you will always lose.</div>
+</div>
+
+<div class="viz">
+  <div class="viz-top"><div class="viz-icon"><svg><use href="#ico-shield"/></svg></div><div class="viz-meta"><div class="viz-label">Biblical Truth</div><h4>Vulnerability Is Not Weakness</h4></div></div>
+  <div class="viz-body">
+    <p>David danced before the Lord in his underwear (2 Samuel 6:14). Peter wept openly after denying Christ (Matthew 26:75). Paul publicly listed his weaknesses as credentials (2 Corinthians 11:30). The Bible is filled with people who stopped performing and started being real. And that is exactly when God showed up in power.</p>
+    <p>James 5:16 says, <em>"Confess your trespasses to one another, and pray for one another, that you may be healed."</em> (NKJV) Healing requires confession. Confession requires removing the mask. There is no shortcut.</p>
+  </div>
+</div>
+
+<div class="ba-pair">
+  <div class="ba-card ba-before"><div class="ba-head"><div class="ba-dot"></div> MASK ON</div><div class="ba-body"><ul>
+    <li>"I'm fine, thanks for asking"</li>
+    <li>Performing competence at work</li>
+    <li>Curating a highlight reel online</li>
+    <li>Smiling at church while dying inside</li>
+    <li>Pretending the marriage is great</li>
+  </ul></div></div>
+  <div class="ba-card ba-after"><div class="ba-head"><div class="ba-dot"></div> MASK OFF</div><div class="ba-body"><ul>
+    <li>"I am struggling and I need help"</li>
+    <li>Asking questions you are afraid of</li>
+    <li>Sharing the real story, not the edit</li>
+    <li>Bringing your actual brokenness to prayer</li>
+    <li>Admitting what is not working</li>
+  </ul></div></div>
+</div>
+
+<div class="think"><div class="think-label"><svg><use href="#ico-fire"/></svg> Mask Audit</div><h4>Which masks are you wearing today?</h4>
+ <p class="q-start"><svg><use href="#ico-mask"/></svg> Name one mask you wear at work. What are you hiding behind it?</p><div class="think-line"></div>
+ <p class="q-start"><svg><use href="#ico-heart"/></svg> Name one mask you wear in your closest relationship. What are you afraid they will see?</p><div class="think-line"></div>
+ <p class="q-start"><svg><use href="#ico-prayer"/></svg> Name one mask you wear with God. What would it take to remove it?</p><div class="think-line"></div>
+</div>
+
+<div class="prayer"><div class="prayer-label">Prayer</div>
+<p>Father, I am tired of performing. I am tired of maintaining versions of myself that are not real. I want to be <strong>fully known</strong> so I can be <strong>fully loved.</strong> Give me the courage to drop the mask, even when my hands shake. Help me believe that what You made is enough, even when the world tells me to edit it. I choose to walk in the light. In Jesus' name, Amen.</p>
+</div>
+
+</div></div>
+
+
+<!-- ===== CHAPTER 3: The Worldly Detour ===== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-num">Chapter Three</div>
+    <h2 class="ch-title">The Worldly Detour</h2>
+    <p class="ch-sub">Every shiny road the world offers leads to a painted sky.</p>
+  </div>
+</div>
+
+<div class="ribbon"><p>"Do not love the world or the things in the world. If anyone loves the world, the love of the Father is not in him. For all that is in the world; the lust of the flesh, the lust of the eyes, and the pride of life; is not of the Father but is of the world." 1 John 2:15-16 NKJV</p></div>
+
+<div class="section"><div class="page prose">
+
+<p>The world is an incredible salesman. It knows exactly what to dangle in front of your face. The promotion that will finally make you feel significant. The relationship that will complete you. The purchase that will fill the void. The lifestyle that will prove you have arrived. And every single one of them is a detour away from the road God actually built for you.</p>
+
+<p>Here is the part that stings: <strong>the worldly desires are not bad because they feel good. They are bad because they feel like enough.</strong> They are convincing counterfeits. Close enough to the real thing that you do not notice you have been tricked until you are miles off course.</p>
+
+<div class="bit">
+  <div class="bit-head">
+    <span class="bit-icon">📋</span>
+    <span class="bit-tag">THE BIT</span>
+    <span class="bit-title">Things Lost While "Just Browsing"</span>
+  </div>
+  <div class="bit-body">
+    <p class="bit-stage">[Partial list, updated daily]</p>
+    <p>Three hours of sleep (scrolling). A promotion (daydreaming about a different career during the one that was paying you). One friendship (comparing it to a better one online). Your peace of mind (reading about someone else's vacation). The quiet voice of God (drowned out by 47 open browser tabs). An entire Saturday (you still cannot explain where it went). Your actual calling (traded for something shinier that turned out to be tinfoil).</p>
+  </div>
+  <div class="bit-anchor">Nobody plans to wander off course. You just browse your way there, one harmless click at a time, until you look up and something precious is gone.</div>
+</div>
+
+<div class="dd"><div class="sub">The Reframe</div><h4>Worldly Desires Are Obstacles, Not Destinations</h4>
+<p>We treat the things of this world as finish lines. If I get the corner office. If I get the body. If I get the bank account. If I get the followers. But Jesus said in Matthew 16:26, <em>"For what profit is it to a man if he gains the whole world, and loses his own soul?"</em> (NKJV)</p>
+<p>The corner office is not the destination. The relationship is not the destination. The money is not the destination. They are obstacles dressed as destinations. Speed bumps painted to look like finish lines. And every minute you spend chasing them is a minute you are not investing in the assignment God placed in your hands today.</p>
+</div>
+
+<div class="bit">
+  <div class="bit-head">
+    <span class="bit-icon">🎬</span>
+    <span class="bit-tag">THE BIT</span>
+    <span class="bit-title">★☆☆☆☆ Review of "The Life Everyone Said I Should Want"</span>
+  </div>
+  <div class="bit-body">
+    <p class="bit-stage">[Posted by FinallyWokeUp, verified former participant]</p>
+    <p>"Got the corner office. Got the car. Got the followers. Got the body. Arrived at the finish line and discovered it was painted on the floor. Tried to keep running past it but hit a wall that turned out to be the sky. The sky was plaster. The sunrise was a spotlight. The applause was a laugh track. Zero stars. Would not recommend. Currently looking for the actual door. Will update."</p>
+  </div>
+  <div class="bit-anchor">The most dangerous prison is the one that looks like everything you ever wanted. The real sky is on the other side of the set.</div>
+</div>
+
+<p>That promotion you are obsessing over? It might be paint. That Instagram lifestyle? A backdrop. That relationship you think will fix everything? A set, built to keep you from walking through the door God actually opened for you.</p>
+
+<div class="insight"><p>The most dangerous worldly desire is not the obviously sinful one. It is the <em>almost good</em> one. The one that looks responsible. The one that looks wise. The one that makes perfect sense to everyone around you. The one that is 95% right and 5% not what God asked you to do. That 5% is the detour. And detours that start small end up miles away.</p></div>
+
+<div class="stack">
+<div class="stack-label">The Detour Progression</div>
+<div class="stack-flow">
+<span class="stack-node sn-dark">Desire</span><span class="stack-arr">&rarr;</span>
+<span class="stack-node sn-gold">Fixation</span><span class="stack-arr">&rarr;</span>
+<span class="stack-node sn-red">Pursuit</span><span class="stack-arr">&rarr;</span>
+<span class="stack-node sn-red">Arrival</span><span class="stack-arr">&rarr;</span>
+<span class="stack-node sn-dark">Emptiness</span><span class="stack-arr">&rarr;</span>
+<span class="stack-node sn-green">Return to God</span>
+</div>
+</div>
+
+<p>James 1:14-15 maps it perfectly: <em>"But each one is tempted when he is drawn away by his own desires and enticed. Then, when desire has conceived, it gives birth to sin; and sin, when it is full-grown, brings forth death."</em> (NKJV) The progression is always the same. Desire. Fixation. Pursuit. And then you arrive at the thing you chased and discover it is hollow.</p>
+
+<div class="think"><div class="think-label"><svg><use href="#ico-fire"/></svg> Detour Detection</div><h4>Where have you wandered?</h4>
+ <p class="q-start"><svg><use href="#ico-compass"/></svg> What worldly pursuit has consumed more of your mental energy than your actual calling this month?</p><div class="think-line"></div>
+ <p class="q-start"><svg><use href="#ico-eye"/></svg> What "almost good" goal might actually be a detour away from God's assignment?</p><div class="think-line"></div>
+ <p class="q-start"><svg><use href="#ico-sunrise"/></svg> If you arrived at the thing you are chasing tomorrow, would it bring you closer to God or further away?</p><div class="think-line"></div>
+</div>
+
+<div class="prayer"><div class="prayer-label">Prayer</div>
+<p>God, I confess that I have been chasing painted skies. I have been running toward things this world promised would satisfy me, and I am still empty. <strong>Reorient my compass.</strong> Show me the difference between Your assignments and the world's advertisements. Give me the courage to walk through Your door, even when the set looks more comfortable. In Jesus' name, Amen.</p>
+</div>
+
+</div></div>
+
+
+<!-- ===== CHAPTER 4: The Signal System ===== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-num">Chapter Four</div>
+    <h2 class="ch-title">The Signal System</h2>
+    <p class="ch-sub">Your weakness is not a curse. It is an alarm clock.</p>
+  </div>
+</div>
+
+<div class="ribbon"><p>"And not only that, but we also glory in tribulations, knowing that tribulation produces perseverance; and perseverance, character; and character, hope." Romans 5:3-5 NKJV</p></div>
+
+<div class="section"><div class="page prose">
+
+<p>Every morning, the alarm goes off. Every morning, you hit snooze. Every morning, you promise yourself tomorrow will be different. And every morning, the same song plays. The same weakness. The same pattern. The same failure cycle on repeat.</p>
+
+<p>What if you have been thinking about it wrong? What if the alarm is not the problem? What if the alarm is doing exactly what it was designed to do?</p>
+
+<div class="bit">
+  <div class="bit-head">
+    <span class="bit-icon">⏰</span>
+    <span class="bit-tag">THE BIT</span>
+    <span class="bit-title">Your Recurring Weakness: A Timeline</span>
+  </div>
+  <div class="bit-body">
+    <p>Monday: "I will never do that again." Tuesday: [does it again]. Wednesday: "Okay but THIS time I really mean it." Thursday: [does it again, but with more guilt]. Friday: "Maybe I need a new system." Saturday: [builds elaborate system, feels productive]. Sunday: [does it again, inside the new system]. Monday: "I will never do that again."</p>
+    <p style="margin-top:8px;font-style:italic;color:var(--steel-light);font-size:0.85rem">[This loop has been running for approximately your entire adult life.]</p>
+  </div>
+  <div class="bit-anchor">You keep trying to change the alarm. God is trying to change the sleeper. The loop breaks when you turn toward Him, not when the weakness disappears.</div>
+</div>
+
+<div class="viz">
+  <div class="viz-top"><div class="viz-icon"><svg><use href="#ico-bell"/></svg></div><div class="viz-meta"><div class="viz-label">Reframe</div><h4>Weakness as Signal, Not Sentence</h4></div></div>
+  <div class="viz-body">
+    <p>Your weakness is a signal. It is telling you something. Not "you are broken." Not "you are hopeless." It is telling you: <strong>you are trying to do this alone, and you were never designed to.</strong></p>
+    <p>Psalm 34:18 says, <em>"The Lord is near to those who have a broken heart, and saves such as have a contrite spirit."</em> (NKJV) Nearness to God is not the reward for overcoming weakness. Weakness is the mechanism that draws you near.</p>
+    <p>The signal system works like this: weakness fires, you feel the pull, and instead of white-knuckling your way through it or spiraling into shame, you use it as a prompt to pray. The weakness becomes the trigger for the very thing that heals you.</p>
+  </div>
+</div>
+
+<div class="dd"><div class="sub">Mental Model</div><h4>The Weakness-to-Prayer Pipeline</h4>
+<p>Most people treat weakness like this: feel it, fight it, fail, feel shame, try harder, repeat. That cycle has a 100% failure rate over a long enough timeline because it relies entirely on you.</p>
+<p>The biblical model inverts it: feel it, recognize it as a signal, pray, let God's strength fill the gap, walk forward. The weakness does not go away. You just stop trying to carry it alone.</p>
+<p>Philippians 4:13: <em>"I can do all things through Christ who strengthens me."</em> (NKJV) Not "I can do all things through a better morning routine who strengthens me." Through Christ. Through surrender. Through the admission that you need Him.</p>
+</div>
+
+<div class="ba-pair">
+  <div class="ba-card ba-before"><div class="ba-head"><div class="ba-dot"></div> WORLD'S APPROACH</div><div class="ba-body"><ul>
+    <li>Identify weakness</li>
+    <li>Apply willpower</li>
+    <li>Build discipline habits</li>
+    <li>Track streaks</li>
+    <li>Shame yourself when you fail</li>
+    <li>Try harder next time</li>
+  </ul></div></div>
+  <div class="ba-card ba-after"><div class="ba-head"><div class="ba-dot"></div> GOD'S APPROACH</div><div class="ba-body"><ul>
+    <li>Feel the weakness</li>
+    <li>Recognize the signal</li>
+    <li>Turn to God in prayer</li>
+    <li>Receive His strength</li>
+    <li>Walk forward in grace</li>
+    <li>Thank Him for the crack</li>
+  </ul></div></div>
+</div>
+
+<div class="inst"><p><strong>At work:</strong> When you feel that pull to browse job listings, scroll social media, or daydream about being somewhere else, treat it as the alarm clock. It is not telling you to escape. It is telling you to pray. Right there. At your desk. "Lord, I am wandering. Bring me back." Five seconds. That is the entire pipeline.</p></div>
+
+<div class="think"><div class="think-label"><svg><use href="#ico-fire"/></svg> Signal Mapping</div><h4>What are your alarm clocks telling you?</h4>
+ <p class="q-start"><svg><use href="#ico-bell"/></svg> Name your most recurring weakness. How often does it fire?</p><div class="think-line"></div>
+ <p class="q-start"><svg><use href="#ico-cycle"/></svg> What have you been doing when it fires? (Fighting, ignoring, indulging?)</p><div class="think-line"></div>
+ <p class="q-start"><svg><use href="#ico-prayer"/></svg> What if, starting today, every time it fired you prayed instead?</p><div class="think-line"></div>
+</div>
+
+<div class="prayer"><div class="prayer-label">Prayer</div>
+<p>Lord, I have been treating my weaknesses as enemies when You designed them as alarms. I have been hitting snooze on the very signal You sent to draw me closer. <strong>Change my response.</strong> When the weakness fires, let my first instinct be prayer, not performance. Let every crack be a doorway to Your presence. In Jesus' name, Amen.</p>
+</div>
+
+</div></div>
+
+
+<!-- ===== CHAPTER 5: Love the Crack ===== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-num">Chapter Five</div>
+    <h2 class="ch-title">Love the Crack</h2>
+    <p class="ch-sub">The radical act is not fixing yourself. It is thanking God for the break.</p>
+  </div>
+</div>
+
+<div class="ribbon"><p>"Therefore I take pleasure in infirmities, in reproaches, in needs, in persecutions, in distresses, for Christ's sake. For when I am weak, then I am strong." 2 Corinthians 12:10 NKJV</p></div>
+
+<div class="section"><div class="page prose">
+
+<p>This is where the playbook gets uncomfortable. Everything up to this point has been about understanding your weakness differently. This chapter asks you to do something the world will think is insane: <strong>love it.</strong></p>
+
+<p>Not tolerate it. Not accept it. Love it. Be grateful for it. Thank God for it. Because the crack in the bowl is the reason the gold is there at all.</p>
+
+<div class="bit">
+  <div class="bit-head">
+    <span class="bit-icon">🩹</span>
+    <span class="bit-tag">THE BIT</span>
+    <span class="bit-title">Overheard in the Denial Ward</span>
+  </div>
+  <div class="bit-body">
+    <div class="bit-line"><span class="bit-who">Doctor:</span> <span class="bit-said">"Sir, your life is visibly falling apart."</span></div>
+    <div class="bit-line"><span class="bit-who">Patient:</span> <span class="bit-said">"I'm fine."</span></div>
+    <div class="bit-line"><span class="bit-who">Doctor:</span> <span class="bit-said">"Your marriage, your health, and your calling are all on fire."</span></div>
+    <div class="bit-line"><span class="bit-who">Patient:</span> <span class="bit-said">"That's just a flesh wound."</span></div>
+    <div class="bit-line"><span class="bit-who">Doctor:</span> <span class="bit-said">"You have no arms."</span></div>
+    <div class="bit-line"><span class="bit-who">Patient:</span> <span class="bit-said">"I never used them anyway."</span></div>
+  </div>
+  <div class="bit-anchor">Gold cannot fill a crack you refuse to acknowledge. The first step is not strength. It is honesty.</div>
+</div>
+
+<div class="insight"><p>Paul did not just accept his weakness. He <em>took pleasure</em> in it. He <em>boasted</em> in it. He said "most gladly I will rather boast in my infirmities." That is not resignation. That is not coping. That is a man who discovered something the world has not figured out yet: <em>the crack is the most valuable part of the bowl.</em></p></div>
+
+<div class="bit">
+  <div class="bit-head">
+    <span class="bit-icon">📖</span>
+    <span class="bit-tag">THE BIT</span>
+    <span class="bit-title">God's Dictionary vs. Yours</span>
+  </div>
+  <div class="bit-body">
+    <p class="bit-stage">[Selected entries, heavily annotated]</p>
+    <p><strong>Weakness</strong> — <em>Your definition:</em> Failure. Deficiency. The thing to fix before anyone notices. <em>God's definition:</em> The exact address where My power lives. Please stop remodeling.</p>
+    <p><strong>Broken</strong> — <em>Your definition:</em> Beyond repair. <em>God's definition:</em> Ready for gold.</p>
+    <p><strong>Enough</strong> — <em>Your definition:</em> What you will be after one more achievement. <em>God's definition:</em> What you were before you started keeping score.</p>
+  </div>
+  <div class="bit-anchor">You keep using the word "weakness." It does not mean what you think it means.</div>
+</div>
+
+<div class="viz">
+  <div class="viz-top"><div class="viz-icon"><svg><use href="#ico-crown"/></svg></div><div class="viz-meta"><div class="viz-label">Redefining Weakness</div><h4>Three Mental Models That Change Everything</h4></div></div>
+  <div class="viz-body">
+    <p><strong>1. Weakness as Strength.</strong> Not future strength. Not potential strength. Present, active, immediate strength. The moment you acknowledge your weakness to God, His power fills the gap. You do not have to get better first. You have to get honest first. (2 Corinthians 12:9)</p>
+    <p><strong>2. Worldly Lusts as Obstacles, Not Destinations.</strong> Every desire the world offers is a speed bump dressed as a finish line. The car, the title, the body, the followers. They are not where you are going. They are what you have to drive past to get where you are going. (1 John 2:17)</p>
+    <p><strong>3. Masks as Walls Against Love.</strong> Every persona you perform is a wall between you and the love you actually need. God does not love your representative. He loves you. The real, cracked, imperfect, wandering-eyed you. But you have to let Him see you to let Him love you. (1 John 1:7)</p>
+  </div>
+</div>
+
+<div class="breathe">
+  <div class="breathe-ring"></div>
+  <div class="breathe-ring"></div>
+  <div class="breathe-ring"></div>
+  <div class="breathe-content">
+    <div class="breathe-label">Pause</div>
+    <h4>Before you continue, sit with this:</h4>
+    <p>The thing you are most ashamed of might be the thing God wants to use the most. The crack you keep trying to hide? That is exactly where the gold goes.</p>
+  </div>
+</div>
+
+<div class="dd"><div class="sub">The Practice</div><h4>How to Love the Crack</h4>
+<p>This is not abstract theology. This is a daily practice. When the weakness fires, instead of the old cycle of fight, fail, and shame, try this:</p>
+<p><strong>Step 1: Name it.</strong> "I am feeling pulled toward [the distraction]." Not in shame. In honesty.</p>
+<p><strong>Step 2: Thank God for the signal.</strong> "Lord, thank You that this weakness reminds me I need You."</p>
+<p><strong>Step 3: Ask for His strength.</strong> "Fill this crack with Your gold. I cannot do this alone."</p>
+<p><strong>Step 4: Walk forward.</strong> Not in your strength. In His. One step at a time.</p>
+</div>
+
+<div class="think"><div class="think-label"><svg><use href="#ico-fire"/></svg> The Gratitude Shift</div><h4>Can you thank God for your weakness?</h4>
+ <p class="q-start"><svg><use href="#ico-heart"/></svg> What is one weakness you have never thanked God for? Write a one sentence prayer of gratitude for it.</p><div class="think-line"></div>
+ <p class="q-start"><svg><use href="#ico-crown"/></svg> How has this specific weakness drawn you closer to God in the past, even if you did not realize it at the time?</p><div class="think-line"></div>
+ <p class="q-start"><svg><use href="#ico-shield"/></svg> If God never removes this weakness, can you still trust that His grace is sufficient? What changes if you say yes?</p><div class="think-line"></div>
+</div>
+
+<div class="prayer"><div class="prayer-label">Prayer</div>
+<p>Father, this is hard. You are asking me to love the thing I have spent my whole life fighting. But I trust You. I trust that Your strength is made perfect in weakness. I trust that the crack is where the gold goes. <strong>I choose gratitude.</strong> Thank You for my weakness. Thank You for every failure that sent me running back to You. Thank You for being close to the brokenhearted. I am brokenhearted, Lord. Be close. In Jesus' name, Amen.</p>
+</div>
+
+</div></div>
+
+
+<!-- ===== CHAPTER 6: The Golden Bowl ===== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-num">Chapter Six</div>
+    <h2 class="ch-title">The Golden Bowl</h2>
+    <p class="ch-sub">You were never meant to be unbroken. You were meant to be filled.</p>
+  </div>
+</div>
+
+<div class="ribbon"><p>"The word which came to Jeremiah from the Lord, saying: 'Arise and go down to the potter's house, and there I will cause you to hear My words.' Then I went down to the potter's house, and there he was, making something at the wheel. And the vessel that he made of clay was marred in the hand of the potter; so he made it again into another vessel, as it seemed good to the potter to make." Jeremiah 18:1-4 NKJV</p></div>
+
+<div class="section"><div class="page prose">
+
+<p>God told Jeremiah to go to the potter's house. Not to a palace. Not to a temple. To a workshop where a man was making something out of clay. And the vessel cracked. It fell apart in the potter's hands. And what did the potter do? Did he throw the clay away? Did he curse it for being defective? No. He made it again. He reshaped it into something new.</p>
+
+<p>You are the clay. God is the potter. And <strong>the crack did not ruin the vessel. The crack gave the potter a reason to reshape it.</strong></p>
+
+<div class="insight"><p>In the art of Kintsugi, a broken bowl repaired with gold is worth more than a bowl that never broke. Not despite the cracks. <em>Because of them.</em> The gold is the proof that something shattered and something was restored. Your testimony is not the story of a perfect life. Your testimony is the gold in the cracks. It is the evidence that God showed up where you fell apart.</p></div>
+
+<p>Think about every testimony you have ever heard that moved you. Not one of them started with "Everything was great and it stayed great." Every single one started with a break. A failure. A weakness that brought someone to their knees. And then God. And then gold.</p>
+
+<div class="adventure">
+  <div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-bowl"/></svg></div><div class="adv-head-text"><div class="adv-head-label">Your Story</div><div class="adv-head-title">From Crack to Gold</div></div></div>
+  <div class="adv-step"><div class="step-c"><p><strong>The Break:</strong> You have a weakness that keeps returning. At work, you cannot stay focused. In relationships, you keep reaching for what is not yours. In your thought life, you wander to places God did not send you.</p></div></div>
+  <div class="adv-step"><div class="step-c"><p><strong>The Old Response:</strong> You fought it with willpower. You hid it with masks. You chased worldly alternatives. You told everyone "I'm fine" while the cracks spread wider.</p></div></div>
+  <div class="adv-step"><div class="step-c"><p><strong>The Signal:</strong> The weakness fired again. But this time, instead of fighting or hiding, you recognized it for what it was. An alarm. A reminder. An invitation to bring this to God.</p></div></div>
+  <div class="adv-step"><div class="step-c"><p><strong>The Surrender:</strong> You prayed. Not "God, take this away." But "God, be strong where I am weak. Fill this crack with Your gold."</p></div></div>
+  <div class="adv-step adv-result-good"><div class="step-c"><p><strong>The Gold:</strong> The weakness did not disappear. But it stopped controlling you. It became the very thing that keeps you close to God. Every time it fires, you pray. Every time you pray, He fills. Every crack becomes gold.</p></div></div>
+</div>
+
+<div class="gq"><p>"But we have this treasure in earthen vessels, that the excellence of the power may be of God and not of us." 2 Corinthians 4:7 NKJV</p></div>
+
+<p>You are an earthen vessel. Clay. Fragile. Cracked. And inside you is a treasure that does not come from you. It comes from God. The cracks are not a defect. They are <strong>how the light gets out.</strong> People do not see God's power in your perfect performance. They see it in your honest weakness. They see it when you say "I cannot do this" and somehow do it anyway. That is the testimony. That is the gold.</p>
+
+<div class="stack">
+<div class="stack-label">The Kintsugi Transformation</div>
+<div class="stack-flow">
+<span class="stack-node sn-dark">Broken</span><span class="stack-arr">&rarr;</span>
+<span class="stack-node sn-red">Honest</span><span class="stack-arr">&rarr;</span>
+<span class="stack-node sn-gold">Surrendered</span><span class="stack-arr">&rarr;</span>
+<span class="stack-node sn-green">Filled</span><span class="stack-arr">&rarr;</span>
+<span class="stack-node sn-gold">Golden</span>
+</div>
+</div>
+
+<div class="inst"><p><strong>The daily practice:</strong> Weakness fires. You name it honestly. You thank God for the signal. You ask Him to fill the crack. You walk forward in His strength. That is the entire playbook. Not complex. Not sophisticated. Just honest, repeated, daily surrender. And over time, a bowl covered in gold.</p></div>
+
+<div class="think"><div class="think-label"><svg><use href="#ico-fire"/></svg> The Final Test</div><h4>Can you answer these without looking back?</h4>
+ <p class="q-start"><svg><use href="#ico-bowl"/></svg> What is the difference between fighting a weakness and surrendering it?</p><div class="think-line"></div>
+ <p class="q-start"><svg><use href="#ico-eye"/></svg> What does it mean that your weakness is a signal, not a sentence?</p><div class="think-line"></div>
+ <p class="q-start"><svg><use href="#ico-mask"/></svg> Why do masks prevent you from receiving the love you actually want?</p><div class="think-line"></div>
+ <p class="q-start"><svg><use href="#ico-heart"/></svg> Can you name one crack in your life that God has already started filling with gold?</p><div class="think-line"></div>
+</div>
+
+</div></div>
+
+<div class="prompt"><div class="prompt-head">THE KINTSUGI BOWL. OPERATING PROMPT</div><div class="prompt-body"><strong>I just read "The Kintsugi Bowl: The Wandering Eye."</strong> The model: my weaknesses are not defects to fix but cracks that God fills with gold. Fighting weakness with willpower fails. Surrendering weakness to God transforms it into the very thing that keeps me close to Him.<br><br><strong>My biggest recurring weakness:</strong> [name it]<br><strong>What I have been doing about it:</strong> [fighting / hiding / indulging / ignoring]<br><strong>What mask I wear to hide it:</strong> [name the mask]<br><strong>What worldly detour it leads me toward:</strong> [name the shiny road]<br><br>Help me build my Signal System. When this weakness fires, walk me through the four steps: Name it, Thank God for the signal, Ask for His strength, Walk forward. Help me identify the gold already in my cracks, the testimony already forming in my weakness. When I start performing or pretending, call me out.<br><br><strong>Do not help me fight harder. Help me surrender deeper.</strong></div></div>
+
+<section class="finale">
+  <h2>Your cracks are where<br><span>the gold goes.</span></h2>
+  <p>Stop hiding the break. Stop fighting it. Stop performing wholeness you do not have. Bring every shattered piece to the Potter and let Him fill it with something more valuable than perfection: Himself.</p>
+  <p style="margin-top:28px;font-style:normal;font-family:'Poppins',sans-serif;font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;color:rgba(201,168,76,0.25)">The bowl is not ruined. It is being made golden.</p>
+</section>
+
+<footer>
+  <p>"But He knows the way that I take; when He has tested me, I shall come forth as gold." Job 23:10 NKJV</p>
+  <div class="brand">KingdomBuilders AI</div>
+  <p style="margin-top:12px">kingdombuilders.ai</p>
+</footer>
+
+<div style="text-align:center;padding:18px 24px 28px;background:#060402;border-top:1px solid rgba(201,168,76,0.06);font-family:'Poppins',sans-serif;font-size:0.6rem;color:rgba(255,255,255,0.2);line-height:1.6" class="no-print">
+  To save as PDF: Open in browser &rarr; File &rarr; Print &rarr; "Save as PDF" &middot; Works on desktop and mobile.
+</div>
+
+<div id="read-progress"></div>
+<div id="chapter-pill">Cover</div>
+
+<script>
+// Scroll reveal
+const revealObs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.classList.add('visible');revealObs.unobserve(el.target)}})},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.mission,.viz,.think,.insight,.gq,.adventure,.dd,.breathe,.prayer,.prompt,.stack,.inst,.scene,.bit').forEach(el=>{el.classList.add('reveal');revealObs.observe(el)});
+document.querySelectorAll('.ba-pair').forEach(el=>{el.classList.add('stagger-children');revealObs.observe(el)});
+
+// Progress bar
+const bar=document.getElementById('read-progress');
+window.addEventListener('scroll',()=>{const p=(window.scrollY/(document.documentElement.scrollHeight-window.innerHeight))*100;bar.style.width=Math.min(100,p)+'%'},{passive:true});
+
+// Chapter pill
+const pill=document.getElementById('chapter-pill');
+const chEls=[{el:document.querySelector('.cover'),label:'Cover'},...Array.from(document.querySelectorAll('.ch-head')).map((el,i)=>({el,label:el.querySelector('.ch-num')?.textContent?.trim()||('Ch '+(i+1))}))].filter(c=>c.el);
+let pillHide;
+const pillObs=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){const c=chEls.find(x=>x.el===en.target);if(c){pill.textContent=c.label;pill.classList.add('show');clearTimeout(pillHide);pillHide=setTimeout(()=>pill.classList.remove('show'),2400)}}})},{threshold:0.5});
+chEls.forEach(c=>pillObs.observe(c.el));
+
+// Think line click glow
+document.querySelectorAll('.think-line').forEach(l=>{l.addEventListener('click',()=>{l.style.borderBottomColor='rgba(201,168,76,0.7)';setTimeout(()=>{l.style.borderBottomColor=''},1800)})});
+</script>
+</body>
+</html>
