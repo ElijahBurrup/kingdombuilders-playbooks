@@ -198,11 +198,28 @@ usage pattern.
 
 ## III. NARRATIVE SYSTEMS
 
-### 20. The Scene Block
-**What it is:** A narrative story passage set inside a warm-toned box.
-**How it works:** Tells the parable — the actual story of the animal characters. Labeled with the scene name and an icon. This is where the metaphor lives and breathes.
-**Elements:** `scene`, `scene-label`
-**Used in:** ~30 playbooks
+### 20. The Bit (replaces Scene Block)
+**What it is:** A short comedy break that locks in a teaching point through laughter. Named after the comedy term for a short routine.
+**How it works:** A rounded, playful box with a distinct visual identity — uses the **Baloo 2** font for the header, a tilted comedy icon (rotating theater mask, rubber duck, megaphone, etc.), and a punchy title. The humor is modern, absurdist, and succinct (3-8 lines max). The comedy format varies per Bit — fake reviews, fake texts, overheard conversations, fake headlines, one-liners, internal monologues. Every Bit ends with a single-line teaching anchor (`bit-anchor`) that connects the joke to the lesson. The goal: make the reader laugh so hard the concept becomes emotionally unforgettable.
+**Elements:** `bit`, `bit-head`, `bit-icon`, `bit-tag`, `bit-title`, `bit-body`, `bit-anchor`
+**Sub-formats (mix and match per playbook):**
+- **The Overheard** — fake conversation someone overhears (2-4 rapid lines)
+- **The Review** — fake 1-star or 5-star product/service review
+- **The Headline** — fake breaking news banner
+- **The Text Thread** — fake text message exchange (2-4 bubbles)
+- **The Monologue** — internal thoughts vs. what was actually said
+- **The Warning Label** — fake product warning or disclaimer
+- **Classic Setup/Punchline** — traditional joke structure
+**Design rules:**
+- Max 8 lines of comedy content (brevity is the soul of wit)
+- One Bit per chapter (same frequency as old scene blocks)
+- The `bit-anchor` line must connect humor to the chapter's core teaching
+- Humor should be clean, modern, slightly absurdist — think McSweeney's, @dadsaysjokes, modern standup
+- Never explain the joke. If it needs explaining, rewrite it.
+- The Bit should make sense even if the reader skips it, but reward those who read it
+**CSS class:** `.bit` — visually distinct from all other boxes: rounded corners (20px), light warm background with subtle polka-dot or confetti texture, dashed playful border, Baloo 2 header font
+**Font:** Google Fonts `Baloo 2` for `.bit-tag` and `.bit-title` (bubbly, round, reads as playful). Body stays in the playbook's standard font for readability.
+**Used in:** All new playbooks going forward (MANDATORY, replaces `.scene`)
 
 ### 21. The Adventure Sequence
 **What it is:** A multi-step real-world application scenario.
@@ -524,7 +541,7 @@ usage pattern.
 | Installation Prompt | 36/36 | **MANDATORY** |
 | Reflection Well (think) | 36/36 | Universal |
 | The Cast (characters) | ~32/36 | **MANDATORY** |
-| Scene Block | ~30/36 | Near-universal |
+| The Bit (was Scene Block) | ~30/36 | **MANDATORY** |
 | Grand Quote | ~30/36 | Near-universal |
 | Before/After Split | ~30/36 | Near-universal |
 | Final Test | ~30/36 | **MANDATORY** |
