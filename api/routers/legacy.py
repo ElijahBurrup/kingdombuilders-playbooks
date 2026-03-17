@@ -251,6 +251,8 @@ LANDING_ROUTES: dict[str, str] = {
     "/theliftedceiling": "the-lifted-ceiling.html",
     "/thenewearning": "the-new-earning.html",
     "/thethreetables": "the-three-tables.html",
+    "/thekintsugibow": "the-kintsugi-bowl.html",
+    "/theunfinishedsong": "the-unfinished-song.html",
 }
 
 # ============================================================================
@@ -323,6 +325,8 @@ SLUG_TO_FILE: dict[str, str] = {
     "the-lifted-ceiling": "The_Lifted_Ceiling.html",
     "the-new-earning": "The_New_Earning.html",
     "the-three-tables": "The_Three_Tables.html",
+    "the-kintsugi-bowl": "The_Kintsugi_Bowl_The_Wandering_Eye.html",
+    "the-unfinished-song": "The_Unfinished_Song.html",
 }
 
 

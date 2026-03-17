@@ -83,6 +83,8 @@ const PLAYBOOKS = [
   { title: "The Lifted Ceiling", slug: "the-lifted-ceiling", tag: "Finance", free: true },
   { title: "The New Earning", slug: "the-new-earning", tag: "Finance" },
   { title: "The Three Tables", slug: "the-three-tables", tag: "Faith" },
+  { title: "The Kintsugi Bowl", slug: "the-kintsugi-bowl", tag: "Faith" },
+  { title: "The Unfinished Song", slug: "the-unfinished-song", tag: "Health" },
 ];
 
 const FREE_PLAYBOOKS = PLAYBOOKS.filter((pb) => pb.free);
