@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Ant Network. How Blockchain Actually Works</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+<title>The Ant Network. How Trust Actually Works</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --dirt:#4A3424;--dirt-dark:#2D1F14;--dirt-mid:#6B4E38;--dirt-light:#8B6E54;--dirt-pale:#B89878;
@@ -19,7 +19,8 @@
   --shadow-mid:0 4px 28px rgba(74,52,36,0.12);
   --glow-green:rgba(74,128,48,0.15);
   --glow-amber:rgba(212,140,32,0.15);
-  --code-bg:#1a1a1a;--code-text:#e0e0e0;--code-comment:#6a9955;--code-keyword:#569cd6;
+  --before-bg:#FFF5EE;--before-border:#E09060;--before-text:#6A2800;
+  --after-bg:#EEF8F2;--after-border:#70B888;--after-text:#1A4A28;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;font-size:18px}
@@ -31,7 +32,7 @@ h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
 .prose p:last-child{margin-bottom:0}
 .prose strong{color:var(--dirt);font-weight:700}
 .prose em{color:var(--amber);font-style:normal;font-weight:600}
-.prose h2{font-size:1.35rem;color:var(--dirt);margin:40px 0 16px;letter-spacing:-0.01em;display:flex;align-items:center;gap:10px}
+.prose h2{font-size:1.35rem;color:var(--dirt);margin:40px 0 16px;letter-spacing:-0.01em}
 
 /* ===== COVER ===== */
 .cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;
@@ -55,13 +56,16 @@ h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
 .ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.02;mix-blend-mode:overlay;pointer-events:none}
 .cover-content{position:relative;z-index:2;padding:48px 24px}
 .cover-badge{display:inline-block;padding:6px 22px;border:1px solid rgba(212,140,32,0.3);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.67rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--amber-glow);margin-bottom:36px}
-.cover-icon{font-size:3.5rem;margin-bottom:16px;display:block;animation:icon-pulse 3s ease-in-out infinite}
-@keyframes icon-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.cover-icon{font-size:3.5rem;margin-bottom:16px;display:block}
 .cover h1{font-family:'Nunito',sans-serif;font-size:clamp(2.2rem,6vw,3.8rem);font-weight:900;color:var(--white);line-height:1.08;margin-bottom:4px}
-.cover h1 strong{font-weight:900;color:var(--amber-glow);display:block;font-size:clamp(2.6rem,7vw,4.4rem)}
+.cover h1 strong{font-weight:900;color:var(--amber-glow);display:block;font-size:clamp(1.4rem,4vw,2.2rem);margin-top:8px}
+.cover-art{margin:0 auto 24px;animation:cover-breathe 4s ease-in-out infinite}
+.cover-art svg{width:200px;height:190px;filter:drop-shadow(0 0 20px rgba(212,140,32,0.3)) drop-shadow(0 0 50px rgba(74,128,48,0.15))}
+@keyframes cover-breathe{0%,100%{transform:scale(1);opacity:0.9}50%{transform:scale(1.04);opacity:1}}
 .cover-tagline{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.5);margin-top:24px;line-height:1.75}
 .cover-tagline em{color:var(--amber-pale);font-style:normal;font-weight:600}
 .cover-sub{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-top:12px}
+.cover-author{font-family:'Nunito',sans-serif;font-size:0.55rem;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.12);margin-top:48px}
 
 /* ===== CHAPTER HEADS ===== */
 .ch-head{background:linear-gradient(170deg,var(--dirt-dark),var(--dirt));padding:72px 24px 52px;position:relative;overflow:hidden}
@@ -71,32 +75,12 @@ h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
 .ch-title{font-family:'Nunito',sans-serif;font-size:2.1rem;font-weight:900;color:var(--white);line-height:1.15;letter-spacing:-0.02em;margin-bottom:10px}
 .ch-sub{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.4);line-height:1.6}
 
-/* Character cards */
-.char-grid{display:grid;gap:24px;margin:40px 0}
-@media(min-width:640px){.char-grid{grid-template-columns:1fr 1fr}}
-.char-card{background:var(--white);border:2px solid var(--sand-deep);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft);transition:all 0.3s ease}
-.char-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-mid)}
-.char-head{background:linear-gradient(135deg,var(--amber-soft),rgba(212,140,32,0.03));padding:18px 20px;border-bottom:1px solid var(--sand-deep);display:flex;align-items:center;gap:14px}
-.char-emoji{font-size:2rem;line-height:1}
-.char-info{flex:1}
-.char-name{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;color:var(--dirt);line-height:1.25}
-.char-title{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-top:2px}
-.char-body{padding:20px}
-.char-body p{font-size:0.92rem;color:var(--text-light);line-height:1.75;margin:0}
-
-/* Scenarios */
+/* Scenes */
 .scene{background:linear-gradient(135deg,var(--sand-warm),var(--sand));border:1px solid var(--sand-deep);border-radius:var(--radius);padding:28px;margin:32px 0;box-shadow:var(--shadow-soft)}
-.scene-label{font-family:'Nunito',sans-serif;font-size:0.68rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--amber);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.scene-label{font-family:'Nunito',sans-serif;font-size:0.68rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--amber);margin-bottom:16px}
 .scene h4{font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:800;color:var(--dirt-dark);margin-bottom:14px;line-height:1.3}
 .scene p{font-size:0.95rem;color:var(--text);line-height:1.8;margin-bottom:12px}
 .scene p:last-child{margin-bottom:0}
-
-/* Code blocks */
-.code-block{background:var(--code-bg);border-radius:12px;padding:24px;margin:24px 0;overflow-x:auto;border:1px solid #333}
-.code-label{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--amber-glow);margin-bottom:12px}
-.code-block code{font-family:'Fira Code',monospace;font-size:0.85rem;line-height:1.6;color:var(--code-text);display:block}
-.code-comment{color:var(--code-comment)}
-.code-keyword{color:var(--code-keyword)}
 
 /* Visualizations */
 .viz{background:linear-gradient(135deg,#0F1F0A,#1A3312);border-radius:var(--radius);padding:2px;margin:48px 0;box-shadow:var(--shadow-mid);position:relative;overflow:hidden}
@@ -109,35 +93,30 @@ h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
 .viz-meta h4{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:800;color:var(--white);line-height:1.25}
 .viz-body p{font-size:0.95rem;color:rgba(255,255,255,0.75);line-height:1.85;margin-bottom:18px}
 .viz-body p:last-of-type{margin-bottom:0}
-.viz-body strong,.viz-lesson strong{color:rgba(255,255,255,0.95);font-weight:700}
-.viz-body em,.viz-lesson em{color:var(--amber-pale);font-style:normal;font-weight:600}
+.viz-body strong{color:rgba(255,255,255,0.95);font-weight:700}
+.viz-body em{color:var(--amber-pale);font-style:normal;font-weight:600}
 .viz-lesson{background:rgba(74,128,48,0.1);border:1px solid rgba(74,128,48,0.25);border-radius:12px;padding:20px;margin-top:24px;font-size:0.95rem;font-style:italic;color:var(--leaf-pale);line-height:1.8}
-
-/* Network diagram */
-.network{background:var(--white);border:2px solid var(--sand-deep);border-radius:var(--radius);padding:32px;margin:32px 0;box-shadow:var(--shadow-soft)}
-.network-title{font-family:'Nunito',sans-serif;font-size:0.75rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:24px;text-align:center}
-.network-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
-.network-node{background:linear-gradient(135deg,var(--amber-soft),rgba(212,140,32,0.03));border:2px solid var(--amber);border-radius:12px;padding:16px;text-align:center}
-.network-node-icon{font-size:1.8rem;display:block;margin-bottom:8px}
-.network-node-name{font-family:'Nunito',sans-serif;font-size:0.8rem;font-weight:700;color:var(--dirt)}
-.network-arrow{text-align:center;font-size:1.5rem;color:var(--amber);margin:12px 0}
 
 /* Compare boxes */
 .compare{display:grid;gap:20px;margin:36px 0}
 @media(min-width:640px){.compare{grid-template-columns:1fr 1fr}}
 .compare-box{border-radius:var(--radius);padding:24px;box-shadow:var(--shadow-soft)}
-.compare-old{background:#FFF5EE;border:2px solid #E09060}
-.compare-new{background:#EEF8F2;border:2px solid #70B888}
-.compare-label{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.compare-old .compare-label{color:#6A2800}
-.compare-new .compare-label{color:#1A4A28}
-.compare-box p{font-size:0.92rem;line-height:1.75;margin:0}
-.compare-old p{color:#6A2800}
-.compare-new p{color:#1A4A28}
+.compare-old{background:var(--before-bg);border:2px solid var(--before-border)}
+.compare-new{background:var(--after-bg);border:2px solid var(--after-border)}
+.compare-label{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px}
+.compare-old .compare-label{color:var(--before-text)}
+.compare-new .compare-label{color:var(--after-text)}
+.compare-box h4{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;margin-bottom:10px}
+.compare-old h4{color:var(--before-text)}
+.compare-new h4{color:var(--after-text)}
+.compare-box p{font-size:0.92rem;line-height:1.75;margin:0 0 8px}
+.compare-old p{color:var(--before-text)}
+.compare-new p{color:var(--after-text)}
+.compare-box p:last-child{margin-bottom:0}
 
 /* Grand quotes */
 .gq{background:linear-gradient(135deg,var(--dirt-dark),var(--dirt-mid));border-radius:var(--radius);padding:40px 32px;margin:48px 0;box-shadow:var(--shadow-mid);position:relative;overflow:hidden}
-.gq::before{content:'"';position:absolute;top:-20px;left:10px;font-size:12rem;font-family:Georgia,serif;color:rgba(255,255,255,0.04);line-height:1;pointer-events:none}
+.gq::before{content:'\201C';position:absolute;top:-20px;left:10px;font-size:12rem;font-family:Georgia,serif;color:rgba(255,255,255,0.04);line-height:1;pointer-events:none}
 .gq p{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:var(--white);line-height:1.85;position:relative;margin:0}
 
 /* Thinking prompts */
@@ -159,463 +138,55 @@ h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
 .r-dot{width:8px;height:8px;border-radius:50%;background:#C4A67A;margin-top:8px;flex-shrink:0}
 .r-text{font-size:0.85rem;color:#4A3520;line-height:1.55;padding-top:2px}
 
+/* Network diagram */
+.network{background:var(--white);border:2px solid var(--sand-deep);border-radius:var(--radius);padding:32px;margin:32px 0;box-shadow:var(--shadow-soft)}
+.network-title{font-family:'Nunito',sans-serif;font-size:0.75rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:24px;text-align:center}
+.network-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
+.network-node{background:linear-gradient(135deg,var(--amber-soft),rgba(212,140,32,0.03));border:2px solid var(--amber);border-radius:12px;padding:16px;text-align:center}
+.network-node-icon{font-size:1.8rem;display:block;margin-bottom:8px}
+.network-node-name{font-family:'Nunito',sans-serif;font-size:0.8rem;font-weight:700;color:var(--dirt)}
+.network-arrow{text-align:center;font-size:1.5rem;color:var(--amber);margin:12px 0}
+
+/* dfn tooltips */
+dfn{cursor:help;border-bottom:1.5px dotted var(--amber);font-style:normal;font-weight:600;color:var(--dirt);position:relative}
+dfn::after{content:attr(data-def);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--dirt-dark);color:var(--white);padding:10px 16px;border-radius:8px;font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:600;line-height:1.5;white-space:normal;width:260px;text-align:center;opacity:0;pointer-events:none;transition:opacity 0.2s;z-index:10;box-shadow:var(--shadow-mid)}
+dfn:hover::after,dfn:focus::after{opacity:1}
+
 /* Finale section */
 .finale{background:linear-gradient(165deg,#0F1F0A,#1C3820);text-align:center;padding:80px 24px;color:var(--white)}
 .finale-emoji{font-size:3.5rem;display:block;margin-bottom:24px;animation:gentle-pulse 4s ease-in-out infinite}
 @keyframes gentle-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
 .finale h2{font-family:'Nunito',sans-serif;font-size:1.8rem;font-weight:800;color:var(--white);line-height:1.4;margin-bottom:24px}
 .finale h2 span{display:block;color:var(--amber-glow);font-size:2rem;margin-top:8px}
-.finale p{font-family:'Lora',serif;font-size:1.05rem;color:rgba(255,255,255,0.7);line-height:1.85;max-width:600px;margin:0 auto}
+.finale p{font-family:'Lora',serif;font-size:1.05rem;color:rgba(255,255,255,0.7);line-height:1.85;max-width:600px;margin:0 auto 18px}
+.finale p:last-child{margin-bottom:0}
 
 /* Footer */
 footer{background:linear-gradient(165deg,#0A0604,#0E0A08);padding:60px 24px 40px;text-align:center;color:rgba(255,255,255,0.3);border-top:1px solid rgba(212,140,32,0.1)}
 footer p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;margin-bottom:24px;line-height:1.7}
 .brand{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;letter-spacing:1px;color:var(--amber-glow)}
 
-/* ===== SVG ICON SIZING ===== */
-.ico{display:inline-block;vertical-align:middle;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
-.ico-fill{fill:currentColor;stroke:none}
-.cover-icon .ico{width:56px;height:56px;stroke-width:1.5;color:var(--amber-glow)}
-.cover-art{margin:0 auto 24px;animation:cover-breathe 4s ease-in-out infinite}
-.cover-art svg{width:200px;height:190px;filter:drop-shadow(0 0 20px rgba(212,140,32,0.3)) drop-shadow(0 0 50px rgba(74,128,48,0.15))}
-@keyframes cover-breathe{0%,100%{transform:scale(1);opacity:0.9}50%{transform:scale(1.04);opacity:1}}
-.finale-emoji .ico{width:56px;height:56px;stroke-width:1.5;color:var(--amber-glow)}
-.prose h2 span .ico{width:22px;height:22px;color:var(--amber)}
-.think-label .ico{width:16px;height:16px;color:var(--amber)}
-.viz-icon-wrap .ico{width:36px;height:36px;stroke-width:1.5;color:var(--leaf-light)}
-.char-emoji .ico{width:28px;height:28px;color:var(--amber)}
-.scene-label .ico{width:16px;height:16px;color:var(--amber)}
-.code-label .ico{width:16px;height:16px;color:var(--amber-glow)}
-.compare-label .ico{width:16px;height:16px}
-.compare-old .compare-label .ico{color:#6A2800}
-.compare-new .compare-label .ico{color:#1A4A28}
-.network-title .ico{width:18px;height:18px;color:var(--amber)}
-.q-start .ico{width:18px;height:18px;color:var(--amber)}
-.finale p .ico{width:16px;height:16px;color:var(--amber-glow)}
-@media(max-width:640px){
-  .page{padding:0 16px}
-}
+/* Flow diagram */
+.flow{margin:40px 0}
+.flow-step{display:flex;align-items:flex-start;gap:18px;margin-bottom:0}
+.flow-marker{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--amber),var(--amber-glow));display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;color:var(--dirt-dark);flex-shrink:0;box-shadow:0 2px 12px rgba(212,140,32,0.3)}
+.flow-content{flex:1;padding:8px 0 32px}
+.flow-content h4{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;color:var(--dirt);margin-bottom:6px}
+.flow-content p{font-size:0.92rem;color:var(--text-light);line-height:1.7;margin:0}
+.flow-arrow{text-align:center;font-size:1.2rem;color:var(--amber);margin:-12px 0 8px 15px;opacity:0.5}
+
+/* Prompt card */
+.prompt-card{background:linear-gradient(135deg,var(--dirt-dark),var(--dirt-mid));border:1px solid rgba(212,140,32,0.2);border-radius:var(--radius);padding:32px;margin:40px 0}
+.pc-label{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--amber-glow);margin-bottom:16px}
+.prompt-card p{font-size:0.95rem;color:rgba(255,255,255,0.8);line-height:1.8;margin-bottom:12px;font-style:italic}
+.prompt-card p:last-child{margin-bottom:0}
+
+@media(max-width:640px){.page{padding:0 16px}.network-grid{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+@media print{.cover{min-height:auto;padding:60px 24px}.particle,.ghost-noise{display:none}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 </style>
 </head>
 <body>
-
-<!-- ===== SVG SPRITE SHEET ===== -->
-<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
-<defs>
-  <!-- Ant: body segments, legs, antennae -->
-  <symbol id="ico-ant" viewBox="0 0 24 24">
-    <ellipse cx="12" cy="7" rx="3" ry="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <ellipse cx="12" cy="13" rx="3.5" ry="3" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <ellipse cx="12" cy="19" rx="2.5" ry="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <line x1="9" y1="5" x2="6" y2="2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    <line x1="15" y1="5" x2="18" y2="2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    <line x1="8.5" y1="12" x2="5" y2="9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    <line x1="15.5" y1="12" x2="19" y2="9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    <line x1="8.5" y1="14" x2="5" y2="17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    <line x1="15.5" y1="14" x2="19" y2="17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-  </symbol>
-
-  <!-- Book (open) -->
-  <symbol id="ico-book" viewBox="0 0 24 24">
-    <path d="M2 4c2-1 4-1.5 6-1.5S12 3 12 4v16c-1-1-3-1.5-4-1.5S4 19 2 20V4z" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <path d="M22 4c-2-1-4-1.5-6-1.5S12 3 12 4v16c1-1 3-1.5 4-1.5s4 .5 6 1.5V4z" fill="none" stroke="currentColor" stroke-width="1.8"/>
-  </symbol>
-
-  <!-- Scroll -->
-  <symbol id="ico-scroll" viewBox="0 0 24 24">
-    <path d="M8 3h10a2 2 0 012 2v14a2 2 0 01-2 2H8" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <path d="M8 3a2 2 0 00-2 2v1h4V5a2 2 0 00-2-2z" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <path d="M6 6v13a2 2 0 002 2" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <line x1="11" y1="8" x2="17" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    <line x1="11" y1="12" x2="17" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    <line x1="11" y1="16" x2="14" y2="16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-  </symbol>
-
-  <!-- Explosion / Impact -->
-  <symbol id="ico-explosion" viewBox="0 0 24 24">
-    <path d="M12 2l2 5 5-2-3 4 4 3-5 1 1 5-4-3-4 3 1-5-5-1 4-3-3-4 5 2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-  </symbol>
-
-  <!-- Thinking (head with question mark) -->
-  <symbol id="ico-thinking" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <path d="M10 9.5a2.5 2.5 0 014.5 1.5c0 1.5-2 2-2 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    <circle cx="12" cy="17" r="0.5" fill="currentColor" stroke="none"/>
-  </symbol>
-
-  <!-- Film clapper / Scene -->
-  <symbol id="ico-scene" viewBox="0 0 24 24">
-    <rect x="2" y="8" width="20" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <path d="M2 8l3-5h14l3 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-    <line x1="8" y1="3" x2="6" y2="8" stroke="currentColor" stroke-width="1.5"/>
-    <line x1="14" y1="3" x2="12" y2="8" stroke="currentColor" stroke-width="1.5"/>
-  </symbol>
-
-  <!-- Crown -->
-  <symbol id="ico-crown" viewBox="0 0 24 24">
-    <path d="M3 18h18l-2-10-4 4-3-6-3 6-4-4-2 10z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-    <line x1="3" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-  </symbol>
-
-  <!-- Document / Page -->
-  <symbol id="ico-document" viewBox="0 0 24 24">
-    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <polyline points="14 2 14 8 20 8" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <line x1="8" y1="13" x2="16" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    <line x1="8" y1="17" x2="13" y2="17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-  </symbol>
-
-  <!-- Hash / Number sign -->
-  <symbol id="ico-hash" viewBox="0 0 24 24">
-    <line x1="4" y1="9" x2="20" y2="9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    <line x1="4" y1="15" x2="20" y2="15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    <line x1="10" y1="3" x2="8" y2="21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    <line x1="16" y1="3" x2="14" y2="21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-  </symbol>
-
-  <!-- Microscope / Lab -->
-  <symbol id="ico-microscope" viewBox="0 0 24 24">
-    <path d="M14 4l-4 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    <circle cx="14" cy="4" r="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <path d="M10 12a5 5 0 01-5 5" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <line x1="3" y1="21" x2="21" y2="21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    <line x1="12" y1="17" x2="12" y2="21" stroke="currentColor" stroke-width="1.8"/>
-    <path d="M8 17h8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-  </symbol>
-
-  <!-- Lock -->
-  <symbol id="ico-lock" viewBox="0 0 24 24">
-    <rect x="5" y="11" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <path d="M8 11V7a4 4 0 018 0v4" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <circle cx="12" cy="16" r="1.5" fill="currentColor" stroke="none"/>
-  </symbol>
-
-  <!-- Chain links -->
-  <symbol id="ico-chain" viewBox="0 0 24 24">
-    <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-  </symbol>
-
-  <!-- Link (single) -->
-  <symbol id="ico-link" viewBox="0 0 24 24">
-    <path d="M15 7h3a5 5 0 010 10h-3m-6 0H6A5 5 0 016 7h3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    <line x1="8" y1="12" x2="16" y2="12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-  </symbol>
-
-  <!-- No entry / Block -->
-  <symbol id="ico-block" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <line x1="5.7" y1="5.7" x2="18.3" y2="18.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-  </symbol>
-
-  <!-- Shield -->
-  <symbol id="ico-shield" viewBox="0 0 24 24">
-    <path d="M12 2l8 4v5c0 5.25-3.5 10-8 11.5C7.5 21 4 16.25 4 11V6l8-4z" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <polyline points="9 12 11 14 15 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-  </symbol>
-
-  <!-- Dice -->
-  <symbol id="ico-dice" viewBox="0 0 24 24">
-    <rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <circle cx="8" cy="8" r="1" fill="currentColor" stroke="none"/>
-    <circle cx="16" cy="8" r="1" fill="currentColor" stroke="none"/>
-    <circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/>
-    <circle cx="8" cy="16" r="1" fill="currentColor" stroke="none"/>
-    <circle cx="16" cy="16" r="1" fill="currentColor" stroke="none"/>
-  </symbol>
-
-  <!-- Puzzle piece -->
-  <symbol id="ico-puzzle" viewBox="0 0 24 24">
-    <path d="M20 9h-2a2 2 0 010-4h2V3h-4a2 2 0 01-4 0H8v2a2 2 0 01-4 0V3H2v18h2a2 2 0 010-4H2v-4h2a2 2 0 000-4H2V5" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <path d="M20 9v4h-2a2 2 0 000 4h2v4H8v-2a2 2 0 00-4 0v2" fill="none" stroke="currentColor" stroke-width="1.8"/>
-  </symbol>
-
-  <!-- Pickaxe -->
-  <symbol id="ico-pickaxe" viewBox="0 0 24 24">
-    <line x1="5" y1="19" x2="15" y2="9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-    <path d="M15 9l3-3c1-1 3-1.5 4-1l-2 4-1 3-4-3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-  </symbol>
-
-  <!-- Checkmark -->
-  <symbol id="ico-check" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <polyline points="8 12 11 15 16 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  </symbol>
-
-  <!-- X mark / Cross -->
-  <symbol id="ico-x" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <line x1="9" y1="9" x2="15" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-    <line x1="15" y1="9" x2="9" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-  </symbol>
-
-  <!-- Gift / Reward -->
-  <symbol id="ico-gift" viewBox="0 0 24 24">
-    <rect x="3" y="10" width="18" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <rect x="2" y="7" width="20" height="4" rx="1" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <line x1="12" y1="7" x2="12" y2="21" stroke="currentColor" stroke-width="1.5"/>
-    <path d="M12 7c-1-3-4-4-5-3s0 3 5 3" fill="none" stroke="currentColor" stroke-width="1.5"/>
-    <path d="M12 7c1-3 4-4 5-3s0 3-5 3" fill="none" stroke="currentColor" stroke-width="1.5"/>
-  </symbol>
-
-  <!-- Coins -->
-  <symbol id="ico-coins" viewBox="0 0 24 24">
-    <circle cx="10" cy="14" r="6" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <path d="M14.5 9.5a6 6 0 100" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <line x1="10" y1="11" x2="10" y2="17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    <path d="M8 13h3a1 1 0 010 2H9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-  </symbol>
-
-  <!-- Thought bubble -->
-  <symbol id="ico-thought" viewBox="0 0 24 24">
-    <path d="M4 14a6 6 0 0112 0c0 3.3-2.7 6-6 6a5.9 5.9 0 01-4.2-1.8A6 6 0 014 14z" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <circle cx="7" cy="20" r="1" fill="currentColor" stroke="none"/>
-    <circle cx="5" cy="22" r="0.7" fill="currentColor" stroke="none"/>
-    <path d="M16 10a4 4 0 00-4-4 4 4 0 00-4 4" fill="none" stroke="currentColor" stroke-width="1.8"/>
-  </symbol>
-
-  <!-- Brain -->
-  <symbol id="ico-brain" viewBox="0 0 24 24">
-    <path d="M12 2a4 4 0 00-4 4c-2 0-4 2-4 4a4 4 0 001 7.5V20a2 2 0 002 2h2v-6" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <path d="M12 2a4 4 0 014 4c2 0 4 2 4 4a4 4 0 01-1 7.5V20a2 2 0 01-2 2h-2v-6" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <line x1="12" y1="2" x2="12" y2="16" stroke="currentColor" stroke-width="1.2" stroke-dasharray="2 2"/>
-  </symbol>
-
-  <!-- Sparkle -->
-  <symbol id="ico-sparkle" viewBox="0 0 24 24">
-    <path d="M12 2l2 6 6 2-6 2-2 6-2-6-6-2 6-2 2-6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-    <circle cx="19" cy="5" r="1" fill="currentColor" stroke="none"/>
-  </symbol>
-
-  <!-- Masks (theatre) -->
-  <symbol id="ico-masks" viewBox="0 0 24 24">
-    <path d="M3 5c0 5 3 9 7 9s7-4 7-9H3z" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <circle cx="7" cy="8" r="1" fill="currentColor" stroke="none"/>
-    <circle cx="13" cy="8" r="1" fill="currentColor" stroke="none"/>
-    <path d="M8 11c1 1 2 1 4 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    <path d="M14 8c0 5-2 8-5 9" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="2 2"/>
-    <path d="M21 10c0 4-2.5 7-5.5 7" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <path d="M14 8h7c0 0 0 2 0 2" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <circle cx="17" cy="11" r="0.8" fill="currentColor" stroke="none"/>
-    <path d="M16 14c.5-.5 1.5-.5 2 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-  </symbol>
-
-  <!-- Target -->
-  <symbol id="ico-target" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/>
-  </symbol>
-
-  <!-- Scales (justice) -->
-  <symbol id="ico-scales" viewBox="0 0 24 24">
-    <line x1="12" y1="3" x2="12" y2="21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    <line x1="4" y1="7" x2="20" y2="7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    <path d="M4 7l-1 7h6L8 7" fill="none" stroke="currentColor" stroke-width="1.5"/>
-    <path d="M20 7l-1 7h-6l1-7" fill="none" stroke="currentColor" stroke-width="1.5"/>
-    <line x1="8" y1="21" x2="16" y2="21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-  </symbol>
-
-  <!-- Crystal ball -->
-  <symbol id="ico-crystal" viewBox="0 0 24 24">
-    <circle cx="12" cy="10" r="8" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <path d="M8 18h8v2a2 2 0 01-2 2h-4a2 2 0 01-2-2v-2z" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <path d="M9 7c1-1 3-1 4 0" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-    <circle cx="10" cy="9" r="0.5" fill="currentColor" stroke="none"/>
-  </symbol>
-
-  <!-- Star -->
-  <symbol id="ico-star" viewBox="0 0 24 24">
-    <polygon points="12,2 15.1,8.3 22,9.3 17,14.1 18.2,21 12,17.8 5.8,21 7,14.1 2,9.3 8.9,8.3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-  </symbol>
-
-  <!-- Globe -->
-  <symbol id="ico-globe" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <ellipse cx="12" cy="12" rx="4" ry="9" fill="none" stroke="currentColor" stroke-width="1.2"/>
-    <line x1="3" y1="9" x2="21" y2="9" stroke="currentColor" stroke-width="1.2"/>
-    <line x1="3" y1="15" x2="21" y2="15" stroke="currentColor" stroke-width="1.2"/>
-  </symbol>
-
-  <!-- Robot / Smart contract -->
-  <symbol id="ico-robot" viewBox="0 0 24 24">
-    <rect x="4" y="8" width="16" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <circle cx="9" cy="14" r="1.5" fill="currentColor" stroke="none"/>
-    <circle cx="15" cy="14" r="1.5" fill="currentColor" stroke="none"/>
-    <line x1="12" y1="4" x2="12" y2="8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    <circle cx="12" cy="3" r="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <line x1="1" y1="13" x2="4" y2="13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    <line x1="20" y1="13" x2="23" y2="13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-  </symbol>
-
-  <!-- Building columns (DAO) -->
-  <symbol id="ico-columns" viewBox="0 0 24 24">
-    <path d="M4 21h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    <path d="M6 21V8" stroke="currentColor" stroke-width="1.8"/>
-    <path d="M10 21V8" stroke="currentColor" stroke-width="1.8"/>
-    <path d="M14 21V8" stroke="currentColor" stroke-width="1.8"/>
-    <path d="M18 21V8" stroke="currentColor" stroke-width="1.8"/>
-    <path d="M3 8h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    <path d="M12 3L3 8h18L12 3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-  </symbol>
-
-  <!-- Ticket -->
-  <symbol id="ico-ticket" viewBox="0 0 24 24">
-    <path d="M2 9a3 3 0 010 6v4a1 1 0 001 1h18a1 1 0 001-1v-4a3 3 0 010-6V5a1 1 0 00-1-1H3a1 1 0 00-1 1v4z" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <line x1="9" y1="4" x2="9" y2="8" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 2"/>
-    <line x1="9" y1="16" x2="9" y2="20" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 2"/>
-  </symbol>
-
-  <!-- Bank -->
-  <symbol id="ico-bank" viewBox="0 0 24 24">
-    <path d="M3 21h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    <rect x="3" y="18" width="18" height="3" rx="1" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <path d="M6 18V9" stroke="currentColor" stroke-width="1.8"/>
-    <path d="M12 18V9" stroke="currentColor" stroke-width="1.8"/>
-    <path d="M18 18V9" stroke="currentColor" stroke-width="1.8"/>
-    <path d="M3 9h18L12 3 3 9z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-  </symbol>
-
-  <!-- Lightbulb -->
-  <symbol id="ico-bulb" viewBox="0 0 24 24">
-    <path d="M9 18h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    <path d="M10 21h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    <path d="M12 2a7 7 0 00-4 12.7V18h8v-3.3A7 7 0 0012 2z" fill="none" stroke="currentColor" stroke-width="1.8"/>
-  </symbol>
-
-  <!-- Warning triangle -->
-  <symbol id="ico-warning" viewBox="0 0 24 24">
-    <path d="M12 2L2 20h20L12 2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-    <line x1="12" y1="9" x2="12" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-    <circle cx="12" cy="17" r="0.8" fill="currentColor" stroke="none"/>
-  </symbol>
-
-  <!-- People / Network -->
-  <symbol id="ico-people" viewBox="0 0 24 24">
-    <circle cx="8" cy="7" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <path d="M2 21v-2a4 4 0 014-4h4a4 4 0 014 4v2" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <circle cx="18" cy="8" r="2.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
-    <path d="M16 21v-1a3 3 0 013-3" fill="none" stroke="currentColor" stroke-width="1.5"/>
-  </symbol>
-
-  <!-- Skull -->
-  <symbol id="ico-skull" viewBox="0 0 24 24">
-    <circle cx="12" cy="10" r="8" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <circle cx="9" cy="10" r="1.5" fill="currentColor" stroke="none"/>
-    <circle cx="15" cy="10" r="1.5" fill="currentColor" stroke="none"/>
-    <path d="M8 18h8v2a2 2 0 01-2 2h-4a2 2 0 01-2-2v-2z" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <line x1="10" y1="18" x2="10" y2="22" stroke="currentColor" stroke-width="1.2"/>
-    <line x1="14" y1="18" x2="14" y2="22" stroke="currentColor" stroke-width="1.2"/>
-  </symbol>
-
-  <!-- Pen / Writing -->
-  <symbol id="ico-pen" viewBox="0 0 24 24">
-    <path d="M17 3a2.83 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-    <line x1="15" y1="5" x2="19" y2="9" stroke="currentColor" stroke-width="1.5"/>
-  </symbol>
-
-  <!-- Key -->
-  <symbol id="ico-key" viewBox="0 0 24 24">
-    <circle cx="8" cy="8" r="5" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <line x1="12" y1="12" x2="21" y2="21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    <line x1="18" y1="18" x2="21" y2="15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    <circle cx="7" cy="7" r="1.5" fill="currentColor" stroke="none"/>
-  </symbol>
-
-  <!-- Ruler / Measure -->
-  <symbol id="ico-ruler" viewBox="0 0 24 24">
-    <rect x="2" y="8" width="20" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <line x1="6" y1="8" x2="6" y2="12" stroke="currentColor" stroke-width="1.5"/>
-    <line x1="10" y1="8" x2="10" y2="14" stroke="currentColor" stroke-width="1.5"/>
-    <line x1="14" y1="8" x2="14" y2="12" stroke="currentColor" stroke-width="1.5"/>
-    <line x1="18" y1="8" x2="18" y2="14" stroke="currentColor" stroke-width="1.5"/>
-  </symbol>
-
-  <!-- Fork (utensil for handling forks) -->
-  <symbol id="ico-fork" viewBox="0 0 24 24">
-    <line x1="12" y1="14" x2="12" y2="22" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    <path d="M8 2v6a4 4 0 008 0V2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    <line x1="10" y1="2" x2="10" y2="7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    <line x1="14" y1="2" x2="14" y2="7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-  </symbol>
-
-  <!-- Lightning bolt -->
-  <symbol id="ico-lightning" viewBox="0 0 24 24">
-    <polygon points="13,2 3,14 12,14 11,22 21,10 12,10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-  </symbol>
-
-  <!-- Package / Box -->
-  <symbol id="ico-package" viewBox="0 0 24 24">
-    <path d="M12 2l9 5v10l-9 5-9-5V7l9-5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-    <line x1="12" y1="12" x2="12" y2="22" stroke="currentColor" stroke-width="1.5"/>
-    <polyline points="3 7 12 12 21 7" fill="none" stroke="currentColor" stroke-width="1.5"/>
-  </symbol>
-
-  <!-- Hospital / Medical -->
-  <symbol id="ico-medical" viewBox="0 0 24 24">
-    <rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <line x1="12" y1="7" x2="12" y2="17" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-    <line x1="7" y1="12" x2="17" y2="12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-  </symbol>
-
-  <!-- Ballot / Vote -->
-  <symbol id="ico-ballot" viewBox="0 0 24 24">
-    <rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <polyline points="8 11 10 13 14 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    <line x1="8" y1="17" x2="16" y2="17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-  </symbol>
-
-  <!-- House -->
-  <symbol id="ico-house" viewBox="0 0 24 24">
-    <path d="M3 10l9-7 9 7v9a2 2 0 01-2 2H5a2 2 0 01-2-2V10z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-    <polyline points="9 21 9 14 15 14 15 21" fill="none" stroke="currentColor" stroke-width="1.5"/>
-  </symbol>
-
-  <!-- Gamepad -->
-  <symbol id="ico-gamepad" viewBox="0 0 24 24">
-    <path d="M6 10a4 4 0 00-4 4 4 4 0 004 4h2l2-3h4l2 3h2a4 4 0 004-4 4 4 0 00-4-4H6z" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <line x1="8" y1="12" x2="8" y2="16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    <line x1="6" y1="14" x2="10" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    <circle cx="16" cy="13" r="0.8" fill="currentColor" stroke="none"/>
-    <circle cx="18" cy="15" r="0.8" fill="currentColor" stroke="none"/>
-  </symbol>
-
-  <!-- Worried face -->
-  <symbol id="ico-worried" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/>
-    <circle cx="15" cy="10" r="1" fill="currentColor" stroke="none"/>
-    <path d="M8 16c1.5-1 3.5-1 4.5 0s3 1 4.5 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    <path d="M8 7l2 1" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    <path d="M16 7l-2 1" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-  </symbol>
-
-  <!-- Angry face -->
-  <symbol id="ico-angry" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <circle cx="9" cy="11" r="1" fill="currentColor" stroke="none"/>
-    <circle cx="15" cy="11" r="1" fill="currentColor" stroke="none"/>
-    <path d="M8 16h8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    <path d="M7 8l3 1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    <path d="M17 8l-3 1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-  </symbol>
-
-  <!-- Tunnel / Arrow down (underground) -->
-  <symbol id="ico-tunnel" viewBox="0 0 24 24">
-    <path d="M4 4c0 8 3.5 16 8 16s8-8 8-16" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <line x1="12" y1="8" x2="12" y2="16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    <polyline points="9 13 12 16 15 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-  </symbol>
-
-  <!-- Graduation cap -->
-  <symbol id="ico-graduation" viewBox="0 0 24 24">
-    <polygon points="12,2 2,8 12,14 22,8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-    <path d="M6 10v6c0 2 3 4 6 4s6-2 6-4v-6" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <line x1="22" y1="8" x2="22" y2="16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-  </symbol>
-</defs>
-</svg>
 
 <div class="cover">
   <div class="particle"></div>
@@ -628,10 +199,9 @@ footer p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;margin-bot
   <div class="particle"></div>
   <div class="ghost-noise"></div>
   <div class="cover-content">
-    <div class="cover-badge">A Distributed Systems Parable</div>
-    <span class="cover-icon"><svg class="ico"><use href="#ico-ant"/></svg></span>
+    <div class="cover-badge">A Biological Systems Parable</div>
     <div class="cover-art">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 190" aria-label="Ant Network illustration: colony tunnels with chambers and ant silhouettes">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 190" aria-label="Ant colony network illustration showing underground chambers and tunnels">
         <defs>
           <linearGradient id="an-dirt" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#4A3424"/><stop offset="100%" stop-color="#2D1F14"/></linearGradient>
           <linearGradient id="an-amber" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#D48C20"/><stop offset="100%" stop-color="#F0B040"/></linearGradient>
@@ -639,795 +209,498 @@ footer p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;margin-bot
           <radialGradient id="an-glow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#D48C20" stop-opacity="0.2"/><stop offset="100%" stop-color="#2D1F14" stop-opacity="0"/></radialGradient>
           <filter id="an-blur"><feGaussianBlur in="SourceGraphic" stdDeviation="2"/></filter>
         </defs>
-        <!-- Background glow -->
         <ellipse cx="100" cy="100" rx="80" ry="70" fill="url(#an-glow)" filter="url(#an-blur)"/>
-        <!-- Surface line -->
         <path d="M10,45 Q30,42 50,44 Q70,46 90,43 Q110,40 130,44 Q150,48 170,45 Q185,43 195,45" fill="none" stroke="#4A8030" stroke-width="1.5" opacity="0.4"/>
-        <!-- Surface grass tufts -->
         <path d="M40,44 L38,35 L42,38 L44,32 L46,40" fill="none" stroke="#7AB850" stroke-width="0.8" opacity="0.3"/>
         <path d="M90,42 L88,34 L92,37 L94,30 L96,40" fill="none" stroke="#7AB850" stroke-width="0.8" opacity="0.3"/>
         <path d="M150,46 L148,38 L152,40 L154,34 L156,44" fill="none" stroke="#7AB850" stroke-width="0.8" opacity="0.3"/>
-        <!-- Main tunnel network -->
-        <!-- Entry tunnel -->
         <path d="M100,45 L100,60" stroke="#6B4E38" stroke-width="8" stroke-linecap="round" opacity="0.5"/>
-        <!-- Left branch -->
         <path d="M100,60 Q85,70 60,80" stroke="#6B4E38" stroke-width="7" stroke-linecap="round" opacity="0.45"/>
         <path d="M60,80 Q45,88 35,100" stroke="#6B4E38" stroke-width="6" stroke-linecap="round" opacity="0.4"/>
-        <!-- Right branch -->
         <path d="M100,60 Q120,72 145,80" stroke="#6B4E38" stroke-width="7" stroke-linecap="round" opacity="0.45"/>
         <path d="M145,80 Q160,88 165,100" stroke="#6B4E38" stroke-width="6" stroke-linecap="round" opacity="0.4"/>
-        <!-- Lower tunnels -->
         <path d="M60,80 Q70,95 75,115" stroke="#6B4E38" stroke-width="6" stroke-linecap="round" opacity="0.4"/>
         <path d="M145,80 Q135,95 130,115" stroke="#6B4E38" stroke-width="6" stroke-linecap="round" opacity="0.4"/>
         <path d="M75,115 Q90,125 100,140" stroke="#6B4E38" stroke-width="5" stroke-linecap="round" opacity="0.35"/>
         <path d="M130,115 Q115,125 100,140" stroke="#6B4E38" stroke-width="5" stroke-linecap="round" opacity="0.35"/>
-        <!-- Cross tunnel -->
         <path d="M35,100 Q55,110 75,115" stroke="#6B4E38" stroke-width="5" stroke-linecap="round" opacity="0.35"/>
         <path d="M165,100 Q148,110 130,115" stroke="#6B4E38" stroke-width="5" stroke-linecap="round" opacity="0.35"/>
-        <!-- Deep tunnel -->
         <path d="M100,140 L100,165" stroke="#6B4E38" stroke-width="5" stroke-linecap="round" opacity="0.3"/>
-        <!-- Chambers (wider nodes) -->
-        <!-- Central chamber -->
         <ellipse cx="100" cy="60" rx="12" ry="8" fill="#4A3424" stroke="#D48C20" stroke-width="0.8" opacity="0.5"/>
-        <!-- Left chambers -->
         <ellipse cx="60" cy="80" rx="14" ry="10" fill="#4A3424" stroke="#D48C20" stroke-width="0.8" opacity="0.45"/>
         <ellipse cx="35" cy="100" rx="12" ry="9" fill="#4A3424" stroke="#D48C20" stroke-width="0.7" opacity="0.4"/>
-        <!-- Right chambers -->
         <ellipse cx="145" cy="80" rx="14" ry="10" fill="#4A3424" stroke="#D48C20" stroke-width="0.8" opacity="0.45"/>
         <ellipse cx="165" cy="100" rx="12" ry="9" fill="#4A3424" stroke="#D48C20" stroke-width="0.7" opacity="0.4"/>
-        <!-- Lower chambers -->
         <ellipse cx="75" cy="115" rx="13" ry="9" fill="#4A3424" stroke="#D48C20" stroke-width="0.7" opacity="0.4"/>
         <ellipse cx="130" cy="115" rx="13" ry="9" fill="#4A3424" stroke="#D48C20" stroke-width="0.7" opacity="0.4"/>
-        <!-- Queen chamber (bottom, largest) -->
         <ellipse cx="100" cy="142" rx="16" ry="12" fill="#3A2410" stroke="#F0B040" stroke-width="1" opacity="0.5"/>
-        <!-- Storage chamber -->
         <ellipse cx="100" cy="168" rx="10" ry="8" fill="#3A2410" stroke="#D48C20" stroke-width="0.6" opacity="0.35"/>
-        <!-- Ant silhouettes (tiny, in tunnels) -->
-        <!-- Ant 1: entering -->
         <ellipse cx="100" cy="48" rx="2.5" ry="1.5" fill="#2D1F14" opacity="0.7"/>
         <circle cx="103" cy="47" r="1.2" fill="#2D1F14" opacity="0.7"/>
-        <!-- Ant 2: left tunnel -->
         <ellipse cx="72" cy="74" rx="2.5" ry="1.5" fill="#2D1F14" opacity="0.6" transform="rotate(-20, 72, 74)"/>
         <circle cx="70" cy="73" r="1.2" fill="#2D1F14" opacity="0.6"/>
-        <!-- Ant 3: right tunnel -->
         <ellipse cx="130" cy="76" rx="2.5" ry="1.5" fill="#2D1F14" opacity="0.6" transform="rotate(15, 130, 76)"/>
         <circle cx="133" cy="75" r="1.2" fill="#2D1F14" opacity="0.6"/>
-        <!-- Ant 4: in left chamber -->
         <ellipse cx="55" cy="80" rx="2" ry="1.2" fill="#2D1F14" opacity="0.5"/>
         <circle cx="53" cy="79.5" r="1" fill="#2D1F14" opacity="0.5"/>
-        <!-- Ant 5: lower left -->
         <ellipse cx="78" cy="118" rx="2" ry="1.2" fill="#2D1F14" opacity="0.5"/>
         <circle cx="80" cy="117.5" r="1" fill="#2D1F14" opacity="0.5"/>
-        <!-- Ant 6: queen chamber -->
         <ellipse cx="98" cy="145" rx="3" ry="1.8" fill="#2D1F14" opacity="0.55"/>
         <circle cx="95" cy="144.5" r="1.3" fill="#2D1F14" opacity="0.55"/>
-        <!-- Ant 7: on surface -->
         <ellipse cx="120" cy="42" rx="2" ry="1.2" fill="#2D1F14" opacity="0.5"/>
         <circle cx="122" cy="41.5" r="1" fill="#2D1F14" opacity="0.5"/>
-        <!-- Pheromone/data trails (dotted lines between chambers) -->
         <line x1="60" y1="80" x2="145" y2="80" stroke="#F0B040" stroke-width="0.4" opacity="0.15" stroke-dasharray="2,4"/>
         <line x1="75" y1="115" x2="130" y2="115" stroke="#F0B040" stroke-width="0.4" opacity="0.15" stroke-dasharray="2,4"/>
         <line x1="100" y1="60" x2="100" y2="142" stroke="#F0B040" stroke-width="0.3" opacity="0.1" stroke-dasharray="2,5"/>
-        <!-- Small food particles in storage -->
         <circle cx="96" cy="166" r="1.5" fill="#D48C20" opacity="0.3"/>
         <circle cx="102" cy="168" r="1.2" fill="#D48C20" opacity="0.25"/>
         <circle cx="99" cy="170" r="1" fill="#F0B040" opacity="0.2"/>
       </svg>
     </div>
-    <h1>The Ant Network<br><strong>How Blockchain Really Works</strong></h1>
-    <p class="cover-tagline">A blockchain parable where <em>every ant decision</em> builds or breaks the colony's trust, from the foragers to the validators, the honest workers to the attackers, the single trail to the unbreakable network.</p>
-    <p class="cover-sub">Understanding Distributed Consensus Through Nature</p>
-    <p class="cover-author" style="font-family:'Nunito',sans-serif;font-size:0.55rem;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.12);margin-top:48px">KingdomBuilders AI</p>
+    <h1>The Ant Network<br><strong>How Trust Actually Works</strong></h1>
+    <p class="cover-tagline">A colony parable where <em>every verification pattern</em> teaches how your immune system, your relationships, and your capacity for trust all run the same ancient algorithm.</p>
+    <p class="cover-sub">Understanding Trust Through Biological Verification</p>
+    <p class="cover-author">KingdomBuilders AI</p>
+  </div>
+</div>
+
+<div class="ribbon">
+  <p>"Trust in the Lord with all your heart, and do not lean on your own understanding." Proverbs 3:5</p>
+</div>
+
+<div class="page">
+<section class="section">
+  <div class="prose">
+    <p>Your body contains 37 trillion cells. No single cell is in charge. No central authority issues orders. Yet every second, your <dfn data-def="The network of cells, tissues, and organs that defends the body against infection by distinguishing self from non-self.">immune system</dfn> correctly identifies which cells belong to you and which are invaders, with an accuracy rate above 99.99 percent.</p>
+    <p>No government, no corporation, no social network has ever achieved verification at that scale. Your body does it without thinking. It does it while you sleep.</p>
+    <p><strong>This is a playbook about trust.</strong> Not the feeling of trust. Not the decision to trust. The <em>verification architecture</em> underneath trust. Because your relationships run the same pattern matching protocol as the immune cells patrolling your bloodstream right now.</p>
+    <p>The ant colony beneath the forest floor faces an identical problem. Fifty thousand ants, no central roster, yet every ant knows instantly whether a stranger belongs to the colony or is an intruder. The answer is the same mechanism your body uses. The same mechanism your relationships use, whether you know it or not.</p>
+    <p>If you finish this playbook, you will understand why some people feel safe and others feel wrong before you can explain it. You will understand why betrayal hurts for years. And you will learn the biological reason that vulnerability, the thing you avoid, is the only pathway to building real trust.</p>
+  </div>
+</section>
+</div>
+
+<!-- ==================== CHAPTER 1 ==================== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-badge">Chapter One</div>
+    <div class="ch-num">01</div>
+    <h2 class="ch-title">The Verification Problem</h2>
+    <p class="ch-sub">How does a body of 37 trillion cells know which ones belong?</p>
   </div>
 </div>
 
 <div class="page">
 <section class="section">
   <div class="prose">
-    <p>In a vast underground network beneath the forest floor, thousands of ants faced an impossible problem: <strong>How do you keep a shared record of who owns what when no single ant is in charge?</strong></p>
-    <p>No queen keeps the ledger. No central vault holds the truth. Yet somehow, these tiny creatures built a system where every ant agrees on every transaction, where cheating is mathematically impossible, and where the network gets stronger the more ants try to break it.</p>
-    <p><strong>This is the story of blockchain.</strong> Not Bitcoin. Not crypto speculation. The actual technology that solves a problem humans struggled with for thousands of years: <em>How do strangers trust each other without a middleman?</em></p>
-    <p>If you finish this story, you will understand distributed systems, cryptographic hashing, proof of work, consensus mechanisms, and Byzantine fault tolerance better than 99% of people who own cryptocurrency. You will see why blockchain matters beyond money, and where it actually does not help at all.</p>
-    <p>Ready? Let's go underground.</p>
+    <p>Every cell in your body displays a molecular ID card on its surface. Immunologists call it the <dfn data-def="Major Histocompatibility Complex. Proteins on every cell's surface that display fragments of what is inside the cell, allowing immune cells to verify whether the cell is healthy self-tissue.">MHC complex</dfn>. Think of it as a window into the cell. Through that window, the cell shows fragments of whatever is happening inside it. If it is healthy, it displays normal protein fragments. If a virus has invaded, the window shows viral fragments instead.</p>
+    <p>Your immune cells do not read the cell's name. They do not check a registry. They look through the window and read what is actually being displayed.</p>
+    <p><strong>This is the first principle of biological trust: verification happens by reading what someone displays, not by checking their credentials.</strong></p>
+
+    <div class="scene">
+      <div class="scene-label">THE COLONY</div>
+      <h4>The Stranger at the Tunnel Entrance</h4>
+      <p>An ant approaches the colony entrance. The guard does not ask where she came from. The guard does not check a list. The guard runs her antennae across the stranger's body, reading the <em>cuticular hydrocarbon profile</em>, a chemical signature unique to each colony. The profile is not a badge the ant chose to wear. It is a byproduct of the nest environment, the food, the queen's pheromones, the soil chemistry. It is unfakeable because it emerges from actually living inside the colony.</p>
+      <p>The stranger smells like the colony. She enters. If she smelled like a different colony, the guard would attack within two seconds. No deliberation. No appeals process. The chemistry either matches or it does not.</p>
+    </div>
+
+    <p>Your relationships work the same way. When you meet someone, you are not consciously evaluating their resume. You are reading their <em>display</em>. Microexpressions, tone, timing, the gap between what they say and how their body moves. You are running a verification protocol inherited from 500 million years of immune evolution.</p>
+    <p>The person who says "trust me" is displaying one thing through their words and something else through the act of needing to say it. Your system reads both channels. The mismatch triggers the same low level alert that a T cell feels when an MHC window shows the wrong protein fragments.</p>
+
+    <div class="viz">
+      <div class="viz-glow"></div>
+      <div class="viz-inner">
+        <div class="viz-top">
+          <div class="viz-icon-wrap">&#x1F9EC;</div>
+          <div class="viz-meta">
+            <div class="viz-label">Immune Principle</div>
+            <h4>The MHC Window</h4>
+          </div>
+        </div>
+        <div class="viz-body">
+          <p>Picture every person you know as a cell with a window on its surface. Through that window, you can see fragments of what is really happening inside them. Not what they tell you is happening. What is <em>actually</em> happening. Their energy, their consistency, the alignment between their words and their choices over time.</p>
+          <p><strong>You have been reading these windows your entire life.</strong> The moments you "just knew" someone was lying? You read the window. The instant comfort you felt with a stranger? Their window displayed fragments that matched your colony's signature.</p>
+        </div>
+        <div class="viz-lesson">Trust is not a leap of faith. It is a verification reading. You are already doing it. The question is whether you are paying attention to what the window shows.</div>
+      </div>
+    </div>
+
+    <div class="think">
+      <div class="think-label">YOUR TURN</div>
+      <h4>Name someone in your life whose "window" consistently shows the same thing, no matter the circumstances.</h4>
+      <div class="think-line"></div>
+      <p class="q-start">Now name someone whose window shows different things depending on who is watching.</p>
+      <div class="think-line"></div>
+      <p class="q-start">Which person do you trust more? You already knew, before I asked.</p>
+    </div>
   </div>
 </section>
 </div>
 
-<div class="ch-head">
-  <div class="page">
-    <div class="ch-badge">Chapter One</div>
-    <div class="ch-num">01</div>
-    <h1 class="ch-title">The Ledger Problem</h1>
-    <p class="ch-sub">Why trust breaks down when no one is in charge</p>
-  </div>
-</div>
-<div class="ribbon"><p>"Trust in the Lord with all your heart and lean not on your own understanding.". Proverbs 3:5</p></div>
-
-<div class="page">
-<section class="section prose">
-  <h2><span><svg class="ico"><use href="#ico-book"/></svg></span> The Old Way: Queen's Ledger</h2>
-  <p>For generations, the ant colony used a simple system. The Queen kept <em>The Great Ledger</em> a massive scroll recording every exchange of food in the colony:</p>
-
-  <div class="scene">
-    <div class="scene-label"><svg class="ico"><use href="#ico-scroll"/></svg> Sample Ledger Entry</div>
-    <h4>Day 47, Summer</h4>
-    <p><strong>Transaction 1:</strong> Worker Ant #412 gave 3 seeds to Soldier Ant #88<br>
-    <strong>Transaction 2:</strong> Forager Ant #201 gave 5 aphid drops to Worker Ant #412<br>
-    <strong>Transaction 3:</strong> Soldier Ant #88 gave 1 seed to Nurse Ant #55</p>
-  </div>
-
-  <p>This worked perfectly. The Queen was immortal (in theory), trustworthy, and kept immaculate records. If two ants disputed a transaction, they simply asked the Queen. <strong>She was the source of truth.</strong></p>
-
-  <h2><span><svg class="ico"><use href="#ico-explosion"/></svg></span> The Day the Queen Died</h2>
-  <p>Then catastrophe struck. A predator invaded the colony and killed the Queen. The Great Ledger was destroyed in the chaos.</p>
-  <p><strong>Panic spread instantly.</strong></p>
-
-  <div class="char-grid">
-    <div class="char-card">
-      <div class="char-head"><span class="char-emoji"><svg class="ico"><use href="#ico-worried"/></svg></span><div class="char-info"><div class="char-name">The Trust Problem</div><div class="char-title">No Authority = No Truth</div></div></div>
-      <div class="char-body"><p>Worker Ant #523 claimed Soldier Ant #88 owed him 10 seeds. Soldier #88 said, "No way, I already paid you!" With no ledger, <strong>who was right?</strong> There was no way to know.</p></div>
-    </div>
-    <div class="char-card">
-      <div class="char-head"><span class="char-emoji"><svg class="ico"><use href="#ico-angry"/></svg></span><div class="char-info"><div class="char-name">The Fraud Problem</div><div class="char-title">Lies Spread Fast</div></div></div>
-      <div class="char-body"><p>Opportunistic ants started making false claims. "The Queen's ledger said you owe me 50 seeds!" Without proof, these lies created chaos. <strong>Trust collapsed.</strong></p></div>
-    </div>
-  </div>
-
-  <p>The colony faced economic collapse. Trade stopped. Ants hoarded food. The social fabric unraveled. <strong>Without a trusted ledger, cooperation was impossible.</strong></p>
-
-  <h2><span><svg class="ico"><use href="#ico-thinking"/></svg></span> The Council Meets</h2>
-  <p>The elder ants called an emergency council. They debated solutions:</p>
-
-  <div class="scene">
-    <div class="scene-label"><svg class="ico"><use href="#ico-scene"/></svg> Scene: The Strategy Debate</div>
-    <h4>Five Proposals</h4>
-
-    <p><strong>Option 1: Elect a New Queen</strong><br>
-    <em>"Just pick one ant to keep the ledger. Simple!"</em><br>
-    Problem: What if she lies? What if she dies again? Single point of failure.</p>
-
-    <p><strong>Option 2: Council of Elders</strong><br>
-    <em>"Five ants keep the ledger together. Majority rules!"</em><br>
-    Problem: What if three of them collude to lie? What if they disagree?</p>
-
-    <p><strong>Option 3: Everyone Keeps Their Own Records</strong><br>
-    <em>"Every ant tracks their own transactions!"</em><br>
-    Problem: My record says you owe me. Your record disagrees. Now what?</p>
-
-    <p><strong>Option 4: Give Up on Ledgers Entirely</strong><br>
-    <em>"Return to immediate barter only. No credit, no debt."</em><br>
-    Problem: Kills economic complexity. Back to the stone age.</p>
-
-    <p><strong>Option 5: Something New</strong><br>
-    <em>"What if... EVERYONE kept a copy of the SAME ledger?"</em></p>
-  </div>
-
-  <p>The room fell silent. <strong>Option 5 sounded insane.</strong></p>
-
-  <p>"If everyone has a copy," one elder asked, "how do we keep them all the same? What if ants write different things?"</p>
-
-  <p>A young engineer ant named <strong>Ada</strong> stood up. "I have an idea. It is weird. But I think it might work."</p>
-</section>
-
-<div class="think">
-  <div class="think-label"><svg class="ico"><use href="#ico-thought"/></svg> Think About This</div>
-  <h4>Why is a shared ledger so hard?</h4>
-  <p class="q-start"><svg class="ico"><use href="#ico-thinking"/></svg> Imagine 1,000 people all trying to write in the same notebook at the same time. How do you keep it consistent?</p>
-  <div class="think-line"></div>
-  <p style="font-size:0.9rem;color:var(--text-light);line-height:1.75">This is called the <strong>distributed consensus problem</strong> and it is one of the hardest challenges in computer science. Banks solve it by having ONE central database. But what if you do not trust any single party to run that database? <strong>That is the problem blockchain solves.</strong></p>
-</div>
-</div>
-
-<div class="root-ck">
-  <div class="rc-label">ROOT CHECK NO. 1</div>
-  <h4>Water What Was Planted</h4>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text">A centralized ledger creates a single point of failure, when the authority is lost, trust collapses and trade stops</div></div>
-</div>
-
+<!-- ==================== CHAPTER 2 ==================== -->
 <div class="ch-head">
   <div class="page">
     <div class="ch-badge">Chapter Two</div>
     <div class="ch-num">02</div>
-    <h1 class="ch-title">The Chain of Blocks</h1>
-    <p class="ch-sub">How to build an unforgeable history, one page at a time</p>
+    <h2 class="ch-title">The Antigen Pattern</h2>
+    <p class="ch-sub">You do not verify people. You verify patterns.</p>
   </div>
 </div>
-<div class="ribbon"><p>"The stone the builders rejected has become the cornerstone.". Psalm 118:22</p></div>
 
 <div class="page">
-<section class="section prose">
-  <h2><span><svg class="ico"><use href="#ico-document"/></svg></span> Ada's Proposal: The Block System</h2>
-  <p>Ada explained her idea to the council:</p>
+<section class="section">
+  <div class="prose">
+    <p>A <dfn data-def="T-cell receptor. A protein on the surface of T-cells that recognizes and binds to specific antigen fragments displayed on MHC molecules. Each T-cell has receptors for one specific shape.">T cell receptor</dfn> does not recognize whole organisms. It recognizes a shape. A specific molecular pattern, usually just 8 to 10 amino acids long. The immune system does not ask "What are you?" It asks "Does your shape match a pattern I have learned to flag?"</p>
+    <p>This distinction matters enormously. The immune system does not store a database of every pathogen. It stores a library of <em>pattern fragments</em> it has learned to recognize. When a new virus arrives, the system checks: "Does any fragment of this thing match a shape I already know is dangerous?"</p>
 
-  <div class="gq"><p>"What if we do not write transactions one at a time? Instead, we collect about 100 transactions into a GROUP. We call that group a BLOCK. Then we add that block to the ledger in a way that makes it impossible to change anything in the past without everyone noticing."</p></div>
-
-  <p>"Impossible to change?" the elders scoffed. "Any ant with a pen can change writing!"</p>
-
-  <p>"Not if we use <em>cryptographic fingerprints</em>," Ada replied.</p>
-
-  <h2><span><svg class="ico"><use href="#ico-hash"/></svg></span> The Magic of Hashing</h2>
-  <p>Ada explained the concept with a demonstration. She took a leaf and asked: "What if I could create a unique NUMBER that represents this exact leaf in its exact current state?"</p>
-
-  <div class="scene">
-    <div class="scene-label"><svg class="ico"><use href="#ico-microscope"/></svg> The Hashing Demo</div>
-    <h4>Creating a Fingerprint</h4>
-
-    <p><strong>Ada took a leaf and said:</strong> "I am going to count every vein, measure every edge, note every tiny imperfection. Then I will do a complex mathematical operation on all that data. The result is a NUMBER. We call it a HASH."</p>
-
-    <p><strong>The hash of this leaf is: 7A3B91</strong></p>
-
-    <p>"Now," Ada continued, "if I change ANYTHING about this leaf even tear off one tiny piece the hash changes COMPLETELY."</p>
-
-    <p><strong>She tore the leaf slightly.</strong></p>
-
-    <p><strong>New hash: 2F89C4</strong></p>
-
-    <p>"See? Completely different. This is a ONE WAY function. You can go from leaf to hash easily. But you CANNOT go from hash back to leaf. And you CANNOT find two different leaves with the same hash."</p>
-  </div>
-
-  <div class="char-grid">
-    <div class="char-card">
-      <div class="char-head"><span class="char-emoji"><svg class="ico"><use href="#ico-hash"/></svg></span><div class="char-info"><div class="char-name">Hash Function</div><div class="char-title">Digital Fingerprint</div></div></div>
-      <div class="char-body"><p>A hash function takes ANY input (transaction, message, file) and produces a FIXED LENGTH number. Change one letter of the input? Completely different hash. <strong>It is like a fingerprint that is impossible to fake.</strong></p></div>
+    <div class="compare">
+      <div class="compare-box compare-old">
+        <div class="compare-label">How You Think Trust Works</div>
+        <h4>Identity Verification</h4>
+        <p>"I trust this person because of who they are."</p>
+        <p>"They have a good reputation."</p>
+        <p>"They told me I could trust them."</p>
+      </div>
+      <div class="compare-box compare-new">
+        <div class="compare-label">How Trust Actually Works</div>
+        <h4>Pattern Verification</h4>
+        <p>"This person's behavior matches the pattern of people who followed through."</p>
+        <p>"Their words and actions display the same fragments over time."</p>
+        <p>"The shape of their consistency matches shapes I have learned are safe."</p>
+      </div>
     </div>
-    <div class="char-card">
-      <div class="char-head"><span class="char-emoji"><svg class="ico"><use href="#ico-lock"/></svg></span><div class="char-info"><div class="char-name">One-Way Function</div><div class="char-title">Easy to Create, Impossible to Reverse</div></div></div>
-      <div class="char-body"><p>You can hash a message in milliseconds. But finding what message creates a SPECIFIC hash? That would take billions of years. <strong>This asymmetry is the foundation of all cryptography.</strong></p></div>
+
+    <p>In the colony, the verification is chemical. <dfn data-def="Waxy molecules on the outer surface of insects that serve as colony-specific chemical signatures. Produced by shared diet, queen pheromones, and nest microbiome.">Cuticular hydrocarbons</dfn> form a pattern, not an identity card. The pattern shifts slightly with diet, season, and age, but the core signature remains stable. Guards verify the pattern, not the individual ant.</p>
+    <p>This is why you can meet a total stranger and feel immediate trust, while feeling uneasy around someone you have known for years. <strong>You are not verifying the person. You are verifying the pattern.</strong> The stranger's pattern matches shapes you associate with safety. Your long acquaintance's pattern has shifted, and the mismatch trips your alarm, even if you cannot articulate what changed.</p>
+
+    <div class="gq">
+      <p>A T cell does not care about your name. It cares about your shape. Your relationships work the same way. The people you trust are not the ones with the best stories. They are the ones whose shape has stayed consistent long enough for your pattern library to classify them as self.</p>
     </div>
+
+    <p>This also explains a frustrating experience you have probably had: someone does all the "right" things and you still cannot trust them. They say the correct words. They perform the expected gestures. But the pattern is wrong. The shape does not match. Something is off by a few amino acids, and your immune system, your trust system, flags it.</p>
+    <p>You are not paranoid when this happens. You are accurate. Your T cells did not survive 500 million years of evolution by ignoring shape mismatches because the pathogen seemed nice.</p>
   </div>
-
-  <h2><span><svg class="ico"><use href="#ico-chain"/></svg></span> Linking Blocks Together</h2>
-  <p>Ada continued: "Here is where it gets clever. Each new block does not just contain transactions. It ALSO contains the HASH of the previous block."</p>
-
-  <div class="code-block">
-    <div class="code-label"><svg class="ico"><use href="#ico-link"/></svg> BLOCK STRUCTURE</div>
-    <code><span class="code-comment">// Block #1 (Genesis Block)</span>
-{
-  <span class="code-keyword">block_number</span>: 1,
-  <span class="code-keyword">previous_hash</span>: 0000000000,
-  <span class="code-keyword">transactions</span>: [
-    "Ant#412 gave 3 seeds to Ant#88",
-    "Ant#201 gave 5 drops to Ant#412"
-  ],
-  <span class="code-keyword">hash</span>: <span style="color:#ce9178">"7A3B91F2"</span>
-}
-
-<span class="code-comment">// Block #2</span>
-{
-  <span class="code-keyword">block_number</span>: 2,
-  <span class="code-keyword">previous_hash</span>: <span style="color:#ce9178">"7A3B91F2"</span>, <span class="code-comment">// Links to Block #1!</span>
-  <span class="code-keyword">transactions</span>: [
-    "Ant#88 gave 1 seed to Ant#55",
-    "Ant#301 gave 2 drops to Ant#88"
-  ],
-  <span class="code-keyword">hash</span>: <span style="color:#ce9178">"2F89C4E7"</span>
-}</code>
-  </div>
-
-  <p>"This creates a CHAIN," Ada explained. "Block 2 contains the fingerprint of Block 1. Block 3 contains the fingerprint of Block 2. And so on. Forever."</p>
-
-  <h2><span><svg class="ico"><use href="#ico-block"/></svg></span> Why You Cannot Cheat</h2>
-  <p>An elder ant raised his antenna skeptically. "So what? I could still go back and change Block 1!"</p>
-
-  <p>Ada smiled. "Try it."</p>
-
-  <div class="scene">
-    <div class="scene-label"><svg class="ico"><use href="#ico-microscope"/></svg> The Cheating Attempt</div>
-    <h4>Why History is Immutable</h4>
-
-    <p><strong>Step 1:</strong> Cheater ant changes a transaction in Block 1<br>
-    <em>Old:</em> "Ant#412 gave 3 seeds to Ant#88"<br>
-    <em>New:</em> "Ant#412 gave 30 seeds to Ant#88"</p>
-
-    <p><strong>Step 2:</strong> Block 1's hash CHANGES<br>
-    <em>Old hash:</em> 7A3B91F2<br>
-    <em>New hash:</em> 8X5C72K9</p>
-
-    <p><strong>Step 3:</strong> But Block 2 still says the previous hash is 7A3B91F2!<br>
-    <strong>MISMATCH DETECTED!</strong></p>
-
-    <p><strong>Step 4:</strong> Cheater thinks: "Fine, I will change Block 2 to match!"<br>
-    But changing Block 2 changes ITS hash, which breaks Block 3's link.<br>
-    Changing Block 3 breaks Block 4.<br>
-    Changing Block 4 breaks Block 5.</p>
-
-    <p><strong>To change history, you must rewrite EVERY SINGLE BLOCK after your change.</strong></p>
-  </div>
-
-  <p>"And EVERY ant has a copy!" Ada continued. "So even if you rewrote your entire chain, everyone else's copy would not match. <strong>The network would reject your fake version.</strong>"</p>
-
-  <div class="viz"><div class="viz-glow"></div><div class="viz-inner">
-    <div class="viz-top"><div class="viz-icon-wrap"><svg class="ico"><use href="#ico-chain"/></svg></div><div class="viz-meta"><div class="viz-label">The Blockchain Structure</div><h4>How the Chain Protects Itself</h4></div></div>
-    <div class="viz-body">
-      <p><strong>Block 1:</strong> [Transactions] → Hash: ABC123<br>
-      <strong>Block 2:</strong> [Previous: ABC123][Transactions] → Hash: DEF456<br>
-      <strong>Block 3:</strong> [Previous: DEF456][Transactions] → Hash: GHI789<br>
-      <strong>Block 4:</strong> [Previous: GHI789][Transactions] → Hash: JKL012</p>
-      <div class="viz-lesson">Change ANYTHING in Block 1? Its hash changes. That breaks the link to Block 2. To hide your fraud, you must recalculate EVERY block after it. But thousands of other ants have the correct version. <strong>Your fake chain gets rejected by the network.</strong> This is why blockchain is called "immutable" or unchangeable.</div>
-    </div>
-  </div></div>
-
-  <p>The elders were impressed. But one wise old ant raised a final objection: "Ada, this is brilliant for detecting changes. But what stops an ant from just ADDING fake transactions to NEW blocks?"</p>
-
-  <p>"Ah," Ada grinned. "That is where proof of work comes in."</p>
 </section>
 </div>
 
-<div class="root-ck">
-  <div class="rc-label">ROOT CHECK NO. 2</div>
-  <h4>Water What Was Planted</h4>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text">A centralized ledger creates a single point of failure, when the authority is lost, trust collapses and trade stops</div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text">Cryptographic hashing creates unique fingerprints for data, and chaining blocks together makes altering history detectable, change one block and every link after it breaks</div></div>
-</div>
-
+<!-- ==================== CHAPTER 3 ==================== -->
 <div class="ch-head">
   <div class="page">
     <div class="ch-badge">Chapter Three</div>
     <div class="ch-num">03</div>
-    <h1 class="ch-title">The Mining Game</h1>
-    <p class="ch-sub">Why solving useless puzzles creates priceless security</p>
+    <h2 class="ch-title">The Memory Cell</h2>
+    <p class="ch-sub">Why betrayal stays in your system for years.</p>
   </div>
 </div>
-<div class="ribbon"><p>"Whatever you do, work at it with all your heart, as working for the Lord.". Colossians 3:23</p></div>
 
 <div class="page">
-<section class="section prose">
-  <h2><span><svg class="ico"><use href="#ico-pickaxe"/></svg></span> The Problem: Who Gets to Write?</h2>
-  <p>The colony now had a brilliant ledger design. But a critical question remained: <strong>Who decides which transactions go into the next block?</strong></p>
+<section class="section">
+  <div class="prose">
+    <p>When your immune system encounters a pathogen for the first time, the initial response is slow. It takes days, sometimes weeks, to mount an effective attack. Many cells are lost in the process. The infection causes real damage before the body learns how to fight it.</p>
+    <p>But after the battle, something remarkable happens. The immune system creates <dfn data-def="Long-lived immune cells that retain the 'memory' of a specific pathogen. On re-exposure, they trigger a faster and stronger response than the original encounter.">memory cells</dfn>. These are specialized B cells and T cells that carry the exact pattern of the defeated pathogen. They circulate in your bloodstream for decades. Some last your entire life.</p>
+    <p>If the same pathogen returns, even twenty years later, the memory cells recognize it instantly. The second response is 10 to 100 times faster than the first. The body does not need to relearn the threat. It remembers the shape.</p>
+    <p><strong>Your relationships have memory cells too.</strong></p>
 
-  <div class="compare">
-    <div class="compare-box compare-old">
-      <div class="compare-label"><svg class="ico"><use href="#ico-x"/></svg> Bad Idea: First Come First Serve</div>
-      <p>Whoever writes fastest wins? No. A malicious ant could spam thousands of fake transactions per second and flood the network.</p>
+    <div class="scene">
+      <div class="scene-label">THE COLONY</div>
+      <h4>The Scent That Never Fades</h4>
+      <p>When a colony detects a parasitic ant species, something changes in the guard behavior permanently. Researchers at the University of Lausanne discovered that colonies exposed to social parasites maintain elevated aggression toward that specific chemical signature for the rest of the colony's lifespan. The guards are not angrier in general. They are <em>specifically calibrated</em> to the parasite's pattern.</p>
+      <p>The colony did not choose to hold a grudge. The verification protocol updated itself. The old threshold was too generous. The new threshold is exact.</p>
     </div>
-    <div class="compare-box compare-old">
-      <div class="compare-label"><svg class="ico"><use href="#ico-x"/></svg> Bad Idea: Voting</div>
-      <p>Majority vote on each block? No. An attacker could create 10,000 fake ant identities and vote for their own fraudulent blocks.</p>
+
+    <p>When someone betrays your trust, your system does not simply feel hurt and recover. It creates a memory cell. That memory cell carries the <em>exact pattern</em> of the betrayal: the tone of voice, the timing, the type of promise that was broken, the specific way the person's window showed one thing while something else was happening inside.</p>
+    <p>Now, for the rest of your life, whenever someone displays a pattern that matches those fragments, even slightly, your system triggers a rapid response. Not because you are damaged. Not because you are "carrying baggage." Because your immune system did exactly what it was designed to do: it learned the shape of a real threat so it could respond faster next time.</p>
+
+    <div class="viz">
+      <div class="viz-glow"></div>
+      <div class="viz-inner">
+        <div class="viz-top">
+          <div class="viz-icon-wrap">&#x1F9E0;</div>
+          <div class="viz-meta">
+            <div class="viz-label">Immune Principle</div>
+            <h4>The Secondary Response</h4>
+          </div>
+        </div>
+        <div class="viz-body">
+          <p>Your first heartbreak took months to process. Your system had never seen that pattern before. It was the immunological equivalent of a novel virus.</p>
+          <p>Now someone shows 30 percent of the same pattern and you pull back within minutes. That is not emotional damage. That is a <em>secondary immune response</em>. Faster. Stronger. More precise. Your memory cells are doing their job.</p>
+          <p><strong>The problem is not that you remember. The problem is when the memory is so sensitive that it fires on harmless patterns too.</strong></p>
+        </div>
+        <div class="viz-lesson">Healing from betrayal is not about forgetting. Memory cells cannot be deleted. Healing is about recalibrating sensitivity, so the alarm fires on actual threats, not on every pattern that shares a few fragments with the original wound.</div>
+      </div>
     </div>
-  </div>
 
-  <p>Ada proposed something radical: <strong>"Make it expensive to write a block. Not expensive in food. Expensive in WORK."</strong></p>
-
-  <h2><span><svg class="ico"><use href="#ico-dice"/></svg></span> The Puzzle System</h2>
-  <p>Ada explained: "Before any ant can add a block to the chain, they must solve a VERY HARD math puzzle. A puzzle so hard that it takes thousands of attempts to solve by pure random guessing."</p>
-
-  <div class="scene">
-    <div class="scene-label"><svg class="ico"><use href="#ico-puzzle"/></svg> The Mining Puzzle</div>
-    <h4>How It Works</h4>
-
-    <p><strong>The Challenge:</strong> Find a number (called a "nonce") that, when combined with your block's data and hashed, produces a hash starting with a certain number of zeros.</p>
-
-    <p><strong>Example:</strong><br>
-    Block data: "Ant#412 gave 3 seeds to Ant#88"<br>
-    Try nonce = 1 → Hash = 7A3B91F2 (no zeros at start, fail)<br>
-    Try nonce = 2 → Hash = 9C2E84D1 (no zeros, fail)<br>
-    Try nonce = 3 → Hash = 4F7A23B8 (no zeros, fail)<br>
-    ...<br>
-    Try nonce = 47,293 → Hash = 0000A3F7 (four zeros! SUCCESS!)</p>
-
-    <p><strong>The ant who finds the right nonce gets to publish the next block!</strong></p>
-  </div>
-
-  <div class="char-grid">
-    <div class="char-card">
-      <div class="char-head"><span class="char-emoji"><svg class="ico"><use href="#ico-pickaxe"/></svg></span><div class="char-info"><div class="char-name">Mining</div><div class="char-title">Competitive Puzzle Solving</div></div></div>
-      <div class="char-body"><p>Thousands of ants compete simultaneously to solve the puzzle. The first to find a valid solution wins the right to add the next block. <strong>This is called "mining."</strong> It costs energy and time. That cost is what makes attacks expensive.</p></div>
-    </div>
-    <div class="char-card">
-      <div class="char-head"><span class="char-emoji"><svg class="ico"><use href="#ico-dice"/></svg></span><div class="char-info"><div class="char-name">Difficulty Adjustment</div><div class="char-title">Self-Regulating Puzzle</div></div></div>
-      <div class="char-body"><p>If blocks are being solved too fast, increase the number of required leading zeros (harder puzzle). Too slow? Decrease zeros (easier puzzle). <strong>The system automatically balances itself.</strong></p></div>
+    <div class="root-ck">
+      <div class="rc-label">ROOT CHECK</div>
+      <h4>Are your memory cells calibrated or over-sensitized?</h4>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Calibrated response:</strong> You feel uneasy around a specific behavior pattern and you can name the specific fragments triggering the alarm.</div></div>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Over-sensitized response:</strong> You feel uneasy around anyone who reminds you even slightly of a past betrayal, but you cannot separate the old pattern from the new person.</div></div>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Suppressed response:</strong> You override the alarm because you think you should not "still be affected by that." Your memory cells are screaming and you are covering your ears.</div></div>
     </div>
   </div>
-
-  <h2><span><svg class="ico"><use href="#ico-shield"/></svg></span> Why This Stops Fraud</h2>
-  <p>An elder ant challenged Ada: "Okay, but what stops a dishonest ant from just working really hard to mine a fraudulent block?"</p>
-
-  <p>Ada drew a diagram in the dirt:</p>
-
-  <div class="viz"><div class="viz-glow"></div><div class="viz-inner">
-    <div class="viz-top"><div class="viz-icon-wrap"><svg class="ico"><use href="#ico-shield"/></svg></div><div class="viz-meta"><div class="viz-label">The Security Model</div><h4>Why Honest Ants Always Win</h4></div></div>
-    <div class="viz-body">
-      <p><strong>Honest Network:</strong> 1,000 ants mining honestly<br>
-      <strong>Attacker:</strong> 1 malicious ant trying to create fake history</p>
-
-      <p><strong>Scenario:</strong> Attacker wants to go back and change Block 100 (currently on Block 200).</p>
-
-      <p><strong>What the attacker must do:</strong><br>
-      1. Re-mine Block 100 with fake transaction (solve puzzle)<br>
-      2. Re-mine Block 101 (solve puzzle again)<br>
-      3. Re-mine Block 102 (solve puzzle again)<br>
-      4. Continue through Block 200 (solve 100 puzzles total)<br>
-      5. Keep mining NEW blocks faster than the honest network to stay ahead</p>
-
-      <p><strong>What the honest network is doing:</strong><br>
-      Mining Block 201... 202... 203... continuously moving forward</p>
-
-      <div class="viz-lesson">The attacker needs to out-mine the ENTIRE honest network (all 1,000 ants) while ALSO catching up on 100 blocks of history. Unless the attacker controls MORE than 50% of the network's total computing power, <strong>this is mathematically impossible.</strong> The honest chain will always be longer, and the network follows the longest chain.</div>
-    </div>
-  </div></div>
-
-  <h2><span><svg class="ico"><use href="#ico-ruler"/></svg></span> The Longest Chain Rule</h2>
-  <p>Ada explained the final piece: "When two ants mine valid blocks at the same time, we have a FORK. Two competing versions of history. How do we resolve it?"</p>
-
-  <div class="scene">
-    <div class="scene-label"><svg class="ico"><use href="#ico-fork"/></svg> Handling Forks</div>
-    <h4>The Longest Chain Wins</h4>
-
-    <p><strong>Block 100:</strong> Everyone agrees<br>
-    <strong>Block 101:</strong> Ant Alice mines: "Ant#412 gave 3 seeds to Ant#88"<br>
-    <strong>Block 101:</strong> Ant Bob mines: "Ant#412 gave 3 seeds to Ant#99"<br>
-    <em>(Both valid! Both announced at nearly the same time!)</em></p>
-
-    <p><strong>What happens?</strong><br>
-    Half the network hears Alice's block first, starts building on it.<br>
-    Half the network hears Bob's block first, starts building on it.<br>
-    <strong>Now there are TWO chains!</strong></p>
-
-    <p><strong>Resolution:</strong><br>
-    Whichever chain mines Block 102 FIRST becomes the winner.<br>
-    The other chain is abandoned.<br>
-    <strong>Always follow the longest chain.</strong></p>
-  </div>
-
-  <p>"This is why we wait for CONFIRMATIONS," Ada emphasized. "If your transaction is in Block 101, wait until Block 102, 103, 104, 105, 106 are added on top of it. After 6 confirmations, the chance your transaction gets reversed is astronomically small."</p>
-
-  <div class="char-grid">
-    <div class="char-card">
-      <div class="char-head"><span class="char-emoji"><svg class="ico"><use href="#ico-chain"/></svg></span><div class="char-info"><div class="char-name">Longest Chain Rule</div><div class="char-title">Consensus Mechanism</div></div></div>
-      <div class="char-body"><p>When there is disagreement, <strong>the chain with the most accumulated work (most blocks) wins.</strong> This prevents splits and ensures everyone eventually agrees on one version of history.</p></div>
-    </div>
-    <div class="char-card">
-      <div class="char-head"><span class="char-emoji"><svg class="ico"><use href="#ico-check"/></svg></span><div class="char-info"><div class="char-name">Confirmations</div><div class="char-title">Security Through Depth</div></div></div>
-      <div class="char-body"><p>Each new block added on top of your transaction makes it exponentially harder to reverse. After 6 blocks, reversal requires more computational power than exists in the entire network. <strong>Your transaction is effectively permanent.</strong></p></div>
-    </div>
-  </div>
-
-  <h2><span><svg class="ico"><use href="#ico-gift"/></svg></span> The Reward System</h2>
-  <p>One practical ant asked: "Why would any ant spend energy mining? What is in it for them?"</p>
-
-  <p>Ada smiled. "The ant who successfully mines a block gets a REWARD. New food tokens created from nothing. This serves two purposes:"</p>
-
-  <p><strong>1. Incentivizes honest mining</strong> (Why cheat when you can earn by playing fair?)<br>
-  <strong>2. Distributes new currency into the economy</strong> (Instead of a central bank printing money, the network itself creates it through work)</p>
-
-  <div class="gq"><p>"Mining is not useless computation. It is the price of security. Every puzzle solved is a vote for the honest chain. Every joule of energy spent makes it more expensive to attack the network. The work IS the security."</p></div>
 </section>
-
-<div class="think">
-  <div class="think-label"><svg class="ico"><use href="#ico-thought"/></svg> Think About This</div>
-  <h4>Is proof-of-work wasteful?</h4>
-  <p class="q-start"><svg class="ico"><use href="#ico-lightning"/></svg> Bitcoin mining uses as much electricity as entire countries. Is this justified?</p>
-  <div class="think-line"></div>
-  <p style="font-size:0.9rem;color:var(--text-light);line-height:1.75">Critics say yes, it is wasteful. Defenders say: <strong>banks and gold mining ALSO use massive energy, we just do not measure it the same way.</strong> The question is not "does it use energy?" but "is the SECURITY it provides worth the energy cost?" For a global, trustless, censorship-resistant ledger, many argue yes. For a local rewards program? Probably not. <strong>Context matters.</strong></p>
-</div>
 </div>
 
-<div class="root-ck">
-  <div class="rc-label">ROOT CHECK NO. 3</div>
-  <h4>Water What Was Planted</h4>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text">A centralized ledger creates a single point of failure, when the authority is lost, trust collapses and trade stops</div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text">Cryptographic hashing creates unique fingerprints for data, and chaining blocks together makes altering history detectable</div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text">Proof of work makes writing a block expensive, so the honest majority always out-mines any attacker, and the longest chain wins any disagreement</div></div>
-</div>
-
+<!-- ==================== CHAPTER 4 ==================== -->
 <div class="ch-head">
   <div class="page">
     <div class="ch-badge">Chapter Four</div>
     <div class="ch-num">04</div>
-    <h1 class="ch-title">The Byzantine Ant Problem</h1>
-    <p class="ch-sub">How to reach agreement when some ants are liars</p>
+    <h2 class="ch-title">The Autoimmune Response</h2>
+    <p class="ch-sub">When the verification system attacks what it should protect.</p>
   </div>
 </div>
-<div class="ribbon"><p>"The integrity of the upright guides them, but the unfaithful are destroyed by their duplicity.". Proverbs 11:3</p></div>
 
 <div class="page">
-<section class="section prose">
-  <h2><span><svg class="ico"><use href="#ico-masks"/></svg></span> The Trust Paradox</h2>
-  <p>The colony had built an incredible system. But Ada wanted to stress-test it against the hardest scenario imaginable: <strong>What if some ants actively try to sabotage the network?</strong></p>
+<section class="section">
+  <div class="prose">
+    <p>In type 1 diabetes, the immune system identifies the insulin producing cells of the pancreas as foreign and destroys them. In lupus, the system attacks the joints, skin, and kidneys. In rheumatoid arthritis, healthy cartilage is treated as an invader. In each case, the verification protocol is functioning perfectly. The targeting is wrong.</p>
+    <p><dfn data-def="A condition in which the immune system mistakenly identifies the body's own healthy cells as foreign threats and attacks them. The verification mechanism works correctly; the target classification is wrong.">Autoimmune disease</dfn> is not a broken immune system. It is a precisely functioning system aimed at the wrong target. The verification machinery works. The pattern library is corrupted.</p>
+    <p><strong>Relational autoimmunity looks exactly the same.</strong></p>
 
-  <p>This is called the <em>Byzantine Generals Problem</em> a famous thought experiment in computer science. Ada adapted it for ants:</p>
+    <div class="scene">
+      <div class="scene-label">THE COLONY</div>
+      <h4>When the Colony Turns on Itself</h4>
+      <p>In rare conditions, ant colonies experience a phenomenon researchers call <em>nestmate rejection syndrome</em>. After exposure to a chemical disruption, a parasite, a sudden environmental change, or contamination from a foreign colony, individual ants begin attacking their own sisters. The colony's chemical verification gets scrambled. Workers with slightly different hydrocarbon profiles, perhaps because they work in a different chamber or eat slightly different food, get flagged as intruders.</p>
+      <p>The colony does not need enemies. It destroys itself from the inside.</p>
+    </div>
 
-  <div class="scene">
-    <div class="scene-label"><svg class="ico"><use href="#ico-scene"/></svg> The Byzantine Ant Scenario</div>
-    <h4>When Traitors Hide Among You</h4>
+    <p>You have seen this. Maybe you have lived it. After enough betrayal, the verification system stops distinguishing between threat patterns and safe patterns. Everyone triggers the alarm. Kindness looks like manipulation. Consistency looks like a setup. Vulnerability from others feels like a trap.</p>
+    <p>The person experiencing relational autoimmunity is not crazy, weak, or ungrateful. Their verification system is doing exactly what it was trained to do. The problem is that the training data was corrupted. When every significant relationship taught the pattern "closeness precedes pain," the memory cells generalize. Now <em>closeness itself</em> is classified as the antigen.</p>
 
-    <p>Imagine 10 ant colonies must coordinate an attack on a termite fortress. They communicate by messenger ants. <strong>But some colonies are traitors working for the termites!</strong></p>
+    <div class="compare">
+      <div class="compare-box compare-old">
+        <div class="compare-label">The Common Diagnosis</div>
+        <h4>"Trust Issues"</h4>
+        <p>"You just need to let people in."</p>
+        <p>"Not everyone is going to hurt you."</p>
+        <p>"You are pushing away the people who care about you."</p>
+        <p>This is like telling someone with lupus to "just stop attacking your own kidneys."</p>
+      </div>
+      <div class="compare-box compare-new">
+        <div class="compare-label">The Biological Reality</div>
+        <h4>Autoimmune Miscalibration</h4>
+        <p>Your pattern library classified "safe person" as a threat shape.</p>
+        <p>The fix is not to disable verification. It is to retrain the pattern library with new data.</p>
+        <p>That requires controlled exposure to safe relationships that do not confirm the corrupted pattern.</p>
+      </div>
+    </div>
 
-    <p><strong>The Challenge:</strong><br>
-    Honest colonies send message: "Attack at dawn!"<br>
-    Traitor colonies send conflicting messages: "Attack at noon!" or "Retreat!"</p>
-
-    <p><strong>The Problem:</strong><br>
-    How can honest colonies reach consensus when they cannot tell who is honest and who is a liar? If half attack at dawn and half attack at noon, everyone dies!</p>
-
-    <p><strong>Classic computer science says:</strong> You can tolerate up to 1/3 traitors. If MORE than 1/3 are malicious, consensus becomes impossible.</p>
+    <div class="think">
+      <div class="think-label">YOUR TURN</div>
+      <h4>Where in your life is your trust system attacking something it should protect?</h4>
+      <div class="think-line"></div>
+      <p class="q-start">Name one relationship where you know the person is safe, but your body reacts as if they are dangerous.</p>
+      <div class="think-line"></div>
+      <p class="q-start">What specific pattern are your memory cells matching to? Can you name the original infection?</p>
+      <div class="think-line"></div>
+    </div>
   </div>
-
-  <h2><span><svg class="ico"><use href="#ico-sparkle"/></svg></span> How Blockchain Solves This</h2>
-  <p>Ada explained how the ant network handles Byzantine attackers:</p>
-
-  <div class="char-grid">
-    <div class="char-card">
-      <div class="char-head"><span class="char-emoji"><svg class="ico"><use href="#ico-hash"/></svg></span><div class="char-info"><div class="char-name">Math, Not Trust</div><div class="char-title">Cryptographic Proof</div></div></div>
-      <div class="char-body"><p>Instead of trusting WHO sent a message, verify the MATH. "Is this hash valid? Is this signature correct? Is this chain the longest?" <strong>Numbers do not lie.</strong></p></div>
-    </div>
-    <div class="char-card">
-      <div class="char-head"><span class="char-emoji"><svg class="ico"><use href="#ico-pickaxe"/></svg></span><div class="char-info"><div class="char-name">Proof of Work</div><div class="char-title">Cost to Deceive</div></div></div>
-      <div class="char-body"><p>Byzantine traitors can send fake messages for free. But in blockchain, <strong>lying costs enormous computational work.</strong> The honest majority out-works the liars.</p></div>
-    </div>
-    <div class="char-card">
-      <div class="char-head"><span class="char-emoji"><svg class="ico"><use href="#ico-people"/></svg></span><div class="char-info"><div class="char-name">Decentralization</div><div class="char-title">No Single Point of Corruption</div></div></div>
-      <div class="char-body"><p>In traditional systems, corrupt the leader = corrupt the system. In blockchain, <strong>you must corrupt 51% of the entire network simultaneously.</strong> Practically impossible at scale.</p></div>
-    </div>
-    <div class="char-card">
-      <div class="char-head"><span class="char-emoji"><svg class="ico"><use href="#ico-coins"/></svg></span><div class="char-info"><div class="char-name">Economic Incentives</div><div class="char-title">Honesty Pays Better</div></div></div>
-      <div class="char-body"><p>Mining rewards make honesty profitable. An attacker with 51% mining power would earn MORE by mining honestly than by attacking! <strong>Greed aligns with security.</strong></p></div>
-    </div>
-  </div>
-
-  <h2><span><svg class="ico"><use href="#ico-target"/></svg></span> The 51% Attack</h2>
-  <p>An elder ant asked the crucial question: "Ada, you keep saying '51%' as if it is impossible. But what if an attacker DOES control 51% of mining power?"</p>
-
-  <p>Ada nodded gravely. "Then we have a problem. A big one."</p>
-
-  <div class="scene">
-    <div class="scene-label"><svg class="ico"><use href="#ico-skull"/></svg> The 51% Attack Scenario</div>
-    <h4>When One Attacker Controls the Majority</h4>
-
-    <p><strong>What the attacker CAN do:</strong></p>
-    <p><svg class="ico" style="width:14px;height:14px;color:#1A4A28"><use href="#ico-check"/></svg> Reverse their own recent transactions (double-spend)<br>
-    <svg class="ico" style="width:14px;height:14px;color:#1A4A28"><use href="#ico-check"/></svg> Prevent new transactions from confirming<br>
-    <svg class="ico" style="width:14px;height:14px;color:#1A4A28"><use href="#ico-check"/></svg> Prevent other miners from finding blocks<br>
-    <svg class="ico" style="width:14px;height:14px;color:#1A4A28"><use href="#ico-check"/></svg> Create the longest chain at will</p>
-
-    <p><strong>What the attacker CANNOT do:</strong></p>
-    <p><svg class="ico" style="width:14px;height:14px;color:#6A2800"><use href="#ico-x"/></svg> Steal coins from other ants (still need private keys)<br>
-    <svg class="ico" style="width:14px;height:14px;color:#6A2800"><use href="#ico-x"/></svg> Change old blocks deep in history (too much work)<br>
-    <svg class="ico" style="width:14px;height:14px;color:#6A2800"><use href="#ico-x"/></svg> Create coins from nothing (violates protocol rules)<br>
-    <svg class="ico" style="width:14px;height:14px;color:#6A2800"><use href="#ico-x"/></svg> Force the network to accept invalid transactions</p>
-
-    <p><strong>Why it is rare:</strong><br>
-    In a large network like Bitcoin, getting 51% of global hash power requires billions of dollars in hardware and electricity. <strong>You would earn more by mining honestly than by attacking.</strong></p>
-
-    <p><strong>Where it HAS happened:</strong><br>
-    Small cryptocurrency networks with low hash power have been 51% attacked. This is why <strong>network size matters.</strong> Bigger = safer.</p>
-  </div>
-
-  <div class="viz"><div class="viz-glow"></div><div class="viz-inner">
-    <div class="viz-top"><div class="viz-icon-wrap"><svg class="ico"><use href="#ico-scales"/></svg></div><div class="viz-meta"><div class="viz-label">The Security Spectrum</div><h4>When Blockchain Works and When It Does Not</h4></div></div>
-    <div class="viz-body">
-      <p><strong>STRONG SECURITY (Bitcoin, Ethereum):</strong><br>
-      Millions of miners globally, decades of accumulated hash power, attacking costs billions. <strong>Effectively impossible to 51% attack.</strong></p>
-
-      <p><strong>MEDIUM SECURITY (Mid-tier cryptos):</strong><br>
-      Thousands of miners, moderate hash power, attacking costs millions but is technically possible. <strong>Generally safe but vulnerable to nation-state actors.</strong></p>
-
-      <p><strong>WEAK SECURITY (Small chains):</strong><br>
-      Dozens of miners, low hash power, attacking costs thousands and has been done multiple times. <strong>Do not trust these for important transactions.</strong></p>
-
-      <div class="viz-lesson">Blockchain security is NOT binary. It exists on a spectrum based on network size, hash power, and economic incentives. <strong>The bigger and more decentralized the network, the more secure it becomes.</strong> This is why Bitcoin is more secure than "FastCoin2000" even if FastCoin has newer tech.</div>
-    </div>
-  </div></div>
-
-  <h2><span><svg class="ico"><use href="#ico-lock"/></svg></span> Digital Signatures: Proving Identity Without Revealing It</h2>
-  <p>Ada introduced one more critical concept: "How do we know a transaction actually came from the ant who claims to have sent it?"</p>
-
-  <div class="scene">
-    <div class="scene-label"><svg class="ico"><use href="#ico-pen"/></svg> The Signature System</div>
-    <h4>Public and Private Keys</h4>
-
-    <p><strong>Every ant gets two keys (numbers):</strong></p>
-
-    <p><strong>Private Key:</strong> A secret number ONLY you know. Never share this. Think of it as your signature that no one can forge.</p>
-
-    <p><strong>Public Key:</strong> A number derived from your private key that you CAN share. Anyone can use this to verify your signature.</p>
-
-    <p><strong>How it works:</strong><br>
-    1. Ant #412 wants to send 5 seeds to Ant #88<br>
-    2. Ant #412 creates transaction: "Send 5 seeds to Ant#88"<br>
-    3. Ant #412 SIGNS it with their private key<br>
-    4. Network verifies signature using Ant #412's public key<br>
-    5. If signature is valid → transaction is authentic<br>
-    6. If signature is invalid → transaction is rejected</p>
-
-    <p><strong>The magic:</strong> You can VERIFY a signature without ever seeing the private key. And you cannot FORGE a signature without the private key. <strong>Asymmetric cryptography makes this possible.</strong></p>
-  </div>
-
-  <p>"This is how we have ownership without identity," Ada explained. "You do not need to tell me WHO you are. Just prove you control the private key associated with those coins. <strong>The math is the identity.</strong>"</p>
 </section>
-
-<div class="think">
-  <div class="think-label"><svg class="ico"><use href="#ico-thought"/></svg> Think About This</div>
-  <h4>What happens if you lose your private key?</h4>
-  <p class="q-start"><svg class="ico"><use href="#ico-key"/></svg> If your private key is your ONLY proof of ownership, what happens if you forget it or lose it?</p>
-  <div class="think-line"></div>
-  <p style="font-size:0.9rem;color:var(--text-light);line-height:1.75"><strong>Your coins are gone forever. No customer service. No password reset.</strong> This is the trade-off of trustless systems. No one can take your coins without your key (good!) but also no one can help you recover lost keys (bad!). Billions of dollars in Bitcoin are permanently lost due to forgotten passwords. <strong>With great power comes great responsibility.</strong></p>
-</div>
 </div>
 
-<div class="root-ck">
-  <div class="rc-label">ROOT CHECK NO. 4</div>
-  <h4>Water What Was Planted</h4>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text">A centralized ledger creates a single point of failure, when the authority is lost, trust collapses</div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text">Cryptographic hashing and chaining blocks makes altering history detectable, change one block and every link breaks</div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text">Proof of work makes writing blocks expensive so the honest majority always wins, and the longest chain resolves disagreements</div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text">The Byzantine Generals Problem is solved by replacing trust in people with trust in math, a 51% attack is theoretically possible but economically irrational at scale</div></div>
-</div>
-
+<!-- ==================== CHAPTER 5 ==================== -->
 <div class="ch-head">
   <div class="page">
     <div class="ch-badge">Chapter Five</div>
     <div class="ch-num">05</div>
-    <h1 class="ch-title">Beyond Currency</h1>
-    <p class="ch-sub">Smart contracts, DAOs, and the real revolution</p>
+    <h2 class="ch-title">The Tolerance Threshold</h2>
+    <p class="ch-sub">The hardest skill in biology and in relationships: learning what to not attack.</p>
   </div>
 </div>
-<div class="ribbon"><p>"For where your treasure is, there your heart will be also.". Matthew 6:21</p></div>
 
 <div class="page">
-<section class="section prose">
-  <h2><span><svg class="ico"><use href="#ico-scroll"/></svg></span> The Smart Contract Revolution</h2>
-  <p>Years after implementing the blockchain ledger, a young ant named <strong>Victoria</strong> had a radical idea: "What if we do not just record transactions? What if we record RULES?"</p>
+<section class="section">
+  <div class="prose">
+    <p>Before a T cell is released into your bloodstream, it passes through an organ called the <dfn data-def="A small organ behind the breastbone where immature T-cells are tested. Those that react too strongly to the body's own proteins are eliminated. Roughly 95% of developing T-cells fail this test and are destroyed.">thymus</dfn>. Inside the thymus, every developing T cell is tested. If it reacts too strongly to the body's own proteins, it is destroyed. Roughly 95 percent of all developing T cells fail this test. They are killed before they ever enter the bloodstream.</p>
+    <p>Read that again. <strong>Your body eliminates 95 percent of its own immune cells because they would attack you.</strong></p>
+    <p>This is called <em>central tolerance</em>. It is the biological process of learning what not to fight. Without it, every immune cell would be an autoimmune disease waiting to happen. The most important thing the immune system ever learns is not what to attack. It is what to leave alone.</p>
 
-  <div class="scene">
-    <div class="scene-label"><svg class="ico"><use href="#ico-bulb"/></svg> Victoria's Proposal</div>
-    <h4>Programs on the Blockchain</h4>
-
-    <p><strong>Traditional contract:</strong><br>
-    "If Ant #412 delivers 10 seeds to Ant #88 by Day 50, Ant #88 pays 15 seeds."<br>
-    <em>Problem:</em> Requires both ants to trust each other AND requires a judge to enforce if there is a dispute.</p>
-
-    <p><strong>Smart contract:</strong><br>
-    <code style="font-family:'Fira Code',monospace;background:#1a1a1a;color:#e0e0e0;padding:2px 6px;border-radius:4px;font-size:0.85rem">
-    IF (Ant#412 sends 10 seeds to contract address)<br>
-    AND (Day <= 50)<br>
-    THEN (Automatically send 15 seeds to Ant#412)<br>
-    ELSE (Refund 10 seeds to Ant#88)
-    </code></p>
-
-    <p><strong>The revolution:</strong> The blockchain ITSELF enforces the contract. No lawyers. No judges. No trust needed. <strong>Code is law.</strong></p>
-  </div>
-
-  <div class="char-grid">
-    <div class="char-card">
-      <div class="char-head"><span class="char-emoji"><svg class="ico"><use href="#ico-robot"/></svg></span><div class="char-info"><div class="char-name">Smart Contracts</div><div class="char-title">Self-Executing Code</div></div></div>
-      <div class="char-body"><p>Programs stored on the blockchain that automatically execute when conditions are met. <strong>No middleman. No discretion. Pure logic.</strong> Used for everything from financial derivatives to digital art ownership.</p></div>
-    </div>
-    <div class="char-card">
-      <div class="char-head"><span class="char-emoji"><svg class="ico"><use href="#ico-columns"/></svg></span><div class="char-info"><div class="char-name">DAOs</div><div class="char-title">Decentralized Autonomous Organizations</div></div></div>
-      <div class="char-body"><p>Entire organizations run by smart contracts. No CEO. No board. Just code and token holders voting on proposals. <strong>Some DAOs manage billions of dollars with no human executives.</strong></p></div>
-    </div>
-    <div class="char-card">
-      <div class="char-head"><span class="char-emoji"><svg class="ico"><use href="#ico-ticket"/></svg></span><div class="char-info"><div class="char-name">NFTs</div><div class="char-title">Unique Digital Ownership</div></div></div>
-      <div class="char-body"><p>Non-Fungible Tokens prove ownership of unique digital items. Not just JPEGs concert tickets, real estate deeds, medical records, game items. <strong>Blockchain proves "this specific thing belongs to you."</strong></p></div>
-    </div>
-    <div class="char-card">
-      <div class="char-head"><span class="char-emoji"><svg class="ico"><use href="#ico-bank"/></svg></span><div class="char-info"><div class="char-name">DeFi</div><div class="char-title">Decentralized Finance</div></div></div>
-      <div class="char-body"><p>Banking without banks. Lending, borrowing, trading, insurance all via smart contracts. <strong>Billions of dollars transact daily with no central authority.</strong> Some see this as the future of finance. Others see disaster waiting to happen.</p></div>
-    </div>
-  </div>
-
-  <h2><span><svg class="ico"><use href="#ico-globe"/></svg></span> Real-World Applications</h2>
-  <p>The ant colony's blockchain inspired applications across the forest:</p>
-
-  <div class="network">
-    <div class="network-title"><svg class="ico"><use href="#ico-globe"/></svg> BLOCKCHAIN USE CASES</div>
-
-    <div class="scene" style="margin:0 0 16px 0">
-      <div class="scene-label"><svg class="ico"><use href="#ico-coins"/></svg> FINANCE</div>
-      <h4 style="font-size:1rem;margin-bottom:8px">Cross-Border Payments</h4>
-      <p style="font-size:0.88rem;margin:0">Send money globally in minutes with tiny fees. No banks. No intermediaries. <strong>Bitcoin processes $billions daily.</strong></p>
+    <div class="viz">
+      <div class="viz-glow"></div>
+      <div class="viz-inner">
+        <div class="viz-top">
+          <div class="viz-icon-wrap">&#x2696;&#xFE0F;</div>
+          <div class="viz-meta">
+            <div class="viz-label">Immune Principle</div>
+            <h4>Central Tolerance</h4>
+          </div>
+        </div>
+        <div class="viz-body">
+          <p>Picture the thymus as a training academy. Every T cell cadet is presented with fragments of your own body's normal proteins. If the cadet reacts aggressively to a self protein, it is court martialed and destroyed. Only the T cells that can distinguish self from non self graduate.</p>
+          <p><strong>Now apply this to your relationships.</strong> Not every defensive instinct deserves to graduate into action. Some of your protective impulses, your suspicion, your withdrawal, your preemptive rejection, would destroy healthy tissue if deployed. The mature immune system learns this. The immature one attacks everything.</p>
+        </div>
+        <div class="viz-lesson">Wisdom is not stronger defenses. Wisdom is a better trained thymus. The ability to feel the alarm, evaluate it, and stand down when the target is self, not threat.</div>
+      </div>
     </div>
 
-    <div class="scene" style="margin:0 0 16px 0">
-      <div class="scene-label"><svg class="ico"><use href="#ico-package"/></svg> SUPPLY CHAIN</div>
-      <h4 style="font-size:1rem;margin-bottom:8px">Tracking Products</h4>
-      <p style="font-size:0.88rem;margin:0">Walmart uses blockchain to track food from farm to shelf. Every step recorded. Impossible to fake. <strong>Food poisoning traced in seconds, not weeks.</strong></p>
+    <p>There is a second layer called <dfn data-def="Immune tolerance mechanisms that operate outside the thymus, in the body's tissues. These suppress T-cells that escaped central tolerance and would otherwise attack healthy tissue in specific organs.">peripheral tolerance</dfn>. Some T cells slip through the thymus and still carry the potential to attack self tissue. The body handles this with regulatory T cells, suppressors that patrol the tissues and shut down misdirected attacks before they cause damage.</p>
+    <p>In relational terms, peripheral tolerance is the friend who says, "I hear that alarm going off in you, but I need you to look at the evidence before you act on it." It is the internal voice that says, "Yes, this person is late, and yes, the last person who was consistently late was lying to you, but those are two different people. Check the pattern before you fire."</p>
+
+    <div class="scene">
+      <div class="scene-label">THE COLONY</div>
+      <h4>The Foreign Food Problem</h4>
+      <p>When a colony discovers a new food source, foragers return carrying unfamiliar chemical signatures. They smell wrong. But the colony has learned through repeated exposure that foragers who leave always return smelling slightly different. The verification system tolerates the variation within bounds. A forager returning with traces of a new flower is tolerated. A completely foreign chemical signature triggers an attack.</p>
+      <p>The colony calibrates its tolerance threshold through exposure. Too strict, and it rejects its own foragers. Too loose, and parasites walk in.</p>
     </div>
 
-    <div class="scene" style="margin:0 0 16px 0">
-      <div class="scene-label"><svg class="ico"><use href="#ico-medical"/></svg> HEALTHCARE</div>
-      <h4 style="font-size:1rem;margin-bottom:8px">Medical Records</h4>
-      <p style="font-size:0.88rem;margin:0">Your health data on blockchain. You control who sees it. Doctors access instantly. <strong>No lost records. No fax machines.</strong></p>
-    </div>
+    <p>The tolerance threshold is the most difficult calibration in both immunology and in relationships. Too aggressive, and you destroy the people who are trying to love you. Too permissive, and you let genuine threats walk through your defenses unchallenged.</p>
+    <p>Most people are not miscalibrated in one direction. They are miscalibrated in both directions simultaneously. They tolerate clear violations from familiar people while attacking ambiguous signals from unfamiliar ones. The ex who keeps crossing boundaries gets infinite patience. The new friend who is five minutes late gets analyzed for red flags.</p>
 
-    <div class="scene" style="margin:0 0 16px 0">
-      <div class="scene-label"><svg class="ico"><use href="#ico-ballot"/></svg> VOTING</div>
-      <h4 style="font-size:1rem;margin-bottom:8px">Transparent Elections</h4>
-      <p style="font-size:0.88rem;margin:0">Every vote recorded on blockchain. Impossible to hack or delete. Fully auditable. <strong>Some countries are piloting this now.</strong></p>
-    </div>
-
-    <div class="scene" style="margin:0 0 16px 0">
-      <div class="scene-label"><svg class="ico"><use href="#ico-house"/></svg> REAL ESTATE</div>
-      <h4 style="font-size:1rem;margin-bottom:8px">Property Titles</h4>
-      <p style="font-size:0.88rem;margin:0">Home ownership recorded on blockchain. No title companies. No escrow fees. <strong>Transfer property in hours, not months.</strong></p>
-    </div>
-
-    <div class="scene" style="margin:0">
-      <div class="scene-label"><svg class="ico"><use href="#ico-gamepad"/></svg> GAMING</div>
-      <h4 style="font-size:1rem;margin-bottom:8px">True Item Ownership</h4>
-      <p style="font-size:0.88rem;margin:0">That legendary sword you earned? <strong>You actually own it.</strong> Trade it. Sell it. Use it in other games. Game company cannot take it away.</p>
+    <div class="root-ck">
+      <div class="rc-label">ROOT CHECK</div>
+      <h4>Where is your tolerance threshold set?</h4>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Too strict:</strong> You pull away from people at the first sign of imperfection. Your thymus is killing too many T cells. You have strong defenses and no allies.</div></div>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Too loose:</strong> You keep letting the same types of people through your verification because they say the right words. Your thymus is not testing anything.</div></div>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Calibrated:</strong> You can feel the alarm, pause, identify the specific pattern triggering it, and then decide whether the pattern matches a real threat or an old memory cell firing on a new face.</div></div>
     </div>
   </div>
-
-  <h2><span><svg class="ico"><use href="#ico-warning"/></svg></span> Where Blockchain Does NOT Help</h2>
-  <p>Ada was careful to warn the colony about blockchain hype:</p>
-
-  <div class="gq"><p>"Blockchain solves ONE specific problem: creating trust between strangers without a middleman. If you ALREADY have trust, or if a middleman is FINE, blockchain just adds complexity for no benefit."</p></div>
-
-  <div class="compare">
-    <div class="compare-box compare-old">
-      <div class="compare-label"><svg class="ico"><use href="#ico-x"/></svg> BAD USE OF BLOCKCHAIN</div>
-      <p><strong>Internal company database:</strong> You trust your company. Just use PostgreSQL. It is 1000x faster and cheaper.</p>
-      <p style="margin-top:10px"><strong>Storing large files:</strong> Blockchain is expensive storage. Use S3 or similar.</p>
-      <p style="margin-top:10px"><strong>High-speed transactions:</strong> Need millions of transactions per second? Blockchain cannot do that. Use Visa.</p>
-    </div>
-    <div class="compare-box compare-new">
-      <div class="compare-label"><svg class="ico"><use href="#ico-check"/></svg> GOOD USE OF BLOCKCHAIN</div>
-      <p><strong>Multiple parties who do not trust each other:</strong> International shipping, multi-party contracts, etc.</p>
-      <p style="margin-top:10px"><strong>Censorship resistance needed:</strong> Assets governments or corporations might try to seize.</p>
-      <p style="margin-top:10px"><strong>Provable scarcity required:</strong> Digital collectibles, limited-edition items, identity proofs.</p>
-    </div>
-  </div>
-
-  <h2><span><svg class="ico"><use href="#ico-crystal"/></svg></span> The Future of Trust</h2>
-  <p>As the ant colony thrived on their blockchain system, Ada reflected on what they had built:</p>
-
-  <div class="viz"><div class="viz-glow"></div><div class="viz-inner">
-    <div class="viz-top"><div class="viz-icon-wrap"><svg class="ico"><use href="#ico-star"/></svg></div><div class="viz-meta"><div class="viz-label">The Paradigm Shift</div><h4>From Trust in People to Trust in Math</h4></div></div>
-    <div class="viz-body">
-      <p><strong>Old World:</strong> I trust you because I know you, or because a powerful authority vouches for you.</p>
-
-      <p><strong>New World:</strong> I do not need to trust you. I trust the MATH. The cryptography. The economic incentives. <strong>Trust the system, not the people.</strong></p>
-
-      <p><strong>What this enables:</strong><br>
-      &#8226; Strangers across the world cooperate without intermediaries<br>
-      &#8226; Value transfers in minutes instead of days<br>
-      &#8226; Ownership that no authority can revoke<br>
-      &#8226; Organizations that run themselves via code<br>
-      &#8226; Economic systems resistant to manipulation</p>
-
-      <div class="viz-lesson">Blockchain does not eliminate trust. It TRANSFORMS trust. Instead of trusting individuals or institutions, <strong>we trust cryptographic proofs and economic incentives.</strong> This is not better in all cases. But for certain problems problems where trust is expensive, slow, or unavailable it is revolutionary.</div>
-    </div>
-  </div></div>
 </section>
-
-<div class="think">
-  <div class="think-label">The Final Test <svg class="ico"><use href="#ico-brain"/></svg></div>
-  <h4>Can you answer these without looking back?</h4>
-  <p class="q-start"><svg class="ico"><use href="#ico-link"/></svg> What is a hash function and why is it one-way?</p><div class="think-line"></div>
-  <p class="q-start"><svg class="ico"><use href="#ico-pickaxe"/></svg> Why does mining make the network secure?</p><div class="think-line"></div>
-  <p class="q-start"><svg class="ico"><use href="#ico-people"/></svg> What is the Byzantine Generals Problem and how does blockchain solve it?</p><div class="think-line"></div>
-  <p class="q-start"><svg class="ico"><use href="#ico-key"/></svg> Explain public/private keys in one sentence:</p><div class="think-line"></div>
-  <p class="q-start"><svg class="ico"><use href="#ico-warning"/></svg> Name one thing blockchain is GOOD at and one thing it is BAD at:</p><div class="think-line"></div>
-  <p style="font-weight:800;color:var(--amber);margin-top:14px;font-family:'Nunito',sans-serif;font-size:0.95rem">If you can answer all five, you understand blockchain better than 95% of people who own crypto.</p>
 </div>
+
+<!-- ==================== CHAPTER 6 ==================== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-badge">Chapter Six</div>
+    <div class="ch-num">06</div>
+    <h2 class="ch-title">The Colony Protocol</h2>
+    <p class="ch-sub">Why trust requires a network, not just a decision.</p>
+  </div>
 </div>
 
 <div class="page">
-<div class="prompt">
-  <div class="prompt-head">THE ANT NETWORK. INSTALLATION PROMPT</div>
-  <div class="prompt-body"><strong>I just read The Ant Network.</strong> I now understand that: Blockchain solves the problem of trust between strangers without a middleman. Cryptographic hashing creates tamper-evident fingerprints. Blocks are chained so changing history requires rewriting every subsequent block. Proof of work makes fraud economically irrational. The Byzantine Generals Problem is solved by trusting math instead of people. Smart contracts extend the blockchain from recording transactions to enforcing rules automatically.<br><br><strong>I want to go deeper now.</strong> When I bring you a real-world scenario, a supply chain, a voting system, a financial product, help me evaluate whether blockchain is the right solution or unnecessary complexity. Walk me through the trust analysis: Who are the parties? Do they trust each other? Is a middleman acceptable? Is censorship resistance needed?<br><br><strong>Help me think like Ada. Not every problem needs a blockchain, but show me how to recognize the ones that do.</strong></div>
-</div>
+<section class="section">
+  <div class="prose">
+    <p>A single immune cell cannot protect you. One T cell, no matter how well trained, cannot patrol 37 trillion cells. The immune system works because it is <em>distributed</em>. Millions of cells, each checking a small territory, reporting signals to each other through chemical messengers called <dfn data-def="Small signaling proteins released by immune cells that coordinate the immune response. They function as chemical messages between cells, amplifying or suppressing immune activity.">cytokines</dfn>.</p>
+    <p>No single cell knows the full picture. Each cell knows its local environment. But the network of signals creates a collective intelligence that no individual cell possesses.</p>
+
+    <div class="network">
+      <div class="network-title">Distributed Trust Verification</div>
+      <div class="network-grid">
+        <div class="network-node">
+          <div class="network-node-icon">&#x1F9EC;</div>
+          <div class="network-node-name">Your Gut</div>
+        </div>
+        <div class="network-node">
+          <div class="network-node-icon">&#x1F441;&#xFE0F;</div>
+          <div class="network-node-name">Your Observation</div>
+        </div>
+        <div class="network-node">
+          <div class="network-node-icon">&#x1F91D;</div>
+          <div class="network-node-name">Trusted Advisors</div>
+        </div>
+      </div>
+      <div class="network-arrow">&#x21C4;</div>
+      <p style="font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:600;color:var(--text-light);text-align:center">No single signal is sufficient. The immune response requires convergent signals from multiple independent sources before it activates.</p>
+    </div>
+
+    <p>The colony runs the same protocol. No single guard ant decides the fate of a stranger. When a guard detects an unfamiliar scent, she raises an alarm pheromone. Other guards converge. Multiple ants independently verify the chemical signature. If enough independent verifiers confirm the mismatch, the colony attacks. If the majority read the signature as close enough, the stranger is tolerated.</p>
+    <p><strong>This is why isolation is the single greatest threat to your trust system.</strong></p>
+    <p>When you are isolated, you are running a single node immune system. One signal source, your own perception, with no independent verification. Every alarm feels equally urgent because there is no network to cross reference against.</p>
+    <p>The person who has three trusted friends they can call and say, "Am I being paranoid or is this a real red flag?" has a distributed immune system. Three independent pattern readers evaluating the same signal. If all three say "that is a real threat," the confidence level is extremely high. If all three say "you are firing on an old pattern," the recalibration data is invaluable.</p>
+
+    <div class="gq">
+      <p>Your immune system was never designed to operate alone. Neither was your trust system. A single cell making life or death decisions about 37 trillion other cells will eventually make an error. The colony survives not because individual ants are perfect verifiers, but because the network catches what individuals miss.</p>
+    </div>
+
+    <div class="think">
+      <div class="think-label">YOUR TURN</div>
+      <h4>How many independent trust verification nodes do you have?</h4>
+      <p class="q-start">Name 2 to 3 people you would call before making a major trust decision.</p>
+      <div class="think-line"></div>
+      <p class="q-start">If you cannot name anyone, that is not a personality trait. That is a single node immune system operating without backup.</p>
+    </div>
+  </div>
+</section>
 </div>
 
+<!-- ==================== CHAPTER 7 ==================== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-badge">Chapter Seven</div>
+    <div class="ch-num">07</div>
+    <h2 class="ch-title">The Deliberate Exposure</h2>
+    <p class="ch-sub">The only way to build immunity is controlled vulnerability.</p>
+  </div>
+</div>
+
+<div class="page">
+<section class="section">
+  <div class="prose">
+    <p>A <dfn data-def="A biological preparation that stimulates the immune system to recognize and fight a specific pathogen without causing the full disease. It works by exposing the system to a controlled, weakened, or fragmented version of the threat.">vaccine</dfn> works by introducing a controlled fragment of a pathogen, enough to trigger an immune response and build memory cells, without causing the full disease. The exposure is deliberate. The dose is calibrated. The risk is real but bounded.</p>
+    <p>Without vaccination, the only way to build immunity is to survive the full infection. Some people do. Some people die. The vaccine gives you the immunity without the catastrophe.</p>
+    <p><strong>Building trust works exactly the same way.</strong></p>
+
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-marker">1</div>
+        <div class="flow-content">
+          <h4>Small Controlled Exposure</h4>
+          <p>Share something small but real with a person. Not a performance of vulnerability. An actual fragment of yourself that you would normally keep hidden. Watch what they do with it.</p>
+        </div>
+      </div>
+      <div class="flow-arrow">&#x2193;</div>
+      <div class="flow-step">
+        <div class="flow-marker">2</div>
+        <div class="flow-content">
+          <h4>Read the Response Pattern</h4>
+          <p>Did they handle the fragment carefully? Did they reciprocate with a fragment of their own? Did they weaponize it, dismiss it, or simply receive it? This is the verification data. This is the MHC reading.</p>
+        </div>
+      </div>
+      <div class="flow-arrow">&#x2193;</div>
+      <div class="flow-step">
+        <div class="flow-marker">3</div>
+        <div class="flow-content">
+          <h4>Calibrate and Repeat</h4>
+          <p>If the pattern checks out, increase the dose slightly. Share something a bit more real. Watch again. Each successful exchange builds a memory cell that says "this pattern is safe." Over time, the accumulated evidence creates genuine immunity: trust that has been tested, not assumed.</p>
+        </div>
+      </div>
+      <div class="flow-arrow">&#x2193;</div>
+      <div class="flow-step">
+        <div class="flow-marker">4</div>
+        <div class="flow-content">
+          <h4>Antibody Level Reached</h4>
+          <p>After enough verified exchanges, you reach a threshold immunologists call <em>seroconversion</em>. The system switches from "vigilant" to "protected." Not because you decided to trust. Because the evidence accumulated past the verification threshold.</p>
+        </div>
+      </div>
+    </div>
+
+    <p>The person who says "I just cannot trust anyone" is often the person who refuses the vaccine because the disease once nearly killed them. Understandable. But the alternative to vaccination is not safety. It is either surviving the next full infection by luck, or living in quarantine forever.</p>
+    <p>Controlled vulnerability is the only way to build trust immunity. There is no shortcut. There is no way to build memory cells without exposure. But the exposure can be graduated, calibrated, and conducted with a network of trusted verifiers watching alongside you.</p>
+
+    <div class="prompt-card">
+      <div class="pc-label">INSTALLATION PROMPT</div>
+      <p>This week, choose one person and share one small, honest fragment you would normally keep hidden. Not a trauma dump. Not a test. A genuine piece of information about how you actually feel about something specific.</p>
+      <p>Then read their MHC window. Watch what they display in response. Not their words. Their pattern. Does the pattern match what your verification system classifies as safe?</p>
+      <p>Write down what you observed. This is your first controlled exposure. Your trust immune system is learning.</p>
+    </div>
+
+    <div class="root-ck">
+      <div class="rc-label">FINAL ROOT CHECK</div>
+      <h4>The Full Verification Protocol</h4>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>MHC Reading:</strong> I verify people by reading what they display over time, not by listening to what they claim.</div></div>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Pattern Library:</strong> I recognize that I match new people against old patterns. Some of those matches are accurate warnings. Some are memory cells firing on the wrong target.</div></div>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Tolerance Threshold:</strong> I know where my threshold is set and I am actively recalibrating it. Not looser. Not tighter. More precise.</div></div>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Distributed Network:</strong> I do not verify trust alone. I have independent nodes who help me cross reference my readings.</div></div>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Controlled Exposure:</strong> I build trust through graduated, verified exchanges. Not leaps of faith. Not permanent quarantine. Calibrated vulnerability.</div></div>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- ==================== FINALE ==================== -->
 <section class="finale">
-  <span class="finale-emoji"><svg class="ico"><use href="#ico-ant"/></svg></span>
-  <h2>The colony thrived not because ants trusted each other,<br><span>but because they trusted the math.</span></h2>
-  <p>Blockchain is not magic. It is clever math, economic incentives, and a lot of redundant computation. It solves one specific problem extraordinarily well: enabling strangers to cooperate without a middleman. Everything else is either application of that principle, or hype.</p>
-  <p style="margin-top:24px;font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:700"><svg class="ico" style="width:16px;height:16px;color:var(--amber-glow)"><use href="#ico-link"/></svg> The future is not trustless. It is trust through cryptography. <svg class="ico" style="width:16px;height:16px;color:var(--amber-glow)"><use href="#ico-lock"/></svg></p>
+  <div class="finale-emoji">&#x1F41C;</div>
+  <h2>The Colony Knows<span>What Your Body Already Knew</span></h2>
+  <p>Trust is not a feeling. It is not a decision. It is a <em>verification architecture</em> that has been running in every living organism for 500 million years. Your body runs it. The colony runs it. And now that you can see the machinery, you can maintain it.</p>
+  <p>You cannot delete memory cells. You cannot skip the thymus. You cannot build immunity without exposure. But you can recalibrate. You can build a network. You can learn the difference between a real pathogen and an old ghost that happens to share a few fragments with something that once hurt you.</p>
+  <p>The colony survives not because it is fearless, but because its verification protocol is precise. Yours can be too.</p>
 </section>
 
 <footer>
-  <p>"Your word is a lamp to my feet and a light to my path." Psalm 119:105</p>
+  <p>"Trust in the Lord with all your heart, and do not lean on your own understanding. In all your ways acknowledge him, and he will make straight your paths." Proverbs 3:5-6</p>
   <div class="brand">KingdomBuilders AI</div>
-  <p style="margin-top:14px;font-family:'Nunito',sans-serif;font-weight:700">Understanding Complex Systems Through Story</p>
 </footer>
-
-<div style="text-align:center;padding:20px 24px 32px;background:#0A0604;border-top:1px solid rgba(212,140,32,0.08);font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:700;color:rgba(255,255,255,0.2);line-height:1.6">
-  To save as PDF: Open this file in your browser → File → Print → "Save as PDF"<br>
-  Works on desktop, iPhone, iPad, and Android.
-</div>
 
 </body>
 </html>

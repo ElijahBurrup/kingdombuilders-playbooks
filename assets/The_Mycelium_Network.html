@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Mycelium Network: How Network Effects Actually Build Monopolies (And How to Create Them)</title>
+<title>The Mycelium Network. Why Cooperation Wins</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -18,6 +18,8 @@
   --white:#FFFFFF;--radius:16px;
   --shadow-soft:0 2px 16px rgba(58,42,26,0.08);
   --shadow-mid:0 4px 28px rgba(58,42,26,0.12);
+  --before-bg:#FFF5EE;--before-border:#C8956C;--before-text:#5A2A10;
+  --after-bg:#EEF5EE;--after-border:#6A9A6A;--after-text:#1A3A1A;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;font-size:18px}
@@ -29,7 +31,7 @@ h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
 .prose p:last-child{margin-bottom:0}
 .prose strong{color:var(--soil);font-weight:700}
 .prose em{color:var(--glow);font-style:normal;font-weight:600}
-.prose h2{font-size:1.4rem;color:var(--soil);margin:40px 0 16px;letter-spacing:-0.01em;display:flex;align-items:center;gap:10px}
+.prose h2{font-size:1.4rem;color:var(--soil);margin:40px 0 16px;letter-spacing:-0.01em}
 
 /* ===== COVER ===== */
 .cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;
@@ -42,37 +44,29 @@ h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
 .thread:nth-child(3){left:50%;animation-delay:-4s}
 .thread:nth-child(4){left:70%;animation-delay:-6s}
 .thread:nth-child(5){left:90%;animation-delay:-1s}
-@keyframes thread-grow{
-  0%,100%{transform:scaleY(0);opacity:0}
-  50%{transform:scaleY(1);opacity:0.4}
-}
+@keyframes thread-grow{0%,100%{transform:scaleY(0);opacity:0}50%{transform:scaleY(1);opacity:0.4}}
 .spore{position:absolute;width:3px;height:3px;border-radius:50%;background:var(--glow-bright);
   animation:spore-drift linear infinite;pointer-events:none;opacity:0}
 .spore:nth-child(6){left:15%;animation-duration:12s;animation-delay:0s}
 .spore:nth-child(7){left:45%;animation-duration:15s;animation-delay:-5s}
 .spore:nth-child(8){left:75%;animation-duration:10s;animation-delay:-8s}
-@keyframes spore-drift{
-  0%{transform:translate(0,100vh);opacity:0}
-  10%{opacity:0.6}
-  90%{opacity:0.3}
-  100%{transform:translate(50px,-100px);opacity:0}
-}
+@keyframes spore-drift{0%{transform:translate(0,100vh);opacity:0}10%{opacity:0.6}90%{opacity:0.3}100%{transform:translate(50px,-100px);opacity:0}}
 .ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.015;mix-blend-mode:overlay;pointer-events:none}
 .cover-content{position:relative;z-index:2;padding:52px 26px}
 .cover-badge{display:inline-block;padding:7px 24px;border:1px solid rgba(232,192,112,0.35);border-radius:50px;
   font-family:'Nunito',sans-serif;font-size:0.56rem;font-weight:800;letter-spacing:4.5px;text-transform:uppercase;
   color:var(--glow-bright);margin-bottom:38px}
-.cover-icon{font-size:4rem;margin-bottom:18px;display:block;animation:pulse-glow 3s ease-in-out infinite}
+.cover-art{width:200px;height:180px;margin:0 auto 24px;animation:pulse-glow 4s ease-in-out infinite}
+.cover-art svg{width:100%;height:100%;filter:drop-shadow(0 0 12px rgba(232,192,112,0.25))}
 @keyframes pulse-glow{0%,100%{transform:scale(1);filter:drop-shadow(0 0 10px rgba(232,192,112,0.3))}
   50%{transform:scale(1.05);filter:drop-shadow(0 0 20px rgba(232,192,112,0.6))}}
 .cover h1{font-family:'Nunito',sans-serif;font-size:clamp(2.3rem,6.5vw,4rem);font-weight:900;color:var(--white);
   line-height:1.06;margin-bottom:6px}
-.cover h1 strong{font-weight:900;color:var(--glow-bright);display:block;font-size:clamp(2.8rem,7.5vw,4.6rem)}
+.cover h1 strong{font-weight:900;color:var(--glow-bright);display:block;font-size:clamp(1.4rem,4vw,2.2rem);margin-top:8px}
 .cover-tagline{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:rgba(255,255,255,0.52);
   margin-top:26px;line-height:1.8;max-width:620px;margin-left:auto;margin-right:auto}
 .cover-tagline em{color:var(--spore-pale);font-style:normal;font-weight:600}
-.cover-art{width:200px;height:180px;margin:0 auto 24px;animation:pulse-glow 4s ease-in-out infinite}
-.cover-art svg{width:100%;height:100%;filter:drop-shadow(0 0 12px rgba(232,192,112,0.25))}
+.cover-author{font-family:'Nunito',sans-serif;font-size:0.55rem;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.12);margin-top:48px}
 
 /* ===== CHAPTER HEADS ===== */
 .ch-head{background:linear-gradient(170deg,var(--soil-dark),var(--soil));padding:76px 26px 56px;position:relative;overflow:hidden}
@@ -81,141 +75,114 @@ h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
 .ch-badge{display:inline-block;padding:5px 18px;background:rgba(232,192,112,0.12);border:1px solid rgba(232,192,112,0.28);
   border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.54rem;font-weight:800;letter-spacing:3.8px;
   text-transform:uppercase;color:var(--spore-pale);margin-bottom:22px}
-.ch-num{font-family:'Nunito',sans-serif;font-size:6rem;font-weight:900;line-height:0.88;
-  color:rgba(232,192,112,0.18);margin-bottom:-12px}
-.ch-title{font-family:'Nunito',sans-serif;font-size:2.2rem;font-weight:900;color:var(--white);
-  line-height:1.14;letter-spacing:-0.02em;margin-bottom:12px}
+.ch-num{font-family:'Nunito',sans-serif;font-size:6rem;font-weight:900;line-height:0.88;color:rgba(232,192,112,0.18);margin-bottom:-12px}
+.ch-title{font-family:'Nunito',sans-serif;font-size:2.2rem;font-weight:900;color:var(--white);line-height:1.14;letter-spacing:-0.02em;margin-bottom:12px}
 .ch-sub{font-family:'Lora',serif;font-size:0.98rem;font-style:italic;color:rgba(255,255,255,0.42);line-height:1.65}
 
-/* ===== RIBBON (scripture) ===== */
+/* ===== RIBBON ===== */
 .ribbon{text-align:center;padding:22px 24px;background:linear-gradient(135deg,rgba(232,192,112,0.04),rgba(232,192,112,0.08));border-top:1.5px solid rgba(232,192,112,0.15);border-bottom:1.5px solid rgba(232,192,112,0.15)}
 .ribbon p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:var(--text-muted);max-width:520px;margin:0 auto}
 
-/* ===== ROOT CHECK ===== */
+/* ===== SCENES ===== */
+.scene{background:linear-gradient(135deg,var(--bark-warm),var(--bark));border:1px solid var(--bark-deep);
+  border-radius:var(--radius);padding:28px;margin:32px 0;box-shadow:var(--shadow-soft)}
+.scene-label{font-family:'Nunito',sans-serif;font-size:0.68rem;font-weight:800;letter-spacing:2.5px;
+  text-transform:uppercase;color:var(--glow);margin-bottom:16px}
+.scene h4{font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:800;color:var(--soil-dark);margin-bottom:14px;line-height:1.3}
+.scene p{font-size:0.95rem;color:var(--text);line-height:1.8;margin-bottom:12px}
+.scene p:last-child{margin-bottom:0}
+
+/* ===== VISUALIZATIONS ===== */
+.viz{background:linear-gradient(135deg,#1A2A1A,#2A3A2A);border-radius:var(--radius);padding:2px;margin:48px 0;
+  box-shadow:var(--shadow-mid);position:relative;overflow:hidden}
+.viz-glow{position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,var(--glow-soft),transparent 70%);pointer-events:none}
+.viz-inner{background:linear-gradient(165deg,#0A1A0A,#1A2A1A);border-radius:calc(var(--radius) - 2px);padding:32px;position:relative}
+.viz-top{display:flex;align-items:center;gap:18px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid rgba(218,192,170,0.2)}
+.viz-icon-wrap{font-size:2.4rem;line-height:1}
+.viz-meta{flex:1}
+.viz-label{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--glow-bright);margin-bottom:6px}
+.viz-meta h4{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:800;color:var(--white);line-height:1.25}
+.viz-body p{font-size:0.95rem;color:rgba(255,255,255,0.75);line-height:1.85;margin-bottom:18px}
+.viz-body p:last-of-type{margin-bottom:0}
+.viz-body strong{color:rgba(255,255,255,0.95);font-weight:700}
+.viz-body em{color:var(--spore-pale);font-style:normal;font-weight:600}
+.viz-lesson{background:rgba(232,192,112,0.1);border:1px solid rgba(232,192,112,0.25);border-radius:12px;
+  padding:20px;margin-top:24px;font-size:0.95rem;font-style:italic;color:var(--spore-pale);line-height:1.8}
+
+/* ===== COMPARE BOXES ===== */
+.compare{display:grid;gap:20px;margin:36px 0}
+@media(min-width:640px){.compare{grid-template-columns:1fr 1fr}}
+.compare-box{border-radius:var(--radius);padding:24px;box-shadow:var(--shadow-soft)}
+.compare-old{background:var(--before-bg);border:2px solid var(--before-border)}
+.compare-new{background:var(--after-bg);border:2px solid var(--after-border)}
+.compare-label{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px}
+.compare-old .compare-label{color:var(--before-text)}
+.compare-new .compare-label{color:var(--after-text)}
+.compare-box h4{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;margin-bottom:10px}
+.compare-old h4{color:var(--before-text)}
+.compare-new h4{color:var(--after-text)}
+.compare-box p{font-size:0.92rem;line-height:1.75;margin:0 0 8px}
+.compare-old p{color:var(--before-text)}
+.compare-new p{color:var(--after-text)}
+.compare-box p:last-child{margin-bottom:0}
+
+/* ===== GRAND QUOTES ===== */
+.gq{background:linear-gradient(135deg,var(--root-dark),var(--root));border-radius:var(--radius);
+  padding:40px 32px;margin:48px 0;box-shadow:var(--shadow-mid);position:relative;overflow:hidden}
+.gq::before{content:'\201C';position:absolute;top:-20px;left:10px;font-size:12rem;font-family:Georgia,serif;
+  color:rgba(255,255,255,0.04);line-height:1;pointer-events:none}
+.gq p{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:var(--white);line-height:1.85;position:relative;margin:0}
+
+/* ===== THINK PROMPTS ===== */
+.think{background:var(--bark-warm);border:2px dashed var(--spore);border-radius:var(--radius);padding:32px;margin:40px 0}
+.think-label{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--spore);margin-bottom:8px}
+.think h4{font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:800;color:var(--soil);margin-bottom:22px}
+.q-start{font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:700;color:var(--soil-mid);margin-bottom:10px;line-height:1.5}
+.think-line{height:2px;background:var(--bark-deep);margin-bottom:22px;border-radius:2px}
+
+/* ===== ROOT CHECKS ===== */
 .root-ck{margin:40px auto;max-width:680px;padding:36px 32px;background:linear-gradient(135deg,rgba(232,192,112,0.04),rgba(154,122,90,0.06));border-radius:var(--radius);border:2px solid rgba(232,192,112,0.18)}
-.root-ck .rc-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--glow);margin-bottom:12px}
+.rc-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--glow);margin-bottom:12px}
 .root-ck h4{font-size:1.05rem;color:var(--soil);margin-bottom:20px}
 .r-item{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
 .r-item:last-child{margin-bottom:0}
 .r-dot{flex-shrink:0;width:8px;height:8px;border-radius:50%;background:var(--glow);margin-top:7px}
 .r-text{font-size:0.92rem;color:var(--text-light);line-height:1.7}
 
-/* Character cards */
-.char-grid{display:grid;gap:26px;margin:44px 0}
-@media(min-width:650px){.char-grid{grid-template-columns:1fr 1fr}}
-.char-card{background:var(--white);border:2px solid var(--bark-deep);border-radius:var(--radius);overflow:hidden;
-  box-shadow:var(--shadow-soft);transition:all 0.35s ease}
-.char-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-mid)}
-.char-head{background:linear-gradient(135deg,var(--spore-soft),rgba(154,122,90,0.03));padding:20px 22px;
-  border-bottom:1px solid var(--bark-deep);display:flex;align-items:center;gap:15px}
-.char-emoji{font-size:2.2rem;line-height:1}
-.char-info{flex:1}
-.char-name{font-family:'Nunito',sans-serif;font-size:1.08rem;font-weight:800;color:var(--soil);line-height:1.28}
-.char-title{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:1.6px;
-  text-transform:uppercase;color:var(--text-muted);margin-top:3px}
-.char-body{padding:22px}
-.char-body p{font-size:0.94rem;color:var(--text-light);line-height:1.78;margin:0}
+/* ===== DFN TOOLTIPS ===== */
+dfn{cursor:help;border-bottom:1.5px dotted var(--glow);font-style:normal;font-weight:600;color:var(--soil);position:relative}
+dfn::after{content:attr(data-def);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--soil-dark);color:var(--white);padding:10px 16px;border-radius:8px;font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:600;line-height:1.5;white-space:normal;width:260px;text-align:center;opacity:0;pointer-events:none;transition:opacity 0.2s;z-index:10;box-shadow:var(--shadow-mid)}
+dfn:hover::after,dfn:focus::after{opacity:1}
 
-/* Scenarios */
-.scene{background:linear-gradient(135deg,var(--bark-warm),var(--bark));border:1px solid var(--bark-deep);
-  border-radius:var(--radius);padding:28px;margin:32px 0;box-shadow:var(--shadow-soft)}
-.scene-label{font-family:'Nunito',sans-serif;font-size:0.68rem;font-weight:800;letter-spacing:2.5px;
-  text-transform:uppercase;color:var(--glow);margin-bottom:16px;display:flex;align-items:center;gap:8px}
-.scene h4{font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:800;color:var(--soil-dark);
-  margin-bottom:14px;line-height:1.3}
-.scene p{font-size:0.95rem;color:var(--text);line-height:1.8;margin-bottom:12px}
-.scene p:last-child{margin-bottom:0}
-
-/* Visualizations */
-.viz{background:linear-gradient(135deg,#1A2A1A,#2A3A2A);border-radius:var(--radius);padding:2px;margin:48px 0;
-  box-shadow:var(--shadow-mid);position:relative;overflow:hidden}
-.viz-glow{position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,var(--glow-soft),transparent 70%);
-  pointer-events:none}
-.viz-inner{background:linear-gradient(165deg,#0A1A0A,#1A2A1A);border-radius:calc(var(--radius) - 2px);padding:32px;
-  position:relative}
-.viz-top{display:flex;align-items:center;gap:18px;margin-bottom:24px;padding-bottom:20px;
-  border-bottom:1px solid rgba(218,192,170,0.2)}
-.viz-icon-wrap{font-size:2.4rem;line-height:1}
-.viz-meta{flex:1}
-.viz-label{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;
-  color:var(--glow-bright);margin-bottom:6px}
-.viz-meta h4{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:800;color:var(--white);line-height:1.25}
-.viz-body p{font-size:0.95rem;color:rgba(255,255,255,0.75);line-height:1.85;margin-bottom:18px}
-.viz-body p:last-of-type{margin-bottom:0}
-.viz-body strong,.viz-lesson strong{color:rgba(255,255,255,0.95);font-weight:700}
-.viz-body em,.viz-lesson em{color:var(--spore-pale);font-style:normal;font-weight:600}
-.viz-lesson{background:rgba(232,192,112,0.1);border:1px solid rgba(232,192,112,0.25);border-radius:12px;
-  padding:20px;margin-top:24px;font-size:0.95rem;font-style:italic;color:var(--spore-pale);line-height:1.8}
-
-/* Network diagram */
-.network{background:var(--white);border:2px solid var(--bark-deep);border-radius:var(--radius);padding:32px;
-  margin:36px 0;box-shadow:var(--shadow-soft);text-align:center}
-.network-stage{margin:24px 0;padding:20px;background:var(--bark-warm);border-radius:12px}
-.network-label{font-family:'Nunito',sans-serif;font-size:0.75rem;font-weight:800;letter-spacing:2px;
-  text-transform:uppercase;color:var(--glow);margin-bottom:12px}
-.network-nodes{font-size:2rem;margin:12px 0;letter-spacing:8px}
-.network-value{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:700;color:var(--soil);margin-top:8px}
-
-/* Formula boxes */
-.formula{background:linear-gradient(135deg,var(--glow-soft),rgba(232,192,112,0.05));
-  border:2px solid var(--glow);border-radius:var(--radius);padding:28px;margin:32px 0;text-align:center}
-.formula-label{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:800;letter-spacing:2.5px;
-  text-transform:uppercase;color:var(--glow);margin-bottom:16px}
-.formula-eq{font-family:'Nunito',sans-serif;font-size:1.8rem;font-weight:900;color:var(--soil-dark);
-  margin:16px 0;letter-spacing:2px}
+/* ===== FORMULA BOX ===== */
+.formula{background:linear-gradient(135deg,var(--glow-soft),rgba(232,192,112,0.05));border:2px solid var(--glow);border-radius:var(--radius);padding:28px;margin:32px 0;text-align:center}
+.formula-label{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--glow);margin-bottom:16px}
+.formula-eq{font-family:'Nunito',sans-serif;font-size:1.8rem;font-weight:900;color:var(--soil-dark);margin:16px 0;letter-spacing:2px}
 .formula-desc{font-size:0.92rem;color:var(--text);line-height:1.75;margin-top:12px}
 
-/* Mental Model boxes */
-.model{background:var(--white);border:3px solid var(--glow);border-radius:var(--radius);padding:30px;margin:36px 0;
-  box-shadow:var(--shadow-mid)}
-.model-icon{font-size:2.5rem;margin-bottom:14px;display:block}
-.model-label{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:800;letter-spacing:2.5px;
-  text-transform:uppercase;color:var(--glow);margin-bottom:12px}
-.model h4{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:800;color:var(--soil);
-  margin-bottom:16px;line-height:1.3}
-.model p{font-size:0.95rem;color:var(--text);line-height:1.8;margin-bottom:12px}
-.model p:last-child{margin-bottom:0}
-.model-app{background:rgba(232,192,112,0.08);border-left:3px solid var(--glow);padding:16px;margin-top:16px;
-  border-radius:8px}
-.model-app-label{font-family:'Nunito',sans-serif;font-size:0.75rem;font-weight:800;color:var(--glow);
-  margin-bottom:8px;text-transform:uppercase;letter-spacing:1.5px}
+/* ===== PROMPT CARD ===== */
+.prompt-card{background:linear-gradient(135deg,var(--soil-dark),var(--soil-mid));border:1px solid rgba(232,192,112,0.2);border-radius:var(--radius);padding:32px;margin:40px 0}
+.pc-label{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--glow-bright);margin-bottom:16px}
+.prompt-card p{font-size:0.95rem;color:rgba(255,255,255,0.8);line-height:1.8;margin-bottom:12px;font-style:italic}
+.prompt-card p:last-child{margin-bottom:0}
 
-/* Thinking prompts */
-.think{background:var(--bark-warm);border:2px dashed var(--spore);border-radius:var(--radius);padding:32px;margin:40px 0}
-.think-label{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:800;letter-spacing:2.5px;
-  text-transform:uppercase;color:var(--spore);margin-bottom:8px}
-.think h4{font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:800;color:var(--soil);margin-bottom:22px}
-.q-start{font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:700;color:var(--soil-mid);
-  margin-bottom:10px;line-height:1.5}
-.think-line{height:2px;background:var(--bark-deep);margin-bottom:22px;border-radius:2px}
-
-/* Grand quotes */
-.gq{background:linear-gradient(135deg,var(--root-dark),var(--root));border-radius:var(--radius);
-  padding:40px 32px;margin:48px 0;box-shadow:var(--shadow-mid);position:relative;overflow:hidden}
-.gq::before{content:'"';position:absolute;top:-20px;left:10px;font-size:12rem;font-family:Georgia,serif;
-  color:rgba(255,255,255,0.04);line-height:1;pointer-events:none}
-.gq p{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:var(--white);line-height:1.85;
-  position:relative;margin:0}
-
-/* Finale section */
+/* ===== FINALE ===== */
 .finale{background:linear-gradient(165deg,#0A1A0A,#1C2A1C);text-align:center;padding:80px 24px;color:var(--white)}
 .finale-emoji{font-size:3.5rem;display:block;margin-bottom:24px;animation:gentle-pulse 4s ease-in-out infinite}
 @keyframes gentle-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
-.finale h2{font-family:'Nunito',sans-serif;font-size:1.8rem;font-weight:800;color:var(--white);line-height:1.4;
-  margin-bottom:24px}
+.finale h2{font-family:'Nunito',sans-serif;font-size:1.8rem;font-weight:800;color:var(--white);line-height:1.4;margin-bottom:24px}
 .finale h2 span{display:block;color:var(--glow-bright);font-size:2rem;margin-top:8px}
-.finale p{font-family:'Lora',serif;font-size:1.05rem;color:rgba(255,255,255,0.7);line-height:1.85;
-  max-width:600px;margin:0 auto}
+.finale p{font-family:'Lora',serif;font-size:1.05rem;color:rgba(255,255,255,0.7);line-height:1.85;max-width:600px;margin:0 auto 18px}
+.finale p:last-child{margin-bottom:0}
 
-/* Footer */
-footer{background:linear-gradient(165deg,#060C04,#0E1408);padding:60px 24px 40px;text-align:center;
-  color:rgba(255,255,255,0.3);border-top:1px solid rgba(232,192,112,0.1)}
+/* ===== FOOTER ===== */
+footer{background:linear-gradient(165deg,#060C04,#0E1408);padding:60px 24px 40px;text-align:center;color:rgba(255,255,255,0.3);border-top:1px solid rgba(232,192,112,0.1)}
 footer p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;margin-bottom:24px;line-height:1.7}
 .brand{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;letter-spacing:1px;color:var(--glow-bright)}
-@media(max-width:640px){
-  .page{padding:0 16px}
-}
+
+@media(max-width:640px){.page{padding:0 16px}}
 @media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+@media print{.cover{min-height:auto;padding:60px 24px}.thread,.spore,.ghost-noise{display:none}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 </style>
 </head>
 <body>
@@ -231,742 +198,368 @@ footer p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;margin-bot
   <div class="spore"></div>
   <div class="ghost-noise"></div>
   <div class="cover-content">
-    <div class="cover-badge">A Network Effects Parable</div>
+    <div class="cover-badge">A Game Theory Parable</div>
     <div class="cover-art">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 180" aria-label="Mycelium Network illustration">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 180" aria-label="Mycelium network connecting trees underground">
         <defs>
           <linearGradient id="mn-glow" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#E8C070"/><stop offset="100%" stop-color="#F0D090"/></linearGradient>
           <linearGradient id="mn-spore" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#9A7A5A"/><stop offset="100%" stop-color="#BA9A7A"/></linearGradient>
           <linearGradient id="mn-forest" x1="50%" y1="100%" x2="50%" y2="0%"><stop offset="0%" stop-color="#2A4A2A"/><stop offset="100%" stop-color="#5A8A5A"/></linearGradient>
           <filter id="mn-blur"><feGaussianBlur in="SourceGraphic" stdDeviation="1.2"/></filter>
         </defs>
-        <!-- Ground line -->
         <path d="M0,90 Q50,85 100,90 Q150,95 200,88" fill="none" stroke="#6A5A4A" stroke-width="2" opacity="0.6"/>
         <path d="M0,92 Q50,87 100,92 Q150,97 200,90" fill="none" stroke="#4A3A2A" stroke-width="1" opacity="0.3"/>
-        <!-- Underground network - branching lines -->
         <g opacity="0.7">
           <path d="M100,95 Q85,110 60,120" fill="none" stroke="url(#mn-glow)" stroke-width="1.8" stroke-linecap="round"/>
           <path d="M100,95 Q115,108 140,118" fill="none" stroke="url(#mn-glow)" stroke-width="1.8" stroke-linecap="round"/>
           <path d="M100,95 Q100,115 100,140" fill="none" stroke="url(#mn-glow)" stroke-width="1.5" stroke-linecap="round"/>
           <path d="M60,120 Q45,130 30,135" fill="none" stroke="#E8C070" stroke-width="1.2" opacity="0.6" stroke-linecap="round"/>
           <path d="M60,120 Q55,135 50,150" fill="none" stroke="#E8C070" stroke-width="1" opacity="0.5" stroke-linecap="round"/>
-          <path d="M60,120 Q70,132 65,145" fill="none" stroke="#E8C070" stroke-width="0.8" opacity="0.4" stroke-linecap="round"/>
           <path d="M140,118 Q155,128 170,132" fill="none" stroke="#E8C070" stroke-width="1.2" opacity="0.6" stroke-linecap="round"/>
           <path d="M140,118 Q145,135 150,155" fill="none" stroke="#E8C070" stroke-width="1" opacity="0.5" stroke-linecap="round"/>
-          <path d="M140,118 Q130,130 125,148" fill="none" stroke="#E8C070" stroke-width="0.8" opacity="0.4" stroke-linecap="round"/>
           <path d="M100,140 Q80,150 65,160" fill="none" stroke="#E8C070" stroke-width="0.8" opacity="0.4" stroke-linecap="round"/>
           <path d="M100,140 Q120,152 140,160" fill="none" stroke="#E8C070" stroke-width="0.8" opacity="0.4" stroke-linecap="round"/>
           <path d="M30,135 Q20,145 15,160" fill="none" stroke="#E8C070" stroke-width="0.6" opacity="0.3" stroke-linecap="round"/>
           <path d="M170,132 Q180,142 188,155" fill="none" stroke="#E8C070" stroke-width="0.6" opacity="0.3" stroke-linecap="round"/>
         </g>
-        <!-- Network nodes (underground) -->
         <circle cx="100" cy="95" r="5" fill="url(#mn-glow)" opacity="0.9"/>
         <circle cx="60" cy="120" r="4" fill="#E8C070" opacity="0.7"/>
         <circle cx="140" cy="118" r="4" fill="#E8C070" opacity="0.7"/>
         <circle cx="100" cy="140" r="3.5" fill="#E8C070" opacity="0.6"/>
         <circle cx="30" cy="135" r="3" fill="#E8C070" opacity="0.5"/>
         <circle cx="170" cy="132" r="3" fill="#E8C070" opacity="0.5"/>
-        <circle cx="50" cy="150" r="2.5" fill="#E8C070" opacity="0.4"/>
-        <circle cx="150" cy="155" r="2.5" fill="#E8C070" opacity="0.4"/>
-        <circle cx="65" cy="145" r="2" fill="#E8C070" opacity="0.35"/>
-        <circle cx="125" cy="148" r="2" fill="#E8C070" opacity="0.35"/>
-        <!-- Node glow pulses -->
         <circle cx="100" cy="95" r="8" fill="#E8C070" opacity="0.12" filter="url(#mn-blur)"/>
         <circle cx="60" cy="120" r="6" fill="#E8C070" opacity="0.1" filter="url(#mn-blur)"/>
         <circle cx="140" cy="118" r="6" fill="#E8C070" opacity="0.1" filter="url(#mn-blur)"/>
-        <!-- Mushroom fruiting bodies on surface -->
         <g opacity="0.85">
-          <!-- Center mushroom -->
           <rect x="97" y="72" width="6" height="18" rx="2" fill="url(#mn-spore)"/>
           <ellipse cx="100" cy="70" rx="14" ry="8" fill="url(#mn-spore)"/>
           <ellipse cx="100" cy="70" rx="10" ry="5" fill="#BA9A7A" opacity="0.5"/>
-          <!-- Left mushroom -->
           <rect x="38" y="75" width="5" height="14" rx="2" fill="#9A7A5A" opacity="0.8"/>
           <ellipse cx="40" cy="74" rx="10" ry="6" fill="#9A7A5A" opacity="0.8"/>
-          <ellipse cx="40" cy="74" rx="7" ry="3.5" fill="#BA9A7A" opacity="0.4"/>
-          <!-- Right mushroom -->
           <rect x="153" y="73" width="5" height="15" rx="2" fill="#9A7A5A" opacity="0.8"/>
           <ellipse cx="155" cy="72" rx="11" ry="7" fill="#9A7A5A" opacity="0.8"/>
-          <ellipse cx="155" cy="72" rx="8" ry="4" fill="#BA9A7A" opacity="0.4"/>
-          <!-- Small mushrooms -->
           <rect x="68" y="79" width="3" height="10" rx="1.5" fill="#9A7A5A" opacity="0.6"/>
           <ellipse cx="69.5" cy="78" rx="7" ry="4" fill="#9A7A5A" opacity="0.6"/>
           <rect x="128" y="78" width="3" height="11" rx="1.5" fill="#9A7A5A" opacity="0.6"/>
           <ellipse cx="129.5" cy="77" rx="7" ry="4" fill="#9A7A5A" opacity="0.6"/>
         </g>
-        <!-- Surface vegetation hints -->
         <path d="M18,88 Q20,75 22,88" fill="none" stroke="url(#mn-forest)" stroke-width="1.2" opacity="0.4"/>
         <path d="M180,86 Q182,73 184,86" fill="none" stroke="url(#mn-forest)" stroke-width="1.2" opacity="0.4"/>
-        <path d="M10,90 Q12,80 14,90" fill="none" stroke="#5A8A5A" stroke-width="0.8" opacity="0.3"/>
-        <path d="M190,88 Q192,78 194,88" fill="none" stroke="#5A8A5A" stroke-width="0.8" opacity="0.3"/>
       </svg>
     </div>
-    <h1>The Mycelium Network<br><strong>How to Build Monopolies</strong></h1>
-    <p class="cover-tagline">Underground, unseen by the forest above, fungal networks connect every tree through <em>billions of microscopic threads</em>. The biggest network wins. Always. This is the story of how Facebook, Amazon, and Uber don't just beat competitors, they make competition mathematically impossible. And how YOU can build the same unstoppable advantage.</p>
+    <h1>The Mycelium Network<br><strong>Why Cooperation Wins</strong></h1>
+    <p class="cover-tagline">Underground, unseen by the forest above, <em>billions of fungal threads</em> connect every tree into a single network that remembers who gave and who only took. This is the game theory of cooperation, told through the infrastructure that enforces it.</p>
+    <p class="cover-author">KingdomBuilders AI</p>
+  </div>
+</div>
+
+<div class="ribbon">
+  <p>"Bear one another's burdens, and so fulfill the law of Christ." Galatians 6:2</p>
+</div>
+
+<div class="page">
+<section class="section">
+  <div class="prose">
+    <p>In a forest in British Columbia, ecologist Suzanne Simard injected radioactive carbon into a paper birch tree and waited. Within hours, the carbon appeared in a Douglas fir 30 feet away. The two trees were not touching. Their roots were not intertwined. The carbon had traveled through an underground fungal network, a web of microscopic threads called <dfn data-def="The vegetative body of a fungus, consisting of a network of fine white filaments (hyphae) that can extend for miles through soil. Mycelium connects plant root systems and facilitates the transfer of nutrients, water, and chemical signals between them.">mycelium</dfn> that connected every tree in the forest.</p>
+    <p>The birch was not forced to share. The fir did not demand the carbon. The fungal network transferred resources from where they were abundant to where they were needed. But it was not charity. Simard discovered something that changed our understanding of forests: <strong>the network kept score.</strong></p>
+    <p>Trees that contributed resources to the network received resources when they needed them. Trees that only extracted were gradually disconnected. The network did not punish. It simply <em>remembered</em>.</p>
+    <p><strong>This is a playbook about cooperation.</strong> Not the soft version. Not "be nice to people." The mathematical, game theoretic, biologically enforced version. The version where cooperation is not a moral choice but a strategy that dominates every alternative, enforced by infrastructure that remembers whether you gave or only took.</p>
+  </div>
+</section>
+</div>
+
+<!-- ==================== CHAPTER 1 ==================== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-badge">Chapter One</div>
+    <div class="ch-num">01</div>
+    <h2 class="ch-title">The Defection Trap</h2>
+    <p class="ch-sub">Why selfishness looks like the rational choice and why it always loses.</p>
   </div>
 </div>
 
 <div class="page">
 <section class="section">
   <div class="prose">
-    <p>Deep beneath the Redwood Forest, two fungi competed for survival. Both connected trees. Both transferred nutrients. Both helped the forest thrive.</p>
-    <p><strong>MycoNet started first.</strong> It connected 10 trees in the first month. Then 20. Then 50. Growth was exponential, but early progress felt slow.</p>
-    <p><strong>SporeCorp launched later</strong> with better technology, more nutrients, and superior spore dispersal. They connected 15 trees in their first month. Better than MycoNet's start!</p>
-    <p>Five years later, MycoNet connected 10,000 trees across 50 square miles. SporeCorp connected 200 trees and was dying.</p>
-    <p><strong>What happened?</strong> MycoNet discovered something that economists call "network effects" and entrepreneurs call "the only moat that matters": <em>Every new connection made the network more valuable to every existing member. And that advantage compounds.</em></p>
-    <p>This is not just about fungi. This is about why Facebook has 3 billion users while hundreds of "better" social networks have died. Why Uber dominates while superior ride-sharing apps failed. Why Amazon has 200 million Prime members while better-designed e-commerce sites can't compete.</p>
-    <p><strong>If you finish this story, you'll understand Metcalfe's Law, network density, platform economics, cold start problems, and winner-take-all dynamics better than 99% of founders pitching VCs.</strong> More importantly, you'll know how to engineer network effects into YOUR business.</p>
-    <p>Let's go underground. 🍄</p>
+    <p>In 1950, mathematicians Merrill Flood and Melvin Dresher formalized a problem that had plagued economics for centuries. They called it the <dfn data-def="A game theory scenario where two rational players each have an incentive to defect (betray) even though mutual cooperation produces a better outcome for both. The 'dilemma' is that individual rationality leads to collective irrationality.">Prisoner's Dilemma</dfn>.</p>
+    <p>Two suspects are arrested. Each is offered the same deal. Betray your partner and go free while they serve three years. If both betray, both serve two years. If neither betrays, both serve only one year.</p>
+    <p>The math is brutal. No matter what your partner does, betrayal gives you a better personal outcome. If they cooperate, you get zero years by betraying instead of one year by cooperating. If they betray, you get two years by betraying instead of three years by cooperating. <strong>Betrayal dominates. Always.</strong></p>
+    <p>Except it does not. Not in the real world. Not in the forest. Not in any system where the same players meet more than once.</p>
+
+    <div class="scene">
+      <div class="scene-label">THE FOREST</div>
+      <h4>The Seedling's First Winter</h4>
+      <p>A Douglas fir seedling germinates in deep shade. It produces so little sugar through photosynthesis that it cannot sustain its own root growth. In a one round game, the mature birch trees around it have no reason to help. The seedling offers nothing. Sending carbon through the mycelium to the seedling is pure cost.</p>
+      <p>But the forest does not play one round games. Simard discovered that mother trees, the largest and oldest in the network, sent disproportionate amounts of carbon to seedlings. Not randomly. Preferentially to their own kin, and to seedlings that were connected to the network. The investment was enormous. The payoff was decades away.</p>
+      <p>The seedling that survived because of that early carbon would, thirty years later, be a mature tree feeding the next generation through the same network. <em>The cooperation was not generosity. It was a long game played through infrastructure that remembered every transaction.</em></p>
+    </div>
+
+    <div class="formula">
+      <div class="formula-label">The Defection Trap</div>
+      <div class="formula-eq">One Round: Defect &gt; Cooperate</div>
+      <div class="formula-desc">In any single encounter, taking more than you give produces a better individual outcome. This is mathematically true and practically disastrous, because no relationship of value is a single encounter.</div>
+    </div>
+
+    <p>Most people play their relationships as if every interaction is a one round game. They optimize each conversation, each favor, each exchange for maximum personal extraction. They are playing the Prisoner's Dilemma as if they will never see the other player again. And they are slowly being disconnected from every network that matters.</p>
   </div>
 </section>
 </div>
 
-<div class="ch-head">
-  <div class="page">
-    <div class="ch-badge">Chapter One</div>
-    <div class="ch-num">01</div>
-    <h1 class="ch-title">Metcalfe's Law</h1>
-    <p class="ch-sub">Why value grows exponentially, not linearly</p>
-  </div>
-</div>
-
-<div class="ribbon"><p>"For where two or three gather in my name, there am I with them.". Matthew 18:20</p></div>
-
-<div class="page">
-<section class="section prose">
-  <h2><span>🍄</span> The First Connections</h2>
-  <p>MycoNet's founder, a mushroom named Meta, started with a simple value proposition: "Connect to our network. We'll share nutrients between trees."</p>
-  <p>The first tree to join was a young Douglas Fir named Doug. "What's the benefit?" Doug asked.</p>
-  <p>"Well," Meta admitted, "right now, there's only you. So... none."</p>
-  <p>Doug almost left. But Meta added: "But when we get to 10 trees, you'll have access to nutrients from 9 others. When we hit 100, you'll have 99 potential trading partners. <em>The network gets more valuable with every tree that joins.</em>"</p>
-  <p>Doug stayed. Barely.</p>
-</section>
-
-<div class="network">
-  <div class="network-stage">
-    <div class="network-label">NETWORK SIZE: 1 TREE</div>
-    <div class="network-nodes">🌲</div>
-    <div class="network-value">Possible Connections: 0</div>
-    <div class="network-value" style="font-size:0.85rem;margin-top:6px;color:var(--text-muted)">Network Value: Worthless</div>
-  </div>
-
-  <div class="network-stage">
-    <div class="network-label">NETWORK SIZE: 2 TREES</div>
-    <div class="network-nodes">🌲 ↔ 🌲</div>
-    <div class="network-value">Possible Connections: 1</div>
-    <div class="network-value" style="font-size:0.85rem;margin-top:6px;color:var(--text-muted)">Network Value: Minimal</div>
-  </div>
-
-  <div class="network-stage">
-    <div class="network-label">NETWORK SIZE: 5 TREES</div>
-    <div class="network-nodes">🌲 🌲 🌲 🌲 🌲</div>
-    <div class="network-value">Possible Connections: 10</div>
-    <div class="network-value" style="font-size:0.85rem;margin-top:6px;color:var(--text-muted)">Network Value: Starting to Matter</div>
-  </div>
-
-  <div class="network-stage">
-    <div class="network-label">NETWORK SIZE: 10 TREES</div>
-    <div class="network-nodes">🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲</div>
-    <div class="network-value">Possible Connections: 45</div>
-    <div class="network-value" style="font-size:0.85rem;margin-top:6px;color:var(--text-muted)">Network Value: Useful</div>
-  </div>
-
-  <div class="network-stage">
-    <div class="network-label">NETWORK SIZE: 100 TREES</div>
-    <div class="network-nodes" style="font-size:1rem">🌲🌲🌲🌲🌲🌲🌲... (×100)</div>
-    <div class="network-value">Possible Connections: 4,950</div>
-    <div class="network-value" style="font-size:0.85rem;margin-top:6px;color:var(--glow);font-weight:900">Network Value: Dominant</div>
-  </div>
-</div>
-
-<div class="formula">
-  <div class="formula-label">📐 METCALFE'S LAW</div>
-  <div class="formula-eq">V = n²</div>
-  <div class="formula-desc">The value of a network (V) grows with the <strong>square</strong> of the number of users (n).<br><br>
-  <strong>Translation:</strong> If you double your network size, you don't double value you <em>quadruple</em> it.<br><br>
-  10 users = 45 possible connections<br>
-  100 users = 4,950 possible connections<br>
-  1,000 users = 499,500 possible connections<br><br>
-  <em>This is why early networks grow slowly but dominant networks become unstoppable.</em></div>
-</div>
-
-<div class="char-grid">
-  <div class="char-card">
-    <div class="char-head"><span class="char-emoji">🍄</span><div class="char-info"><div class="char-name">MycoNet (Meta)</div><div class="char-title">The First Mover</div></div></div>
-    <div class="char-body"><p>Started small, grew exponentially. Represents <strong>Facebook, eBay, Craigslist</strong> any platform where being first created insurmountable advantage through network effects. Not necessarily better. Just first to critical mass.</p></div>
-  </div>
-  <div class="char-card">
-    <div class="char-head"><span class="char-emoji">🌿</span><div class="char-info"><div class="char-name">SporeCorp</div><div class="char-title">The Better Product That Lost</div></div></div>
-    <div class="char-body"><p>Superior technology, better features, more funding. Represents <strong>Google+, countless Uber clones, every Facebook competitor.</strong> Died because network effects beat product quality. Quality doesn't matter if nobody's there.</p></div>
-  </div>
-</div>
-
-<section class="section prose">
-  <h2><span>📈</span> The Exponential Trap</h2>
-  <p>Two years in, SporeCorp launched. Their spores traveled faster. Their nutrient exchange was more efficient. Their underground threads were stronger.</p>
-  <p>"We're objectively better," said Spore, the founder. "Trees will switch."</p>
-  <p>They didn't.</p>
-</section>
-
-<div class="scene">
-  <div class="scene-label">💬 THE SWITCHING CONVERSATION</div>
-  <h4>Why Better Loses to Bigger</h4>
-  
-  <p>Spore approached Doug the Douglas Fir: "We're faster and more efficient than MycoNet. Join us!"</p>
-
-  <p><strong>Doug:</strong> "How many trees are on your network?"</p>
-
-  <p><strong>Spore:</strong> "Fifteen. But we're growing!"</p>
-
-  <p><strong>Doug:</strong> "MycoNet has 500 trees. I can trade nutrients with 499 others. You're offering me access to... 14?"</p>
-
-  <p><strong>Spore:</strong> "But our nutrient transfer is 40% faster!"</p>
-
-  <p><strong>Doug:</strong> "I don't care if you're 100% faster. You're offering me 14 connections vs 499 connections. Even if each of your connections is twice as good, 14×2 = 28. That's still way less than 499."</p>
-
-  <p><strong>Spore:</strong> "But if everyone joined us, we'd have 515 trees and be better than MycoNet!"</p>
-
-  <p><strong>Doug:</strong> "Sure. But nobody is going to join you FIRST. And as long as nobody joins you first, nobody will join you at all. You're trapped."</p>
-</scene>
-
-<div class="viz"><div class="viz-glow"></div><div class="viz-inner">
-  <div class="viz-top"><div class="viz-icon-wrap">🔒</div><div class="viz-meta"><div class="viz-label">The Network Lock-In Effect</div><h4>Why Switching Becomes Impossible</h4></div></div>
-  <div class="viz-body">
-    <p><strong>The Math:</strong></p>
-
-    <p>MycoNet: 500 trees × (500-1) / 2 = 124,750 possible connections<br>
-    SporeCorp: 15 trees × (15-1) / 2 = 105 possible connections</p>
-
-    <p>Even if SporeCorp's technology is 10× better per connection, they're offering:<br>
-    105 × 10 = 1,050 "efficiency units"</p>
-
-    <p>MycoNet offers:<br>
-    124,750 × 1 = 124,750 "efficiency units"</p>
-
-    <p><strong>MycoNet wins by 100×</strong> despite having inferior technology.</p>
-
-    <p><strong>The Trap:</strong> To compete with MycoNet, SporeCorp needs to convince trees to switch. But each tree only switches if enough OTHER trees switch first. This is a coordination problem. And coordination problems favor the incumbent.</p>
-
-    <div class="viz-lesson">This is why Facebook beat Google+. Google+ was arguably better designed. But Facebook had 1 billion users. Google+ had millions. The network effect gap was insurmountable. <strong>In network businesses, being 10× better doesn't matter if you're 100× smaller.</strong></div>
-  </div>
-</div></div>
-
-<section class="section prose">
-  <h2><span>⚡</span> The Tipping Point</h2>
-  <p>MycoNet's growth followed a predictable pattern that every successful network business follows:</p>
-</section>
-
-<div class="scene">
-  <div class="scene-label">📊 THE GROWTH CURVE</div>
-  <h4>Four Phases of Network Growth</h4>
-  
-  <p><strong>Phase 1: The Slog (Months 1-6)</strong><br>
-  3 trees → 10 trees → 25 trees<br>
-  Growth is slow. Value is minimal. Most networks die here because founders give up.<br>
-  <em>This is where discipline matters. Keep going.</em></p>
-
-  <p><strong>Phase 2: The Inflection (Months 7-12)</strong><br>
-  25 trees → 100 trees → 250 trees<br>
-  Something shifts. Word of mouth kicks in. Each new member brings more value, which attracts more members. Growth accelerates.<br>
-  <em>This is where you feel the curve bending.</em></p>
-
-  <p><strong>Phase 3: The Explosion (Year 2)</strong><br>
-  250 trees → 1,000 trees → 5,000 trees<br>
-  Exponential growth becomes obvious. Competitors see the opportunity and launch. But they're too late. You're already dominant.<br>
-  <em>This is where winners emerge.</em></p>
-
-  <p><strong>Phase 4: The Monopoly (Year 3+)</strong><br>
-  5,000 trees → 10,000 trees → market saturation<br>
-  Growth slows not because you're failing, but because you've connected everyone. Competitors can't get traction. You've won.<br>
-  <em>This is where you become unbeatable.</em></p>
-</scene>
-
-<div class="gq"><p>Network effects don't guarantee success. But once you reach critical mass, they guarantee you can't be beaten by better products. Only by different networks serving different needs. <em>Facebook didn't beat MySpace by being a better MySpace. It created a different network.</em></p></div>
-
-</div>
-
-<div class="think">
-  <div class="think-label">💭 Think About This</div>
-  <h4>Which businesses have network effects?</h4>
-  <p class="q-start">🤔 Does YOUR business benefit from network effects? Or are you in a business where more customers doesn't help existing customers?</p>
-  <div class="think-line"></div>
-  <p style="font-size:0.9rem;color:var(--text-light);line-height:1.75"><strong>Network Effect Test:</strong> If I'm customer #100, am I more valuable to customer #1 than if I were customer #10? If yes, you have network effects. If no, you're in a different game. Most businesses DON'T have network effects. But the ones that do become monopolies.</p>
-</div>
-
-<div class="root-ck">
-  <div class="rc-label">Root Check</div>
-  <h4>Water What Was Planted</h4>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Metcalfe&rsquo;s Law.</strong> The value of a network grows proportionally to the square of its users (n&sup2;). This is why network businesses become exponentially more valuable as they grow, and why competitors cannot catch up once you reach critical mass.</div></div>
-</div>
-
+<!-- ==================== CHAPTER 2 ==================== -->
 <div class="ch-head">
   <div class="page">
     <div class="ch-badge">Chapter Two</div>
     <div class="ch-num">02</div>
-    <h1 class="ch-title">The Cold Start Problem</h1>
-    <p class="ch-sub">How to build value when nobody's there yet</p>
+    <h2 class="ch-title">The Shadow of the Future</h2>
+    <p class="ch-sub">When the same players meet repeatedly, everything changes.</p>
   </div>
 </div>
-
-<div class="ribbon"><p>"Do not despise these small beginnings, for the Lord rejoices to see the work begin.". Zechariah 4:10</p></div>
 
 <div class="page">
-<section class="section prose">
-  <h2><span>🥶</span> The Chicken and Egg</h2>
-  <p>Meta faced an impossible paradox in the early days:</p>
-  <p><em>Trees won't join unless there are other trees. But there won't be other trees unless trees join.</em></p>
-  <p>This is the cold start problem. And it kills 90% of network businesses before they escape it.</p>
-</section>
+<section class="section">
+  <div class="prose">
+    <p>In 1984, political scientist Robert Axelrod ran a tournament. He invited game theorists from around the world to submit computer programs that would play the <dfn data-def="A version of the Prisoner's Dilemma where the same two players interact repeatedly over many rounds. The possibility of future encounters changes the optimal strategy from pure defection to conditional cooperation.">Iterated Prisoner's Dilemma</dfn>, hundreds of rounds against every other program. The most sophisticated strategies, built by the best minds in mathematics and economics, competed for dominance.</p>
+    <p>The winner was the simplest program in the tournament. It was submitted by Anatol Rapoport, a mathematical psychologist. It was four lines of code. It was called <em>Tit for Tat</em>.</p>
+    <p>The strategy: Start by cooperating. Then do whatever your partner did last round. If they cooperated, cooperate. If they defected, defect. That is the entire algorithm.</p>
 
-<div class="viz"><div class="viz-glow"></div><div class="viz-inner">
-  <div class="viz-top"><div class="viz-icon-wrap">❄️</div><div class="viz-meta"><div class="viz-label">The Cold Start Problem</div><h4>Why Most Networks Die Before They Start</h4></div></div>
-  <div class="viz-body">
-    <p><strong>The Death Spiral:</strong></p>
+    <div class="viz">
+      <div class="viz-glow"></div>
+      <div class="viz-inner">
+        <div class="viz-top">
+          <div class="viz-icon-wrap">&#x1F3AF;</div>
+          <div class="viz-meta">
+            <div class="viz-label">Game Theory Principle</div>
+            <h4>Why Tit for Tat Won</h4>
+          </div>
+        </div>
+        <div class="viz-body">
+          <p><strong>Nice:</strong> It always cooperated first. It never initiated defection. This meant it captured the full benefit of mutual cooperation with every program that was willing to cooperate.</p>
+          <p><strong>Retaliatory:</strong> It immediately punished defection. This meant exploitative programs could not take advantage of it for more than one round.</p>
+          <p><strong>Forgiving:</strong> After punishing defection, it returned to cooperation. This meant it could recover mutual cooperation after a conflict instead of spiraling into permanent mutual destruction.</p>
+          <p><strong>Clear:</strong> Its behavior was perfectly predictable. Other programs could learn exactly what to expect, making cooperation the obvious best response.</p>
+        </div>
+        <div class="viz-lesson">The most successful cooperation strategy in history was not clever. It was not sneaky. It was not sophisticated. It was transparent, generous first, retaliatory when tested, and forgiving after punishment.</div>
+      </div>
+    </div>
 
-    <p>New user joins → Sees empty network → No value → Leaves immediately → Network stays empty → Next user sees empty network → Cycle repeats</p>
+    <p>Axelrod called the key variable the <em>shadow of the future</em>. When you know you will interact with the same person again and again, the math of cooperation flips. Defection no longer dominates. The short term gain from betrayal is outweighed by the long term cost of destroyed cooperation.</p>
+    <p><strong>The shadow of the future is the reason cooperation exists in biology.</strong> Organisms that will encounter each other repeatedly develop cooperation. Organisms that meet once and never again defect. This is not morality. This is mathematics.</p>
 
-    <p><strong>Real Examples:</strong></p>
-
-    <p>• Google+ launched with nobody on it. Your friends weren't there. You left. Your friends checked, saw you weren't there, and left. Empty forever.</p>
-
-    <p>• Clubhouse peaked at 10M users then died because growth stopped. New users joined rooms with nobody interesting. Left. Network collapsed.</p>
-
-    <p>• Every "Uber for X" startup that launched in a new city with 3 drivers and 5 riders. Nobody could get a ride. Nobody stayed.</p>
-
-    <div class="viz-lesson">The cold start problem is why MOST network businesses fail. You need to solve: "How do I create value for user #1 when they're the only person here?" <strong>If you can't answer that, don't build a network business.</strong></div>
+    <div class="think">
+      <div class="think-label">YOUR TURN</div>
+      <h4>Where in your life are you playing a repeated game as if it were a one time interaction?</h4>
+      <div class="think-line"></div>
+      <p class="q-start">Where are you optimizing for extraction in a relationship that has a long future?</p>
+      <div class="think-line"></div>
+    </div>
   </div>
-</div></div>
-
-<section class="section prose">
-  <h2><span>🔑</span> Meta's Solution: Niche Density</h2>
-  <p>Meta didn't try to connect the whole forest at once. That would have failed. Instead, Meta used a strategy that every successful network replicates:</p>
 </section>
-
-<div class="scene">
-  <div class="scene-label">🎯 THE NICHE DENSITY STRATEGY</div>
-  <h4>How MycoNet Actually Escaped Cold Start</h4>
-  
-  <p><strong>Step 1: Pick the Smallest Viable Network</strong></p>
-
-  <p>Meta didn't target "all trees." Meta targeted: "The 10 Doug Fir trees within 50 feet of each other in the northeast grove."</p>
-
-  <p>Why? Because 10 trees in close proximity can actually benefit from trading nutrients even when the network is small. They're neighbors. They share soil. Connections matter immediately.</p>
-
-  <p><strong>Step 2: Saturate That Micro-Network</strong></p>
-
-  <p>Meta connected 8 out of 10 trees in that grove within one week. Suddenly, each tree had 7 trading partners. The network was DENSE. Value was real. Word spread.</p>
-
-  <p><strong>Step 3: Expand to Adjacent Niche</strong></p>
-
-  <p>Once the northeast grove was saturated, Meta moved to the next grove. Then the next. Each new grove connected to previous groves, multiplying value.</p>
-
-  <p><strong>Step 4: Bridge Between Niches</strong></p>
-
-  <p>After 10 dense groves were connected, Meta had a thriving network of 100 trees. Now expanding to NEW species (Redwoods, Pines) made sense because there were already 100 trees to trade with.</p>
-</scene>
-
-<div class="model">
-  <span class="model-icon">🎯</span>
-  <div class="model-label">MENTAL MODEL: NICHE DENSITY</div>
-  <h4>The Strategy That Beats Cold Start</h4>
-  <p><strong>The Principle:</strong> It's better to have 100% of a small market than 1% of a large market.</p>
-  
-  <p><strong>Why This Works:</strong></p>
-  <p>Dense small networks create immediate value. Sparse large networks create no value. Start dense. Then expand.</p>
-
-  <div class="model-app">
-    <div class="model-app-label">🎯 REAL-WORLD EXAMPLES</div>
-    <p><strong>Facebook:</strong> Didn't launch to "everyone." Launched to Harvard only. Saturated Harvard (dense network). Then expanded to Yale, then Stanford, then other colleges. Each expansion happened AFTER achieving density in the previous market.</p>
-    <p><strong>Uber:</strong> Didn't launch in every city. Launched in San Francisco. Saturated SF (enough drivers that wait times were low). Then NYC. Then LA. Dense city-by-city, not sparse everywhere.</p>
-    <p><strong>Airbnb:</strong> Started by saturating NYC and SF during conferences. Got every attendee listing and booking. Created density in time AND space. Then expanded.</p>
-  </div>
 </div>
 
-<section class="section prose">
-  <h2><span>💰</span> The Subsidy Strategy</h2>
-  <p>But Meta still faced a problem: How do you convince the FIRST tree in a grove to join when there's nobody else yet?</p>
-  <p>Meta's answer: <em>Pay them.</em></p>
-</section>
-
-<div class="scene">
-  <div class="scene-label">💸 THE SUBSIDY PHASE</div>
-  <h4>How Networks Buy Their Way to Critical Mass</h4>
-  
-  <p>Meta offered the first tree in each new grove a deal:</p>
-
-  <p>"Join MycoNet. Even though nobody else is here yet, I'll give you FREE nutrients for 30 days. No strings attached."</p>
-
-  <p>The tree joined. Then Meta offered the same deal to tree #2. And tree #3.</p>
-
-  <p>By the time tree #5 joined, there were already 4 other trees trading nutrients. <strong>Tree #5 didn't need the subsidy anymore the network itself had value.</strong></p>
-
-  <p>Meta stopped subsidizing at tree #6. The network was self-sustaining.</p>
-</scene>
-
-<div class="viz"><div class="viz-glow"></div><div class="viz-inner">
-  <div class="viz-top"><div class="viz-icon-wrap">💰</div><div class="viz-meta"><div class="viz-label">The Unit Economics of Network Building</div><h4>Why Uber Loses Money Per Ride</h4></div></div>
-  <div class="viz-body">
-    <p><strong>The Math:</strong></p>
-
-    <p>Cost to acquire first 10 users in a new market: $500 each (subsidies, marketing, incentives)<br>
-    Total: $5,000</p>
-
-    <p>Value created once network reaches 100 users: $50,000<br>
-    Cost to acquire users 11-100: $50 each (network effects kick in, word of mouth works)<br>
-    Total cost for users 11-100: $4,500</p>
-
-    <p><strong>Total cost to reach critical mass: $9,500<br>
-    Total value created: $50,000+<br>
-    ROI: 5× or better</strong></p>
-
-    <p><strong>Why this works:</strong> Early users are expensive because you're buying them into an empty network. Later users are cheap because the network sells itself. You LOSE money early to MAKE money later.</p>
-
-    <div class="viz-lesson">This is why Uber, Lyft, DoorDash, and every marketplace loses money for years. They're not dumb. They're buying market share by subsidizing rides/deliveries/products until network effects take over. Once they achieve density, they stop subsidizing and turn profitable. <strong>Subsidies aren't charity. They're network investment.</strong></div>
-  </div>
-</div></div>
-
-</div>
-
-<div class="root-ck">
-  <div class="rc-label">Root Check</div>
-  <h4>Water What Was Planted</h4>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Metcalfe&rsquo;s Law.</strong> Network value grows as n&sup2;. Critical mass creates an insurmountable lead.</div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Cold Start Problem.</strong> Every network starts at zero value. Solve it by constraining your market (one niche, one geography), subsidizing early users, and providing standalone value before the network kicks in.</div></div>
-</div>
-
+<!-- ==================== CHAPTER 3 ==================== -->
 <div class="ch-head">
   <div class="page">
     <div class="ch-badge">Chapter Three</div>
     <div class="ch-num">03</div>
-    <h1 class="ch-title">Multi-Sided Networks</h1>
-    <p class="ch-sub">When you have to balance two different user types</p>
+    <h2 class="ch-title">The Memory Thread</h2>
+    <p class="ch-sub">Cooperation without infrastructure is just hope. The mycelium remembers.</p>
   </div>
 </div>
-
-<div class="ribbon"><p>"Two are better than one, because they have a good return for their labor.". Ecclesiastes 4:9</p></div>
 
 <div class="page">
-<section class="section prose">
-  <h2><span>⚖️</span> The Two-Sided Problem</h2>
-  <p>MycoNet worked because trees traded with trees. Simple. One-sided network.</p>
-  <p>But then Meta had an idea: "What if we also connected <em>mushrooms</em> (decomposers) with <em>trees</em> (nutrients providers)? Mushrooms break down dead material into nutrients. Trees provide sugars. Perfect partnership!"</p>
-  <p>This created a new problem: the multi-sided marketplace.</p>
-</section>
+<section class="section">
+  <div class="prose">
+    <p>Tit for Tat requires one thing that a one round game does not: <strong>memory</strong>. You must remember what your partner did last round to decide what to do this round. Without memory, every round is round one. Without memory, defection dominates again.</p>
+    <p>In the forest, the mycelium network is the memory. Every transfer of carbon, nitrogen, phosphorus, and water is recorded in the chemical gradients of the fungal threads. The network does not keep a ledger in any conscious sense. But the <em>physical structure of the connections</em> is the ledger. A well fed connection is thick, robust, multi threaded. A neglected connection is thin, fragile, and eventually severed.</p>
 
-<div class="scene">
-  <div class="scene-label">🍄🌲 THE TWO-SIDED CHALLENGE</div>
-  <h4>Why Marketplaces Are 10× Harder Than Networks</h4>
-  
-  <p><strong>The Problem:</strong></p>
+    <div class="scene">
+      <div class="scene-label">THE FOREST</div>
+      <h4>The Fungal Ledger</h4>
+      <p>When a birch tree sends excess carbon through the mycelium to a neighboring fir, the fungal threads between them grow thicker. More threads mean more capacity. More capacity means faster, larger transfers in both directions. The relationship literally grows with use.</p>
+      <p>When a tree stops contributing to the network while continuing to extract from it, the reverse happens. The threads thin. The connection weakens. Eventually, the mycelium redirects its infrastructure to more productive partnerships. The network does not punish. It reallocates. The cheater is not attacked. They are simply no longer connected.</p>
+    </div>
 
-  <p>Trees won't join unless there are mushrooms.<br>
-  Mushrooms won't join unless there are trees.<br>
-  <strong>You have TWO cold start problems simultaneously.</strong></p>
+    <p>Your relationships have the same infrastructure. You have been building it your entire life, often without knowing it. Every kept promise is a thicker thread. Every followed through commitment is a new connection. Every ignored message, every broken plan, every one sided extraction thins the threads between you and the people around you.</p>
+    <p>The infrastructure does not care about your intentions. It responds to your behavior. A person can intend to be generous while consistently extracting, and the threads will thin just as if they intended to exploit. The mycelium does not read minds. <em>It reads transactions.</em></p>
 
-  <p><strong>What Meta Tried (Failed):</strong></p>
+    <div class="gq">
+      <p>Cooperation is not a feeling between individuals. It is a condition of the infrastructure between them. You cannot cooperate through a dead connection any more than a tree can share carbon through severed mycelium. The first question is not "Do I want to cooperate?" It is "Have I maintained the infrastructure that makes cooperation possible?"</p>
+    </div>
 
-  <p>Recruited 10 trees. Then recruited 10 mushrooms. But the trees were in the north grove and the mushrooms were in the south grove. No connections happened. Both sides left.</p>
-
-  <p><strong>What Meta Learned:</strong></p>
-
-  <p>You need GEOGRAPHIC density, not just numeric density. 10 trees and 10 mushrooms spread across the forest = 0 value. 5 trees and 5 mushrooms in the SAME location = instant value.</p>
-</scene>
-
-<div class="model">
-  <span class="model-icon">⚖️</span>
-  <div class="model-label">MENTAL MODEL: MARKETPLACE BALANCE</div>
-  <h4>The Chicken-Egg-Chicken Problem</h4>
-  <p><strong>The Challenge:</strong> In two-sided marketplaces, you need to grow both sides at roughly the same rate AND in the same location.</p>
-  
-  <p><strong>The Failure Mode:</strong> Too many buyers, not enough sellers → Buyers can't find what they want → Leave.<br>
-  Too many sellers, not enough buyers → Sellers make no money → Leave.</p>
-
-  <p><strong>The Solution:</strong> Pick one side to subsidize heavily. Make that side overabundant. Then the other side will come naturally.</p>
-
-  <div class="model-app">
-    <div class="model-app-label">🎯 REAL-WORLD EXAMPLES</div>
-    <p><strong>Uber:</strong> Subsidized drivers first. Paid them to drive even when there were no riders. Once enough drivers were available (2-minute pickup times), riders came naturally. Then stopped subsidizing drivers.</p>
-    <p><strong>Airbnb:</strong> Focused on hosts first. Paid photographers to take professional photos of listings. Made supply abundant and high-quality. Demand followed.</p>
-    <p><strong>eBay:</strong> Focused on sellers. Made listing free or cheap. Got millions of items listed. Buyers came because there was stuff to buy.</p>
-    <p><em>Pattern: Subsidize supply (harder side). Demand (easier side) will follow.</em></p>
+    <div class="root-ck">
+      <div class="rc-label">ROOT CHECK</div>
+      <h4>The state of your infrastructure</h4>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Thick threads:</strong> Relationships where both sides have consistently contributed. Transfers are fast, easy, and flow in both directions. These are the connections you can call at 2 AM.</div></div>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Thin threads:</strong> Relationships where one or both sides have been extracting more than contributing. Communication is slow and strained. You have not spoken in months. These connections will break under any real load.</div></div>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Dead threads:</strong> Connections that have been severed by sustained non reciprocity. The infrastructure is gone. Rebuilding requires starting from scratch, not simply resuming where you left off.</div></div>
+    </div>
   </div>
-</div>
-
-<section class="section prose">
-  <h2><span>🔄</span> The Flywheel Effect</h2>
-  <p>Once Meta balanced the two-sided marketplace, something magical happened: a self-reinforcing cycle.</p>
 </section>
-
-<div class="viz"><div class="viz-glow"></div><div class="viz-inner">
-  <div class="viz-top"><div class="viz-icon-wrap">🔄</div><div class="viz-meta"><div class="viz-label">The Marketplace Flywheel</div><h4>How Amazon Prime Became Unstoppable</h4></div></div>
-  <div class="viz-body">
-    <p><strong>The Virtuous Cycle:</strong></p>
-
-    <p>More trees join → More mushrooms join (because more potential trading partners) → Better nutrient availability → Faster trades → Trees grow better → More trees want to join → Repeat</p>
-
-    <p><strong>The Data Advantage:</strong></p>
-
-    <p>As the network grows, Meta learns:<br>
-    • Which tree-mushroom pairings work best<br>
-    • Which nutrients are most valuable<br>
-    • When trades are most likely to happen<br>
-    • Which new groves to expand to next</p>
-
-    <p>This data makes MycoNet better at matchmaking. Which makes both sides happier. Which attracts more users. Which generates more data. <strong>The flywheel spins faster.</strong></p>
-
-    <p><strong>Why This Creates Monopoly:</strong></p>
-
-    <p>A new competitor can't replicate this. Even if they have better technology, they don't have:<br>
-    • The network (nobody's there yet)<br>
-    • The data (no transactions = no learning)<br>
-    • The flywheel momentum (takes years to build)</p>
-
-    <div class="viz-lesson">This is why Amazon dominates e-commerce. It's not just the network. It's the FLYWHEEL. More selection → more buyers → more sellers → more selection. Powered by 25 years of transaction data telling them exactly what works. <strong>Competitors can't catch up because they're not just behind they're missing the momentum.</strong></div>
-  </div>
-</div></div>
-
 </div>
 
-<div class="root-ck">
-  <div class="rc-label">Root Check</div>
-  <h4>Water What Was Planted</h4>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Metcalfe&rsquo;s Law.</strong> Network value grows as n&sup2;.</div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Cold Start Problem.</strong> Constrain your market, subsidize early users, provide standalone value.</div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Multi-Sided Networks.</strong> Platforms must balance supply and demand sides simultaneously. Solve the chicken-and-egg problem by subsidizing the harder side first, then let the easier side follow. The flywheel of data, matching, and trust creates a compounding advantage no competitor can replicate.</div></div>
-</div>
-
+<!-- ==================== CHAPTER 4 ==================== -->
 <div class="ch-head">
   <div class="page">
     <div class="ch-badge">Chapter Four</div>
     <div class="ch-num">04</div>
-    <h1 class="ch-title">Building Your Moat</h1>
-    <p class="ch-sub">The playbook for creating network effects in any business</p>
+    <h2 class="ch-title">The Punishment Signal</h2>
+    <p class="ch-sub">What happens when a tree takes without giving.</p>
   </div>
 </div>
 
-<div class="ribbon"><p>"The plans of the diligent lead to profit as surely as haste leads to poverty.". Proverbs 21:5</p></div>
-
-<div class="page">
-<section class="section prose">
-  <h2><span>🏗️</span> The Network Effects Playbook</h2>
-  <p>After five years, MycoNet was unbeatable. Meta shared the lessons with aspiring network builders:</p>
-</section>
-
-<div class="model">
-  <span class="model-icon">📋</span>
-  <div class="model-label">PLAYBOOK STEP 1</div>
-  <h4>Identify If You CAN Build Network Effects</h4>
-  <p><strong>The Test:</strong> Ask these questions</p>
-  
-  <p>1. Does having more users make the product MORE valuable to existing users?<br>
-  2. Is there a way for users to interact/transact with each other?<br>
-  3. Do users care WHO ELSE is on the platform?</p>
-
-  <p><strong>If YES to all three:</strong> You can build network effects.<br>
-  <strong>If NO to any:</strong> You're building a different kind of business (not worse, just different).</p>
-
-  <div class="model-app">
-    <div class="model-app-label">✅ HAS NETWORK EFFECTS</div>
-    <p>• Social networks (value = who else is there)<br>
-    • Marketplaces (value = supply & demand density)<br>
-    • Communication tools (value = who you can reach)<br>
-    • Developer platforms (value = ecosystem size)</p>
-  </div>
-
-  <div class="model-app" style="background:rgba(220,80,60,0.08);border-color:#DC503C">
-    <div class="model-app-label" style="color:#DC503C">❌ NO NETWORK EFFECTS</div>
-    <p>• SaaS productivity tools (Notion doesn't get better because more people use it)<br>
-    • E-commerce stores (my experience on Nike.com doesn't improve because you shop there)<br>
-    • Media/content (Netflix doesn't improve because more subscribers exist)</p>
-  </div>
-</div>
-
-<div class="model">
-  <span class="model-icon">🎯</span>
-  <div class="model-label">PLAYBOOK STEP 2</div>
-  <h4>Start Dense, Not Broad</h4>
-  <p><strong>The Strategy:</strong> Dominate a small, well-defined niche before expanding.</p>
-  
-  <p><strong>How to pick your niche:</strong><br>
-  1. Small enough that you can reach 50%+ market share quickly<br>
-  2. Dense enough that users can actually interact (geography, profession, interest)<br>
-  3. Adjacent to larger markets you'll expand to later</p>
-
-  <div class="model-app">
-    <div class="model-app-label">🎯 NICHE SELECTION EXAMPLES</div>
-    <p><strong>Bad:</strong> "Social network for everyone" (too broad, can't reach density)<br>
-    <strong>Good:</strong> "Social network for Harvard students" (Facebook's actual start)</p>
-    <p><strong>Bad:</strong> "Marketplace for everything" (too broad)<br>
-    <strong>Good:</strong> "Marketplace for college textbooks at UCLA" (can reach 80% penetration fast)</p>
-  </div>
-</div>
-
-<div class="model">
-  <span class="model-icon">💰</span>
-  <div class="model-label">PLAYBOOK STEP 3</div>
-  <h4>Subsidize to Critical Mass</h4>
-  <p><strong>The Principle:</strong> Lose money early to build the network. Make money later from network effects.</p>
-  
-  <p><strong>How to subsidize:</strong><br>
-  1. Free credits/rides/products for early users<br>
-  2. Pay suppliers to join (Uber paying drivers to stay online)<br>
-  3. Offer premium features free temporarily<br>
-  4. Manually do work to create value (Airbnb photographing homes)</p>
-
-  <p><strong>When to stop subsidizing:</strong><br>
-  When new users join for the network itself, not the subsidy. Test by reducing incentives and watching retention.</p>
-
-  <div class="model-app">
-    <div class="model-app-label">💸 SUBSIDY BUDGET RULE</div>
-    <p><strong>Formula:</strong> Spend up to 3× lifetime value (LTV) to acquire users in the cold start phase.<br>
-    <strong>Why:</strong> Early users are 3× more valuable because they help attract future users through network effects.<br>
-    <strong>Once you hit critical mass:</strong> Drop CAC to 1× LTV or less and ride the flywheel.</p>
-  </div>
-</div>
-
-<div class="model">
-  <span class="model-icon">⚡</span>
-  <div class="model-label">PLAYBOOK STEP 4</div>
-  <h4>Optimize for Speed, Not Efficiency</h4>
-  <p><strong>The Insight:</strong> In winner-take-all markets, second place is worthless. Get to critical mass FAST, even if it's messy.</p>
-  
-  <p><strong>What this means:</strong><br>
-  • Burn cash to acquire users faster than competitors<br>
-  • Launch in new markets aggressively before you're ready<br>
-  • Sacrifice margins to build density<br>
-  • Don't worry about profitability until you dominate</p>
-
-  <div class="model-app">
-    <div class="model-app-label">⚡ THE SPEED PRINCIPLE</div>
-    <p><strong>Why Uber beat Lyft in most markets:</strong> Uber expanded to 100+ cities while Lyft focused on perfecting 10 cities. Uber's execution was messier, but they GOT THERE FIRST. First to density wins.</p>
-    <p><strong>Why this is risky:</strong> If you run out of money before reaching critical mass, you lose everything. Network effects are binary → dominate or die.</p>
-  </div>
-</div>
-
-<div class="model">
-  <span class="model-icon">🔒</span>
-  <div class="model-label">PLAYBOOK STEP 5</div>
-  <h4>Build Defensibility Through Data</h4>
-  <p><strong>The Moat:</strong> Once you have the network, use transaction data to make better matches than competitors ever could.</p>
-  
-  <p><strong>How to build the data moat:</strong><br>
-  1. Track every interaction (who trades with whom, when, what works)<br>
-  2. Use data to improve matchmaking (better recommendations, faster transactions)<br>
-  3. Create feedback loops (show users the value data creates)<br>
-  4. Make it clear: "We know your preferences better than anyone else could"</p>
-
-  <div class="model-app">
-    <div class="model-app-label">📊 DATA MOAT EXAMPLES</div>
-    <p><strong>Amazon:</strong> "People who bought X also bought Y" (only works with massive transaction data)<br>
-    <strong>Spotify:</strong> Discover Weekly (your taste + 500M users' listening history)<br>
-    <strong>LinkedIn:</strong> "People you may know" (only accurate with the full professional graph)</p>
-  </div>
-</div>
-
-<section class="section prose">
-  <h2><span>⚠️</span> The Dark Side of Network Effects</h2>
-  <p>Meta ended the lesson with a warning:</p>
-</section>
-
-<div class="gq"><p>Network effects create monopolies. Monopolies create power. Power without accountability creates harm. The same force that makes Facebook valuable makes it dangerous. The same mechanism that makes Uber efficient makes it exploitative. <em>Build responsibly. The network you create might be too powerful to control.</em></p></div>
-
-<div class="scene">
-  <div class="scene-label">⚠️ THE MONOPOLY PROBLEM</div>
-  <h4>What Happens When You Win Too Hard</h4>
-  
-  <p><strong>The Pattern:</strong></p>
-
-  <p>Phase 1: Build network through subsidies and good service<br>
-  Phase 2: Reach monopoly through network effects<br>
-  Phase 3: Extract value now that users are locked in<br>
-  Phase 4: Degrade quality because users can't leave</p>
-
-  <p><strong>Real Examples:</strong></p>
-
-  <p>• Facebook: Free and user-focused (2004-2012) → Ad-heavy and manipulative (2013+)<br>
-  • Uber: Great driver pay and cheap rides (2010-2015) → Squeeze drivers, raise prices (2016+)<br>
-  • Amazon Marketplace: Seller-friendly (2000-2015) → High fees, copies best sellers (2016+)</p>
-
-  <p><strong>The Lesson:</strong> Network effects are neutral. They amplify whatever you build. Build something good, it becomes dominant good. Build something exploitative, it becomes dominant exploitation.</p>
-</scene>
-
-</div>
-
-<div class="think">
-  <div class="think-label">💭 FOR ENTREPRENEURS</div>
-  <h4>Apply This to Your Business</h4>
-  <p class="q-start">🔍 Does your business have potential for network effects? Run the 3-question test.</p>
-  <div class="think-line"></div>
-  <p class="q-start">🎯 If yes: What's the smallest niche you could dominate to 80%+ penetration?</p>
-  <div class="think-line"></div>
-  <p class="q-start">💰 How much would you need to subsidize to reach critical mass in that niche?</p>
-  <div class="think-line"></div>
-  <p class="q-start">⚡ Could you reach critical mass faster than competitors by burning cash?</p>
-  <div class="think-line"></div>
-  <p style="font-weight:800;color:var(--glow);margin-top:14px;font-family:'Nunito',sans-serif;font-size:0.95rem">If you can't build network effects, don't try. Build a different moat. But if you CAN build them, they're the strongest competitive advantage in business.</p>
-</div>
-
-</div>
-
-<!-- ===== FINAL ROOT CHECK ===== -->
-<div class="root-ck">
-  <div class="rc-label">Final Root Check</div>
-  <h4>The Full Map</h4>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Metcalfe&rsquo;s Law.</strong> The value of a network grows as the square of its users. This exponential math is the engine behind every dominant platform.</div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Cold Start Problem.</strong> Every network starts at zero. Solve it by constraining your market, subsidizing early users, and providing standalone value before the network kicks in.</div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Multi-Sided Networks.</strong> Platforms balance supply and demand. Subsidize the harder side first, build the flywheel of data and trust, and let compounding do the work.</div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Building Your Moat.</strong> Network effects, data moats, and switching costs create competitive advantages that cannot be replicated by better products, only by different networks serving different needs. Build responsibly.</div></div>
-</div>
-
-<!-- ===== FINAL TEST ===== -->
 <div class="page">
 <section class="section">
-  <div class="think">
-    <div class="think-label">The Final Test</div>
-    <h4>Can you answer these without looking back?</h4>
-    <p class="q-start">What is Metcalfe&rsquo;s Law and why does it make network businesses exponentially more valuable than linear ones?</p>
-    <div class="think-line"></div>
-    <p class="q-start">What is the Cold Start Problem and what are the three strategies for solving it?</p>
-    <div class="think-line"></div>
-    <p class="q-start">What makes multi-sided networks harder to build than single-sided ones? How do you solve the chicken-and-egg problem?</p>
-    <div class="think-line"></div>
-    <p class="q-start">Name three types of moats that protect a network business. Which is strongest?</p>
-    <div class="think-line"></div>
-    <p class="q-start">What is the dark side of network effects, and what responsibility does a builder have once their network reaches monopoly status?</p>
-    <div class="think-line"></div>
+  <div class="prose">
+    <p>In Simard's research, something unexpected emerged. When a tree was consistently extracting nutrients from the network without contributing, the mycelium did not simply disconnect it passively. The network actively reduced its investment. Fungal hyphae that had been growing toward the exploitative tree reversed direction. Resources were rerouted to cooperative trees. The cheater experienced a measurable decline in nutrient access, even when other nutrient sources were available.</p>
+    <p>The forest has a punishment mechanism. Not rage. Not revenge. <em>Reallocation.</em></p>
+
+    <div class="compare">
+      <div class="compare-box compare-old">
+        <div class="compare-label">How We Punish</div>
+        <h4>Emotional Retaliation</h4>
+        <p>Anger, withdrawal, gossip, passive aggression.</p>
+        <p>The goal is to inflict pain on the defector.</p>
+        <p>The cost: both parties suffer. The infrastructure is damaged further.</p>
+      </div>
+      <div class="compare-box compare-new">
+        <div class="compare-label">How the Network Punishes</div>
+        <h4>Strategic Reallocation</h4>
+        <p>The mycelium does not attack the cheating tree. It redirects resources to cooperative trees.</p>
+        <p>The goal is not punishment. The goal is efficient investment.</p>
+        <p>The cost to the network: zero. The cheater bears all the loss.</p>
+      </div>
+    </div>
+
+    <p>This is the difference between retaliation and boundary. Retaliation costs you resources to inflict pain on someone else. A boundary costs you nothing because it is simply an investment decision. You are not punishing anyone. You are directing your finite energy toward the connections that reciprocate.</p>
+    <p>In Axelrod's tournament, programs that punished too harshly, defecting for many rounds after a single defection, performed poorly. They spiraled into mutual destruction with too many partners. Programs that never punished were exploited into extinction. The winning strategy punished defection with exactly one round of defection, then returned to cooperation.</p>
+    <p><strong>One round. Proportional. Then back to open.</strong></p>
+
+    <div class="think">
+      <div class="think-label">YOUR TURN</div>
+      <h4>Where are you retaliating when you should be reallocating?</h4>
+      <div class="think-line"></div>
+      <p class="q-start">Name a relationship where you are spending energy punishing defection instead of simply redirecting that energy toward cooperative connections.</p>
+      <div class="think-line"></div>
+    </div>
   </div>
 </section>
 </div>
 
-<!-- ===== PROMPT CARD ===== -->
+<!-- ==================== CHAPTER 5 ==================== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-badge">Chapter Five</div>
+    <div class="ch-num">05</div>
+    <h2 class="ch-title">The Generous Strategy</h2>
+    <p class="ch-sub">Why the best cooperators give more than they take.</p>
+  </div>
+</div>
+
 <div class="page">
 <section class="section">
-  <div class="think">
-    <div class="think-label">The Full Installation Prompt</div>
-    <h4>Copy This Into Any AI Assistant</h4>
-    <p>Use this prompt to get a personalized network effects strategy built for your specific business:</p>
-    <p style="font-family:monospace;font-size:0.88rem;background:var(--bark-warm);padding:20px;border-radius:12px;line-height:1.7;color:var(--soil-dark)">I just read The Mycelium Network by KingdomBuilders AI. The framework covers Metcalfe&rsquo;s Law (n&sup2; value growth), the Cold Start Problem (constraining markets, subsidizing early users, standalone value), Multi-Sided Networks (balancing supply and demand, data flywheels), and Building Your Moat (network effects, data moats, switching costs).<br><br>Help me apply this to my business. Start by asking about my product, my users, and my competitive landscape. Then assess whether my business has potential for network effects. If yes, design a cold start strategy for my smallest viable niche. If no, help me identify which type of moat I should build instead. Be direct. Challenge my assumptions. Do not let me confuse scale with network effects.<br><br>Let us begin.</p>
+  <div class="prose">
+    <p>After Axelrod's first tournament, researchers discovered something surprising. Strict Tit for Tat was vulnerable to noise. In the real world, signals get misread. A cooperator accidentally fails to follow through. A generous act gets misinterpreted. In a noisy environment, strict reciprocity spirals into mutual punishment.</p>
+    <p>The solution was a variant called <dfn data-def="A modified version of Tit for Tat that occasionally cooperates even after the partner defected. By introducing a small probability of 'forgiving' defection, it breaks retaliatory spirals caused by misunderstandings or noise.">Generous Tit for Tat</dfn>. It followed the same basic logic: cooperate first, mirror your partner's behavior. But with one difference. After the partner defected, it cooperated anyway about one third of the time. It forgave randomly.</p>
+    <p>In noisy environments, Generous Tit for Tat crushed every other strategy. It broke retaliatory spirals. It gave accidental defectors a way back to cooperation. It signaled that the relationship was worth more than any single transgression.</p>
+
+    <div class="viz">
+      <div class="viz-glow"></div>
+      <div class="viz-inner">
+        <div class="viz-top">
+          <div class="viz-icon-wrap">&#x1F33F;</div>
+          <div class="viz-meta">
+            <div class="viz-label">Forest Principle</div>
+            <h4>The Mother Tree Protocol</h4>
+          </div>
+        </div>
+        <div class="viz-body">
+          <p>Simard's "mother trees," the largest and most connected trees in the forest, demonstrated exactly this pattern. They contributed <em>disproportionately</em> more to the network than they extracted. Not because they were altruistic. Because their position in the network gave their generosity compound returns.</p>
+          <p>A mother tree connected to 47 other trees through the mycelium network receives stability, pathogen warnings, drought signals, and reciprocal nutrients from dozens of sources. <strong>Her generosity was not a cost. It was an investment that built the infrastructure she depended on.</strong></p>
+          <p>The trees that extracted efficiently were the ones most vulnerable to the next drought. The trees that gave generously were the ones with 47 connections ready to support them when they needed it.</p>
+        </div>
+        <div class="viz-lesson">In a connected system, generosity is not charity. It is infrastructure investment. The person who gives more than they take is not being exploited. They are building a network with 47 support connections for the crisis that has not arrived yet.</div>
+      </div>
+    </div>
+
+    <p>This does not mean giving without boundaries. Generous Tit for Tat still retaliates. It still defects when the pattern of extraction becomes sustained rather than accidental. The generosity is in the recovery, not in the tolerance of sustained exploitation.</p>
+    <p><strong>There is a difference between being generous and being a doormat.</strong> The generous strategy forgives noise. It does not forgive patterns. The difference is whether the defection was a single misfire or a consistent shape.</p>
+
+    <div class="root-ck">
+      <div class="rc-label">ROOT CHECK</div>
+      <h4>Which strategy are you running?</h4>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Always Cooperate:</strong> You give regardless of what the other person does. You are being exploited by every defector in your network. This feels like virtue but it funds destruction.</div></div>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Always Defect:</strong> You take from every interaction. You win every single round and lose every relationship. Your threads are all severed or thinning.</div></div>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Strict Tit for Tat:</strong> You match every defection with exact retaliation. You never get exploited, but you spiral into mutual punishment over every misunderstanding.</div></div>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Generous Tit for Tat:</strong> You cooperate first. You forgive mistakes. You retaliate only against patterns of sustained extraction. And after retaliating, you offer the path back to cooperation.</div></div>
+    </div>
   </div>
 </section>
 </div>
 
+<!-- ==================== CHAPTER 6 ==================== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-badge">Chapter Six</div>
+    <div class="ch-num">06</div>
+    <h2 class="ch-title">The Network You Build</h2>
+    <p class="ch-sub">Your relationships are not separate. They are one network.</p>
+  </div>
+</div>
+
+<div class="page">
+<section class="section">
+  <div class="prose">
+    <p>The mycelium network does not connect two trees. It connects every tree. A single fungal organism in Oregon, <dfn data-def="Armillaria ostoyae, the honey fungus. A single organism in Oregon's Blue Mountains covers 2,385 acres, making it the largest known organism on Earth. It is estimated to be between 2,400 and 8,650 years old.">Armillaria ostoyae</dfn>, covers 2,385 acres. It is the largest living organism on Earth. Every tree in that forest is connected to every other tree through one continuous network.</p>
+    <p>Your relationships work the same way. You do not have separate connections to separate people. You have one network. And every node in that network is affected by the health of every other connection.</p>
+    <p>When you consistently cooperate with person A, person A becomes a stronger node who can cooperate more effectively with persons B and C. When you extract from person D until the connection dies, person D becomes a weaker node in the wider network that includes people you depend on. Your defection ripples outward through infrastructure you cannot see.</p>
+
+    <div class="scene">
+      <div class="scene-label">THE FOREST</div>
+      <h4>When the Hub Falls</h4>
+      <p>In 2019, researchers studied what happened when mother trees were removed from a mycelium network. The effect was not local. Trees up to 30 meters away from the removed hub showed measurable declines in carbon access, growth rate, and disease resistance. The mother tree's network connections had been providing stability to trees she had never directly exchanged resources with. Her cooperation had been propagating through second and third order connections across the entire network.</p>
+      <p>When she was removed, the network did not collapse immediately. But the resilience of the entire forest dropped. The next drought, the next beetle infestation, the next disease pressure would find a system with fewer backup pathways, fewer redundant connections, fewer ways to reroute resources to where they were needed.</p>
+    </div>
+
+    <p>You are a node in a network. Your cooperation and your defection do not stay between you and the other person. They propagate through the infrastructure of every shared connection. The person you exploited tells three friends. The person you generously supported becomes a stronger node in the network that includes your future opportunities.</p>
+
+    <div class="gq">
+      <p>The forest does not have selfish trees and generous trees. It has trees that are well connected and trees that are poorly connected. The well connected trees survive droughts, resist disease, and live for centuries. The poorly connected trees die first, every time. Connection is not a personality trait. It is an infrastructure outcome of thousands of cooperative transactions, compounded over years.</p>
+    </div>
+
+    <div class="prompt-card">
+      <div class="pc-label">INSTALLATION PROMPT</div>
+      <p>Map your network this week. Write down the five most important connections in your life. For each one, answer honestly: Am I a net contributor or a net extractor in this relationship? When was the last time I strengthened this thread without needing something in return?</p>
+      <p>Then pick the thinnest thread. The relationship where you have been extracting or neglecting. Send one act of contribution this week. Not an apology. Not a grand gesture. One unit of genuine value delivered with no ask attached.</p>
+      <p>This is how the mycelium rebuilds. One thread at a time.</p>
+    </div>
+
+    <div class="root-ck">
+      <div class="rc-label">FINAL ROOT CHECK</div>
+      <h4>The Full Cooperation Protocol</h4>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Iterated Game:</strong> Every important relationship is a repeated game. I optimize for long term cooperation, not short term extraction.</div></div>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Memory Thread:</strong> My relationships have infrastructure. Kept promises thicken it. Broken commitments thin it. The infrastructure does not care about my intentions. It responds to my transactions.</div></div>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Reallocation Principle:</strong> When someone consistently extracts, I do not retaliate. I reallocate my energy to cooperative connections. Boundaries are investment decisions, not punishments.</div></div>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Generous Strategy:</strong> I forgive noise. I do not forgive patterns. I cooperate first, retaliate proportionally, and always offer the path back.</div></div>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Network Effect:</strong> My cooperation and my defection ripple through every shared connection. I am building or degrading infrastructure that extends far beyond the people I can see.</div></div>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- ==================== FINALE ==================== -->
 <section class="finale">
-  <span class="finale-emoji">🍄</span>
-  <h2>The biggest network doesn't always start as the best network.<br><span>It just starts first and never stops growing.</span></h2>
-  <p>Mycelium networks connect forests underground, invisible but unstoppable. Network effects work the same way in business. By the time competitors see your dominance, it's already too late to catch you. The math doesn't allow it. Build the network. Win the market. Repeat.</p>
-  <p style="margin-top:24px;font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:700">🌍 The network is the moat. The moat is the business. Everything else is decoration. 🌍</p>
+  <div class="finale-emoji">&#x1F344;</div>
+  <h2>The Network Remembers<span>Every Thread You Build</span></h2>
+  <p>Cooperation is not a moral choice. It is a dominant strategy in every repeated game, enforced by infrastructure that remembers whether you gave or only took. The mycelium does not hope for reciprocity. It builds it into the physical structure of the connections.</p>
+  <p>You cannot talk your way into a strong network. You cannot intend your way into deep connections. You can only build them, one cooperative transaction at a time, through infrastructure that grows thicker with every kept promise and thinner with every extraction.</p>
+  <p>The forest that has been cooperating for a thousand years can survive anything. So can you.</p>
 </section>
 
 <footer>
   <p>"Iron sharpens iron, and one man sharpens another." Proverbs 27:17</p>
-  <div class="brand">Kingdom Builders AI</div>
-  <p style="margin-top:14px;font-family:'Nunito',sans-serif;font-weight:700">Understanding Platform Economics Through Natural Systems</p>
+  <div class="brand">KingdomBuilders AI</div>
 </footer>
-
-<div style="text-align:center;padding:20px 24px 32px;background:#060C04;border-top:1px solid rgba(232,192,112,0.08);font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:700;color:rgba(255,255,255,0.2);line-height:1.6">
-  To save as PDF: Open this file in your browser → File → Print → "Save as PDF"<br>
-  Works on desktop, iPhone, iPad, and Android.
-</div>
 
 </body>
 </html>

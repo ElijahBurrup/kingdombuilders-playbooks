@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Tardigrade Protocol. Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --amber:#D4A574;--amber-bright:#E8C098;--amber-pale:#F0D8B8;--amber-soft:rgba(212,165,116,0.07);
+  --glass:#88C0D0;--glass-mid:rgba(136,192,208,0.15);--glass-pale:#B0D8E8;
+  --void:#0A0810;--void-mid:#141020;--void-dark:#060408;--void-light:#1E1830;
+  --trehalose:#E8B84C;--trehalose-mid:rgba(232,184,76,0.18);
+  --cream:#FFF8F0;--cream-warm:#FFF4E8;--paper:#FFFCF8;--white:#FFFFFF;
+  --text:#0A0810;--text-light:#2A2030;--text-muted:#5A4868;
+  --radius:14px;--shadow:0 2px 16px rgba(10,8,16,0.08);--shadow-deep:0 8px 40px rgba(10,8,16,0.15);
+  --before-bg:#FFF1F1;--before-border:#C07070;--before-text:#5A1A1A;
+  --after-bg:#F0F8F4;--after-border:#5A9A7A;--after-text:#1A4A30;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{overflow-x:hidden;font-family:'Lora',Georgia,serif;color:var(--text);background:var(--paper);line-height:1.82;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
+.page{max-width:720px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--void-mid);font-weight:700}
+.prose em{color:var(--amber);font-style:normal;font-weight:600}
+
+/* ===== KNOWLEDGE LAYER (dfn tooltips) ===== */
+.def{position:relative;border-bottom:1.5px dotted var(--glass);cursor:help;font-style:normal;font-weight:inherit}
+.def:hover{color:var(--glass)}
+.def::after{content:attr(data-def);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);width:max-content;max-width:280px;padding:10px 14px;background:var(--void-mid);color:var(--white);font-family:'Lora',serif;font-size:0.78rem;font-style:normal;font-weight:400;line-height:1.55;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.35);opacity:0;visibility:hidden;transition:opacity 0.2s,visibility 0.2s;z-index:100;pointer-events:none;text-align:left;white-space:normal}
+.def::before{content:'';position:absolute;bottom:calc(100% + 2px);left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--void-mid);opacity:0;visibility:hidden;transition:opacity 0.2s,visibility 0.2s;z-index:101}
+.def:hover::after,.def:hover::before,.def:focus::after,.def:focus::before{opacity:1;visibility:visible}
+.def{outline:none}
+@media(max-width:600px){.def::after{left:0;transform:none;max-width:220px}}
+
+/* ===== COVER ===== */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;
+  background:linear-gradient(175deg,var(--void-dark) 0%,var(--void) 20%,#100C1C 50%,var(--void-mid) 78%,var(--void-dark) 100%);
+  position:relative;overflow:hidden}
+/* Atmosphere particles */
+.atm-particle{position:absolute;pointer-events:none;opacity:0;animation:atm-drift linear infinite}
+.atm-particle.tardi{border-radius:40% 60% 60% 40% / 50% 50% 60% 40%;background:rgba(136,192,208,0.12)}
+.atm-particle.hex{clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);background:rgba(212,165,116,0.1)}
+.atm-particle:nth-child(1){width:12px;height:8px;left:6%;animation-duration:18s;animation-delay:0s}
+.atm-particle:nth-child(2){width:7px;height:5px;left:19%;animation-duration:22s;animation-delay:-4s}
+.atm-particle:nth-child(3){width:10px;height:7px;left:33%;animation-duration:16s;animation-delay:-9s}
+.atm-particle:nth-child(4){width:9px;height:9px;left:47%;animation-duration:25s;animation-delay:-2s}
+.atm-particle:nth-child(5){width:6px;height:4px;left:61%;animation-duration:19s;animation-delay:-7s}
+.atm-particle:nth-child(6){width:11px;height:7px;left:74%;animation-duration:21s;animation-delay:-12s}
+.atm-particle:nth-child(7){width:8px;height:6px;left:86%;animation-duration:17s;animation-delay:-5s}
+.atm-particle:nth-child(8){width:5px;height:8px;left:12%;animation-duration:23s;animation-delay:-15s}
+.atm-particle:nth-child(9){width:9px;height:9px;left:54%;animation-duration:20s;animation-delay:-3s}
+.atm-particle:nth-child(10){width:7px;height:5px;left:91%;animation-duration:14s;animation-delay:-8s}
+@keyframes atm-drift{
+  0%{top:-4%;opacity:0;transform:translateX(0) rotate(0deg)}
+  8%{opacity:0.55}
+  50%{transform:translateX(22px) rotate(160deg)}
+  92%{opacity:0.25}
+  100%{top:106%;opacity:0;transform:translateX(-18px) rotate(320deg)}
+}
+.ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.018;mix-blend-mode:overlay;pointer-events:none}
+.cover-content{position:relative;z-index:2;padding:48px 24px}
+.cover-badge{display:inline-block;padding:6px 20px;border:1px solid rgba(136,192,208,0.25);border-radius:40px;font-family:'Nunito',sans-serif;font-size:0.67rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--glass);margin-bottom:36px}
+.cover h1{font-size:clamp(2.4rem,7vw,4.2rem);font-weight:900;color:var(--white);line-height:1.05;margin-bottom:8px}
+.cover h1 span{display:block;background:linear-gradient(135deg,var(--glass),var(--amber-pale));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cover-sub{font-family:'Lora',serif;font-size:0.96rem;font-style:italic;color:rgba(255,255,255,0.28);margin-top:24px;line-height:1.72;max-width:560px;margin-left:auto;margin-right:auto}
+.cover-sub em{color:var(--amber-pale);font-style:normal}
+.cover-author{font-family:'Nunito',sans-serif;font-size:0.5rem;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.1);margin-top:48px}
+.cover-art{width:200px;height:200px;margin:0 auto 28px;animation:tardi-breathe 5s ease-in-out infinite}
+.cover-art svg{width:100%;height:100%;filter:drop-shadow(0 0 18px rgba(136,192,208,0.25)) drop-shadow(0 0 48px rgba(212,165,116,0.12))}
+@keyframes tardi-breathe{
+  0%,100%{transform:scale(1);filter:brightness(1) drop-shadow(0 0 10px rgba(136,192,208,0.3))}
+  50%{transform:scale(1.05);filter:brightness(1.25) drop-shadow(0 0 28px rgba(136,192,208,0.55))}
+}
+
+/* ===== RIBBON ===== */
+.ribbon{text-align:center;padding:22px 24px;background:linear-gradient(135deg,rgba(136,192,208,0.03),rgba(212,165,116,0.05));border-top:1.5px solid rgba(136,192,208,0.1);border-bottom:1.5px solid rgba(136,192,208,0.1)}
+.ribbon p{font-family:'Lora',serif;font-size:0.94rem;font-style:italic;color:var(--text-muted);max-width:520px;margin:0 auto}
+
+/* ===== CHAPTER HEADINGS ===== */
+.ch-head{padding:64px 24px 48px;text-align:center;background:linear-gradient(170deg,var(--void-dark),var(--void),var(--void-mid));position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:420px;height:420px;background:radial-gradient(circle,rgba(136,192,208,0.05) 0%,transparent 70%);border-radius:50%}
+.ch-head .ch-num{font-family:'Nunito',sans-serif;font-size:0.54rem;font-weight:800;letter-spacing:6px;text-transform:uppercase;color:var(--glass);margin-bottom:12px;position:relative;z-index:2}
+.ch-head h2{font-size:1.65rem;color:var(--white);position:relative;z-index:2;margin-bottom:8px}
+.ch-head .ch-sub{font-family:'Lora',serif;font-size:0.88rem;font-style:italic;color:rgba(255,255,255,0.4);position:relative;z-index:2;max-width:480px;margin:0 auto}
+
+/* ===== CHARACTER CARDS ===== */
+.char-grid{display:grid;gap:20px;margin:36px 0}
+@media(min-width:640px){.char-grid{grid-template-columns:1fr 1fr}}
+.char-card{background:var(--white);border:2px solid rgba(136,192,208,0.15);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.char-head{background:linear-gradient(135deg,var(--void),var(--void-mid));padding:18px 20px;display:flex;align-items:center;gap:14px}
+.char-avatar{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,rgba(136,192,208,0.2),rgba(136,192,208,0.06));border:1.5px solid rgba(136,192,208,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--glass)}
+.char-avatar svg{width:24px;height:24px}
+.char-name{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:var(--white);line-height:1.2}
+.char-role{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--amber);margin-top:2px}
+.char-body{padding:18px 20px}
+.char-body p{font-size:0.9rem;color:var(--text-light);line-height:1.72;margin:0}
+
+/* ===== SCENE ===== */
+.scene{margin:36px 0;padding:32px;background:linear-gradient(145deg,var(--void-dark),var(--void));border-radius:var(--radius);border:1px solid rgba(136,192,208,0.1);position:relative;overflow:hidden}
+.scene::before{content:'';position:absolute;top:0;right:0;width:220px;height:220px;background:radial-gradient(circle,rgba(136,192,208,0.04) 0%,transparent 70%);border-radius:50%}
+.scene .scene-label{font-family:'Nunito',sans-serif;font-size:0.54rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--glass);margin-bottom:14px;position:relative;z-index:2;display:flex;align-items:center;gap:6px}
+.scene .scene-label svg{width:14px;height:14px;flex-shrink:0}
+.scene p{font-family:'Lora',serif;font-size:0.95rem;color:rgba(255,255,255,0.65);line-height:1.8;position:relative;z-index:2;margin-bottom:12px}
+.scene p:last-child{margin-bottom:0}
+.scene em{color:var(--amber-pale);font-style:normal;font-weight:600}
+.scene strong{color:var(--glass-pale);font-weight:700}
+
+/* ===== BEFORE / AFTER GRID ===== */
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:28px 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+@media(max-width:600px){.ba-grid{grid-template-columns:1fr}}
+.ba-before,.ba-after{padding:24px 28px}
+.ba-before{background:var(--before-bg);border-right:2px solid var(--before-border)}
+.ba-after{background:var(--after-bg);border-left:2px solid var(--after-border)}
+@media(max-width:600px){.ba-before{border-right:none;border-bottom:2px solid var(--before-border)}.ba-after{border-left:none;border-top:2px solid var(--after-border)}}
+.ba-before h4,.ba-after h4{font-size:0.58rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;margin-bottom:12px}
+.ba-before h4{color:var(--before-text)}.ba-after h4{color:var(--after-text)}
+.ba-before p,.ba-after p{font-size:0.88rem;line-height:1.68;margin-bottom:8px}
+.ba-before p:last-child,.ba-after p:last-child{margin-bottom:0}
+.ba-before p{color:var(--before-text)}.ba-after p{color:var(--after-text)}
+
+/* ===== THINK ===== */
+.think{margin:32px 0;padding:28px 32px;background:linear-gradient(135deg,rgba(136,192,208,0.04),rgba(136,192,208,0.07));border-radius:var(--radius);border-left:5px solid var(--glass)}
+.think .think-label{font-family:'Nunito',sans-serif;font-size:0.54rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--glass);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.think .think-label svg{width:16px;height:16px;flex-shrink:0}
+.think h4{font-size:1rem;color:var(--void-mid);margin-bottom:16px}
+.think p{font-size:0.88rem;color:var(--text-light);line-height:1.72;margin-bottom:12px}
+.think p:last-child{margin-bottom:0}
+.think .fill-line{display:block;border-bottom:1.5px dashed rgba(136,192,208,0.4);margin:20px 0;height:28px}
+
+/* ===== GRAND QUOTE ===== */
+.grand-quote{margin:40px 0;padding:48px 36px;text-align:center;position:relative}
+.grand-quote::before{content:'\201C';font-family:Georgia,serif;font-size:8rem;color:rgba(136,192,208,0.06);position:absolute;top:-20px;left:50%;transform:translateX(-50%);line-height:1}
+.grand-quote blockquote{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:var(--text-muted);line-height:1.75;max-width:560px;margin:0 auto;position:relative;z-index:2}
+.grand-quote .attribution{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--glass);margin-top:16px}
+
+/* ===== VIZ BOX ===== */
+.viz-box{margin:32px 0;padding:32px;background:var(--white);border-radius:var(--radius);border:2px solid rgba(136,192,208,0.2);box-shadow:0 0 20px rgba(136,192,208,0.07),var(--shadow);position:relative;overflow:hidden}
+.viz-box::before{content:'';position:absolute;top:-40%;right:-20%;width:320px;height:320px;background:radial-gradient(circle,rgba(136,192,208,0.04) 0%,transparent 70%);border-radius:50%}
+.viz-box .viz-label{font-family:'Nunito',sans-serif;font-size:0.54rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--glass);margin-bottom:16px;position:relative;z-index:2;display:flex;align-items:center;gap:6px}
+.viz-box .viz-label svg{width:14px;height:14px;flex-shrink:0}
+.viz-box h3{font-size:1.1rem;color:var(--void-mid);margin-bottom:16px;position:relative;z-index:2}
+.viz-box p{font-size:0.9rem;color:var(--text-light);line-height:1.72;position:relative;z-index:2;margin-bottom:12px}
+.viz-box p:last-child{margin-bottom:0}
+
+/* ===== DATA HEROES ===== */
+.data-heroes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:32px 0}
+@media(max-width:600px){.data-heroes{grid-template-columns:1fr 1fr}}
+.data-hero{padding:24px 16px;background:linear-gradient(145deg,var(--void),var(--void-mid));border-radius:var(--radius);border:1px solid rgba(136,192,208,0.12);text-align:center;box-shadow:var(--shadow)}
+.data-hero .dh-num{font-family:'Nunito',sans-serif;font-size:2.2rem;font-weight:900;line-height:1;margin-bottom:6px;background:linear-gradient(135deg,var(--glass),var(--amber));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.data-hero .dh-label{font-family:'Nunito',sans-serif;font-size:0.54rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.35);line-height:1.4}
+
+/* ===== DARK PANEL ===== */
+.dark-panel{margin:28px 0;padding:30px;background:linear-gradient(145deg,var(--void-dark),var(--void));border-radius:var(--radius);border:1px solid rgba(212,165,116,0.12)}
+.dark-panel .dp-label{font-family:'Nunito',sans-serif;font-size:0.54rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--amber);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.dark-panel .dp-label svg{width:14px;height:14px;flex-shrink:0}
+.dark-panel h3{font-size:1rem;color:var(--white);margin-bottom:12px}
+.dark-panel p{font-size:0.88rem;color:rgba(255,255,255,0.58);line-height:1.72;margin-bottom:8px}
+.dark-panel p:last-child{margin-bottom:0}
+.dark-panel em{color:var(--amber-pale);font-style:normal;font-weight:600}
+.dark-panel strong{color:var(--amber-bright)}
+.dark-panel ol,.dark-panel ul{padding-left:20px;margin:8px 0}
+.dark-panel li{font-size:0.88rem;color:rgba(255,255,255,0.55);line-height:1.7;margin-bottom:6px}
+
+/* ===== SURVIVAL MATRIX ===== */
+.survival-matrix{margin:36px 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-deep);background:var(--void)}
+.sm-head{padding:20px 24px;background:linear-gradient(135deg,var(--void-dark),var(--void));display:flex;align-items:center;gap:14px;border-bottom:1px solid rgba(136,192,208,0.1)}
+.sm-head-icon{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,rgba(136,192,208,0.2),rgba(136,192,208,0.06));display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--glass)}
+.sm-head-icon svg{width:20px;height:20px}
+.sm-head-text .sm-label{font-family:'Nunito',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:4.5px;text-transform:uppercase;color:var(--glass);opacity:0.65}
+.sm-head-text h4{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:var(--white);margin-top:2px}
+.sm-row{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1fr;gap:0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.sm-row:last-child{border-bottom:none}
+.sm-row.sm-header .sm-cell{font-family:'Nunito',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.3);padding:12px 14px;background:rgba(255,255,255,0.03)}
+.sm-cell{padding:14px 14px;font-family:'Lora',serif;font-size:0.82rem;color:rgba(255,255,255,0.55);line-height:1.45;border-right:1px solid rgba(255,255,255,0.04)}
+.sm-cell:last-child{border-right:none}
+.sm-cell.sm-name{font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:700;color:var(--amber-pale)}
+.sm-cell.survived{color:var(--glass);font-weight:600}
+.sm-cell.died{color:rgba(200,100,100,0.7)}
+@media(max-width:600px){.sm-row{grid-template-columns:1fr 1fr}.sm-cell.sm-extra{display:none}}
+
+/* ===== TUN CORE BUILDER ===== */
+.tun-core{margin:36px 0;padding:32px;background:linear-gradient(145deg,var(--cream-warm),var(--cream));border-radius:var(--radius);border:2px solid rgba(136,192,208,0.18);box-shadow:var(--shadow)}
+.tun-core .tc-label{font-family:'Nunito',sans-serif;font-size:0.54rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--glass);margin-bottom:8px}
+.tun-core h3{font-size:1.05rem;color:var(--void-mid);margin-bottom:8px}
+.tun-core .tc-intro{font-size:0.88rem;color:var(--text-muted);line-height:1.65;margin-bottom:24px}
+.tun-line{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px}
+.tun-num{flex-shrink:0;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--glass),rgba(136,192,208,0.5));display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:900;color:var(--void);margin-top:2px}
+.tun-prompt{flex:1}
+.tun-prompt label{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);display:block;margin-bottom:6px}
+.tun-field{display:block;width:100%;border:none;border-bottom:1.5px dashed rgba(136,192,208,0.4);background:transparent;font-family:'Lora',serif;font-size:0.9rem;color:var(--text);padding:6px 0;outline:none;line-height:1.5}
+.tun-field:focus{border-bottom-color:var(--glass)}
+.tun-core .tc-note{font-size:0.78rem;color:var(--text-muted);font-style:italic;margin-top:16px;line-height:1.6;border-top:1px solid rgba(136,192,208,0.12);padding-top:14px}
+
+/* ===== HYDRATION MAP (Chapter 3, CSS now) ===== */
+.hydration-map{margin:36px 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);background:var(--white);border:2px solid rgba(136,192,208,0.15)}
+.hm-head{padding:18px 24px;background:linear-gradient(135deg,var(--void),var(--void-mid));display:flex;align-items:center;gap:12px}
+.hm-head-icon{color:var(--glass);width:20px;height:20px;flex-shrink:0}
+.hm-head-icon svg{width:100%;height:100%}
+.hm-title{font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:800;color:var(--white)}
+.hm-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-bottom:1px solid rgba(136,192,208,0.08)}
+.hm-row:last-child{border-bottom:none}
+.hm-row.hm-header .hm-cell{font-family:'Nunito',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);padding:10px 18px;background:rgba(136,192,208,0.04)}
+.hm-cell{padding:14px 18px;font-size:0.88rem;color:var(--text-light);line-height:1.55;border-right:1px solid rgba(136,192,208,0.08)}
+.hm-cell:last-child{border-right:none}
+.hm-cell.hm-source{font-family:'Nunito',sans-serif;font-weight:700;color:var(--void-mid)}
+.hm-cell.hm-replace{color:var(--glass);font-style:italic}
+@media(max-width:600px){.hm-row{grid-template-columns:1fr}.hm-cell{border-right:none;border-bottom:1px solid rgba(136,192,208,0.06)}}
+
+/* ===== REHYDRATION SEQUENCE (Chapter 4, CSS now) ===== */
+.rehydration-seq{margin:36px 0}
+.rh-step{display:flex;align-items:flex-start;gap:16px;margin-bottom:10px}
+.rh-marker{flex-shrink:0;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:900;color:var(--void);background:linear-gradient(135deg,var(--glass),var(--glass-pale));box-shadow:0 2px 10px rgba(136,192,208,0.25)}
+.rh-content{flex:1;padding:10px 0}
+.rh-content h4{font-size:0.95rem;color:var(--void-mid);margin-bottom:4px}
+.rh-content p{font-size:0.85rem;color:var(--text-muted);line-height:1.62}
+.rh-arrow{text-align:center;color:var(--glass);font-size:1.2rem;margin:4px 0 4px 14px;opacity:0.4}
+
+/* ===== BREATHE GATE ===== */
+.breathe-gate{margin:48px 0;padding:36px 28px;background:linear-gradient(145deg,var(--void-dark),var(--void));border-radius:var(--radius);border:1px solid rgba(136,192,208,0.12);text-align:center;position:relative;overflow:hidden}
+.breathe-gate::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(136,192,208,0.04) 0%,transparent 70%);border-radius:50%;animation:breathe-pulse 5s ease-in-out infinite}
+@keyframes breathe-pulse{0%,100%{transform:translate(-50%,-50%) scale(0.9);opacity:0.5}50%{transform:translate(-50%,-50%) scale(1.1);opacity:1}}
+.breathe-gate .bg-label{font-family:'Nunito',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--glass);margin-bottom:14px;position:relative;z-index:2}
+.breathe-gate p{font-family:'Lora',serif;font-size:0.92rem;font-style:italic;color:rgba(255,255,255,0.4);line-height:1.75;max-width:460px;margin:0 auto;position:relative;z-index:2}
+.breathe-gate .bg-cue{font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:700;color:var(--amber-pale);margin-top:18px;position:relative;z-index:2;letter-spacing:1.5px}
+
+/* ===== DESCENT RAMP ===== */
+.descent-ramp{margin:36px 0;display:flex;flex-direction:column;gap:10px}
+.descent-echo{padding:22px 26px;background:linear-gradient(160deg,rgba(136,192,208,0.08),rgba(136,192,208,0.04));border-radius:12px;border:1.5px solid rgba(136,192,208,0.1)}
+.descent-echo p{font-family:'Lora',serif;font-size:0.9rem;font-style:italic;color:var(--text-muted);line-height:1.72;text-align:center;margin:0}
+.descent-close{padding:34px 26px;text-align:center;background:linear-gradient(160deg,rgba(212,165,116,0.08),rgba(212,165,116,0.04));border-radius:12px;border:1.5px solid rgba(212,165,116,0.1)}
+.descent-close-label{font-family:'Nunito',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--amber);opacity:0.6;margin-bottom:8px}
+.descent-close p{font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:500;color:var(--text-light);line-height:1.62;max-width:440px;margin:0 auto}
+
+/* ===== ROOT REVIEW ===== */
+.root-review{margin:44px 0;padding:28px 24px;background:linear-gradient(170deg,var(--cream-warm),var(--cream));border-radius:var(--radius);position:relative;overflow:hidden}
+.root-review::before{content:'';position:absolute;bottom:-20px;right:-20px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(136,192,208,0.07) 0%,transparent 70%)}
+.root-label{font-family:'Nunito',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--glass);text-align:center;margin-bottom:16px;position:relative;z-index:1}
+.root-layer{display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 0;position:relative;z-index:1;flex-wrap:wrap}
+.root-layer.current{padding:12px 0}
+.root-ch{font-family:'Nunito',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);width:26px;text-align:right;flex-shrink:0}
+.root-layer.current .root-ch{color:var(--glass)}
+.root-items{display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center}
+.root-pill{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:600;padding:5px 14px;border-radius:6px;white-space:nowrap}
+.root-pill.rp-dim{background:rgba(0,0,0,0.04);color:var(--text-muted);border:1px solid rgba(0,0,0,0.06)}
+.root-pill.rp-bright{background:rgba(136,192,208,0.15);color:var(--void-mid);border:1px solid rgba(136,192,208,0.3);box-shadow:0 0 6px rgba(136,192,208,0.08)}
+.root-arr{color:var(--text-muted);opacity:0.3;font-size:0.8rem;padding:0 4px}
+.root-layer.current .root-arr{opacity:0.5;color:var(--glass)}
+.root-sep{width:60%;max-width:300px;height:1px;background:linear-gradient(90deg,transparent,rgba(136,192,208,0.15),transparent);margin:4px auto}
+
+/* ===== SERIES PROGRESS ===== */
+.series-progress{text-align:center;padding:32px 24px;background:var(--cream-warm);border-top:1px solid rgba(10,8,16,0.06)}
+.series-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--glass);margin-bottom:14px}
+.series-dots{display:flex;align-items:center;justify-content:center;gap:16px}
+.series-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(136,192,208,0.3);background:transparent}
+.series-dot.done{background:rgba(136,192,208,0.25);border-color:rgba(136,192,208,0.5)}
+.series-dot.active{background:var(--glass);border-color:var(--glass);box-shadow:0 0 8px rgba(136,192,208,0.4)}
+.series-dot-label{font-family:'Poppins',sans-serif;font-size:0.55rem;color:var(--text-muted);margin-top:10px}
+
+/* ===== BOLD CLAIM ===== */
+.bold-claim{margin:36px 0;padding:32px;background:linear-gradient(145deg,var(--void),var(--void-mid));border-radius:var(--radius);border:2px solid var(--glass);box-shadow:0 0 24px rgba(136,192,208,0.08)}
+.bold-claim .bc-label{font-family:'Nunito',sans-serif;font-size:0.54rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--glass);margin-bottom:16px}
+.bold-claim ul{list-style:none;padding:0}
+.bold-claim li{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid rgba(136,192,208,0.08);font-family:'Lora',serif;font-size:0.9rem;color:rgba(255,255,255,0.65);line-height:1.68}
+.bold-claim li:last-child{border-bottom:none}
+.bold-claim li::before{content:'';flex-shrink:0;width:6px;height:6px;border-radius:50%;background:var(--glass);margin-top:7px}
+
+/* ===== PROMPT CARD ===== */
+.prompt-card{margin:40px 0;padding:36px;background:linear-gradient(150deg,var(--void),var(--void-mid));border-radius:var(--radius);border:2px solid var(--amber);box-shadow:0 0 24px rgba(212,165,116,0.08)}
+.prompt-card .pc-label{font-family:'Nunito',sans-serif;font-size:0.54rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--amber);margin-bottom:16px}
+.prompt-card h3{font-size:1.05rem;color:var(--white);margin-bottom:16px}
+.prompt-card p{font-size:0.88rem;color:rgba(255,255,255,0.55);line-height:1.72;margin-bottom:8px}
+.prompt-card p:last-child{margin-bottom:0}
+
+/* ===== FINALE ===== */
+.finale{padding:80px 24px;text-align:center;background:linear-gradient(175deg,var(--void-dark),var(--void),var(--void-mid));position:relative;overflow:hidden}
+.finale-icon{width:52px;height:52px;margin:0 auto 24px;display:block;animation:tardi-breathe 5s ease-in-out infinite;color:var(--glass)}
+.finale-icon svg{width:100%;height:100%}
+.finale h2{font-size:1.6rem;color:var(--white);margin-bottom:16px}
+.finale h2 span{color:var(--amber-bright)}
+.finale p{font-family:'Lora',serif;font-size:0.95rem;color:rgba(255,255,255,0.35);max-width:520px;margin:0 auto 16px;line-height:1.72}
+
+/* ===== FOOTER ===== */
+footer{text-align:center;padding:36px 24px;background:var(--void-dark)}
+footer p{font-family:'Lora',serif;font-size:0.78rem;font-style:italic;color:rgba(136,192,208,0.15);margin-bottom:12px}
+footer .brand{font-family:'Nunito',sans-serif;font-size:0.5rem;font-style:normal;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.06)}
+
+/* ===== READ PROGRESS + CHAPTER PILL ===== */
+#read-progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--glass),rgba(136,192,208,0.3));z-index:9999;pointer-events:none;transition:width 0.08s linear}
+#chapter-pill{position:fixed;bottom:24px;right:24px;background:var(--void);border:1px solid rgba(136,192,208,0.25);color:var(--glass);font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:8px 18px;border-radius:50px;opacity:0;transition:opacity 0.35s ease;pointer-events:none;z-index:1000;box-shadow:0 4px 24px rgba(0,0,0,0.5)}
+#chapter-pill.show{opacity:1}
+
+/* ===== REVEAL ANIMATIONS ===== */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.65s ease,transform 0.65s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.stagger-children > *{opacity:0;transform:translateY(18px);transition:opacity 0.5s ease,transform 0.5s ease}
+.stagger-children.visible > *:nth-child(1){opacity:1;transform:none;transition-delay:0s}
+.stagger-children.visible > *:nth-child(2){opacity:1;transform:none;transition-delay:0.12s}
+.stagger-children.visible > *:nth-child(3){opacity:1;transform:none;transition-delay:0.24s}
+.stagger-children.visible > *:nth-child(4){opacity:1;transform:none;transition-delay:0.36s}
+
+/* ===== MOBILE BREAKPOINTS ===== */
+@media(max-width:640px){
+  .page{padding:0 16px}
+  html{font-size:17px}
+  .ch-head{padding:48px 20px 36px}
+  .cover h1{font-size:clamp(2rem,8vw,3rem)}
+  .grand-quote{padding:36px 20px}
+  .data-heroes{grid-template-columns:1fr 1fr}
+  .survival-matrix .sm-row{grid-template-columns:1fr 1fr}
+  .root-review{padding:24px 16px}
+}
+
+/* ===== PRINT STYLES ===== */
+@media print{
+  @page{margin:18mm 16mm 22mm 16mm}
+  body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .cover{min-height:auto;padding:80px 24px;break-after:page}
+  .ch-head{break-before:page;padding:48px 24px 36px}
+  .think,.viz-box,.bold-claim,.tun-core,.dark-panel,.root-review,.survival-matrix,.breathe-gate{break-inside:avoid}
+  .atm-particle,.ghost-noise,.breathe-gate::before{animation:none!important;display:none}
+  #read-progress,#chapter-pill{display:none!important}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+</style>
+</head>
+<body>
+
+<!-- ===== SVG SPRITE SHEET ===== -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+
+  <!-- Tardigrade (tun state: barrel-shaped, crystalline) -->
+  <symbol id="ico-tardi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="12" cy="12" rx="8" ry="6"/>
+    <circle cx="8" cy="11" r="1" fill="currentColor" stroke="none" opacity="0.6"/>
+    <path d="M8,13 Q12,15 16,13" opacity="0.4"/>
+    <path d="M6,11 L4,9M6,12 L3,12M6,13 L4,15" stroke-width="1" opacity="0.5"/>
+    <path d="M18,11 L20,9M18,12 L21,12M18,13 L20,15" stroke-width="1" opacity="0.5"/>
+    <path d="M9,9 L8,7M12,8.5 L12,6M15,9 L16,7" stroke-width="1" opacity="0.4"/>
+    <path d="M9,15 L8,17M12,15.5 L12,18M15,15 L16,17" stroke-width="1" opacity="0.3"/>
+  </symbol>
+
+  <!-- Tun state (crystal barrel) -->
+  <symbol id="ico-tun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="12" cy="12" rx="6" ry="5"/>
+    <ellipse cx="12" cy="12" rx="3.5" ry="3" opacity="0.4"/>
+    <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" opacity="0.3"/>
+    <path d="M6,12 L4,10M18,12 L20,10" opacity="0.3"/>
+    <path d="M7,9 L5,7M17,9 L19,7" opacity="0.2"/>
+    <path d="M7,15 L5,17M17,15 L19,17" opacity="0.2"/>
+  </symbol>
+
+  <!-- Shield -->
+  <symbol id="ico-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 2l8 4v5c0 5.5-3.8 10.7-8 12-4.2-1.3-8-6.5-8-12V6l8-4z"/>
+    <path d="M9 12l2 2 4-4" stroke-width="1.5"/>
+  </symbol>
+
+  <!-- Water / droplet -->
+  <symbol id="ico-water" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 2C12 2 6 9 6 14a6 6 0 0 0 12 0C18 9 12 2 12 2z"/>
+    <path d="M9 15.5c0-2 1-3.5 3-4.5" stroke-width="1" opacity="0.4"/>
+  </symbol>
+
+  <!-- Hexagon (crystalline) -->
+  <symbol id="ico-hex" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round">
+    <path d="M12 2l8 4.5v9L12 20l-8-4.5v-9L12 2z"/>
+    <path d="M12 2v18M4 6.5l8 4.5 8-4.5" stroke-width="1" opacity="0.3"/>
+  </symbol>
+
+  <!-- Core / nucleus -->
+  <symbol id="ico-core" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+    <circle cx="12" cy="12" r="9"/>
+    <circle cx="12" cy="12" r="5"/>
+    <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none" opacity="0.4"/>
+    <path d="M12 3v3M12 18v3M3 12h3M18 12h3" stroke-width="1" opacity="0.35"/>
+  </symbol>
+
+  <!-- Thought / reflection -->
+  <symbol id="ico-thought" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20 10C20 6.7 16.4 4 12 4C7.6 4 4 6.7 4 10C4 13.3 7.6 16 12 16C12.7 16 13.4 15.9 14 15.8L18 18V14.7C19.2 13.5 20 11.8 20 10Z"/>
+    <circle cx="8" cy="21" r="1" fill="currentColor" stroke="none"/>
+    <circle cx="5" cy="22" r="0.7" fill="currentColor" stroke="none"/>
+  </symbol>
+
+  <!-- Eye (awareness) -->
+  <symbol id="ico-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+    <circle cx="12" cy="12" r="3"/>
+    <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/>
+  </symbol>
+
+  <!-- Warning / pressure -->
+  <symbol id="ico-warning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+    <line x1="12" y1="9" x2="12" y2="13"/>
+    <line x1="12" y1="17" x2="12.01" y2="17"/>
+  </symbol>
+
+  <!-- Anchor (identity) -->
+  <symbol id="ico-anchor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="5" r="3"/>
+    <line x1="12" y1="8" x2="12" y2="22"/>
+    <path d="M5 15a7 7 0 0 0 14 0"/>
+    <path d="M5 15H2M22 15h-3"/>
+  </symbol>
+
+  <!-- Flame / fire -->
+  <symbol id="ico-flame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 2C12 2 8 8 8 13C8 16.3 9.8 19 12 20C14.2 19 16 16.3 16 13C16 8 12 2 12 2Z"/>
+    <path d="M12 10C12 10 10 13 10 15C10 16.7 10.9 18 12 18.5" stroke-width="1" opacity="0.4"/>
+  </symbol>
+
+  <!-- Compass rose -->
+  <symbol id="ico-compass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="9"/>
+    <polygon points="12,4 14,12 12,20 10,12" fill="currentColor" opacity="0.15" stroke="none"/>
+    <polygon points="4,12 12,10 20,12 12,14" fill="currentColor" opacity="0.15" stroke="none"/>
+    <polygon points="12,4 14,12 12,20 10,12" stroke-width="1"/>
+    <polygon points="4,12 12,10 20,12 12,14" stroke-width="1"/>
+    <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/>
+  </symbol>
+
+</svg>
+
+<div id="read-progress"></div>
+<div id="chapter-pill"></div>
+
+<!-- ============================= COVER ============================= -->
+<div class="cover">
+  <div class="atm-particle tardi"></div>
+  <div class="atm-particle hex"></div>
+  <div class="atm-particle tardi"></div>
+  <div class="atm-particle hex"></div>
+  <div class="atm-particle tardi"></div>
+  <div class="atm-particle hex"></div>
+  <div class="atm-particle tardi"></div>
+  <div class="atm-particle hex"></div>
+  <div class="atm-particle tardi"></div>
+  <div class="atm-particle hex"></div>
+  <div class="ghost-noise"></div>
+
+  <div class="cover-content">
+    <div class="cover-badge">Mindset &nbsp;&#xb7;&nbsp; The Shield Series &nbsp;&#xb7;&nbsp; Part 3 of 3</div>
+
+    <!-- Cover Art SVG: Tardigrade in tun state, crystalline barrel, amber glow, hostile symbols fading -->
+    <div class="cover-art">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" aria-label="Tardigrade in tun state: crystalline barrel surrounded by fading hostile forces">
+        <defs>
+          <radialGradient id="tp-amber-core" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#E8C098" stop-opacity="0.9"/>
+            <stop offset="40%" stop-color="#D4A574" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#D4A574" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="tp-glass-shell" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#B0D8E8" stop-opacity="0.3"/>
+            <stop offset="60%" stop-color="#88C0D0" stop-opacity="0.12"/>
+            <stop offset="100%" stop-color="#88C0D0" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="tp-outer-glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#88C0D0" stop-opacity="0.08"/>
+            <stop offset="100%" stop-color="#88C0D0" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="tp-body-grad" x1="20%" y1="20%" x2="80%" y2="80%">
+            <stop offset="0%" stop-color="#B0D8E8" stop-opacity="0.55"/>
+            <stop offset="50%" stop-color="#88C0D0" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="#88C0D0" stop-opacity="0.18"/>
+          </linearGradient>
+          <filter id="tp-glow">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+            <feColorMatrix in="blur" values="0 0 0 0 0.533  0 0 0 0 0.753  0 0 0 0 0.816  0 0 0 1 0" result="glow"/>
+            <feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- Outer halo glow -->
+        <circle cx="100" cy="100" r="85" fill="url(#tp-outer-glow)"/>
+
+        <!-- Fading hostile symbols (environment forces) -->
+        <!-- Heat symbol (sun-like rays) -->
+        <g opacity="0.12" stroke="#FF8844" stroke-width="1.2" stroke-linecap="round">
+          <circle cx="38" cy="42" r="7" fill="none"/>
+          <line x1="38" y1="30" x2="38" y2="26"/>
+          <line x1="38" y1="54" x2="38" y2="58"/>
+          <line x1="26" y1="42" x2="22" y2="42"/>
+          <line x1="50" y1="42" x2="54" y2="42"/>
+          <line x1="30" y1="34" x2="27" y2="31"/>
+          <line x1="46" y1="50" x2="49" y2="53"/>
+        </g>
+        <!-- Cold symbol (snowflake-like) -->
+        <g opacity="0.1" stroke="#88C0D0" stroke-width="1" stroke-linecap="round">
+          <line x1="162" y1="38" x2="162" y2="54"/>
+          <line x1="154" y1="46" x2="170" y2="46"/>
+          <line x1="156" y1="40" x2="168" y2="52"/>
+          <line x1="168" y1="40" x2="156" y2="52"/>
+        </g>
+        <!-- Pressure arrows (inward) -->
+        <g opacity="0.08" stroke="#D4A574" stroke-width="1.2" stroke-linecap="round" fill="none">
+          <path d="M25,100 L40,100 M37,96 L40,100 L37,104"/>
+          <path d="M175,100 L160,100 M163,96 L160,100 L163,104"/>
+          <path d="M100,25 L100,40 M96,37 L100,40 L104,37"/>
+          <path d="M100,175 L100,160 M96,163 L100,160 L104,163"/>
+        </g>
+        <!-- Radiation symbol suggestion -->
+        <g opacity="0.09" stroke="#E8B84C" stroke-width="1" fill="none">
+          <circle cx="164" cy="148" r="4"/>
+          <path d="M164,144 L164,132M159,147 L149,141M169,147 L179,141"/>
+        </g>
+
+        <!-- Glass shell (outer crystalline layer) -->
+        <ellipse cx="100" cy="100" rx="52" ry="40" fill="url(#tp-glass-shell)" stroke="#88C0D0" stroke-width="1.2" stroke-opacity="0.35"/>
+        <!-- Crystal facets on shell -->
+        <path d="M100,60 L130,80 L134,100 L130,120 L100,140 L70,120 L66,100 L70,80 Z" fill="none" stroke="#88C0D0" stroke-width="0.7" stroke-opacity="0.2"/>
+        <path d="M100,68 L122,84 L126,100 L122,116 L100,132 L78,116 L74,100 L78,84 Z" fill="none" stroke="#B0D8E8" stroke-width="0.5" stroke-opacity="0.15"/>
+
+        <!-- Tardigrade body (tun state: compact oval with segmentation) -->
+        <ellipse cx="100" cy="100" rx="38" ry="28" fill="url(#tp-body-grad)" stroke="#88C0D0" stroke-width="1.5" stroke-opacity="0.5" filter="url(#tp-glow)"/>
+
+        <!-- Segmentation lines -->
+        <path d="M74,92 Q100,88 126,92" fill="none" stroke="#B0D8E8" stroke-width="0.8" stroke-opacity="0.3"/>
+        <path d="M70,100 Q100,96 130,100" fill="none" stroke="#B0D8E8" stroke-width="0.8" stroke-opacity="0.3"/>
+        <path d="M74,108 Q100,112 126,108" fill="none" stroke="#B0D8E8" stroke-width="0.8" stroke-opacity="0.3"/>
+
+        <!-- Eye (single, simple, aware) -->
+        <circle cx="90" cy="96" r="3.5" fill="#88C0D0" opacity="0.5"/>
+        <circle cx="90" cy="96" r="1.8" fill="#B0D8E8" opacity="0.8"/>
+
+        <!-- Legs (retracted, vestigial, tun state) -->
+        <g stroke="#88C0D0" stroke-width="1" stroke-linecap="round" opacity="0.25">
+          <path d="M80,106 L74,112"/>
+          <path d="M90,110 L88,117"/>
+          <path d="M100,111 L100,118"/>
+          <path d="M110,110 L112,117"/>
+          <path d="M120,106 L126,112"/>
+          <path d="M80,94 L74,88"/>
+          <path d="M120,94 L126,88"/>
+        </g>
+
+        <!-- Amber core glow (identity nucleus) -->
+        <circle cx="100" cy="100" r="16" fill="url(#tp-amber-core)" opacity="0.7"/>
+        <circle cx="100" cy="100" r="8" fill="#E8C098" opacity="0.35"/>
+        <circle cx="100" cy="100" r="3" fill="#F0D8B8" opacity="0.6"/>
+      </svg>
+    </div>
+
+    <h1>The Tardigrade<br><span>Protocol</span></h1>
+    <p class="cover-sub">"They boiled it. Froze it to one degree above absolute zero. Irradiated it with a thousand times the lethal dose. Shot it into the vacuum of space. Crushed it at six times the pressure of the deepest ocean trench. <em>The tardigrade survived every single one.</em> Not because it is tough. Because when the environment becomes lethal, it stops being alive." This is the survival manual for narcissistic abuse that no one else will write.</p>
+    <p class="cover-author">KingdomBuilders AI</p>
+  </div>
+</div>
+
+<!-- ============================= CHAPTER 00: BEFORE WE BEGIN ============================= -->
+<div class="section"><div class="page">
+
+<div style="text-align:center;padding:48px 0 32px">
+  <div style="font-family:'Nunito',sans-serif;font-size:0.54rem;font-weight:800;letter-spacing:6px;text-transform:uppercase;color:var(--glass);margin-bottom:14px">Before We Begin</div>
+  <h2 style="font-size:1.7rem;color:var(--void-mid);margin-bottom:10px">The Organism That Broke Physics</h2>
+  <p style="font-family:'Lora',serif;font-size:0.92rem;font-style:italic;color:var(--text-muted);max-width:480px;margin:0 auto;line-height:1.72">What half a millimeter of biology teaches us about surviving the unsurvivable without losing who we are.</p>
+</div>
+
+</div></div>
+
+<div class="ribbon">
+  <p>"He will never leave you nor forsake you." &nbsp;&#x2014;&nbsp; Deuteronomy 31:6</p>
+</div>
+
+<div class="section"><div class="page"><div class="prose">
+
+<p>There is a creature alive on earth right now that has survived every mass extinction event in the history of life. It outlasted the asteroid that killed the dinosaurs. It survived the Permian extinction that killed ninety-six percent of all marine species. It survived the Ordovician glaciation. The Devonian collapse. The Triassic event. Five times this planet has tried to erase all life. Five times this creature endured.</p>
+
+<p>Scientists wanted to understand why. So they subjected the <dfn tabindex="0" class="def" data-def="Tardigrades (Tardigrada), also called 'water bears' or 'moss piglets.' Eight-legged micro-animals, 0.1 to 1.5mm in length, found on every continent and in every habitat, including glaciers, hot springs, ocean sediments, and the vacuum of space. The most resilient animals on Earth.">tardigrade</dfn> to conditions far worse than any extinction event. They boiled it. They froze it to one degree above absolute zero. They hit it with 1,000 times the radiation dose lethal to humans. They placed it in the vacuum of space for ten days. They subjected it to 6,000 atmospheres of pressure. Pressure six times greater than the bottom of the Mariana Trench.</p>
+
+<p>The tardigrade survived everything.</p>
+
+<p>Not because it is made of something indestructible. It is made of protein and water, same as you. It survived because it discovered something no other organism on earth has mastered to the same degree: <dfn tabindex="0" class="def" data-def="Cryptobiosis: a state in which an organism's metabolic processes slow to near-zero in response to environmental extremes. The organism is not dead. It is in suspended animation — all chemical activity paused, waiting for conditions to change.">the ability to stop being alive when being alive is lethal</dfn>.</p>
+
+<p>This playbook is for anyone who knows what it is to live inside a lethal environment. One that does not attack you with temperature or radiation, but with words, with silence, with unpredictability, with love that is always just about to be withdrawn. One that does not kill you but slowly makes staying alive feel like too much work.</p>
+
+<p>This is Part 3 of The Shield Series. Part 1 taught you to recognize the pattern. Part 2 gave you structural protection. This final installment gives you the biology of survival itself. Not how to fight the environment. How to outlast it without dissolving into it.</p>
+
+</div></div></div>
+
+<!-- Bold Claim -->
+<div class="section" style="padding-top:0"><div class="page">
+
+<div class="bold-claim reveal">
+  <div class="bc-label">If You Finish This Playbook</div>
+  <ul>
+    <li>You will build an indestructible identity core that no amount of narcissistic pressure can deform.</li>
+    <li><span>You will learn to suspend emotional exchange without <dfn tabindex="0" class="def" data-def="Dissociation: a disconnection from thoughts, feelings, surroundings, or identity. Unlike cryptobiosis, dissociation is involuntary and often damaging. The tardigrade protocol is deliberate suspension, not involuntary splitting.">dissociating</dfn> or shutting down.</span></li>
+    <li>You will replace the specific emotional resources the narcissist weaponized so that withdrawal never controls you again.</li>
+    <li>You will design a re-entry sequence for returning to full emotional life without carrying the damage forward.</li>
+  </ul>
+</div>
+
+<!-- The Cast -->
+<div style="font-family:'Nunito',sans-serif;font-size:0.54rem;font-weight:800;letter-spacing:6px;text-transform:uppercase;color:var(--text-muted);margin:48px 0 18px;text-align:center">The Cast</div>
+
+<div class="char-grid stagger-children">
+  <div class="char-card">
+    <div class="char-head">
+      <div class="char-avatar"><svg><use href="#ico-tardi"/></svg></div>
+      <div>
+        <div class="char-name">Tardi</div>
+        <div class="char-role">The Mentor</div>
+      </div>
+    </div>
+    <div class="char-body">
+      <p>A tardigrade. Microscopic but indestructible. Has survived five mass extinctions without ever once defeating the event that caused them. Tardi does not win against the environment. Tardi waits. There is a difference, and that difference is the entire lesson.</p>
+    </div>
+  </div>
+  <div class="char-card">
+    <div class="char-head">
+      <div class="char-avatar"><svg><use href="#ico-water"/></svg></div>
+      <div>
+        <div class="char-name">Amoeba</div>
+        <div class="char-role">The Student</div>
+      </div>
+    </div>
+    <div class="char-body">
+      <p>A single-celled organism that adapts by constantly changing shape, absorbing everything, merging with its environment. Amoeba has forgotten what it originally was. Every shape it has taken was a response to something outside itself. It is looking for its original form.</p>
+    </div>
+  </div>
+</div>
+
+<div class="char-card reveal" style="margin-top:0">
+  <div class="char-head" style="background:linear-gradient(135deg,#100C1C,#1A1428)">
+    <div class="char-avatar" style="background:linear-gradient(135deg,rgba(212,165,116,0.15),rgba(212,165,116,0.04));border-color:rgba(212,165,116,0.2);color:var(--amber)"><svg><use href="#ico-warning"/></svg></div>
+    <div>
+      <div class="char-name" style="color:var(--amber-pale)">The Drought</div>
+      <div class="char-role" style="color:rgba(212,165,116,0.6)">The Environment</div>
+    </div>
+  </div>
+  <div class="char-body">
+    <p>Not a character but a force. The narcissist is the environment: the heat, the cold, the vacuum, the pressure. You do not defeat an environment. You do not argue with temperature. You do not negotiate with radiation. You outlast it. The Drought is never personified here because personifying it gives it more agency than it deserves. It is a condition to survive, not an opponent to overcome.</p>
+  </div>
+</div>
+
+<!-- Data Heroes -->
+<div style="font-family:'Nunito',sans-serif;font-size:0.54rem;font-weight:800;letter-spacing:6px;text-transform:uppercase;color:var(--text-muted);margin:48px 0 18px;text-align:center">Survivability Profile</div>
+
+<div class="data-heroes stagger-children">
+  <div class="data-hero">
+    <div class="dh-num">5</div>
+    <div class="dh-label">Mass Extinctions<br>Survived</div>
+  </div>
+  <div class="data-hero">
+    <div class="dh-num">600M</div>
+    <div class="dh-label">Years on Earth<br>Unchanged</div>
+  </div>
+  <div class="data-hero">
+    <div class="dh-num">0%</div>
+    <div class="dh-label">Metabolic Activity<br>in Tun State</div>
+  </div>
+  <div class="data-hero">
+    <div class="dh-num">1,000x</div>
+    <div class="dh-label">Lethal Radiation Dose<br>Survived</div>
+  </div>
+  <div class="data-hero">
+    <div class="dh-num">30yr</div>
+    <div class="dh-label">Maximum Time<br>in Stasis</div>
+  </div>
+  <div class="data-hero">
+    <div class="dh-num">100%</div>
+    <div class="dh-label">Function Restored<br>After Rehydration</div>
+  </div>
+</div>
+
+<!-- Survival Matrix -->
+<div class="survival-matrix reveal">
+  <div class="sm-head">
+    <div class="sm-head-icon"><svg><use href="#ico-hex"/></svg></div>
+    <div class="sm-head-text">
+      <div class="sm-label">Survival Matrix</div>
+      <h4>What Survived Five Extinction Events</h4>
+    </div>
+  </div>
+  <div class="sm-row sm-header">
+    <div class="sm-cell">Organism</div>
+    <div class="sm-cell">Strategy</div>
+    <div class="sm-cell">Ordovician</div>
+    <div class="sm-cell sm-extra">Permian</div>
+    <div class="sm-cell sm-extra">K-Pg</div>
+  </div>
+  <div class="sm-row">
+    <div class="sm-cell sm-name">Tardigrade</div>
+    <div class="sm-cell">Suspended all exchange</div>
+    <div class="sm-cell survived">Survived</div>
+    <div class="sm-cell survived sm-extra">Survived</div>
+    <div class="sm-cell survived sm-extra">Survived</div>
+  </div>
+  <div class="sm-row">
+    <div class="sm-cell sm-name">Trilobite</div>
+    <div class="sm-cell">Adapted to conditions</div>
+    <div class="sm-cell survived">Survived</div>
+    <div class="sm-cell died sm-extra">Extinct</div>
+    <div class="sm-cell died sm-extra">Extinct</div>
+  </div>
+  <div class="sm-row">
+    <div class="sm-cell sm-name">Ammonite</div>
+    <div class="sm-cell">Evolved new shells</div>
+    <div class="sm-cell survived">Survived</div>
+    <div class="sm-cell survived sm-extra">Survived</div>
+    <div class="sm-cell died sm-extra">Extinct</div>
+  </div>
+  <div class="sm-row">
+    <div class="sm-cell sm-name">Dinosaur</div>
+    <div class="sm-cell">Dominated environment</div>
+    <div class="sm-cell died">Absent</div>
+    <div class="sm-cell died sm-extra">Absent</div>
+    <div class="sm-cell died sm-extra">Extinct</div>
+  </div>
+</div>
+
+<div class="prose" style="margin-top:32px">
+<p>The lesson is not that adapting is wrong. The trilobite survived two extinction events by adapting. The lesson is that when the environment becomes extreme enough, adaptation becomes assimilation. You change so much in response to the threat that when the threat passes, you have become something else entirely. You cannot adapt your way through a force that is trying to consume you. At some point, you have to stop exchanging with it.</p>
+</div>
+
+</div></div>
+
+<!-- ============================= BREATHE GATE ============================= -->
+<div class="section" style="padding-bottom:0"><div class="page">
+<div class="breathe-gate reveal">
+  <div class="bg-label">Before Chapter One</div>
+  <p>Take a breath. If you are currently in a difficult relationship, this material may surface recognition that feels uncomfortable. That discomfort is not a sign something is wrong. It is the first moment of accurate seeing. Stay with it.</p>
+  <div class="bg-cue">Breathe. You are safe right now, in this moment. Continue when ready.</div>
+</div>
+</div></div>
+
+<!-- ============================= CHAPTER 1: CRYPTOBIOSIS ============================= -->
+<div class="ch-head">
+  <div class="ch-num">Chapter One</div>
+  <h2>Cryptobiosis</h2>
+  <div class="ch-sub">Deliberate, reversible suspension of emotional exchange while remaining fully aware</div>
+</div>
+
+<div class="ribbon">
+  <p>"We are hard pressed on every side, but not crushed; perplexed, but not in despair; persecuted, but not abandoned; struck down, but not destroyed." &nbsp;&#x2014;&nbsp; 2 Corinthians 4:8,9</p>
+</div>
+
+<div class="section"><div class="page"><div class="prose">
+
+<div class="scene">
+  <div class="scene-label"><svg><use href="#ico-eye"/></svg> The Lesson at the Edge of the Drought</div>
+  <p>Amoeba found Tardi motionless on a dried leaf. For three days the leaf had been without water. Amoeba had been trying everything: stretching toward the moisture in the soil beneath, extending pseudopods toward the morning condensation, absorbing the chemical signatures of humidity from the air and reforming around them. Constantly reshaping. Constantly reaching. Exhausted.</p>
+  <p><em>"Why are you not moving?"</em> Amoeba asked.</p>
+  <p>Tardi did not answer immediately. After a long pause: <em>"Because the environment is hostile right now. Moving costs water. And every drop of water I spend in a drought is water I do not have for when the rain returns."</em></p>
+  <p>"But are you not suffering? Is it not terrible, being still while everything around you dries out?"</p>
+  <p>Tardi considered this. <em>"I am not inside the drought the way you are,"</em> Tardi said finally. <em>"I am behind glass. I can see it. I am aware of every degree of temperature, every unit of pressure. But nothing is passing through. Nothing is being exchanged. I am not numb. I am in glass."</em></p>
+  <p>Amoeba looked at its own form. It had reshaped itself seventeen times in three days trying to accommodate the conditions. <strong>It had no idea what its original shape was anymore.</strong></p>
+</div>
+
+<p><dfn tabindex="0" class="def" data-def="Cryptobiosis: from Greek 'kryptos' (hidden) and 'bios' (life). The reversible suspension of all metabolic processes in response to environmental extremes. The organism remains biologically intact but functionally dormant. All chemical exchange with the environment stops.">Cryptobiosis</dfn> is not a defense mechanism. It is a suspension mechanism. There is a difference most people in <dfn tabindex="0" class="def" data-def="Trauma bond: a powerful emotional attachment formed through cycles of abuse and intermittent reinforcement. Named for the biochemical similarity to hostage-captor bonds. The bond is strongest precisely because the relationship is most painful.">trauma-bonded relationships</dfn> never learn to make. Defense implies fighting the environment. Suspension implies recognizing that the environment is not something that can be fought and choosing to stop exchanging with it entirely.</p>
+
+<p>When a tardigrade detects lethal environmental conditions, its nervous system does not tell it to flee or fight. It triggers a completely different process: the systematic withdrawal of water from every cell, the replacement of that water with a sugar called <dfn tabindex="0" class="def" data-def="Trehalose: a disaccharide sugar produced by tardigrades that replaces water within cells during cryptobiosis. It forms a glass-like matrix that preserves cellular structures without the need for metabolic activity, preventing crystallization damage at extreme cold or desiccation.">trehalose</dfn>, and the folding of the entire body into a compact, sealed form called the tun. Nothing enters. Nothing exits. The organism is alive in the fullest biological sense. But it is having no exchange with the lethal world around it.</p>
+
+<p>For people in <dfn tabindex="0" class="def" data-def="Narcissistic abuse: a pattern of emotional and psychological manipulation by someone with narcissistic traits. Characterized by idealization, devaluation, discard cycles, gaslighting, intermittent reinforcement, and the systematic erosion of the target's identity and self-trust.">narcissistic relationships</dfn>, the instinct is usually to adapt. Speak differently. React differently. Be better at reading the mood. Shrink. Expand. Predict. Accommodate. Each adaptation is a reshaping that costs something. And the cumulative cost of a thousand small reshapings is the loss of your original form.</p>
+
+<p>Cryptobiosis, as a human practice, is not the <dfn tabindex="0" class="def" data-def="Grey rock: a strategy of making yourself uninteresting to a narcissist by giving minimal, boring responses. Useful tactically, but often confused with full emotional suspension. Grey rock manages the surface. Cryptobiosis manages the interior.">grey rock method</dfn>. Grey rock manages the surface. You still absorb. You still exchange. You are just giving less interesting material to work with. Cryptobiosis goes deeper. It is the deliberate decision that this person's emotional state is not a signal your nervous system needs to process. Their approval is not data. Their disappointment is not information. Their anger is not evidence about you. You are aware. You are present. You are watching. Nothing is passing through.</p>
+
+<div class="viz-box reveal">
+  <div class="viz-label"><svg><use href="#ico-eye"/></svg> Visualization</div>
+  <h3>Picture This</h3>
+  <p>A microscopic creature detecting lethal conditions. Boiling water approaches. Instead of fighting it or running from it, the tardigrade begins to withdraw its water inward. The surface of its body seals. A glass-like matrix forms around every cell, preserving the structure without requiring any activity to maintain it. The boiling water arrives and surrounds the creature completely.</p>
+  <p>The water is real. The heat is real. The creature is inside it. But the creature is also behind glass. Everything on the outside is experienced as information rather than invasion. The tardigrade knows it is in boiling water. It simply does not have the biological pathways open to be harmed by that knowledge.</p>
+  <p><strong>That is what you are building. Not numbness. Not avoidance. Glass.</strong> A state in which you can see clearly, remain fully aware, and exchange nothing with the lethal environment surrounding you.</p>
+</div>
+
+<p>This is categorically different from <dfn tabindex="0" class="def" data-def="Dissociation: an involuntary psychological response where a person disconnects from their thoughts, feelings, surroundings, or identity. Common in trauma responses. Unlike cryptobiosis, dissociation is not chosen and often impairs awareness. The tardigrade is MORE aware during cryptobiosis, not less.">dissociation</dfn>, which is what most people in high-stress relationships eventually develop. Dissociation is involuntary. It is the nervous system's emergency exit when it cannot process the volume of incoming stress. You go through it not around it. You do not see clearly during dissociation. You see through fog. You lose time. You cannot remember conversations.</p>
+
+<p><dfn tabindex="0" class="def" data-def="Nervous system dysregulation: a state in which the autonomic nervous system is stuck in threat-response mode (fight, flight, or freeze), preventing access to higher cognitive and relational functions. Chronic narcissistic abuse creates persistent dysregulation.">Nervous system dysregulation</dfn> from chronic stress can also produce a state that looks like cryptobiosis but is not: <dfn tabindex="0" class="def" data-def="Learned helplessness: a psychological condition discovered by Martin Seligman in which repeated exposure to uncontrollable stressors causes an organism to stop trying to change its situation, even when escape becomes possible. Common in long-term abusive relationships.">learned helplessness</dfn>. Learned helplessness is not chosen. It is collapse. The animal in the cage that stopped trying to escape, even when the cage door was opened. Cryptobiosis is not collapse. It is strategic suspension. The tardigrade in the tun state has not forgotten how to move. It has made a precise, reversible decision to stop moving until conditions change.</p>
+
+<p>That distinction matters enormously. Because when the Drought ends, the tardigrade rehydrates fully within hours and returns to complete function. The learned-helpless animal does not know the cage is open. The dissociated person does not know they have any self left to return to.</p>
+
+</div></div></div>
+
+<!-- Before/After -->
+<div class="section" style="padding-top:0"><div class="page">
+
+<div class="ba-grid reveal">
+  <div class="ba-before">
+    <h4>Adapting to Toxicity</h4>
+    <p>Every response is reshaped to fit the environment. Approval is sought continuously. Emotional state is monitored against the narcissist's mood. Each cycle of idealization and devaluation leaves a slightly different person behind. The original form is lost through a thousand small accommodations, none of which feel catastrophic in the moment.</p>
+    <p>Exhausted. Hypervigilant. No longer sure who you were before this started.</p>
+  </div>
+  <div class="ba-after">
+    <h4>Suspending Exchange with Toxicity</h4>
+    <p>Presence without porosity. You are in the room. You are aware. You are not providing the emotional signal the environment is looking for, and you are not absorbing the emotional signals it is sending. You are behind glass. The original form is preserved precisely because it is no longer in contact with the reshaping force.</p>
+    <p>Still. Conserving. Intact. Waiting for conditions to change.</p>
+  </div>
+</div>
+
+<div class="think reveal">
+  <div class="think-label"><svg><use href="#ico-thought"/></svg> Reflection</div>
+  <h4>Where Have You Been Adapting Instead of Suspending?</h4>
+  <p>Think of a specific moment in the last week when you adjusted your behavior, your tone, your words, or your mood to accommodate someone else's state. Not because you chose to be kind, but because you were afraid of what would happen if you did not.</p>
+  <p>What did that adjustment cost? What version of yourself did you leave behind in that room?</p>
+  <span class="fill-line"></span>
+  <span class="fill-line"></span>
+  <span class="fill-line"></span>
+</div>
+
+</div></div>
+
+<!-- Root Review 1 -->
+<div class="section" style="padding-top:0"><div class="page">
+
+<div class="root-review reveal">
+  <div class="root-label">Root Review</div>
+  <div class="root-layer current">
+    <span class="root-ch">Ch 1</span>
+    <div class="root-items">
+      <span class="root-pill rp-bright">Cryptobiosis</span>
+    </div>
+  </div>
+</div>
+
+</div></div>
+
+<!-- ============================= CHAPTER 2: THE TUN STATE ============================= -->
+<div class="ch-head">
+  <div class="ch-num">Chapter Two</div>
+  <h2>The Tun State</h2>
+  <div class="ch-sub">Compress to your 5 non-negotiable identity truths. A core so dense no external pressure can deform it.</div>
+</div>
+
+<div class="ribbon">
+  <p>"I have set before you life and death, blessings and curses. Now choose life." &nbsp;&#x2014;&nbsp; Deuteronomy 30:19</p>
+</div>
+
+<div class="section"><div class="page"><div class="prose">
+
+<div class="scene">
+  <div class="scene-label"><svg><use href="#ico-core"/></svg> The Question at the Bottom of Everything</div>
+  <p>The Drought had been going for eleven days. Amoeba found Tardi in the tun state for the first time and studied the small barrel-shaped form with something approaching awe and something approaching fear.</p>
+  <p>"What is left?" Amoeba asked. "When you suspend everything, what remains inside?"</p>
+  <p>Tardi, from within the glass, said: <em>"Everything that matters. Nothing that doesn't."</em></p>
+  <p>"But how do you know the difference?"</p>
+  <p>A long pause. <em>"The tun is not empty. It is the most essential version of what I am. My cells are intact. My genetic information is intact. My capacity to move, to eat, to reproduce when the rain returns. None of that is gone. It is compressed. It has to be compressed. Because if I tried to maintain every non-essential process during the Drought, it would kill me."</em></p>
+  <p>Amoeba looked at its own shape. It had been stretching in every direction for eleven days trying to maintain everything. Every role. Every function. Every version of itself that different parts of the environment had come to expect. <strong>It had no core. It had only surface.</strong></p>
+  <p>"What if I have already lost it?" Amoeba said quietly. "What if there is nothing left inside that I can call mine?"</p>
+  <p>Tardi was quiet for a long time. Then: <em>"That is the lie the Drought tells. It says there is nothing left. It has been saying that so long you have started to believe it. But I have never seen a creature that does not have a core. I have seen creatures that have forgotten it is there."</em></p>
+</div>
+
+<p>When a tardigrade enters the tun state, it does not preserve everything. It cannot. The metabolic cost of maintaining every cellular process in a hostile environment would consume the organism before the environment changed. Instead, it employs a precise biological triage. Non-essential proteins are dehydrated and suspended. Essential genetic and structural information is encased in <dfn tabindex="0" class="def" data-def="Trehalose glass: the glass-like matrix formed when trehalose replaces water in a tardigrade's cells during cryptobiosis. It is not a crystal (which would damage cellular structures) but an amorphous glass that preserves molecular arrangements without requiring energy.">trehalose glass</dfn>. The organism compresses to its irreducible core.</p>
+
+<p>The irreducible core is not small. It contains everything needed to reconstruct the full organism. It is dense. It is complete. It is simply not expanded at this moment.</p>
+
+<p>This is the second mental model: you have an irreducible core. You have always had one. The work of the tun state is not to create one. It is to identify what is already there, compress your sense of self to it, and recognize that nothing the Drought does can reach it.</p>
+
+<p><dfn tabindex="0" class="def" data-def="Identity erosion: the gradual loss of a person's sense of self through sustained exposure to an environment that consistently redefines who they are, what they feel, and what they are allowed to want. Distinguished from normal growth by the fact that the redefinition serves the environment, not the person.">Identity erosion</dfn> is the primary mechanism of narcissistic abuse. It is not a side effect. It is the objective. A person who knows clearly who they are, what they value, and what they will not compromise is extraordinarily difficult to control. The first order of business, often invisible even to the person perpetrating it, is to create uncertainty. To make you question your perceptions, your feelings, your memory, your worth. To make <dfn tabindex="0" class="def" data-def="Gaslighting: a form of manipulation that causes the target to question their own memory, perception, and sanity. Named after the 1944 film Gaslight. The target is made to believe that accurate perceptions of reality are distortions, and that distortions presented by the abuser are reality.">gaslighting</dfn> feel like correction. To make your uncertainty the abuser's greatest tool.</p>
+
+<p>The tun state is the antidote. When you know your five non-negotiable identity truths, there is an anchor point that cannot be moved by any external force. Not because you are rigid. Because you know what you are. The tardigrade in the tun state does not need the environment to confirm its nature. It carries its nature as compressed, preserved fact.</p>
+
+<p>These are not aspirational truths. They are not who you want to be, or who you used to be before the relationship started. They are the truths that have remained constant through everything. The things that you know about yourself even when someone else is telling you the opposite. Even when you are exhausted. Even when you are afraid they are right and you are wrong. There is a part of you that knows.</p>
+
+<p>The five truths are your tun core. They are not beliefs. They are not feelings. They are facts about you that have proven themselves across the full length of your life, before this relationship began.</p>
+
+</div></div></div>
+
+<!-- Tun Core Builder -->
+<div class="section" style="padding-top:0"><div class="page">
+
+<div class="tun-core reveal">
+  <div class="tc-label">The Tun Core Builder</div>
+  <h3>Your Five Non-Negotiable Identity Truths</h3>
+  <p class="tc-intro">These are not values or goals. They are facts about who you are that have remained true across your entire life, independent of this relationship. Finish each sentence. Write without editing yourself. The first honest answer is almost always the right one.</p>
+
+  <div class="tun-line">
+    <div class="tun-num">1</div>
+    <div class="tun-prompt">
+      <label>I have always been someone who</label>
+      <input class="tun-field" type="text" placeholder="writes your truth here..." aria-label="Identity truth one">
+    </div>
+  </div>
+  <div class="tun-line">
+    <div class="tun-num">2</div>
+    <div class="tun-prompt">
+      <label>The thing I value most deeply, regardless of anyone's opinion, is</label>
+      <input class="tun-field" type="text" placeholder="writes your truth here..." aria-label="Identity truth two">
+    </div>
+  </div>
+  <div class="tun-line">
+    <div class="tun-num">3</div>
+    <div class="tun-prompt">
+      <label>The way I treat people when I am at my best has always been</label>
+      <input class="tun-field" type="text" placeholder="writes your truth here..." aria-label="Identity truth three">
+    </div>
+  </div>
+  <div class="tun-line">
+    <div class="tun-num">4</div>
+    <div class="tun-prompt">
+      <label>The thing I would not do regardless of the consequences is</label>
+      <input class="tun-field" type="text" placeholder="writes your truth here..." aria-label="Identity truth four">
+    </div>
+  </div>
+  <div class="tun-line">
+    <div class="tun-num">5</div>
+    <div class="tun-prompt">
+      <label>When I am alone and no one is watching, I am still someone who</label>
+      <input class="tun-field" type="text" placeholder="writes your truth here..." aria-label="Identity truth five">
+    </div>
+  </div>
+
+  <p class="tc-note">These five truths are your tun. No external condition can reach them. They do not require maintenance. They do not need the Drought to end in order to remain true. They are true right now, in this moment, regardless of what the environment around you is saying.</p>
+</div>
+
+<div class="dark-panel reveal">
+  <div class="dp-label"><svg><use href="#ico-warning"/></svg> The Identity Erosion Pattern</div>
+  <h3>How the Drought Dismantles a Core</h3>
+  <p>Identity erosion rarely happens all at once. It follows a recognizable sequence that typically unfolds over months or years, each stage making the next more difficult to identify:</p>
+  <ol style="padding-left:20px;margin:12px 0">
+    <li style="font-size:0.88rem;color:rgba(255,255,255,0.55);line-height:1.7;margin-bottom:8px"><strong style="color:var(--amber-pale)">Hypervigilance.</strong> You become extraordinarily attuned to the other person's moods, energy, and signals. This is your nervous system going into threat-detection mode. It feels like care. It is <dfn tabindex="0" class="def" data-def="Hyperarousal: a state of heightened alertness and sensitivity associated with trauma responses. The nervous system stays on high alert, constantly scanning for threats. In narcissistic relationships, this often presents as always watching the other person's mood.">hyperarousal</dfn>.</li>
+    <li style="font-size:0.88rem;color:rgba(255,255,255,0.55);line-height:1.7;margin-bottom:8px"><strong style="color:var(--amber-pale)">Shape-shifting.</strong> You begin adjusting yourself to manage their state. Your words, your tone, your behavior, your desires. Each adjustment feels rational. Cumulatively, it is the loss of your original form.</li>
+    <li style="font-size:0.88rem;color:rgba(255,255,255,0.55);line-height:1.7;margin-bottom:8px"><strong style="color:var(--amber-pale)">Self-doubt.</strong> Their reframing of your perceptions begins to feel more credible than your own. <dfn tabindex="0" class="def" data-def="Window of tolerance: the zone of arousal in which a person can function effectively, think clearly, and feel without being overwhelmed. Narcissistic abuse progressively narrows this window.">Your window of tolerance</dfn> narrows. You stop trusting your own reads of situations.</li>
+    <li style="font-size:0.88rem;color:rgba(255,255,255,0.55);line-height:1.7;margin-bottom:8px"><strong style="color:var(--amber-pale)">Identity amnesia.</strong> You have difficulty answering basic questions about yourself that once would have been immediate. What do you like? What do you want? Who are you when no one is watching? The answers feel far away or absent entirely.</li>
+    <li style="font-size:0.88rem;color:rgba(255,255,255,0.55);line-height:1.7"><strong style="color:var(--amber-pale)">The Drought's claim.</strong> At the deepest point, a voice that feels like your own begins to say: there is nothing left. You were never anyone in particular. What you are is what this relationship made you. This is the final lie. This is the voice of the environment, not the voice of your tun.</li>
+  </ol>
+  <p><em>The tun state is the interruption of this sequence at any stage. You do not need to have reached stage five to benefit from it. You do not need to be at rock bottom. You need to recognize the pattern and choose to stop exchanging with it.</em></p>
+</div>
+
+</div></div>
+
+<!-- Grand Quote -->
+<div class="section" style="padding-top:0"><div class="page">
+
+<div class="grand-quote reveal">
+  <blockquote>"The tardigrade does not become a different creature during the Drought. It becomes a more essential version of the same one. The tun is not a diminished state. It is the compressed, preserved form of everything the tardigrade has always been. When the water returns, nothing new is built. Everything is simply restored."</blockquote>
+  <div class="attribution">The Tardigrade Protocol</div>
+</div>
+
+<div class="prose">
+<p>There is a version of this story you may have told yourself: that who you are now, after everything, is who you actually are. That the exhausted, uncertain, hypervigilant person who flinches at raised voices and apologizes for taking up space is the real you. The relationship revealed you. Everything before it was a flattering delusion.</p>
+
+<p>This is the Drought's most sophisticated lie. It is not revelation. It is erosion. The tardigrade in the tun state looks nothing like the tardigrade in full function. It is smaller. It is motionless. It has no visible activity. If you encountered it mid-drought and had never seen a tardigrade before, you might reasonably conclude that this is a dead thing. A remnant of something. Not a full organism waiting to return.</p>
+
+<p>You would be wrong. Every structure needed for full function is preserved. The <dfn tabindex="0" class="def" data-def="Complex PTSD (C-PTSD): a psychological condition resulting from prolonged, repeated trauma, particularly in situations where escape is difficult. Symptoms include emotional dysregulation, distorted self-perception, difficulty with relationships, and a persistent sense of being changed or damaged.">complex trauma</dfn> response that has condensed you into survival mode is not a revelation of your actual nature. It is the tun. And the tun is not the point. The tun is the passage.</p>
+
+<p>The tun core builder above is not an exercise in pretending. It is an archaeological act. The five truths you wrote were always there. They did not stop being true when the Drought started. They were simply not being exchanged with the environment because the environment would have used them against you. The tardigrade does not stop having a genetic code during the tun state. It stops having an active metabolism. These are not the same thing.</p>
+
+<p>Your identity is your genetic code. Your current state is your metabolism. One is who you are. The other is how much energy you currently have available. Do not confuse the two.</p>
+</div>
+
+<div class="think reveal">
+  <div class="think-label"><svg><use href="#ico-thought"/></svg> Reflection</div>
+  <h4>The Tun Truth Test</h4>
+  <p>Look at the five truths you wrote. Now answer this: has the Drought told you, directly or indirectly, that one or more of these things is not actually true about you? That you are not kind, or capable, or trustworthy, or loving, or good? That the version of yourself you knew before this relationship was naive, or fragile, or deluded?</p>
+  <p>Write down exactly what the Drought has said about each truth. Then ask yourself: if this truth were actually false, who else in your life, before this relationship, would have seen it?</p>
+  <span class="fill-line"></span>
+  <span class="fill-line"></span>
+  <span class="fill-line"></span>
+</div>
+
+</div></div>
+
+<!-- Root Review 2 -->
+<div class="section" style="padding-top:0"><div class="page">
+
+<div class="root-review reveal">
+  <div class="root-label">Root Review</div>
+  <div class="root-sep"></div>
+  <div class="root-layer">
+    <span class="root-ch">Ch 1</span>
+    <div class="root-items">
+      <span class="root-pill rp-dim">Cryptobiosis</span>
+    </div>
+  </div>
+  <div class="root-sep"></div>
+  <div class="root-layer current">
+    <span class="root-ch">Ch 2</span>
+    <div class="root-items">
+      <span class="root-pill rp-bright">Cryptobiosis</span>
+      <span class="root-arr">&#x2192;</span>
+      <span class="root-pill rp-bright">Tun State</span>
+    </div>
+  </div>
+</div>
+
+</div></div>
+
+<script>
+(function(){
+  const bar=document.getElementById('read-progress');
+  const pill=document.getElementById('chapter-pill');
+  const chEls=[{el:document.querySelector('.cover'),label:'Cover'},...Array.from(document.querySelectorAll('.ch-head')).map((el,i)=>({el,label:el.querySelector('.ch-num')?.textContent?.trim()||('Ch '+(i+1))}))].filter(c=>c.el);
+  function onScroll(){
+    const h=document.documentElement;
+    const pct=h.scrollTop/(h.scrollHeight-h.clientHeight)*100;
+    bar.style.width=pct+'%';
+    let cur='';
+    for(const c of chEls){if(c.el.getBoundingClientRect().top<200)cur=c.label}
+    if(cur){pill.textContent=cur;pill.classList.add('show')}else{pill.classList.remove('show')}
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  if('IntersectionObserver' in window){
+    const obs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:0.12});
+    document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+    document.querySelectorAll('.stagger-children').forEach(el=>obs.observe(el));
+  }else{
+    document.querySelectorAll('.reveal,.stagger-children').forEach(el=>el.classList.add('visible'));
+  }
+})();
+</script>
+
+<!-- ============================= DESCENT RAMP (before Chapter 3) ============================= -->
+<div class="section"><div class="page">
+
+<div class="descent-ramp reveal">
+  <div class="descent-echo">
+    <p>You stopped knowing what you actually wanted. Every preference ran through the filter of what would be safe to want around them.</p>
+  </div>
+  <div class="descent-echo">
+    <p>Their approval became the measure of whether a day was good. Their mood became the weather you lived inside. You organized your entire nervous system around their state.</p>
+  </div>
+  <div class="descent-echo">
+    <p>The excitement they created felt like aliveness. The intensity felt like depth. You mistook the neurochemical chaos of <dfn tabindex="0" class="def" data-def="Trauma bonding: a psychological response to abuse in which the victim develops a strong emotional attachment to their abuser. It is driven by intermittent reinforcement, cycles of punishment and reward, and neurochemical responses including cortisol, dopamine, and oxytocin spikes.">trauma bonding</dfn> for connection. When they were gone, the quiet felt like nothing.</p>
+  </div>
+  <div class="descent-echo">
+    <p>You began to believe that your sense of significance only existed in relation to them. That you were only real when you were being perceived by them, judged by them, wanted by them, or needed by them.</p>
+  </div>
+  <div class="descent-echo">
+    <p>They were not in your life. They were in your nervous system. They had become the water itself.</p>
+  </div>
+  <div class="descent-close">
+    <div class="descent-close-label">Entering</div>
+    <p>The third model. The one that addresses not the environment, not the core, but the chemistry of dependency itself. What the tardigrade does when the water it needs has become poisoned and it must survive without water at all.</p>
+  </div>
+</div>
+
+</div></div>
+
+<!-- ============================= CHAPTER 3: ANHYDROBIOSIS ============================= -->
+<div class="ch-head">
+  <div class="ch-num">Chapter Three</div>
+  <h2>Anhydrobiosis</h2>
+  <div class="ch-sub">Life Without Their Water</div>
+</div>
+
+<div class="ribbon">
+  <p>"He restores my soul. He leads me in paths of righteousness for his name's sake." &nbsp;&#x2014;&nbsp; Psalm 23:3</p>
+</div>
+
+<div class="section"><div class="page"><div class="prose">
+
+<div class="scene">
+  <div class="scene-label"><svg><use href="#ico-core"/></svg> The Confession at the Edge of the Drought</div>
+  <p>Amoeba found Tardi near the last of the moisture and said something it had never said out loud before.</p>
+  <p>"I do not know how to exist without it."</p>
+  <p>Tardi did not rush to fill the silence.</p>
+  <p>"I have been shaped by this environment for so long," Amoeba continued. "The way it moves, the way it withholds, the way it floods and then retreats. I am formed around it. If you removed it entirely, I do not know if there would be anything left of me. It feels like death."</p>
+  <p>"That feeling," Tardi said carefully, "is accurate information about <em>how dependent the structure has become.</em> It is not accurate information about whether removing it would actually kill you. Those are different things."</p>
+  <p>"What do you do?" Amoeba asked. "When the water is gone entirely."</p>
+  <p>Tardi was quiet for a moment. <em>"I replace it. Molecule by molecule. There is a sugar called trehalose. When the water leaves, trehalose takes its place. It forms a glass, an amorphous solid that preserves every cellular structure exactly as it was. I do not simply remove the water. I install a substitute so the shape holds."</em></p>
+  <p>Amoeba absorbed this. "You do not just cut off."</p>
+  <p><em>"Cutting off without replacement is not survivable. The structure collapses. I replace. Molecule by molecule. One dependency at a time. Until I need nothing from the environment that the environment has poisoned."</em></p>
+</div>
+
+<p>The tardigrade's capacity for <dfn tabindex="0" class="def" data-def="Anhydrobiosis: a form of cryptobiosis in which an organism survives complete desiccation (loss of water) by replacing water molecules with trehalose, a disaccharide sugar that forms a protective glass-like matrix around cellular structures. The organism is not dead. It is preserved.">anhydrobiosis</dfn> is not simply the absence of water. It is the replacement of water. The <dfn tabindex="0" class="def" data-def="Trehalose: a naturally occurring disaccharide sugar used by tardigrades, some insects, and certain plants to survive complete desiccation. Trehalose forms a glass-like amorphous solid that preserves cellular structure by mimicking the hydrogen bonding properties of water. It does not crystallize, which would destroy cells.">trehalose</dfn> glass is not a metaphor for coping. It is a precise molecular substitution that allows every cellular structure to remain intact in the complete absence of the resource that structure was built around. When water returns, the glass dissolves and function resumes without any damage having occurred.</p>
+
+<p>This is the third mental model, and it is the one most people in narcissistic relationships urgently need and almost never receive.</p>
+
+<p>The standard advice is: leave. Cut contact. No contact. Gray rock. And all of that is correct. But it addresses only the first half of the equation. The narcissist IS the water. Not figuratively. Neurochemically, structurally, functionally. They became your validation. They became your excitement and your sense of intensity. They became your primary source of significance, your <dfn tabindex="0" class="def" data-def="Emotional regulation: the ability to influence which emotions you have, when you have them, and how you experience and express them. Narcissistic relationships progressively outsource emotional regulation to the narcissist, creating dependency.">emotional regulation</dfn>, and your primary evidence that you exist and matter. Cutting off without replacing those functions does not free you. It creates a physiological and psychological vacuum that drives you back with the force of a biological imperative.</p>
+
+<p>This is why people return. Not weakness. Not stupidity. Not love, or not only love. The <dfn tabindex="0" class="def" data-def="Withdrawal response: the constellation of physical and psychological symptoms that occur when a person is separated from a source of neurochemical stimulation to which their system has adapted. In trauma bonding, separation from the abuser triggers cortisol spikes, anxiety, obsessive thinking, and craving that mirror substance withdrawal.">withdrawal response</dfn> is real. The <dfn tabindex="0" class="def" data-def="Extinction burst: an increase in the frequency and intensity of a behavior when the reinforcement for that behavior is suddenly removed. In the context of narcissistic relationships, an extinction burst from the narcissist often takes the form of hoovering: extreme charm, promises, crises, or threats designed to restore the previous dynamic.">extinction burst</dfn> is real. The biology of dependency is real. And it will override the most sincere decision to leave, over and over, until the structural replacement is made.</p>
+
+<p><dfn tabindex="0" class="def" data-def="Anhydrobiosis (emotional equivalent): the process of identifying each specific resource the narcissist provided (validation, excitement, regulation, significance, belonging) and installing a specific, viable replacement for each one before or during the process of separation. Not 'finding yourself.' A targeted molecular substitution.">Anhydrobiosis</dfn>, as a practice, looks like this: identify each specific function the narcissist served in your nervous system. Name it precisely, not broadly. Not "they made me feel good." What specifically did they provide? Validation of your intelligence? The experience of being chosen? Relief from loneliness? The sense of being in proximity to someone powerful? The feeling of being needed? Each of these is a molecule. Each requires its own replacement source. Not "find new friends" or "love yourself." A specific, structural substitute for a specific dependency. One at a time. Until the structure holds without them.</p>
+
+</div></div></div>
+
+<!-- Hydration Map -->
+<div class="section" style="padding-top:0"><div class="page">
+
+<div class="hydration-map reveal">
+  <div class="hm-head">
+    <div class="hm-head-icon"><svg><use href="#ico-core"/></svg></div>
+    <div class="hm-title">The Hydration Map: Molecular Replacement Protocol</div>
+  </div>
+  <div class="hm-row hm-header">
+    <div class="hm-cell">Need / Dependency</div>
+    <div class="hm-cell">What They Provided</div>
+    <div class="hm-cell">Your Replacement Source</div>
+  </div>
+  <div class="hm-row">
+    <div class="hm-cell hm-source">Validation</div>
+    <div class="hm-cell">Intermittent confirmation that you are intelligent, desirable, or worthy. Unpredictable enough to be addictive.</div>
+    <div class="hm-cell hm-replace">Daily evidence journal. Three facts about yourself that are demonstrably true regardless of anyone's opinion. Written. Read aloud. Non-negotiable.</div>
+  </div>
+  <div class="hm-row">
+    <div class="hm-cell hm-source">Excitement / Intensity</div>
+    <div class="hm-cell">Neurochemical chaos mistaken for depth. The cortisol and adrenaline of <dfn tabindex="0" class="def" data-def="Hyperarousal: a state of heightened nervous system activation characterized by anxiety, hypervigilance, difficulty sleeping, and emotional reactivity. In narcissistic relationships, hyperarousal becomes normalized and mistaken for emotional aliveness.">hyperarousal</dfn> reframed as passion.</div>
+    <div class="hm-cell hm-replace">Physical practice that generates its own neurochemical reward. Running, climbing, cold exposure, martial arts. Something the body does that creates intensity without requiring a person to create the chaos.</div>
+  </div>
+  <div class="hm-row">
+    <div class="hm-cell hm-source">Purpose / Significance</div>
+    <div class="hm-cell">Being chosen. Being needed. Being the one who manages, rescues, or endures. Significance through their orbit.</div>
+    <div class="hm-cell hm-replace">One creative project that exists independent of any audience. Something that matters because you made it, not because anyone saw it. Build it whether or not anyone ever knows.</div>
+  </div>
+  <div class="hm-row">
+    <div class="hm-cell hm-source">Emotional Regulation</div>
+    <div class="hm-cell">Their occasional calm, their approval, their moments of warmth. You outsourced the ability to self-regulate to the person who controlled whether you could access it.</div>
+    <div class="hm-cell hm-replace"><dfn tabindex="0" class="def" data-def="Somatic grounding: techniques that use the body to regulate the nervous system, bypassing cognitive processing and working directly with the physiological state. Effective for trauma responses that have become body-stored.">Somatic grounding</dfn> protocol. 5-4-3-2-1 sensory anchoring. <dfn tabindex="0" class="def" data-def="Bilateral tapping: a somatic technique derived from EMDR in which alternating stimulation (tapping left and right sides of the body) activates both hemispheres of the brain, reducing the intensity of distressing memories and physiological arousal.">Bilateral tapping</dfn>. Cold water on wrists. Box breathing. These are not coping mechanisms. They are the reinstallation of your own nervous system regulation.</div>
+  </div>
+  <div class="hm-row">
+    <div class="hm-cell hm-source">Identity / Belonging</div>
+    <div class="hm-cell">Being known, or the illusion of being known. The experience of having someone who claimed to understand you entirely, even if what they understood was weaponized.</div>
+    <div class="hm-cell hm-replace">Three relationships where you are known, not performed. Where you do not adjust yourself to maintain the connection. Where your tun core truths are visible and met with recognition, not revision.</div>
+  </div>
+</div>
+
+</div></div>
+
+<!-- Before/After Split -->
+<div class="section" style="padding-top:0"><div class="page">
+
+<div class="ba-grid reveal">
+  <div class="ba-before">
+    <h4>Before</h4>
+    <p>"I need them to feel alive. Without the intensity, without the anticipation, without even the fear of what they might do next, I feel nothing. I do not know what I am without this."</p>
+  </div>
+  <div class="ba-after">
+    <h4>After</h4>
+    <p>"I replaced what they provided. The validation, the intensity, the regulation, the significance. The structure holds without them. I am not numb. I am sustained by sources they cannot touch."</p>
+  </div>
+</div>
+
+<div class="think reveal">
+  <div class="think-label"><svg><use href="#ico-thought"/></svg> Reflection</div>
+  <h4>The Molecular Inventory</h4>
+  <p>Look at the Hydration Map. Which row is most accurate for you? Where is the dependency most structural, most embedded, most resistant to simple decision?</p>
+  <p>Name the specific function, not the general feeling. Not "they made me feel loved" but "they were the only one who ever told me my ideas were good, and I organized my creative life around earning that response." That specificity is the address of the molecule that needs replacing.</p>
+  <p>What is the one replacement you could install this week? Not the full protocol. One molecule. What would it be?</p>
+  <span class="fill-line"></span>
+  <span class="fill-line"></span>
+  <span class="fill-line"></span>
+</div>
+
+</div></div>
+
+<!-- Root Review 3 -->
+<div class="section" style="padding-top:0"><div class="page">
+
+<div class="root-review reveal">
+  <div class="root-label">Root Review</div>
+  <div class="root-sep"></div>
+  <div class="root-layer">
+    <span class="root-ch">Ch 1</span>
+    <div class="root-items">
+      <span class="root-pill rp-dim">Cryptobiosis</span>
+    </div>
+  </div>
+  <div class="root-sep"></div>
+  <div class="root-layer">
+    <span class="root-ch">Ch 2</span>
+    <div class="root-items">
+      <span class="root-pill rp-dim">Tun State</span>
+    </div>
+  </div>
+  <div class="root-sep"></div>
+  <div class="root-layer current">
+    <span class="root-ch">Ch 3</span>
+    <div class="root-items">
+      <span class="root-pill rp-bright">Cryptobiosis</span>
+      <span class="root-arr">&#x2192;</span>
+      <span class="root-pill rp-bright">Tun State</span>
+      <span class="root-arr">&#x2192;</span>
+      <span class="root-pill rp-bright">Anhydrobiosis</span>
+    </div>
+  </div>
+</div>
+
+</div></div>
+
+<!-- ============================= CHAPTER 4: THE REHYDRATION SEQUENCE ============================= -->
+<div class="ch-head">
+  <div class="ch-num">Chapter Four</div>
+  <h2>The Rehydration Sequence</h2>
+  <div class="ch-sub">Coming Back Fully Alive</div>
+</div>
+
+<div class="ribbon">
+  <p>"Behold, I am making all things new." &nbsp;&#x2014;&nbsp; Revelation 21:5</p>
+</div>
+
+<div class="section"><div class="page"><div class="prose">
+
+<div class="scene">
+  <div class="scene-label"><svg><use href="#ico-core"/></svg> The Return of the Rain</div>
+  <p>The Drought broke on the forty-first day.</p>
+  <p>Amoeba felt the moisture first as a rumor, then as a fact. It did not know what to do. For so long, the absence of water had been the entire condition of its existence. Now the water was returning. Real water. Clean water. Water from a source that did not require constant appeasement to stay available.</p>
+  <p>And Amoeba panicked.</p>
+  <p>"I do not know how to be in this," it said. "I do not know how to exist without the threat. I do not know how to trust that the water will stay. I do not know if I have any idea how to function in a non-toxic environment."</p>
+  <p>Tardi, slowly beginning to rehydrate, was characteristically unhurried. <em>"You do not rehydrate all at once. That is the mistake. If water reintroduces too quickly, the cellular structures cannot manage the transition. You go slowly. One system at a time. You do not snap back. You return."</em></p>
+  <p>"What if I start to feel things I have not felt in years and I cannot manage them?"</p>
+  <p><em>"That is not a problem. That is the sequence working. Feel them slowly. One system at a time."</em></p>
+  <p>Amoeba was quiet. Then: "What if I go through all of it and still end up in another drought?"</p>
+  <p>Tardi looked at it steadily. <em>"Then you will know exactly what to do. You will have done it before. The protocol is yours now. It goes with you."</em></p>
+</div>
+
+<p>When the narcissist leaves, or when you leave, the environment changes. The Drought ends. And something unexpected happens: you do not automatically return to who you were before. Not because you cannot. Because the structure has been compressed for so long that it no longer knows how to expand. Because <dfn tabindex="0" class="def" data-def="Hypoarousal: a state of low nervous system activation characterized by numbness, disconnection, emotional flatness, dissociation, and difficulty feeling or responding. Often follows a period of hyperarousal and trauma. The nervous system shifts from high alert to shutdown.">hypoarousal</dfn> and shutdown have become the default state. Because the experience of positive conditions has become a threat, something to be suspicious of, something that must be preparing to withdraw.</p>
+
+<p>Many people survive the narcissist and then remain in the tun state permanently. They are safe. They are not alive. They have traded one form of non-living for another, and they call it recovery. They stop being controlled by the narcissist and start being controlled by the fear of being controlled again. The <dfn tabindex="0" class="def" data-def="Window of tolerance: the optimal zone of arousal in which a person can process experiences, feel emotions, and engage with others without being overwhelmed or shutting down. Trauma narrows this window. Recovery widens it.">window of tolerance</dfn> stays narrow. The emotional range stays collapsed. The trehalose glass never dissolves.</p>
+
+<p>The rehydration sequence is controlled re-entry. It is not healing, because healing implies a permanent wound that closes. It is rehydration. The structure was always intact. The capacity for full emotional function was always there, compressed, preserved, waiting for the right conditions. The sequence is simply the protocol for returning to those conditions without overwhelming the system before it is ready.</p>
+
+<p>You were not broken. You were in the tun. The sequence brings you back.</p>
+
+</div></div></div>
+
+<!-- Rehydration Sequence Visual -->
+<div class="section" style="padding-top:0"><div class="page">
+
+<div class="rehydration-seq reveal">
+
+  <div class="rh-step">
+    <div class="rh-marker">1</div>
+    <div class="rh-content">
+      <h4>Safety Scan</h4>
+      <p>Confirm the environment has actually changed. Not hope. Not projection. Evidence. Three consecutive weeks of reduced threat before proceeding. Measure behavior, not words. Measure patterns, not moments. The absence of active harm is not the presence of safety. Look for consistent evidence of genuine change before you begin to open.</p>
+    </div>
+  </div>
+  <div class="rh-arrow">&#x2193;</div>
+
+  <div class="rh-step">
+    <div class="rh-marker">2</div>
+    <div class="rh-content">
+      <h4>Peripheral Reactivation</h4>
+      <p>Reconnect with low-risk emotional inputs first. Music that moved you before the relationship began. A walk in a place with no associations. Texture. Color. Small beauty. Not people. Not relationships. Not vulnerability. The peripheral senses first. Let the body remember what it felt like to receive something without needing to manage the consequences.</p>
+    </div>
+  </div>
+  <div class="rh-arrow">&#x2193;</div>
+
+  <div class="rh-step">
+    <div class="rh-marker">3</div>
+    <div class="rh-content">
+      <h4>Trust Calibration</h4>
+      <p>One person. Not a new relationship. An existing connection you suspended during the Drought. Someone who was there before and is still there now. Test with small vulnerability. A minor truth. An honest feeling. Observe the response carefully. Does it land with care or get filed away for future use? Does the relationship feel like an exchange or an extraction? Proceed or pause accordingly.</p>
+    </div>
+  </div>
+  <div class="rh-arrow">&#x2193;</div>
+
+  <div class="rh-step">
+    <div class="rh-marker">4</div>
+    <div class="rh-content">
+      <h4>Identity Unpacking</h4>
+      <p>Take each truth from your tun core and give it room to breathe. Say it out loud. Write it larger. Let it expand from compressed density to living practice. "I have always been someone who..." is not a statement you read to yourself in a journal. It is something you act from in the world. One truth at a time. Let it take up its actual space.</p>
+    </div>
+  </div>
+  <div class="rh-arrow">&#x2193;</div>
+
+  <div class="rh-step">
+    <div class="rh-marker">5</div>
+    <div class="rh-content">
+      <h4>Full Emotional Range</h4>
+      <p>The final step. Allow yourself to feel joy without waiting for the punishment that has always followed it. Feel sadness without it being weaponized as evidence against you. Feel anger without it being called <dfn tabindex="0" class="def" data-def="Reactive abuse: a manipulation tactic in which the abuser provokes the victim until the victim reacts, then uses that reaction as evidence that the victim is the actual abuser. The victim's understandable emotional response to sustained mistreatment is reframed as the problem.">reactive abuse</dfn>. Feel desire without apologizing for it. Your emotional spectrum belongs to you again. All of it. Even the difficult parts. Especially the difficult parts.</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="grand-quote reveal">
+  <blockquote>"The tardigrade does not come back different. It comes back. That is the miracle."</blockquote>
+  <div class="attribution">The Tardigrade Protocol</div>
+</div>
+
+</div></div>
+
+<!-- Dark Panel: Permanent Tun Trap -->
+<div class="section" style="padding-top:0"><div class="page">
+
+<div class="dark-panel reveal">
+  <div class="dp-label"><svg><use href="#ico-warning"/></svg> The Permanent Tun Trap</div>
+  <h3>Safe, But Not Alive</h3>
+  <p>There is a category of person who survived the narcissist but never rehydrated. They left the relationship. They went no contact. They read the books. They told the story correctly in therapy. They know every term. They know what was done to them. And they are still, years later, operating from the tun state.</p>
+  <p>They do not form deep relationships because depth feels like exposure. They do not pursue what they want because wanting feels like vulnerability. They do not allow joy to land completely because joy has always been the setup for what comes next. They are not being controlled by the narcissist anymore. They are being controlled by the <dfn tabindex="0" class="def" data-def="Emotional flashback: an abrupt shift into an intense emotional state associated with past trauma, without a corresponding narrative memory. The person does not necessarily remember the traumatic event. They simply find themselves flooded with shame, fear, or worthlessness that feels completely present and real.">emotional flashback</dfn> of what the narcissist taught them to expect.</p>
+  <p>The tun state was meant to be a passage. Not a permanent residence. If you have been out of the relationship for months or years and you still cannot feel joy without bracing for the punishment, still cannot trust a kind person without waiting for the mask to drop, still cannot let yourself be fully known without expecting that knowledge to be used against you, this is the Permanent Tun Trap.</p>
+  <p><em>The protocol for exit is the same: Rehydration Sequence. Step one. Start there. The structure is still intact. The water is available. The only remaining task is to let it in.</em></p>
+</div>
+
+</div></div>
+
+<!-- Adventure Sequence: Real World Rehydration -->
+<div class="section" style="padding-top:0"><div class="page">
+
+<div class="bold-claim reveal">
+  <div class="bc-label">Real World Rehydration: Your Five-Step Protocol</div>
+  <ul>
+    <li><strong style="color:var(--amber-pale)">This week.</strong> Choose one peripheral reactivation. A piece of music from before. A walk with no destination. One hour of pure sensory input with no relational complexity. No texting. No social media. Just your senses and the world. Notice what comes back.</li>
+    <li><strong style="color:var(--amber-pale)">This week also.</strong> Install one molecule from the Hydration Map. Just one. The one that feels most urgent. Set it as a non-negotiable daily practice for 21 days. Not "when I have time." A specific time. A specific action. Molecule by molecule.</li>
+    <li><strong style="color:var(--amber-pale)">Within two weeks.</strong> Identify your trust calibration candidate. One person. One small truth you could share with them. One conversation. Observe the response. Write down what you notice about how it felt to be received without consequence.</li>
+    <li><strong style="color:var(--amber-pale)">Within one month.</strong> Take your tun core truths out of the journal and act from one of them publicly. Build something. Say something. Pursue something. Let the compressed truth expand into visible behavior in the world.</li>
+    <li><strong style="color:var(--amber-pale)">Ongoing.</strong> When joy arrives, let it land. When sadness arrives, feel it without management. When anger arrives, name it accurately and without apology. Practice the full emotional range as a discipline, not a luxury. You are not being naive. You are finishing the rehydration.</li>
+  </ul>
+</div>
+
+<div class="think reveal">
+  <div class="think-label"><svg><use href="#ico-thought"/></svg> Reflection</div>
+  <h4>Where Are You in the Sequence?</h4>
+  <p>Of the five steps in the Rehydration Sequence, which one are you at right now? Not which one do you want to be at. Which one does your actual daily life indicate?</p>
+  <p>If you are at step one (Safety Scan), what would three consecutive weeks of evidence look like? What would qualify? What would disqualify?</p>
+  <p>If you are already past step three, what is the thing you have been unwilling to let expand? What would happen if you let that one thing take its actual space?</p>
+  <span class="fill-line"></span>
+  <span class="fill-line"></span>
+  <span class="fill-line"></span>
+</div>
+
+</div></div>
+
+<!-- Root Review 4 -->
+<div class="section" style="padding-top:0"><div class="page">
+
+<div class="root-review reveal">
+  <div class="root-label">Root Review</div>
+  <div class="root-sep"></div>
+  <div class="root-layer">
+    <span class="root-ch">Ch 1</span>
+    <div class="root-items">
+      <span class="root-pill rp-dim">Cryptobiosis</span>
+    </div>
+  </div>
+  <div class="root-sep"></div>
+  <div class="root-layer">
+    <span class="root-ch">Ch 2</span>
+    <div class="root-items">
+      <span class="root-pill rp-dim">Tun State</span>
+    </div>
+  </div>
+  <div class="root-sep"></div>
+  <div class="root-layer">
+    <span class="root-ch">Ch 3</span>
+    <div class="root-items">
+      <span class="root-pill rp-dim">Anhydrobiosis</span>
+    </div>
+  </div>
+  <div class="root-sep"></div>
+  <div class="root-layer current">
+    <span class="root-ch">Ch 4</span>
+    <div class="root-items">
+      <span class="root-pill rp-bright">Cryptobiosis</span>
+      <span class="root-arr">&#x2192;</span>
+      <span class="root-pill rp-bright">Tun State</span>
+      <span class="root-arr">&#x2192;</span>
+      <span class="root-pill rp-bright">Anhydrobiosis</span>
+      <span class="root-arr">&#x2192;</span>
+      <span class="root-pill rp-bright">Rehydration</span>
+    </div>
+  </div>
+</div>
+
+</div></div>
+
+<!-- ============================= FINAL TEST ============================= -->
+<div class="section"><div class="page">
+
+<div class="root-review reveal">
+  <div class="root-label">Final Test. Can You Answer Without Looking Back?</div>
+  <div class="root-sep"></div>
+  <dl style="padding:8px 0;position:relative;z-index:1">
+    <dt style="font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;color:var(--void-mid);margin-bottom:4px;margin-top:16px">1.</dt>
+    <dd style="font-size:0.88rem;color:var(--text-light);line-height:1.65;margin-left:0;margin-bottom:0">What is the difference between cryptobiosis and dissociation?</dd>
+
+    <dt style="font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;color:var(--void-mid);margin-bottom:4px;margin-top:16px">2.</dt>
+    <dd style="font-size:0.88rem;color:var(--text-light);line-height:1.65;margin-left:0;margin-bottom:0">What molecule does the tardigrade use to replace water, and what is the emotional equivalent?</dd>
+
+    <dt style="font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;color:var(--void-mid);margin-bottom:4px;margin-top:16px">3.</dt>
+    <dd style="font-size:0.88rem;color:var(--text-light);line-height:1.65;margin-left:0;margin-bottom:0">Name your five tun core truths.</dd>
+
+    <dt style="font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;color:var(--void-mid);margin-bottom:4px;margin-top:16px">4.</dt>
+    <dd style="font-size:0.88rem;color:var(--text-light);line-height:1.65;margin-left:0;margin-bottom:0">Why is the narcissist treated as an environment rather than a character in this playbook?</dd>
+
+    <dt style="font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;color:var(--void-mid);margin-bottom:4px;margin-top:16px">5.</dt>
+    <dd style="font-size:0.88rem;color:var(--text-light);line-height:1.65;margin-left:0;margin-bottom:0">What are the five steps of the Rehydration Sequence, in order?</dd>
+
+    <dt style="font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;color:var(--void-mid);margin-bottom:4px;margin-top:16px">6.</dt>
+    <dd style="font-size:0.88rem;color:var(--text-light);line-height:1.65;margin-left:0;margin-bottom:0">Why does cutting off a narcissist without replacement often fail?</dd>
+
+    <dt style="font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;color:var(--void-mid);margin-bottom:4px;margin-top:16px">7.</dt>
+    <dd style="font-size:0.88rem;color:var(--text-light);line-height:1.65;margin-left:0;margin-bottom:0">What is the Permanent Tun Trap?</dd>
+
+    <dt style="font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;color:var(--void-mid);margin-bottom:4px;margin-top:16px">8.</dt>
+    <dd style="font-size:0.88rem;color:var(--text-light);line-height:1.65;margin-left:0;margin-bottom:0">How does anhydrobiosis differ from simply leaving?</dd>
+
+    <dt style="font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;color:var(--void-mid);margin-bottom:4px;margin-top:16px">9.</dt>
+    <dd style="font-size:0.88rem;color:var(--text-light);line-height:1.65;margin-left:0;margin-bottom:0">What three conditions must be met before beginning peripheral reactivation?</dd>
+
+    <dt style="font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;color:var(--void-mid);margin-bottom:4px;margin-top:16px">10.</dt>
+    <dd style="font-size:0.88rem;color:var(--text-light);line-height:1.65;margin-left:0;margin-bottom:0">Complete the sentence: "You were always intact. You were just ___."</dd>
+  </dl>
+</div>
+
+</div></div>
+
+<!-- ============================= PROMPT CARD ============================= -->
+<div class="section" style="padding-top:0"><div class="page">
+
+<div class="prompt-card reveal">
+  <div class="pc-label">Installation Prompt</div>
+  <h3>Continue With AI</h3>
+  <p>Copy this prompt into Claude, ChatGPT, or any AI assistant to build your personal Tardigrade Protocol:</p>
+  <p style="background:rgba(255,255,255,0.04);border:1px solid rgba(212,165,116,0.15);border-radius:8px;padding:18px;font-size:0.82rem;color:rgba(255,255,255,0.65);line-height:1.78;font-style:italic;margin-top:12px">I just read The Tardigrade Protocol by Kingdom Builders AI, the final playbook in the Shield Series. It taught four survival models: cryptobiosis (suspending emotional exchange with a toxic environment without dissociating), the tun state (compressing to an indestructible identity core of five non-negotiable truths), anhydrobiosis (replacing narcissistic dependency at the molecular level rather than simply cutting off), and the rehydration sequence (returning to full emotional function one system at a time). I want you to help me build my personal protocol. Start by asking me about my current situation: am I still in the environment, planning to leave, or already out? Then walk me through each model as it applies to my specific circumstances. Be direct. Challenge me where I am rationalizing. Help me identify what I have been absorbing that I need to replace.</p>
+</div>
+
+</div></div>
+
+<!-- ============================= FINALE ============================= -->
+<div class="finale reveal">
+  <div class="finale-icon"><svg><use href="#ico-tardi"/></svg></div>
+  <h2>You Were Always <span>Intact.</span></h2>
+  <p>The tardigrade does not fight the vacuum. It does not argue with the radiation. It does not negotiate with the cold. It transforms into something the environment cannot reach, and when the environment exhausts itself, it comes back. Fully. Completely. Alive.</p>
+  <p>You were not destroyed. You were compressed. The structure was always there. The truths were always there. The capacity for joy, for depth, for genuine connection, for the full weight of your own life fully lived. All of it was in the tun. Waiting. Preserved.</p>
+  <p style="font-style:normal;font-family:'Nunito',sans-serif;font-size:0.78rem;letter-spacing:1px;color:rgba(136,192,208,0.5);margin-top:28px">"We are hard pressed on every side, but not crushed. Perplexed, but not in despair. Persecuted, but not abandoned. Struck down, but not destroyed." &mdash; 2 Corinthians 4:8, 9</p>
+</div>
+
+<!-- ============================= SERIES PROGRESS ============================= -->
+<div class="series-progress">
+  <div class="series-label">The Shield Series</div>
+  <div class="series-dots">
+    <span class="series-dot done" title="The Mantis Shrimp's Eye"></span>
+    <span class="series-dot done" title="The Porcupine's Quills"></span>
+    <span class="series-dot active" title="The Tardigrade Protocol"></span>
+  </div>
+  <div class="series-dot-label">Part 3 of 3. Survive It</div>
+</div>
+
+<!-- ============================= FOOTER ============================= -->
+<footer>
+  <p>"He will never leave you nor forsake you." Deuteronomy 31:6</p>
+  <div class="brand">KingdomBuilders AI</div>
+</footer>
+
+</body>
+</html>

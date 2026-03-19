@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lay It Down: Gluttony | Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1A0818;--ink-mid:#2C1028;--ink-soft:#3D2038;
+  --steel:#5A3858;--steel-light:#8A6888;--fog:#B090A8;
+  --plum:#8B2252;--plum-mid:rgba(139,34,82,0.18);--plum-pale:rgba(139,34,82,0.07);
+  --copper:#C06030;--copper-mid:rgba(192,96,48,0.15);
+  --gold:#D4A030;--gold-mid:rgba(212,160,48,0.18);--gold-pale:rgba(212,160,48,0.08);
+  --berry:#A83060;--berry-mid:rgba(168,48,96,0.15);
+  --green:#2D8A4E;--green-mid:rgba(45,138,78,0.15);
+  --cream:#FFFAF6;--cream-warm:#FFF6F0;--paper:#FFFAF6;--white:#FFFFFF;
+  --radius:10px;--shadow:0 2px 16px rgba(26,8,24,0.09);--shadow-deep:0 8px 40px rgba(26,8,24,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.78;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.label{font-family:'Poppins',sans-serif}
+.page{max-width:700px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--ink-mid);font-weight:600;font-family:'Poppins',sans-serif}
+
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(160deg,#0E0210 0%,#220A1C 40%,#180620 100%);position:relative;overflow:hidden}
+.cover-grain{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:0.5}
+.cover-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 25%,rgba(10,2,8,0.7) 100%)}
+.flame-ring{position:absolute;border-radius:50%;border:1px solid rgba(139,34,82,0.06);animation:flame-expand 7s ease-out infinite}
+.flame-ring:nth-child(3){width:180px;height:180px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:0s}
+.flame-ring:nth-child(4){width:360px;height:360px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:1.8s}
+.flame-ring:nth-child(5){width:540px;height:540px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:3.6s}
+@keyframes flame-expand{0%{opacity:0.6;transform:translate(-50%,-50%) scale(0.85)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.25)}}
+.cover-art{margin:0 auto 28px;animation:cover-breathe 4s ease-in-out infinite}
+.cover-art svg{width:190px;height:180px;filter:drop-shadow(0 0 20px rgba(139,34,82,0.3)) drop-shadow(0 0 50px rgba(192,96,48,0.15))}
+@keyframes cover-breathe{0%,100%{transform:scale(1);opacity:0.9}50%{transform:scale(1.04);opacity:1}}
+.cover-content{position:relative;z-index:2;padding:60px 24px 40px}
+.cover-badge{display:inline-block;padding:5px 18px;border:1px solid rgba(139,34,82,0.3);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.67rem;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:var(--plum);margin-bottom:40px;background:rgba(139,34,82,0.07)}
+.cover h1{font-family:'Poppins',sans-serif;font-size:clamp(3rem,9vw,5.5rem);font-weight:300;color:#FFFFFF;line-height:0.95;margin-bottom:6px;letter-spacing:-0.02em}
+.cover h1 em{display:block;color:var(--plum);font-style:normal;font-weight:700;font-size:0.5em;margin-top:12px;letter-spacing:0.01em}
+.cover-sub{font-family:'Lora',Georgia,serif;font-size:clamp(0.95rem,2.5vw,1.15rem);font-style:italic;color:rgba(255,255,255,0.45);margin-top:28px;line-height:1.7;max-width:480px;margin-left:auto;margin-right:auto}
+.cover-sub em{color:rgba(139,34,82,0.85);font-style:normal;font-weight:600}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.5rem;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-top:52px}
+.cover-verse{margin-top:28px;padding:14px 24px;display:inline-block;background:rgba(139,34,82,0.06);border:1px solid rgba(139,34,82,0.12);border-radius:8px;font-family:'Lora',Georgia,serif;font-size:0.82rem;font-style:italic;color:rgba(255,255,255,0.35);line-height:1.6}
+
+.ch-head{background:linear-gradient(160deg,#0E0210 0%,#201020 100%);padding:72px 24px 52px;position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 50%,rgba(139,34,82,0.04) 0%,transparent 50%)}
+.ch-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 5%,var(--plum) 50%,transparent 95%);opacity:0.5}
+.ch-head .page{position:relative;z-index:2}
+.ch-num{font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--plum);opacity:0.9;margin-bottom:8px}
+.ch-title{font-family:'Poppins',sans-serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:700;color:#FFFFFF;margin:10px 0 8px;letter-spacing:-0.01em}
+.ch-sub{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:rgba(139,34,82,0.55)}
+
+.ribbon{text-align:center;padding:20px 24px;background:var(--cream-warm);border-top:1px solid rgba(26,8,24,0.06);border-bottom:1px solid rgba(26,8,24,0.06)}
+.ribbon p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:var(--steel-light);max-width:540px;margin:0 auto;line-height:1.6}
+
+.mission{text-align:center;padding:36px 32px;margin:36px 0;background:linear-gradient(140deg,rgba(139,34,82,0.08),rgba(139,34,82,0.03));border-radius:14px;border:2px solid rgba(139,34,82,0.2);box-shadow:0 0 0 1px rgba(139,34,82,0.06),var(--shadow)}
+.mission-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--plum);margin-bottom:12px}
+.mission p{font-family:'Poppins',sans-serif;font-size:clamp(0.88rem,2.2vw,1.05rem);font-weight:500;color:var(--ink-mid);line-height:1.65}
+.mission p em{color:var(--plum);font-style:normal;font-weight:700}
+
+.insight{margin:30px 0;padding:28px 32px;background:linear-gradient(140deg,#0E0210,#201020);border-radius:14px;border:2px solid rgba(139,34,82,0.25);border-left:5px solid var(--plum);position:relative;overflow:hidden;box-shadow:var(--shadow-deep)}
+.insight::before{content:'';position:absolute;top:-40%;right:-10%;width:200px;height:200px;background:radial-gradient(circle,rgba(139,34,82,0.07) 0%,transparent 70%);border-radius:50%}
+.insight p{font-family:'Lora',Georgia,serif;font-size:1.02rem;font-style:italic;color:rgba(255,255,255,0.9);line-height:1.72;position:relative;z-index:2}
+.insight em{color:var(--plum);font-style:normal;font-weight:700}
+
+.gq{margin:32px 0;text-align:center;padding:32px 24px;position:relative;background:linear-gradient(160deg,rgba(139,34,82,0.04),rgba(139,34,82,0.07));border-radius:14px;border:1.5px solid rgba(139,34,82,0.15)}
+.gq::before,.gq::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:48px;height:2px;background:linear-gradient(90deg,transparent,var(--plum),transparent)}
+.gq::before{top:0}.gq::after{bottom:0}
+.gq p{font-family:'Lora',Georgia,serif;font-size:1.05rem;font-style:italic;color:var(--ink-soft);line-height:1.6;max-width:520px;margin:0 auto}
+
+.viz{margin:44px 0 32px;border-radius:14px;overflow:hidden;border:2px solid rgba(139,34,82,0.22);box-shadow:var(--shadow-deep);position:relative;background:var(--white)}
+.viz-top{background:linear-gradient(135deg,rgba(139,34,82,0.1),rgba(139,34,82,0.04));padding:20px 26px 18px;display:flex;align-items:center;gap:14px;border-bottom:1px solid rgba(139,34,82,0.12)}
+.viz-icon{width:48px;height:48px;border-radius:50%;border:2px solid rgba(139,34,82,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(145deg,#fff,rgba(255,240,248,0.6))}
+.viz-meta{flex:1}
+.viz-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--plum);margin-bottom:2px}
+.viz h4{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:var(--ink-mid)}
+.viz-body{padding:26px 26px 22px;background:linear-gradient(170deg,#FFFDF8 0%,#FFF8F4 100%)}
+.viz-body p{font-size:0.95rem;color:var(--steel);line-height:1.78;margin-bottom:14px}
+.viz-body strong,.viz-lesson strong{color:rgba(255,255,255,0.95);font-weight:700}
+.viz-body em,.viz-lesson em{color:var(--plum-pale);font-style:normal;font-weight:600}
+.viz-body p:last-child{margin-bottom:0}
+.viz-trigger{margin-top:18px;padding:14px 18px;background:linear-gradient(135deg,rgba(139,34,82,0.08),rgba(139,34,82,0.14));border:1.5px solid rgba(139,34,82,0.2);border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.76rem;font-weight:600;color:var(--ink-soft);text-align:center;line-height:1.55}
+
+.ba-pair{margin:32px 0;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:620px){.ba-pair{grid-template-columns:1fr}}
+.ba-card{border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.ba-head{padding:11px 18px;font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.ba-before{background:linear-gradient(170deg,#FFF0F4,#FFE8F0)}
+.ba-before .ba-head{background:rgba(139,34,82,0.12);color:#5A1030}
+.ba-after{background:linear-gradient(170deg,#F0FFF4,#E8FFE8)}
+.ba-after .ba-head{background:rgba(45,138,78,0.12);color:#1A4A28}
+.ba-dot{width:7px;height:7px;border-radius:50%}
+.ba-before .ba-dot{background:var(--plum)}
+.ba-after .ba-dot{background:var(--green)}
+.ba-body{padding:16px 18px;font-size:0.88rem;line-height:1.65}
+.ba-body ul{list-style:none;padding:0;margin:0}
+.ba-body ul li{padding:6px 0;border-bottom:1px solid rgba(0,0,0,0.05);font-family:'Poppins',sans-serif;font-size:0.8rem}
+.ba-body ul li:last-child{border-bottom:none}
+
+.dd{margin:24px 0;padding:22px 26px;border-radius:12px;border-left:4px solid var(--plum);background:var(--white);box-shadow:var(--shadow)}
+.dd:nth-of-type(even){background:var(--cream)}
+.dd h4{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--ink-mid);margin-bottom:4px}
+.dd .sub{font-family:'Poppins',sans-serif;font-size:0.54rem;font-weight:700;color:var(--plum);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.dd p{font-size:0.95rem;color:var(--steel);line-height:1.78;margin-bottom:8px}
+.dd p:last-child{margin-bottom:0}
+
+.adventure{margin:36px 0;border-radius:14px;overflow:hidden;box-shadow:var(--shadow-deep);background:var(--white);border:1.5px solid rgba(26,8,24,0.08)}
+.adv-head{padding:14px 26px 12px;display:flex;align-items:center;gap:12px;border-bottom:1.5px solid rgba(139,34,82,0.1);background:linear-gradient(135deg,rgba(139,34,82,0.05),rgba(139,34,82,0.02))}
+.adv-head-icon{width:36px;height:36px;border-radius:50%;background:rgba(139,34,82,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1.5px solid rgba(139,34,82,0.2)}
+.adv-head-text{flex:1}
+.adv-head-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--plum);opacity:0.7}
+.adv-head-title{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--ink-mid)}
+.adv-step{padding:14px 26px;border-bottom:1px solid rgba(26,8,24,0.05)}
+.adv-step:last-child{border-bottom:none}
+.adv-step:nth-child(odd){background:var(--white)}
+.adv-step:nth-child(even){background:rgba(139,34,82,0.02)}
+.step-c p{font-family:'Source Serif 4',Georgia,serif;font-size:0.93rem;line-height:1.75;margin:0 0 6px;color:var(--ink-soft)}
+.step-c p:last-child{margin-bottom:0}
+.step-c em{color:var(--steel-light)}
+.tag-you{font-family:'Poppins',sans-serif;font-weight:700;color:var(--ink-mid);font-size:0.74rem;display:inline-block;padding:2px 10px;background:rgba(139,34,82,0.1);border-radius:4px;margin-bottom:5px;border:1px solid rgba(139,34,82,0.2)}
+.adv-result-good{background:linear-gradient(135deg,rgba(45,138,78,0.04),rgba(45,138,78,0.08))!important}
+
+.think{margin:16px 0 36px;padding:30px;background:linear-gradient(145deg,rgba(139,34,82,0.08),rgba(139,34,82,0.04));border:2px dashed rgba(139,34,82,0.35);border-radius:14px;position:relative;box-shadow:0 4px 16px rgba(139,34,82,0.08)}
+.think::before{content:'';position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--paper);padding:0 12px;width:28px;height:28px;display:block;margin-left:-14px;background:var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238B2252' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22c-2 0-4-1.5-4-4 0-2 2-3 4-3s4 1 4 3c0 2.5-2 4-4 4z'/%3E%3Cpath d='M12 15c-1.5-2-5-4-5-8a5 5 0 0 1 10 0c0 4-3.5 6-5 8z'/%3E%3Cpath d='M9.5 9c.3-1.8 1.5-3 2.5-3'/%3E%3C/svg%3E") center/contain no-repeat}
+.think-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--plum);text-align:center;margin-bottom:10px}
+.think h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--ink-mid);text-align:center;margin-bottom:14px}
+.think p{font-size:0.86rem;color:var(--steel);margin-bottom:8px;font-family:'Poppins',sans-serif}
+.think-line{border-bottom:1.5px solid rgba(139,34,82,0.25);height:30px;margin-bottom:4px;cursor:text}
+.think p.q-start{font-family:'Poppins',sans-serif;font-weight:500;color:var(--ink-soft);font-size:0.82rem;text-align:left;margin-top:14px;margin-bottom:4px}
+.think .closing{font-weight:600;color:var(--plum);margin-top:12px;font-family:'Poppins',sans-serif;font-size:0.8rem}
+
+.breathe{margin:44px 0;text-align:center;padding:52px 24px;position:relative;background:linear-gradient(160deg,rgba(139,34,82,0.08),rgba(139,34,82,0.04));border-radius:16px;border:2px solid rgba(139,34,82,0.15)}
+.breathe-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1.5px solid rgba(139,34,82,0.1)}
+.breathe-ring:nth-child(1){width:140px;height:140px;animation:breathe-pulse 6s ease-in-out infinite}
+.breathe-ring:nth-child(2){width:90px;height:90px;animation:breathe-pulse 6s ease-in-out infinite 1.5s}
+.breathe-ring:nth-child(3){width:45px;height:45px;animation:breathe-pulse 6s ease-in-out infinite 3s}
+@keyframes breathe-pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.5}50%{transform:translate(-50%,-50%) scale(1.25);opacity:0.1}}
+.breathe-content{position:relative;z-index:2}
+.breathe-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--plum);margin-bottom:8px}
+.breathe h4{font-family:'Poppins',sans-serif;font-size:0.94rem;font-weight:600;color:var(--ink-mid);margin-bottom:8px}
+.breathe p{font-family:'Lora',Georgia,serif;font-size:0.88rem;font-style:italic;color:var(--steel);max-width:420px;margin:0 auto;line-height:1.65}
+
+.descent-ramp{margin:36px 0 0;display:flex;flex-direction:column;gap:12px}
+.ramp-echo{padding:26px 30px;background:linear-gradient(160deg,rgba(139,34,82,0.07),rgba(139,34,82,0.03));border-radius:14px;border:1.5px solid rgba(139,34,82,0.12)}
+.ramp-echo p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:var(--steel);line-height:1.78;text-align:center;margin:0}
+.ramp-close{padding:36px 30px;text-align:center;background:linear-gradient(160deg,rgba(212,160,48,0.1),rgba(212,160,48,0.05));border-radius:14px;border:1.5px solid rgba(212,160,48,0.2)}
+.ramp-close-label{font-family:'Poppins',sans-serif;font-size:0.44rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--gold);opacity:0.9;margin-bottom:8px}
+.ramp-close p{font-family:'Poppins',sans-serif;font-size:0.8rem;font-weight:500;color:var(--ink-soft);line-height:1.65;max-width:440px;margin:0 auto}
+
+.inst{margin:26px 0;padding:18px 22px;background:linear-gradient(90deg,rgba(139,34,82,0.07),rgba(212,160,48,0.05));border-left:4px solid var(--plum);border-radius:0 12px 12px 0;box-shadow:var(--shadow)}
+.inst p{font-family:'Poppins',sans-serif;font-size:0.8rem;color:var(--steel);line-height:1.6;margin:0}
+.inst strong{color:var(--ink-mid);font-weight:600}
+
+.h2-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--ink-mid),var(--ink-soft));margin-right:10px;vertical-align:middle;box-shadow:0 2px 8px rgba(26,8,24,0.2)}
+.h2-icon svg{width:16px;height:16px;stroke:var(--plum);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.viz-icon svg{width:24px;height:24px;stroke:var(--plum);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.adv-head-icon svg{width:18px;height:18px;stroke:var(--plum);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.prose h2{font-family:'Poppins',sans-serif;font-size:1.3rem;color:var(--ink-mid);margin:36px 0 14px;letter-spacing:-0.01em;display:flex;align-items:center}
+
+.root-review{margin:44px 0;padding:28px 22px;background:linear-gradient(160deg,#FFF8F4,#FFF0F4);border-radius:16px;border:2px solid rgba(139,34,82,0.18);box-shadow:var(--shadow)}
+.root-label{font-family:'Poppins',sans-serif;font-size:0.44rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--plum);text-align:center;margin-bottom:18px}
+.root-layer{display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 0;flex-wrap:wrap}
+.root-layer.current{padding:12px 0}
+.root-ch{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--fog);width:28px;text-align:right;flex-shrink:0}
+.root-layer.current .root-ch{color:var(--plum)}
+.root-items{display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center}
+.root-pill{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:600;padding:5px 13px;border-radius:6px;white-space:nowrap}
+.root-pill.rp-dim{background:rgba(90,56,72,0.1);color:var(--steel);border:1.5px solid rgba(90,56,72,0.18)}
+.root-pill.rp-bright{background:linear-gradient(135deg,rgba(139,34,82,0.18),rgba(139,34,82,0.26));color:var(--ink-mid);border:2px solid rgba(139,34,82,0.35);box-shadow:0 2px 10px rgba(139,34,82,0.12);font-weight:700}
+.root-pill.rp-ch1{background:rgba(139,34,82,0.12);color:#5A1030;border:1.5px solid rgba(139,34,82,0.28);font-weight:600}
+.root-pill.rp-ch2{background:rgba(192,96,48,0.12);color:#5A2800;border:1.5px solid rgba(192,96,48,0.25);font-weight:600}
+.root-pill.rp-ch3{background:rgba(45,138,78,0.12);color:#1A3A28;border:1.5px solid rgba(45,138,78,0.25);font-weight:600}
+.root-pill.rp-ch4{background:rgba(160,100,240,0.12);color:#3A1A5A;border:1.5px solid rgba(160,100,240,0.25);font-weight:600}
+.root-pill.rp-ch5{background:rgba(60,140,240,0.12);color:#1A2E5A;border:1.5px solid rgba(60,140,240,0.25);font-weight:600}
+.root-arr{color:var(--plum);opacity:0.65;font-size:0.78rem;padding:0 3px}
+.root-layer.current .root-arr{opacity:0.9}
+.root-sep{width:60%;max-width:300px;height:1.5px;background:linear-gradient(90deg,transparent,rgba(139,34,82,0.15),transparent);margin:6px auto}
+
+.prompt{margin:32px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(139,34,82,0.22);box-shadow:var(--shadow-deep)}
+.prompt-head{padding:12px 20px;background:linear-gradient(90deg,#0E0210,#201020);font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--plum)}
+.prompt-body{padding:24px 26px;background:#0A0208;color:#C0B0B8;font-family:'Poppins',sans-serif;font-size:0.82rem;line-height:1.8}
+.prompt-body strong{color:var(--plum)}
+
+.stack{margin:38px 0;text-align:center}
+.stack-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--plum);opacity:0.7;margin-bottom:16px}
+.stack-flow{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap}
+.stack-node{display:inline-flex;align-items:center;justify-content:center;padding:10px 18px;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.68rem;font-weight:600;line-height:1.35;white-space:nowrap}
+.sn-dark{background:var(--ink-mid);color:#FFFFFF;border:1.5px solid rgba(139,34,82,0.2)}
+.sn-plum{background:rgba(139,34,82,0.13);color:var(--ink-mid);border:1.5px solid rgba(139,34,82,0.25)}
+.sn-gold{background:rgba(212,160,48,0.13);color:var(--ink-soft);border:1.5px solid rgba(212,160,48,0.28)}
+.sn-copper{background:rgba(192,96,48,0.1);color:#5A2800;border:1.5px solid rgba(192,96,48,0.2)}
+.sn-green{background:rgba(45,138,78,0.1);color:#1A3A28;border:1.5px solid rgba(45,138,78,0.2)}
+.stack-arr{font-size:1rem;color:rgba(139,34,82,0.45);padding:0 7px}
+
+.prayer{margin:32px 0;padding:28px 30px;background:linear-gradient(160deg,#0E0210,#181028);border-radius:14px;border:2px solid rgba(212,160,48,0.25);position:relative;overflow:hidden}
+.prayer::before{content:'';position:absolute;top:-20%;left:-10%;width:160px;height:160px;background:radial-gradient(circle,rgba(212,160,48,0.06) 0%,transparent 70%);border-radius:50%}
+.prayer-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;position:relative;z-index:2}
+.prayer p{font-family:'Lora',Georgia,serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.85);line-height:1.8;position:relative;z-index:2;margin-bottom:8px}
+.prayer p:last-child{margin-bottom:0}
+.prayer strong{color:var(--gold);font-style:normal;font-weight:700}
+
+.finale{text-align:center;padding:80px 24px;background:linear-gradient(160deg,#0E0210 0%,#201020 100%);position:relative;overflow:hidden}
+.finale::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 50% 50%,rgba(139,34,82,0.04) 0%,transparent 50%)}
+.finale h2{font-family:'Poppins',sans-serif;font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;color:#FFFFFF;margin-bottom:8px;position:relative;z-index:2}
+.finale h2 span{color:var(--plum)}
+.finale p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.38);max-width:460px;margin:16px auto;line-height:1.65;position:relative;z-index:2}
+
+footer{text-align:center;padding:36px 24px;background:#060208}
+footer p{font-family:'Lora',Georgia,serif;font-size:0.8rem;font-style:italic;color:rgba(139,34,82,0.2);margin-bottom:12px}
+footer .brand{font-family:'Poppins',sans-serif;font-size:0.67rem;font-style:normal;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.12)}
+
+/* === CONSUMPTION TIMELINE === */
+.trigger-timeline{margin:36px 0;padding:28px 26px;background:var(--white);border-radius:14px;border:2px solid rgba(139,34,82,0.2);box-shadow:var(--shadow)}
+.trigger-timeline-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--plum);text-align:center;margin-bottom:22px}
+.tl-track{position:relative;padding-left:28px}
+.tl-track::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--plum),var(--copper),var(--gold),var(--green));border-radius:3px}
+.tl-node{position:relative;padding:14px 0 22px 24px}
+.tl-node::before{content:'';position:absolute;left:-22px;top:18px;width:12px;height:12px;border-radius:50%;border:2.5px solid var(--plum);background:var(--white);z-index:1}
+.tl-node.tl-green::before{border-color:var(--green)}
+.tl-node.tl-gold::before{border-color:var(--gold)}
+.tl-node-label{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--plum);margin-bottom:4px}
+.tl-node.tl-green .tl-node-label{color:var(--green)}
+.tl-node.tl-gold .tl-node-label{color:var(--gold)}
+.tl-node h4{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--ink-mid);margin-bottom:6px}
+.tl-node p{font-family:'Poppins',sans-serif;font-size:0.82rem;color:var(--steel);line-height:1.6}
+
+/* === CONSUMPTION LEDGER === */
+.resent-ledger{margin:36px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(139,34,82,0.2);box-shadow:var(--shadow-deep)}
+.resent-ledger-head{padding:14px 22px;background:linear-gradient(135deg,rgba(139,34,82,0.1),rgba(139,34,82,0.04));font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--plum);text-align:center;border-bottom:1.5px solid rgba(139,34,82,0.12)}
+.resent-table{width:100%;border-collapse:collapse}
+.resent-table th{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:12px 16px;text-align:left;border-bottom:1.5px solid rgba(26,8,24,0.08)}
+.resent-table th:first-child{color:#5A1030;background:rgba(139,34,82,0.05)}
+.resent-table th:last-child{color:#1A4A28;background:rgba(45,138,78,0.05)}
+.resent-table td{padding:12px 16px;font-family:'Poppins',sans-serif;font-size:0.8rem;color:var(--steel);border-bottom:1px solid rgba(26,8,24,0.05);vertical-align:top}
+.resent-table tr:last-child td{border-bottom:none}
+.resent-table td:first-child{background:rgba(139,34,82,0.02)}
+.resent-table td:last-child{background:rgba(45,138,78,0.02)}
+
+/* === CRAVING CYCLE === */
+.rage-cycle{margin:36px 0;text-align:center;padding:32px 24px;background:var(--white);border-radius:14px;border:2px solid rgba(139,34,82,0.2);box-shadow:var(--shadow)}
+.rage-cycle-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--plum);margin-bottom:20px}
+.rc-ring{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0}
+.rc-node{padding:12px 20px;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.72rem;font-weight:600;min-width:120px}
+.rc-node.rc-fire{background:rgba(139,34,82,0.12);color:#5A1030;border:1.5px solid rgba(139,34,82,0.25)}
+.rc-node.rc-ember{background:rgba(192,96,48,0.12);color:#5A2800;border:1.5px solid rgba(192,96,48,0.2)}
+.rc-node.rc-dark{background:var(--ink-mid);color:#FFFFFF;border:1.5px solid rgba(139,34,82,0.2)}
+.rc-node.rc-gold{background:rgba(212,160,48,0.12);color:#5A3800;border:1.5px solid rgba(212,160,48,0.25)}
+.rc-arr{font-size:1.1rem;color:rgba(139,34,82,0.4);padding:0 8px}
+.rc-break{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--green);margin-top:20px;padding:10px 20px;border:2px dashed rgba(45,138,78,0.3);border-radius:8px;display:inline-block;background:rgba(45,138,78,0.06)}
+
+.series-progress{text-align:center;padding:32px 24px;background:var(--cream-warm);border-top:1px solid rgba(26,8,24,0.06)}
+.series-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--plum);margin-bottom:14px}
+.series-dots{display:flex;align-items:center;justify-content:center;gap:12px}
+.series-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(139,34,82,0.3);background:transparent}
+.series-dot.done{background:rgba(139,34,82,0.25);border-color:rgba(139,34,82,0.5)}
+.series-dot.active{background:var(--plum);border-color:var(--plum);box-shadow:0 0 8px rgba(139,34,82,0.3)}
+.series-dot-label{font-family:'Poppins',sans-serif;font-size:0.55rem;color:var(--steel-light);margin-top:10px}
+
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.65s ease,transform 0.65s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.stagger-children > *{opacity:0;transform:translateY(18px);transition:opacity 0.5s ease,transform 0.5s ease}
+.stagger-children.visible > *:nth-child(1){opacity:1;transform:none;transition-delay:0s}
+.stagger-children.visible > *:nth-child(2){opacity:1;transform:none;transition-delay:0.12s}
+.stagger-children.visible > *:nth-child(3){opacity:1;transform:none;transition-delay:0.24s}
+.stagger-children.visible > *:nth-child(4){opacity:1;transform:none;transition-delay:0.36s}
+.think:hover{box-shadow:0 0 0 2px rgba(139,34,82,0.25),0 8px 32px rgba(139,34,82,0.1)}
+.think{transition:box-shadow 0.3s ease}
+.adv-step{transition:background 0.2s ease}
+.adv-step:hover{background:rgba(139,34,82,0.04)!important}
+@keyframes insight-border{0%,100%{border-left-color:var(--plum)}50%{border-left-color:rgba(139,34,82,0.3)}}
+.insight{animation:insight-border 4s ease-in-out infinite}
+
+#read-progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--plum),rgba(139,34,82,0.4));z-index:9999;pointer-events:none;transition:width 0.08s linear}
+#chapter-pill{position:fixed;bottom:24px;right:24px;background:var(--ink);border:1px solid rgba(139,34,82,0.25);color:var(--plum);font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:8px 18px;border-radius:50px;opacity:0;transition:opacity 0.35s ease;pointer-events:none;z-index:1000;box-shadow:0 4px 24px rgba(0,0,0,0.4)}
+#chapter-pill.show{opacity:1}
+
+@media(max-width:620px){.stack-node{font-size:0.6rem;padding:8px 12px}.rc-node{font-size:0.6rem;padding:10px 14px;min-width:90px}.tl-node{padding-left:18px}}
+@media(max-width:640px){
+  .page{padding:0 16px}
+}
+@media print{
+  @page{margin:18mm 16mm 22mm 16mm}
+  body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .cover{min-height:auto;padding:80px 24px;break-after:page}
+  .ch-head{break-before:page;padding:56px 24px 40px}
+  .think,.adventure,.viz,.ba-pair,.mission,.insight,.dd,.breathe,.prayer,.prompt,.stack,.descent-ramp,.trigger-timeline,.resent-ledger,.rage-cycle{break-inside:avoid}
+  .flame-ring,.cover-grain,.breathe-ring,.cover-vignette{animation:none!important;display:none}
+  .section{padding:36px 0}
+  #read-progress,#chapter-pill,.no-print{display:none!important}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+</style>
+</head>
+<body>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="ico-cup" viewBox="0 0 24 24"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></symbol>
+  <symbol id="ico-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="ico-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+  <symbol id="ico-scale" viewBox="0 0 24 24"><line x1="12" y1="3" x2="12" y2="21"/><polyline points="8 21 16 21"/><path d="M4 8l4 6h-8z"/><path d="M20 8l4 6h-8z"/><line x1="4" y1="8" x2="20" y2="8"/></symbol>
+  <symbol id="ico-heart" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></symbol>
+  <symbol id="ico-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+  <symbol id="ico-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+  <symbol id="ico-pause" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></symbol>
+</svg>
+
+<div id="read-progress"></div>
+<div id="chapter-pill"></div>
+
+<!-- ===== COVER ===== -->
+<section class="cover">
+  <div class="cover-grain"></div>
+  <div class="cover-vignette"></div>
+  <div class="flame-ring"></div>
+  <div class="flame-ring"></div>
+  <div class="flame-ring"></div>
+  <div class="cover-content">
+    <div class="cover-badge">Lay It Down Series. Part 6 of 7</div>
+    <div class="cover-art">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 190 180" aria-label="Gluttony illustration: an overflowing vessel revealing something hidden at the bottom">
+        <defs>
+          <linearGradient id="gl-plum" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B2252"/><stop offset="100%" stop-color="#A83060"/></linearGradient>
+          <linearGradient id="gl-copper" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#C06030"/><stop offset="100%" stop-color="#D4A030"/></linearGradient>
+          <linearGradient id="gl-vessel" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#2C1028"/><stop offset="100%" stop-color="#1A0818"/></linearGradient>
+          <linearGradient id="gl-liquid" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#8B2252" stop-opacity="0.6"/><stop offset="100%" stop-color="#3D2038" stop-opacity="0.8"/></linearGradient>
+          <radialGradient id="gl-glow" cx="50%" cy="70%" r="40%"><stop offset="0%" stop-color="#D4A030" stop-opacity="0.3"/><stop offset="100%" stop-color="#8B2252" stop-opacity="0"/></radialGradient>
+          <filter id="gl-blur"><feGaussianBlur in="SourceGraphic" stdDeviation="2"/></filter>
+        </defs>
+        <!-- Glow at bottom center (hidden thing) -->
+        <ellipse cx="95" cy="140" rx="30" ry="15" fill="url(#gl-glow)" filter="url(#gl-blur)"/>
+        <!-- Vessel / chalice -->
+        <path d="M55,50 L50,135 Q50,150 70,150 L120,150 Q140,150 140,135 L135,50" fill="url(#gl-vessel)" stroke="#8B2252" stroke-width="1.5"/>
+        <!-- Vessel base -->
+        <ellipse cx="95" cy="150" rx="35" ry="8" fill="#1A0818" stroke="#8B2252" stroke-width="1" opacity="0.5"/>
+        <!-- Liquid inside (overflowing) -->
+        <path d="M58,60 L53,130 Q55,142 70,142 L120,142 Q135,142 137,130 L132,60" fill="url(#gl-liquid)" opacity="0.7"/>
+        <!-- Overflow spilling left -->
+        <path d="M55,52 Q45,55 38,65 Q32,78 30,90" fill="none" stroke="#8B2252" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+        <path d="M52,48 Q40,50 32,58 Q25,68 22,80" fill="none" stroke="#A83060" stroke-width="1.5" opacity="0.4" stroke-linecap="round"/>
+        <circle cx="28" cy="92" r="3" fill="#8B2252" opacity="0.35"/>
+        <circle cx="20" cy="82" r="2.5" fill="#A83060" opacity="0.25"/>
+        <!-- Overflow spilling right -->
+        <path d="M135,52 Q145,55 152,65 Q158,78 160,90" fill="none" stroke="#8B2252" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+        <path d="M138,48 Q150,50 158,58 Q165,68 168,80" fill="none" stroke="#A83060" stroke-width="1.5" opacity="0.4" stroke-linecap="round"/>
+        <circle cx="162" cy="92" r="3" fill="#8B2252" opacity="0.35"/>
+        <circle cx="170" cy="82" r="2.5" fill="#A83060" opacity="0.25"/>
+        <!-- Drips -->
+        <ellipse cx="30" cy="98" rx="2" ry="3" fill="#8B2252" opacity="0.2"/>
+        <ellipse cx="162" cy="98" rx="2" ry="3" fill="#8B2252" opacity="0.2"/>
+        <!-- Surface of overflowing liquid -->
+        <path d="M52,50 Q65,44 80,48 Q95,42 110,48 Q125,44 138,50" fill="none" stroke="#A83060" stroke-width="1" opacity="0.5"/>
+        <!-- Hidden thing at bottom (golden gem/truth) -->
+        <polygon points="95,125 88,135 95,142 102,135" fill="url(#gl-copper)" opacity="0.8"/>
+        <polygon points="95,128 90,134 95,140 100,134" fill="#D4A030" opacity="0.5"/>
+        <!-- Light rays from hidden gem -->
+        <line x1="95" y1="122" x2="95" y2="115" stroke="#D4A030" stroke-width="0.6" opacity="0.3"/>
+        <line x1="88" y1="128" x2="82" y2="122" stroke="#D4A030" stroke-width="0.5" opacity="0.2"/>
+        <line x1="102" y1="128" x2="108" y2="122" stroke="#D4A030" stroke-width="0.5" opacity="0.2"/>
+        <!-- Vessel decorative rings -->
+        <ellipse cx="95" cy="55" rx="40" ry="3" fill="none" stroke="#8B2252" stroke-width="0.6" opacity="0.4"/>
+        <ellipse cx="95" cy="80" rx="38" ry="2.5" fill="none" stroke="#8B2252" stroke-width="0.5" opacity="0.3"/>
+        <!-- Floating excess items (abstract consumption) -->
+        <circle cx="70" cy="38" r="4" fill="#8B2252" opacity="0.25"/>
+        <circle cx="120" cy="35" r="3.5" fill="#A83060" opacity="0.2"/>
+        <circle cx="95" cy="30" r="3" fill="#8B2252" opacity="0.15"/>
+        <rect x="78" y="40" width="6" height="6" rx="1" fill="#A83060" opacity="0.15" transform="rotate(20, 81, 43)"/>
+        <rect x="108" y="42" width="5" height="5" rx="1" fill="#8B2252" opacity="0.15" transform="rotate(-15, 110, 44)"/>
+      </svg>
+    </div>
+    <h1>Lay It Down<em>Gluttony</em></h1>
+    <p class="cover-sub">The sin that calls itself <em>self care.</em> You are not hungry. You are not empty. You are avoiding something, and the next bite, the next scroll, the next purchase will not fix it.</p>
+    <p class="cover-author">KingdomBuilders AI</p>
+    <div class="cover-verse">"Their destiny is destruction, their god is their stomach, and their glory is in their shame.<br>Their mind is set on earthly things."<br> Philippians 3:19 (NIV)</div>
+  </div>
+</section>
+
+<!-- ===== BEFORE WE BEGIN ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Before We Begin</div><h2 class="ch-title">The Sin That Calls Itself Self Care</h2><p class="ch-sub">Gluttony does not look like a person at a buffet. It looks like a person who cannot sit still.</p></div></div>
+<div class="ribbon"><p>"Everything is permissible for me, but not everything is beneficial. Everything is permissible for me, but I will not be mastered by anything." 1 Corinthians 6:12 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>When you hear the word gluttony, you picture someone at a table piled with food, unable to stop eating. That picture is wrong. Or rather, it is incomplete. Gluttony is not about food. <strong>It is about excess.</strong> It is the compulsive need to consume more than you need in every domain of life.</p>
+  <p>Gluttony looks like a person who cannot sit in silence for five minutes without reaching for a phone, a snack, or a distraction. It looks like the person who opens a bag of chips and finishes it without tasting a single one. It looks like the person who watches six episodes instead of one, buys four things when they came for one, scrolls for an hour when they opened the app for ten seconds. It is the inability to be empty. The terror of having nothing in your hands.</p>
+  <p>And here is what makes gluttony the most deceptive of the seven sins: <strong>it disguises itself as self care.</strong> "I deserve this." "I worked hard." "I just need to unwind." Every overconsumption event has a permission slip attached to it. The permission slip is always a lie dressed as kindness.</p>
+
+  <div class="mission reveal">
+    <div class="mission-label">The Mission</div>
+    <p>Identify the three altars of gluttony <em>the numbing agent, the appetite machine, and the fullness lie</em>, and dismantle them with protocols that retrain your relationship with consumption, rebuild the refusal reflex, and teach you to taste deeply instead of swallowing endlessly.</p>
+  </div>
+
+  <div class="insight reveal">
+    <p>"Gluttony is not the sin of enjoying food. It is the sin of using consumption as a substitute for presence. <em>The glutton is not someone who loves to eat. The glutton is someone who has forgotten how to stop.</em>"</p>
+  </div>
+
+  <div class="stack reveal">
+    <div class="stack-label">The Three Altars of Gluttony</div>
+    <div class="stack-flow">
+      <span class="stack-node sn-copper">The Numbing Agent</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-dark">The Appetite Machine</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-plum">The Fullness Lie</span>
+    </div>
+  </div>
+
+  <p>Three altars. Three versions of the same lie: that consuming more will eventually fill the void. It will not. It never has. And it is time to lay them down.</p>
+
+  <div class="insight reveal"><p>If you finish this playbook, you will know the three altars where gluttony hides: numbing, craving, and the myth of fullness. You will own <strong>a Consumption Audit that maps your anesthesia, a Micro Fast that rebuilds the refusal reflex, and a Reset Protocol that retrains your appetite from "more" to "enough."</strong></p></div>
+</div>
+
+<!-- ===== CHAPTER 1: THE NUMBING MENU ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter One</div><h2 class="ch-title">The Numbing Menu</h2><p class="ch-sub">You are not hungry. You are avoiding something.</p></div></div>
+<div class="ribbon"><p>"Why do you spend money on what is not bread, and your labor on what does not satisfy?" Isaiah 55:2 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>You do not have a consumption problem. You have an <strong>avoidance problem.</strong> Every binge, every marathon scroll, every unnecessary purchase, every third helping is not about appetite. It is about anesthesia. Something hurts, something feels empty, something feels overwhelming, and your body reaches for the fastest available painkiller.</p>
+  <p>The problem is that the painkiller is not treating the pain. It is burying it under sensation. And buried pain does not decompose. It compounds. So you need more. Always more. Not because the substance is not working, but because the wound underneath it is growing.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-cup"/></svg></span>The Consumption Audit</h2>
+  <p>Every person has a numbing menu. A list of substances, behaviors, and habits they reach for when the real feeling becomes too uncomfortable. The first step to dismantling gluttony is to name your menu honestly.</p>
+
+  <div class="trigger-timeline reveal">
+    <div class="trigger-timeline-label">The Numbing Pipeline</div>
+    <div class="tl-track">
+      <div class="tl-node"><div class="tl-node-label">The Trigger</div><h4>An Uncomfortable Feeling Arrives</h4><p>Loneliness. Boredom. Anxiety. Shame. Grief. Exhaustion. Something your body does not want to sit with.</p></div>
+      <div class="tl-node"><div class="tl-node-label">The Reach</div><h4>The Hand Moves Before the Mind Thinks</h4><p>The phone unlocks. The cabinet opens. The cart fills. The app launches. Your body has a rehearsed response that bypasses conscious decision.</p></div>
+      <div class="tl-node"><div class="tl-node-label">The Dose</div><h4>The Numbing Agent Delivers</h4><p>Sugar hits the bloodstream. Dopamine fires from the scroll. The purchase delivers a brief spark of control. The feeling recedes. Temporarily.</p></div>
+      <div class="tl-node tl-gold"><div class="tl-node-label">The Aftermath</div><h4>The Feeling Returns, Plus Shame</h4><p>The original feeling was never addressed. Now it is joined by guilt, physical discomfort, and the quiet awareness that you did it again.</p></div>
+      <div class="tl-node tl-green"><div class="tl-node-label">The Loop</div><h4>The Shame Becomes the Next Trigger</h4><p>Shame is itself an uncomfortable feeling. So the cycle restarts. The numbing agent becomes the source of the next dose of pain that requires numbing.</p></div>
+    </div>
+  </div>
+
+  <p>Look at that pipeline. The consumption event is never the beginning. It is the middle. <strong>The feeling came first.</strong> And until you learn to sit with the feeling instead of medicating it, the consumption will never stop. You are not fighting a behavior. You are fighting an escape route.</p>
+
+  <div class="ba-pair reveal">
+    <div class="ba-card ba-before">
+      <div class="ba-head"><span class="ba-dot"></span>The Numbing Menu</div>
+      <div class="ba-body"><ul>
+        <li>Eating when not physically hungry</li>
+        <li>Scrolling to avoid thinking</li>
+        <li>Shopping to feel in control</li>
+        <li>Bingeing content to fill silence</li>
+        <li>"I just need to relax"</li>
+      </ul></div>
+    </div>
+    <div class="ba-card ba-after">
+      <div class="ba-head"><span class="ba-dot"></span>The Honest Translation</div>
+      <div class="ba-body"><ul>
+        <li>"I am lonely and food feels like comfort"</li>
+        <li>"My thoughts scare me right now"</li>
+        <li>"I feel powerless and buying gives me agency"</li>
+        <li>"Silence makes me face things I am avoiding"</li>
+        <li>"I am exhausted and do not know how to rest"</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Right Now</div>
+    <h4>Your Numbing Menu</h4>
+    <p class="q-start">Name 5 things you reach for when you feel uncomfortable (food, phone, shopping, drink, content):</p>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+    <p class="q-start">For each one, what feeling are you actually avoiding?</p>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+    <p class="closing">Every binge has a trigger. Name the feeling you are swallowing.</p>
+  </div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapter 1</div>
+    <div class="root-layer current"><span class="root-ch">1</span><div class="root-items"><span class="root-pill rp-bright">Numbing Agent</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Consumption Audit</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 2: THE FASTING MUSCLE ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Two</div><h2 class="ch-title">The Fasting Muscle</h2><p class="ch-sub">You cannot control what you cannot refuse.</p></div></div>
+<div class="ribbon"><p>"No, I strike a blow to my body and make it my slave so that after I have preached to others, I myself will not be disqualified for the prize." 1 Corinthians 9:27 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>There is a muscle in your soul that most people have never exercised. It is the refusal muscle. The ability to want something, to have it available, to be fully capable of reaching for it, and to say: <strong>"Not right now."</strong> Not because it is forbidden. Not because someone is watching. But because you are training yourself to be the one who decides, not your appetite.</p>
+  <p>Fasting is not deprivation. Fasting is <strong>training.</strong> An athlete does not skip meals because food is bad. An athlete controls intake because discipline is the foundation of performance. You are not punishing your body. You are teaching it who is in charge.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-shield"/></svg></span>The 24 Hour Micro Fast</h2>
+  <p>This is not a week long cleanse. This is not a dramatic fast. This is 24 hours of voluntary emptiness in one domain. Pick one. Just one.</p>
+
+  <div class="dd reveal"><h4>Option A. The Phone Fast</h4><div class="sub">24 Hours Without the Screen</div><p>Put the phone in a drawer for 24 hours. Not airplane mode. Not "I will just check texts." The drawer. For 24 hours, you will feel the phantom vibration. You will reach for your pocket and find nothing. You will feel anxious, bored, even panicked. <strong>Good.</strong> That panic is the proof that the device was controlling you, not the other way around. Sit with the discomfort. Let it pass. Notice what you do with your hands when they have nothing to hold.</p></div>
+
+  <div class="dd reveal"><h4>Option B. The Food Fast</h4><div class="sub">24 Hours of Intentional Hunger</div><p>Eat dinner tonight. Do not eat again until dinner tomorrow. Drink water. That is all. For 24 hours, you will feel hunger. Real, physical hunger. Many people have never sat with genuine hunger because they eat at the first whisper of appetite. Hunger will not hurt you. It will teach you the difference between <strong>"I need food" and "I want comfort."</strong> Most of what you call hunger is habit.</p></div>
+
+  <div class="dd reveal"><h4>Option C. The Entertainment Fast</h4><div class="sub">24 Hours Without Content</div><p>No television. No streaming. No podcasts. No YouTube. No music. For 24 hours, your ears and eyes consume nothing that was designed to hold your attention. Read a physical book if you must. But sit in silence as much as you can tolerate. The boredom you feel is not boredom. <strong>It is withdrawal.</strong> Your brain is accustomed to constant stimulation, and you just cut the supply. What surfaces in the silence is the thing you have been drowning out.</p></div>
+
+  <div class="viz reveal">
+    <div class="viz-top"><div class="viz-icon"><svg><use href="#ico-pause"/></svg></div><div class="viz-meta"><div class="viz-label">Protocol</div><h4>What the Micro Fast Teaches You</h4></div></div>
+    <div class="viz-body">
+      <p><strong>Hour 1 through 4:</strong> Mild discomfort. Your body and mind reach for the missing thing repeatedly. Each reach is a data point. Count them. Every reach reveals how automatic the habit has become.</p>
+      <p><strong>Hour 5 through 12:</strong> The discomfort intensifies, then plateaus. You realize you are not going to die. The craving is loud but not lethal. This is the refusal muscle engaging. It burns the way bicep curls burn on rep eight.</p>
+      <p><strong>Hour 13 through 24:</strong> Clarity. Energy. A strange lightness. You realize how much mental bandwidth the habit was consuming. Your mind is quieter. Your hands are still. Something inside you that was always shouting has finally gone silent.</p>
+      <div class="viz-trigger">The fast does not reveal your strength. It reveals your dependency. And that revelation is the beginning of freedom.</div>
+    </div>
+  </div>
+
+  <div class="breathe reveal">
+    <div class="breathe-ring"></div>
+    <div class="breathe-ring"></div>
+    <div class="breathe-ring"></div>
+    <div class="breathe-content">
+      <div class="breathe-label">Pause</div>
+      <h4>Can You Sit in Emptiness?</h4>
+      <p>Not emptiness as punishment. Emptiness as proof. Proof that you are not controlled by what you consume. Proof that you can want something and choose not to reach for it. Proof that you are free.</p>
+    </div>
+  </div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapters 1, 2</div>
+    <div class="root-layer"><span class="root-ch">1</span><div class="root-items"><span class="root-pill rp-ch1">Numbing Agent</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Consumption Audit</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">2</span><div class="root-items"><span class="root-pill rp-bright">Refusal Reflex</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Micro Fast</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 3: THE APPETITE LOOP ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Three</div><h2 class="ch-title">The Appetite Loop</h2><p class="ch-sub">Your cravings are not natural. They were engineered.</p></div></div>
+<div class="ribbon"><p>"Do not join those who drink too much wine or gorge themselves on meat, for drunkards and gluttons become poor, and drowsiness clothes them in rags." Proverbs 23:20,21 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>Your appetite is lying to you. Not because appetite is inherently dishonest, but because the appetite you carry today is not the one you were born with. <strong>It was trained.</strong> By food scientists who engineer craving. By algorithm designers who optimize for engagement. By marketing teams who understand that dissatisfaction drives purchases. Your hunger has been weaponized against you.</p>
+  <p>Here is how it works. Every pleasurable consumption event releases dopamine. Dopamine is not the pleasure chemical. It is the <strong>anticipation chemical.</strong> It does not make you enjoy the thing. It makes you want more of it. And here is the critical piece: your brain develops tolerance. The same dose produces less dopamine over time. So you need a bigger dose. A richer dessert. A longer scroll. A more expensive purchase. A more extreme experience. The appetite is not growing because you love the thing more. The appetite is growing because your brain is producing less reward per unit consumed.</p>
+
+  <div class="rage-cycle reveal">
+    <div class="rage-cycle-label">The Appetite Escalation Loop</div>
+    <div class="rc-ring">
+      <span class="rc-node rc-fire">Craving Hits</span>
+      <span class="rc-arr">&rarr;</span>
+      <span class="rc-node rc-ember">Consumption</span>
+      <span class="rc-arr">&rarr;</span>
+      <span class="rc-node rc-dark">Dopamine Spike</span>
+      <span class="rc-arr">&rarr;</span>
+      <span class="rc-node rc-gold">Tolerance Builds</span>
+      <span class="rc-arr">&rarr;</span>
+      <span class="rc-node rc-fire">Bigger Craving</span>
+    </div>
+    <div class="rc-break">Break the Loop Here</div>
+  </div>
+
+  <p>Look at that cycle. You are not weak. You are caught in a loop that was designed to escalate. Every hit requires a bigger dose. Every dose raises the baseline. Every raised baseline makes ordinary pleasures feel flat. <strong>This is why the glutton cannot enjoy a simple meal.</strong> Not because simple meals are not good, but because the palate has been recalibrated for excess.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-zap"/></svg></span>The Craving Timeline</h2>
+  <p>Here is what most people do not know: a craving, left alone, peaks and subsides in approximately 20 minutes. That is it. The unbearable urge that feels like it will last forever has a shelf life of less than half an hour. But nobody waits that long. They give in at minute three.</p>
+
+  <div class="trigger-timeline reveal">
+    <div class="trigger-timeline-label">What Happens When You Wait</div>
+    <div class="tl-track">
+      <div class="tl-node"><div class="tl-node-label">Minutes 0 to 5</div><h4>The Surge</h4><p>The craving arrives loud and urgent. Your body is convinced this is an emergency. It is not. It is a request, not a command.</p></div>
+      <div class="tl-node"><div class="tl-node-label">Minutes 5 to 10</div><h4>The Peak</h4><p>Maximum intensity. This is where 90% of people give in. The craving is screaming. But it has already begun to plateau. The worst is nearly over.</p></div>
+      <div class="tl-node tl-gold"><div class="tl-node-label">Minutes 10 to 15</div><h4>The Descent</h4><p>The intensity begins to fade. Slowly at first, then noticeably. The urgency softens. The body starts to recalibrate. You realize you are not going to break.</p></div>
+      <div class="tl-node tl-green"><div class="tl-node-label">Minutes 15 to 20</div><h4>The Release</h4><p>The craving passes. Not because you conquered it with willpower but because you outlasted its biology. You did not fight it. You waited it out. And you won.</p></div>
+    </div>
+  </div>
+
+  <div class="inst reveal"><p><strong>The Protocol:</strong> The next time a craving hits, set a timer for 20 minutes. Do not fight the craving. Do not argue with it. Just watch it. Observe it like weather. "There it is. It is loud. It is uncomfortable. And it will pass." If after 20 minutes you still genuinely want it, have a reasonable portion. But most of the time, the craving will have dissolved on its own.</p></div>
+
+  <div class="insight reveal">
+    <p>"The glutton does not love food. The glutton loves the moment before the food arrives. <em>The anticipation. The dopamine hit of reaching. Once the plate is empty, the glutton is already thinking about the next plate.</em> That is not enjoyment. That is addiction."</p>
+  </div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapter 3</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Numbing Agent</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Micro Fast</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">3</span><div class="root-items"><span class="root-pill rp-bright">Appetite Loop</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Craving Timeline</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 4: THE RESET PROTOCOL ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Four</div><h2 class="ch-title">The Reset Protocol</h2><p class="ch-sub">Retraining the appetite from "more" to "enough."</p></div></div>
+<div class="ribbon"><p>"But godliness with contentment is great gain. For we brought nothing into the world, and we can take nothing out of it." 1 Timothy 6:6,7 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>You now understand the numbing pipeline. You have practiced the refusal reflex. You know the craving timeline. Now it is time to <strong>retrain the appetite itself.</strong> Not suppress it. Not shame it. Retrain it. Teach it a new definition of "enough."</p>
+  <p>The word contentment in 1 Timothy 6:6 comes from the Greek word <em>autarkeia.</em> It means "self sufficiency, the state of needing nothing external to be complete." Paul is not describing a person who has given up desire. He is describing a person who has learned that their completeness does not depend on their consumption.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-target"/></svg></span>The Three Resets</h2>
+
+  <div class="dd reveal"><h4>Reset 1. The Portion Awareness Practice</h4><div class="sub">Learning to Stop Before Full</div><p>For 7 days, eat every meal at 80% capacity. The Japanese call this <em>hara hachi bu,</em> "eat until you are eight parts full." Stop when you are satisfied, not when you are stuffed. The difference between satisfied and stuffed is the difference between freedom and slavery. Satisfaction says "that was enough." Fullness says "I cannot move." <strong>You have been confusing stuffed with satisfied your entire life.</strong></p></div>
+
+  <div class="dd reveal"><h4>Reset 2. The Stimulus Audit</h4><div class="sub">Removing the Environmental Triggers</div><p>Your environment is engineered to make you consume. Identify the 5 environmental triggers that launch your cravings and remove or relocate them. The candy on the counter. The app on the home screen. The store you drive past. The notification that pulls you in. The friend who always suggests excess. <strong>Willpower is finite. Environment design is permanent.</strong> Stop fighting your environment. Redesign it.</p></div>
+
+  <div class="dd reveal"><h4>Reset 3. The Satisfaction Pause</h4><div class="sub">The Five Second Check</div><p>Before every consumption event, food, purchase, content, pause for five seconds and ask one question: "Am I consuming this because I need it, because I want it, or because I am avoiding something?" Need is legitimate. Want is permitted. Avoidance is the gluttony trigger. <strong>If the answer is avoidance, put it down.</strong> Not forever. Just for right now. Name the thing you are avoiding instead.</p></div>
+
+  <div class="viz reveal">
+    <div class="viz-top"><div class="viz-icon"><svg><use href="#ico-scale"/></svg></div><div class="viz-meta"><div class="viz-label">Protocol</div><h4>The Weekly Stimulus Audit</h4></div></div>
+    <div class="viz-body">
+      <p><strong>Every Sunday evening:</strong> Walk through your physical space and your digital space. Identify the five loudest consumption triggers. The pantry items that call your name. The apps that steal your hours. The subscriptions that auto deliver temptation.</p>
+      <p><strong>Remove, relocate, or restrict</strong> each one. Move the snacks to a high shelf. Delete the app (you can always reinstall it, but friction is freedom). Unsubscribe from the promotional emails. Put the credit card in a drawer instead of your wallet.</p>
+      <p><strong>The goal is not perfection.</strong> The goal is friction. Every second of delay between impulse and action is a second where your prefrontal cortex can engage. Gluttony thrives on speed. Discipline thrives on friction.</p>
+      <div class="viz-trigger">You do not need more willpower. You need fewer triggers.</div>
+    </div>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Right Now</div>
+    <h4>Your Five Triggers</h4>
+    <p class="q-start">Name the 5 environmental cues that most reliably launch a consumption binge:</p>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+    <p class="q-start">For each one, what is one action you can take this week to add friction?</p>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+    <p class="closing">Willpower runs out. Environment redesign does not.</p>
+  </div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapters 3, 4</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Numbing Agent</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Micro Fast</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">3</span><div class="root-items"><span class="root-pill rp-ch2">Appetite Loop</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch2">Craving Timeline</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">4</span><div class="root-items"><span class="root-pill rp-bright">Reset Protocol</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Three Resets</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 5: THE FULLNESS MYTH ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Five</div><h2 class="ch-title">The Fullness Myth</h2><p class="ch-sub">You believed that if you could just get full enough, you would finally feel at peace.</p></div></div>
+<div class="ribbon"><p>"He who loves pleasure will become poor; whoever loves wine and olive oil will never be rich." Proverbs 21:17 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>You have spent four chapters confronting two altars: the numbing agent and the appetite machine. Before you encounter the third, there is a myth underneath all of it that must be named. <strong>You believed that fullness would produce peace.</strong></p>
+  <p>It seemed so logical. If emptiness hurts, then fullness must heal. If hunger is uncomfortable, then satiation must be the cure. If boredom is painful, then stimulation must be the medicine. So you consumed. And consumed. And consumed. Waiting for the moment when enough consumption would finally produce the peace you were chasing.</p>
+  <p>But it never came. What came instead was shame. Sluggishness. A bloated body, a cluttered home, an overstuffed calendar, a mind so saturated with content that it could not produce a single original thought. <strong>Fullness did not produce peace. It produced paralysis.</strong></p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-eye"/></svg></span>The Fullness Inventory</h2>
+  <p>Fullness shows up in every domain, not just the kitchen. It is physical. It is digital. It is financial. It is social. And in every domain, it promises satisfaction and delivers suffocation.</p>
+
+  <div class="resent-ledger reveal">
+    <div class="resent-ledger-head">The Fullness Ledger</div>
+    <table class="resent-table">
+      <tr><th>What Fullness Promised</th><th>What Fullness Delivered</th></tr>
+      <tr><td>"Eat until you are stuffed and you will feel comforted"</td><td>Lethargy, digestive pain, shame, and the need to eat again in two hours</td></tr>
+      <tr><td>"Buy everything you want and you will feel complete"</td><td>Debt, clutter, buyer's regret, and the next shopping list already forming</td></tr>
+      <tr><td>"Watch everything available and you will feel relaxed"</td><td>Wasted evenings, eye strain, sleep disruption, and nothing to show for the hours</td></tr>
+      <tr><td>"Stay busy every moment and you will feel productive"</td><td>Burnout, no margin for rest, relationships neglected, creativity extinguished</td></tr>
+      <tr><td>"Fill every silence and you will never feel lonely"</td><td>An inability to hear your own thoughts, God's voice drowned by noise</td></tr>
+    </table>
+  </div>
+
+  <p>Read that right column slowly. Which row makes your stomach tighten? That tightness is recognition. You have been living in that row. You have been chasing fullness in that domain and getting suffocation instead.</p>
+
+  <div class="breathe reveal">
+    <div class="breathe-ring"></div>
+    <div class="breathe-ring"></div>
+    <div class="breathe-ring"></div>
+    <div class="breathe-content">
+      <div class="breathe-label">Pause</div>
+      <h4>The Emptiness Meditation</h4>
+      <p>Sit in a room with nothing in your hands. No phone. No book. No food. No music. Set a timer for 10 minutes. Just sit. Notice what surfaces. The anxiety that demands stimulation. The restlessness that begs for action. The thoughts you have been burying under consumption. Let them come. They will not destroy you.</p>
+    </div>
+  </div>
+
+  <p>This chapter is not about fixing the fullness addiction today. It is about <strong>seeing the lie.</strong> Fullness never produced peace. It only produced the need for more fullness. The math never worked. And the moment you see that the math never worked is the moment you stop trying to solve the wrong equation.</p>
+
+  <div class="inst reveal"><p><strong>The rewiring:</strong> The next time you feel the urge to consume something you do not need, ask: "Am I chasing fullness or am I chasing peace?" If the answer is peace, consumption is the wrong vehicle. Stillness is the right one.</p></div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapter 5</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Numbing Agent</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Micro Fast</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">3-4</span><div class="root-items"><span class="root-pill rp-ch2">Appetite Loop</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch2">Reset Protocol</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">5</span><div class="root-items"><span class="root-pill rp-bright">Fullness Myth</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Emptiness Meditation</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 6: THE TABLE FLIP ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Six</div><h2 class="ch-title">The Table Flip</h2><p class="ch-sub">Stop consuming everything. Start creating something.</p></div></div>
+<div class="ribbon"><p>"For we are God's handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do." Ephesians 2:10 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>This is the chapter nobody talks about. Numbing is obvious. Craving is recognizable. But the deepest wound of gluttony is this: <strong>excess consumption kills the creative impulse.</strong> You were designed to create. God is a creator, and you are made in His image. But creation requires emptiness. A painter needs a blank canvas. A writer needs a blank page. A musician needs silence before the first note. When you fill every moment with consumption, there is no room left for creation.</p>
+  <p>You scroll instead of writing. You binge instead of building. You consume other people's lives on social media instead of living your own. And slowly, imperceptibly, the creator inside you goes silent. Not because the gift died. Because you drowned it in content.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-target"/></svg></span>The 1:1 Rule</h2>
+
+  <div class="viz reveal">
+    <div class="viz-top"><div class="viz-icon"><svg><use href="#ico-scale"/></svg></div><div class="viz-meta"><div class="viz-label">Protocol</div><h4>The Creation / Consumption Balance</h4></div></div>
+    <div class="viz-body">
+      <p><strong>The rule is simple:</strong> For every hour consumed, one hour created. For every dollar spent on appetite, one dollar redirected toward purpose.</p>
+      <p><strong>Consumption hours:</strong> scrolling, streaming, browsing, gaming, eating beyond need, shopping for pleasure.</p>
+      <p><strong>Creation hours:</strong> writing, building, practicing, serving, praying, cooking for someone else, designing, learning a skill, mentoring, making something that did not exist before you showed up.</p>
+      <p><strong>You do not have to be perfect.</strong> You just have to be honest. Track one week. Write down every consumption hour and every creation hour. The ratio will shock you. Most people consume at a 10:1 ratio. Ten hours consumed for every one hour created. The 1:1 Rule is not about guilt. It is about reclaiming the creator you buried under content.</p>
+      <div class="viz-trigger">You were not made to be a consumer. You were made to be a creator who occasionally consumes.</div>
+    </div>
+  </div>
+
+  <div class="ba-pair reveal">
+    <div class="ba-card ba-before">
+      <div class="ba-head"><span class="ba-dot"></span>Consumer Posture</div>
+      <div class="ba-body"><ul>
+        <li>Scrolls for two hours nightly</li>
+        <li>Watches other people build things</li>
+        <li>Spends money on temporary comfort</li>
+        <li>Feels inspired but never acts</li>
+        <li>"I will start tomorrow"</li>
+      </ul></div>
+    </div>
+    <div class="ba-card ba-after">
+      <div class="ba-head"><span class="ba-dot"></span>Creator Posture</div>
+      <div class="ba-body"><ul>
+        <li>Creates for one hour before consuming</li>
+        <li>Builds the thing they used to only admire</li>
+        <li>Invests in tools instead of distractions</li>
+        <li>Acts on the inspiration within 24 hours</li>
+        <li>"I start right now, imperfectly"</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <div class="adventure reveal">
+    <div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-target"/></svg></div><div class="adv-head-text"><div class="adv-head-label">Scenario</div><div class="adv-head-title">The Empty Evening</div></div></div>
+    <div class="adv-step"><div class="step-c"><p>It is 7 PM. You finished dinner. The dishes are done. The kids are in bed or the house is quiet. Three hours stretch before you. The couch is there. The remote is there. The phone is there. The kitchen is there. The familiar evening routine is waiting to swallow another night.</p></div></div>
+    <div class="adv-step"><div class="step-c"><span class="tag-you">The Altar Response</span><p>You sit down, turn on the TV, open a bag of something, and scroll your phone simultaneously. Triple consumption. Three hours later, you cannot remember a single thing you watched. The bag is empty. Your eyes are dry. You shuffle to bed feeling vaguely disappointed but unable to name why. Another evening consumed.</p></div></div>
+    <div class="adv-step"><div class="step-c"><span class="tag-you">The Protocol Response</span><p>You sit down with a notebook instead. You write for 30 minutes. It does not have to be good. It just has to exist. Then you call a friend. A real conversation, not a text thread. Then you read 20 pages of a book that challenges you. Then you go to bed. <em>You remember this evening. It felt like yours.</em></p></div></div>
+    <div class="adv-step adv-result-good"><div class="step-c"><p><strong>The consumer gives away their evenings. The creator invests them.</strong> Three hours multiplied by seven days is 21 hours per week. That is a part time job. You have been spending a part time job's worth of hours on consumption that produces nothing. What could you build with 21 hours a week?</p></div></div>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Right Now</div>
+    <h4>The Creation Audit</h4>
+    <p class="q-start">How many hours did you consume content last week (TV, phone, streaming, scrolling)?</p>
+    <div class="think-line"></div>
+    <p class="q-start">How many hours did you create something last week (writing, building, serving, making)?</p>
+    <div class="think-line"></div>
+    <p class="q-start">What is one thing you could create this week with just 3 of those consumed hours?</p>
+    <div class="think-line"></div>
+    <p class="closing">The creator inside you is not dead. It is buried. Dig.</p>
+  </div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapter 6</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Numbing Agent</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Micro Fast</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">3-4</span><div class="root-items"><span class="root-pill rp-ch2">Appetite Loop</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch2">Reset Protocol</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">5</span><div class="root-items"><span class="root-pill rp-ch3">Fullness Myth</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch3">Emptiness Meditation</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">6</span><div class="root-items"><span class="root-pill rp-bright">Table Flip</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">1:1 Rule</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 7: THE SATISFIED LIFE ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Seven</div><h2 class="ch-title">The Satisfied Life</h2><p class="ch-sub">The opposite of gluttony is not starvation. It is the ability to taste deeply.</p></div></div>
+<div class="ribbon"><p>"Taste and see that the Lord is good; blessed is the one who takes refuge in him." Psalm 34:8 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>Chapter Six showed you the table flip. Consumption to creation. Now you complete the transformation. The opposite of gluttony is not deprivation. It is not a life of grim refusal where every pleasure is suspect and every meal is measured with anxiety. <strong>The opposite of gluttony is deep satisfaction.</strong></p>
+  <p>The glutton swallows without tasting. The satisfied person tastes without needing to swallow the whole thing. The glutton needs the entire bottle. The satisfied person needs a single glass, and they enjoy every sip. The glutton rushes through the meal thinking about the next one. The satisfied person is so present with this meal that the next one does not exist yet.</p>
+  <p>Psalm 34:8 says "taste and see." Not "devour and move on." Tasting requires presence. Tasting requires slowness. Tasting requires the belief that <strong>this moment, this portion, this experience is enough.</strong></p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-heart"/></svg></span>The Daily Posture</h2>
+
+  <div class="dd reveal"><h4>Morning. The Intention</h4><div class="sub">Before the Day Begins</div><p>Before your feet hit the floor: "What will I consume today, and why?" Not a rigid plan. An intention. "I will eat three meals and actually taste them. I will use my phone for 30 minutes, not three hours. I will watch one episode, not four. I will buy only what I came for." The intention does not guarantee perfection. It creates awareness. And awareness is the enemy of autopilot.</p></div>
+
+  <div class="dd reveal"><h4>Midday. The Pause</h4><div class="sub">In the Middle of the Rush</div><p>At noon, stop. Five seconds. Ask: "Have I consumed anything so far today that I did not intend to?" If yes, do not punish yourself. Just notice. "I opened the app without thinking. I ate the second portion without checking whether I was still hungry. I bought something I did not plan to buy." <strong>Noticing without punishment is the practice.</strong> Shame drives more consumption. Awareness interrupts it.</p></div>
+
+  <div class="dd reveal"><h4>Evening. The Gratitude</h4><div class="sub">Before You Sleep</div><p>Three questions: What did I taste deeply today? Where did I consume mindlessly? What do I want to do differently tomorrow? Then name three things you are grateful for. Not grand things. Simple things. The meal that tasted good. The conversation that mattered. The moment of silence that felt like rest. <strong>Gratitude is the antidote to craving.</strong> A person who is genuinely grateful for what they have does not compulsively reach for more.</p></div>
+
+  <div class="gq reveal"><p>"He who has God and everything else has no more than he who has God only." C.S. Lewis</p></div>
+
+  <div class="stack reveal">
+    <div class="stack-label">The Satisfied Life Architecture</div>
+    <div class="stack-flow">
+      <span class="stack-node sn-plum">Morning Intention</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-copper">Midday Pause</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-gold">Evening Gratitude</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-green">Deep Satisfaction</span>
+    </div>
+  </div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Full Map</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Numbing Agent</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Micro Fast</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">3-4</span><div class="root-items"><span class="root-pill rp-ch2">Appetite Loop</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch2">Reset Protocol</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">5</span><div class="root-items"><span class="root-pill rp-ch3">Fullness Myth</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch3">Emptiness Meditation</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">6-7</span><div class="root-items"><span class="root-pill rp-bright">Table Flip</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Daily Posture</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 8: THE OPEN HAND ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Eight</div><h2 class="ch-title">The Open Hand</h2><p class="ch-sub">The opposite of grabbing is not letting go. It is receiving with gratitude and releasing with grace.</p></div></div>
+<div class="ribbon"><p>"I have learned the secret of being content in any and every situation, whether well fed or hungry, whether living in plenty or in want." Philippians 4:12 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>You have spent seven chapters confronting three altars. The numbing agent. The appetite machine. The fullness lie. Each one built on the same foundation: the belief that consuming more would eventually produce peace, purpose, or wholeness.</p>
+  <p>But Paul wrote Philippians 4:12 from a prison cell. Not a retreat center. Not a wellness spa. A Roman prison. And from that cell, this man who had nothing said: <strong>"I have learned the secret of being content."</strong> The word "learned" is critical. He did not say "I was born content." He said he learned it. Contentment is not a personality trait. It is a practiced skill.</p>
+  <p>The secret Paul discovered was this: his completeness was never located in what he consumed. It was located in who consumed him. Christ in him. That is the fullness that never runs out. Not a full stomach. Not a full schedule. Not a full shopping cart. <strong>A full soul.</strong></p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-shield"/></svg></span>The Open Hand Posture</h2>
+
+  <p>Gluttony is a clenched fist. Grabbing. Hoarding. Stuffing. Refusing to let go. The open hand is the opposite posture. It receives what is given. It holds it loosely. It enjoys it fully. And when it is time to release, the hand opens without grief.</p>
+
+  <div class="descent-ramp reveal stagger-children">
+    <div class="ramp-echo"><p>The numbing agent said: "Consume to avoid the pain." But God said: <strong>"Come to me, all you who are weary and burdened, and I will give you rest."</strong></p></div>
+    <div class="ramp-echo"><p>The appetite machine said: "More will satisfy you." But God said: <strong>"I am the bread of life. Whoever comes to me will never go hungry."</strong></p></div>
+    <div class="ramp-echo"><p>The fullness lie said: "If you could just get full enough, you would finally be at peace." But God said: <strong>"My peace I give you. Not as the world gives."</strong></p></div>
+    <div class="ramp-close">
+      <div class="ramp-close-label">The Open Hand</div>
+      <p>You do not need to consume your way to peace. You do not need a full plate, a full cart, or a full feed to feel whole. Open your hand. Receive what God gives. Taste it deeply. And when it is time to stop, stop. You have had enough. And enough is more than enough.</p>
+    </div>
+  </div>
+
+  <div class="prayer reveal">
+    <div class="prayer-label">A Prayer from the Open Hand</div>
+    <p><strong>Father,</strong> I have been swallowing instead of tasting. I have been stuffing instead of savoring. I have been consuming to avoid feeling, to avoid silence, to avoid the emptiness that only You were meant to fill.</p>
+    <p>I am laying down the numbing menu. <strong>I am stepping away from the table.</strong> I am unplugging from the cycle that promised satisfaction and delivered shame. Not because pleasure is wrong. But because I made pleasure my god, and it was never designed to carry that weight.</p>
+    <p>Teach me to taste deeply. Teach me to stop when I have had enough. Teach me to create instead of consume. <strong>Fill the emptiness I have been stuffing with food, screens, and purchases with Your presence instead.</strong></p>
+    <p><strong>In Jesus' name, amen.</strong></p>
+  </div>
+</div>
+
+<!-- ===== FINAL TEST ===== -->
+<div class="page prose section reveal">
+  <div class="root-review">
+    <div class="root-label">Final Test. Can You Answer Without Looking Back?</div>
+    <div style="padding:0 16px">
+      <div class="dd"><h4>1.</h4><p>What are the three altars of gluttony identified in this book?</p></div>
+      <div class="dd"><h4>2.</h4><p>What is the Numbing Pipeline, and where does every consumption event actually begin?</p></div>
+      <div class="dd"><h4>3.</h4><p>What are the three options for the 24 Hour Micro Fast?</p></div>
+      <div class="dd"><h4>4.</h4><p>How long does a craving take to peak and subside if you do not give in?</p></div>
+      <div class="dd"><h4>5.</h4><p>What are the Three Resets in the Reset Protocol?</p></div>
+      <div class="dd"><h4>6.</h4><p>What did fullness promise, and what did it actually deliver?</p></div>
+      <div class="dd"><h4>7.</h4><p>What is the 1:1 Rule, and why does consumption kill the creative impulse?</p></div>
+      <div class="dd"><h4>8.</h4><p>What are the three parts of the Daily Posture for the satisfied life?</p></div>
+      <div class="dd"><h4>9.</h4><p>What is the difference between the glutton and the satisfied person?</p></div>
+      <div class="dd"><h4>10.</h4><p>Complete the sentence: "You were not made to be a consumer. You were made to be a ___."</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PROMPT CARD ===== -->
+<div class="page section reveal">
+  <div class="prompt">
+    <div class="prompt-head">Continue with AI. Prompt Card</div>
+    <div class="prompt-body">
+      <p><strong>Copy this prompt into any AI assistant to continue working on gluttony:</strong></p>
+      <p>"I just read Lay It Down: Gluttony by Kingdom Builders AI. It identified three altars of gluttony: the numbing agent (using consumption to avoid feeling), the appetite machine (a nervous system trained to crave more), and the fullness lie (the belief that more consumption produces peace). I want you to help me do a personal audit. Ask me questions about each altar, one at a time, and help me identify which one has the strongest grip on my life right now. Then give me a personalized 7 day protocol based on the Consumption Audit, Micro Fast, Reset Protocol, and 1:1 Rule from the book. Be direct, not preachy. Challenge me like a coach, not a therapist."</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FINALE ===== -->
+<section class="finale reveal">
+  <h2>Lay It <span>Down.</span></h2>
+  <p>"Their destiny is destruction, their god is their stomach, and their glory is in their shame. Their mind is set on earthly things."</p>
+  <p> Philippians 3:19 (NIV)</p>
+</section>
+
+<!-- ===== SERIES PROGRESS ===== -->
+<div class="series-progress">
+  <div class="series-label">Lay It Down. The Seven Deadly Sins</div>
+  <div class="series-dots">
+    <span class="series-dot done" title="Pride"></span>
+    <span class="series-dot done" title="Envy"></span>
+    <span class="series-dot done" title="Wrath"></span>
+    <span class="series-dot done" title="Sloth"></span>
+    <span class="series-dot done" title="Greed"></span>
+    <span class="series-dot active" title="Gluttony"></span>
+    <span class="series-dot" title="Lust"></span>
+  </div>
+  <div class="series-dot-label">Part 6 of 7. Gluttony</div>
+</div>
+
+<footer>
+  <p>"Taste and see that the Lord is good." Psalm 34:8</p>
+  <div class="brand">KingdomBuilders AI</div>
+</footer>
+
+<script>
+(function(){
+  const bar=document.getElementById('read-progress');
+  const pill=document.getElementById('chapter-pill');
+  const chEls=[{el:document.querySelector('.cover'),label:'Cover'},...Array.from(document.querySelectorAll('.ch-head')).map((el,i)=>({el,label:el.querySelector('.ch-num')?.textContent?.trim()||('Ch '+(i+1))}))].filter(c=>c.el);
+  function onScroll(){
+    const h=document.documentElement;
+    const pct=h.scrollTop/(h.scrollHeight-h.clientHeight)*100;
+    bar.style.width=pct+'%';
+    let cur='';
+    for(const c of chEls){if(c.el.getBoundingClientRect().top<200)cur=c.label}
+    if(cur){pill.textContent=cur;pill.classList.add('show')}else{pill.classList.remove('show')}
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  const revealEls=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    const obs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:0.12});
+    revealEls.forEach(el=>obs.observe(el));
+  }else{revealEls.forEach(el=>el.classList.add('visible'))}
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Lighthouse Keeper's Log. Being a Steady Light in Every Storm</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sea:#0A2A3A;--sea-dark:#041820;--sea-mid:#1A4A5A;--sea-light:#3A7A8A;--sea-pale:#6AA8B8;
+  --salt:#E8E0D0;--salt-warm:#F0E8DA;--salt-deep:#D8CDB8;
+  --lamp:#D8983A;--lamp-glow:#F0B850;--lamp-pale:#F8DCA0;--lamp-soft:rgba(216,152,58,0.06);
+  --fog:#8898A8;--fog-light:#B0C0D0;--fog-pale:#D0E0E8;
+  --drift:#506878;--drift-light:#8898A8;
+  --sand:#FAF7F2;--sand-warm:#F6F0E6;--sand-deep:#E8DDD0;
+  --text:#1A2028;--text-light:#3A4858;--text-muted:#6A7888;
+  --white:#FFFFFF;--radius:14px;
+  --shadow-soft:0 2px 14px rgba(10,42,58,0.06);
+  --shadow-mid:0 4px 24px rgba(10,42,58,0.1);
+  --shadow-strong:0 8px 40px rgba(10,42,58,0.14);
+  --before-bg:#FFF6F0;--before-border:#D8A880;--before-text:#5A3820;
+  --after-bg:#F0F8FF;--after-border:#80A8C8;--after-text:#1A3048;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--sand);line-height:1.78;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Poppins',sans-serif;line-height:1.2}
+.page{max-width:700px;margin:0 auto;padding:0 24px}
+.section{padding:44px 0}
+.prose p{margin-bottom:20px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--sea);font-weight:600}
+.prose em{color:var(--lamp);font-style:normal;font-weight:600}
+.prose h2{font-size:1.35rem;color:var(--sea);margin:36px 0 14px;letter-spacing:-0.01em;display:flex;align-items:center;gap:10px}
+
+/* ===== SVG ICON SYSTEM ===== */
+.svg-sprites{position:absolute;width:0;height:0;overflow:hidden}
+.icon{display:inline-block;vertical-align:middle;fill:currentColor}
+.icon svg{display:block}
+
+/* ===== COVER ===== */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(175deg,#020A10 0%,#061820 22%,#0A2838 48%,#103848 72%,#082028 100%);position:relative;overflow:hidden}
+.cover::before{content:'';position:absolute;top:20%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;background:radial-gradient(circle,rgba(216,152,58,0.05) 0%,transparent 65%);border-radius:50%}
+.wave-line{position:absolute;width:200%;left:-50%;height:2px;background:linear-gradient(90deg,transparent,rgba(106,168,184,0.12),rgba(106,168,184,0.06),transparent);animation:wave-sweep linear infinite}
+.wave-line:nth-child(1){bottom:20%;animation-duration:18s}
+.wave-line:nth-child(2){bottom:28%;animation-duration:22s;animation-delay:-6s;opacity:0.6}
+.wave-line:nth-child(3){bottom:36%;animation-duration:16s;animation-delay:-10s;opacity:0.4}
+.wave-line:nth-child(4){bottom:44%;animation-duration:20s;animation-delay:-3s;opacity:0.3}
+@keyframes wave-sweep{0%{transform:translateX(-25%)}100%{transform:translateX(0%)}}
+.light-pulse{position:absolute;top:18%;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--lamp-glow);box-shadow:0 0 20px 8px rgba(240,184,80,0.15),0 0 60px 20px rgba(240,184,80,0.06);animation:beacon 4s ease-in-out infinite}
+@keyframes beacon{0%,100%{opacity:0.3;box-shadow:0 0 20px 8px rgba(240,184,80,0.1),0 0 60px 20px rgba(240,184,80,0.04)}50%{opacity:1;box-shadow:0 0 30px 12px rgba(240,184,80,0.25),0 0 80px 30px rgba(240,184,80,0.1)}}
+.ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.02;mix-blend-mode:overlay;pointer-events:none}
+.cover-content{position:relative;z-index:2;padding:48px 24px}
+.cover-badge{display:inline-block;padding:6px 22px;border:1px solid rgba(216,152,58,0.2);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:var(--lamp);margin-bottom:40px}
+.cover-art{width:280px;height:210px;margin:0 auto 28px;display:block;animation:cover-breathe 6s ease-in-out infinite}
+.cover-art svg{width:100%;height:100%;filter:drop-shadow(0 0 30px rgba(240,184,80,0.2)) drop-shadow(0 0 60px rgba(240,184,80,0.1))}
+@keyframes cover-breathe{0%,100%{transform:scale(1);filter:brightness(1) drop-shadow(0 0 30px rgba(240,184,80,0.2))}50%{transform:scale(1.03);filter:brightness(1.08) drop-shadow(0 0 40px rgba(240,184,80,0.3))}}
+.cover h1{font-family:'Poppins',sans-serif;font-size:clamp(2rem,6vw,3.6rem);font-weight:300;color:var(--white);line-height:1.08;margin-bottom:4px}
+.cover h1 strong{font-weight:700;color:var(--lamp-glow);display:block}
+.cover-tagline{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.38);margin-top:28px;line-height:1.78}
+.cover-tagline em{color:var(--lamp-pale);font-style:normal;font-weight:600}
+.cover-sub{font-family:'Poppins',sans-serif;font-size:0.7rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.18);margin-top:14px}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.58rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,0.1);margin-top:52px}
+
+/* ===== CHAPTER HEADS ===== */
+.ch-head{background:linear-gradient(170deg,var(--sea-dark),var(--sea));padding:76px 24px 56px;position:relative;overflow:hidden}
+.ch-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 5%,var(--lamp) 50%,transparent 95%)}
+.ch-head .page{position:relative;z-index:2}
+.ch-num{font-family:'Poppins',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:6px;text-transform:uppercase;color:var(--lamp);opacity:0.8}
+.ch-title{font-family:'Poppins',sans-serif;font-size:clamp(1.8rem,5vw,2.8rem);font-weight:700;color:var(--white);margin:10px 0 6px;letter-spacing:-0.01em}
+.ch-sub{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:var(--lamp-glow);opacity:0.55}
+
+/* ===== RIBBON ===== */
+.ribbon{text-align:center;padding:20px 24px;background:linear-gradient(135deg,var(--lamp-soft),rgba(216,152,58,0.06));border-top:1.5px solid rgba(216,152,58,0.15);border-bottom:1.5px solid rgba(216,152,58,0.15)}
+.ribbon p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:var(--text-muted);max-width:480px;margin:0 auto}
+
+/* ===== CHARACTER CARD ===== */
+.character-card{display:flex;gap:20px;align-items:flex-start;padding:28px;margin:28px 0;background:var(--white);border-radius:var(--radius);border:2px solid rgba(58,122,138,0.15);box-shadow:var(--shadow-soft)}
+.character-card .avatar{flex-shrink:0;width:64px;height:64px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--sea),var(--sea-mid));border-radius:50%;overflow:hidden}
+.character-card .avatar svg{width:48px;height:48px}
+.character-card .info h3{font-size:1rem;color:var(--sea);margin-bottom:4px}
+.character-card .info .role{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--lamp);margin-bottom:8px}
+.character-card .info p{font-size:0.88rem;color:var(--text-light);line-height:1.65}
+
+/* ===== MISSION ===== */
+.mission{text-align:center;padding:44px 36px;margin:36px 0;background:linear-gradient(140deg,var(--sea),var(--sea-mid));border-radius:var(--radius);position:relative;overflow:hidden;border:3px solid rgba(216,152,58,0.25);box-shadow:0 0 0 1px rgba(216,152,58,0.06),var(--shadow-strong)}
+.mission::before{content:'';position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:280px;height:280px;background:radial-gradient(circle,rgba(216,152,58,0.05) 0%,transparent 70%);border-radius:50%}
+.mission-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--lamp);margin-bottom:14px;position:relative}
+.mission p{font-family:'Poppins',sans-serif;font-size:clamp(1rem,2.8vw,1.32rem);font-weight:600;color:var(--white);line-height:1.48;position:relative}
+.mission p em{color:var(--lamp-glow);font-style:normal}
+
+/* ===== VIZ ===== */
+.viz{margin:48px 0 36px;border-radius:16px;overflow:hidden;border:2.5px solid var(--sea-light);box-shadow:var(--shadow-strong)}
+.viz-inner{position:relative}
+.viz-top{background:rgba(58,122,138,0.1);padding:22px 28px 20px;display:flex;align-items:center;gap:16px;border-bottom:1.5px solid rgba(58,122,138,0.1)}
+.viz-icon{width:52px;height:52px;border-radius:50%;border:2px solid rgba(216,152,58,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(145deg,#fff,rgba(255,248,240,0.5));box-shadow:0 3px 12px rgba(216,152,58,0.1)}
+.viz-icon svg{width:1.8rem;height:1.8rem;color:var(--lamp)}
+.viz-meta{flex:1}
+.viz-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--sea-light);margin-bottom:2px}
+.viz h4{font-family:'Poppins',sans-serif;font-size:1.08rem;font-weight:600;color:var(--sea);letter-spacing:-0.01em}
+.viz-body{padding:28px;background:linear-gradient(170deg,#FCFCFF 0%,#FFFCF5 40%,#F8FAFF 100%)}
+.viz-body p{font-size:0.95rem;color:var(--text-light);line-height:1.72;margin-bottom:14px}
+.viz-body strong,.viz-lesson strong{color:rgba(255,255,255,0.95);font-weight:700}
+.viz-body em,.viz-lesson em{color:var(--lamp-pale);font-style:normal;font-weight:600}
+.viz-body p:last-child{margin-bottom:0}
+.viz-lesson{margin-top:20px;padding:16px 20px;background:linear-gradient(135deg,rgba(216,152,58,0.04),rgba(216,152,58,0.08));border:1.5px solid rgba(216,152,58,0.15);border-radius:10px;font-family:'Lora',serif;font-size:0.9rem;font-style:italic;color:var(--drift);line-height:1.7}
+
+/* ===== BA ===== */
+.ba{display:grid;gap:18px;margin:36px 0}
+@media(min-width:640px){.ba{grid-template-columns:1fr 1fr}}
+.ba-box{border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft)}
+.ba-before{background:var(--before-bg)}
+.ba-after{background:var(--after-bg)}
+.ba-head{padding:12px 20px;font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.ba-before .ba-head{background:rgba(140,80,40,0.08);color:var(--before-text)}
+.ba-after .ba-head{background:rgba(58,122,138,0.08);color:var(--after-text)}
+.ba-body{padding:18px 20px;font-size:0.88rem;line-height:1.65}
+.ba-before .ba-body{color:var(--before-text)}
+.ba-after .ba-body{color:var(--after-text)}
+.ba-head svg{width:0.85rem;height:0.85rem;flex-shrink:0}
+
+/* ===== SCENE ===== */
+.scene{background:linear-gradient(135deg,var(--sand-warm),var(--sand));border:1px solid var(--sand-deep);border-radius:var(--radius);padding:28px;margin:32px 0;box-shadow:var(--shadow-soft)}
+.scene-label{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--lamp);margin-bottom:14px}
+.scene h4{font-family:'Poppins',sans-serif;font-size:1.15rem;font-weight:600;color:var(--sea);margin-bottom:12px}
+.scene p{font-size:0.95rem;color:var(--text);line-height:1.78;margin-bottom:12px}
+.scene p:last-child{margin-bottom:0}
+
+/* ===== INSIGHT ===== */
+.insight{margin:32px 0;padding:28px 32px;background:linear-gradient(140deg,var(--sea),var(--sea-mid));border-radius:var(--radius);border:2px solid rgba(216,152,58,0.2);border-left:5px solid var(--lamp);position:relative;overflow:hidden;box-shadow:var(--shadow-mid)}
+.insight p{font-family:'Lora',serif;font-size:1.02rem;font-style:italic;color:var(--white);line-height:1.72;position:relative;z-index:2}
+.insight em{color:var(--lamp-glow);font-style:normal;font-weight:600}
+
+/* ===== GQ ===== */
+.gq{margin:32px 0;text-align:center;padding:32px 24px;position:relative;background:linear-gradient(160deg,rgba(216,152,58,0.02),rgba(216,152,58,0.05));border-radius:var(--radius);border:1.5px solid rgba(216,152,58,0.12)}
+.gq::before,.gq::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:48px;height:1.5px;background:linear-gradient(90deg,transparent,var(--lamp),transparent)}
+.gq::before{top:0}
+.gq::after{bottom:0}
+.gq p{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:var(--sea-mid);line-height:1.6;max-width:520px;margin:0 auto}
+
+/* ===== THINK ===== */
+.think{margin:36px 0;padding:32px;background:linear-gradient(145deg,var(--sand-warm),rgba(216,152,58,0.03));border:2.5px dashed var(--lamp);border-radius:var(--radius);position:relative;box-shadow:0 2px 6px rgba(216,152,58,0.08)}
+.think::before{content:'';position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--sand);padding:0 14px;font-size:1rem;color:var(--lamp)}
+.think-label{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--lamp);text-align:center;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px}
+.think-label svg{width:18px;height:18px;flex-shrink:0;color:var(--lamp)}
+.think h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--sea);text-align:center;margin-bottom:14px}
+.think p{font-size:0.88rem;text-align:center;color:var(--text-light);margin-bottom:8px}
+.think-line{border-bottom:1px solid rgba(216,152,58,0.2);height:30px}
+
+/* ===== HOLD CARDS ===== */
+.hold-grid{display:grid;gap:16px;margin:36px 0}
+@media(min-width:640px){.hold-grid{grid-template-columns:1fr 1fr}}
+.hold-card{background:var(--white);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow-soft);border-top:4px solid var(--sea-light);transition:all 0.3s ease}
+.hold-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-mid)}
+.hold-num{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--lamp);margin-bottom:6px}
+.hold-card h4{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:var(--sea);margin-bottom:8px}
+.hold-card h4 svg{width:1.1rem;height:1.1rem;vertical-align:-0.12em;margin-right:2px;color:var(--lamp)}
+.hold-card p{font-size:0.88rem;color:var(--text-light);line-height:1.68;margin:0}
+.hold-full{grid-column:1/-1;border-top-color:var(--lamp);background:linear-gradient(135deg,var(--lamp-soft),rgba(216,152,58,0.03))}
+
+/* ===== LOG ENTRY ===== */
+.log{margin:36px 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-mid)}
+.log-head{padding:16px 24px;background:linear-gradient(90deg,var(--sea),var(--sea-mid));font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--lamp);display:flex;align-items:center;gap:10px}
+.log-head svg{width:1rem;height:1rem;flex-shrink:0;color:var(--lamp-glow)}
+.log-body{padding:24px;background:var(--white)}
+.log-entry{padding:16px 0;border-bottom:1px solid var(--sand-deep);display:grid;grid-template-columns:64px 1fr;gap:16px}
+.log-entry:last-child{border-bottom:none}
+.log-wk{font-family:'Poppins',sans-serif;font-size:0.65rem;font-weight:700;color:var(--lamp);padding-top:3px}
+.log-entry h4{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--sea);margin-bottom:4px}
+.log-entry p{font-size:0.86rem;color:var(--text-light);margin:0;line-height:1.6}
+
+/* ===== PROMPT ===== */
+.prompt{margin:32px 0;border-radius:var(--radius);overflow:hidden;border:2px solid rgba(216,152,58,0.2);box-shadow:var(--shadow-mid)}
+.prompt-head{padding:14px 24px;background:linear-gradient(90deg,var(--sea),var(--sea-mid));font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--lamp)}
+.prompt-body{padding:24px;background:#081820;color:#A8C0D0;font-family:'Lora',serif;font-size:0.88rem;line-height:1.72}
+.prompt-body strong{color:var(--lamp-glow)}
+
+/* ===== ROOT CHECK ===== */
+.root-ck{margin:36px 0;padding:28px;background:linear-gradient(140deg,var(--sand-warm),var(--sand-deep));border-radius:var(--radius);border:1.5px solid rgba(216,152,58,0.15);box-shadow:var(--shadow-soft)}
+.rc-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--lamp);text-align:center;margin-bottom:6px}
+.root-ck h4{font-family:'Poppins',sans-serif;font-size:0.92rem;font-weight:600;color:var(--sea);text-align:center;margin-bottom:20px}
+.r-item{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid rgba(216,152,58,0.08)}
+.r-item:last-child{border-bottom:none}
+.r-dot{width:8px;height:8px;border-radius:50%;background:var(--lamp);flex-shrink:0;margin-top:7px}
+.r-text{font-size:0.85rem;color:var(--text-light);line-height:1.6}
+.r-text strong{color:var(--sea);font-weight:600}
+
+/* ===== ADVENTURE WALKTHROUGH ===== */
+.adventure{margin:32px 0;counter-reset:adventure-step}
+.adventure .adv-step{padding:24px 28px;margin-bottom:16px;background:var(--white);border-radius:var(--radius);border:2px solid rgba(58,122,138,0.1);box-shadow:var(--shadow-soft);position:relative;padding-left:72px}
+.adventure .adv-step::before{counter-increment:adventure-step;content:counter(adventure-step);position:absolute;left:20px;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--sea-mid),var(--sea-light));color:var(--white);font-family:'Poppins',sans-serif;font-size:0.85rem;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(10,42,58,0.2)}
+.adventure .adv-step h4{font-size:0.92rem;color:var(--sea);margin-bottom:6px}
+.adventure .adv-step p{font-size:0.85rem;color:var(--text-light);line-height:1.6}
+
+/* ===== VISUAL TIMELINE ===== */
+.timeline{margin:40px 0;position:relative;padding:20px 0}
+.timeline::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--lamp),var(--sea-light),var(--lamp));transform:translateX(-50%);border-radius:2px}
+.tl-point{display:grid;grid-template-columns:1fr 40px 1fr;gap:0;margin-bottom:28px;position:relative;align-items:start}
+.tl-point:last-child{margin-bottom:0}
+.tl-left{text-align:right;padding:12px 16px}
+.tl-right{text-align:left;padding:12px 16px}
+.tl-marker{display:flex;align-items:center;justify-content:center;z-index:2}
+.tl-dot{width:18px;height:18px;border-radius:50%;background:var(--lamp);border:3px solid var(--sand);box-shadow:0 0 0 2px var(--lamp),0 2px 8px rgba(216,152,58,0.3);margin-top:14px}
+.tl-dot.milestone{width:24px;height:24px;background:linear-gradient(135deg,var(--lamp-glow),var(--lamp));box-shadow:0 0 0 3px var(--sand),0 0 0 5px var(--lamp),0 0 16px rgba(216,152,58,0.4);margin-top:11px}
+.tl-label{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--lamp);margin-bottom:4px}
+.tl-title{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--sea);margin-bottom:4px}
+.tl-desc{font-size:0.78rem;color:var(--text-muted);line-height:1.5}
+.tl-side-label{font-family:'Poppins',sans-serif;font-size:0.42rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;margin-bottom:12px;display:block}
+.tl-internal{color:var(--sea-light)}
+.tl-external{color:var(--lamp)}
+@media(max-width:600px){
+  .timeline::before{left:20px}
+  .tl-point{grid-template-columns:40px 1fr;gap:0}
+  .tl-left{display:none}
+  .tl-marker{justify-content:flex-start}
+  .tl-dot{margin-left:2px}
+}
+
+/* ===== STORM INTENSITY METER ===== */
+.storm-meter{margin:36px 0;padding:28px;background:var(--white);border-radius:var(--radius);border:2px solid rgba(58,122,138,0.12);box-shadow:var(--shadow-mid)}
+.storm-meter h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--sea);margin-bottom:6px;text-align:center}
+.storm-meter .sm-sub{font-size:0.78rem;color:var(--text-muted);text-align:center;margin-bottom:24px}
+.meter-track{position:relative;height:32px;border-radius:16px;overflow:hidden;margin-bottom:8px}
+.meter-track.storm-track{background:linear-gradient(90deg,#B0E0E8 0%,#80C0D0 20%,#6090A0 40%,#405870 60%,#2A3848 80%,#1A2028 100%)}
+.meter-track.light-track{background:linear-gradient(90deg,#1A2028 0%,#2A3848 20%,#405870 40%,#6090A0 60%,#80C0D0 80%,#F0B850 100%)}
+.meter-stops{display:flex;justify-content:space-between;margin-bottom:4px;padding:0 2px}
+.meter-stop{font-family:'Poppins',sans-serif;font-size:0.48rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);text-align:center;flex:1}
+.meter-pair{margin-bottom:20px}
+.meter-pair:last-child{margin-bottom:0}
+.meter-pair-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.meter-pair-label.storm-label{color:var(--sea)}
+.meter-pair-label.light-label{color:var(--lamp)}
+.meter-pair-label svg{width:14px;height:14px}
+.meter-note{font-size:0.75rem;color:var(--text-muted);text-align:center;font-style:italic;margin-top:16px;padding-top:16px;border-top:1px solid var(--sand-deep)}
+
+/* ===== INST ===== */
+.inst{margin:28px 0;padding:18px 24px;background:linear-gradient(90deg,var(--lamp-soft),rgba(58,122,138,0.04));border-left:3px solid var(--lamp);border-radius:0 var(--radius) var(--radius) 0;box-shadow:var(--shadow-soft)}
+.inst p{font-family:'Poppins',sans-serif;font-size:0.78rem;color:var(--drift);line-height:1.55;margin:0}
+.inst strong{color:var(--sea)}
+
+/* ===== FINALE ===== */
+.finale{text-align:center;padding:80px 24px;background:linear-gradient(170deg,var(--sea),#020A10)}
+.finale-emoji{display:block;margin-bottom:24px;animation:gentle-pulse 4s ease-in-out infinite}
+.finale-emoji svg{width:80px;height:80px;margin:0 auto;filter:drop-shadow(0 0 20px rgba(240,184,80,0.3))}
+@keyframes gentle-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+.finale h2{font-family:'Poppins',sans-serif;font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;color:var(--white);margin-bottom:8px}
+.finale h2 span{color:var(--lamp-glow)}
+.finale p{font-family:'Lora',serif;font-size:0.95rem;color:rgba(255,255,255,0.32);max-width:480px;margin:16px auto;line-height:1.6}
+footer{text-align:center;padding:36px 24px;background:#020608}
+footer p{font-family:'Lora',serif;font-size:0.82rem;font-style:italic;color:rgba(216,152,58,0.2);margin-bottom:14px;line-height:1.7}
+footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:normal;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.1)}
+
+/* ===== SVG ICON SIZING ===== */
+.prose h2 svg{width:1.35rem;height:1.35rem;flex-shrink:0;color:var(--lamp)}
+
+@media(max-width:640px){
+  .page{padding:0 16px}
+}
+/* ===== PRINT ===== */
+@media print{
+  @page{margin:18mm 16mm 22mm 16mm}
+  body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .cover{min-height:auto;padding:100px 24px;break-after:page}
+  .ch-head{break-before:page;padding:60px 24px 44px}
+  .think,.scene,.viz,.ba,.hold-card,.insight,.gq,.root-ck,.prompt,.mission,.log,.timeline,.storm-meter,.character-card,.adventure{break-inside:avoid}
+  .no-print{display:none!important}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+</style>
+</head>
+<body>
+
+<!-- ===== SVG SPRITE SHEET ===== -->
+<svg class="svg-sprites" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Cover Art: Lighthouse on rocky shore with sweeping beam (400x300 viewBox) -->
+  <symbol id="cover-lighthouse-art" viewBox="0 0 400 300">
+    <!-- Night sky -->
+    <rect width="400" height="300" fill="#041820"/>
+    <!-- Stars -->
+    <circle cx="30" cy="25" r="1.2" fill="#F8DCA0" opacity="0.7"/>
+    <circle cx="85" cy="40" r="0.8" fill="#FFF" opacity="0.5"/>
+    <circle cx="140" cy="15" r="1" fill="#F8DCA0" opacity="0.6"/>
+    <circle cx="200" cy="50" r="0.7" fill="#FFF" opacity="0.4"/>
+    <circle cx="260" cy="20" r="1.1" fill="#F8DCA0" opacity="0.5"/>
+    <circle cx="310" cy="35" r="0.9" fill="#FFF" opacity="0.6"/>
+    <circle cx="355" cy="18" r="1.3" fill="#F8DCA0" opacity="0.4"/>
+    <circle cx="50" cy="65" r="0.6" fill="#FFF" opacity="0.3"/>
+    <circle cx="370" cy="55" r="0.8" fill="#F8DCA0" opacity="0.5"/>
+    <circle cx="120" cy="58" r="0.7" fill="#FFF" opacity="0.4"/>
+    <circle cx="330" cy="68" r="1" fill="#F8DCA0" opacity="0.3"/>
+    <circle cx="15" cy="80" r="0.5" fill="#FFF" opacity="0.5"/>
+    <!-- Storm clouds -->
+    <ellipse cx="80" cy="70" rx="60" ry="20" fill="#1A3040" opacity="0.6"/>
+    <ellipse cx="100" cy="65" rx="45" ry="18" fill="#1A3848" opacity="0.5"/>
+    <ellipse cx="320" cy="75" rx="55" ry="22" fill="#1A3040" opacity="0.5"/>
+    <ellipse cx="340" cy="68" rx="40" ry="16" fill="#1A3848" opacity="0.4"/>
+    <ellipse cx="200" cy="80" rx="70" ry="15" fill="#0A2030" opacity="0.3"/>
+    <!-- Lighthouse beam — sweeping light with radial gradient -->
+    <defs>
+      <radialGradient id="beam-grad" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#F0B850" stop-opacity="0.5"/>
+        <stop offset="40%" stop-color="#F0B850" stop-opacity="0.15"/>
+        <stop offset="100%" stop-color="#F0B850" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="lamp-grad" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#FFF8E0" stop-opacity="1"/>
+        <stop offset="50%" stop-color="#F0B850" stop-opacity="0.8"/>
+        <stop offset="100%" stop-color="#D8983A" stop-opacity="0.4"/>
+      </radialGradient>
+    </defs>
+    <!-- Beam cone to the right -->
+    <polygon points="223,108 400,40 400,130" fill="url(#beam-grad)" opacity="0.6" class="beam-sweep"/>
+    <!-- Beam cone to the left -->
+    <polygon points="217,108 0,60 0,170" fill="url(#beam-grad)" opacity="0.25"/>
+    <!-- Beam glow halo -->
+    <circle cx="220" cy="110" r="20" fill="url(#lamp-grad)" opacity="0.7"/>
+    <circle cx="220" cy="110" r="35" fill="#F0B850" opacity="0.05"/>
+    <!-- Rocky coastline -->
+    <path d="M0,240 L30,232 50,238 70,228 95,235 120,225 145,230 160,222 175,228 195,218 210,260 240,258 260,250 280,255 300,248 320,252 340,246 360,250 380,244 400,248 400,300 0,300Z" fill="#1A2A30"/>
+    <path d="M0,245 L25,240 45,246 65,236 90,242 115,233 140,238 158,230 180,236 200,226 215,265 238,262 258,255 278,260 298,253 318,257 338,250 358,254 378,248 400,252 400,300 0,300Z" fill="#152228"/>
+    <!-- Rock textures -->
+    <path d="M50,240 L55,235 60,240" fill="none" stroke="#2A4048" stroke-width="0.8" opacity="0.5"/>
+    <path d="M100,234 L108,228 115,234" fill="none" stroke="#2A4048" stroke-width="0.8" opacity="0.5"/>
+    <path d="M300,252 L308,247 315,253" fill="none" stroke="#2A4048" stroke-width="0.8" opacity="0.4"/>
+    <path d="M350,250 L356,244 362,250" fill="none" stroke="#2A4048" stroke-width="0.8" opacity="0.5"/>
+    <!-- Lighthouse body — stone/brick texture -->
+    <rect x="207" y="120" width="26" height="140" fill="#D8CDB8" rx="2"/>
+    <!-- Brick lines -->
+    <line x1="207" y1="132" x2="233" y2="132" stroke="#B8A890" stroke-width="0.5"/>
+    <line x1="207" y1="144" x2="233" y2="144" stroke="#B8A890" stroke-width="0.5"/>
+    <line x1="207" y1="156" x2="233" y2="156" stroke="#B8A890" stroke-width="0.5"/>
+    <line x1="207" y1="168" x2="233" y2="168" stroke="#B8A890" stroke-width="0.5"/>
+    <line x1="207" y1="180" x2="233" y2="180" stroke="#B8A890" stroke-width="0.5"/>
+    <line x1="207" y1="192" x2="233" y2="192" stroke="#B8A890" stroke-width="0.5"/>
+    <line x1="207" y1="204" x2="233" y2="204" stroke="#B8A890" stroke-width="0.5"/>
+    <line x1="207" y1="216" x2="233" y2="216" stroke="#B8A890" stroke-width="0.5"/>
+    <line x1="207" y1="228" x2="233" y2="228" stroke="#B8A890" stroke-width="0.5"/>
+    <line x1="207" y1="240" x2="233" y2="240" stroke="#B8A890" stroke-width="0.5"/>
+    <line x1="207" y1="252" x2="233" y2="252" stroke="#B8A890" stroke-width="0.5"/>
+    <!-- Vertical brick offsets -->
+    <line x1="220" y1="120" x2="220" y2="132" stroke="#B8A890" stroke-width="0.4"/>
+    <line x1="214" y1="132" x2="214" y2="144" stroke="#B8A890" stroke-width="0.4"/>
+    <line x1="226" y1="132" x2="226" y2="144" stroke="#B8A890" stroke-width="0.4"/>
+    <line x1="220" y1="144" x2="220" y2="156" stroke="#B8A890" stroke-width="0.4"/>
+    <line x1="214" y1="156" x2="214" y2="168" stroke="#B8A890" stroke-width="0.4"/>
+    <line x1="226" y1="156" x2="226" y2="168" stroke="#B8A890" stroke-width="0.4"/>
+    <line x1="220" y1="168" x2="220" y2="180" stroke="#B8A890" stroke-width="0.4"/>
+    <line x1="214" y1="180" x2="214" y2="192" stroke="#B8A890" stroke-width="0.4"/>
+    <line x1="226" y1="180" x2="226" y2="192" stroke="#B8A890" stroke-width="0.4"/>
+    <line x1="220" y1="192" x2="220" y2="204" stroke="#B8A890" stroke-width="0.4"/>
+    <line x1="214" y1="204" x2="214" y2="216" stroke="#B8A890" stroke-width="0.4"/>
+    <line x1="226" y1="204" x2="226" y2="216" stroke="#B8A890" stroke-width="0.4"/>
+    <!-- Red stripe on tower -->
+    <rect x="207" y="150" width="26" height="12" fill="#A83828" opacity="0.6"/>
+    <rect x="207" y="198" width="26" height="12" fill="#A83828" opacity="0.6"/>
+    <!-- Windows -->
+    <rect x="215" y="170" width="10" height="14" rx="5" fill="#1A3040"/>
+    <rect x="216.5" y="171.5" width="7" height="11" rx="3.5" fill="#2A4A58" opacity="0.5"/>
+    <rect x="215" y="222" width="10" height="14" rx="5" fill="#1A3040"/>
+    <rect x="216.5" y="223.5" width="7" height="11" rx="3.5" fill="#2A4A58" opacity="0.5"/>
+    <!-- Lighthouse top / lantern room -->
+    <rect x="204" y="112" width="32" height="10" fill="#2A2A28" rx="1"/>
+    <rect x="209" y="102" width="22" height="12" fill="#F0B850" rx="2" opacity="0.9"/>
+    <rect x="210" y="103" width="20" height="10" fill="#FFF8E0" rx="1.5" opacity="0.4"/>
+    <!-- Lantern room glass panes -->
+    <line x1="215" y1="102" x2="215" y2="114" stroke="#2A2A28" stroke-width="0.8"/>
+    <line x1="220" y1="102" x2="220" y2="114" stroke="#2A2A28" stroke-width="0.8"/>
+    <line x1="225" y1="102" x2="225" y2="114" stroke="#2A2A28" stroke-width="0.8"/>
+    <!-- Dome / cap -->
+    <path d="M212,102 Q220,92 228,102" fill="#2A2A28"/>
+    <circle cx="220" cy="95" r="2" fill="#D8983A"/>
+    <!-- Railing -->
+    <line x1="202" y1="112" x2="238" y2="112" stroke="#3A3A38" stroke-width="1.2"/>
+    <line x1="204" y1="112" x2="204" y2="115" stroke="#3A3A38" stroke-width="0.8"/>
+    <line x1="236" y1="112" x2="236" y2="115" stroke="#3A3A38" stroke-width="0.8"/>
+    <!-- Lighthouse base -->
+    <rect x="200" y="256" width="40" height="8" fill="#A0948A" rx="1"/>
+    <path d="M195,264 L245,264 L240,270 L200,270Z" fill="#8A7E74"/>
+    <!-- Crashing waves at base -->
+    <path d="M170,268 Q180,260 190,265 Q195,262 200,265 Q205,258 210,264" fill="none" stroke="#6AA8B8" stroke-width="1.5" opacity="0.6"/>
+    <path d="M230,266 Q240,258 250,264 Q258,260 265,266 Q275,260 285,266" fill="none" stroke="#6AA8B8" stroke-width="1.5" opacity="0.5"/>
+    <path d="M155,275 Q170,265 185,272 Q195,268 205,274" fill="none" stroke="#3A7A8A" stroke-width="1" opacity="0.4"/>
+    <path d="M235,273 Q250,265 265,272 Q280,266 295,274" fill="none" stroke="#3A7A8A" stroke-width="1" opacity="0.4"/>
+    <!-- Wave foam splashes -->
+    <circle cx="192" cy="262" r="2" fill="#B0D8E0" opacity="0.3"/>
+    <circle cx="248" cy="260" r="2.5" fill="#B0D8E0" opacity="0.25"/>
+    <circle cx="188" cy="265" r="1.5" fill="#B0D8E0" opacity="0.2"/>
+    <!-- Distant ocean waves -->
+    <path d="M0,280 Q50,274 100,280 Q150,274 200,280 Q250,274 300,280 Q350,274 400,280" fill="none" stroke="#1A4A5A" stroke-width="1" opacity="0.4"/>
+    <path d="M0,288 Q60,282 120,288 Q180,282 240,288 Q300,282 360,288 Q380,284 400,288" fill="none" stroke="#1A4A5A" stroke-width="0.8" opacity="0.3"/>
+    <!-- Mist around beam illumination -->
+    <ellipse cx="300" cy="85" rx="40" ry="12" fill="#F0B850" opacity="0.04"/>
+    <ellipse cx="350" cy="70" rx="30" ry="10" fill="#F0B850" opacity="0.03"/>
+    <!-- Rain lines -->
+    <line x1="20" y1="20" x2="15" y2="60" stroke="#6AA8B8" stroke-width="0.6" opacity="0.2"/>
+    <line x1="55" y1="10" x2="50" y2="55" stroke="#6AA8B8" stroke-width="0.5" opacity="0.15"/>
+    <line x1="90" y1="15" x2="85" y2="65" stroke="#B0C0D0" stroke-width="0.4" opacity="0.18"/>
+    <line x1="130" y1="25" x2="125" y2="70" stroke="#6AA8B8" stroke-width="0.5" opacity="0.15"/>
+    <line x1="160" y1="8" x2="155" y2="58" stroke="#B0C0D0" stroke-width="0.6" opacity="0.12"/>
+    <line x1="270" y1="12" x2="265" y2="62" stroke="#6AA8B8" stroke-width="0.5" opacity="0.18"/>
+    <line x1="305" y1="20" x2="300" y2="68" stroke="#B0C0D0" stroke-width="0.4" opacity="0.14"/>
+    <line x1="340" y1="5" x2="335" y2="55" stroke="#6AA8B8" stroke-width="0.5" opacity="0.16"/>
+    <line x1="370" y1="18" x2="365" y2="65" stroke="#B0C0D0" stroke-width="0.6" opacity="0.12"/>
+    <line x1="40" y1="80" x2="35" y2="130" stroke="#6AA8B8" stroke-width="0.4" opacity="0.1"/>
+    <line x1="75" y1="75" x2="70" y2="125" stroke="#B0C0D0" stroke-width="0.5" opacity="0.12"/>
+    <line x1="110" y1="85" x2="105" y2="135" stroke="#6AA8B8" stroke-width="0.4" opacity="0.1"/>
+    <line x1="150" y1="90" x2="145" y2="140" stroke="#B0C0D0" stroke-width="0.5" opacity="0.08"/>
+    <line x1="280" y1="85" x2="275" y2="135" stroke="#6AA8B8" stroke-width="0.4" opacity="0.12"/>
+    <line x1="350" y1="80" x2="345" y2="130" stroke="#B0C0D0" stroke-width="0.5" opacity="0.1"/>
+  </symbol>
+
+  <!-- Character Avatar: Maren the Keeper (64x64) -->
+  <symbol id="avatar-maren" viewBox="0 0 64 64">
+    <!-- Face/head -->
+    <circle cx="32" cy="24" r="14" fill="#E8C8A8"/>
+    <!-- Hair -->
+    <path d="M18,20 Q18,8 32,8 Q46,8 46,20 L44,22 Q44,12 32,12 Q20,12 20,22Z" fill="#5A3828"/>
+    <path d="M18,20 L16,30 Q16,26 18,24Z" fill="#5A3828"/>
+    <path d="M46,20 L48,30 Q48,26 46,24Z" fill="#5A3828"/>
+    <!-- Eyes -->
+    <ellipse cx="26" cy="24" rx="2.5" ry="2" fill="#1A2028"/>
+    <circle cx="26.5" cy="23.5" r="0.8" fill="#6AA8B8"/>
+    <ellipse cx="38" cy="24" rx="2.5" ry="2" fill="#1A2028"/>
+    <circle cx="38.5" cy="23.5" r="0.8" fill="#6AA8B8"/>
+    <!-- Nose and mouth -->
+    <path d="M30,27 Q32,29 34,27" fill="none" stroke="#C8A888" stroke-width="0.8"/>
+    <path d="M28,32 Q32,34 36,32" fill="none" stroke="#C8A080" stroke-width="1" stroke-linecap="round"/>
+    <!-- Coat / body -->
+    <path d="M20,38 Q20,34 24,34 L40,34 Q44,34 44,38 L48,56 L16,56Z" fill="#2A4858"/>
+    <path d="M28,34 L28,48" stroke="#1A3848" stroke-width="0.8"/>
+    <path d="M36,34 L36,48" stroke="#1A3848" stroke-width="0.8"/>
+    <!-- Collar -->
+    <path d="M24,34 L28,38 L32,34 L36,38 L40,34" fill="none" stroke="#D8983A" stroke-width="1.2"/>
+    <!-- Lantern in hand -->
+    <rect x="46" y="42" width="8" height="10" rx="1" fill="#D8983A" opacity="0.8"/>
+    <rect x="47" y="44" width="6" height="6" rx="1" fill="#F0B850" opacity="0.5"/>
+    <line x1="50" y1="42" x2="50" y2="40" stroke="#8A7A6A" stroke-width="1"/>
+    <path d="M48,40 L52,40" stroke="#8A7A6A" stroke-width="1"/>
+    <!-- Lantern glow -->
+    <circle cx="50" cy="47" r="8" fill="#F0B850" opacity="0.1"/>
+  </symbol>
+
+  <!-- Character Avatar: Captain Elias (64x64) -->
+  <symbol id="avatar-elias" viewBox="0 0 64 64">
+    <!-- Face/head -->
+    <circle cx="32" cy="24" r="14" fill="#D8B898"/>
+    <!-- Captain's hat -->
+    <path d="M16,20 Q16,10 32,8 Q48,10 48,20 L46,20 Q44,14 32,12 Q20,14 18,20Z" fill="#1A2838"/>
+    <rect x="18" y="18" width="28" height="5" rx="1" fill="#1A2838"/>
+    <rect x="22" y="18" width="20" height="2" fill="#D8983A" opacity="0.6"/>
+    <!-- Beard -->
+    <path d="M22,30 Q24,36 32,38 Q40,36 42,30" fill="#7A6048"/>
+    <path d="M24,32 Q32,40 40,32" fill="none" stroke="#6A5038" stroke-width="0.5"/>
+    <!-- Eyes -->
+    <ellipse cx="26" cy="24" rx="2.5" ry="2" fill="#1A2028"/>
+    <circle cx="26.5" cy="23.5" r="0.8" fill="#506878"/>
+    <ellipse cx="38" cy="24" rx="2.5" ry="2" fill="#1A2028"/>
+    <circle cx="38.5" cy="23.5" r="0.8" fill="#506878"/>
+    <!-- Bushy eyebrows -->
+    <path d="M22,21 Q26,19 30,21" fill="none" stroke="#5A4830" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M34,21 Q38,19 42,21" fill="none" stroke="#5A4830" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- Coat -->
+    <path d="M18,38 Q18,34 22,34 L42,34 Q46,34 46,38 L50,56 L14,56Z" fill="#1A3040"/>
+    <!-- Double breasted buttons -->
+    <circle cx="28" cy="40" r="1.5" fill="#D8983A" opacity="0.6"/>
+    <circle cx="36" cy="40" r="1.5" fill="#D8983A" opacity="0.6"/>
+    <circle cx="28" cy="46" r="1.5" fill="#D8983A" opacity="0.6"/>
+    <circle cx="36" cy="46" r="1.5" fill="#D8983A" opacity="0.6"/>
+    <!-- Collar -->
+    <path d="M22,34 L26,38 L32,34 L38,38 L42,34" fill="none" stroke="#3A5060" stroke-width="1.2"/>
+    <!-- Pipe -->
+    <path d="M42,30 L48,28 L50,32 L48,32 L46,30" fill="#5A3828" stroke="#4A2818" stroke-width="0.5"/>
+    <circle cx="50" cy="30" r="1" fill="#A0A0A0" opacity="0.3"/>
+  </symbol>
+
+  <!-- Lighthouse icon (small) -->
+  <symbol id="ico-lighthouse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 2L14 4V6L16 7V9L14 10V20H10V10L8 9V7L10 6V4L12 2Z"/>
+    <circle cx="12" cy="5" r="1" fill="currentColor" stroke="none"/>
+    <path d="M10 14H14"/>
+    <path d="M10 17H14"/>
+    <path d="M8 20H16"/>
+    <path d="M6 20L8 22H16L18 20"/>
+    <path d="M9 4L7 3M15 4L17 3" stroke-width="1" opacity="0.5"/>
+  </symbol>
+
+  <!-- Anchor -->
+  <symbol id="ico-anchor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="5" r="2.5"/>
+    <path d="M12 7.5V20"/>
+    <path d="M8 10H16"/>
+    <path d="M5 16C5 18.2 8.1 20 12 20C15.9 20 19 18.2 19 16"/>
+  </symbol>
+
+  <!-- Ship -->
+  <symbol id="ico-ship" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 18L5 20H19L21 18"/>
+    <path d="M4 18L6 10H18L20 18"/>
+    <path d="M12 10V4"/>
+    <path d="M12 4L18 8"/>
+    <path d="M12 4L12 7L17 9" fill="currentColor" opacity="0.15"/>
+  </symbol>
+
+  <!-- Flame -->
+  <symbol id="ico-flame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 2C12 2 6 10 6 15C6 18.3 8.7 21 12 21C15.3 21 18 18.3 18 15C18 10 12 2 12 2Z"/>
+    <path d="M12 12C12 12 10 14 10 16C10 17.1 10.9 18 12 18C13.1 18 14 17.1 14 16C14 14 12 12 12 12Z" opacity="0.4"/>
+  </symbol>
+
+  <!-- Eye / Watch -->
+  <symbol id="ico-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M1 12C1 12 5 5 12 5C19 5 23 12 23 12C23 12 19 19 12 19C5 19 1 12 1 12Z"/>
+    <circle cx="12" cy="12" r="3"/>
+  </symbol>
+
+  <!-- Shield / Purpose -->
+  <symbol id="ico-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 2L3 6V12C3 17 7 21 12 22C17 21 21 17 21 12V6L12 2Z"/>
+    <path d="M12 8V14M12 14L9 11M12 14L15 11" stroke-width="1.2"/>
+  </symbol>
+
+  <!-- Heart -->
+  <symbol id="ico-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 21C12 21 3 15 3 9C3 6.2 5.2 4 8 4C9.7 4 11.2 4.8 12 6.1C12.8 4.8 14.3 4 16 4C18.8 4 21 6.2 21 9C21 15 12 21 12 21Z"/>
+  </symbol>
+
+  <!-- Wave -->
+  <symbol id="ico-wave" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2 12C4 9 6 9 8 12C10 15 12 15 14 12C16 9 18 9 20 12C21 13.5 22 13 22 13"/>
+    <path d="M2 17C4 14 6 14 8 17C10 20 12 20 14 17C16 14 18 14 20 17C21 18.5 22 18 22 18" opacity="0.5"/>
+  </symbol>
+
+  <!-- Compass -->
+  <symbol id="ico-compass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/>
+    <polygon points="16.2,7.8 14,14 7.8,16.2 10,10" fill="currentColor" opacity="0.15" stroke="currentColor" stroke-width="1"/>
+    <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/>
+    <path d="M12 2V4M12 20V22M2 12H4M20 12H22" stroke-width="1" opacity="0.4"/>
+  </symbol>
+
+  <!-- Sunrise -->
+  <symbol id="ico-sunrise" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2 16H22"/>
+    <path d="M5 16C5 12.1 8.1 9 12 9C15.9 9 19 12.1 19 16"/>
+    <path d="M12 2V5"/>
+    <path d="M4.2 8.2L6.3 10.3"/>
+    <path d="M19.8 8.2L17.7 10.3"/>
+  </symbol>
+
+  <!-- Journal -->
+  <symbol id="ico-journal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="4" y="2" width="16" height="20" rx="2"/>
+    <path d="M4 6H8"/>
+    <path d="M4 10H8"/>
+    <path d="M4 14H8"/>
+    <path d="M4 18H8"/>
+    <path d="M8 2V22"/>
+    <path d="M11 8H17" stroke-width="1" opacity="0.4"/>
+    <path d="M11 11H16" stroke-width="1" opacity="0.4"/>
+    <path d="M11 14H15" stroke-width="1" opacity="0.4"/>
+  </symbol>
+
+  <!-- Storm cloud -->
+  <symbol id="ico-storm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 14C4 11.8 5.8 10 8 10C8.3 7.7 10.4 6 13 6C15.8 6 18 8.2 18 11C19.7 11 21 12.3 21 14C21 15.7 19.7 17 18 17H6C4.9 17 4 16.1 4 15V14Z"/>
+    <path d="M13 17L11 21" stroke-width="2"/>
+    <path d="M11 21L13 21L11 24" stroke-width="1.5"/>
+  </symbol>
+
+  <!-- Arrow Right -->
+  <symbol id="ico-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 12H20"/>
+    <path d="M14 6L20 12L14 18"/>
+  </symbol>
+
+  <!-- Arrow Left -->
+  <symbol id="ico-arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20 12H4"/>
+    <path d="M10 6L4 12L10 18"/>
+  </symbol>
+
+</svg>
+
+<!-- ===== COVER ===== -->
+<div class="cover">
+  <div class="wave-line"></div><div class="wave-line"></div><div class="wave-line"></div><div class="wave-line"></div>
+  <div class="light-pulse"></div>
+  <div class="ghost-noise"></div>
+  <div class="cover-content">
+    <div class="cover-badge">A Kingdom Builders Parable</div>
+    <div class="cover-art"><svg><use href="#cover-lighthouse-art"/></svg></div>
+    <h1>The Lighthouse<br>Keeper's <strong>Log</strong></h1>
+    <p class="cover-tagline">The world rewards what is loud, flashy, and new.<br>But the ships that make it home follow something different:<br><em>a steady light that never stops burning.</em></p>
+    <p class="cover-sub">Being a Steady Light in Every Storm</p>
+    <p class="cover-author">KingdomBuilders AI</p>
+  </div>
+</div>
+
+<!-- ===== OPENING ===== -->
+<div class="ribbon"><p>"You are the light of the world. A town built on a hill cannot be hidden.". Matthew 5:14</p></div>
+
+<div class="page">
+<section class="section">
+  <div class="prose">
+    <p>This playbook is not about becoming famous. It is not about building a platform. It is for the person who senses a quiet calling to <strong>be consistent when everyone else quits,</strong> to stay lit when the darkness says there is no point, to keep watch when nobody is watching.</p>
+
+    <div class="mission">
+      <div class="mission-label">Who This Is For</div>
+      <p>The person who wonders whether their faithfulness matters. The one who shows up every day to a role that offers no applause. The parent, the teacher, the friend, the colleague, the believer who has started to doubt whether <em>steady</em> counts for anything in a world that only celebrates <em>spectacular.</em> This is your answer. It does. More than you know.</p>
+    </div>
+
+    <p>Most of what we celebrate in culture is the spark. The viral moment. The overnight success. The explosive beginning. But sparks die in seconds. What guides ships safely to harbor is not a spark. It is a lighthouse. A steady, unwavering beam that has been burning long before the storm arrived and will keep burning long after it passes.</p>
+    <p>A lighthouse keeper named Maren is about to show you why consistency is the most undervalued superpower on earth. And a retired sea captain named Elias is going to explain what that light looks like from the water, where it matters most.</p>
+
+    <!-- Character Cards -->
+    <div class="character-card">
+      <div class="avatar"><svg><use href="#avatar-maren"/></svg></div>
+      <div class="info">
+        <h3>Maren Ashford</h3>
+        <div class="role">The Keeper</div>
+        <p>Twenty three years at the Ashford Point lighthouse. She has never missed a night. Not during the hurricane of Year 6, not during the grief of Year 12, not during the long stretch of Years 15 through 19 when she wondered whether any ship was even watching. She kept the light burning. That is all she knows how to do. That is everything.</p>
+      </div>
+    </div>
+
+    <div class="character-card">
+      <div class="avatar"><svg><use href="#avatar-elias"/></svg></div>
+      <div class="info">
+        <h3>Captain Elias Roan</h3>
+        <div class="role">The Mariner</div>
+        <p>Forty years at sea. He has survived three hurricanes, two shipwrecks, and a decade of night voyages along the most dangerous coastline in the region. He has one rule that he teaches every new sailor: "Find the light that does not flicker. Steer toward that." Elias knows what Maren's consistency looks like from the other side of the darkness.</p>
+      </div>
+    </div>
+
+    <div class="gq"><p>"People do not follow the loudest voice. They follow the most reliable light. In a storm, volume means nothing. Steadiness means survival."</p></div>
+  </div>
+</section>
+</div>
+
+<div class="page"><section class="section"><div class="prose">
+  <p>If you finish this playbook, you will understand why the most important people in your life are not the loudest ones, they are the ones who never stopped showing up. You will know <strong>how to become a steady light in every storm, why consistency beats intensity every time, and how the keeper's discipline of showing up when no one is watching is the only thing that saves ships.</strong></p>
+</div></section></div>
+
+<!-- ==================== CHAPTER 1 ==================== -->
+<div class="ch-head"><div class="page">
+  <div class="ch-num">Chapter One</div>
+  <h2 class="ch-title">The Keeper's Watch</h2>
+  <p class="ch-sub">Why the world needs people who refuse to stop showing up</p>
+</div></div>
+
+<div class="ribbon"><p>"Let us not become weary in doing good, for at the proper time we will reap a harvest if we do not give up.". Galatians 6:9</p></div>
+
+<div class="page">
+<section class="section prose">
+  <h2><svg><use href="#ico-lighthouse"/></svg> The Night the Storm Came</h2>
+  <p>In Year 6, a nor'easter hit the coast with sustained winds of 90 miles per hour. Trees snapped like matchsticks. Power went out across the county. Three other lighthouses along the stretch went dark because their keepers evacuated or their generators failed.</p>
+  <p>Maren did not evacuate. She climbed the 127 steps with a backup kerosene lantern in one hand and her logbook in the other. The electric lamp had died, but the Fresnel lens could still focus any light source. She placed the lantern at the focal point, adjusted the reflectors by hand, and sat in the tower room while the building shook beneath her.</p>
+  <p><strong>Fourteen ships made it safely past the rocks that night.</strong> Not because the light was bright. It was dimmer than usual. But it was there. And in a storm, "there" is the only thing that matters.</p>
+
+  <div class="viz"><div class="viz-inner">
+    <div class="viz-top"><div class="viz-icon"><svg><use href="#ico-flame"/></svg></div><div class="viz-meta"><div class="viz-label">The Principle</div><h4>Consistency Outperforms Intensity</h4></div></div>
+    <div class="viz-body">
+      <p>Research in psychology, habit science, and organizational behavior confirms what Maren proved in the storm: <strong>reliability is more valuable than brilliance.</strong> A team member who delivers 80% quality every single day produces more over a year than one who delivers 100% quality half the time and disappears the other half.</p>
+      <p>The reason is compounding. A steady light compounds trust. Every night it burns, it deposits one more unit of credibility into the account. Over years, that account balance becomes enormous. The ships do not steer toward the brightest light. They steer toward the one they know will be there.</p>
+      <div class="viz-lesson">This is the keeper's edge: you do not need to be exceptional every day. You need to be present every day. Presence, sustained over time, becomes something exceptional. The world has plenty of fireworks. What it desperately needs is lighthouses.</div>
+    </div>
+  </div></div>
+
+  <div class="ba">
+    <div class="ba-box ba-before">
+      <div class="ba-head"><svg><use href="#ico-arrow-left"/></svg> The Firework Approach</div>
+      <div class="ba-body"><strong>"I will be amazing when I am ready."</strong><br>Waits for the perfect moment. Delivers a spectacular burst of effort. Burns out. Disappears for weeks. Returns with another burst. People learn not to depend on this person because they never know which version will show up.</div>
+    </div>
+    <div class="ba-box ba-after">
+      <div class="ba-head"><svg><use href="#ico-arrow-right"/></svg> The Lighthouse Approach</div>
+      <div class="ba-body"><strong>"I will be here, every night, no matter what."</strong><br>Shows up consistently. Not perfectly. Consistently. Some nights the light burns bright. Some nights it is a dim lantern in a hurricane. But it is always there. Over time, people learn they can navigate their lives by this person's steadiness.</div>
+    </div>
+  </div>
+
+  <p>Captain Elias put it plainly when he visited the lighthouse: "I have sailed by a hundred lights in my career. I only remember three. Not because they were the brightest. Because they were the ones that were always on. In forty years of sailing, not once did I steer toward a light that flickered."</p>
+
+  <div class="insight"><p>Maren wrote in her log: "The storm does not ask whether I am ready. It arrives. And when it does, the only question that matters is whether the light is on. <em>Not whether it is bright enough. Whether it is on.</em>"</p></div>
+
+  <h2><svg><use href="#ico-eye"/></svg> What Others See vs. What You Feel</h2>
+  <p>This is the tension every keeper must understand. From the inside, consistency feels monotonous. It feels like nothing is happening. Night after night, the same steps, the same lamp, the same dark sea. No applause. No medals. No viral moment. The keeper sees routine.</p>
+  <p>But from the water, the view is completely different. From the water, that light is the difference between life and death. The sailor in the storm is not thinking "that light looks boring." The sailor is thinking "thank God it is still burning."</p>
+  <p><strong>You cannot see the impact of your consistency from the lighthouse.</strong> You can only see it from the ship. And the ships you are guiding may never come close enough for you to hear them say thank you. That does not mean they are not steering by your light.</p>
+
+  <div class="gq"><p>"Faithfulness is the quiet cousin of greatness. It does not announce itself. It simply shows up, again, and trusts that showing up is enough. It always is."</p></div>
+</section>
+
+<div class="think">
+  <div class="think-label"><svg><use href="#ico-lighthouse"/></svg> Feel This Before Moving On</div>
+  <h4>Where are you being a steady light right now?</h4>
+  <p>Name one role, one relationship, one responsibility where you have been showing up consistently, even though nobody seems to notice. That is your lighthouse. That light matters more than you think. Write it down.</p>
+  <div class="think-line"></div>
+  <p>Now ask yourself: have you been tempted to stop? What made you consider quitting? Hold that tension. The next chapter will show you why the hardest seasons produce the strongest light.</p>
+</div>
+</div>
+
+<!-- ==================== CHAPTER 2 ==================== -->
+<div class="ch-head"><div class="page">
+  <div class="ch-num">Chapter Two</div>
+  <h2 class="ch-title">The Long Dark</h2>
+  <p class="ch-sub">Surviving the seasons when nobody seems to need your light</p>
+</div></div>
+
+<div class="ribbon"><p>"I have fought the good fight, I have finished the race, I have kept the faith.", 2 Timothy 4:7</p></div>
+
+<div class="page">
+<section class="section prose">
+  <h2><svg><use href="#ico-wave"/></svg> The Quiet Years</h2>
+  <p>Between Years 15 and 19, something changed on the coast. A new GPS navigation system was installed on most commercial vessels. The shipping lanes shifted further offshore. Fewer ships passed close enough for Maren to see them from the tower. Some nights, she climbed the 127 steps, lit the lamp, and watched an empty horizon for eight straight hours.</p>
+  <p>Her log from Year 16 reads: "No ships tonight. No ships last night. I wonder whether the light serves any purpose at all, or whether I am performing for an audience that left the theater."</p>
+
+  <div class="scene">
+    <div class="scene-label">The Keeper's Trial</div>
+    <h4>Five Forms of the Long Dark</h4>
+    <p><strong>Irrelevance.</strong> The feeling that your role no longer matters. That technology, culture, or circumstance has moved past the need for what you offer. The keeper watches the empty sea and wonders whether lighthouses are relics.</p>
+    <p><strong>Invisibility.</strong> No feedback. No recognition. No one saying "I saw your light last night and it mattered." The absence of acknowledgment, over months and years, begins to erode even the strongest sense of purpose.</p>
+    <p><strong>Isolation.</strong> The keeper's work is solitary by nature. You climb alone. You watch alone. The people closest to you may not understand why you keep doing this. Solitude, chosen freely, can be nourishing. Solitude that feels forced becomes loneliness.</p>
+    <p><strong>Comparison.</strong> Other people are building things. Launching things. Getting promoted. Getting noticed. You are climbing the same 127 steps. The world celebrates builders and ignores maintainers. The Long Dark whispers: "Why are you still here when everyone else is out there?"</p>
+    <p><strong>Doubt.</strong> The deepest layer. Not just "Does anyone see the light?" but "Was there ever a light at all? Was I ever called to this? Or did I mistake stubbornness for faithfulness?"</p>
+  </div>
+
+  <p>Every person who commits to consistency will face the Long Dark. Not once. Repeatedly. The parent whose children stop saying thank you. The leader whose team does not seem to care. The friend who keeps showing up for someone who never reciprocates. The believer whose prayers feel like they hit the ceiling and fall back down.</p>
+  <p><strong>The Long Dark is not a sign that you are in the wrong place. It is the test that proves you are in the right one.</strong> Because anyone can keep the light burning when the harbor is full of grateful ships. The keeper's true character is revealed on the nights when the sea is empty.</p>
+
+  <div class="ba">
+    <div class="ba-box ba-before">
+      <div class="ba-head"><svg><use href="#ico-arrow-left"/></svg> During the Long Dark</div>
+      <div class="ba-body"><strong>What you feel:</strong> "This is pointless. Nobody needs me. I should do something else. Something that matters. Something people can see."<br><br><strong>What the enemy wants:</strong> For you to abandon your post. Because the moment the light goes dark is the moment the next ship runs into the rocks.</div>
+    </div>
+    <div class="ba-box ba-after">
+      <div class="ba-head"><svg><use href="#ico-arrow-right"/></svg> The Truth from the Water</div>
+      <div class="ba-body"><strong>What is actually happening:</strong> Small fishing boats. Solo sailors. Emergency vessels without GPS. People navigating by the old ways because the new ways failed them. They pass in the night, guided by a light they assume will always be there.<br><br><strong>They cannot reach you. But they depend on you.</strong></div>
+    </div>
+  </div>
+
+  <div class="insight"><p>In Year 19, a letter arrived at the lighthouse. A retired fisherman named Thomas wrote: "I passed your light 347 times in my career. I never stopped, never waved, never said a word. But every single time, I looked for your beam and thought: <em>good. She is still there.</em> That was enough. That was everything."</p></div>
+
+  <!-- Storm Intensity Meter -->
+  <div class="storm-meter">
+    <h4>Storm Intensity vs. Light Strength</h4>
+    <p class="sm-sub">The greater the external storm, the more your steady light matters</p>
+
+    <div class="meter-pair">
+      <div class="meter-pair-label storm-label"><svg><use href="#ico-storm"/></svg> Storm Intensity</div>
+      <div class="meter-track storm-track"></div>
+      <div class="meter-stops">
+        <span class="meter-stop">Calm Seas</span>
+        <span class="meter-stop">Light Rain</span>
+        <span class="meter-stop">Strong Winds</span>
+        <span class="meter-stop">Full Storm</span>
+        <span class="meter-stop">Hurricane</span>
+      </div>
+    </div>
+
+    <div class="meter-pair">
+      <div class="meter-pair-label light-label"><svg><use href="#ico-flame"/></svg> Light Strength Needed</div>
+      <div class="meter-track light-track"></div>
+      <div class="meter-stops">
+        <span class="meter-stop">Minimal</span>
+        <span class="meter-stop">Moderate</span>
+        <span class="meter-stop">High</span>
+        <span class="meter-stop">Critical</span>
+        <span class="meter-stop">Absolute</span>
+      </div>
+    </div>
+
+    <p class="meter-note">When conditions are calm, any light will do. When the hurricane arrives, only the keeper who has been faithful all along can deliver. You do not build storm strength during the storm. You build it in the calm, one night at a time.</p>
+  </div>
+
+  <p>Maren wrote in Year 19: "The fisherman's letter arrived today. Three hundred and forty seven times. He never once told me. I almost quit four times during those years. If I had, there would have been 347 passages without a guide. I would never have known. <strong>That is the keeper's burden and the keeper's gift: you rarely know who you are guiding.</strong>"</p>
+
+  <div class="gq"><p>"Do not grow weary. The ships you cannot see are the ones most in need of your light. The thank you that never comes does not mean the impact never happened."</p></div>
+</section>
+
+<div class="think">
+  <div class="think-label"><svg><use href="#ico-eye"/></svg> The Long Dark Inventory</div>
+  <h4>Which form of the Long Dark are you in right now?</h4>
+  <p>Irrelevance? Invisibility? Isolation? Comparison? Doubt? Name it. The named darkness loses half its power.</p>
+  <div class="think-line"></div>
+  <p>Now write the name of one person who might be "passing your light" without you knowing. Someone who benefits from your consistency even though they have never said so.</p>
+  <div class="think-line"></div>
+</div>
+</div>
+
+<!-- ==================== CHAPTER 3 ==================== -->
+<div class="ch-head"><div class="page">
+  <div class="ch-num">Chapter Three</div>
+  <h2 class="ch-title">Purpose in Solitude</h2>
+  <p class="ch-sub">How the keeper's isolation becomes the keeper's power</p>
+</div></div>
+
+<div class="ribbon"><p>"But when you pray, go into your room, close the door and pray to your Father, who is unseen.". Matthew 6:6</p></div>
+
+<div class="page">
+<section class="section prose">
+  <h2><svg><use href="#ico-compass"/></svg> The Tower Perspective</h2>
+  <p>There is a paradox that only keepers understand. The very thing that makes the role difficult, the solitude, the distance from the crowd, the separation from normal life, is also what makes the role effective. A lighthouse placed in the middle of a city is useless. It must stand apart. On the cliff. On the rock. At the edge of the world where the land meets the sea.</p>
+  <p>Maren realized this in Year 10. She had spent her first decade feeling like solitude was the cost of the job. In Year 10, she understood that <strong>solitude was the job.</strong></p>
+
+  <div class="scene">
+    <div class="scene-label">From the Keeper's Log, Year 10</div>
+    <h4>The Revelation</h4>
+    <p>"I used to think I was alone up here because nobody else wanted the work. That is partly true. But the deeper truth is that the lighthouse does what it does precisely because it is alone. If I were surrounded by other lights, no ship could find me. My isolation is not a flaw. It is the design. The light only guides because it stands singular against the dark."</p>
+  </div>
+
+  <p>This applies directly to your life. The roles that feel most isolating are often the ones with the most impact. The parent who feels alone in their standards. The leader who makes the unpopular call. The friend who refuses to gossip when everyone else does. The worker who stays committed to quality when the culture rewards speed.</p>
+  <p>You feel alone because you are supposed to be. Not alone in the sense of abandoned. Alone in the sense of <strong>set apart.</strong> A lighthouse surrounded by other lights is just a light. A lighthouse standing alone on the shore is a beacon. The difference is not brightness. It is position.</p>
+
+  <div class="hold-grid">
+    <div class="hold-card">
+      <div class="hold-num">Solitude Gift 01</div>
+      <h4><svg><use href="#ico-eye"/></svg> Clarity</h4>
+      <p>When you are not drowning in social noise, you see things others miss. Maren could read weather patterns three days in advance because she spent thousands of hours watching the sky without distraction. Solitude gives you eyes that the crowd cannot develop.</p>
+    </div>
+    <div class="hold-card">
+      <div class="hold-num">Solitude Gift 02</div>
+      <h4><svg><use href="#ico-shield"/></svg> Conviction</h4>
+      <p>Beliefs formed in solitude are deeper than beliefs formed in crowds. A crowd belief evaporates when the crowd disperses. A conviction forged in the silence of the tower endures any storm. You have had time to test your own thinking without the pressure of performance.</p>
+    </div>
+    <div class="hold-card">
+      <div class="hold-num">Solitude Gift 03</div>
+      <h4><svg><use href="#ico-anchor"/></svg> Steadiness</h4>
+      <p>The keeper who has sat through a thousand quiet nights is unshakable during the hurricane. Not because they are tougher. Because they have accumulated reserves of calm that the always-busy person never builds. Stillness is training for storms.</p>
+    </div>
+    <div class="hold-card">
+      <div class="hold-num">Solitude Gift 04</div>
+      <h4><svg><use href="#ico-heart"/></svg> Depth</h4>
+      <p>Shallow relationships are formed in noise. Deep ones require silence. The keeper who knows solitude brings a quality of presence to every interaction that the perpetually social person cannot match. You have learned to be with yourself. That makes you safe to be with.</p>
+    </div>
+  </div>
+
+  <p>Captain Elias once told Maren: "Every sailor I have ever met who was worth following had spent real time alone. Not lonely. Alone. They had the kind of rootedness that only forms when you stop performing and start simply being. The sea respects that. People do too, whether they know it or not."</p>
+
+  <div class="insight"><p>Solitude is not the waiting room before real life begins. <em>Solitude is the forge where real life takes shape.</em> The version of you that emerges from intentional aloneness is stronger, clearer, and more genuine than the version shaped by the crowd. Do not rush out of the tower. Let it do its work.</p></div>
+
+  <!-- Visual Timeline: The Keeper's Watch -->
+  <h2><svg><use href="#ico-journal"/></svg> The Keeper's Watch: A Visual Timeline</h2>
+  <p>What the keeper gains internally versus what the world sees externally, year by year. The two columns tell very different stories.</p>
+
+  <div class="timeline">
+    <div style="display:grid;grid-template-columns:1fr 40px 1fr;gap:0;margin-bottom:16px">
+      <div style="text-align:right;padding:0 16px"><span class="tl-side-label tl-internal">Internal Growth</span></div>
+      <div></div>
+      <div style="text-align:left;padding:0 16px"><span class="tl-side-label tl-external">External Perception</span></div>
+    </div>
+
+    <div class="tl-point">
+      <div class="tl-left">
+        <div class="tl-label">Year 1</div>
+        <div class="tl-title">Learning the Craft</div>
+        <div class="tl-desc">Discovering rhythm. Building the nightly habit. The excitement of new purpose.</div>
+      </div>
+      <div class="tl-marker"><div class="tl-dot"></div></div>
+      <div class="tl-right">
+        <div class="tl-label">Year 1</div>
+        <div class="tl-title">"That is a nice hobby."</div>
+        <div class="tl-desc">People find it interesting but do not take it seriously. Polite curiosity, nothing more.</div>
+      </div>
+    </div>
+
+    <div class="tl-point">
+      <div class="tl-left">
+        <div class="tl-label">Year 3</div>
+        <div class="tl-title">Enduring the First Tests</div>
+        <div class="tl-desc">Surviving the first real storm. Understanding that commitment costs something. Quiet pride.</div>
+      </div>
+      <div class="tl-marker"><div class="tl-dot"></div></div>
+      <div class="tl-right">
+        <div class="tl-label">Year 3</div>
+        <div class="tl-title">"Still doing that?"</div>
+        <div class="tl-desc">Mild surprise that you have not moved on. Some people question why you stay.</div>
+      </div>
+    </div>
+
+    <div class="tl-point">
+      <div class="tl-left">
+        <div class="tl-label">Year 5</div>
+        <div class="tl-title">Developing Deep Skill</div>
+        <div class="tl-desc">Pattern recognition. Reading the sea. Knowing the weather by feel. Competence born of repetition.</div>
+      </div>
+      <div class="tl-marker"><div class="tl-dot milestone"></div></div>
+      <div class="tl-right">
+        <div class="tl-label">Year 5</div>
+        <div class="tl-title">"They are committed."</div>
+        <div class="tl-desc">The first shift. People start to notice your consistency. Respect begins to form, slowly.</div>
+      </div>
+    </div>
+
+    <div class="tl-point">
+      <div class="tl-left">
+        <div class="tl-label">Year 10</div>
+        <div class="tl-title">The Revelation of Purpose</div>
+        <div class="tl-desc">Understanding that solitude is not a cost but a design. Peace with the role. Identity settles.</div>
+      </div>
+      <div class="tl-marker"><div class="tl-dot milestone"></div></div>
+      <div class="tl-right">
+        <div class="tl-label">Year 10</div>
+        <div class="tl-title">"They are the real thing."</div>
+        <div class="tl-desc">People trust you instinctively. They do not always say it. But they orient their lives around your reliability.</div>
+      </div>
+    </div>
+
+    <div class="tl-point">
+      <div class="tl-left">
+        <div class="tl-label">Year 15</div>
+        <div class="tl-title">Entering the Long Dark</div>
+        <div class="tl-desc">Doubt. Fatigue. Wondering if it matters. The hardest stretch. Growth invisible to yourself.</div>
+      </div>
+      <div class="tl-marker"><div class="tl-dot"></div></div>
+      <div class="tl-right">
+        <div class="tl-label">Year 15</div>
+        <div class="tl-title">"I do not know how they do it."</div>
+        <div class="tl-desc">Others begin to see your endurance as something they could not replicate. Admiration mixed with distance.</div>
+      </div>
+    </div>
+
+    <div class="tl-point">
+      <div class="tl-left">
+        <div class="tl-label">Year 20+</div>
+        <div class="tl-title">Becoming the Landmark</div>
+        <div class="tl-desc">You are no longer doing the role. You are the role. Peace so deep it radiates. The light burns effortlessly.</div>
+      </div>
+      <div class="tl-marker"><div class="tl-dot milestone"></div></div>
+      <div class="tl-right">
+        <div class="tl-label">Year 20+</div>
+        <div class="tl-title">"They changed my life."</div>
+        <div class="tl-desc">The letters arrive. The testimonies. The people who say: "I did not make it because of talent. I made it because I followed your light."</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="inst"><p><strong>Important:</strong> The internal timeline and the external timeline are never synchronized. You will feel the growth years before others see it. And others will be impacted years before they tell you. This gap is the keeper's test. Trust the process. The letters always come eventually.</p></div>
+
+  <div class="gq"><p>"There is a version of you on the other side of twenty years of faithfulness that you cannot currently imagine. That version is not built by a single heroic act. It is built by ten thousand ordinary ones."</p></div>
+</section>
+
+<div class="think">
+  <div class="think-label"><svg><use href="#ico-compass"/></svg> The Solitude Audit</div>
+  <h4>Which gift of solitude have you been resisting?</h4>
+  <p>Clarity, conviction, steadiness, or depth? Which one has been trying to form in you, but you have been running from the silence that forges it?</p>
+  <div class="think-line"></div>
+  <p>Where on the timeline are you right now? What year of your watch? Write the number and how it feels from the inside.</p>
+  <div class="think-line"></div>
+</div>
+</div>
+
+<!-- ==================== CHAPTER 4 ==================== -->
+<div class="ch-head"><div class="page">
+  <div class="ch-num">Chapter Four</div>
+  <h2 class="ch-title">Tending the Flame</h2>
+  <p class="ch-sub">The daily practices that keep your light burning when everything says quit</p>
+</div></div>
+
+<div class="ribbon"><p>"Be faithful in small things because it is in them that your strength lies.". Mother Teresa</p></div>
+
+<div class="page">
+<section class="section prose">
+  <h2><svg><use href="#ico-flame"/></svg> The Keeper's Disciplines</h2>
+  <p>Maren did not survive 23 years on willpower. Willpower is a sprinter's fuel. The keeper's watch is a marathon measured in decades. She survived on something different: <strong>a set of daily disciplines so small they could not fail, and so consistent they compounded into something unbreakable.</strong></p>
+  <p>Captain Elias called them "the keeper's rituals." He said every great lighthouse keeper he had met practiced some version of the same four disciplines, whether they knew it or not.</p>
+
+  <div class="adventure">
+    <div class="adv-step">
+      <h4>The Morning Inspection</h4>
+      <p>Before anything else, Maren walked the lighthouse from base to top. Not fixing anything. Just seeing. Checking the oil. Testing the mechanism. Noting what needed attention. This took twelve minutes. It was not dramatic. But it meant she never faced a crisis at midnight that could have been caught at dawn. <strong>Application:</strong> Start every day with a quiet scan of your commitments. What needs attention today? Not tomorrow. Today. Twelve minutes of morning awareness prevents twelve hours of evening crisis.</p>
+    </div>
+    <div class="adv-step">
+      <h4>The Nightly Climb</h4>
+      <p>Every evening, regardless of weather, mood, or fatigue, Maren climbed the 127 steps. Not when she felt like it. When the sun began to set. She attached the action to the trigger, not to her emotions. Over 23 years, this meant she climbed those steps more than 8,000 times. <strong>Application:</strong> Attach your most important daily action to an environmental trigger, not a feeling. "When the sun sets, I climb." Not "when I feel ready, I climb." Feelings are weather. Triggers are lighthouses.</p>
+    </div>
+    <div class="adv-step">
+      <h4>The Logbook Entry</h4>
+      <p>Three lines, every night, after the lamp was lit. What she observed. What she maintained. What she felt. Not a journal. Not a diary. A log. Brief, honest, and consistent. Over two decades, those three nightly lines became the most complete record of the coastline in the region. <strong>Application:</strong> End every day with three lines. What did I maintain today? What did I notice? How do I feel about the watch? This is not about productivity. It is about awareness. The person who tracks their faithfulness sees it compounding.</p>
+    </div>
+    <div class="adv-step">
+      <h4>The Weekly Restoration</h4>
+      <p>Every Sunday, Maren did not climb the stairs until the last possible moment. She spent the day reading, walking the shore, cooking something slow. She called it "shore leave." The light still burned, but the keeper rested. She was adamant about this: "A keeper who never rests eventually burns the lighthouse down. Not by negligence. By exhaustion." <strong>Application:</strong> One day per week where you do less. Not nothing. Less. The keeper is not the flame. The keeper tends the flame. If the keeper burns out, the lighthouse goes dark. Sabbath is not laziness. It is strategy.</p>
+    </div>
+  </div>
+
+  <div class="viz"><div class="viz-inner">
+    <div class="viz-top"><div class="viz-icon"><svg><use href="#ico-shield"/></svg></div><div class="viz-meta"><div class="viz-label">The Architecture</div><h4>Why Small Disciplines Beat Grand Gestures</h4></div></div>
+    <div class="viz-body">
+      <p>A grand gesture is a one-time event. It requires maximum energy and produces a spike of impact that quickly decays. A small discipline is a repeating loop. It requires minimal energy per iteration but compounds over time into something no grand gesture can match.</p>
+      <p>Consider the math. A twelve minute morning inspection performed 365 days per year for 20 years amounts to 1,460 hours of accumulated awareness. That is the equivalent of 182 eight hour workdays. <strong>No single act of heroism produces 182 days of insight.</strong> But 12 minutes a day, done faithfully, does.</p>
+      <p>This is why Maren's lighthouse never failed. Not because she was exceptional on any given night. Because she was adequate on every night. And adequacy, sustained for 8,000 nights, becomes legend.</p>
+      <div class="viz-lesson">The secret the world does not want you to know: most of what we call greatness is just consistency that outlasted everyone else's enthusiasm. You do not become great by doing extraordinary things. You become great by doing ordinary things for an extraordinary duration.</div>
+    </div>
+  </div></div>
+
+  <p>There is a conversation Maren had with a young woman named Petra who applied to be her assistant in Year 18. Petra asked: "What makes a great keeper?" Maren said: "A great keeper is someone who can find meaning in maintenance." Petra did not understand at first. Most people don't.</p>
+  <p>But maintenance is not a lesser form of work. Maintenance is the work that makes all other work possible. <strong>The person who maintains the road is more important than the person who drives the fastest car on it.</strong> The person who keeps the light burning is more important than the captain who gets the credit for the safe voyage. Without the maintainer, everything built by the builder eventually falls apart.</p>
+
+  <div class="ba">
+    <div class="ba-box ba-before">
+      <div class="ba-head"><svg><use href="#ico-arrow-left"/></svg> The Builder's Glory</div>
+      <div class="ba-body"><strong>Visible. Celebrated. Temporary.</strong><br>The builder creates something new. Everyone applauds. The building stands for a while. Then, without maintenance, it decays. The builder has moved on to the next project. The building crumbles because nobody stayed to tend it.</div>
+    </div>
+    <div class="ba-box ba-after">
+      <div class="ba-head"><svg><use href="#ico-arrow-right"/></svg> The Keeper's Legacy</div>
+      <div class="ba-body"><strong>Invisible. Overlooked. Permanent.</strong><br>The keeper maintains what already exists. Nobody applauds. But decades later, the lighthouse still stands. Still burns. Still guides. The keeper's work outlasts the builder's because it never stopped. Legacy belongs to those who stay.</div>
+    </div>
+  </div>
+
+  <div class="insight"><p>Maren wrote: "Everyone wants to build the lighthouse. Nobody wants to keep it. But a lighthouse without a keeper is just a building on a cliff. <em>It is the keeping that makes it a lighthouse.</em>"</p></div>
+
+  <div class="gq"><p>"Meaning does not live in the mountain peak. It lives in the 127th step. The one you climbed for the eight thousandth time. The one that felt exactly like the last seven thousand, nine hundred and ninety nine. That step is where faithfulness lives."</p></div>
+</section>
+
+<div class="root-ck">
+  <div class="rc-label">Root Check</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Consistency Over Intensity.</strong> The lighthouse approach beats the firework approach every time. Steady presence, sustained over years, compounds into trust that no single act of brilliance can match.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Long Dark.</strong> Every keeper faces seasons of invisibility, doubt, and silence. These seasons are not punishment. They are the forge that deepens your character and strengthens your light.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Solitude as Design.</strong> The lighthouse must stand apart to function. Your isolation is not a flaw. It is what makes your light visible. The gifts of solitude are clarity, conviction, steadiness, and depth.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Small Disciplines.</strong> Morning inspection. Nightly climb. Logbook entry. Weekly restoration. Small, repeatable, and compounding. Greatness is not one act. It is ten thousand ordinary ones.</div></div>
+</div>
+
+<div class="think">
+  <div class="think-label"><svg><use href="#ico-flame"/></svg> The Discipline Design</div>
+  <h4>Build Your Keeper's Ritual</h4>
+  <p>What is your version of the morning inspection? (A small daily awareness practice, 15 minutes or less.)</p>
+  <div class="think-line"></div>
+  <p>What is your nightly climb? (The one non-negotiable action you commit to regardless of mood.)</p>
+  <div class="think-line"></div>
+  <p>What trigger will you attach it to? (Not a feeling. An event. "When ___ happens, I do ___.") </p>
+  <div class="think-line"></div>
+  <p>When is your shore leave? (One day per week for restoration. Write the day.)</p>
+  <div class="think-line"></div>
+</div>
+</div>
+
+<!-- ==================== CHAPTER 5 ==================== -->
+<div class="ch-head"><div class="page">
+  <div class="ch-num">Chapter Five</div>
+  <h2 class="ch-title">The Light from the Water</h2>
+  <p class="ch-sub">What your consistency looks like to the people who need it most</p>
+</div></div>
+
+<div class="ribbon"><p>"In the same way, let your light shine before others, that they may see your good deeds and glorify your Father in heaven.". Matthew 5:16</p></div>
+
+<div class="page">
+<section class="section prose">
+  <h2><svg><use href="#ico-ship"/></svg> Captain Elias Speaks</h2>
+  <p>In Year 22, Captain Elias retired from the sea and visited the lighthouse one final time. He and Maren sat on the gallery platform, 127 steps up, watching the ocean turn from gold to deep violet as the sun set. Then Elias told her what her light looked like from the water. She had never heard this before.</p>
+
+  <div class="scene">
+    <div class="scene-label">Captain Elias, Year 22</div>
+    <h4>"What Your Light Means to Us"</h4>
+    <p>"You have to understand, Maren, that out there", he pointed to the dark horizon. "everything moves. The waves. The wind. The current. The sky. Nothing stays still. A sailor's entire world is in constant motion. It is disorienting in ways that land people cannot comprehend."</p>
+    <p>"And then there is your light. It does not move. It does not change direction. It does not go away when the weather turns ugly. In a world where everything shifts, <strong>your light is the one fixed point.</strong> We do not just navigate by it. We anchor our sanity to it. When everything is chaos, I look for Ashford Point, and I think: there. That is real. That is not moving. I am not lost."</p>
+    <p>"That is what you do, Maren. Not just for ships. For anyone who has ever felt lost in the storm and needed one thing, just one thing, that was not changing."</p>
+  </div>
+
+  <p>Maren did not respond for a long time. Then she said: "I thought I was just tending a lamp."</p>
+  <p>Elias smiled. "You were. That is what makes it so powerful. You were not performing. You were not posturing. You were just tending a lamp. And because it was genuine, because it was consistent, because it was not designed to impress anyone <strong>it became the most trustworthy thing on the entire coast.</strong>"</p>
+
+  <div class="hold-grid">
+    <div class="hold-card">
+      <div class="hold-num">From the Water</div>
+      <h4><svg><use href="#ico-anchor"/></svg> To the Lost</h4>
+      <p>Your consistency tells the lost person: there is a fixed point. The world may be spinning, but this person, this truth, this practice has not moved. I can orient myself by it. I am not as lost as I thought.</p>
+    </div>
+    <div class="hold-card">
+      <div class="hold-num">From the Water</div>
+      <h4><svg><use href="#ico-shield"/></svg> To the Afraid</h4>
+      <p>Your consistency tells the afraid person: courage is not the absence of fear. It is the presence of someone who keeps showing up despite it. If the keeper can climb those steps every night, maybe I can face this too.</p>
+    </div>
+    <div class="hold-card">
+      <div class="hold-num">From the Water</div>
+      <h4><svg><use href="#ico-heart"/></svg> To the Broken</h4>
+      <p>Your consistency tells the broken person: healing is possible because someone in this world still cares enough to maintain the light. Not for applause. Not for payment. Because the light matters. And if the light matters, maybe I do too.</p>
+    </div>
+    <div class="hold-card hold-full">
+      <div class="hold-num">From the Water</div>
+      <h4><svg><use href="#ico-sunrise"/></svg> To the Next Keeper</h4>
+      <p>Your consistency tells the next generation: this is what it looks like to stay. Not everyone leaves. Not everyone chases the next shiny thing. Some people plant themselves on a rock and become the landmark that an entire community navigates by. And they make it look like the most natural thing in the world, because after twenty years, it is.</p>
+    </div>
+  </div>
+
+  <p>Here is what Maren could not see from the tower that Elias could see from the water: <strong>her consistency had become the coastline's most trusted institution.</strong> More trusted than the harbor master's office. More trusted than the weather bureau. Because offices close. Bureaus issue incorrect forecasts. But Ashford Point? Ashford Point was always on.</p>
+
+  <div class="insight"><p>You may never know how many people are navigating by your light right now. The spouse who stays steady because you stay steady. The child who believes in faithfulness because they watched you practice it. The colleague who did not quit because they saw that you did not quit. <em>Your consistency is not just your story. It is the chapter in someone else's story that kept them going.</em></p></div>
+
+  <h2><svg><use href="#ico-sunrise"/></svg> The Passing of the Light</h2>
+  <p>In Year 23, Maren began training Petra to take over the lighthouse. Not because Maren was tired. Because a light that depends on one person is fragile. A light that has been passed to another keeper is enduring.</p>
+  <p>Maren taught Petra the same four disciplines. The morning inspection. The nightly climb. The logbook entry. The weekly restoration. She taught her the same truth she had learned through 8,000 nights of practice: "The light does not belong to you. You belong to the light. Tend it. Pass it. That is the keeper's way."</p>
+  <p>The greatest impact of consistency is not what you do. It is what you make possible for the person who comes after you. Every keeper who stays for a generation creates the foundation that allows the next keeper to begin at a higher level. <strong>Your faithfulness is not just building your legacy. It is building someone else's starting point.</strong></p>
+
+  <div class="gq"><p>"A society grows great when old keepers tend lights whose full radiance they know they will never see. Your watch matters. Not because you will see every ship it saves. But because the person after you will inherit a light that has not gone out."</p></div>
+</section>
+
+<!-- ===== FINAL TEST ===== -->
+<div class="think">
+  <div class="think-label"><svg><use href="#ico-lighthouse"/></svg> The Final Test</div>
+  <h4>Can you answer these without looking back?</h4>
+  <p style="text-align:left;"><svg style="width:1rem;height:1rem;vertical-align:middle;color:var(--lamp)" ><use href="#ico-flame"/></svg> What principle does the lighthouse keeper's life prove about consistency versus intensity?</p>
+  <div class="think-line"></div>
+  <p style="text-align:left;"><svg style="width:1rem;height:1rem;vertical-align:middle;color:var(--lamp)" ><use href="#ico-wave"/></svg> Name the five forms of the Long Dark. Which one are you in right now?</p>
+  <div class="think-line"></div>
+  <p style="text-align:left;"><svg style="width:1rem;height:1rem;vertical-align:middle;color:var(--lamp)" ><use href="#ico-compass"/></svg> What are the four gifts of solitude?</p>
+  <div class="think-line"></div>
+  <p style="text-align:left;"><svg style="width:1rem;height:1rem;vertical-align:middle;color:var(--lamp)" ><use href="#ico-journal"/></svg> What are the keeper's four daily disciplines?</p>
+  <div class="think-line"></div>
+  <p style="text-align:left;"><svg style="width:1rem;height:1rem;vertical-align:middle;color:var(--lamp)" ><use href="#ico-ship"/></svg> What does your consistency look like from the water? Who is navigating by your light?</p>
+  <div class="think-line"></div>
+</div>
+
+<!-- ===== PROMPT CARD ===== -->
+<div class="prompt">
+  <div class="prompt-head">The Full Installation Prompt</div>
+  <div class="prompt-body"><strong>I just read The Lighthouse Keeper's Log.</strong> The framework: consistency outperforms intensity, the Long Dark tests every faithful person, solitude is design not punishment, and small daily disciplines compound into unshakable character over decades. The four disciplines: morning inspection, nightly climb, logbook entry, weekly restoration.<br><br>Help me build my personal Keeper's Protocol. Start by asking me about the role where I am called to be a steady light. Then help me identify which phase of the keeper's timeline I am in, design my four daily disciplines, and create a plan for enduring the Long Dark when it comes. <strong>Be honest with me. I am tired of chasing fireworks. I am ready to tend a lighthouse.</strong><br><br>Let us begin.</div>
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Final Root Check</div>
+  <h4>The Full Map</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Keeper's Watch.</strong> Consistency is the most undervalued superpower. The world has plenty of fireworks. It needs lighthouses. Your job is not to be brilliant every day. Your job is to be present every day.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Long Dark.</strong> Irrelevance, invisibility, isolation, comparison, and doubt. Every keeper faces them. Surviving the Long Dark is what transforms a hobbyist into a landmark. The letters always come eventually.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Purpose in Solitude.</strong> Your isolation is not a flaw. It is the design that makes your light visible. The tower perspective gives you clarity, conviction, steadiness, and depth that the crowd cannot build.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Tending the Flame.</strong> Morning inspection. Nightly climb. Logbook entry. Weekly restoration. Small disciplines, repeated for years, produce more than any grand gesture. Attach them to triggers, not feelings.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Light from the Water.</strong> You cannot see your own impact from the tower. But from the water, your light is the fixed point that lost, afraid, and broken people navigate by. Your consistency is someone else's survival story.</div></div>
+</div>
+
+<div class="think">
+  <div class="think-label">Your Commitment</div>
+  <h4>The night the keeping begins</h4>
+  <p>Write your start date. Name your lighthouse, the role, the relationship, the calling you will tend faithfully. Commit to the four disciplines. Start tonight with your first logbook entry: three lines. What did I maintain? What did I notice? How does the watch feel?</p>
+  <div class="think-line"></div>
+  <div class="think-line"></div>
+</div>
+
+<div class="inst"><p><strong>Remember:</strong> The light does not belong to you. You belong to the light. Tend it faithfully. Pass it to the next keeper. That is the way. And the ships you will never see? They are out there tonight, steering toward you. Keep climbing. Keep burning. Keep the watch.</p></div>
+</div>
+
+<!-- ===== FINALE ===== -->
+<section class="finale">
+  <span class="finale-emoji"><svg><use href="#ico-lighthouse"/></svg></span>
+  <h2>The lighthouse never moved.<br><span>That is why every ship found home.</span></h2>
+  <p>You were not called to be a firework. You were called to be a lighthouse. Steady. Fixed. Burning through every storm. The world will celebrate the spectacular. History will remember the faithful. Be the light that does not flicker. Be the keeper who does not leave.</p>
+  <p style="margin-top:24px;font-family:'Poppins',sans-serif;font-size:0.8rem;font-weight:600;color:rgba(255,255,255,0.15)">Climb the steps. Light the lamp. Keep the watch.</p>
+</section>
+
+<footer>
+  <p>"He who began a good work in you will carry it on to completion.". Philippians 1:6</p>
+  <div class="brand">KingdomBuilders AI</div>
+  <p style="margin-top:14px;font-family:'Poppins',sans-serif;font-size:0.58rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.06)">kingdombuilders.ai</p>
+</footer>
+
+<div style="text-align:center;padding:20px 24px 32px;background:#020608;border-top:1px solid rgba(216,152,58,0.06);font-family:'Poppins',sans-serif;font-size:0.65rem;color:rgba(255,255,255,0.18);line-height:1.6" class="no-print">
+  To save as PDF: Open this file in your browser, then File, then Print, then "Save as PDF"<br>
+  Works on desktop, iPhone, iPad, and Android.
+</div>
+
+</body>
+</html>

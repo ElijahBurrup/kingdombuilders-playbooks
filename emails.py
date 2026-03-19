@@ -190,9 +190,8 @@ def send_compound_email(customer_email, download_token):
 
 
 def send_lead_magnet_email(email):
-    """Send free Chapter 1 of The Salmon Journey."""
-    chapter_url = f"{config.BASE_URL}/free/salmon-journey-ch1"
-    playbook_url = f"{config.BASE_URL}/thesalmonjourney"
+    """Send welcome email to new subscriber."""
+    catalog_url = f"{config.BASE_URL}/"
 
     html = f"""
     <div style="max-width:600px;margin:0 auto;font-family:Arial,Helvetica,sans-serif;background:#FDFCFA;padding:40px 24px;">
@@ -201,27 +200,23 @@ def send_lead_magnet_email(email):
       </div>
 
       <div style="background:linear-gradient(135deg,#052030 0%,#0A3A5A 100%);border-radius:8px;padding:40px 32px;text-align:center;">
-        <div style="font-size:3rem;margin-bottom:12px;">🐟</div>
-        <h1 style="font-family:Georgia,serif;font-size:24px;color:#FFFFFF;margin:0 0 8px;">Your Free Chapter Is Ready</h1>
-        <p style="font-size:14px;color:rgba(255,255,255,0.5);margin:0 0 28px;">The Salmon Journey — Chapter 1: The Two Paths</p>
+        <h1 style="font-family:Georgia,serif;font-size:24px;color:#FFFFFF;margin:0 0 8px;">Welcome to Kingdom Builders</h1>
+        <p style="font-size:14px;color:rgba(255,255,255,0.5);margin:0 0 28px;">You now have access to our free playbooks.</p>
 
-        <a href="{chapter_url}" style="display:inline-block;padding:16px 48px;background:linear-gradient(135deg,#D4A020 0%,#F0C040 100%);color:#052030;font-size:16px;font-weight:700;text-decoration:none;border-radius:4px;">
-          READ CHAPTER 1
+        <a href="{catalog_url}" style="display:inline-block;padding:16px 48px;background:linear-gradient(135deg,#D4A020 0%,#F0C040 100%);color:#052030;font-size:16px;font-weight:700;text-decoration:none;border-radius:4px;">
+          BROWSE PLAYBOOKS
         </a>
       </div>
 
       <div style="padding:32px 0;text-align:center;">
         <p style="font-size:15px;color:#3A4A5A;line-height:1.7;margin-bottom:16px;">
-          Meet Steady and Flash — two salmon who teach you how compound interest actually works. One swims 1% farther every day. The other waits for one big sprint. Only one makes it.
-        </p>
-        <p style="font-size:14px;color:#6A7A8A;line-height:1.6;">
-          This is Chapter 1 of 5. If you want the full story — including The Rule of 72, The Dark Side of Compound Interest, and The Millionaire Math — <a href="{playbook_url}" style="color:#D4A020;font-weight:600;">get the full playbook for $14.99</a>.
+          Mental models for faith, productivity, finance, technology, and identity. 64 immersive guides that change how you think.
         </p>
       </div>
 
       <div style="border-top:1px solid #F2F0E8;padding-top:24px;text-align:center;">
         <p style="font-size:11px;color:#A0A8B0;line-height:1.5;">
-          Kingdom Builders AI · <a href="{playbook_url}" style="color:#D4A020;">kingdombuilders.ai</a>
+          Kingdom Builders AI · <a href="{catalog_url}" style="color:#D4A020;">kingdombuilders.ai</a>
         </p>
       </div>
     </div>
@@ -231,7 +226,7 @@ def send_lead_magnet_email(email):
         resend.emails.send({
             "from": "Kingdom Builders AI <playbook@kingdombuilders.ai>",
             "to": email,
-            "subject": "Your free chapter: The Salmon Journey",
+            "subject": "Welcome to Kingdom Builders AI",
             "html": html,
         })
     except Exception as e:

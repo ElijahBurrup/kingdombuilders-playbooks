@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lay It Down: Wrath | Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1A0810;--ink-mid:#2C1020;--ink-soft:#3D2030;
+  --steel:#5A3848;--steel-light:#8A6A7A;--fog:#B09098;
+  --fire:#D42020;--fire-mid:rgba(212,32,32,0.18);--fire-pale:rgba(212,32,32,0.07);
+  --ember:#FF4040;--ember-mid:rgba(255,64,64,0.15);
+  --gold:#D4A030;--gold-mid:rgba(212,160,48,0.18);--gold-pale:rgba(212,160,48,0.08);
+  --ash:#E85050;--ash-mid:rgba(232,80,80,0.15);
+  --green:#2D8A4E;--green-mid:rgba(45,138,78,0.15);
+  --cream:#FFF8F6;--cream-warm:#FFF4F0;--paper:#FFFAF8;--white:#FFFFFF;
+  --radius:10px;--shadow:0 2px 16px rgba(26,8,16,0.09);--shadow-deep:0 8px 40px rgba(26,8,16,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.78;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.label{font-family:'Poppins',sans-serif}
+.page{max-width:700px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--ink-mid);font-weight:600;font-family:'Poppins',sans-serif}
+
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(160deg,#120206 0%,#2A0A12 40%,#1A0818 100%);position:relative;overflow:hidden}
+.cover-grain{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:0.5}
+.cover-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 25%,rgba(10,2,4,0.7) 100%)}
+.flame-ring{position:absolute;border-radius:50%;border:1px solid rgba(212,32,32,0.06);animation:flame-expand 7s ease-out infinite}
+.flame-ring:nth-child(3){width:180px;height:180px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:0s}
+.flame-ring:nth-child(4){width:360px;height:360px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:1.8s}
+.flame-ring:nth-child(5){width:540px;height:540px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:3.6s}
+@keyframes flame-expand{0%{opacity:0.6;transform:translate(-50%,-50%) scale(0.85)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.25)}}
+.cover-content{position:relative;z-index:2;padding:60px 24px 40px}
+.cover-badge{display:inline-block;padding:5px 18px;border:1px solid rgba(212,32,32,0.3);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.67rem;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:var(--fire);margin-bottom:40px;background:rgba(212,32,32,0.07)}
+.cover h1{font-family:'Poppins',sans-serif;font-size:clamp(3rem,9vw,5.5rem);font-weight:300;color:#FFFFFF;line-height:0.95;margin-bottom:6px;letter-spacing:-0.02em}
+.cover h1 em{display:block;color:var(--fire);font-style:normal;font-weight:700;font-size:0.5em;margin-top:12px;letter-spacing:0.01em}
+.cover-sub{font-family:'Lora',Georgia,serif;font-size:clamp(0.95rem,2.5vw,1.15rem);font-style:italic;color:rgba(255,255,255,0.45);margin-top:28px;line-height:1.7;max-width:480px;margin-left:auto;margin-right:auto}
+.cover-sub em{color:rgba(212,32,32,0.85);font-style:normal;font-weight:600}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.5rem;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-top:52px}
+.cover-verse{margin-top:28px;padding:14px 24px;display:inline-block;background:rgba(212,32,32,0.06);border:1px solid rgba(212,32,32,0.12);border-radius:8px;font-family:'Lora',Georgia,serif;font-size:0.82rem;font-style:italic;color:rgba(255,255,255,0.35);line-height:1.6}
+.cover-art{width:200px;height:190px;margin:0 auto 28px;display:block;animation:cover-breathe 5s ease-in-out infinite}
+.cover-art svg{width:100%;height:100%;filter:drop-shadow(0 0 24px rgba(212,32,32,0.25)) drop-shadow(0 0 50px rgba(212,32,32,0.1))}
+@keyframes cover-breathe{0%,100%{transform:scale(1);opacity:0.9}50%{transform:scale(1.04);opacity:1}}
+
+.ch-head{background:linear-gradient(160deg,#120206 0%,#201018 100%);padding:72px 24px 52px;position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 50%,rgba(212,32,32,0.04) 0%,transparent 50%)}
+.ch-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 5%,var(--fire) 50%,transparent 95%);opacity:0.5}
+.ch-head .page{position:relative;z-index:2}
+.ch-num{font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--fire);opacity:0.9;margin-bottom:8px}
+.ch-title{font-family:'Poppins',sans-serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:700;color:#FFFFFF;margin:10px 0 8px;letter-spacing:-0.01em}
+.ch-sub{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:rgba(212,32,32,0.55)}
+
+.ribbon{text-align:center;padding:20px 24px;background:var(--cream-warm);border-top:1px solid rgba(26,8,16,0.06);border-bottom:1px solid rgba(26,8,16,0.06)}
+.ribbon p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:var(--steel-light);max-width:540px;margin:0 auto;line-height:1.6}
+
+.mission{text-align:center;padding:36px 32px;margin:36px 0;background:linear-gradient(140deg,rgba(212,32,32,0.08),rgba(212,32,32,0.03));border-radius:14px;border:2px solid rgba(212,32,32,0.2);box-shadow:0 0 0 1px rgba(212,32,32,0.06),var(--shadow)}
+.mission-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--fire);margin-bottom:12px}
+.mission p{font-family:'Poppins',sans-serif;font-size:clamp(0.88rem,2.2vw,1.05rem);font-weight:500;color:var(--ink-mid);line-height:1.65}
+.mission p em{color:var(--fire);font-style:normal;font-weight:700}
+
+.insight{margin:30px 0;padding:28px 32px;background:linear-gradient(140deg,#120206,#201018);border-radius:14px;border:2px solid rgba(212,32,32,0.25);border-left:5px solid var(--fire);position:relative;overflow:hidden;box-shadow:var(--shadow-deep)}
+.insight::before{content:'';position:absolute;top:-40%;right:-10%;width:200px;height:200px;background:radial-gradient(circle,rgba(212,32,32,0.07) 0%,transparent 70%);border-radius:50%}
+.insight p{font-family:'Lora',Georgia,serif;font-size:1.02rem;font-style:italic;color:rgba(255,255,255,0.9);line-height:1.72;position:relative;z-index:2}
+.insight em{color:var(--fire);font-style:normal;font-weight:700}
+
+.gq{margin:32px 0;text-align:center;padding:32px 24px;position:relative;background:linear-gradient(160deg,rgba(212,32,32,0.04),rgba(212,32,32,0.07));border-radius:14px;border:1.5px solid rgba(212,32,32,0.15)}
+.gq::before,.gq::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:48px;height:2px;background:linear-gradient(90deg,transparent,var(--fire),transparent)}
+.gq::before{top:0}.gq::after{bottom:0}
+.gq p{font-family:'Lora',Georgia,serif;font-size:1.05rem;font-style:italic;color:var(--ink-soft);line-height:1.6;max-width:520px;margin:0 auto}
+
+.viz{margin:44px 0 32px;border-radius:14px;overflow:hidden;border:2px solid rgba(212,32,32,0.22);box-shadow:var(--shadow-deep);position:relative;background:var(--white)}
+.viz-top{background:linear-gradient(135deg,rgba(212,32,32,0.1),rgba(212,32,32,0.04));padding:20px 26px 18px;display:flex;align-items:center;gap:14px;border-bottom:1px solid rgba(212,32,32,0.12)}
+.viz-icon{width:48px;height:48px;border-radius:50%;border:2px solid rgba(212,32,32,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(145deg,#fff,rgba(255,240,240,0.6))}
+.viz-meta{flex:1}
+.viz-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);margin-bottom:2px}
+.viz h4{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:var(--ink-mid)}
+.viz-body{padding:26px 26px 22px;background:linear-gradient(170deg,#FFFDF8 0%,#FFF8F4 100%)}
+.viz-body p{font-size:0.95rem;color:var(--steel);line-height:1.78;margin-bottom:14px}
+.viz-body strong,.viz-lesson strong{color:rgba(255,255,255,0.95);font-weight:700}
+.viz-body em,.viz-lesson em{color:var(--fire-pale);font-style:normal;font-weight:600}
+.viz-body p:last-child{margin-bottom:0}
+.viz-trigger{margin-top:18px;padding:14px 18px;background:linear-gradient(135deg,rgba(212,32,32,0.08),rgba(212,32,32,0.14));border:1.5px solid rgba(212,32,32,0.2);border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.76rem;font-weight:600;color:var(--ink-soft);text-align:center;line-height:1.55}
+
+.ba-pair{margin:32px 0;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:620px){.ba-pair{grid-template-columns:1fr}}
+.ba-card{border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.ba-head{padding:11px 18px;font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.ba-before{background:linear-gradient(170deg,#FFF0F0,#FFE8E8)}
+.ba-before .ba-head{background:rgba(212,32,32,0.12);color:#8B1F1F}
+.ba-after{background:linear-gradient(170deg,#F0FFF4,#E8FFE8)}
+.ba-after .ba-head{background:rgba(45,138,78,0.12);color:#1A4A28}
+.ba-dot{width:7px;height:7px;border-radius:50%}
+.ba-before .ba-dot{background:var(--fire)}
+.ba-after .ba-dot{background:var(--green)}
+.ba-body{padding:16px 18px;font-size:0.88rem;line-height:1.65}
+.ba-body ul{list-style:none;padding:0;margin:0}
+.ba-body ul li{padding:6px 0;border-bottom:1px solid rgba(0,0,0,0.05);font-family:'Poppins',sans-serif;font-size:0.8rem}
+.ba-body ul li:last-child{border-bottom:none}
+
+.dd{margin:24px 0;padding:22px 26px;border-radius:12px;border-left:4px solid var(--fire);background:var(--white);box-shadow:var(--shadow)}
+.dd:nth-of-type(even){background:var(--cream)}
+.dd h4{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--ink-mid);margin-bottom:4px}
+.dd .sub{font-family:'Poppins',sans-serif;font-size:0.54rem;font-weight:700;color:var(--fire);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.dd p{font-size:0.95rem;color:var(--steel);line-height:1.78;margin-bottom:8px}
+.dd p:last-child{margin-bottom:0}
+
+.adventure{margin:36px 0;border-radius:14px;overflow:hidden;box-shadow:var(--shadow-deep);background:var(--white);border:1.5px solid rgba(26,8,16,0.08)}
+.adv-head{padding:14px 26px 12px;display:flex;align-items:center;gap:12px;border-bottom:1.5px solid rgba(212,32,32,0.1);background:linear-gradient(135deg,rgba(212,32,32,0.05),rgba(212,32,32,0.02))}
+.adv-head-icon{width:36px;height:36px;border-radius:50%;background:rgba(212,32,32,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1.5px solid rgba(212,32,32,0.2)}
+.adv-head-text{flex:1}
+.adv-head-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--fire);opacity:0.7}
+.adv-head-title{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--ink-mid)}
+.adv-step{padding:14px 26px;border-bottom:1px solid rgba(26,8,16,0.05)}
+.adv-step:last-child{border-bottom:none}
+.adv-step:nth-child(odd){background:var(--white)}
+.adv-step:nth-child(even){background:rgba(212,32,32,0.02)}
+.step-c p{font-family:'Source Serif 4',Georgia,serif;font-size:0.93rem;line-height:1.75;margin:0 0 6px;color:var(--ink-soft)}
+.step-c p:last-child{margin-bottom:0}
+.step-c em{color:var(--steel-light)}
+.tag-you{font-family:'Poppins',sans-serif;font-weight:700;color:var(--ink-mid);font-size:0.74rem;display:inline-block;padding:2px 10px;background:rgba(212,32,32,0.1);border-radius:4px;margin-bottom:5px;border:1px solid rgba(212,32,32,0.2)}
+.adv-result-good{background:linear-gradient(135deg,rgba(45,138,78,0.04),rgba(45,138,78,0.08))!important}
+
+.think{margin:16px 0 36px;padding:30px;background:linear-gradient(145deg,rgba(212,32,32,0.08),rgba(212,32,32,0.04));border:2px dashed rgba(212,32,32,0.35);border-radius:14px;position:relative;box-shadow:0 4px 16px rgba(212,32,32,0.08)}
+.think::before{content:'';position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--paper);padding:0 12px;width:28px;height:28px;display:block;margin-left:-14px;background:var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D42020' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22c-2 0-4-1.5-4-4 0-2 2-3 4-3s4 1 4 3c0 2.5-2 4-4 4z'/%3E%3Cpath d='M12 15c-1.5-2-5-4-5-8a5 5 0 0 1 10 0c0 4-3.5 6-5 8z'/%3E%3Cpath d='M9.5 9c.3-1.8 1.5-3 2.5-3'/%3E%3C/svg%3E") center/contain no-repeat}
+.think-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);text-align:center;margin-bottom:10px}
+.think h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--ink-mid);text-align:center;margin-bottom:14px}
+.think p{font-size:0.86rem;color:var(--steel);margin-bottom:8px;font-family:'Poppins',sans-serif}
+.think-line{border-bottom:1.5px solid rgba(212,32,32,0.25);height:30px;margin-bottom:4px;cursor:text}
+.think p.q-start{font-family:'Poppins',sans-serif;font-weight:500;color:var(--ink-soft);font-size:0.82rem;text-align:left;margin-top:14px;margin-bottom:4px}
+.think .closing{font-weight:600;color:var(--fire);margin-top:12px;font-family:'Poppins',sans-serif;font-size:0.8rem}
+
+.breathe{margin:44px 0;text-align:center;padding:52px 24px;position:relative;background:linear-gradient(160deg,rgba(212,32,32,0.08),rgba(212,32,32,0.04));border-radius:16px;border:2px solid rgba(212,32,32,0.15)}
+.breathe-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1.5px solid rgba(212,32,32,0.1)}
+.breathe-ring:nth-child(1){width:140px;height:140px;animation:breathe-pulse 6s ease-in-out infinite}
+.breathe-ring:nth-child(2){width:90px;height:90px;animation:breathe-pulse 6s ease-in-out infinite 1.5s}
+.breathe-ring:nth-child(3){width:45px;height:45px;animation:breathe-pulse 6s ease-in-out infinite 3s}
+@keyframes breathe-pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.5}50%{transform:translate(-50%,-50%) scale(1.25);opacity:0.1}}
+.breathe-content{position:relative;z-index:2}
+.breathe-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--fire);margin-bottom:8px}
+.breathe h4{font-family:'Poppins',sans-serif;font-size:0.94rem;font-weight:600;color:var(--ink-mid);margin-bottom:8px}
+.breathe p{font-family:'Lora',Georgia,serif;font-size:0.88rem;font-style:italic;color:var(--steel);max-width:420px;margin:0 auto;line-height:1.65}
+
+.descent-ramp{margin:36px 0 0;display:flex;flex-direction:column;gap:12px}
+.ramp-echo{padding:26px 30px;background:linear-gradient(160deg,rgba(212,32,32,0.07),rgba(212,32,32,0.03));border-radius:14px;border:1.5px solid rgba(212,32,32,0.12)}
+.ramp-echo p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:var(--steel);line-height:1.78;text-align:center;margin:0}
+.ramp-close{padding:36px 30px;text-align:center;background:linear-gradient(160deg,rgba(212,160,48,0.1),rgba(212,160,48,0.05));border-radius:14px;border:1.5px solid rgba(212,160,48,0.2)}
+.ramp-close-label{font-family:'Poppins',sans-serif;font-size:0.44rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--gold);opacity:0.9;margin-bottom:8px}
+.ramp-close p{font-family:'Poppins',sans-serif;font-size:0.8rem;font-weight:500;color:var(--ink-soft);line-height:1.65;max-width:440px;margin:0 auto}
+
+.inst{margin:26px 0;padding:18px 22px;background:linear-gradient(90deg,rgba(212,32,32,0.07),rgba(212,160,48,0.05));border-left:4px solid var(--fire);border-radius:0 12px 12px 0;box-shadow:var(--shadow)}
+.inst p{font-family:'Poppins',sans-serif;font-size:0.8rem;color:var(--steel);line-height:1.6;margin:0}
+.inst strong{color:var(--ink-mid);font-weight:600}
+
+.h2-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--ink-mid),var(--ink-soft));margin-right:10px;vertical-align:middle;box-shadow:0 2px 8px rgba(26,8,16,0.2)}
+.h2-icon svg{width:16px;height:16px;stroke:var(--fire);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.viz-icon svg{width:24px;height:24px;stroke:var(--fire);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.adv-head-icon svg{width:18px;height:18px;stroke:var(--fire);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.prose h2{font-family:'Poppins',sans-serif;font-size:1.3rem;color:var(--ink-mid);margin:36px 0 14px;letter-spacing:-0.01em;display:flex;align-items:center}
+
+.root-review{margin:44px 0;padding:28px 22px;background:linear-gradient(160deg,#FFF8F4,#FFF0F0);border-radius:16px;border:2px solid rgba(212,32,32,0.18);box-shadow:var(--shadow)}
+.root-label{font-family:'Poppins',sans-serif;font-size:0.44rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--fire);text-align:center;margin-bottom:18px}
+.root-layer{display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 0;flex-wrap:wrap}
+.root-layer.current{padding:12px 0}
+.root-ch{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--fog);width:28px;text-align:right;flex-shrink:0}
+.root-layer.current .root-ch{color:var(--fire)}
+.root-items{display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center}
+.root-pill{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:600;padding:5px 13px;border-radius:6px;white-space:nowrap}
+.root-pill.rp-dim{background:rgba(90,56,72,0.1);color:var(--steel);border:1.5px solid rgba(90,56,72,0.18)}
+.root-pill.rp-bright{background:linear-gradient(135deg,rgba(212,32,32,0.18),rgba(212,32,32,0.26));color:var(--ink-mid);border:2px solid rgba(212,32,32,0.35);box-shadow:0 2px 10px rgba(212,32,32,0.12);font-weight:700}
+.root-pill.rp-ch1{background:rgba(212,32,32,0.12);color:#5A1010;border:1.5px solid rgba(212,32,32,0.28);font-weight:600}
+.root-pill.rp-ch2{background:rgba(180,60,30,0.12);color:#5A2000;border:1.5px solid rgba(180,60,30,0.25);font-weight:600}
+.root-pill.rp-ch3{background:rgba(45,138,78,0.12);color:#1A3A28;border:1.5px solid rgba(45,138,78,0.25);font-weight:600}
+.root-pill.rp-ch4{background:rgba(160,100,240,0.12);color:#3A1A5A;border:1.5px solid rgba(160,100,240,0.25);font-weight:600}
+.root-pill.rp-ch5{background:rgba(60,140,240,0.12);color:#1A2E5A;border:1.5px solid rgba(60,140,240,0.25);font-weight:600}
+.root-arr{color:var(--fire);opacity:0.65;font-size:0.78rem;padding:0 3px}
+.root-layer.current .root-arr{opacity:0.9}
+.root-sep{width:60%;max-width:300px;height:1.5px;background:linear-gradient(90deg,transparent,rgba(212,32,32,0.15),transparent);margin:6px auto}
+
+.prompt{margin:32px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(212,32,32,0.22);box-shadow:var(--shadow-deep)}
+.prompt-head{padding:12px 20px;background:linear-gradient(90deg,#120206,#201018);font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--fire)}
+.prompt-body{padding:24px 26px;background:#0A0204;color:#C0B0B8;font-family:'Poppins',sans-serif;font-size:0.82rem;line-height:1.8}
+.prompt-body strong{color:var(--fire)}
+
+.stack{margin:38px 0;text-align:center}
+.stack-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);opacity:0.7;margin-bottom:16px}
+.stack-flow{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap}
+.stack-node{display:inline-flex;align-items:center;justify-content:center;padding:10px 18px;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.68rem;font-weight:600;line-height:1.35;white-space:nowrap}
+.sn-dark{background:var(--ink-mid);color:#FFFFFF;border:1.5px solid rgba(212,32,32,0.2)}
+.sn-fire{background:rgba(212,32,32,0.13);color:var(--ink-mid);border:1.5px solid rgba(212,32,32,0.25)}
+.sn-gold{background:rgba(212,160,48,0.13);color:var(--ink-soft);border:1.5px solid rgba(212,160,48,0.28)}
+.sn-red{background:rgba(212,32,32,0.1);color:#5A1818;border:1.5px solid rgba(212,32,32,0.2)}
+.sn-green{background:rgba(45,138,78,0.1);color:#1A3A28;border:1.5px solid rgba(45,138,78,0.2)}
+.stack-arr{font-size:1rem;color:rgba(212,32,32,0.45);padding:0 7px}
+
+.prayer{margin:32px 0;padding:28px 30px;background:linear-gradient(160deg,#120206,#181020);border-radius:14px;border:2px solid rgba(212,160,48,0.25);position:relative;overflow:hidden}
+.prayer::before{content:'';position:absolute;top:-20%;left:-10%;width:160px;height:160px;background:radial-gradient(circle,rgba(212,160,48,0.06) 0%,transparent 70%);border-radius:50%}
+.prayer-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;position:relative;z-index:2}
+.prayer p{font-family:'Lora',Georgia,serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.85);line-height:1.8;position:relative;z-index:2;margin-bottom:8px}
+.prayer p:last-child{margin-bottom:0}
+.prayer strong{color:var(--gold);font-style:normal;font-weight:700}
+
+.finale{text-align:center;padding:80px 24px;background:linear-gradient(160deg,#120206 0%,#201018 100%);position:relative;overflow:hidden}
+.finale::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 50% 50%,rgba(212,32,32,0.04) 0%,transparent 50%)}
+.finale h2{font-family:'Poppins',sans-serif;font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;color:#FFFFFF;margin-bottom:8px;position:relative;z-index:2}
+.finale h2 span{color:var(--fire)}
+.finale p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.38);max-width:460px;margin:16px auto;line-height:1.65;position:relative;z-index:2}
+
+footer{text-align:center;padding:36px 24px;background:#060204}
+footer p{font-family:'Lora',Georgia,serif;font-size:0.8rem;font-style:italic;color:rgba(212,32,32,0.2);margin-bottom:12px}
+footer .brand{font-family:'Poppins',sans-serif;font-size:0.67rem;font-style:normal;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.12)}
+
+/* === TRIGGER TIMELINE === */
+.trigger-timeline{margin:36px 0;padding:28px 26px;background:var(--white);border-radius:14px;border:2px solid rgba(212,32,32,0.2);box-shadow:var(--shadow)}
+.trigger-timeline-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);text-align:center;margin-bottom:22px}
+.tl-track{position:relative;padding-left:28px}
+.tl-track::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--fire),var(--ember),var(--gold),var(--green));border-radius:3px}
+.tl-node{position:relative;padding:14px 0 22px 24px}
+.tl-node::before{content:'';position:absolute;left:-22px;top:18px;width:12px;height:12px;border-radius:50%;border:2.5px solid var(--fire);background:var(--white);z-index:1}
+.tl-node.tl-green::before{border-color:var(--green)}
+.tl-node.tl-gold::before{border-color:var(--gold)}
+.tl-node-label{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--fire);margin-bottom:4px}
+.tl-node.tl-green .tl-node-label{color:var(--green)}
+.tl-node.tl-gold .tl-node-label{color:var(--gold)}
+.tl-node h4{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--ink-mid);margin-bottom:6px}
+.tl-node p{font-family:'Poppins',sans-serif;font-size:0.82rem;color:var(--steel);line-height:1.6}
+
+/* === RESENTMENT LEDGER === */
+.resent-ledger{margin:36px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(212,32,32,0.2);box-shadow:var(--shadow-deep)}
+.resent-ledger-head{padding:14px 22px;background:linear-gradient(135deg,rgba(212,32,32,0.1),rgba(212,32,32,0.04));font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);text-align:center;border-bottom:1.5px solid rgba(212,32,32,0.12)}
+.resent-table{width:100%;border-collapse:collapse}
+.resent-table th{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:12px 16px;text-align:left;border-bottom:1.5px solid rgba(26,8,16,0.08)}
+.resent-table th:first-child{color:#8B1F1F;background:rgba(212,32,32,0.05)}
+.resent-table th:last-child{color:#1A4A28;background:rgba(45,138,78,0.05)}
+.resent-table td{padding:12px 16px;font-family:'Poppins',sans-serif;font-size:0.8rem;color:var(--steel);border-bottom:1px solid rgba(26,8,16,0.05);vertical-align:top}
+.resent-table tr:last-child td{border-bottom:none}
+.resent-table td:first-child{background:rgba(212,32,32,0.02)}
+.resent-table td:last-child{background:rgba(45,138,78,0.02)}
+
+/* === RAGE CYCLE === */
+.rage-cycle{margin:36px 0;text-align:center;padding:32px 24px;background:var(--white);border-radius:14px;border:2px solid rgba(212,32,32,0.2);box-shadow:var(--shadow)}
+.rage-cycle-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);margin-bottom:20px}
+.rc-ring{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0}
+.rc-node{padding:12px 20px;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.72rem;font-weight:600;min-width:120px}
+.rc-node.rc-fire{background:rgba(212,32,32,0.12);color:#5A1010;border:1.5px solid rgba(212,32,32,0.25)}
+.rc-node.rc-ember{background:rgba(255,64,64,0.12);color:#5A1818;border:1.5px solid rgba(255,64,64,0.2)}
+.rc-node.rc-dark{background:var(--ink-mid);color:#FFFFFF;border:1.5px solid rgba(212,32,32,0.2)}
+.rc-node.rc-gold{background:rgba(212,160,48,0.12);color:#5A3800;border:1.5px solid rgba(212,160,48,0.25)}
+.rc-arr{font-size:1.1rem;color:rgba(212,32,32,0.4);padding:0 8px}
+.rc-break{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--green);margin-top:20px;padding:10px 20px;border:2px dashed rgba(45,138,78,0.3);border-radius:8px;display:inline-block;background:rgba(45,138,78,0.06)}
+
+.series-progress{text-align:center;padding:32px 24px;background:var(--cream-warm);border-top:1px solid rgba(26,8,16,0.06)}
+.series-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);margin-bottom:14px}
+.series-dots{display:flex;align-items:center;justify-content:center;gap:12px}
+.series-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(212,32,32,0.3);background:transparent}
+.series-dot.done{background:rgba(212,32,32,0.25);border-color:rgba(212,32,32,0.5)}
+.series-dot.active{background:var(--fire);border-color:var(--fire);box-shadow:0 0 8px rgba(212,32,32,0.3)}
+.series-dot-label{font-family:'Poppins',sans-serif;font-size:0.55rem;color:var(--steel-light);margin-top:10px}
+
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.65s ease,transform 0.65s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.stagger-children > *{opacity:0;transform:translateY(18px);transition:opacity 0.5s ease,transform 0.5s ease}
+.stagger-children.visible > *:nth-child(1){opacity:1;transform:none;transition-delay:0s}
+.stagger-children.visible > *:nth-child(2){opacity:1;transform:none;transition-delay:0.12s}
+.stagger-children.visible > *:nth-child(3){opacity:1;transform:none;transition-delay:0.24s}
+.stagger-children.visible > *:nth-child(4){opacity:1;transform:none;transition-delay:0.36s}
+.think:hover{box-shadow:0 0 0 2px rgba(212,32,32,0.25),0 8px 32px rgba(212,32,32,0.1)}
+.think{transition:box-shadow 0.3s ease}
+.adv-step{transition:background 0.2s ease}
+.adv-step:hover{background:rgba(212,32,32,0.04)!important}
+@keyframes insight-border{0%,100%{border-left-color:var(--fire)}50%{border-left-color:rgba(212,32,32,0.3)}}
+.insight{animation:insight-border 4s ease-in-out infinite}
+
+#read-progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--fire),rgba(212,32,32,0.4));z-index:9999;pointer-events:none;transition:width 0.08s linear}
+#chapter-pill{position:fixed;bottom:24px;right:24px;background:var(--ink);border:1px solid rgba(212,32,32,0.25);color:var(--fire);font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:8px 18px;border-radius:50px;opacity:0;transition:opacity 0.35s ease;pointer-events:none;z-index:1000;box-shadow:0 4px 24px rgba(0,0,0,0.4)}
+#chapter-pill.show{opacity:1}
+
+@media(max-width:620px){.stack-node{font-size:0.6rem;padding:8px 12px}.rc-node{font-size:0.6rem;padding:10px 14px;min-width:90px}.tl-node{padding-left:18px}}
+@media(max-width:640px){
+  .page{padding:0 16px}
+}
+@media print{
+  @page{margin:18mm 16mm 22mm 16mm}
+  body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .cover{min-height:auto;padding:80px 24px;break-after:page}
+  .ch-head{break-before:page;padding:56px 24px 40px}
+  .think,.adventure,.viz,.ba-pair,.mission,.insight,.dd,.breathe,.prayer,.prompt,.stack,.descent-ramp,.trigger-timeline,.resent-ledger,.rage-cycle{break-inside:avoid}
+  .flame-ring,.cover-grain,.breathe-ring,.cover-vignette{animation:none!important;display:none}
+  .section{padding:36px 0}
+  #read-progress,#chapter-pill,.no-print{display:none!important}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+</style>
+</head>
+<body>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="ico-fire" viewBox="0 0 24 24"><path d="M12 22c-2 0-4-1.5-4-4 0-2 2-3 4-3s4 1 4 3c0 2.5-2 4-4 4z"/><path d="M12 15c-1.5-2-5-4-5-8a5 5 0 0 1 10 0c0 4-3.5 6-5 8z"/><path d="M9.5 9c.3-1.8 1.5-3 2.5-3"/></symbol>
+  <symbol id="ico-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="ico-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+  <symbol id="ico-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+  <symbol id="ico-chain" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+  <symbol id="ico-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+  <symbol id="ico-heart" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></symbol>
+</svg>
+
+<div id="read-progress"></div>
+<div id="chapter-pill"></div>
+
+<!-- ===== COVER ===== -->
+<section class="cover">
+  <div class="cover-grain"></div>
+  <div class="cover-vignette"></div>
+  <div class="flame-ring"></div>
+  <div class="flame-ring"></div>
+  <div class="flame-ring"></div>
+  <div class="cover-content">
+    <div class="cover-badge">Lay It Down Series. Part 3 of 7</div>
+    <div class="cover-art">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 190" aria-label="Torch and fire illustration">
+        <defs>
+          <radialGradient id="ldw-glow" cx="50%" cy="25%" r="50%"><stop offset="0%" stop-color="#D42020" stop-opacity="0.35"/><stop offset="60%" stop-color="#FF4040" stop-opacity="0.1"/><stop offset="100%" stop-color="#D42020" stop-opacity="0"/></radialGradient>
+          <radialGradient id="ldw-puddle" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#D42020" stop-opacity="0.15"/><stop offset="40%" stop-color="#2C1020" stop-opacity="0.2"/><stop offset="100%" stop-color="#1A0810" stop-opacity="0.05"/></radialGradient>
+          <linearGradient id="ldw-torch" x1="50%" y1="0%" x2="50%" y2="100%"><stop offset="0%" stop-color="#5A3848"/><stop offset="100%" stop-color="#3D2030"/></linearGradient>
+        </defs>
+        <!-- Fire glow -->
+        <ellipse cx="100" cy="50" rx="50" ry="40" fill="url(#ldw-glow)"/>
+        <!-- Torch handle (tilted, being set down) -->
+        <g transform="rotate(-25, 100, 90)">
+          <rect x="96" y="60" width="8" height="80" rx="3" fill="url(#ldw-torch)" stroke="#5A3848" stroke-width="0.8"/>
+          <!-- Wrapping detail -->
+          <path d="M96,85 L104,82" fill="none" stroke="#8A6A7A" stroke-width="0.6" opacity="0.5"/>
+          <path d="M96,92 L104,89" fill="none" stroke="#8A6A7A" stroke-width="0.6" opacity="0.4"/>
+          <path d="M96,99 L104,96" fill="none" stroke="#8A6A7A" stroke-width="0.6" opacity="0.5"/>
+          <!-- Torch head -->
+          <rect x="93" y="55" width="14" height="10" rx="2" fill="#3D2030" stroke="#5A3848" stroke-width="0.8"/>
+        </g>
+        <!-- Flame on torch -->
+        <g opacity="0.9">
+          <path d="M88,52 Q85,38 90,28 Q95,18 100,25 Q105,15 108,28 Q115,38 112,52Z" fill="#FF4040" opacity="0.7"/>
+          <path d="M92,50 Q90,40 95,32 Q98,24 100,30 Q102,22 105,32 Q110,42 108,50Z" fill="#D42020" opacity="0.8"/>
+          <path d="M95,48 Q94,42 97,36 Q99,30 100,34 Q101,28 103,36 Q106,44 105,48Z" fill="#FF8060" opacity="0.6"/>
+        </g>
+        <!-- Sparks / embers flying -->
+        <circle cx="82" cy="35" r="1.5" fill="#FF4040" opacity="0.6"/>
+        <circle cx="118" cy="30" r="1.2" fill="#D42020" opacity="0.5"/>
+        <circle cx="76" cy="28" r="1" fill="#FF4040" opacity="0.4"/>
+        <circle cx="124" cy="22" r="1.3" fill="#FF8060" opacity="0.35"/>
+        <circle cx="90" cy="20" r="0.8" fill="#D42020" opacity="0.3"/>
+        <circle cx="112" cy="15" r="1" fill="#FF4040" opacity="0.25"/>
+        <circle cx="85" cy="12" r="0.7" fill="#FF8060" opacity="0.2"/>
+        <circle cx="105" cy="8" r="0.9" fill="#D42020" opacity="0.18"/>
+        <circle cx="95" cy="45" r="1" fill="#FF4040" opacity="0.5"/>
+        <circle cx="108" cy="40" r="0.8" fill="#FF8060" opacity="0.4"/>
+        <!-- Falling embers -->
+        <circle cx="75" cy="100" r="1.2" fill="#D42020" opacity="0.4"/>
+        <circle cx="130" cy="95" r="0.9" fill="#FF4040" opacity="0.3"/>
+        <circle cx="68" cy="110" r="0.7" fill="#FF8060" opacity="0.25"/>
+        <!-- Gasoline puddle on ground -->
+        <ellipse cx="100" cy="160" rx="65" ry="15" fill="url(#ldw-puddle)"/>
+        <ellipse cx="85" cy="162" rx="30" ry="8" fill="#2C1020" opacity="0.15"/>
+        <ellipse cx="118" cy="158" rx="25" ry="7" fill="#1A0810" opacity="0.12"/>
+        <!-- Puddle reflections of flame -->
+        <ellipse cx="100" cy="158" rx="12" ry="4" fill="#D42020" opacity="0.12"/>
+        <ellipse cx="95" cy="160" rx="6" ry="2" fill="#FF4040" opacity="0.08"/>
+        <ellipse cx="108" cy="157" rx="5" ry="1.5" fill="#FF8060" opacity="0.06"/>
+        <!-- Puddle surface lines -->
+        <path d="M50,160 Q65,156 80,160 Q95,164 110,160 Q125,156 140,160" fill="none" stroke="#5A3848" stroke-width="0.4" opacity="0.2"/>
+        <path d="M55,165 Q75,161 95,165 Q115,169 135,165" fill="none" stroke="#5A3848" stroke-width="0.3" opacity="0.15"/>
+        <!-- Ground texture -->
+        <path d="M30,170 L170,170" fill="none" stroke="#3D2030" stroke-width="0.5" opacity="0.2"/>
+        <path d="M25,178 L175,178" fill="none" stroke="#2C1020" stroke-width="0.4" opacity="0.15"/>
+      </svg>
+    </div>
+    <h1>Lay It Down<em>Wrath</em></h1>
+    <p class="cover-sub">Your anger is not protecting you. It is <em>replacing</em> you, one righteous outburst at a time, until the person who was angry is the only person left.</p>
+    <p class="cover-author">KingdomBuilders AI</p>
+    <div class="cover-verse">"Everyone should be quick to listen, slow to speak and slow to become angry,<br>because human anger does not produce the righteousness that God desires."<br> James 1:19, 20 (NIV)</div>
+  </div>
+</section>
+
+<!-- ===== BEFORE WE BEGIN ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Before We Begin</div><h2 class="ch-title">The Fire You Mistook for Strength</h2><p class="ch-sub">Anger feels powerful. That is the trap.</p></div></div>
+<div class="ribbon"><p>"In your anger do not sin. Do not let the sun go down while you are still angry, and do not give the devil a foothold.". Ephesians 4:26, 27 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>Wrath does not arrive wearing horns. It arrives wearing armor. It tells you it is protecting your boundaries. It tells you it is standing up for justice. It tells you this feeling is <strong>righteous</strong> and anyone who questions it is trying to silence you.</p>
+  <p>And sometimes anger IS righteous. Jesus flipped tables. God's wrath is real and holy. But here is the problem: you are not God. And the anger you carry is almost never the clean, surgical, righteous kind. It is the kind that makes your chest tight at 2 AM over a conversation from three years ago. It is the kind that ruins a dinner because someone said the wrong word. It is the kind that has been sitting in your ribcage so long it feels like your personality.</p>
+  <p>This playbook is not about becoming passive. It is about recognizing that the fire you have been carrying is not making you stronger. <strong>It is replacing you.</strong> Piece by piece, reaction by reaction, your anger has been writing a version of your story that you never chose.</p>
+
+  <div class="mission reveal">
+    <div class="mission-label">The Mission</div>
+    <p>Identify the three altars of wrath <em>reactive anger, bitterness, and righteous rage addiction</em>, and dismantle them with protocols that retrain reflexes, release debts, and redirect energy toward actual justice instead of performed outrage.</p>
+  </div>
+
+  <div class="insight reveal">
+    <p>"Anger is almost never the primary emotion. It is the bodyguard. <em>Fear, grief, and powerlessness are the VIPs it is protecting.</em> Until you address the VIP, you will never disarm the bodyguard."</p>
+  </div>
+
+  <div class="stack reveal">
+    <div class="stack-label">The Three Altars of Wrath</div>
+    <div class="stack-flow">
+      <span class="stack-node sn-red">Reactive Anger</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-dark">Bitterness</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-fire">Righteous Rage</span>
+    </div>
+  </div>
+
+  <p>Three altars. Three fires you built thinking they were warming you. They are burning you. And it is time to lay them down.</p>
+
+  <div class="insight reveal"><p>If you finish this playbook, you will know the three altars where anger hides, the reactive snap, the bitterness ledger, and the addiction to righteous rage. You will own <strong>a Pause Protocol that creates space between trigger and response, and understand the difference between performing outrage and producing justice.</strong></p></div>
+</div>
+
+<!-- ===== CHAPTER 1: THE FUSE ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter One</div><h2 class="ch-title">The Fuse</h2><p class="ch-sub">You were not born reactive. You were trained.</p></div></div>
+<div class="ribbon"><p>"A hot-tempered person stirs up conflict, but the one who is patient calms a quarrel.". Proverbs 15:18 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>You do not have an anger problem. You have a <strong>speed problem.</strong> The distance between the trigger and the explosion has collapsed to almost nothing. Someone cuts you off in traffic and your blood pressure spikes before you have finished processing what happened. Someone questions your decision at work and the defensive response launches before you have considered whether they might be right.</p>
+  <p>This is what reactive anger looks like: a nervous system that has been trained to fire first and assess later. The fuse was not always this short. Somewhere along the way, childhood, betrayal, years of feeling unheard, your body learned that the fastest response was the safest response. Speed became survival. And now that survival mechanism is running in situations that do not require it.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-zap"/></svg></span>The Trigger-to-Explosion Pipeline</h2>
+  <p>Every reactive outburst follows the same architecture. Understanding the pipeline is the first step to interrupting it.</p>
+
+  <div class="trigger-timeline reveal">
+    <div class="trigger-timeline-label">The Anger Pipeline</div>
+    <div class="tl-track">
+      <div class="tl-node"><div class="tl-node-label">0.3 Seconds</div><h4>The Trigger</h4><p>External event: a word, a tone, a look, a memory. Something hits the tripwire.</p></div>
+      <div class="tl-node"><div class="tl-node-label">0.5 Seconds</div><h4>The Story</h4><p>Your brain attaches meaning: "They don't respect me." "This always happens." "They did this on purpose."</p></div>
+      <div class="tl-node"><div class="tl-node-label">1.5 Seconds</div><h4>The Surge</h4><p>Adrenaline floods. Heart rate jumps 30-40 BPM. Muscles tense. The body is now in fight mode.</p></div>
+      <div class="tl-node"><div class="tl-node-label">2-4 Seconds</div><h4>The Launch</h4><p>The words leave your mouth. The text gets sent. The door gets slammed. You cannot retrieve it.</p></div>
+      <div class="tl-node tl-gold"><div class="tl-node-label">5 Minutes Later</div><h4>The Aftermath</h4><p>The adrenaline fades. The cost becomes visible. Trust eroded. Relationship damaged. Regret arrives.</p></div>
+    </div>
+  </div>
+
+  <p>Look at that timeline. The entire pipeline, from trigger to launch, takes less than four seconds. Your conscious mind barely participates. This is not a character flaw. This is a <strong>trained nervous system</strong> operating exactly as it was conditioned. The question is not "Why am I so angry?" The question is: "Who trained my fuse this short?"</p>
+
+  <div class="ba-pair reveal">
+    <div class="ba-card ba-before">
+      <div class="ba-head"><span class="ba-dot"></span>The Short Fuse</div>
+      <div class="ba-body"><ul>
+        <li>Responds within seconds</li>
+        <li>Body leads, mind follows</li>
+        <li>Treats every trigger as a threat</li>
+        <li>Wins the moment, loses the relationship</li>
+        <li>"I just say what I feel"</li>
+      </ul></div>
+    </div>
+    <div class="ba-card ba-after">
+      <div class="ba-head"><span class="ba-dot"></span>The Rewired Response</div>
+      <div class="ba-body"><ul>
+        <li>Creates a gap between trigger and response</li>
+        <li>Mind catches up to body</li>
+        <li>Assesses actual threat level</li>
+        <li>Preserves the relationship AND the truth</li>
+        <li>"I feel it. I choose what I do with it."</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Right Now</div>
+    <h4>Map Your Fuse</h4>
+    <p class="q-start">Think of the last time you reacted in anger. What triggered it?</p>
+    <div class="think-line"></div>
+    <p class="q-start">How many seconds between the trigger and your response?</p>
+    <div class="think-line"></div>
+    <p class="q-start">What was the story your brain told you in between?</p>
+    <div class="think-line"></div>
+    <p class="q-start">Was the story true? Or was it an assumption?</p>
+    <div class="think-line"></div>
+    <p class="closing">Your fuse has a length. Knowing its current length is step one.</p>
+  </div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapter 1</div>
+    <div class="root-layer current"><span class="root-ch">1</span><div class="root-items"><span class="root-pill rp-bright">Reactive Anger</span><span class="root-arr">&rarr;</span><span class="root-pill rp-dim">The Fuse</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 2: THE PAUSE PROTOCOL ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Two</div><h2 class="ch-title">The Pause Protocol</h2><p class="ch-sub">You cannot control the trigger. You can lengthen the fuse.</p></div></div>
+<div class="ribbon"><p>"Fools give full vent to their rage, but the wise bring calm in the end.". Proverbs 29:11 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>Chapter One showed you the pipeline. Now you interrupt it. The goal is not to never feel anger, that is suppression, and suppression stores poison. The goal is to create a <strong>gap</strong> between the trigger and the response. Even ten seconds changes everything.</p>
+  <p>Neuroscience calls this the "emotional refractory period." Once adrenaline fires, you have about 90 seconds of peak chemical intensity. After that, the body begins returning to baseline. Every second you delay your response during that window is a second your prefrontal cortex, the part of you that actually thinks, is coming back online.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-shield"/></svg></span>The Three Physical Interrupts</h2>
+  <p>When the surge hits, your body is in charge. You cannot think your way out of adrenaline. You must <strong>move</strong> your way out. These are physical interrupts, not coping mechanisms. They are circuit breakers.</p>
+
+  <div class="dd reveal"><h4>Interrupt 1. The Breath Lock</h4><div class="sub">Duration: 10 Seconds</div><p>Inhale through your nose for 4 seconds. Hold for 4 seconds. Exhale through your mouth for 6 seconds. The extended exhale activates the vagus nerve, which sends a direct signal to the brain: <strong>"We are not under attack."</strong> Do this before you open your mouth.</p></div>
+
+  <div class="dd reveal"><h4>Interrupt 2. The Physical Redirect</h4><div class="sub">Duration: 60 Seconds</div><p>Leave the room. Walk to the end of the hallway. Go outside and stand in the air for 60 seconds. Movement metabolizes adrenaline. The chemicals that are screaming "fight" need somewhere to go. Give them somewhere that does not involve another human being.</p></div>
+
+  <div class="dd reveal"><h4>Interrupt 3. The Delay Rule</h4><div class="sub">Duration: 10 Minutes</div><p>For any conversation, text, email, or decision made in anger: <strong>impose a mandatory 10-minute delay.</strong> Draft the text. Do not send it. Write the email. Save it to drafts. Say "I need to think about this" and walk away. Come back in 10 minutes. If the response still feels right, send it. Most of the time, it will not.</p></div>
+
+  <div class="viz reveal">
+    <div class="viz-top"><div class="viz-icon"><svg><use href="#ico-zap"/></svg></div><div class="viz-meta"><div class="viz-label">Protocol</div><h4>The 7-Day Fuse Extension</h4></div></div>
+    <div class="viz-body">
+      <p><strong>Day 1-2:</strong> Practice the Breath Lock in non-angry moments. Train the rhythm before the pressure.</p>
+      <p><strong>Day 3-4:</strong> When you feel the first flash of irritation (not rage, irritation), use the Physical Redirect. Leave the room for 60 seconds. Notice what happens to the feeling.</p>
+      <p><strong>Day 5-6:</strong> Apply the Delay Rule to every written communication that has an emotional charge. Draft. Save. Wait 10 minutes. Revise.</p>
+      <p><strong>Day 7:</strong> Combine all three in a single trigger event. Breathe. Move. Delay. Then respond. Journal the difference between this response and what would have happened a week ago.</p>
+      <div class="viz-trigger">The fuse is not a personality trait. It is a muscle. This week, you are training it.</div>
+    </div>
+  </div>
+
+  <div class="gq reveal"><p>"A person without self-control is like a city with broken walls.". Proverbs 25:28 (NLT)</p></div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapters 1, 2</div>
+    <div class="root-layer"><span class="root-ch">1</span><div class="root-items"><span class="root-pill rp-ch1">Reactive Anger</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">The Fuse</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">2</span><div class="root-items"><span class="root-pill rp-bright">Pause Protocol</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Fuse Extension</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 3: THE LEDGER ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Three</div><h2 class="ch-title">The Ledger</h2><p class="ch-sub">You are carrying debts that were never yours to collect.</p></div></div>
+<div class="ribbon"><p>"Get rid of all bitterness, rage and anger, brawling and slander, along with every form of malice.". Ephesians 4:31 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>Reactive anger is hot. It flashes and fades. Bitterness is cold. It builds slowly, deposits layer after layer, and eventually becomes so thick you cannot see through it. Bitterness is anger that moved in and <strong>decorated.</strong></p>
+  <p>Somewhere you were wronged. Genuinely, deeply wronged. Maybe it was a parent who was supposed to protect you. A spouse who was supposed to stay. A boss who was supposed to promote you. A friend who was supposed to have your back. The wound was real. The pain was real. But then something happened: you opened a ledger.</p>
+  <p>In that ledger, you wrote down the debt. And every day since, you have been carrying that ledger around, reviewing the entries, adding interest, and waiting for payment that is <strong>never coming.</strong></p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-chain"/></svg></span>The Resentment Inventory</h2>
+  <p>Bitterness survives by staying vague. "I just have trouble trusting people." "I've been burned before." The moment you name the specific person, the specific event, and the specific debt, the bitterness loses its camouflage.</p>
+
+  <div class="resent-ledger reveal">
+    <div class="resent-ledger-head">The Resentment Ledger</div>
+    <table class="resent-table">
+      <tr><th>Debts Carried</th><th>What Release Looks Like</th></tr>
+      <tr><td>"They never apologized."</td><td>I stop waiting for words that may never come.</td></tr>
+      <tr><td>"They got away with it."</td><td>Justice is not my job. Healing is.</td></tr>
+      <tr><td>"They wasted my years."</td><td>The years ahead are mine. I will not waste those too.</td></tr>
+      <tr><td>"They never acknowledged the damage."</td><td>My healing does not require their awareness.</td></tr>
+      <tr><td>"They did it to someone else and smiled."</td><td>God sees. My job is to walk free, not enforce payment.</td></tr>
+    </table>
+  </div>
+
+  <p>Look at the left column. How many of those sentences live in your body right now? Not as memories, as <strong>active debts you are tracking.</strong> Bitterness is not about the past. It is about the present. It is the daily decision to re-open the ledger and count the unpaid balance.</p>
+
+  <div class="insight reveal">
+    <p>"Bitterness is drinking poison and waiting for the other person to die. They moved on. They are sleeping fine. <em>You are the one awake at 2 AM reviewing a ledger they do not even know exists.</em>"</p>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Right Now</div>
+    <h4>Name the Debts</h4>
+    <p class="q-start">Who are you still angry at? Name them.</p>
+    <div class="think-line"></div>
+    <p class="q-start">What is the specific debt you are holding them to?</p>
+    <div class="think-line"></div>
+    <p class="q-start">How long have you been carrying this ledger?</p>
+    <div class="think-line"></div>
+    <p class="q-start">What has carrying it cost YOU?</p>
+    <div class="think-line"></div>
+    <p class="closing">The debt is real. The question is whether you will spend the rest of your life collecting.</p>
+  </div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapter 3</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Reactive Anger</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Pause Protocol</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">3</span><div class="root-items"><span class="root-pill rp-bright">Bitterness</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">The Ledger</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 4: THE RELEASE DRILL ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Four</div><h2 class="ch-title">The Release Drill</h2><p class="ch-sub">Forgiveness is not a feeling. It is a decision you make before the feeling arrives.</p></div></div>
+<div class="ribbon"><p>"Bear with each other and forgive one another if any of you has a grievance against someone. Forgive as the Lord forgave you.". Colossians 3:13 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>Forgiveness is the most misunderstood word in the human vocabulary. It does not mean what they did was acceptable. It does not mean you have to trust them again. It does not mean you pretend the wound did not happen. It does not even mean you have to feel warm toward them. Forgiveness means: <strong>"I am closing this ledger. I am releasing this debt. Not because they deserve it, but because I refuse to carry it one more day."</strong></p>
+  <p>Forgiveness is not an emotion. It is a legal declaration. You are the judge, the jury, and the one who gets to stamp "Debt Forgiven" on the ledger entry. The feeling of peace comes later, sometimes weeks, sometimes months later. But the decision comes first.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-heart"/></svg></span>The Three Layers of Release</h2>
+
+  <div class="dd reveal"><h4>Layer 1. Release the Debt</h4><div class="sub">The Decision</div><p>Write down the name, the wrong, and the cost. Then write underneath it: <strong>"I release this debt. I stop waiting for payment. This ledger entry is closed."</strong> Speak it out loud. Your voice has authority your thoughts do not. This is not a feeling. It is a declaration.</p></div>
+
+  <div class="dd reveal"><h4>Layer 2. Release the Fantasy</h4><div class="sub">The Rehearsal Stops</div><p>Bitterness replays the scene. It writes better responses you should have said. It imagines confrontations where you finally win. Every replay is a <strong>re-investment</strong> in the debt you just released. When the replay starts, interrupt it: "I closed that ledger." Redirect your mind to something in your present, a task, a conversation, a prayer. Every interrupted replay weakens the neural pathway.</p></div>
+
+  <div class="dd reveal"><h4>Layer 3. Release the Identity</h4><div class="sub">You Are Not the Wronged One</div><p>The most dangerous layer. When you carry a wound long enough, it becomes your identity. "I'm the one who was abandoned." "I'm the one who was betrayed." The wound becomes the story, and the story becomes you. Release the identity: <strong>you are not defined by what happened to you.</strong> You are defined by who God says you are. And God did not call you "The Wronged One." He called you beloved, chosen, and free.</p></div>
+
+  <div class="viz reveal">
+    <div class="viz-top"><div class="viz-icon"><svg><use href="#ico-heart"/></svg></div><div class="viz-meta"><div class="viz-label">Protocol</div><h4>The Weekly Release Practice</h4></div></div>
+    <div class="viz-body">
+      <p><strong>Every Sunday evening:</strong> Sit in silence for 10 minutes. Ask yourself one question: "Who am I still angry at this week?"</p>
+      <p><strong>Name them.</strong> Not vaguely. Specifically. Then say out loud: "I release [name] from the debt of [specific wrong]. I close this ledger. I am not the victim of this story. I am the one who walks free."</p>
+      <p><strong>If the same name comes back next week:</strong> that is normal. Forgiveness is not a one-time event for deep wounds. It is a weekly decision. The replays will get shorter. The charge will get weaker. One day you will say the name and feel nothing but peace.</p>
+      <div class="viz-trigger">Forgiveness is not forgetting. It is choosing to stop collecting.</div>
+    </div>
+  </div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapters 3, 4</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Reactive Anger</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Pause Protocol</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">3</span><div class="root-items"><span class="root-pill rp-ch2">Bitterness</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch2">The Ledger</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">4</span><div class="root-items"><span class="root-pill rp-bright">Release Drill</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Three Layers</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 5: THE WOUND UNDER THE FIRE ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Five</div><h2 class="ch-title">The Wound Under the Fire</h2><p class="ch-sub">Anger is the bodyguard. The wound is the VIP.</p></div></div>
+<div class="ribbon"><p>"Search me, God, and know my heart; test me and know my anxious thoughts.". Psalm 139:23 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>You have spent four chapters confronting two altars: reactive anger and bitterness. Before you encounter the third, there is something underneath all of it that must be named. <strong>Anger is almost never the primary emotion.</strong></p>
+  <p>Anger is the bodyguard. It stands at the door, arms crossed, radiating threat. But behind that door is the VIP, the emotion anger is actually protecting. Fear. Grief. Powerlessness. Shame. Loneliness. The bodyguard exists because at some point, the VIP was too painful to face directly. Anger stepped in and said: <strong>"I will handle this. No one has to see the wound."</strong></p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-eye"/></svg></span>The Anger Translator</h2>
+  <p>Every angry reaction is a translation. When you decode the translation, the anger loses its power because you can finally address the actual need.</p>
+
+  <div class="ba-pair reveal">
+    <div class="ba-card ba-before">
+      <div class="ba-head"><span class="ba-dot"></span>What Anger Says</div>
+      <div class="ba-body"><ul>
+        <li>"They don't respect me."</li>
+        <li>"Nobody listens to me."</li>
+        <li>"This is so unfair."</li>
+        <li>"I can't trust anyone."</li>
+        <li>"They are going to regret this."</li>
+      </ul></div>
+    </div>
+    <div class="ba-card ba-after">
+      <div class="ba-head"><span class="ba-dot"></span>What the Wound Says</div>
+      <div class="ba-body"><ul>
+        <li>"I am afraid I don't matter."</li>
+        <li>"I am grieving being unseen."</li>
+        <li>"I feel powerless."</li>
+        <li>"I have been hurt and I am afraid of it happening again."</li>
+        <li>"I am terrified of being weak."</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <p>Read the right column slowly. Which of those sentences makes your chest tighten? That tightness is not anger. That tightness is the wound. Anger was just easier to feel.</p>
+
+  <div class="breathe reveal">
+    <div class="breathe-ring"></div>
+    <div class="breathe-ring"></div>
+    <div class="breathe-ring"></div>
+    <div class="breathe-content">
+      <div class="breathe-label">Pause</div>
+      <h4>What Is the Wound Under Your Anger?</h4>
+      <p>Not what you are angry about. What you are afraid of. What you are grieving. What makes you feel powerless. Name it. Just once. Out loud.</p>
+    </div>
+  </div>
+
+  <p>This bridge chapter is not about fixing the wound today. It is about <strong>seeing</strong> it. Because as long as anger stays in charge, the wound never gets treated. The bodyguard is standing so close to the door that no healer can get through. You have to tell the bodyguard: "Stand down. I will let someone else in."</p>
+
+  <div class="inst reveal"><p><strong>The rewiring:</strong> The next time you feel anger rising, ask: "What am I actually afraid of right now?" That single question changes the trajectory of every conflict.</p></div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapter 5</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Reactive Anger</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Pause Protocol</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">3-4</span><div class="root-items"><span class="root-pill rp-ch2">Bitterness</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch2">Release Drill</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">5</span><div class="root-items"><span class="root-pill rp-bright">The Wound</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">The Bodyguard</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 6: THE JUDGE'S BENCH ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Six</div><h2 class="ch-title">The Judge's Bench</h2><p class="ch-sub">You mistook outrage for righteousness. It was just adrenaline with a Bible verse.</p></div></div>
+<div class="ribbon"><p>"Do not take revenge, my dear friends, but leave room for God's wrath, for it is written: 'It is mine to avenge; I will repay,' says the Lord.". Romans 12:19 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>This is the altar nobody talks about. Reactive anger is obvious. Bitterness is recognizable. But <strong>righteous rage</strong>, the addiction to being morally outraged, is the version of wrath that comes dressed in a robe and gavel.</p>
+  <p>You open your phone and the outrage is waiting. A politician said something vile. A public figure got caught. A company made a corrupt decision. Someone online said something so wrong you can feel your jaw tighten. And you react. You share. You comment. You type with force. You feel the rush, and it feels <strong>righteous.</strong> It feels like you are fighting for truth.</p>
+  <p>But here is the question nobody asks: <strong>What changed?</strong> After the thread, after the post, after the heated conversation, what actually moved? The answer is almost always nothing. Nothing changed in the world. But something changed in you. You spent emotional currency on a performance of justice that produced no justice.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-target"/></svg></span>The Outrage Cycle</h2>
+
+  <div class="rage-cycle reveal">
+    <div class="rage-cycle-label">The Righteous Rage Loop</div>
+    <div class="rc-ring">
+      <span class="rc-node rc-fire">Injustice Detected</span>
+      <span class="rc-arr">&rarr;</span>
+      <span class="rc-node rc-ember">Adrenaline Rush</span>
+      <span class="rc-arr">&rarr;</span>
+      <span class="rc-node rc-dark">Public Response</span>
+      <span class="rc-arr">&rarr;</span>
+      <span class="rc-node rc-gold">Validation</span>
+      <span class="rc-arr">&rarr;</span>
+      <span class="rc-node rc-fire">Identity Reinforced</span>
+    </div>
+    <div class="rc-break">Break the Loop Here</div>
+  </div>
+
+  <p>Look at that cycle. Injustice enters your feed. Adrenaline hits. You respond publicly. People agree with you. Your identity as "the one who stands up" gets reinforced. And then the cycle resets, because the algorithm knows you will engage with the next outrage, and the next, and the next.</p>
+  <p>This is not justice. This is <strong>addiction wearing a cape.</strong> The brain chemistry of righteous outrage is identical to the brain chemistry of any other anger high. Dopamine, adrenaline, cortisol. The only difference is the story you tell yourself about why it is acceptable.</p>
+
+  <div class="insight reveal">
+    <p>"The person who is perpetually outraged about injustice but never shows up to actually serve the marginalized is not a warrior. <em>They are a spectator who confused commentary for combat.</em>"</p>
+  </div>
+
+  <div class="ba-pair reveal">
+    <div class="ba-card ba-before">
+      <div class="ba-head"><span class="ba-dot"></span>Performed Justice</div>
+      <div class="ba-body"><ul>
+        <li>Comments on the outrage</li>
+        <li>Shares the article</li>
+        <li>Argues in threads</li>
+        <li>Feels righteous afterward</li>
+        <li>Nothing changes</li>
+      </ul></div>
+    </div>
+    <div class="ba-card ba-after">
+      <div class="ba-head"><span class="ba-dot"></span>Actual Justice</div>
+      <div class="ba-body"><ul>
+        <li>Shows up at the food bank</li>
+        <li>Mentors the fatherless kid</li>
+        <li>Writes the check quietly</li>
+        <li>Feels spent afterward</li>
+        <li>One life changes</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Right Now</div>
+    <h4>The Justice Audit</h4>
+    <p class="q-start">How many hours this week did you spend on outrage (scrolling, commenting, arguing)?</p>
+    <div class="think-line"></div>
+    <p class="q-start">How many hours this week did you spend on actual service?</p>
+    <div class="think-line"></div>
+    <p class="q-start">If those numbers are not close, what is your outrage actually producing?</p>
+    <div class="think-line"></div>
+    <p class="closing">Righteous anger that produces no righteousness is just wrath in a costume.</p>
+  </div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapter 6</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Reactive Anger</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Pause Protocol</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">3-4</span><div class="root-items"><span class="root-pill rp-ch2">Bitterness</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch2">Release Drill</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">5</span><div class="root-items"><span class="root-pill rp-ch3">The Wound</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch3">The Bodyguard</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">6</span><div class="root-items"><span class="root-pill rp-bright">Righteous Rage</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Judge's Bench</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 7: THE JUSTICE FAST ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Seven</div><h2 class="ch-title">The Justice Fast</h2><p class="ch-sub">Stop consuming outrage. Start producing change.</p></div></div>
+<div class="ribbon"><p>"He has shown you, O mortal, what is good. And what does the Lord require of you? To act justly and to love mercy and to walk humbly with your God.". Micah 6:8 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>Chapter Six showed you the cycle. Now you break it. The Justice Fast is not about ignoring injustice. It is about <strong>redirecting the energy you spend on commentary into actual change.</strong> Micah 6:8 does not say "tweet justly." It says "act justly." Action is the antidote to outrage addiction.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-shield"/></svg></span>The 7-Day Justice Fast</h2>
+
+  <div class="dd reveal"><h4>Days 1-3. The Consumption Fast</h4><div class="sub">Stop Feeding the Cycle</div><p>Unfollow, mute, or temporarily remove every outrage source from your feed for 7 days. News commentary accounts. Debate threads. Culture war content. You are not becoming uninformed. You are <strong>stopping the adrenaline drip</strong> that has been keeping your nervous system in permanent fight mode. If something genuinely important happens, someone will tell you.</p></div>
+
+  <div class="dd reveal"><h4>Days 4-5. The Redirection</h4><div class="sub">Convert Outrage to Service</div><p>Take the exact amount of time you would normally spend on outrage content and redirect it to one act of tangible service. Volunteer at a shelter. Write a handwritten letter to someone in prison. Buy groceries for the single mother on your street. Tutor a kid who is falling behind. <strong>One hour of actual service produces more justice than a thousand hours of commentary.</strong></p></div>
+
+  <div class="dd reveal"><h4>Days 6-7. The Audit</h4><div class="sub">Measure the Difference</div><p>At the end of seven days, ask yourself two questions. First: "How does my body feel compared to a week ago?" The answer will be lighter, calmer, less clenched. Second: "Did anything bad happen because I stopped consuming outrage for a week?" The answer will almost certainly be no. Nothing collapsed. The world kept turning. And you have more energy than you have had in months.</p></div>
+
+  <div class="adventure reveal">
+    <div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-target"/></svg></div><div class="adv-head-text"><div class="adv-head-label">Scenario</div><div class="adv-head-title">The Thread</div></div></div>
+    <div class="adv-step"><div class="step-c"><p>Someone in your church small group posts a hot take about a political issue. It is wrong. Not just "different opinion" wrong, factually, morally wrong. Forty-seven people have already commented. The thread is on fire. Your fingers are itching.</p></div></div>
+    <div class="adv-step"><div class="step-c"><span class="tag-you">The Altar Response</span><p>You write a 400-word response dismantling their argument. You cite three scripture references. You are sharp, articulate, devastating. Seventeen people like your comment. You feel vindicated. Two hours later, the person has not changed their mind, three relationships are strained, and your stomach is churning with leftover adrenaline. You accomplished nothing except winning a performance.</p></div></div>
+    <div class="adv-step"><div class="step-c"><span class="tag-you">The Protocol Response</span><p>You see the thread. You feel the pull. You put the phone down. You call the person directly, not to argue, but to understand. You listen for 20 minutes. You ask questions. You share your perspective gently. The conversation does not end in agreement, but it ends in respect. <em>And one relationship that was about to fracture holds together.</em></p></div></div>
+    <div class="adv-step adv-result-good"><div class="step-c"><p><strong>Public outrage produces spectacle. Private conversation produces change.</strong> The question is never whether you are right. The question is whether your method produces the righteousness God desires.</p></div></div>
+  </div>
+
+  <div class="gq reveal"><p>"The anger of man does not produce the righteousness of God.". James 1:20 (ESV)</p></div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Full Map</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Reactive Anger</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Pause Protocol</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">3-4</span><div class="root-items"><span class="root-pill rp-ch2">Bitterness</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch2">Release Drill</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">5</span><div class="root-items"><span class="root-pill rp-ch3">The Wound</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch3">The Bodyguard</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">6-7</span><div class="root-items"><span class="root-pill rp-bright">Righteous Rage</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Justice Fast</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 8: THE STILL PLACE ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Eight</div><h2 class="ch-title">The Still Place</h2><p class="ch-sub">The opposite of wrath is not passivity. It is peace that does not need a fight to feel alive.</p></div></div>
+<div class="ribbon"><p>"Be still, and know that I am God.". Psalm 46:10 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>You have spent seven chapters confronting three altars. Reactive anger. Bitterness and unforgiveness. Righteous rage addiction. Each one built on a lie: that anger was protecting you, that the ledger was keeping you safe, that outrage was producing justice.</p>
+  <p>But Psalm 46:10 gives the countercommand. <strong>Be still.</strong> Not passive. Not weak. Not silent in the face of real injustice. Still. The Hebrew word is <em>raphah</em>, it means "to let go, to release, to cease striving." It is the same word used for opening a clenched fist.</p>
+  <p>Your fist has been clenched for years. Around the fuse. Around the ledger. Around the gavel. And God is saying: <strong>open your hand.</strong> Not because the wrongs were not real. But because the fire is eating you alive and He has something better than anger to fill you with.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-shield"/></svg></span>The Daily Posture</h2>
+
+  <div class="dd reveal"><h4>Morning. The Check</h4><div class="sub">Before the Day Starts</div><p>Before your feet hit the floor: "Am I carrying anger from yesterday?" If yes, name it. Name the person or the situation. Then release it: "This fire is not mine to tend today." Start the day with an empty hand, not a clenched fist.</p></div>
+
+  <div class="dd reveal"><h4>Midday. The Translation</h4><div class="sub">In the Heat of the Day</div><p>When irritation or anger surfaces during the day, translate it in real time: "I feel angry. What am I actually feeling underneath?" Fear? Disrespect? Powerlessness? Name the VIP. Address the VIP. Let the bodyguard stand down.</p></div>
+
+  <div class="dd reveal"><h4>Evening. The Inventory</h4><div class="sub">Before You Sleep</div><p>Three questions: Where did I react today instead of respond? Who am I still holding a ledger against? Where did I perform outrage instead of produce justice? No guilt. Just awareness. The fire dies one honest evening at a time.</p></div>
+
+  <div class="descent-ramp reveal stagger-children">
+    <div class="ramp-echo"><p>Reactive anger said: "Fire first, assess later." But God said: <strong>"Be quick to listen. Slow to speak. Slow to become angry."</strong></p></div>
+    <div class="ramp-echo"><p>Bitterness said: "They owe you." But God said: <strong>"Forgive as I forgave you."</strong></p></div>
+    <div class="ramp-echo"><p>Righteous rage said: "This is justice." But God said: <strong>"Vengeance is mine. Your job is mercy."</strong></p></div>
+    <div class="ramp-close">
+      <div class="ramp-close-label">The Still Place</div>
+      <p>You do not need a fight to feel alive. You do not need a ledger to feel safe. You do not need outrage to prove you care. Be still. Open your hand. Let the fire go. What God fills you with next is stronger than anything you were holding.</p>
+    </div>
+  </div>
+
+  <div class="prayer reveal">
+    <div class="prayer-label">A Prayer from the Still Place</div>
+    <p><strong>Father,</strong> I have been on fire for years. I thought the fire was strength. I thought it was protection. I thought it was righteousness. But it was burning me. Burning my relationships. Burning my peace. Burning the person You created me to be.</p>
+    <p>I am laying down the fuse. <strong>I am closing the ledger.</strong> I am stepping off the judge's bench. Not because the wrongs were not real. But because You said vengeance is Yours, forgiveness is freedom, and stillness is where I find You.</p>
+    <p>Teach me to be quick to listen and slow to speak. Teach me to address the wound instead of deploying the bodyguard. Teach me to produce justice instead of performing outrage. <strong>Fill the space where the fire was with Your peace.</strong></p>
+    <p><strong>In Jesus' name, amen.</strong></p>
+  </div>
+</div>
+
+<!-- ===== FINAL TEST ===== -->
+<div class="page prose section reveal">
+  <div class="root-review">
+    <div class="root-label">Final Test. Can You Answer Without Looking Back?</div>
+    <div style="padding:0 16px">
+      <div class="dd"><h4>1.</h4><p>What are the three altars of wrath identified in this book?</p></div>
+      <div class="dd"><h4>2.</h4><p>How long does the trigger-to-explosion pipeline take?</p></div>
+      <div class="dd"><h4>3.</h4><p>What are the three physical interrupts in the Pause Protocol?</p></div>
+      <div class="dd"><h4>4.</h4><p>What is the difference between bitterness and reactive anger?</p></div>
+      <div class="dd"><h4>5.</h4><p>What are the three layers of the Release Drill?</p></div>
+      <div class="dd"><h4>6.</h4><p>What does the phrase "anger is the bodyguard" mean? What is the VIP?</p></div>
+      <div class="dd"><h4>7.</h4><p>What is the difference between performed justice and actual justice?</p></div>
+      <div class="dd"><h4>8.</h4><p>What does the Hebrew word "raphah" mean, and how does it relate to wrath?</p></div>
+      <div class="dd"><h4>9.</h4><p>What are the three parts of the Daily Posture for defeating wrath?</p></div>
+      <div class="dd"><h4>10.</h4><p>Complete the sentence: "Righteous anger that produces no righteousness is just ___."</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PROMPT CARD ===== -->
+<div class="page section reveal">
+  <div class="prompt">
+    <div class="prompt-head">Continue with AI. Prompt Card</div>
+    <div class="prompt-body">
+      <p><strong>Copy this prompt into any AI assistant to continue working on wrath:</strong></p>
+      <p>"I just read Lay It Down: Wrath by Kingdom Builders AI. It identified three altars of wrath: reactive anger, bitterness/unforgiveness, and righteous rage addiction. I want you to help me do a personal audit. Ask me questions about each altar, one at a time, and help me identify which one has the strongest grip on my life right now. Then give me a personalized 7-day protocol based on the Pause Protocol, Release Drill, and Justice Fast from the book. Be direct, not preachy. Challenge me like a coach, not a therapist."</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FINALE ===== -->
+<section class="finale reveal">
+  <h2>Lay It <span>Down.</span></h2>
+  <p>"Everyone should be quick to listen, slow to speak and slow to become angry, because human anger does not produce the righteousness that God desires."</p>
+  <p> James 1:19, 20 (NIV)</p>
+</section>
+
+<!-- ===== SERIES PROGRESS ===== -->
+<div class="series-progress">
+  <div class="series-label">Lay It Down. The Seven Deadly Sins</div>
+  <div class="series-dots">
+    <span class="series-dot done" title="Pride"></span>
+    <span class="series-dot done" title="Envy"></span>
+    <span class="series-dot active" title="Wrath"></span>
+    <span class="series-dot" title="Greed"></span>
+    <span class="series-dot" title="Gluttony"></span>
+    <span class="series-dot" title="Lust"></span>
+    <span class="series-dot" title="Sloth"></span>
+  </div>
+  <div class="series-dot-label">Part 3 of 7. Wrath</div>
+</div>
+
+<footer>
+  <p>"Be still, and know that I am God.". Psalm 46:10</p>
+  <div class="brand">KingdomBuilders AI</div>
+</footer>
+
+<script>
+(function(){
+  const bar=document.getElementById('read-progress');
+  const pill=document.getElementById('chapter-pill');
+  const chEls=[{el:document.querySelector('.cover'),label:'Cover'},...Array.from(document.querySelectorAll('.ch-head')).map((el,i)=>({el,label:el.querySelector('.ch-num')?.textContent?.trim()||('Ch '+(i+1))}))].filter(c=>c.el);
+  function onScroll(){
+    const h=document.documentElement;
+    const pct=h.scrollTop/(h.scrollHeight-h.clientHeight)*100;
+    bar.style.width=pct+'%';
+    let cur='';
+    for(const c of chEls){if(c.el.getBoundingClientRect().top<200)cur=c.label}
+    if(cur){pill.textContent=cur;pill.classList.add('show')}else{pill.classList.remove('show')}
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  const revealEls=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    const obs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:0.12});
+    revealEls.forEach(el=>obs.observe(el));
+  }else{revealEls.forEach(el=>el.classList.add('visible'))}
+})();
+</script>
+</body>
+</html>

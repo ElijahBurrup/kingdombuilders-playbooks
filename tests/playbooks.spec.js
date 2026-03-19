@@ -24,12 +24,12 @@ const PLAYBOOKS = [
   { title: "The Ghost Frame", slug: "the-ghost-frame", tag: "Mindset" },
   { title: "The Gravity Well", slug: "the-gravity-well", tag: "Productivity" },
   { title: "The Narrator", slug: "the-narrator", tag: "Identity" },
-  { title: "The Salmon Journey", slug: "the-salmon-journey", tag: "Finance" },
+
   { title: "The Squirrel Economy", slug: "the-squirrel-economy", tag: "Economics" },
   { title: "The Wolf's Table", slug: "the-wolfs-table", tag: "Relationships" },
   { title: "The Crow's Gambit", slug: "the-crows-gambit", tag: "Strategy" },
   { title: "The Eagle's Lens", slug: "the-eagles-lens", tag: "Leadership" },
-  { title: "The Lighthouse Keeper's Log", slug: "the-lighthouse-keepers-log", tag: "Mindset" },
+
   { title: "The Octopus Protocol", slug: "the-octopus-protocol", tag: "Finance" },
   { title: "The Starling's Murmuration", slug: "the-starlings-murmuration", tag: "Leadership" },
   { title: "The Chameleon's Code", slug: "the-chameleons-code", tag: "Communication" },
@@ -42,7 +42,7 @@ const PLAYBOOKS = [
   { title: "The Coyote's Laugh", slug: "the-coyotes-laugh", tag: "Resilience" },
   { title: "The Pangolin's Armor", slug: "the-pangolins-armor", tag: "Mindset" },
   { title: "The Horse's Gait", slug: "the-horses-gait", tag: "Productivity" },
-  { title: "The Compass Rose", slug: "the-compass-rose", tag: "History" },
+
   { title: "Pride", slug: "lay-it-down-pride", tag: "Faith" },
   { title: "Envy", slug: "lay-it-down-envy", tag: "Faith" },
   { title: "Wrath", slug: "lay-it-down-wrath", tag: "Faith" },
@@ -60,7 +60,7 @@ const PLAYBOOKS = [
   { title: "The Dopamine Drought", catalogTitle: "Dad Talks: The Dopamine Drought", slug: "dad-talks-the-dopamine-drought", tag: "Parenting", free: true },
   { title: "The Mirror Test", catalogTitle: "Dad Talks: The Mirror Test", slug: "dad-talks-the-mirror-test", tag: "Parenting" },
   { title: "The Flinch", catalogTitle: "Dad Talks: The Flinch", slug: "dad-talks-the-flinch", tag: "Parenting" },
-  { title: "The Two Wallets", catalogTitle: "Dad Talks: The Two Wallets", slug: "dad-talks-the-two-wallets", tag: "Parenting" },
+
   { title: "The Invisible Contract", catalogTitle: "Dad Talks: The Invisible Contract", slug: "dad-talks-the-invisible-contract", tag: "Parenting" },
   { title: "The Scoreboard Lie", catalogTitle: "Dad Talks: The Scoreboard Lie", slug: "dad-talks-the-scoreboard-lie", tag: "Parenting" },
   { title: "The First Punch", catalogTitle: "Dad Talks: The First Punch", slug: "dad-talks-the-first-punch", tag: "Parenting" },
@@ -83,7 +83,7 @@ const PLAYBOOKS = [
   { title: "The Lifted Ceiling", slug: "the-lifted-ceiling", tag: "Finance", free: true },
   { title: "The New Earning", slug: "the-new-earning", tag: "Finance" },
   { title: "The Three Tables", slug: "the-three-tables", tag: "Faith" },
-  { title: "The Kintsugi Bowl", slug: "the-kintsugi-bowl", tag: "Faith" },
+  { title: "The Kintsugi Bowl", catalogTitle: "The Kintsugi Protocol", slug: "the-kintsugi-bowl", tag: "Faith" },
   { title: "The Unfinished Song", slug: "the-unfinished-song", tag: "Health" },
 ];
 

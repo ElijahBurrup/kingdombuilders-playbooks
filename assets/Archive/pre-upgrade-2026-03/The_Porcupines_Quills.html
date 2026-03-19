@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Porcupine's Quills. Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --quill:#C0A882;--quill-bright:#D4BE98;--quill-pale:#E8D8C0;--quill-soft:rgba(192,168,130,0.07);
+  --bark:#5C4033;--bark-mid:rgba(92,64,51,0.15);--bark-pale:#8B6F5E;
+  --forest:#1A1408;--forest-mid:#2C2210;--forest-dark:#0E0A04;--forest-light:#3E3418;
+  --pine:#2D5A27;--pine-mid:rgba(45,90,39,0.15);
+  --earth:#FAF6F0;--earth-warm:#F5EDE2;--paper:#FDFAF5;--white:#FFFFFF;
+  --text:#1A1408;--text-light:#3A3020;--text-muted:#6A5A48;
+  --radius:14px;--shadow:0 2px 16px rgba(26,20,8,0.08);--shadow-deep:0 8px 40px rgba(26,20,8,0.15);
+  --before-bg:#FFF8F4;--before-border:#D4A882;--before-text:#5C3A20;
+  --after-bg:#F4FFF6;--after-border:#6AAA70;--after-text:#1A4020;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--earth);line-height:1.82;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Poppins',sans-serif;line-height:1.2}
+.page{max-width:720px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--bark);font-weight:700}
+.prose em{color:var(--quill);font-style:normal;font-weight:600}
+
+/* ===== PROGRESS BAR ===== */
+#progress-bar{position:fixed;top:0;left:0;width:0%;height:3px;background:linear-gradient(90deg,var(--quill),var(--quill-bright));z-index:1000;transition:width 0.1s linear}
+
+/* ===== CHAPTER PILL ===== */
+#chapter-pill{position:fixed;top:14px;right:14px;background:rgba(26,20,8,0.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:var(--quill-pale);font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:6px 14px;border-radius:40px;z-index:999;opacity:0;transition:opacity 0.3s ease}
+
+/* ===== COVER ===== */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;
+  background:linear-gradient(170deg,#0E0A04 0%,#1A1008 20%,#2C1E0E 45%,#3A2A14 70%,#1A1408 100%);
+  position:relative;overflow:hidden}
+.ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.018;mix-blend-mode:overlay;pointer-events:none}
+/* Quill particles */
+.qp{position:absolute;pointer-events:none;animation:qp-drift linear infinite}
+.qp::before{content:'';display:block;width:2px;border-radius:2px;background:currentColor;transform-origin:50% 100%;animation:qp-rotate linear infinite}
+@keyframes qp-drift{0%{opacity:0;transform:translate(0,0)}8%{opacity:0.5}88%{opacity:0.25}100%{opacity:0;transform:translate(var(--dx),var(--dy))}}
+@keyframes qp-rotate{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.cover-content{position:relative;z-index:2;padding:56px 24px}
+.cover-badge{display:inline-block;padding:6px 20px;border:1px solid rgba(192,168,130,0.28);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.67rem;font-weight:700;letter-spacing:4.5px;text-transform:uppercase;color:var(--quill-bright);margin-bottom:40px}
+.cover-art{width:220px;height:220px;margin:0 auto 28px;display:block;animation:breathe 5s ease-in-out infinite;filter:drop-shadow(0 0 32px rgba(192,168,130,0.22))}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+.cover h1{font-size:clamp(2.4rem,6.5vw,4rem);font-weight:300;color:var(--white);line-height:1.05;margin-bottom:8px}
+.cover h1 span{display:block;font-weight:700;background:linear-gradient(135deg,var(--quill-bright),var(--quill));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cover-sub{font-family:'Lora',serif;font-size:0.98rem;font-style:italic;color:rgba(255,255,255,0.38);margin-top:24px;line-height:1.75;max-width:480px;margin-left:auto;margin-right:auto}
+.cover-sub em{color:var(--quill-pale);font-style:normal}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.5rem;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.14);margin-top:52px}
+
+/* ===== SERIES PROGRESS ===== */
+.series-progress{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:36px}
+.series-label{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.22)}
+.series-dots{display:flex;gap:10px;align-items:center}
+.series-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.2);cursor:pointer;transition:all 0.3s}
+.series-dot.done{background:rgba(192,168,130,0.5);border-color:var(--quill)}
+.series-dot.active{background:var(--quill-bright);border-color:var(--quill-pale);box-shadow:0 0 10px rgba(212,190,152,0.4);width:14px;height:14px}
+.series-dot-label{font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.28)}
+
+/* ===== RIBBON ===== */
+.ribbon{text-align:center;padding:22px 24px;background:linear-gradient(135deg,rgba(192,168,130,0.04),rgba(192,168,130,0.08));border-top:1.5px solid rgba(192,168,130,0.14);border-bottom:1.5px solid rgba(192,168,130,0.14)}
+.ribbon p{font-family:'Lora',serif;font-size:0.9rem;font-style:italic;color:var(--text-muted);max-width:520px;margin:0 auto}
+.ribbon strong{color:var(--bark-pale);font-style:normal}
+
+/* ===== PREGAME ===== */
+.pregame{padding:52px 0}
+.pregame-label{font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--quill);margin-bottom:20px}
+.bold-claim{padding:32px 36px;background:linear-gradient(140deg,var(--forest),var(--forest-mid));border-radius:var(--radius);border:2px solid rgba(192,168,130,0.25);box-shadow:var(--shadow-deep);position:relative;overflow:hidden;margin:24px 0}
+.bold-claim::before{content:'';position:absolute;top:-30%;right:-10%;width:260px;height:260px;background:radial-gradient(circle,rgba(192,168,130,0.07) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+.bold-claim-label{font-family:'Poppins',sans-serif;font-size:0.48rem;font-weight:800;letter-spacing:6px;text-transform:uppercase;color:var(--quill-bright);margin-bottom:16px;position:relative}
+.bold-claim p{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:500;color:var(--white);line-height:1.6;position:relative}
+.bold-claim em{color:var(--quill-pale);font-style:normal}
+
+/* ===== CHARACTER CARDS ===== */
+.cast-grid{display:grid;gap:20px;margin:32px 0}
+.char-card{display:flex;gap:18px;align-items:flex-start;padding:24px;background:var(--white);border-radius:var(--radius);border:2px solid var(--bark-mid);box-shadow:var(--shadow);transition:all 0.3s ease}
+.char-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-deep)}
+.char-avatar{flex-shrink:0;width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;background:linear-gradient(135deg,var(--forest),var(--forest-mid));box-shadow:0 4px 14px rgba(26,20,8,0.2)}
+.char-info h3{font-size:1rem;color:var(--bark);margin-bottom:3px}
+.char-role{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--quill);margin-bottom:8px}
+.char-info p{font-size:0.88rem;color:var(--text-light);line-height:1.65}
+
+/* ===== CHAPTER HEAD ===== */
+.ch-head{padding:64px 24px 48px;text-align:center;background:linear-gradient(170deg,var(--forest-dark),var(--forest),var(--forest-mid));position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:420px;height:420px;background:radial-gradient(circle,rgba(192,168,130,0.06) 0%,transparent 70%);border-radius:50%}
+.ch-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 5%,var(--quill) 50%,transparent 95%)}
+.ch-num{font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:6px;text-transform:uppercase;color:var(--quill-bright);margin-bottom:12px;position:relative;z-index:2}
+.ch-head h2{font-size:1.6rem;color:var(--white);position:relative;z-index:2;margin-bottom:8px}
+.ch-sub{font-family:'Lora',serif;font-size:0.9rem;font-style:italic;color:rgba(255,255,255,0.45);position:relative;z-index:2;max-width:460px;margin:0 auto}
+
+/* ===== SCENE BLOCK ===== */
+.scene{margin:36px 0;padding:32px;background:linear-gradient(140deg,var(--forest-dark),var(--forest));border-radius:var(--radius);border:1px solid rgba(192,168,130,0.18);position:relative;overflow:hidden}
+.scene::before{content:'';position:absolute;top:0;right:0;width:180px;height:180px;background:radial-gradient(circle,rgba(192,168,130,0.06) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+.scene .scene-label{font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--quill-bright);margin-bottom:14px;position:relative;z-index:2}
+.scene p{font-family:'Lora',serif;font-size:0.95rem;color:rgba(255,255,255,0.72);line-height:1.8;position:relative;z-index:2;margin-bottom:12px}
+.scene p:last-child{margin-bottom:0}
+.scene em{color:var(--quill-pale);font-style:normal;font-weight:600}
+.scene strong{color:var(--quill-bright);font-weight:700}
+
+/* ===== THINK PROMPT ===== */
+.think{margin:32px 0;padding:28px 32px;background:linear-gradient(135deg,rgba(192,168,130,0.05),rgba(192,168,130,0.1));border-radius:var(--radius);border:2px dashed rgba(192,168,130,0.35);position:relative}
+.think::before{content:'\2726';position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--earth);padding:0 14px;font-size:1rem;color:var(--quill)}
+.think .think-label{font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--quill);margin-bottom:12px;text-align:center}
+.think h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--bark);text-align:center;margin-bottom:12px}
+.think p{font-size:0.88rem;color:var(--text-light);line-height:1.7;margin-bottom:10px}
+.think p:last-child{margin-bottom:0}
+.fill-line{display:block;border-bottom:1.5px dashed rgba(192,168,130,0.3);margin:18px 0;height:28px}
+
+/* ===== GRAND QUOTE ===== */
+.grand-quote{margin:40px 0;padding:48px 36px;text-align:center;position:relative}
+.grand-quote::before{content:'\201C';font-family:Georgia,serif;font-size:8rem;color:rgba(192,168,130,0.1);position:absolute;top:-20px;left:50%;transform:translateX(-50%);line-height:1}
+.grand-quote blockquote{font-family:'Lora',serif;font-size:1.12rem;font-style:italic;color:var(--bark);line-height:1.75;max-width:540px;margin:0 auto;position:relative;z-index:2}
+.grand-quote .attribution{font-family:'Poppins',sans-serif;font-size:0.62rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--quill);margin-top:16px}
+
+/* ===== BEFORE / AFTER ===== */
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:28px 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+@media(max-width:600px){.ba-grid{grid-template-columns:1fr}}
+.ba-before,.ba-after{padding:24px 26px}
+.ba-before{background:var(--before-bg);border-right:2px solid var(--before-border)}
+.ba-after{background:var(--after-bg);border-left:2px solid var(--after-border)}
+@media(max-width:600px){.ba-before{border-right:none;border-bottom:2px solid var(--before-border)}.ba-after{border-left:none;border-top:2px solid var(--after-border)}}
+.ba-before h4,.ba-after h4{font-size:0.58rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;margin-bottom:12px}
+.ba-before h4{color:var(--before-text)}
+.ba-after h4{color:var(--after-text)}
+.ba-before p,.ba-after p{font-size:0.88rem;line-height:1.65;margin-bottom:8px}
+.ba-before p:last-child,.ba-after p:last-child{margin-bottom:0}
+.ba-before p{color:var(--before-text)}
+.ba-after p{color:var(--after-text)}
+
+/* ===== VIZ BOX ===== */
+.viz-box{margin:32px 0;padding:32px;background:var(--white);border-radius:var(--radius);border:2px solid var(--quill);box-shadow:0 0 22px rgba(192,168,130,0.1),var(--shadow);position:relative;overflow:hidden}
+.viz-box::before{content:'';position:absolute;top:-40%;right:-15%;width:280px;height:280px;background:radial-gradient(circle,rgba(192,168,130,0.05) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+.viz-box .viz-label{font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--quill);margin-bottom:16px;position:relative;z-index:2}
+.viz-box h3{font-size:1.1rem;color:var(--bark);margin-bottom:14px;position:relative;z-index:2}
+.viz-box p{font-size:0.9rem;color:var(--text-light);line-height:1.72;position:relative;z-index:2;margin-bottom:12px}
+.viz-box p:last-child{margin-bottom:0}
+.viz-trigger{margin-top:18px;padding:14px 18px;background:linear-gradient(135deg,rgba(192,168,130,0.08),rgba(192,168,130,0.14));border:1.5px solid rgba(192,168,130,0.22);border-radius:10px;font-family:'Poppins',sans-serif;font-size:0.78rem;font-weight:600;color:var(--text);text-align:center;line-height:1.5;position:relative;z-index:2}
+
+/* ===== DARK PANEL ===== */
+.dark-panel{margin:32px 0;padding:32px;background:linear-gradient(140deg,var(--forest-dark),var(--forest-mid));border-radius:var(--radius);border:1px solid rgba(192,168,130,0.2);border-left:4px solid var(--quill);box-shadow:var(--shadow-deep)}
+.dark-panel .dp-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--quill-bright);margin-bottom:14px}
+.dark-panel p{font-family:'Lora',serif;font-size:0.95rem;color:rgba(255,255,255,0.68);line-height:1.8;margin-bottom:12px}
+.dark-panel p:last-child{margin-bottom:0}
+.dark-panel em{color:var(--quill-pale);font-style:normal;font-weight:600}
+.dark-panel strong{color:var(--quill-bright);font-weight:700}
+
+/* ===== BREATHE GATE ===== */
+.breathe-gate{margin:40px 0;padding:44px 32px;text-align:center;background:linear-gradient(135deg,var(--forest-dark),var(--forest));border-radius:var(--radius);border:1px solid rgba(192,168,130,0.15)}
+.breathe-gate .breathe-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:6px;text-transform:uppercase;color:var(--quill);margin-bottom:20px}
+.breathe-circle{width:80px;height:80px;border-radius:50%;border:2px solid rgba(192,168,130,0.3);margin:0 auto 20px;animation:breathe-pulse 4s ease-in-out infinite;display:flex;align-items:center;justify-content:center;font-size:1.8rem}
+@keyframes breathe-pulse{0%,100%{transform:scale(1);border-color:rgba(192,168,130,0.3)}50%{transform:scale(1.15);border-color:rgba(192,168,130,0.7)}}
+.breathe-gate p{font-family:'Lora',serif;font-size:0.92rem;font-style:italic;color:rgba(255,255,255,0.45);max-width:400px;margin:0 auto}
+
+/* ===== ROOT REVIEW ===== */
+.root-review{margin:36px 0;padding:28px 32px;background:var(--white);border-radius:var(--radius);border:2px solid var(--bark-mid);box-shadow:var(--shadow)}
+.root-review .rr-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--bark-pale);margin-bottom:16px}
+.rr-pills{display:flex;flex-wrap:wrap;gap:10px}
+.rr-pill{padding:8px 16px;background:linear-gradient(135deg,var(--forest-dark),var(--forest));color:var(--quill-pale);font-family:'Poppins',sans-serif;font-size:0.7rem;font-weight:600;border-radius:50px;border:1px solid rgba(192,168,130,0.2);letter-spacing:0.5px}
+.rr-pill.new{background:linear-gradient(135deg,var(--bark),var(--bark-pale));color:var(--white);border-color:var(--quill)}
+
+/* ===== FLOW DIAGRAM ===== */
+.flow-diagram{margin:32px 0;background:var(--white);border-radius:var(--radius);border:2px solid var(--bark-mid);overflow:hidden;box-shadow:var(--shadow)}
+.flow-title{padding:18px 24px;background:linear-gradient(135deg,var(--forest),var(--forest-mid));font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--quill-pale)}
+.flow-row{display:flex;align-items:center;padding:14px 20px;border-bottom:1px solid rgba(192,168,130,0.1)}
+.flow-row:last-child{border-bottom:none}
+.flow-row.flow-old{background:rgba(220,80,60,0.04)}
+.flow-row.flow-new{background:rgba(60,160,80,0.04)}
+.flow-tag{font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;width:60px;flex-shrink:0}
+.flow-tag.old{color:#C05030}
+.flow-tag.new{color:#2A8040}
+.flow-steps{display:flex;align-items:center;flex-wrap:wrap;gap:4px;flex:1}
+.flow-step{padding:6px 12px;border-radius:6px;font-family:'Poppins',sans-serif;font-size:0.72rem;font-weight:600}
+.flow-old .flow-step{background:rgba(200,80,60,0.1);color:#8A3020;border:1px solid rgba(200,80,60,0.2)}
+.flow-new .flow-step{background:rgba(60,160,80,0.1);color:#1A5030;border:1px solid rgba(60,160,80,0.2)}
+.flow-arrow{color:var(--text-muted);font-size:0.9rem;margin:0 2px}
+
+/* ===== BARB ESCALATION ===== */
+.barb-chart{margin:32px 0;background:var(--white);border-radius:var(--radius);overflow:hidden;border:2px solid var(--bark-mid);box-shadow:var(--shadow)}
+.barb-title{padding:18px 24px;background:linear-gradient(135deg,var(--forest),var(--forest-mid));font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--quill-pale)}
+.barb-row{display:flex;align-items:center;gap:16px;padding:14px 20px;border-bottom:1px solid rgba(192,168,130,0.1)}
+.barb-row:last-child{border-bottom:none}
+.barb-level{font-family:'Poppins',sans-serif;font-size:0.58rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;width:52px;flex-shrink:0;color:var(--text-muted)}
+.barb-push{flex:1;font-size:0.82rem;color:var(--before-text)}
+.barb-response{flex:1;font-size:0.82rem;color:var(--after-text);font-weight:600}
+.barb-force{width:80px;height:8px;border-radius:4px;flex-shrink:0}
+.barb-force.l1{background:rgba(192,168,130,0.3);width:20px}
+.barb-force.l2{background:rgba(192,168,130,0.5);width:36px}
+.barb-force.l3{background:rgba(192,168,130,0.7);width:52px}
+.barb-force.l4{background:rgba(192,168,130,0.9);width:68px}
+.barb-force.l5{background:var(--quill-bright);width:80px;box-shadow:0 0 8px rgba(212,190,152,0.4)}
+
+/* ===== DISPLAY GRID ===== */
+.display-grid{margin:28px 0;background:var(--white);border-radius:var(--radius);overflow:hidden;border:2px solid var(--bark-mid);box-shadow:var(--shadow)}
+.display-head{display:grid;grid-template-columns:1fr 1fr}
+.display-head-cell{padding:14px 20px;font-family:'Poppins',sans-serif;font-size:0.58rem;font-weight:800;letter-spacing:3px;text-transform:uppercase}
+.display-head-cell.announce{background:rgba(200,80,60,0.08);color:#8A3020;border-right:1px solid rgba(200,80,60,0.15)}
+.display-head-cell.discover{background:rgba(60,160,80,0.08);color:#1A5030}
+.display-row{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid rgba(192,168,130,0.1)}
+.display-cell{padding:12px 20px;font-size:0.85rem;line-height:1.55}
+.display-cell.announce-cell{background:rgba(200,80,60,0.03);color:var(--before-text);border-right:1px solid rgba(200,80,60,0.1)}
+.display-cell.discover-cell{background:rgba(60,160,80,0.03);color:var(--after-text);font-weight:600}
+@media(max-width:560px){.display-head,.display-row{grid-template-columns:1fr}.display-cell.announce-cell,.display-head-cell.announce{border-right:none;border-bottom:1px solid rgba(192,168,130,0.15)}}
+
+/* ===== COMPLETENESS INVENTORY ===== */
+.completeness-table{margin:28px 0;background:var(--white);border-radius:var(--radius);overflow:hidden;border:2px solid var(--bark-mid);box-shadow:var(--shadow)}
+.ct-head{display:grid;grid-template-columns:1fr 1fr;background:linear-gradient(135deg,var(--forest),var(--forest-mid))}
+.ct-head-cell{padding:14px 18px;font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--quill-pale)}
+.ct-head-cell:first-child{border-right:1px solid rgba(192,168,130,0.2)}
+.ct-row{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid rgba(192,168,130,0.1)}
+.ct-cell{padding:14px 18px;font-size:0.85rem;line-height:1.55;color:var(--text-light)}
+.ct-cell:first-child{border-right:1px solid rgba(192,168,130,0.1);color:var(--bark);font-weight:600}
+@media(max-width:540px){.ct-head,.ct-row{grid-template-columns:1fr}.ct-cell:first-child,.ct-head-cell:first-child{border-right:none;border-bottom:1px solid rgba(192,168,130,0.15)}}
+
+/* ===== DATA HERO ===== */
+.data-hero{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0}
+@media(max-width:540px){.data-hero{grid-template-columns:1fr 1fr}}
+.data-card{padding:22px 16px;background:var(--white);border-radius:var(--radius);border:1.5px solid var(--bark-mid);box-shadow:var(--shadow);text-align:center}
+.data-num{font-family:'Poppins',sans-serif;font-size:2rem;font-weight:700;color:var(--bark);line-height:1;margin-bottom:6px}
+.data-label{font-family:'Poppins',sans-serif;font-size:0.62rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);line-height:1.4}
+
+/* ===== ADVENTURE STEPS ===== */
+.adventure{margin:28px 0;counter-reset:adv-step}
+.adv-step{display:flex;gap:18px;align-items:flex-start;padding:20px 24px;margin-bottom:14px;background:var(--white);border-radius:var(--radius);border:1.5px solid var(--bark-mid);box-shadow:var(--shadow)}
+.adv-num{counter-increment:adv-step;content:counter(adv-step);flex-shrink:0;width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--forest),var(--forest-mid));color:var(--quill-pale);font-family:'Poppins',sans-serif;font-size:0.82rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.adv-body h4{font-size:0.92rem;color:var(--bark);margin-bottom:5px}
+.adv-body p{font-size:0.86rem;color:var(--text-light);line-height:1.65}
+
+/* ===== FINAL TEST ===== */
+.final-test{margin:32px 0}
+.ft-item{padding:22px 24px;background:var(--white);border-radius:var(--radius);border:1.5px solid var(--bark-mid);margin-bottom:12px;box-shadow:var(--shadow);cursor:pointer;transition:all 0.25s}
+.ft-item:hover{border-color:var(--quill);box-shadow:0 4px 20px rgba(192,168,130,0.12)}
+.ft-q{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--bark);margin-bottom:0;display:flex;gap:12px}
+.ft-q-num{color:var(--quill);flex-shrink:0;font-weight:800}
+.ft-a{font-size:0.85rem;color:var(--text-light);line-height:1.65;margin-top:14px;padding-top:14px;border-top:1px dashed rgba(192,168,130,0.3);display:none}
+.ft-item.open .ft-a{display:block}
+.ft-item.open{border-color:var(--quill);background:linear-gradient(135deg,rgba(192,168,130,0.04),rgba(192,168,130,0.08))}
+
+/* ===== SCRIPTURE RIBBON ===== */
+.scripture-ribbon{margin:36px 0;padding:24px 32px;text-align:center;background:linear-gradient(135deg,rgba(192,168,130,0.05),rgba(192,168,130,0.1));border-radius:var(--radius);border:1px solid rgba(192,168,130,0.18);position:relative}
+.scripture-ribbon::before{content:'\2723';position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--earth);padding:0 16px;color:var(--quill);font-size:1rem}
+.scripture-ribbon p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:var(--bark);line-height:1.7;margin-bottom:6px}
+.scripture-ribbon .ref{font-family:'Poppins',sans-serif;font-size:0.58rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--quill);margin-top:10px}
+
+/* ===== AI PROMPT CARD ===== */
+.prompt-card{margin:36px 0;padding:32px;background:linear-gradient(140deg,var(--forest-dark),var(--forest-mid));border-radius:var(--radius);border:2px solid rgba(192,168,130,0.28);box-shadow:var(--shadow-deep)}
+.prompt-card .pc-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--quill-bright);margin-bottom:16px}
+.prompt-card h3{font-size:1rem;color:var(--white);margin-bottom:14px}
+.prompt-box{background:rgba(0,0,0,0.3);border-radius:10px;padding:20px;border:1px solid rgba(192,168,130,0.15);font-family:'Lora',serif;font-size:0.88rem;font-style:italic;color:rgba(255,255,255,0.7);line-height:1.75}
+.prompt-box strong{color:var(--quill-pale);font-style:normal}
+
+/* ===== DEF TERMS (KNOWLEDGE LAYER) ===== */
+.def{border-bottom:1.5px dotted var(--quill);cursor:help;position:relative;color:inherit}
+.def::after{content:attr(data-def);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--forest);color:rgba(255,255,255,0.88);font-family:'Poppins',sans-serif;font-size:0.68rem;font-weight:500;line-height:1.55;padding:10px 14px;border-radius:8px;width:240px;text-align:left;pointer-events:none;opacity:0;transition:opacity 0.25s;z-index:50;box-shadow:0 4px 20px rgba(0,0,0,0.3)}
+.def:hover::after,.def:focus::after{opacity:1}
+.def{outline:none}
+
+/* ===== FINALE ===== */
+.finale{padding:72px 24px;text-align:center;background:linear-gradient(170deg,var(--forest-dark),var(--forest),var(--forest-mid));position:relative;overflow:hidden}
+.finale::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;background:radial-gradient(circle,rgba(192,168,130,0.07) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+.finale .finale-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:6px;text-transform:uppercase;color:var(--quill-bright);margin-bottom:20px;position:relative}
+.finale h2{font-size:clamp(1.8rem,5vw,2.6rem);color:var(--white);margin-bottom:16px;position:relative}
+.finale h2 span{background:linear-gradient(135deg,var(--quill-bright),var(--quill));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.finale p{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.5);max-width:480px;margin:0 auto 24px;position:relative;line-height:1.78}
+.finale .finale-scripture{padding:24px 32px;background:rgba(192,168,130,0.08);border:1px solid rgba(192,168,130,0.2);border-radius:var(--radius);max-width:480px;margin:28px auto 0;position:relative}
+.finale .finale-scripture p{color:rgba(255,255,255,0.65);font-size:0.92rem;margin-bottom:6px}
+.finale .finale-scripture .ref{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--quill);margin:0}
+
+/* ===== FOOTER ===== */
+.footer{padding:36px 24px;text-align:center;border-top:1px solid rgba(192,168,130,0.1)}
+.footer p{font-family:'Poppins',sans-serif;font-size:0.62rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+
+/* ===== REVEAL ANIMATION ===== */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity 0.6s ease,transform 0.6s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ===== PRINT ===== */
+@media print{#progress-bar,#chapter-pill{display:none}.cover{min-height:auto;padding:48px 0}.scene,.dark-panel{background:var(--earth-warm)!important}.ch-head{background:var(--earth-warm)!important}.ch-head h2,.ch-num,.scene .scene-label,.dark-panel .dp-label{color:var(--bark)!important}}
+
+/* ===== MOBILE ===== */
+@media(max-width:640px){
+  .page{padding:0 18px}
+  .ch-head{padding:48px 18px 36px}
+  .cover-content{padding:40px 18px}
+  .scene{padding:24px 20px}
+  .dark-panel{padding:24px 20px}
+  .bold-claim{padding:24px 22px}
+  .grand-quote{padding:32px 20px}
+  .ba-grid{grid-template-columns:1fr}
+  .ba-before{border-right:none;border-bottom:2px solid var(--before-border)}
+  .ba-after{border-left:none;border-top:2px solid var(--after-border)}
+  .cast-grid{grid-template-columns:1fr}
+  .data-hero{grid-template-columns:1fr 1fr}
+  .barb-row{flex-direction:column;gap:6px}
+  .barb-force{display:none}
+  .display-grid .display-head,.display-grid .display-row{grid-template-columns:1fr}
+  .display-cell.announce-cell,.display-head-cell.announce{border-right:none;border-bottom:1px solid rgba(192,168,130,0.15)}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<div id="chapter-pill">Cover</div>
+
+<!-- ===== COVER ===== -->
+<section class="cover" id="cover">
+  <div class="ghost-noise"></div>
+
+  <!-- Quill particles -->
+  <div class="qp" style="left:8%;top:15%;color:#C0A882;--dx:30px;--dy:-110vh;animation-duration:14s;animation-delay:0s"><div style="width:2px;height:22px;background:currentColor;border-radius:2px"></div></div>
+  <div class="qp" style="left:22%;top:35%;color:#8B6F5E;--dx:-20px;--dy:-90vh;animation-duration:18s;animation-delay:-5s"><div style="width:1.5px;height:16px;background:currentColor;border-radius:2px"></div></div>
+  <div class="qp" style="left:40%;top:12%;color:#D4BE98;--dx:15px;--dy:-120vh;animation-duration:12s;animation-delay:-9s"><div style="width:2px;height:28px;background:currentColor;border-radius:2px"></div></div>
+  <div class="qp" style="left:62%;top:55%;color:#C0A882;--dx:-25px;--dy:-95vh;animation-duration:16s;animation-delay:-3s"><div style="width:1.5px;height:20px;background:currentColor;border-radius:2px"></div></div>
+  <div class="qp" style="left:78%;top:28%;color:#8B6F5E;--dx:10px;--dy:-105vh;animation-duration:20s;animation-delay:-7s"><div style="width:2px;height:18px;background:currentColor;border-radius:2px"></div></div>
+  <div class="qp" style="left:88%;top:65%;color:#D4BE98;--dx:-15px;--dy:-88vh;animation-duration:11s;animation-delay:-2s"><div style="width:1.5px;height:24px;background:currentColor;border-radius:2px"></div></div>
+  <div class="qp" style="left:15%;top:72%;color:#C0A882;--dx:20px;--dy:-115vh;animation-duration:15s;animation-delay:-11s"><div style="width:2px;height:14px;background:currentColor;border-radius:2px"></div></div>
+  <div class="qp" style="left:52%;top:80%;color:#8B6F5E;--dx:-18px;--dy:-100vh;animation-duration:13s;animation-delay:-4s"><div style="width:1.5px;height:26px;background:currentColor;border-radius:2px"></div></div>
+
+  <div class="cover-content">
+    <div class="cover-badge">The Shield Series &nbsp;&#183;&nbsp; Part 2 of 3 &nbsp;&#183;&nbsp; Mindset</div>
+
+    <!-- Cover Art: Porcupine silhouette from the back with radiating quills -->
+    <div class="cover-art">
+      <svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="bodyGrad" cx="50%" cy="60%" r="45%">
+            <stop offset="0%" stop-color="#C0A882" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="#5C4033" stop-opacity="0.7"/>
+          </radialGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <!-- Quills radiating outward -->
+        <g opacity="0.55" stroke="#C0A882" stroke-width="1" stroke-linecap="round">
+          <!-- ring 1: short inner -->
+          <line x1="110" y1="110" x2="110" y2="62"/>
+          <line x1="110" y1="110" x2="144" y2="70"/>
+          <line x1="110" y1="110" x2="158" y2="100"/>
+          <line x1="110" y1="110" x2="152" y2="136"/>
+          <line x1="110" y1="110" x2="76" y2="70"/>
+          <line x1="110" y1="110" x2="62" y2="100"/>
+          <line x1="110" y1="110" x2="68" y2="136"/>
+          <!-- ring 2: medium -->
+          <line x1="110" y1="110" x2="110" y2="42" opacity="0.7"/>
+          <line x1="110" y1="110" x2="148" y2="50" opacity="0.7"/>
+          <line x1="110" y1="110" x2="170" y2="78" opacity="0.7"/>
+          <line x1="110" y1="110" x2="174" y2="116" opacity="0.7"/>
+          <line x1="110" y1="110" x2="158" y2="148" opacity="0.6"/>
+          <line x1="110" y1="110" x2="126" y2="162" opacity="0.6"/>
+          <line x1="110" y1="110" x2="94" y2="162" opacity="0.6"/>
+          <line x1="110" y1="110" x2="62" y2="148" opacity="0.6"/>
+          <line x1="110" y1="110" x2="46" y2="116" opacity="0.7"/>
+          <line x1="110" y1="110" x2="50" y2="78" opacity="0.7"/>
+          <line x1="110" y1="110" x2="72" y2="50" opacity="0.7"/>
+          <!-- ring 3: long outer -->
+          <line x1="110" y1="110" x2="110" y2="22" opacity="0.45"/>
+          <line x1="110" y1="110" x2="148" y2="28" opacity="0.45"/>
+          <line x1="110" y1="110" x2="180" y2="52" opacity="0.45"/>
+          <line x1="110" y1="110" x2="198" y2="88" opacity="0.45"/>
+          <line x1="110" y1="110" x2="196" y2="128" opacity="0.4"/>
+          <line x1="110" y1="110" x2="178" y2="164" opacity="0.4"/>
+          <line x1="110" y1="110" x2="148" y2="188" opacity="0.4"/>
+          <line x1="110" y1="110" x2="110" y2="196" opacity="0.4"/>
+          <line x1="110" y1="110" x2="72" y2="188" opacity="0.4"/>
+          <line x1="110" y1="110" x2="42" y2="164" opacity="0.4"/>
+          <line x1="110" y1="110" x2="24" y2="128" opacity="0.45"/>
+          <line x1="110" y1="110" x2="22" y2="88" opacity="0.45"/>
+          <line x1="110" y1="110" x2="40" y2="52" opacity="0.45"/>
+          <line x1="110" y1="110" x2="72" y2="28" opacity="0.45"/>
+        </g>
+        <!-- Body -->
+        <ellipse cx="110" cy="130" rx="38" ry="28" fill="url(#bodyGrad)" filter="url(#glow)"/>
+        <!-- Head (small, facing away) -->
+        <ellipse cx="110" cy="150" rx="14" ry="12" fill="#5C4033" opacity="0.85"/>
+        <!-- Nose -->
+        <ellipse cx="110" cy="160" rx="5" ry="3" fill="#3A2218" opacity="0.6"/>
+      </svg>
+    </div>
+
+    <h1>The Porcupine's<span>Quills</span></h1>
+
+    <p class="cover-sub">The porcupine never chases anything. Never threatens. Never performs, postures, or raises its voice. It walks through the forest with 30,000 reasons not to be touched, and everything that bites a porcupine only does it once. <em>This is your manual for building an automatic defense system against narcissistic abuse.</em></p>
+
+    <div class="series-progress">
+      <div class="series-label">The Shield Series</div>
+      <div class="series-dots">
+        <span class="series-dot done" title="The Mantis Shrimp's Eye"></span>
+        <span class="series-dot active" title="The Porcupine's Quills"></span>
+        <span class="series-dot" title="The Tardigrade Protocol"></span>
+      </div>
+      <div class="series-dot-label">Part 2 of 3. Shield It</div>
+    </div>
+
+    <p class="cover-author">Kingdom Builders AI</p>
+  </div>
+</section>
+
+<!-- ===== PREGAME ===== -->
+<section class="section" id="pregame">
+  <div class="page">
+    <div class="pregame-label reveal">Before We Begin</div>
+
+    <div class="prose reveal">
+      <p>You have been spending your emotional energy defending yourself. Every day. Maybe for years. You explain, justify, argue, clarify, document, brace for impact, recover, and then do it again. You are not tired because you are weak. You are tired because you have been doing the wrong kind of work.</p>
+      <p>The porcupine does none of that. It walks. It eats. It exists. The defense happens without consultation.</p>
+      <p>This playbook is about ending the exhausting project of active defense and replacing it with <span class="def" data-def="A set of structural boundaries and consequences that operate automatically, without requiring your emotional energy or presence.">automatic consequence architecture</span>. You will not need to be angrier, louder, or more confrontational. You will need to be quieter, more deliberate, and structurally complete.</p>
+    </div>
+
+    <div class="bold-claim reveal">
+      <div class="bold-claim-label">If You Finish This Playbook</div>
+      <p>You will build an automatic consequence system that protects you without draining your energy. You will understand why announcing your <span class="def" data-def="Personal limits that define how others may treat you and what behavior you will accept.">boundaries</span> to a <span class="def" data-def="A person with a persistent pattern of grandiosity, need for admiration, and lack of empathy that causes harm to those around them.">narcissist</span> is like handing them your battle plan. You will install proportional defense that makes every manipulation attempt self-punishing for the manipulator. And you will discover that solitude is not the cost of escaping a narcissist. <em>It is the reward.</em></p>
+    </div>
+
+    <!-- The Cast -->
+    <h3 class="reveal" style="font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:var(--bark);margin:40px 0 20px;letter-spacing:-0.01em">The Cast</h3>
+    <div class="cast-grid reveal">
+      <div class="char-card">
+        <div class="char-avatar">&#129439;</div>
+        <div class="char-info">
+          <h3>Quill</h3>
+          <div class="char-role">The Mentor</div>
+          <p>A North American porcupine. Old, slow, unbothered. Has survived every predator in the forest not by fighting but by being structurally expensive to attack. Quill does not lecture. Quill simply exists, and Darter watches what that looks like.</p>
+        </div>
+      </div>
+      <div class="char-card">
+        <div class="char-avatar">&#128007;</div>
+        <div class="char-info">
+          <h3>Darter</h3>
+          <div class="char-role">The Student</div>
+          <p>A rabbit who runs from everything. Exhausted, <span class="def" data-def="A state of heightened alertness and anxiety from chronic threat exposure, common in trauma survivors.">hypervigilant</span>, always fleeing. Darter is learning there is a third option between fight and flight. Something the forest does not have a name for yet.</p>
+        </div>
+      </div>
+      <div class="char-card">
+        <div class="char-avatar">&#129418;</div>
+        <div class="char-info">
+          <h3>Fang</h3>
+          <div class="char-role">The Narcissist Archetype</div>
+          <p>A fisher. The one predator that can sometimes kill porcupines. Persistent, patient, studies its target, probes for vulnerability, then flips to expose the unprotected belly. Fang represents every manipulator who keeps probing until they find the soft spot.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="scripture-ribbon reveal">
+      <p>"The Lord is my rock, my fortress and my deliverer; my God is my rock, in whom I take refuge."</p>
+      <div class="ref">Psalm 18:2</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CHAPTER 1 ===== -->
+<section id="ch1">
+  <div class="ch-head">
+    <div class="page">
+      <div class="ch-num">Chapter One</div>
+      <h2>Automatic Consequence Architecture</h2>
+      <p class="ch-sub">Quills are not weapons. They are structure. Build consequences that deploy without your emotional participation.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="page">
+
+      <div class="scene reveal">
+        <div class="scene-label">&#9673; The Forest, Dusk</div>
+        <p>Darter found Quill near the base of a hemlock, eating bark with the slow deliberateness of something that had nowhere to be. Fang was circling at the tree line, calculating distance, looking for angles.</p>
+        <p><em>"How are you not running?"</em> Darter asked. His ears were flattened. His whole body was a calculation of escape routes.</p>
+        <p>Quill did not look up. <em>"Running from what?"</em></p>
+        <p><em>"From that."</em> Darter gestured at Fang with a trembling nose.</p>
+        <p>Quill finished a piece of bark. <em>"Fang is not my problem. Fang is Fang's problem. The moment Fang touches me, Fang is reminded of a lesson Fang has already learned before. I do not have to remember the lesson for it to work. The quills remember."</em></p>
+        <p>Darter watched Fang probe three feet closer, pause, and then drift back. Not retreating. Not attacking. Recalculating. Probing for the angle that costs less. <strong>Finding none.</strong></p>
+      </div>
+
+      <div class="prose reveal">
+        <p>Here is the first thing to understand about <span class="def" data-def="The practice of building consequences into the structure of your life so they execute automatically when boundaries are crossed.">automatic consequence architecture</span>: it is not about threats. A threat requires your <span class="def" data-def="The mental and emotional effort required to manage feelings and interactions, which depletes over time.">emotional labor</span>. A threat requires you to monitor, enforce, and follow through while also managing your own reaction to the violation that triggered it. Threats are expensive. They cost you energy whether or not the other person complies.</p>
+        <p><span class="def" data-def="Structural limits where the consequence follows automatically from a crossed boundary, without requiring emotional activation.">Structural consequences</span> are different. They do not require your attention. They exist in the architecture of your life the way a lock exists on a door. You do not have to stand in front of the door all day to prevent entry. The lock does that.</p>
+        <p>The narcissist's strategy depends on finding ways to make your defense more costly than the attack. <span class="def" data-def="The pattern where a manipulator intensifies pressure specifically when they sense you running out of emotional resources to resist.">Emotional exhaustion as leverage</span> is the core tactic. They keep pushing until you either give in or your response becomes inconsistent. Inconsistency is fuel. It tells them there is a gap in the system. Keep probing.</p>
+      </div>
+
+      <!-- Flow Diagram -->
+      <div class="flow-diagram reveal">
+        <div class="flow-title">Consequence Architecture: The Old Way vs. The Structural Way</div>
+        <div class="flow-row flow-old">
+          <div class="flow-tag old">Before</div>
+          <div class="flow-steps">
+            <span class="flow-step">Trigger</span>
+            <span class="flow-arrow">&#8594;</span>
+            <span class="flow-step">Emotional Reaction</span>
+            <span class="flow-arrow">&#8594;</span>
+            <span class="flow-step">Exhaustion</span>
+            <span class="flow-arrow">&#8594;</span>
+            <span class="flow-step">Inconsistent Response</span>
+            <span class="flow-arrow">&#8594;</span>
+            <span class="flow-step">More Probing</span>
+          </div>
+        </div>
+        <div class="flow-row flow-new">
+          <div class="flow-tag new">After</div>
+          <div class="flow-steps">
+            <span class="flow-step">Trigger</span>
+            <span class="flow-arrow">&#8594;</span>
+            <span class="flow-step">Automatic Response</span>
+            <span class="flow-arrow">&#8594;</span>
+            <span class="flow-step">Consequence Executes</span>
+            <span class="flow-arrow">&#8594;</span>
+            <span class="flow-step">You Were Never Involved</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="prose reveal">
+        <p>What does this look like in practice? It means building systems before the next violation. Not responses, not ultimatums. Systems. If someone repeatedly calls after 9 PM, your phone goes on Do Not Disturb automatically at 8:58 PM. You do not have to decide in the moment whether to answer. The architecture already decided.</p>
+        <p>If someone repeatedly cancels plans at the last minute, you stop making singular plans with them. You make plans that work regardless of whether they show up. You are not punishing them. You are removing yourself as a variable in a system that does not respect your time. The consequence of their pattern is that they simply stop having reliable access to yours.</p>
+        <p>Notice what is absent from both of those scenarios: your <span class="def" data-def="The ongoing work of acknowledging, naming, and processing your emotional state, which depletes when done repeatedly in hostile environments.">emotional processing</span>. You do not have to feel anything. You do not have to say anything. The structure handles it. This is not <span class="def" data-def="An avoidance strategy where someone suppresses their response to a situation rather than addressing it structurally.">suppression</span>. Suppression costs energy. Architecture does not.</p>
+      </div>
+
+      <div class="think reveal">
+        <div class="think-label">Reflection</div>
+        <h4>Where is your defense currently requiring emotional energy?</h4>
+        <p>Think of one recurring boundary violation in your life. List the emotional cost of your current response: the anticipation, the reaction, the recovery time, the mental replay.</p>
+        <span class="fill-line"></span>
+        <p>Now ask: what structural change would make your response automatic, requiring zero emotional activation?</p>
+        <span class="fill-line"></span>
+      </div>
+
+      <div class="data-hero reveal">
+        <div class="data-card">
+          <div class="data-num">30,000</div>
+          <div class="data-label">Quills on a North American porcupine. None require activation.</div>
+        </div>
+        <div class="data-card">
+          <div class="data-num">0</div>
+          <div class="data-label">Emotional calories spent on the architecture doing its job.</div>
+        </div>
+        <div class="data-card">
+          <div class="data-num">1</div>
+          <div class="data-label">Time most predators need to learn the lesson. Some learn it without contact.</div>
+        </div>
+      </div>
+
+      <!-- Root Review 1 -->
+      <div class="root-review reveal">
+        <div class="rr-label">Root System: What You've Built So Far</div>
+        <div class="rr-pills">
+          <span class="rr-pill new">Automatic Consequence Architecture</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Scripture Ribbon -->
+<div class="ribbon">
+  <div class="page">
+    <div class="scripture-ribbon" style="margin:0;background:transparent;border:none">
+      <p>"A gentle answer turns away wrath, but a harsh word stirs up anger."</p>
+      <div class="ref">Proverbs 15:1</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 2 ===== -->
+<section id="ch2">
+  <div class="ch-head">
+    <div class="page">
+      <div class="ch-num">Chapter Two</div>
+      <h2>The Barb Principle</h2>
+      <p class="ch-sub">Every push deeper does not find softer ground. It finds compound resistance that the narcissist amplifies through their own force.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="page">
+
+      <div class="scene reveal">
+        <div class="scene-label">&#9673; Three Days Later</div>
+        <p>Fang had not left. Fang never left quickly. That was the thing about fishers. They studied. They waited. They looked for the soft spot beneath the armor, the one angle where the quills did not point.</p>
+        <p>Fang had tried from the left. Twenty minutes of circling, then a cautious nudge. Darter watched Quill simply turn. Not fleeing. Turning, so the quills faced the nudge. Fang got one in the paw. Pulled back. The quill, with its microscopic backward barbs, had already set itself. The harder Fang pulled, the deeper it went.</p>
+        <p><em>"That looks painful,"</em> said Darter.</p>
+        <p><em>"It is more painful the more Fang fights it,"</em> said Quill. <em>"I did not do that. Fang did that. I simply existed in a particular way. The consequence was made of Fang's own force."</em></p>
+      </div>
+
+      <div class="prose reveal">
+        <p>Porcupine quills do not inject venom. They do not need to. The backward-facing barbs on each quill are engineered so that the act of pulling the quill deeper is powered by the creature's own muscle contractions. The more desperate the pull, the deeper the penetration. The aggressor's force becomes the mechanism of their own consequence.</p>
+        <p>This is the principle you are building toward. Not consequences that require your force to execute, but consequences structured so that the narcissist's own behavior amplifies them. Their <span class="def" data-def="A narcissist's intensified aggression when a manipulation tactic is not working, often before they escalate to a new strategy.">extinction burst</span>, their escalation, their attempt to break through the boundary accelerates the outcome they were trying to avoid.</p>
+        <p>Let's make this concrete. The classic example is documentation. If someone is engaging in behavior that might one day require legal or institutional intervention, and you begin documenting every incident quietly, their escalation builds your case. The harder they push, the more evidence accumulates. Their force powers the consequence. You do not have to do anything except keep the record.</p>
+      </div>
+
+      <!-- Barb Escalation Chart -->
+      <div class="barb-chart reveal">
+        <div class="barb-title">The Barb Escalation Chart: Proportional Automatic Consequence</div>
+        <div class="barb-row" style="background:rgba(192,168,130,0.04)">
+          <div class="barb-level">Push</div>
+          <div style="font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;flex:1;color:var(--bark-pale)">Narcissist's Move</div>
+          <div style="font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;flex:1;color:var(--pine)">Automatic Consequence</div>
+          <div style="width:80px;font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted)">Force</div>
+        </div>
+        <div class="barb-row">
+          <div class="barb-level">L1</div>
+          <div class="barb-push">Mild guilt trip or complaint</div>
+          <div class="barb-response">You exit the conversation. No explanation.</div>
+          <div class="barb-force l1"></div>
+        </div>
+        <div class="barb-row">
+          <div class="barb-level">L2</div>
+          <div class="barb-push">Repeated contact after stated limits</div>
+          <div class="barb-response">All contact filtered through intermediary or blocked channel.</div>
+          <div class="barb-force l2"></div>
+        </div>
+        <div class="barb-row">
+          <div class="barb-level">L3</div>
+          <div class="barb-push">Public harassment or reputation attack</div>
+          <div class="barb-response">Documentation filed. Screenshot archive sent to trusted third party.</div>
+          <div class="barb-force l3"></div>
+        </div>
+        <div class="barb-row">
+          <div class="barb-level">L4</div>
+          <div class="barb-push">Legal or financial aggression</div>
+          <div class="barb-response">Attorney notified. Full documentation package delivered.</div>
+          <div class="barb-force l4"></div>
+        </div>
+        <div class="barb-row">
+          <div class="barb-level">L5</div>
+          <div class="barb-push">Physical threat or direct intimidation</div>
+          <div class="barb-response">Pre-arranged safety protocol activates. You are already elsewhere.</div>
+          <div class="barb-force l5"></div>
+        </div>
+      </div>
+
+      <div class="dark-panel reveal">
+        <div class="dp-label">The Key Insight About Escalation</div>
+        <p>The narcissist expects you to break at L3 or L4. That has been the pattern. That is where the <span class="def" data-def="The reward a narcissist extracts from controlling, destabilizing, or getting a reaction from their target.">supply source</span> always cracked. The panic, the backtracking, the desperate attempt to de-escalate. That crack was the point of the escalation.</p>
+        <p>When the system continues executing calmly at L3, L4, and L5, the narcissist experiences something they are genuinely not prepared for: <em>a consequence that does not care about their reaction to it.</em> The quill does not retreat because you are upset about the quill. The quill is structural. It does not negotiate.</p>
+        <p>You built this system before it was needed. Now you do not have to be present for it to work.</p>
+      </div>
+
+      <div class="grand-quote reveal">
+        <blockquote>The most disorienting thing you can do to someone who expects emotional participation from you is to give them structural silence instead.</blockquote>
+        <div class="attribution">The Barb Principle</div>
+      </div>
+
+      <div class="think reveal">
+        <div class="think-label">Reflection</div>
+        <h4>Map your current escalation response</h4>
+        <p>At what level does your current system break down? At what point do you start reacting emotionally instead of executing structurally? Name the level honestly.</p>
+        <span class="fill-line"></span>
+        <p>What would a structural response at that level look like if you built it now, before you need it?</p>
+        <span class="fill-line"></span>
+      </div>
+
+      <!-- Root Review 2 -->
+      <div class="root-review reveal">
+        <div class="rr-label">Root System: What You've Built So Far</div>
+        <div class="rr-pills">
+          <span class="rr-pill">Automatic Consequence Architecture</span>
+          <span class="rr-pill new">The Barb Principle</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Breathe Gate -->
+<div class="breathe-gate">
+  <div class="page">
+    <div class="breathe-label">Pause Here</div>
+    <div class="breathe-circle">&#129439;</div>
+    <p>You have been building systems instead of reactions. This is already different from how most people approach this. Stay with the architecture. The next chapter changes the thing you have probably been doing wrong the longest.</p>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 3 ===== -->
+<section id="ch3">
+  <div class="ch-head">
+    <div class="page">
+      <div class="ch-num">Chapter Three</div>
+      <h2>Non-Display Defense</h2>
+      <p class="ch-sub">The most effective defense never announces itself. Stop handing the narcissist your battle plan.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="page">
+
+      <div class="scene reveal">
+        <div class="scene-label">&#9673; The Hemlock Stand, Early Morning</div>
+        <p>Darter had started telling the other animals about Quill's method. The badger. The marten. Whoever would listen. <em>"Quill has a system. Quill doesn't run. Quill just turns and the quills face out."</em></p>
+        <p>Quill, hearing this from the other side of the hemlock, said nothing until Darter circled back.</p>
+        <p><em>"Why do you look troubled?"</em> Darter asked.</p>
+        <p><em>"Because you are announcing what you have learned,"</em> said Quill. <em>"And now Fang knows. Fang will spend the next weeks looking for the angle where the quills do not cover. Fang will study the pattern. The moment defense becomes performance, the predator begins auditioning for exceptions."</em></p>
+        <p>Darter was quiet for a long time. Then: <em>"I told my family too. About the things I learned in therapy. About the boundaries I was drawing."</em></p>
+        <p><em>"Yes,"</em> said Quill. <em>"And how did that go?"</em></p>
+        <p>Darter did not answer. They both already knew.</p>
+      </div>
+
+      <div class="prose reveal">
+        <p>This is one of the most painful things to accept about recovery from <span class="def" data-def="Psychological harm inflicted by someone with narcissistic personality disorder or traits, often through manipulation, gaslighting, and control.">narcissistic abuse</span>: the growth you are most proud of is the growth you most urgently want to announce. You went to therapy. You read the books. You identified the patterns. You drew up your list of what you will no longer accept. And then, because you want to believe the relationship can change, you tell them.</p>
+        <p>You have just handed Fang your map.</p>
+        <p>The narcissist does not hear your boundary as a commitment. They hear it as a specification. Now they know exactly where the edge is, which means they know exactly where to push that stays technically inside it. They know which words activate your <span class="def" data-def="An automatic emotional and physical response triggered by a past trauma, often causing reactions that seem disproportionate to current events.">trauma response</span>. They know which framing bypasses your new framework. They begin to probe the perimeter you just described to them in detail.</p>
+        <p>The <span class="def" data-def="The body's automatic stress responses: fight (aggression), flight (avoidance), or fawn (appeasement), all of which require conscious energy to override.">fight-or-flight</span> system, when it was evolved, did not come with an announcement. The quills do not fan out and wave to signal intent. The porcupine simply turns its back, and whatever touches the quills discovers them by touching them.</p>
+        <p><span class="def" data-def="A trauma response where someone appeases a threatening person to avoid conflict, often at the cost of their own needs and boundaries.">Fawn response</span> survivors especially struggle with this, because announcing growth feels like connection. It is an attempt to bring the other person into the recovery. It feels like hope. And hope is not wrong. But announcing your defense system to the person it is designed to defend against is not hope. It is <span class="def" data-def="A pattern where someone takes on excessive responsibility for managing others' emotions and behavior, often at great cost to themselves.">enabling</span>.</p>
+      </div>
+
+      <!-- Display vs Non-Display Grid -->
+      <div class="display-grid reveal">
+        <div class="display-head">
+          <div class="display-head-cell announce">What You Used to Announce</div>
+          <div class="display-head-cell discover">What You Now Let Them Discover</div>
+        </div>
+        <div class="display-row">
+          <div class="display-cell announce-cell">"I went to therapy and I finally understand what you do to me."</div>
+          <div class="display-cell discover-cell">They call to guilt trip you. The phone rings once. Then silence. They stand in the echo of a person who simply stopped being available. No explanation. No closure. Just a door that closed and stays closed.</div>
+        </div>
+        <div class="display-row">
+          <div class="display-cell announce-cell">"My therapist says you are <span class="def" data-def="A manipulation tactic where someone causes another person to question their own memory, perception, or sanity.">gaslighting</span> me."</div>
+          <div class="display-cell discover-cell">They rewrite last night. You say two words: "I remember." Then nothing else. Their rewrite floats in the air with nowhere to land. The argument they prepared for never arrives.</div>
+        </div>
+        <div class="display-row">
+          <div class="display-cell announce-cell">"I will not let you talk to me that way anymore."</div>
+          <div class="display-cell discover-cell">They raise their voice. You stand up, pick up your keys, and leave the room. No speech. No trembling explanation. The chair where you used to sit and absorb it is empty. That empty chair says everything your words never could.</div>
+        </div>
+        <div class="display-row">
+          <div class="display-cell announce-cell">"I know about narcissistic abuse now. I see what you are doing."</div>
+          <div class="display-cell discover-cell">They deploy the charm offensive that used to melt you. You feel it land and watch it slide off. You say "That is kind of you" and change the subject. They are performing to an audience that has left the theater.</div>
+        </div>
+        <div class="display-row">
+          <div class="display-cell announce-cell">"I need you to respect my boundaries or this relationship is over."</div>
+          <div class="display-cell discover-cell">They cross the boundary. The consequence you built three weeks ago activates without your voice, your tears, or your presence. You are in another room, reading. You do not even know it happened until later. The architecture handled it.</div>
+        </div>
+      </div>
+
+      <div class="dark-panel reveal">
+        <div class="dp-label">What Silence Communicates That Words Cannot</div>
+        <p>Silence communicates <em>irreversibility</em>. When you announce a change in policy, the narcissist immediately begins negotiating. When they discover a change in behavior, there is nothing to negotiate with. The behavior simply is what it is. The quill is already in place.</p>
+        <p>This is not passive aggression. Passive aggression is when you withhold response while secretly hoping they will notice and ask. <span class="def" data-def="A form of communication where actions rather than words convey limits, making boundaries difficult to argue with or manipulate.">Structural silence</span> is when you remove the architecture of access and do not think about whether they notice. The difference is where your attention lives. Theirs is in the forest. Yours is in your own life.</p>
+      </div>
+
+      <div class="viz-box reveal">
+        <div class="viz-label">Visualization</div>
+        <h3>The Forest Clearing at Dusk</h3>
+        <p>Picture yourself in a forest clearing at dusk. The light is the color of aged honey, filtering through hemlock branches. You are sitting against the base of a wide, solid trunk. You can feel the bark through your shirt.</p>
+        <p>Somewhere at the tree line, something is pacing. You know what it is. It has been pacing for years. It is looking for the angle. Probing the edge of the clearing for the soft entry point it has always found before.</p>
+        <p>But this time you are not watching it. You are watching the light change on the moss. You are eating something small and good. You are not tracking its distance. Your defense is not in your attention. Your defense is in your structure. You built it before you sat down. It is already pointing outward in every direction.</p>
+        <p>The pacer stops. Studies. Finds no gap. Moves to a different section of the perimeter. Finds the same architecture. Moves again. The clearing is complete. Every edge holds.</p>
+        <p>You finish what you are eating and look for somewhere comfortable to sleep.</p>
+        <div class="viz-trigger">Close your eyes for 60 seconds with this image. Notice where in your body the tension lives and whether it shifts when the defense is not yours to maintain.</div>
+      </div>
+
+      <div class="think reveal">
+        <div class="think-label">Reflection</div>
+        <h4>What have you recently announced that you should have stayed quiet about?</h4>
+        <p>Is there a growth, a limit, a decision, a new understanding that you shared with the person it was designed to protect you from? What did you hope would happen? What actually happened?</p>
+        <span class="fill-line"></span>
+        <p>Going forward: what is the behavioral equivalent of this growth that requires no announcement at all?</p>
+        <span class="fill-line"></span>
+      </div>
+
+      <!-- Root Review 3 -->
+      <div class="root-review reveal">
+        <div class="rr-label">Root System: What You've Built So Far</div>
+        <div class="rr-pills">
+          <span class="rr-pill">Automatic Consequence Architecture</span>
+          <span class="rr-pill">The Barb Principle</span>
+          <span class="rr-pill new">Non-Display Defense</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Scripture Ribbon -->
+<div class="ribbon">
+  <div class="page">
+    <div class="scripture-ribbon" style="margin:0;background:transparent;border:none">
+      <p>"When you pass through the waters, I will be with you."</p>
+      <div class="ref">Isaiah 43:2</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 4 ===== -->
+<section id="ch4">
+  <div class="ch-head">
+    <div class="page">
+      <div class="ch-num">Chapter Four</div>
+      <h2>Solitary Completeness</h2>
+      <p class="ch-sub">Porcupines are solitary. Not because they are hurt. Because they are finished.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="page">
+
+      <div class="scene reveal">
+        <div class="scene-label">&#9673; The Hillside, Ten Days After</div>
+        <p>Fang had moved on. Not because Fang was defeated. Because the calculation no longer worked. Porcupines are not the most nutritious prey. They are simply the most structurally expensive. There were easier things to hunt elsewhere. Fang would find them.</p>
+        <p>Darter came to Quill on the hillside. <em>"I think I understand the architecture. I think I understand the barbs. I think I understand the silence. But I don't understand this part."</em></p>
+        <p><em>"Which part?"</em></p>
+        <p><em>"The alone part. How do you do it? Don't you need things? Company? Someone to tell things to?"</em></p>
+        <p>Quill looked at Darter with the patience of something very old. <em>"What do I need that I do not already have?"</em></p>
+        <p>Darter thought about it for a long time. He thought about all the things Fang had provided. The sense of significance. The feeling of being needed. The intoxicating chaos of never knowing what would happen next. The way a predator's attention felt, sometimes, like the only real proof that you existed at all.</p>
+        <p><em>"I think,"</em> said Darter slowly, <em>"that I was using Fang to know I was real."</em></p>
+        <p>Quill turned and began walking uphill. <em>"Yes. That is the last quill you need to grow."</em></p>
+      </div>
+
+      <div class="prose reveal">
+        <p>The narcissist's most powerful weapon is not cruelty. Cruelty is the surface. The weapon is <em>manufactured dependency</em>. Over months or years, the relationship is structured so that you come to believe you need something from it that you cannot get elsewhere. Significance. Validation. Safety. The specific brand of intensity that their attention creates. Sometimes even just the feeling of being known, however distorted the knowing is.</p>
+        <p><span class="def" data-def="The psychological process through which a narcissist makes their target increasingly reliant on them for basic emotional needs, isolating them from other sources of support.">Manufactured dependency</span> works because it exploits real needs. You do need to be known. You do need connection. You do need a sense of significance. The narcissist did not create those needs. They colonized them. They inserted themselves as the exclusive provider so that removing them felt like removing a load-bearing wall.</p>
+        <p>But here is what the porcupine teaches: <span class="def" data-def="The state of being fully resourced within oneself, not requiring external validation, presence, or approval to feel safe and whole.">structural completeness</span> is not the same as not needing anything. It means your needs have sources that are not singularly controlled by one person. Quill still eats, sleeps, grooms, finds warmth in winter. Quill is not without needs. Quill has simply never outsourced the meeting of those needs to a creature with a <span class="def" data-def="A deeply destabilizing experience for narcissists when their sense of superiority or control is threatened, often triggering rage or vindictive behavior.">narcissistic injury</span> and a reason to weaponize access.</p>
+        <p><span class="def" data-def="An unhealthy pattern of excessive reliance on another person for emotional regulation, often at the cost of independent functioning.">Codependency</span> is the operating system that <span class="def" data-def="A person with narcissistic traits who provides intensity, drama, and attention that becomes addictive despite being harmful.">narcissistic relationships</span> install. It runs quietly in the background. It makes aloneness feel like punishment. It makes silence feel like abandonment. It makes having needs met from sources other than the narcissist feel like something is missing rather than something being restored.</p>
+        <p>What you are doing in this chapter is not accepting a diminished life. You are uninstalling a corrupted operating system and replacing it with one that was always supposed to be there.</p>
+      </div>
+
+      <!-- Completeness Inventory -->
+      <div class="completeness-table reveal">
+        <div class="ct-head">
+          <div class="ct-head-cell">What I Believed Only They Provided</div>
+          <div class="ct-head-cell">The Actual Alternative Source</div>
+        </div>
+        <div class="ct-row">
+          <div class="ct-cell">Knowing that I matter to someone</div>
+          <div class="ct-cell">Friends who are not controlled by this person. A faith community. My own record of who I have been to people who needed me.</div>
+        </div>
+        <div class="ct-row">
+          <div class="ct-cell">Being understood in my full complexity</div>
+          <div class="ct-cell">A therapist. A journal. Creative expression. Safe relationships that do not extract a toll for knowing me.</div>
+        </div>
+        <div class="ct-row">
+          <div class="ct-cell">The intensity of feeling fully alive</div>
+          <div class="ct-cell">Physical challenge, creative risk, deep spiritual practice, genuine community. Intensity that does not cost my stability.</div>
+        </div>
+        <div class="ct-row">
+          <div class="ct-cell">Financial or practical safety</div>
+          <div class="ct-cell">Built over time, not overnight. But the first step is naming this as a separate project from the relationship, not a reason to stay.</div>
+        </div>
+        <div class="ct-row">
+          <div class="ct-cell">Permission to feel good about myself</div>
+          <div class="ct-cell">This was never theirs to grant. Reclaim it. It was always structural. It belongs to you by nature of your existence.</div>
+        </div>
+        <div class="ct-row">
+          <div class="ct-cell">A sense that someone is watching out for me</div>
+          <div class="ct-cell">"The name of the Lord is a fortified tower; the righteous run to it and are safe." The architecture that does not require a person.</div>
+        </div>
+      </div>
+
+      <div class="dark-panel reveal">
+        <div class="dp-label">The Operating System Installation</div>
+        <p>Repeat this until it stops feeling like a lie and starts feeling like a fact:</p>
+        <p style="font-size:1.1rem;font-weight:700;color:var(--quill-pale);font-family:'Poppins',sans-serif;text-align:center;line-height:1.5;margin:18px 0"><em>I am structurally complete. Alone is not a wound. Alone is the natural state of something that does not need protection from others because it carries its own.</em></p>
+        <p>The first time you say this it will feel performative. The fifteenth time it will feel aspirational. The fiftieth time it will feel like memory. The hundredth time it will feel like body.</p>
+        <p>This is how operating systems install. Not in a moment. In repetitions.</p>
+      </div>
+
+      <!-- Adventure Steps -->
+      <h3 class="reveal" style="font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:700;color:var(--bark);margin:32px 0 16px">Build Your Solitary Completeness: 5 Steps</h3>
+      <div class="adventure reveal">
+        <div class="adv-step">
+          <div class="adv-num">1</div>
+          <div class="adv-body">
+            <h4>Audit the dependency map</h4>
+            <p>List everything you currently receive from this relationship. Not what you wish you received. What you actually receive. Including the painful things you have come to depend on for their own kind of familiarity.</p>
+          </div>
+        </div>
+        <div class="adv-step">
+          <div class="adv-num">2</div>
+          <div class="adv-body">
+            <h4>Source each item independently</h4>
+            <p>For every item on the list, name at least one source outside this person. It does not have to be fully available yet. It has to exist as a target.</p>
+          </div>
+        </div>
+        <div class="adv-step">
+          <div class="adv-num">3</div>
+          <div class="adv-body">
+            <h4>Rebuild one source per week</h4>
+            <p>Do not try to replace everything at once. Pick one item and invest that week's relational energy into the independent source. Repetition builds the pathway.</p>
+          </div>
+        </div>
+        <div class="adv-step">
+          <div class="adv-num">4</div>
+          <div class="adv-body">
+            <h4>Practice being alone without filling the silence</h4>
+            <p>Solitude is a skill. Sit with it. Notice what arises. The anxious reach for contact, the pull to check the phone, the instinct to fill the absence. That is the <span class="def" data-def="The way a nervous system conditioned to chaos or intensity craves stimulation even when it is harmful, because familiarity reads as safety.">conditioned nervous system</span> asking for its usual input. You do not have to supply it.</p>
+          </div>
+        </div>
+        <div class="adv-step">
+          <div class="adv-num">5</div>
+          <div class="adv-body">
+            <h4>Receive from God what you tried to receive from the narcissist</h4>
+            <p>The deepest dependency the narcissist exploits is spiritual: the need to be fully known and fully loved. That provision was never designed to come from a human who uses your vulnerability as leverage. Take it back to the source it was always meant to come from.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grand-quote reveal">
+        <blockquote>Solitude is not the cost of leaving. It is what you find on the other side of the forest, when you stop spending your energy on defense and start spending it on life.</blockquote>
+        <div class="attribution">Solitary Completeness</div>
+      </div>
+
+      <!-- Root Review 4 (complete) -->
+      <div class="root-review reveal">
+        <div class="rr-label">Root System: Your Complete Architecture</div>
+        <div class="rr-pills">
+          <span class="rr-pill">Automatic Consequence Architecture</span>
+          <span class="rr-pill">The Barb Principle</span>
+          <span class="rr-pill">Non-Display Defense</span>
+          <span class="rr-pill new">Solitary Completeness</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Scripture Ribbon -->
+<div class="ribbon">
+  <div class="page">
+    <div class="scripture-ribbon" style="margin:0;background:transparent;border:none">
+      <p>"I have told you these things, so that in me you may have peace. In this world you will have trouble. But take heart! I have overcome the world."</p>
+      <div class="ref">John 16:33</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FINAL TEST ===== -->
+<section class="section" id="final-test">
+  <div class="page">
+    <div class="pregame-label reveal">Final Test</div>
+    <p class="prose reveal" style="margin-bottom:28px">Ten questions. Click each one to reveal the answer. These are not trick questions. They are the architecture review.</p>
+
+    <div class="final-test">
+      <div class="ft-item reveal">
+        <div class="ft-q"><span class="ft-q-num">01.</span><span>What is Automatic Consequence Architecture? Define the concept in your own words and explain why it does not require your emotional energy to function.</span></div>
+        <div class="ft-a">Threats require your emotional energy to issue and monitor. They invite negotiation. They give the narcissist something to argue against and wear down. Structural consequences execute automatically regardless of your emotional state or presence, removing the narcissist's ability to exhaust you into inconsistency.</div>
+      </div>
+      <div class="ft-item reveal">
+        <div class="ft-q"><span class="ft-q-num">02.</span><span>What is the biological principle behind the Barb Principle, and what does it teach about consequence design?</span></div>
+        <div class="ft-a">Porcupine quills have backward-facing barbs that are driven deeper by the muscle contractions of the creature pulling them out. The aggressor's force powers the consequence. Applied to consequence design: build systems where the narcissist's own escalation increases the outcome they were trying to avoid.</div>
+      </div>
+      <div class="ft-item reveal">
+        <div class="ft-q"><span class="ft-q-num">03.</span><span>Why is announcing your growth or boundaries to a narcissist counterproductive?</span></div>
+        <div class="ft-a">When you announce a boundary, you hand the narcissist a specification. They now know exactly where the limit is and can probe just inside it, look for exceptions, or use the language of your growth against you. When they discover a change in behavior without announcement, there is nothing to negotiate with. The behavior is simply structural.</div>
+      </div>
+      <div class="ft-item reveal">
+        <div class="ft-q"><span class="ft-q-num">04.</span><span>What is the difference between passive aggression and structural silence?</span></div>
+        <div class="ft-a">Passive aggression withholds response while hoping the other person notices and asks. The attention is still on them. Structural silence removes access architecturally and is not thinking about whether they notice. The difference lives entirely in where your attention is directed.</div>
+      </div>
+      <div class="ft-item reveal">
+        <div class="ft-q"><span class="ft-q-num">05.</span><span>What is manufactured dependency, and how does a narcissist use it?</span></div>
+        <div class="ft-a">Manufactured dependency is the process by which a narcissist inserts themselves as the exclusive provider of real emotional needs (significance, validation, safety, being known), isolating you from other sources so that removing them feels like removing a load-bearing wall. They exploit genuine needs rather than creating artificial ones.</div>
+      </div>
+      <div class="ft-item reveal">
+        <div class="ft-q"><span class="ft-q-num">06.</span><span>What does Fang circling the clearing without attacking illustrate about the narcissist's strategy?</span></div>
+        <div class="ft-a">It illustrates that narcissists often do not attack directly. They probe, study the perimeter, look for gaps in the system. The moment of silence or waiting is itself information-gathering. Structural completeness means no gap is available to probe, which makes continued circling eventually unprofitable.</div>
+      </div>
+      <div class="ft-item reveal">
+        <div class="ft-q"><span class="ft-q-num">07.</span><span>What does it mean that Fang left not because of defeat but because of calculation?</span></div>
+        <div class="ft-a">Narcissists are not stopped by moral arguments or emotional appeals. They are stopped by cost-benefit calculation. When the cost of engagement (structural consequences, lack of supply, predictable non-reaction) exceeds the available reward, they relocate to more profitable targets. You do not need to defeat them. You need to become structurally unprofitable.</div>
+      </div>
+      <div class="ft-item reveal">
+        <div class="ft-q"><span class="ft-q-num">08.</span><span>What is solitary completeness, and is it the same as not having needs?</span></div>
+        <div class="ft-a">Solitary completeness is the state of having your genuine needs sourced from multiple places that are not singularly controlled by one person. It is not the same as not having needs. It is having needs met from sources that do not use your vulnerability as leverage. The porcupine still eats, sleeps, and seeks warmth. It simply does not outsource those needs to a predator.</div>
+      </div>
+      <div class="ft-item reveal">
+        <div class="ft-q"><span class="ft-q-num">09.</span><span>Darter says "I was using Fang to know I was real." What does this mean, and why is it a crucial insight?</span></div>
+        <div class="ft-a">It means that the narcissist's attention, even when destructive, had become the primary mechanism through which Darter confirmed their own existence and significance. This is the deepest layer of manufactured dependency: identity tethered to the gaze of someone who weaponizes it. The crucial insight is that this is a recoverable operating system, not a permanent condition.</div>
+      </div>
+      <div class="ft-item reveal">
+        <div class="ft-q"><span class="ft-q-num">10.</span><span>The playbook says solitude is not the cost of escaping a narcissist but the reward. In your own words, why?</span></div>
+        <div class="ft-a">Because what feels like loss (the end of the relationship, the aloneness, the quiet) is actually the return of something that was taken from you: the ability to simply exist without defending. The porcupine's solitude is not loneliness. It is structural peace. What is recovered is not just safety from one person but the entire energy that was being spent on constant defense. That energy is now available for life.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== INSTALLATION PROMPT ===== -->
+<section class="section" id="install">
+  <div class="page">
+    <div class="prompt-card reveal">
+      <div class="pc-label">AI Installation Prompt</div>
+      <h3>Take This to Your AI Assistant</h3>
+      <div class="prompt-box">
+        <strong>Copy and paste this prompt:</strong><br><br>
+        I am building what The Porcupine's Quills calls "automatic consequence architecture." I am currently navigating a relationship with someone who exhibits narcissistic behavior patterns.<br><br>
+        Help me build a concrete consequence system by walking me through four things:<br>
+        1. Identify the three most common recurring boundary violations I describe and design a structural (not emotional) consequence for each.<br>
+        2. Map the escalation levels in my situation and design a proportional automatic response for each level, using the Barb Principle.<br>
+        3. Identify anything I have recently announced or shared with this person about my growth or limits that I should now let speak only through behavior instead.<br>
+        4. Help me audit my dependency map: what I believe only they provide and what the independent alternative source is for each item.<br><br>
+        Start with question one. Ask me to describe the most recent recurring violation before offering any framework.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FINALE ===== -->
+<section class="finale" id="finale">
+  <div class="page">
+    <div class="finale-label">The Finale</div>
+    <h2>You Are <span>Already Quilled</span></h2>
+    <p>Every limit you have ever recognized, every time you felt something was wrong, every boundary that was crossed and some part of you registered the crossing, those were quills. They were always there. You just spent years being convinced you had to earn the right to let them point outward.</p>
+    <p>The porcupine never had to grow into its defense. It was structural from the beginning. What it had to learn was simply to stop believing that turning its belly up would produce a different result from the predator.</p>
+    <p>You do not have to be angrier. You do not have to be harder. You do not have to perform strength. You have to build systems that execute in your absence, hold the perimeter in your silence, and escalate proportionally with the attacker's own force. And then you have to walk uphill. Slowly. Eating good things. Looking for somewhere to sleep that is yours.</p>
+    <div class="finale-scripture">
+      <p>"The name of the Lord is a fortified tower; the righteous run to it and are safe."</p>
+      <div class="ref">Proverbs 18:10</div>
+    </div>
+
+    <div class="series-progress" style="margin-top:48px">
+      <div class="series-label">The Shield Series</div>
+      <div class="series-dots">
+        <span class="series-dot done" title="The Mantis Shrimp's Eye"></span>
+        <span class="series-dot active" title="The Porcupine's Quills"></span>
+        <span class="series-dot" title="The Tardigrade Protocol"></span>
+      </div>
+      <div class="series-dot-label" style="color:rgba(255,255,255,0.35)">Next: Part 3. The Tardigrade Protocol. Survive.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="page">
+    <p>Kingdom Builders AI &nbsp;&#183;&nbsp; The Porcupine's Quills &nbsp;&#183;&nbsp; The Shield Series Part 2</p>
+  </div>
+</footer>
+
+<script>
+/* === READ PROGRESS === */
+const progressBar = document.getElementById('progress-bar');
+const chapterPill = document.getElementById('chapter-pill');
+const chapters = [
+  {id:'cover',label:'Cover'},
+  {id:'pregame',label:'Pregame'},
+  {id:'ch1',label:'Ch. 1 — Architecture'},
+  {id:'ch2',label:'Ch. 2 — The Barb'},
+  {id:'ch3',label:'Ch. 3 — Non-Display'},
+  {id:'ch4',label:'Ch. 4 — Solitude'},
+  {id:'final-test',label:'Final Test'},
+  {id:'install',label:'Install'},
+  {id:'finale',label:'Finale'}
+];
+
+function updateProgress() {
+  const scrollTop = window.scrollY || document.documentElement.scrollTop;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  progressBar.style.width = pct + '%';
+
+  // Chapter pill
+  let current = chapters[0].label;
+  for (const ch of chapters) {
+    const el = document.getElementById(ch.id);
+    if (el && el.getBoundingClientRect().top <= 100) {
+      current = ch.label;
+    }
+  }
+  chapterPill.textContent = current;
+  chapterPill.style.opacity = scrollTop > 100 ? '1' : '0';
+}
+window.addEventListener('scroll', updateProgress, {passive: true});
+updateProgress();
+
+/* === REVEAL ON SCROLL === */
+const revealEls = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, {threshold: 0.1, rootMargin: '0px 0px -40px 0px'});
+revealEls.forEach(el => revealObserver.observe(el));
+
+/* === FINAL TEST ACCORDION === */
+document.querySelectorAll('.ft-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.ft-item').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  });
+});
+
+/* === SERIES DOT TOOLTIPS (simple title) === */
+// Native title attribute handles this on desktop; dots are display-only on mobile.
+</script>
+</body>
+</html>

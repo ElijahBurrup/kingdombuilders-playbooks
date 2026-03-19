@@ -73,7 +73,7 @@ test.describe("Catalog Page — Visual Audit", () => {
     await page.goto("");
     const search = page.locator("#lens-input");
     await expect(search).toBeVisible();
-    await search.fill("salmon");
+    await search.fill("bonsai");
     await page.waitForTimeout(500);
     const visible = page.locator(".card:not(.hidden)");
     const visCount = await visible.count();
@@ -273,7 +273,7 @@ test.describe("Visual Components — Display Integrity", () => {
   });
 
   test("Chapter gates render with visible titles", async ({ page }) => {
-    await page.goto("read/the-salmon-journey");
+    await page.goto("read/conductors-playbook");
     const chapters = page.locator(".ch-head, .ch-title, [class*='ch-']");
     const count = await chapters.count();
     expect(count).toBeGreaterThan(0);

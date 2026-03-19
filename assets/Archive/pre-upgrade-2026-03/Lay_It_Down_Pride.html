@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lay It Down: Pride | Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1A1008;
+  --ink-mid:#2C2010;
+  --ink-soft:#3D3020;
+  --steel:#5A4830;
+  --steel-light:#8A7A60;
+  --fog:#B0A090;
+  --fire:#E8860A;
+  --fire-mid:rgba(232,134,10,0.18);
+  --fire-pale:rgba(232,134,10,0.07);
+  --ember:#FF6B2B;
+  --ember-mid:rgba(255,107,43,0.15);
+  --gold:#D4A030;
+  --gold-mid:rgba(212,160,48,0.18);
+  --gold-pale:rgba(212,160,48,0.08);
+  --ash:#E85050;
+  --ash-mid:rgba(232,80,80,0.15);
+  --green:#2D8A4E;
+  --green-mid:rgba(45,138,78,0.15);
+  --cream:#FFF9F0;
+  --cream-warm:#FFF4E6;
+  --paper:#FFFBF5;
+  --white:#FFFFFF;
+  --radius:10px;
+  --shadow:0 2px 16px rgba(26,16,8,0.09);
+  --shadow-deep:0 8px 40px rgba(26,16,8,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.78;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.label{font-family:'Poppins',sans-serif}
+.page{max-width:700px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--ink-mid);font-weight:600;font-family:'Poppins',sans-serif}
+
+/* === COVER === */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(160deg,#1A0A02 0%,#2A1508 40%,#1A1020 100%);position:relative;overflow:hidden}
+.cover-grain{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:0.5}
+.cover-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 25%,rgba(10,5,2,0.7) 100%)}
+.flame-ring{position:absolute;border-radius:50%;border:1px solid rgba(232,134,10,0.06);animation:flame-expand 7s ease-out infinite}
+.flame-ring:nth-child(3){width:180px;height:180px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:0s}
+.flame-ring:nth-child(4){width:360px;height:360px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:1.8s}
+.flame-ring:nth-child(5){width:540px;height:540px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:3.6s}
+@keyframes flame-expand{0%{opacity:0.6;transform:translate(-50%,-50%) scale(0.85)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.25)}}
+.cover-content{position:relative;z-index:2;padding:60px 24px 40px}
+.cover-badge{display:inline-block;padding:5px 18px;border:1px solid rgba(232,134,10,0.3);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.67rem;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:var(--fire);margin-bottom:40px;background:rgba(232,134,10,0.07)}
+.cover h1{font-family:'Poppins',sans-serif;font-size:clamp(3rem,9vw,5.5rem);font-weight:300;color:#FFFFFF;line-height:0.95;margin-bottom:6px;letter-spacing:-0.02em}
+.cover h1 em{display:block;color:var(--fire);font-style:normal;font-weight:700;font-size:0.5em;margin-top:12px;letter-spacing:0.01em}
+.cover-sub{font-family:'Lora',Georgia,serif;font-size:clamp(0.95rem,2.5vw,1.15rem);font-style:italic;color:rgba(255,255,255,0.45);margin-top:28px;line-height:1.7;max-width:480px;margin-left:auto;margin-right:auto}
+.cover-sub em{color:rgba(232,134,10,0.85);font-style:normal;font-weight:600}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.5rem;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-top:52px}
+.cover-verse{margin-top:28px;padding:14px 24px;display:inline-block;background:rgba(232,134,10,0.06);border:1px solid rgba(232,134,10,0.12);border-radius:8px;font-family:'Lora',Georgia,serif;font-size:0.82rem;font-style:italic;color:rgba(255,255,255,0.35);line-height:1.6}
+.cover-art{width:200px;height:190px;margin:0 auto 28px;display:block;animation:cover-breathe 5s ease-in-out infinite}
+.cover-art svg{width:100%;height:100%;filter:drop-shadow(0 0 24px rgba(232,134,10,0.2)) drop-shadow(0 0 50px rgba(232,134,10,0.08))}
+@keyframes cover-breathe{0%,100%{transform:scale(1);opacity:0.9}50%{transform:scale(1.04);opacity:1}}
+
+/* === CHAPTER HEADS === */
+.ch-head{background:linear-gradient(160deg,#1A0A02 0%,#201218 100%);padding:72px 24px 52px;position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 50%,rgba(232,134,10,0.04) 0%,transparent 50%)}
+.ch-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 5%,var(--fire) 50%,transparent 95%);opacity:0.5}
+.ch-head .page{position:relative;z-index:2}
+.ch-num{font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--fire);opacity:0.9;margin-bottom:8px}
+.ch-title{font-family:'Poppins',sans-serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:700;color:#FFFFFF;margin:10px 0 8px;letter-spacing:-0.01em}
+.ch-sub{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:rgba(232,134,10,0.55)}
+
+/* === RIBBON === */
+.ribbon{text-align:center;padding:20px 24px;background:var(--cream-warm);border-top:1px solid rgba(26,16,8,0.06);border-bottom:1px solid rgba(26,16,8,0.06)}
+.ribbon p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:var(--steel-light);max-width:540px;margin:0 auto;line-height:1.6}
+
+/* === MISSION === */
+.mission{text-align:center;padding:36px 32px;margin:36px 0;background:linear-gradient(140deg,rgba(232,134,10,0.08),rgba(232,134,10,0.03));border-radius:14px;border:2px solid rgba(232,134,10,0.2);box-shadow:0 0 0 1px rgba(232,134,10,0.06),var(--shadow)}
+.mission-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--fire);margin-bottom:12px}
+.mission p{font-family:'Poppins',sans-serif;font-size:clamp(0.88rem,2.2vw,1.05rem);font-weight:500;color:var(--ink-mid);line-height:1.65}
+.mission p em{color:var(--fire);font-style:normal;font-weight:700}
+
+/* === INSIGHT === */
+.insight{margin:30px 0;padding:28px 32px;background:linear-gradient(140deg,#1A0A02,#201218);border-radius:14px;border:2px solid rgba(232,134,10,0.25);border-left:5px solid var(--fire);position:relative;overflow:hidden;box-shadow:var(--shadow-deep)}
+.insight::before{content:'';position:absolute;top:-40%;right:-10%;width:200px;height:200px;background:radial-gradient(circle,rgba(232,134,10,0.07) 0%,transparent 70%);border-radius:50%}
+.insight p{font-family:'Lora',Georgia,serif;font-size:1.02rem;font-style:italic;color:rgba(255,255,255,0.9);line-height:1.72;position:relative;z-index:2}
+.insight em{color:var(--fire);font-style:normal;font-weight:700}
+
+/* === GUIDED QUOTE === */
+.gq{margin:32px 0;text-align:center;padding:32px 24px;position:relative;background:linear-gradient(160deg,rgba(232,134,10,0.04),rgba(232,134,10,0.07));border-radius:14px;border:1.5px solid rgba(232,134,10,0.15)}
+.gq::before,.gq::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:48px;height:2px;background:linear-gradient(90deg,transparent,var(--fire),transparent)}
+.gq::before{top:0}.gq::after{bottom:0}
+.gq p{font-family:'Lora',Georgia,serif;font-size:1.05rem;font-style:italic;color:var(--ink-soft);line-height:1.6;max-width:520px;margin:0 auto}
+
+/* === VIZ CARDS === */
+.viz{margin:44px 0 32px;border-radius:14px;overflow:hidden;border:2px solid rgba(232,134,10,0.22);box-shadow:var(--shadow-deep);position:relative;background:var(--white)}
+.viz-top{background:linear-gradient(135deg,rgba(232,134,10,0.1),rgba(232,134,10,0.04));padding:20px 26px 18px;display:flex;align-items:center;gap:14px;border-bottom:1px solid rgba(232,134,10,0.12)}
+.viz-icon{width:48px;height:48px;border-radius:50%;border:2px solid rgba(232,134,10,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(145deg,#fff,rgba(255,244,230,0.6));font-size:1.3rem}
+.viz-meta{flex:1}
+.viz-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);margin-bottom:2px}
+.viz h4{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:var(--ink-mid)}
+.viz-body{padding:26px 26px 22px;background:linear-gradient(170deg,#FFFDF8 0%,#FFF8F0 100%)}
+.viz-body p{font-size:0.95rem;color:var(--steel);line-height:1.78;margin-bottom:14px}
+.viz-body strong,.viz-lesson strong{color:rgba(255,255,255,0.95);font-weight:700}
+.viz-body em,.viz-lesson em{color:var(--fire-pale);font-style:normal;font-weight:600}
+.viz-body p:last-child{margin-bottom:0}
+.viz-trigger{margin-top:18px;padding:14px 18px;background:linear-gradient(135deg,rgba(232,134,10,0.08),rgba(232,134,10,0.14));border:1.5px solid rgba(232,134,10,0.2);border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.76rem;font-weight:600;color:var(--ink-soft);text-align:center;line-height:1.55}
+
+/* === BEFORE/AFTER === */
+.ba-pair{margin:32px 0;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:620px){.ba-pair{grid-template-columns:1fr}}
+.ba-card{border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.ba-head{padding:11px 18px;font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.ba-before{background:linear-gradient(170deg,#FFF0F0,#FFE8E8)}
+.ba-before .ba-head{background:rgba(232,80,80,0.12);color:#8B1F1F}
+.ba-after{background:linear-gradient(170deg,#FFF8EE,#FFF2E0)}
+.ba-after .ba-head{background:rgba(232,134,10,0.12);color:#5A3800}
+.ba-dot{width:7px;height:7px;border-radius:50%}
+.ba-before .ba-dot{background:var(--ash)}
+.ba-after .ba-dot{background:var(--fire)}
+.ba-body{padding:16px 18px;font-size:0.88rem;line-height:1.65}
+.ba-body ul{list-style:none;padding:0;margin:0}
+.ba-body ul li{padding:6px 0;border-bottom:1px solid rgba(0,0,0,0.05);font-family:'Poppins',sans-serif;font-size:0.8rem}
+.ba-body ul li:last-child{border-bottom:none}
+
+/* === DD CARDS === */
+.dd{margin:24px 0;padding:22px 26px;border-radius:12px;border-left:4px solid var(--fire);background:var(--white);box-shadow:var(--shadow)}
+.dd:nth-of-type(even){background:var(--cream)}
+.dd h4{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--ink-mid);margin-bottom:4px}
+.dd .sub{font-family:'Poppins',sans-serif;font-size:0.54rem;font-weight:700;color:var(--fire);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.dd p{font-size:0.95rem;color:var(--steel);line-height:1.78;margin-bottom:8px}
+.dd p:last-child{margin-bottom:0}
+
+/* === ADVENTURE === */
+.adventure{margin:36px 0;border-radius:14px;overflow:hidden;box-shadow:var(--shadow-deep);background:var(--white);border:1.5px solid rgba(26,16,8,0.08)}
+.adv-head{padding:14px 26px 12px;display:flex;align-items:center;gap:12px;border-bottom:1.5px solid rgba(232,134,10,0.1);background:linear-gradient(135deg,rgba(232,134,10,0.05),rgba(232,134,10,0.02))}
+.adv-head-icon{width:36px;height:36px;border-radius:50%;background:rgba(232,134,10,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1.5px solid rgba(232,134,10,0.2);font-size:1rem}
+.adv-head-text{flex:1}
+.adv-head-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--fire);opacity:0.7}
+.adv-head-title{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--ink-mid)}
+.adv-step{padding:14px 26px;border-bottom:1px solid rgba(26,16,8,0.05)}
+.adv-step:last-child{border-bottom:none}
+.adv-step:nth-child(odd){background:var(--white)}
+.adv-step:nth-child(even){background:rgba(232,134,10,0.02)}
+.step-c p{font-family:'Source Serif 4',Georgia,serif;font-size:0.93rem;line-height:1.75;margin:0 0 6px;color:var(--ink-soft)}
+.step-c p:last-child{margin-bottom:0}
+.step-c em{color:var(--steel-light)}
+.tag-you{font-family:'Poppins',sans-serif;font-weight:700;color:var(--ink-mid);font-size:0.74rem;display:inline-block;padding:2px 10px;background:rgba(232,134,10,0.1);border-radius:4px;margin-bottom:5px;border:1px solid rgba(232,134,10,0.2)}
+.adv-result-good{background:linear-gradient(135deg,rgba(45,138,78,0.04),rgba(45,138,78,0.08))!important}
+
+/* === THINK === */
+.think{margin:16px 0 36px;padding:30px;background:linear-gradient(145deg,rgba(232,134,10,0.08),rgba(232,134,10,0.04));border:2px dashed rgba(232,134,10,0.35);border-radius:14px;position:relative;box-shadow:0 4px 16px rgba(232,134,10,0.08)}
+.think::before{content:'';position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--paper);padding:0 12px;width:28px;height:28px;display:block;margin-left:-14px;background:var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23E8860A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22c-2 0-4-1.5-4-4 0-2 2-3 4-3s4 1 4 3c0 2.5-2 4-4 4z'/%3E%3Cpath d='M12 15c-1.5-2-5-4-5-8a5 5 0 0 1 10 0c0 4-3.5 6-5 8z'/%3E%3Cpath d='M9.5 9c.3-1.8 1.5-3 2.5-3'/%3E%3C/svg%3E") center/contain no-repeat}
+.think-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);text-align:center;margin-bottom:10px}
+.think h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--ink-mid);text-align:center;margin-bottom:14px}
+.think p{font-size:0.88rem;color:var(--steel);margin-bottom:8px;font-family:'Poppins',sans-serif}
+.think-line{border-bottom:1.5px solid rgba(232,134,10,0.25);height:30px;margin-bottom:4px;cursor:text}
+.think p.q-start{font-family:'Poppins',sans-serif;font-weight:500;color:var(--ink-soft);font-size:0.85rem;text-align:left;margin-top:14px;margin-bottom:4px}
+.think .closing{font-weight:600;color:var(--fire);margin-top:12px;font-family:'Poppins',sans-serif;font-size:0.8rem}
+
+/* === BREATHE === */
+.breathe{margin:44px 0;text-align:center;padding:52px 24px;position:relative;background:linear-gradient(160deg,rgba(232,134,10,0.08),rgba(232,134,10,0.04));border-radius:16px;border:2px solid rgba(232,134,10,0.15)}
+.breathe-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1.5px solid rgba(232,134,10,0.1)}
+.breathe-ring:nth-child(1){width:140px;height:140px;animation:breathe-pulse 6s ease-in-out infinite}
+.breathe-ring:nth-child(2){width:90px;height:90px;animation:breathe-pulse 6s ease-in-out infinite 1.5s}
+.breathe-ring:nth-child(3){width:45px;height:45px;animation:breathe-pulse 6s ease-in-out infinite 3s}
+@keyframes breathe-pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.5}50%{transform:translate(-50%,-50%) scale(1.25);opacity:0.1}}
+.breathe-content{position:relative;z-index:2}
+.breathe-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--fire);margin-bottom:8px}
+.breathe h4{font-family:'Poppins',sans-serif;font-size:0.94rem;font-weight:600;color:var(--ink-mid);margin-bottom:8px}
+.breathe p{font-family:'Lora',Georgia,serif;font-size:0.88rem;font-style:italic;color:var(--steel);max-width:420px;margin:0 auto;line-height:1.65}
+
+/* === DESCENT === */
+.descent-ramp{margin:36px 0 0;display:flex;flex-direction:column;gap:12px}
+.ramp-echo{padding:26px 30px;background:linear-gradient(160deg,rgba(232,134,10,0.07),rgba(232,134,10,0.03));border-radius:14px;border:1.5px solid rgba(232,134,10,0.12)}
+.ramp-echo p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:var(--steel);line-height:1.78;text-align:center;margin:0}
+.ramp-close{padding:36px 30px;text-align:center;background:linear-gradient(160deg,rgba(212,160,48,0.1),rgba(212,160,48,0.05));border-radius:14px;border:1.5px solid rgba(212,160,48,0.2)}
+.ramp-close-label{font-family:'Poppins',sans-serif;font-size:0.44rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--gold);opacity:0.9;margin-bottom:8px}
+.ramp-close p{font-family:'Poppins',sans-serif;font-size:0.8rem;font-weight:500;color:var(--ink-soft);line-height:1.65;max-width:440px;margin:0 auto}
+
+/* === INSTRUCTION === */
+.inst{margin:26px 0;padding:18px 22px;background:linear-gradient(90deg,rgba(232,134,10,0.07),rgba(212,160,48,0.05));border-left:4px solid var(--fire);border-radius:0 12px 12px 0;box-shadow:var(--shadow)}
+.inst p{font-family:'Poppins',sans-serif;font-size:0.8rem;color:var(--steel);line-height:1.6;margin:0}
+.inst strong{color:var(--ink-mid);font-weight:600}
+
+/* === H2 ICON === */
+.h2-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--ink-mid),var(--ink-soft));margin-right:10px;vertical-align:middle;box-shadow:0 2px 8px rgba(26,16,8,0.2);font-size:0.7rem}
+.h2-icon svg{width:16px;height:16px;stroke:var(--fire);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.viz-icon svg{width:24px;height:24px;stroke:var(--fire);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.adv-head-icon svg{width:18px;height:18px;stroke:var(--fire);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.prose h2{font-family:'Poppins',sans-serif;font-size:1.35rem;color:var(--ink-mid);margin:36px 0 14px;letter-spacing:-0.01em;display:flex;align-items:center}
+
+/* === ROOT REVIEW === */
+.root-review{margin:44px 0;padding:28px 22px;background:linear-gradient(160deg,#FFF8EE,#FFF0F8);border-radius:16px;border:2px solid rgba(232,134,10,0.18);box-shadow:var(--shadow)}
+.root-label{font-family:'Poppins',sans-serif;font-size:0.44rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--fire);text-align:center;margin-bottom:18px}
+.root-layer{display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 0;flex-wrap:wrap}
+.root-layer.current{padding:12px 0}
+.root-ch{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--fog);width:28px;text-align:right;flex-shrink:0}
+.root-layer.current .root-ch{color:var(--fire)}
+.root-items{display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center}
+.root-pill{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:600;padding:5px 13px;border-radius:6px;white-space:nowrap}
+.root-pill.rp-dim{background:rgba(90,72,48,0.1);color:var(--steel);border:1.5px solid rgba(90,72,48,0.18)}
+.root-pill.rp-bright{background:linear-gradient(135deg,rgba(232,134,10,0.18),rgba(232,134,10,0.26));color:var(--ink-mid);border:2px solid rgba(232,134,10,0.35);box-shadow:0 2px 10px rgba(232,134,10,0.12);font-weight:700}
+.root-pill.rp-ch1{background:rgba(232,134,10,0.12);color:#5A3800;border:1.5px solid rgba(232,134,10,0.28);font-weight:600}
+.root-pill.rp-ch2{background:rgba(255,107,43,0.12);color:#5A2000;border:1.5px solid rgba(255,107,43,0.25);font-weight:600}
+.root-pill.rp-ch3{background:rgba(45,138,78,0.12);color:#1A3A28;border:1.5px solid rgba(45,138,78,0.25);font-weight:600}
+.root-pill.rp-ch4{background:rgba(160,100,240,0.12);color:#3A1A5A;border:1.5px solid rgba(160,100,240,0.25);font-weight:600}
+.root-pill.rp-ch5{background:rgba(60,140,240,0.12);color:#1A2E5A;border:1.5px solid rgba(60,140,240,0.25);font-weight:600}
+.root-arr{color:var(--fire);opacity:0.65;font-size:0.78rem;padding:0 3px}
+.root-layer.current .root-arr{opacity:0.9}
+.root-sep{width:60%;max-width:300px;height:1.5px;background:linear-gradient(90deg,transparent,rgba(232,134,10,0.15),transparent);margin:6px auto}
+
+/* === PROMPT === */
+.prompt{margin:32px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(232,134,10,0.22);box-shadow:var(--shadow-deep)}
+.prompt-head{padding:12px 20px;background:linear-gradient(90deg,#1A0A02,#201218);font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--fire)}
+.prompt-body{padding:24px 26px;background:#120A04;color:#C0B8A8;font-family:'Poppins',sans-serif;font-size:0.88rem;line-height:1.8}
+.prompt-body strong{color:var(--fire)}
+
+/* === STACK === */
+.stack{margin:38px 0;text-align:center}
+.stack-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);opacity:0.7;margin-bottom:16px}
+.stack-flow{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap}
+.stack-node{display:inline-flex;align-items:center;justify-content:center;padding:10px 18px;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.68rem;font-weight:600;line-height:1.35;white-space:nowrap}
+.sn-dark{background:var(--ink-mid);color:#FFFFFF;border:1.5px solid rgba(232,134,10,0.2)}
+.sn-fire{background:rgba(232,134,10,0.13);color:var(--ink-mid);border:1.5px solid rgba(232,134,10,0.25)}
+.sn-gold{background:rgba(212,160,48,0.13);color:var(--ink-soft);border:1.5px solid rgba(212,160,48,0.28)}
+.sn-red{background:rgba(232,80,80,0.1);color:#5A1818;border:1.5px solid rgba(232,80,80,0.2)}
+.sn-green{background:rgba(45,138,78,0.1);color:#1A3A28;border:1.5px solid rgba(45,138,78,0.2)}
+.stack-arr{font-size:1rem;color:rgba(232,134,10,0.45);padding:0 7px}
+
+/* === PRAYER === */
+.prayer{margin:32px 0;padding:28px 30px;background:linear-gradient(160deg,#1A0A02,#181020);border-radius:14px;border:2px solid rgba(212,160,48,0.25);position:relative;overflow:hidden}
+.prayer::before{content:'';position:absolute;top:-20%;left:-10%;width:160px;height:160px;background:radial-gradient(circle,rgba(212,160,48,0.06) 0%,transparent 70%);border-radius:50%}
+.prayer-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;position:relative;z-index:2}
+.prayer p{font-family:'Lora',Georgia,serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.85);line-height:1.8;position:relative;z-index:2;margin-bottom:8px}
+.prayer p:last-child{margin-bottom:0}
+.prayer strong{color:var(--gold);font-style:normal;font-weight:700}
+
+/* === FINALE === */
+.finale{text-align:center;padding:80px 24px;background:linear-gradient(160deg,#1A0A02 0%,#201218 100%);position:relative;overflow:hidden}
+.finale::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 50% 50%,rgba(232,134,10,0.04) 0%,transparent 50%)}
+.finale h2{font-family:'Poppins',sans-serif;font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;color:#FFFFFF;margin-bottom:8px;position:relative;z-index:2}
+.finale h2 span{color:var(--fire)}
+.finale p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.38);max-width:460px;margin:16px auto;line-height:1.65;position:relative;z-index:2}
+
+/* === FOOTER === */
+footer{text-align:center;padding:36px 24px;background:#080602}
+footer p{font-family:'Lora',Georgia,serif;font-size:0.78rem;font-style:italic;color:rgba(232,134,10,0.2);margin-bottom:12px}
+footer .brand{font-family:'Poppins',sans-serif;font-size:0.67rem;font-style:normal;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.12)}
+
+/* === PERCEPTION STACK === */
+.perc-stack{margin:36px 0;position:relative;padding:0}
+.perc-layer{margin:0 auto;padding:20px 24px;border-radius:12px;position:relative;box-shadow:var(--shadow)}
+.perc-surface{background:linear-gradient(135deg,rgba(232,134,10,0.12),rgba(232,134,10,0.06));border:2px solid rgba(232,134,10,0.25);z-index:3;max-width:80%}
+.perc-hidden{background:linear-gradient(135deg,rgba(255,107,43,0.08),rgba(255,107,43,0.04));border:2px solid rgba(255,107,43,0.2);z-index:2;margin-top:-6px;max-width:88%;padding-top:24px}
+.perc-core{background:linear-gradient(135deg,rgba(212,160,48,0.1),rgba(212,160,48,0.04));border:2px solid rgba(212,160,48,0.25);z-index:1;margin-top:-6px;max-width:96%;padding-top:24px}
+.perc-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;margin-bottom:6px}
+.perc-surface .perc-label{color:var(--fire)}.perc-hidden .perc-label{color:var(--ember)}.perc-core .perc-label{color:var(--gold)}
+.perc-layer p{font-family:'Poppins',sans-serif;font-size:0.82rem;color:var(--steel);line-height:1.6;margin:0}
+
+/* === CORRECTION FILTER === */
+.corr-filter{margin:36px 0;text-align:center}
+.corr-flow{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;margin-bottom:16px}
+.corr-node{padding:12px 18px;border-radius:10px;font-family:'Poppins',sans-serif;font-size:0.72rem;font-weight:600}
+.corr-input{background:rgba(45,138,78,0.1);color:#1A3A28;border:1.5px solid rgba(45,138,78,0.25)}
+.corr-intercept{background:rgba(232,80,80,0.1);color:#5A1818;border:1.5px solid rgba(232,80,80,0.25)}
+.corr-output{background:rgba(232,134,10,0.1);color:#5A3800;border:1.5px solid rgba(232,134,10,0.25)}
+.corr-branches{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.corr-branch{padding:10px 16px;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.68rem;font-weight:600;background:rgba(232,80,80,0.06);color:#5A1818;border:1px solid rgba(232,80,80,0.15)}
+
+/* === CONTROL GRID === */
+.ctrl-grid{margin:36px 0;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:620px){.ctrl-grid{grid-template-columns:1fr}}
+.ctrl-col{border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.ctrl-col-head{padding:12px 18px;font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:4px;text-transform:uppercase}
+.ctrl-grip .ctrl-col-head{background:rgba(232,80,80,0.12);color:#8B1F1F}
+.ctrl-release .ctrl-col-head{background:rgba(45,138,78,0.12);color:#1A3A28}
+.ctrl-grip{background:linear-gradient(170deg,#FFF0F0,#FFE8E8)}
+.ctrl-release{background:linear-gradient(170deg,#F0FFF4,#E8FFE8)}
+.ctrl-col-body{padding:16px 18px}
+.ctrl-col-body ul{list-style:none;padding:0;margin:0}
+.ctrl-col-body ul li{padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.05);font-family:'Poppins',sans-serif;font-size:0.8rem;color:var(--steel)}
+.ctrl-col-body ul li:last-child{border-bottom:none}
+
+/* === SERIES PROGRESS === */
+.series-progress{text-align:center;padding:32px 24px;background:var(--cream-warm);border-top:1px solid rgba(26,16,8,0.06)}
+.series-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);margin-bottom:14px}
+.series-dots{display:flex;align-items:center;justify-content:center;gap:12px}
+.series-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(232,134,10,0.3);background:transparent}
+.series-dot.active{background:var(--fire);border-color:var(--fire);box-shadow:0 0 8px rgba(232,134,10,0.3)}
+.series-dot-label{font-family:'Poppins',sans-serif;font-size:0.55rem;color:var(--steel-light);margin-top:10px}
+
+/* === SCROLL REVEAL === */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.65s ease,transform 0.65s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.stagger-children > *{opacity:0;transform:translateY(18px);transition:opacity 0.5s ease,transform 0.5s ease}
+.stagger-children.visible > *:nth-child(1){opacity:1;transform:none;transition-delay:0s}
+.stagger-children.visible > *:nth-child(2){opacity:1;transform:none;transition-delay:0.12s}
+.stagger-children.visible > *:nth-child(3){opacity:1;transform:none;transition-delay:0.24s}
+.stagger-children.visible > *:nth-child(4){opacity:1;transform:none;transition-delay:0.36s}
+
+.think:hover{box-shadow:0 0 0 2px rgba(232,134,10,0.25),0 8px 32px rgba(232,134,10,0.1)}
+.think{transition:box-shadow 0.3s ease}
+.adv-step{transition:background 0.2s ease}
+.adv-step:hover{background:rgba(232,134,10,0.04)!important}
+@keyframes insight-border{0%,100%{border-left-color:var(--fire)}50%{border-left-color:rgba(232,134,10,0.3)}}
+.insight{animation:insight-border 4s ease-in-out infinite}
+
+#read-progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--fire),rgba(232,134,10,0.4));z-index:9999;pointer-events:none;transition:width 0.08s linear}
+#chapter-pill{position:fixed;bottom:24px;right:24px;background:var(--ink);border:1px solid rgba(232,134,10,0.25);color:var(--fire);font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:8px 18px;border-radius:50px;opacity:0;transition:opacity 0.35s ease;pointer-events:none;z-index:1000;box-shadow:0 4px 24px rgba(0,0,0,0.4)}
+#chapter-pill.show{opacity:1}
+
+@media(max-width:620px){.stack-node{font-size:0.6rem;padding:8px 12px}}
+@media(max-width:640px){
+  .page{padding:0 16px}
+}
+@media print{
+  @page{margin:18mm 16mm 22mm 16mm}
+  body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .cover{min-height:auto;padding:80px 24px;break-after:page}
+  .ch-head{break-before:page;padding:56px 24px 40px}
+  .think,.adventure,.viz,.ba-pair,.mission,.insight,.dd,.breathe,.prayer,.prompt,.stack,.descent-ramp{break-inside:avoid}
+  .flame-ring,.cover-grain,.breathe-ring,.cover-vignette{animation:none!important;display:none}
+  .section{padding:36px 0}
+  #read-progress,#chapter-pill,.no-print{display:none!important}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+</style>
+</head>
+<body>
+
+<!-- SVG Sprite Sheet -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="ico-fire" viewBox="0 0 24 24"><path d="M12 22c-2 0-4-1.5-4-4 0-2 2-3 4-3s4 1 4 3c0 2.5-2 4-4 4z"/><path d="M12 15c-1.5-2-5-4-5-8a5 5 0 0 1 10 0c0 4-3.5 6-5 8z"/><path d="M9.5 9c.3-1.8 1.5-3 2.5-3"/></symbol>
+  <symbol id="ico-crown" viewBox="0 0 24 24"><path d="M2 18h20"/><path d="M4 18V8l4 4 4-6 4 6 4-4v10"/></symbol>
+  <symbol id="ico-mirror" viewBox="0 0 24 24"><ellipse cx="12" cy="10" rx="7" ry="8"/><path d="M12 18v4"/><path d="M8 22h8"/><path d="M9.5 7c.8-1.5 2-2.5 3.5-2.5"/></symbol>
+  <symbol id="ico-mask" viewBox="0 0 24 24"><path d="M3 5c0 8 4 14 9 14s9-6 9-14"/><path d="M3 5c0-1 2-2 9-2s9 1 9 2"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><path d="M9 15c1.5 2 4.5 2 6 0"/></symbol>
+  <symbol id="ico-scales" viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M4 7h16"/><path d="M4 7l-2 7h8L8 7"/><path d="M16 7l-2 7h8l-2-7"/><circle cx="12" cy="3" r="1"/></symbol>
+  <symbol id="ico-sword" viewBox="0 0 24 24"><path d="M14.5 17.5L3 6V3h3l11.5 11.5"/><path d="M13 19l6-6"/><path d="M16 16l4 4"/><path d="M19 21l2-2"/><path d="M14.5 6.5L18 3h3v3l-3.5 3.5"/></symbol>
+  <symbol id="ico-shield" viewBox="0 0 24 24"><path d="M12 2l8 4v5c0 5.5-3.8 10.7-8 12-4.2-1.3-8-6.5-8-12V6l8-4z"/><path d="M9 12l2 2 4-4"/></symbol>
+  <symbol id="ico-brain" viewBox="0 0 24 24"><path d="M12 4a4 4 0 0 0-4 4c0 1 .4 2 1 2.7C7.8 11.5 7 13 7 14.5 7 17 9 19 12 20c3-1 5-3 5-5.5 0-1.5-.8-3-2-3.8.6-.7 1-1.7 1-2.7a4 4 0 0 0-4-4z"/><path d="M12 4v16"/><path d="M8 8.5c1 .5 2.5.5 4 0"/><path d="M8.5 13c1 .8 2.5.8 3.5 0"/><path d="M12 8.5c1.5.5 3 .5 4 0"/><path d="M12 13c1 .8 2.5.8 3.5 0"/></symbol>
+  <symbol id="ico-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></symbol>
+  <symbol id="ico-lightning" viewBox="0 0 24 24"><path d="M13 2L4 14h7l-2 8 9-12h-7l2-8z"/></symbol>
+  <symbol id="ico-sunrise" viewBox="0 0 24 24"><path d="M12 2v4"/><path d="M4.93 10.93l2.83 2.83"/><path d="M2 18h4"/><path d="M18 18h4"/><path d="M16.24 13.76l2.83-2.83"/><path d="M18 18a6 6 0 0 0-12 0"/></symbol>
+  <symbol id="ico-prayer" viewBox="0 0 24 24"><path d="M12 3v4"/><path d="M8 9l4-2 4 2"/><path d="M8 9c-1 1-2 3-2 5l2 3"/><path d="M16 9c1 1 2 3 2 5l-2 3"/><path d="M8 17l4 4 4-4"/><path d="M10 13l2 1 2-1"/></symbol>
+  <symbol id="ico-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+  <symbol id="ico-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8"/><path d="M8 11h6"/></symbol>
+  <symbol id="ico-cycle" viewBox="0 0 24 24"><path d="M21.5 2v6h-6"/><path d="M2.5 22v-6h6"/><path d="M21.5 8A10 10 0 0 0 5 5l-2.5 3"/><path d="M2.5 16A10 10 0 0 0 19 19l2.5-3"/></symbol>
+  <symbol id="ico-mute" viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></symbol>
+</svg>
+
+<div id="read-progress"></div>
+<div id="chapter-pill"></div>
+
+<!-- ===== COVER ===== -->
+<section class="cover">
+  <div class="cover-grain"></div>
+  <div class="cover-vignette"></div>
+  <div class="flame-ring"></div>
+  <div class="flame-ring"></div>
+  <div class="flame-ring"></div>
+  <div class="cover-content">
+    <div class="cover-badge">Lay It Down Series. Part 1 of 7</div>
+    <div class="cover-art">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 190" aria-label="Hands releasing crown illustration">
+        <defs>
+          <radialGradient id="ldp-glow" cx="50%" cy="40%" r="50%"><stop offset="0%" stop-color="#D4A030" stop-opacity="0.3"/><stop offset="50%" stop-color="#E8860A" stop-opacity="0.1"/><stop offset="100%" stop-color="#D4A030" stop-opacity="0"/></radialGradient>
+          <linearGradient id="ldp-gold" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#D4A030"/><stop offset="50%" stop-color="#E8860A"/><stop offset="100%" stop-color="#D4A030"/></linearGradient>
+          <linearGradient id="ldp-light" x1="50%" y1="100%" x2="50%" y2="0%"><stop offset="0%" stop-color="#E8860A" stop-opacity="0.6"/><stop offset="100%" stop-color="#D4A030" stop-opacity="0"/></linearGradient>
+        </defs>
+        <!-- Central glow -->
+        <ellipse cx="100" cy="80" rx="60" ry="50" fill="url(#ldp-glow)"/>
+        <!-- Light rays breaking through fingers -->
+        <line x1="100" y1="90" x2="100" y2="15" stroke="url(#ldp-light)" stroke-width="2" opacity="0.3"/>
+        <line x1="100" y1="90" x2="75" y2="20" stroke="url(#ldp-light)" stroke-width="1.5" opacity="0.2"/>
+        <line x1="100" y1="90" x2="125" y2="20" stroke="url(#ldp-light)" stroke-width="1.5" opacity="0.2"/>
+        <line x1="100" y1="90" x2="60" y2="30" stroke="url(#ldp-light)" stroke-width="1" opacity="0.15"/>
+        <line x1="100" y1="90" x2="140" y2="30" stroke="url(#ldp-light)" stroke-width="1" opacity="0.15"/>
+        <line x1="100" y1="90" x2="85" y2="18" stroke="url(#ldp-light)" stroke-width="1.2" opacity="0.18"/>
+        <line x1="100" y1="90" x2="115" y2="18" stroke="url(#ldp-light)" stroke-width="1.2" opacity="0.18"/>
+        <!-- Crown (floating upward, being released) -->
+        <g opacity="0.75">
+          <!-- Crown base band -->
+          <path d="M72,62 Q100,68 128,62" fill="none" stroke="#D4A030" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Crown points -->
+          <path d="M72,62 L68,42 L80,52 L90,38 L100,55 L110,38 L120,52 L132,42 L128,62" fill="none" stroke="#D4A030" stroke-width="2" stroke-linejoin="round"/>
+          <!-- Crown jewels -->
+          <circle cx="100" cy="55" r="2.5" fill="#E8860A" opacity="0.6"/>
+          <circle cx="80" cy="52" r="2" fill="#FF6B2B" opacity="0.5"/>
+          <circle cx="120" cy="52" r="2" fill="#FF6B2B" opacity="0.5"/>
+          <!-- Crown inner fill (translucent) -->
+          <path d="M72,62 L68,42 L80,52 L90,38 L100,55 L110,38 L120,52 L132,42 L128,62 Q100,68 72,62Z" fill="#D4A030" opacity="0.06"/>
+          <!-- Crown sparkle points -->
+          <circle cx="68" cy="42" r="1.5" fill="#D4A030" opacity="0.5"/>
+          <circle cx="90" cy="38" r="1.5" fill="#D4A030" opacity="0.45"/>
+          <circle cx="110" cy="38" r="1.5" fill="#D4A030" opacity="0.45"/>
+          <circle cx="132" cy="42" r="1.5" fill="#D4A030" opacity="0.5"/>
+        </g>
+        <!-- Light particles rising from crown -->
+        <circle cx="95" cy="30" r="1.5" fill="#E8860A" opacity="0.4"/>
+        <circle cx="108" cy="25" r="1.2" fill="#D4A030" opacity="0.35"/>
+        <circle cx="88" cy="22" r="1" fill="#E8860A" opacity="0.3"/>
+        <circle cx="115" cy="18" r="1.3" fill="#D4A030" opacity="0.25"/>
+        <circle cx="100" cy="12" r="1" fill="#E8860A" opacity="0.2"/>
+        <circle cx="90" cy="8" r="0.8" fill="#D4A030" opacity="0.15"/>
+        <!-- Left hand (open, fingers spread, releasing) -->
+        <g opacity="0.75">
+          <!-- Palm -->
+          <path d="M50,110 Q48,100 52,92 Q55,85 62,82 Q68,80 72,85 Q76,92 74,102 Q72,110 65,115Z" fill="#5A4830" opacity="0.4"/>
+          <!-- Fingers (spread open) -->
+          <path d="M55,88 Q50,78 48,68" fill="none" stroke="#8A7A60" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+          <path d="M58,85 Q55,74 54,64" fill="none" stroke="#8A7A60" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+          <path d="M62,83 Q60,72 60,62" fill="none" stroke="#8A7A60" stroke-width="1.8" stroke-linecap="round" opacity="0.45"/>
+          <path d="M66,84 Q66,74 68,66" fill="none" stroke="#8A7A60" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+          <path d="M70,87 Q72,80 76,74" fill="none" stroke="#5A4830" stroke-width="1.3" stroke-linecap="round" opacity="0.35"/>
+          <!-- Light between fingers -->
+          <line x1="56" y1="75" x2="54" y2="50" stroke="#E8860A" stroke-width="0.8" opacity="0.2"/>
+          <line x1="61" y1="72" x2="60" y2="48" stroke="#D4A030" stroke-width="0.6" opacity="0.15"/>
+          <line x1="67" y1="74" x2="70" y2="52" stroke="#E8860A" stroke-width="0.6" opacity="0.15"/>
+        </g>
+        <!-- Right hand (mirror of left) -->
+        <g opacity="0.75">
+          <!-- Palm -->
+          <path d="M150,110 Q152,100 148,92 Q145,85 138,82 Q132,80 128,85 Q124,92 126,102 Q128,110 135,115Z" fill="#5A4830" opacity="0.4"/>
+          <!-- Fingers (spread open) -->
+          <path d="M145,88 Q150,78 152,68" fill="none" stroke="#8A7A60" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+          <path d="M142,85 Q145,74 146,64" fill="none" stroke="#8A7A60" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+          <path d="M138,83 Q140,72 140,62" fill="none" stroke="#8A7A60" stroke-width="1.8" stroke-linecap="round" opacity="0.45"/>
+          <path d="M134,84 Q134,74 132,66" fill="none" stroke="#8A7A60" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+          <path d="M130,87 Q128,80 124,74" fill="none" stroke="#5A4830" stroke-width="1.3" stroke-linecap="round" opacity="0.35"/>
+          <!-- Light between fingers -->
+          <line x1="144" y1="75" x2="146" y2="50" stroke="#E8860A" stroke-width="0.8" opacity="0.2"/>
+          <line x1="139" y1="72" x2="140" y2="48" stroke="#D4A030" stroke-width="0.6" opacity="0.15"/>
+          <line x1="133" y1="74" x2="130" y2="52" stroke="#E8860A" stroke-width="0.6" opacity="0.15"/>
+        </g>
+        <!-- Wrist/arm hints -->
+        <path d="M50,110 Q42,125 40,140" fill="none" stroke="#5A4830" stroke-width="3" stroke-linecap="round" opacity="0.25"/>
+        <path d="M150,110 Q158,125 160,140" fill="none" stroke="#5A4830" stroke-width="3" stroke-linecap="round" opacity="0.25"/>
+        <!-- Ground shadow -->
+        <ellipse cx="100" cy="170" rx="55" ry="8" fill="#1A1008" opacity="0.3"/>
+        <!-- Subtle warm glow at center -->
+        <circle cx="100" cy="85" r="15" fill="#E8860A" opacity="0.06"/>
+      </svg>
+    </div>
+    <h1>Lay It Down<em>Pride</em></h1>
+    <p class="cover-sub">The sin that doesn't look like a sin.<br>It looks like <em>your personality.</em><br>Your confidence. Your independence. Your high standards.<br>And it is eating your life from the inside.</p>
+    <div class="cover-verse">"God resists the proud, but gives grace to the humble."<br> James 4:6 (NKJV)</div>
+    <p class="cover-author">KingdomBuilders AI</p>
+  </div>
+</section>
+
+<!-- ===== BEFORE WE BEGIN ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Before We Begin</div><h2 class="ch-title">The Throne You Sit on Every Day</h2><p class="ch-sub">Pride is the only sin that feels like a compliment.</p></div></div>
+
+<div class="page prose section reveal">
+  <p>Pride is not arrogance. Arrogance is just pride dressed loud. The person who brags, who name drops, who makes everything about themselves, that is the amateur version. Easy to spot. Easy to diagnose. And therefore, easy to dismiss.</p>
+  <p>The real pride is quieter. It is the voice that says <strong>"I don't need help."</strong> The reflex that says <strong>"I already knew that."</strong> The identity built entirely on what you have accomplished, curated, and controlled. It does not announce itself because it does not have to. Everyone already calls it by its preferred names: confidence, independence, leadership, discipline, high standards.</p>
+  <p>This is why pride is the root of every other deadly sin. It is not one problem among seven. It is the operating system that makes the other six possible. Greed says "I deserve more." Lust says "I deserve pleasure." Envy says "I deserve what they have." Wrath says "I deserve to be respected." Sloth says "I deserve rest I haven't earned." Gluttony says "I deserve comfort." Every single one begins with the word <strong>I.</strong></p>
+
+  <div class="insight"><p>Pride is the only sin that gets better camouflage the more spiritual you become. A new believer struggles with obvious temptation. A mature believer struggles with <em>the subtle worship of their own maturity.</em> The throne gets more comfortable the longer you sit on it.</p></div>
+
+  <p>This book confronts three thrones. Three altars that pride builds in your life without asking your permission. They are not obvious. They wear social approval like camouflage. Your church probably rewards at least one of them.</p>
+
+  <div class="breathe">
+    <div class="breathe-ring"></div><div class="breathe-ring"></div><div class="breathe-ring"></div>
+    <div class="breathe-content">
+      <div class="breathe-label">Three Thrones</div>
+      <h4>Self-Image. Being Right. Self-Reliance.</h4>
+      <p>None of them asked for your soul. They just asked for your attention, your arguments, and your independence. And you gave all three willingly.</p>
+    </div>
+  </div>
+
+  <div class="inst"><p><strong>How this guide works:</strong> Each pair of chapters names one throne, then gives you a specific counterattack. The exercises are not journaling prompts, they are acts of honesty. This is the first of seven in the Lay It Down series. We start here because nothing else can change until pride is addressed first.</p></div>
+
+  <div class="insight"><p>If you finish this playbook, you will recognize pride in places you've been calling 'personality', the need to be right, the refusal to ask for help, the quiet belief that your standards are simply higher than everyone else's. You will have <strong>a dismantling protocol for each altar and understand why surrender isn't weakness but the only door to genuine strength.</strong></p></div>
+</div>
+
+<!-- ===== CHAPTER 1: THE CURATOR ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter One</div><h2 class="ch-title">The Curator</h2><p class="ch-sub">How you turned yourself into a museum exhibit, and forgot what was real.</p></div></div>
+<div class="ribbon"><p>"The Lord does not look at the things people look at. People look at the outward appearance, but the Lord looks at the heart.", 1 Samuel 16:7 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <div class="mission"><div class="mission-label">The Throne</div><p>The altar of self-image.<br>Not vanity, something more sophisticated.<br>The daily, deliberate curation of how <em>the world perceives you.</em><br>Your online presence. Your reputation. Your "personal brand."<br>The version of you that <em>everyone sees but you no longer recognize.</em></p></div>
+
+  <p>You did not wake up one day and decide to become a performer. It happened in layers. The first time someone praised you for looking put together, something inside you made a note: <strong>this works.</strong> The first time a post got more likes than usual, the algorithm in your brain updated its model: <strong>this version of me gets approval.</strong></p>
+  <p>Over time, you stopped sharing and started curating. You stopped living and started framing. Every photo is angled. Every story is edited. Every conversation has a narrator running in the background, asking not "What do I think?" but <strong>"What should someone like me think?"</strong></p>
+  <p>This is not a social media problem. Social media is just the megaphone. The real altar was built long before the first smartphone. It was built the moment you decided that being seen correctly was more important than being known honestly.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-mirror"/></svg></span>The Performance Tax</h2>
+  <p>Every curated moment costs energy. Not the visible kind, the deep kind. The kind that leaves you exhausted at the end of a day where nothing hard actually happened. You spent the day managing: managing how your coworker sees you, managing how your spouse interprets your tone, managing how your social feed tells the story of your life.</p>
+  <p>The performance tax is this: <strong>you cannot be known and curated at the same time.</strong> The more energy you spend controlling perception, the less energy remains for actual connection. You end up with a thousand followers and zero people who know what keeps you up at night.</p>
+
+  <div class="viz reveal">
+    <div class="viz-top"><div class="viz-icon"><svg><use href="#ico-mask"/></svg></div><div class="viz-meta"><div class="viz-label">Visualization</div><h4>The Performance Tax</h4></div></div>
+    <div class="viz-body">
+      <p><strong>Energy spent performing</strong> = energy unavailable for connection, creativity, rest, and prayer.</p>
+      <p>Most people spend 60% or more of their social energy managing perception. That leaves less than half for the relationships and calling that actually matter.</p>
+      <div class="viz-trigger">Ask yourself: How much of today's energy went toward being seen correctly versus being honest?</div>
+    </div>
+  </div>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-search"/></svg></span>The Perception Stack</h2>
+  <p>Pride builds your identity in layers. The deeper you go, the more unfamiliar it becomes. Most people live their entire lives on the surface layer and never realize there is something underneath.</p>
+
+  <div class="perc-stack reveal stagger-children">
+    <div class="perc-layer perc-surface">
+      <div class="perc-label">Surface. What You Show</div>
+      <p>The curated feed. The confident posture. The put-together outfit. The measured response. The resume. The highlight reel.</p>
+    </div>
+    <div class="perc-layer perc-hidden">
+      <div class="perc-label">Hidden. What You Protect</div>
+      <p>The insecurities you manage. The doubts you never voice. The comparison that runs on a loop. The fear that if people saw the real version, they would leave.</p>
+    </div>
+    <div class="perc-layer perc-core">
+      <div class="perc-label">Core. What You Forgot Was Real</div>
+      <p>The person you were before you learned to perform. The desires you buried because they did not fit the brand. The simple version of you that God created and called good.</p>
+    </div>
+  </div>
+
+  <div class="ba-pair reveal">
+    <div class="ba-card ba-before"><div class="ba-head"><span class="ba-dot"></span>Pride Says</div><div class="ba-body"><ul><li>"I'm being authentic" (while selecting which truths to share)</li><li>"I just have high standards" (for how I'm perceived)</li><li>"I'm a private person" (translation: I control the narrative)</li><li>"Image matters" (to me, above all else)</li></ul></div></div>
+    <div class="ba-card ba-after"><div class="ba-head"><span class="ba-dot"></span>Truth Says</div><div class="ba-body"><ul><li>Authenticity means being known, not being impressive</li><li>High standards for image means low tolerance for honesty</li><li>Privacy is a boundary; curation is a fortress</li><li>What God sees already is what actually matters</li></ul></div></div>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Think</div>
+    <h4>The Unfiltered Question</h4>
+    <p>If every person you know could see your last 48 hours, unedited, unnarrated, no context you could add, what would make you most uncomfortable?</p>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+    <p class="q-start">Now ask: is that discomfort protecting a <strong>real boundary</strong>, or a <strong>false image?</strong></p>
+    <div class="think-line"></div>
+    <p class="closing">The answer reveals which layer of the stack you are actually living on.</p>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 2: THE IMAGE FAST ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Two</div><h2 class="ch-title">The Image Fast</h2><p class="ch-sub">Seven days to stop performing and start living in the open.</p></div></div>
+<div class="ribbon"><p>"Be careful not to practice your righteousness in front of others to be seen by them. If you do, you will have no reward from your Father in heaven.". Matthew 6:1 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>Fasting from food teaches your body that hunger does not control you. Fasting from image teaches your soul that approval does not own you. This is a seven-day protocol. It is not about social media detox, it is about dismantling the performance reflex at its root.</p>
+
+  <div class="dd reveal"><h4>Day 1. No Capturing</h4><div class="sub">Stop Documenting</div><p>Do not photograph anything today for the purpose of showing it to someone. If something beautiful happens, let it happen without an audience. Let one good moment exist for only you and God.</p></div>
+
+  <div class="dd reveal"><h4>Day 2. No Editing</h4><div class="sub">Stop Polishing</div><p>Send every text, email, and message today on the first draft. Do not rewrite to sound smarter, funnier, or more measured. Let your unpolished words stand. Notice the anxiety, that is the performance reflex losing its grip.</p></div>
+
+  <div class="dd reveal"><h4>Day 3. One Honest Admission</h4><div class="sub">Crack the Image</div><p>Tell one person something real. Not dramatic. Not a confession designed to impress with its vulnerability. Something small and true: "I've been struggling with this." "I don't actually know what I'm doing here." "I'm more tired than I let on." Let the cracks show.</p></div>
+
+  <div class="dd reveal"><h4>Day 4. Do Good Invisibly</h4><div class="sub">Serve Without a Witness</div><p>Do something generous today that no one will ever know about. No posting it. No mentioning it. No casual humble-brag later. Let the act die in obscurity. If it still feels meaningful without an audience, it was real.</p></div>
+
+  <div class="dd reveal"><h4>Day 5. Wear the Wrong Thing</h4><div class="sub">Break the Costume</div><p>Choose something today that does not fit the brand. Not to be rebellious, to notice how much of your wardrobe, your style, your daily choices are performance rather than preference. Who are you when nobody is watching?</p></div>
+
+  <div class="dd reveal"><h4>Day 6. Ask How You Come Across</h4><div class="sub">Invite the Mirror</div><p>Ask someone you trust: "What is the gap between who I perform and who I actually am?" Do not defend. Do not explain. Just listen. Write down what they say. Sit with it for 24 hours before responding.</p></div>
+
+  <div class="dd reveal"><h4>Day 7. The Silence</h4><div class="sub">Let the Throne Go Empty</div><p>Post nothing. Share nothing. Offer no commentary on yourself. Go through one entire day without managing a single perception. Let the throne sit empty. Notice what rises in the absence: peace, anxiety, freedom, terror. Whatever comes up is the truth about how deep the altar goes.</p></div>
+
+  <div class="adventure reveal">
+    <div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-mask"/></svg></div><div class="adv-head-text"><div class="adv-head-label">Scenario</div><div class="adv-head-title">The Dinner Without a Script</div></div></div>
+    <div class="adv-step"><div class="step-c"><p>You are at dinner with friends. Someone asks how work is going. The curated answer is ready: <em>"Great, really busy, exciting stuff happening."</em> That answer costs nothing and reveals nothing.</p></div></div>
+    <div class="adv-step"><div class="step-c"><span class="tag-you">The Performance</span><p>You deliver the line. Everyone nods. The conversation moves on. You feel safe but strangely empty. Nobody at this table actually knows how your week went. You just managed the room.</p></div></div>
+    <div class="adv-step"><div class="step-c"><span class="tag-you">The Fast</span><p>You pause. You say: <em>"Honestly? It's been hard. I'm behind on a few things and I'm not sure I'm handling it well."</em> The table gets quiet. Someone says, "Yeah, I've been there too." The conversation deepens. For the first time in months, you are actually at dinner, not performing one.</p></div></div>
+    <div class="adv-step adv-result-good"><div class="step-c"><p><strong>The difference:</strong> One response maintains the image. The other destroys it, and in the wreckage, finds connection.</p></div></div>
+  </div>
+
+  <div class="stack reveal">
+    <div class="stack-label">The Performance Loop</div>
+    <div class="stack-flow">
+      <span class="stack-node sn-dark">Curate</span><span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-fire">Perform</span><span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-gold">Protect</span><span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-red">Exhaust</span><span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-dark">Repeat</span>
+    </div>
+  </div>
+
+  <div class="gq reveal"><p>"He must increase, but I must decrease.". John 3:30 (NKJV)</p></div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapters 1-2</div>
+    <div class="root-layer current"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-bright">Self-Image</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Performance Tax</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Image Fast</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 3: THE LAST WORD ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Three</div><h2 class="ch-title">The Last Word</h2><p class="ch-sub">How the need to be right became the thing you worship more than God's voice.</p></div></div>
+<div class="ribbon"><p>"The way of a fool is right in his own eyes, but a wise man listens to advice.". Proverbs 12:15 (ESV)</p></div>
+
+<div class="page prose section reveal">
+  <div class="mission"><div class="mission-label">The Throne</div><p>The altar of being right.<br>Not truth <em>rightness.</em><br>The addiction to winning every argument, having the final say,<br>and turning every correction into a counterpoint.<br>The most dangerous throne because it feels like <em>conviction.</em></p></div>
+
+  <p>There is a difference between holding truth and needing to be right. Holding truth is peaceful. It can afford to wait. It does not require an audience or a victory. It simply <strong>is.</strong> Needing to be right is different. It is restless. It needs confirmation. It needs the other person to concede. It needs the argument won, the point proven, the last word delivered.</p>
+  <p>Pride disguised as conviction has destroyed more marriages than adultery. It has killed more church communities than scandal. It has ended more friendships than betrayal. Because it never looks like the villain. It looks like <strong>the person who cares about truth.</strong></p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-scales"/></svg></span>The Correction Filter</h2>
+  <p>Watch what happens in your body when someone corrects you. Not a stranger, someone who loves you. Your spouse says, "You've been distant lately." Your friend says, "That came across harsh." Your boss says, "This could be better."</p>
+  <p>Before their sentence is finished, something in you has already moved. Not toward understanding, toward <strong>defense.</strong> The rebuttal is loading before the feedback has landed. This is not a character flaw. It is an altar. It has been trained by years of rewarding yourself for being the smartest person in the room.</p>
+
+  <div class="corr-filter reveal">
+    <div class="corr-flow">
+      <span class="corr-node corr-input">Feedback Enters</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="corr-node corr-intercept">Pride Intercepts</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="corr-node corr-output">Response Deployed</span>
+    </div>
+    <div class="corr-branches">
+      <span class="corr-branch">Deflect: "You do the same thing."</span>
+      <span class="corr-branch">Defend: "That's not what I meant."</span>
+      <span class="corr-branch">Dismiss: "You're overreacting."</span>
+    </div>
+  </div>
+
+  <p>Notice that all three responses have one thing in common: <strong>the feedback never lands.</strong> It enters the system and gets rerouted before it can reach the heart. This is pride working exactly as designed. Its entire purpose is to keep you on the throne. Correction threatens the throne. So correction gets neutralized.</p>
+
+  <div class="viz reveal">
+    <div class="viz-top"><div class="viz-icon"><svg><use href="#ico-brain"/></svg></div><div class="viz-meta"><div class="viz-label">Data</div><h4>The Speed of Defense</h4></div></div>
+    <div class="viz-body">
+      <p>Research on conversational dynamics shows the average person begins formulating a response within <strong>three seconds</strong> of hearing the other person speak, well before the speaker has finished.</p>
+      <p>In emotionally charged conversations, that drops to under <strong>one second.</strong> You are not listening. You are reloading.</p>
+      <div class="viz-trigger">Pride does not argue because it cares about truth. It argues because the throne is under threat.</div>
+    </div>
+  </div>
+
+  <div class="ba-pair reveal">
+    <div class="ba-card ba-before"><div class="ba-head"><span class="ba-dot"></span>Pride Says</div><div class="ba-body"><ul><li>"I'm standing on conviction"</li><li>"I'm just being honest"</li><li>"Someone has to say it"</li><li>"I already know that"</li></ul></div></div>
+    <div class="ba-card ba-after"><div class="ba-head"><span class="ba-dot"></span>Truth Says</div><div class="ba-body"><ul><li>Conviction listens before it speaks</li><li>Honesty without humility is cruelty with a Bible verse</li><li>Pride volunteers to say it; wisdom waits to be asked</li><li>"I already know that" is the sound of a closed door</li></ul></div></div>
+  </div>
+
+  <div class="insight"><p>The most dangerous sentence in your vocabulary is <em>"I already know that."</em> It is a lock on a door God is trying to open. Every time you say it, you tell the Holy Spirit: I don't need what You are offering. <em>And after enough refusals, He stops knocking.</em></p></div>
+
+  <div class="think reveal">
+    <div class="think-label">Think</div>
+    <h4>The Correction Audit</h4>
+    <p>Think of the last three times someone corrected you, your spouse, a friend, a coworker, a leader. Write the correction and your first internal response.</p>
+    <p class="q-start">Correction 1:</p><div class="think-line"></div>
+    <p class="q-start">My first internal response:</p><div class="think-line"></div>
+    <p class="q-start">Correction 2:</p><div class="think-line"></div>
+    <p class="q-start">My first internal response:</p><div class="think-line"></div>
+    <p class="q-start">Correction 3:</p><div class="think-line"></div>
+    <p class="q-start">My first internal response:</p><div class="think-line"></div>
+    <p class="closing">If all three responses were defensive, the throne is still occupied.</p>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 4: THE SURRENDER PROTOCOL ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Four</div><h2 class="ch-title">The Surrender Protocol</h2><p class="ch-sub">How to retrain your reflexes so correction feels like a gift, not an attack.</p></div></div>
+<div class="ribbon"><p>"Do nothing out of selfish ambition or vain conceit. Rather, in humility value others above yourselves.". Philippians 2:3 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>You cannot defeat pride by trying harder to be humble. Trying harder is pride's favorite disguise. True surrender requires new reflexes, not new intentions. You need to retrain the response system, not just the beliefs. Here are three protocols that attack the altar of being right at the reflex level.</p>
+
+  <div class="dd reveal"><h4>Protocol 1. The Five-Second Rule</h4><div class="sub">Delay the Defense</div><p>When someone corrects you, count to five before you respond. Not silently preparing your rebuttal, actually counting. Let the words land in the silence. Feel the discomfort of not defending yourself immediately. That discomfort is the throne losing its grip.</p><p>In those five seconds, ask one question internally: <strong>"What if they are right?"</strong> Not "Are they right?", that gives pride a vote. Ask "What if?", that opens a door without requiring you to walk through it yet.</p></div>
+
+  <div class="dd reveal"><h4>Protocol 2. The Eighty Percent Practice</h4><div class="sub">Assume the Feedback Is Mostly True</div><p>When you receive correction, assume it is eighty percent accurate. Not because you are always wrong, but because pride's default assumption is zero percent, and the truth is almost never that generous. Eighty percent forces you to engage with the content instead of the threat.</p><p>This is not about accepting bad feedback uncritically. It is about breaking the reflex that categorizes all correction as an attack. Once the reflex is broken, you can evaluate feedback honestly instead of defensively.</p></div>
+
+  <div class="dd reveal"><h4>Protocol 3. The Weekly Ask</h4><div class="sub">Invite What Pride Resists</div><p>Once a week, go to one person you trust, your spouse, a close friend, a mentor, and ask: <strong>"What am I not seeing about myself right now?"</strong> Do not qualify it. Do not explain why you are asking. Do not steer the answer. Ask, listen, and write it down. Sit with it for 24 hours before responding.</p><p>If you cannot think of a single person you trust enough to ask, that is not a trust problem. That is a pride problem. Pride builds walls that look like standards.</p></div>
+
+  <div class="adventure reveal">
+    <div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-sword"/></svg></div><div class="adv-head-text"><div class="adv-head-label">Scenario</div><div class="adv-head-title">The Meeting</div></div></div>
+    <div class="adv-step"><div class="step-c"><p>You are in a team meeting. Someone challenges your idea, not rudely, but directly. "I don't think that approach will work. Here's why." The room turns to you.</p></div></div>
+    <div class="adv-step"><div class="step-c"><span class="tag-you">The Throne Response</span><p>You counter immediately. Your tone stays calm but your words are sharp. You dismantle their objection point by point. You win the exchange. The room moves on. But something has died in the room, the willingness of others to challenge you. You just taught your team that disagreement has a cost.</p></div></div>
+    <div class="adv-step"><div class="step-c"><span class="tag-you">The Surrender Response</span><p>You pause. Five seconds. Then: <em>"Walk me through that. Where does my approach break down?"</em> You listen, not to find the weakness in their argument, but to find the truth in it. The room exhales. People start contributing. The final plan is better than anything you would have built alone.</p></div></div>
+    <div class="adv-step adv-result-good"><div class="step-c"><p><strong>The cost of being right:</strong> a room full of people who stopped telling you the truth. <strong>The reward of surrender:</strong> a team that fights for the mission instead of fighting around your ego.</p></div></div>
+  </div>
+
+  <div class="prayer reveal">
+    <div class="prayer-label">A Prayer for the Person Who Always Has to Be Right</div>
+    <p><strong>Father,</strong> I have spent years defending a throne that was never mine. I have turned conversations into competitions and corrections into threats. I have made people afraid to tell me the truth, and then felt lonely because nobody knew me.</p>
+    <p>Teach me to listen before I speak. Teach me to receive before I counter. <strong>Break the reflex that turns every word into a war.</strong> Help me love truth more than I love being the one who holds it. Make me small enough for You to use.</p>
+    <p><strong>In Jesus' name, amen.</strong></p>
+  </div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapters 1-4</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Self-Image</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Image Fast</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">3-4</span><div class="root-items"><span class="root-pill rp-bright">Being Right</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Surrender Protocol</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 5: THE ROOT BENEATH THE ROOT ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Five</div><h2 class="ch-title">The Root Beneath the Root</h2><p class="ch-sub">Why pride keeps regenerating, and the wound it is protecting.</p></div></div>
+<div class="ribbon"><p>"Search me, God, and know my heart; test me and know my anxious thoughts.". Psalm 139:23 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>If you have ever tried to kill pride and watched it come back, there is a reason. Pride is rarely the root. It is the <strong>defense system</strong> built on top of the root. The root is usually a wound.</p>
+  <p>Somewhere in your history, you learned a lesson that went something like this: <strong>"Nobody is coming."</strong> Maybe it was a parent who was emotionally unavailable. Maybe it was a rejection that taught you approval must be earned. Maybe it was a failure that convinced you the only safe person to depend on is yourself.</p>
+  <p>That moment, that wound, built the first version of the throne. Not out of arrogance, but out of <strong>survival.</strong> The child who learned "nobody is coming" became the teenager who said "I'll do it myself," became the adult who says "I don't need help," became the leader who says "my way is best," became the believer who prays with confidence but listens to God with a closed heart.</p>
+
+  <div class="gq reveal"><p>"Pride is not the opposite of shame. Pride is the armor we wear over shame."</p></div>
+
+  <p>This is why willpower alone cannot defeat pride. You are not fighting a bad habit. You are fighting a defense system that has been protecting a wound for decades. The system will not shut down because you read a chapter about humility. It will only shut down when the wound underneath is brought into the light and healed.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-sunrise"/></svg></span>From Performance to Sonship</h2>
+  <p>The gospel does not say "perform better." It says <strong>"you are already received."</strong> The throne of pride exists because at some level, you believe you must earn your seat at the table. You must be impressive enough, right enough, strong enough to deserve love, respect, and belonging.</p>
+  <p>But sonship, or daughtership, operates on a completely different system. You do not earn a seat. The Father already set your place. You do not prove yourself. You are already known. You do not manage perception. You are already seen, fully, and loved anyway.</p>
+  <p>Every protocol in this book is designed to move you from the performance system to the sonship system. From earning to receiving. From controlling to trusting. From the throne to the table.</p>
+
+  <div class="breathe reveal">
+    <div class="breathe-ring"></div><div class="breathe-ring"></div><div class="breathe-ring"></div>
+    <div class="breathe-content">
+      <div class="breathe-label">Pause</div>
+      <h4>You do not need to earn a seat at the table.</h4>
+      <p>The Father already set your place. The chair has your name on it. You are not auditioning. You are arriving.</p>
+    </div>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Think</div>
+    <h4>The Origin Question</h4>
+    <p>When was the first time you learned that love, safety, or belonging had to be earned? What happened?</p>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+    <p class="q-start">How did that moment shape the way you show up today?</p>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+    <p class="closing">The wound is not the enemy. The armor you built around it is. And God is asking permission to remove it.</p>
+  </div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapters 1-5</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Self-Image</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Image Fast</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">3-4</span><div class="root-items"><span class="root-pill rp-ch2">Being Right</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch2">Surrender Protocol</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">5</span><div class="root-items"><span class="root-pill rp-bright">The Wound</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Performance to Sonship</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 6: THE ONE-MAN ARMY ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Six</div><h2 class="ch-title">The One-Man Army</h2><p class="ch-sub">How "I'll just do it myself" became the most expensive sentence in your life.</p></div></div>
+<div class="ribbon"><p>"Two are better than one, because they have a good return for their labor: If either of them falls down, one can help the other up. But pity anyone who falls and has no one to help them up.". Ecclesiastes 4:9-10 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <div class="mission"><div class="mission-label">The Throne</div><p>The altar of self-reliance.<br>Not discipline, something darker wearing discipline's clothes.<br>The refusal to delegate. The refusal to ask. <em>The refusal to need.</em><br>It looks like strength. It feels like control.<br>It costs you <em>everything God designed you to receive.</em></p></div>
+
+  <p>The one-man army does not need a team. He manages the finances, leads the project, fixes the sink, carries the emotional weight of the family, mentors the younger guy at work, and reads his Bible at 5 AM, all without asking for a single thing from anyone. He is impressive. He is admired. He is <strong>dying.</strong></p>
+  <p>Self-reliance is the final throne of pride because it looks exactly like godliness. It mimics discipline, responsibility, and leadership. Churches celebrate it. Employers reward it. Culture puts it on motivational posters. And the person sitting on this throne is the loneliest person in the building.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-shield"/></svg></span>The Cost of the Grip</h2>
+  <p>Everything you refuse to release becomes something you must carry. Every task you refuse to delegate is a weight that stays on your shoulders. Every emotion you refuse to share becomes a pressure that builds with no outlet. Every need you refuse to voice becomes a gap that God designed someone else to fill, but you will not let them.</p>
+  <p>The self-reliant person does not just carry more. They receive less. Less help, less wisdom, less connection, less of God's provision through other people. They have built a system where the only approved source of strength is <strong>themselves.</strong> And they wonder why they are running out.</p>
+
+  <div class="ctrl-grid reveal">
+    <div class="ctrl-col ctrl-grip">
+      <div class="ctrl-col-head">What You Grip</div>
+      <div class="ctrl-col-body"><ul>
+        <li>Every decision (because nobody else will get it right)</li>
+        <li>Your emotions (because vulnerability is weakness)</li>
+        <li>Your schedule (because asking for help is failure)</li>
+        <li>Your reputation (because depending on others is risky)</li>
+        <li>Your spiritual life (because God helps those who help themselves, a sentence that is not in the Bible)</li>
+      </ul></div>
+    </div>
+    <div class="ctrl-col ctrl-release">
+      <div class="ctrl-col-head">What God Offers When You Release</div>
+      <div class="ctrl-col-body"><ul>
+        <li>Shared wisdom (two perspectives see what one cannot)</li>
+        <li>Real connection (vulnerability is the door, not the threat)</li>
+        <li>Sustainable pace (the body of Christ was designed to share the load)</li>
+        <li>Deeper trust (risk is the currency of every meaningful relationship)</li>
+        <li>Actual rest (the kind that comes from letting go, not powering through)</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <div class="ba-pair reveal">
+    <div class="ba-card ba-before"><div class="ba-head"><span class="ba-dot"></span>Pride Says</div><div class="ba-body"><ul><li>"I'm just being responsible"</li><li>"Nobody can do it like I can"</li><li>"I don't want to burden anyone"</li><li>"If you want it done right..."</li></ul></div></div>
+    <div class="ba-card ba-after"><div class="ba-head"><span class="ba-dot"></span>Truth Says</div><div class="ba-body"><ul><li>Responsibility shared is responsibility multiplied</li><li>"Nobody can do it like I can" is control wearing a work ethic</li><li>Refusing to burden anyone means refusing to let anyone love you</li><li>Doing it right alone costs more than doing it together</li></ul></div></div>
+  </div>
+
+  <div class="insight"><p>God did not design the body of Christ as a collection of one-man armies. He designed it as a body, where the eye needs the hand and the head needs the feet. <em>Your self-sufficiency is not strength. It is a refusal to participate in the design.</em></p></div>
+
+  <div class="think reveal">
+    <div class="think-label">Think</div>
+    <h4>The Burden Inventory</h4>
+    <p>List three things you are currently carrying alone that someone else could help with:</p>
+    <p class="q-start">1.</p><div class="think-line"></div>
+    <p class="q-start">2.</p><div class="think-line"></div>
+    <p class="q-start">3.</p><div class="think-line"></div>
+    <p class="q-start">Now ask: why haven't you asked for help? What would you have to admit?</p>
+    <div class="think-line"></div>
+    <p class="closing">The answer is almost always: "That I can't do this alone." That is not weakness. That is the truth pride has been hiding.</p>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 7: THE DEPENDENCY DRILL ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Seven</div><h2 class="ch-title">The Dependency Drill</h2><p class="ch-sub">A practical protocol for learning to need people again, and letting God be God.</p></div></div>
+<div class="ribbon"><p>"Bear one another's burdens, and so fulfill the law of Christ.". Galatians 6:2 (ESV)</p></div>
+
+<div class="page prose section reveal">
+  <p>Self-reliance is a fortress. You do not dismantle a fortress by thinking about it. You dismantle it by removing one stone at a time. These three drills are designed to remove the stones, not all at once, but consistently enough that the structure cannot hold.</p>
+
+  <div class="dd reveal"><h4>Drill 1. The Ask Protocol</h4><div class="sub">Request What You Could Do Yourself</div><p>This week, ask someone for help with one thing you are fully capable of doing yourself. Not because you cannot do it, but because asking retrains the reflex. It could be small: "Can you pick that up for me?" "Would you handle this email?" "Can you pray for me about this?" The content does not matter. The act of asking does.</p><p>Notice the resistance. That resistance is the throne defending itself. Every time you push through it, the throne gets weaker.</p></div>
+
+  <div class="dd reveal"><h4>Drill 2. The Delegation Fast</h4><div class="sub">Release Three Things</div><p>Identify three tasks, projects, or responsibilities that you currently own, and hand them to someone else this week. Not the ones that do not matter. The ones that do. The ones where your grip is tightest. Let someone else lead. Let someone else decide. Let someone else carry it.</p><p>If their way is different from yours, that is not failure. That is the sound of the fortress losing a wall.</p></div>
+
+  <div class="dd reveal"><h4>Drill 3. The Submission Practice</h4><div class="sub">Follow Without Editing</div><p>Find one area this week where you follow someone else's lead without correcting, adjusting, or "improving" their approach. A spouse's plan for the evening. A colleague's project direction. A pastor's guidance on a decision. Follow their lead completely and resist every impulse to steer.</p><p>This is not about being passive. It is about proving to your soul that you can trust someone other than yourself, and that the world does not collapse when you are not in charge.</p></div>
+
+  <div class="adventure reveal">
+    <div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-shield"/></svg></div><div class="adv-head-text"><div class="adv-head-label">Scenario</div><div class="adv-head-title">The Project</div></div></div>
+    <div class="adv-step"><div class="step-c"><p>You are leading a project at work, or at church, or at home. It is behind schedule. The stress is visible in your face, your sleep, your patience. Your spouse says, "Let me help." A colleague says, "I can take some of that." A friend says, "You don't have to carry this alone."</p></div></div>
+    <div class="adv-step"><div class="step-c"><span class="tag-you">The Fortress Response</span><p>"I'm fine. I've got it." You smile. You stay late. You miss dinner. You get it done, barely, and collapse into bed feeling simultaneously proud and empty. You proved you could do it alone. Nobody helped. Nobody knew. Mission accomplished. Cost: everything.</p></div></div>
+    <div class="adv-step"><div class="step-c"><span class="tag-you">The Drill Response</span><p>You pause. The reflex says "I'm fine." You override it. "Actually, yes. I need help. Here's where I'm stuck." The project gets done faster. Your spouse feels included. Your colleague feels trusted. Your friend feels needed. You feel something unfamiliar: <em>supported.</em></p></div></div>
+    <div class="adv-step adv-result-good"><div class="step-c"><p><strong>The fortress costs:</strong> connection, health, pace, and every relationship that tried to get close. <strong>The drill produces:</strong> a project done better, people who feel valued, and a leader who finally learned to receive.</p></div></div>
+  </div>
+
+  <div class="stack reveal">
+    <div class="stack-label">The Self-Reliance Spiral</div>
+    <div class="stack-flow">
+      <span class="stack-node sn-dark">Control</span><span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-fire">Grip</span><span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-gold">Exhaust</span><span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-red">Isolate</span><span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-dark">Break</span>
+    </div>
+  </div>
+
+  <div class="gq reveal"><p>"My grace is sufficient for you, for My power is made perfect in weakness.", 2 Corinthians 12:9 (NIV)</p></div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Full Map</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Self-Image</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Image Fast</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">3-4</span><div class="root-items"><span class="root-pill rp-ch2">Being Right</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch2">Surrender Protocol</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">5</span><div class="root-items"><span class="root-pill rp-ch3">The Wound</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch3">Sonship</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">6-7</span><div class="root-items"><span class="root-pill rp-bright">Self-Reliance</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Dependency Drill</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 8: THE LOW PLACE ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Eight</div><h2 class="ch-title">The Low Place</h2><p class="ch-sub">Why humility is not weakness, it is the only position where God can reach you.</p></div></div>
+<div class="ribbon"><p>"Humble yourselves before the Lord, and He will lift you up.". James 4:10 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>You have spent eight chapters confronting three thrones. Self-image. Being right. Self-reliance. Each one built carefully over years, reinforced by culture, rewarded by peers, and so deeply embedded that removing them feels like removing parts of yourself.</p>
+  <p>That feeling is accurate. <strong>Pride is not something you have. It is something you became.</strong> The throne is not furniture in your life, it is load-bearing architecture. When you remove it, things shift. Things wobble. Things feel unsafe.</p>
+  <p>That is the low place. And it is exactly where God does His best work.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-crown"/></svg></span>The Paradox</h2>
+  <p>God resists the proud. Not punishes <strong>resists.</strong> The word in Greek is <em>antitassomai</em>: to set oneself against, to arrange in battle against. God does not simply disapprove of pride. He actively opposes it. Not because pride offends His ego. God does not have an ego problem. He opposes pride because <strong>pride makes you unreachable.</strong></p>
+  <p>Think of it as physics, not punishment. You cannot fill a cup that is already full. You cannot guide a person who has already decided where they are going. You cannot love someone who will not receive. Pride is a closed system. Grace requires an opening. Humility is that opening.</p>
+
+  <div class="viz reveal">
+    <div class="viz-top"><div class="viz-icon"><svg><use href="#ico-scales"/></svg></div><div class="viz-meta"><div class="viz-label">The Equation</div><h4>God's Resistance Scale</h4></div></div>
+    <div class="viz-body">
+      <p><strong>More pride = more resistance from God.</strong> Not because He is angry, but because He will not override your throne. He waits for you to step down.</p>
+      <p><strong>More humility = more grace available.</strong> Not because you earned it, but because you finally made room for it.</p>
+      <div class="viz-trigger">Pride says: "I will climb." Grace says: "Come down. I will lift you."</div>
+    </div>
+  </div>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-prayer"/></svg></span>The Daily Posture</h2>
+  <p>Humility is not an event. It is a posture. You do not "become humble" in a moment, you practice it daily until it becomes your default position. Here is a simple daily practice that rebuilds the foundation after pride has been removed:</p>
+
+  <div class="dd reveal"><h4>Morning. The Admission</h4><div class="sub">Before the Day Begins</div><p>Before you check your phone, before you plan your day, say one sentence aloud: <strong>"I cannot do today without You."</strong> Not a prayer. A fact. An admission that resets the operating system from self-reliance to dependence before the day has a chance to rebuild the throne.</p></div>
+
+  <div class="dd reveal"><h4>Midday. The Release</h4><div class="sub">In the Thick of It</div><p>At some point during the busiest part of your day, pause for ten seconds and release one thing you are gripping. A decision. A conflict. A task. Say internally: <strong>"This is not mine to carry alone."</strong> Then let your hands open. Physically. The body teaches the soul what the mind resists.</p></div>
+
+  <div class="dd reveal"><h4>Evening. The Inventory</h4><div class="sub">Before the Day Ends</div><p>Before you sleep, ask three questions: <strong>Where did I perform today instead of being honest? Where did I defend instead of listen? Where did I grip instead of trust?</strong> No guilt. No condemnation. Just awareness. Awareness is the beginning of freedom.</p></div>
+
+  <div class="descent-ramp reveal stagger-children">
+    <div class="ramp-echo"><p>Self-image said: "Be impressive." But God said: <strong>"Be known."</strong></p></div>
+    <div class="ramp-echo"><p>Being right said: "Win the argument." But God said: <strong>"Win the person."</strong></p></div>
+    <div class="ramp-echo"><p>Self-reliance said: "Do it yourself." But God said: <strong>"Let Me."</strong></p></div>
+    <div class="ramp-close">
+      <div class="ramp-close-label">The Low Place</div>
+      <p>Humility is not the floor. It is the foundation. Everything God builds in your life, every relationship, every calling, every breakthrough, is built on this ground. The lower you go, the stronger the foundation. The stronger the foundation, the higher He can build.</p>
+    </div>
+  </div>
+
+  <div class="prayer reveal">
+    <div class="prayer-label">A Prayer from the Low Place</div>
+    <p><strong>Father,</strong> I have been sitting on a throne that was never mine. I have curated my image instead of letting You shape me. I have defended my rightness instead of listening for Your voice. I have relied on myself instead of receiving from You.</p>
+    <p>I am stepping down. Not because I am strong enough to be humble, but because <strong>I am finally tired enough to be honest.</strong></p>
+    <p>Take the throne. Take the image. Take the arguments. Take the control. I do not need them anymore. I need <strong>You.</strong></p>
+    <p><strong>In Jesus' name, amen.</strong></p>
+  </div>
+</div>
+
+<!-- ===== FINAL TEST ===== -->
+<div class="page prose section reveal">
+  <div class="root-review">
+    <div class="root-label">Final Test. Can You Answer Without Looking Back?</div>
+    <div style="padding:0 16px">
+      <div class="dd"><h4>1.</h4><p>What are the three thrones of pride identified in this book?</p></div>
+      <div class="dd"><h4>2.</h4><p>What is the difference between integrity and image?</p></div>
+      <div class="dd"><h4>3.</h4><p>Name the three layers of the Perception Stack.</p></div>
+      <div class="dd"><h4>4.</h4><p>What are the three responses of the Correction Filter?</p></div>
+      <div class="dd"><h4>5.</h4><p>What is the Five-Second Rule, and why does it work?</p></div>
+      <div class="dd"><h4>6.</h4><p>Why does pride keep regenerating after you try to kill it?</p></div>
+      <div class="dd"><h4>7.</h4><p>What is the difference between "God helps those who help themselves" and actual scripture?</p></div>
+      <div class="dd"><h4>8.</h4><p>What does the Greek word <em>antitassomai</em> tell us about how God relates to pride?</p></div>
+      <div class="dd"><h4>9.</h4><p>What are the three parts of the Daily Posture practice?</p></div>
+      <div class="dd"><h4>10.</h4><p>Complete the sentence: "Humility is not the floor. It is the ___."</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PROMPT CARD ===== -->
+<div class="page section reveal">
+  <div class="prompt">
+    <div class="prompt-head">Continue with AI. Prompt Card</div>
+    <div class="prompt-body">
+      <p><strong>Copy this prompt into any AI assistant to continue working on pride:</strong></p>
+      <p>"I just read Lay It Down: Pride by Kingdom Builders AI. It identified three thrones of pride: self-image, being right, and self-reliance. I want you to help me do a personal audit. Ask me questions about each throne, one at a time, and help me identify which one has the strongest grip on my life right now. Then give me a personalized 7-day protocol based on the Image Fast, Surrender Protocol, and Dependency Drill from the book. Be direct, not preachy. Challenge me like a coach, not a therapist."</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FINALE ===== -->
+<section class="finale reveal">
+  <h2>Lay It <span>Down.</span></h2>
+  <p>"Humble yourselves in the sight of the Lord, and He will lift you up."</p>
+  <p> James 4:10 (NKJV)</p>
+</section>
+
+<!-- ===== SERIES PROGRESS ===== -->
+<div class="series-progress">
+  <div class="series-label">Lay It Down. The Seven Deadly Sins</div>
+  <div class="series-dots">
+    <span class="series-dot active" title="Pride"></span>
+    <span class="series-dot" title="Envy"></span>
+    <span class="series-dot" title="Wrath"></span>
+    <span class="series-dot" title="Greed"></span>
+    <span class="series-dot" title="Gluttony"></span>
+    <span class="series-dot" title="Lust"></span>
+    <span class="series-dot" title="Sloth"></span>
+  </div>
+  <div class="series-dot-label">Part 1 of 7. Pride</div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <p>"God resists the proud, but gives grace to the humble.". James 4:6</p>
+  <div class="brand">KingdomBuilders AI</div>
+</footer>
+
+<script>
+(function(){
+  const bar=document.getElementById('read-progress');
+  const pill=document.getElementById('chapter-pill');
+  const chEls=[{el:document.querySelector('.cover'),label:'Cover'},...Array.from(document.querySelectorAll('.ch-head')).map((el,i)=>({el,label:el.querySelector('.ch-num')?.textContent?.trim()||('Ch '+(i+1))}))].filter(c=>c.el);
+  function onScroll(){
+    const h=document.documentElement;
+    const pct=h.scrollTop/(h.scrollHeight-h.clientHeight)*100;
+    bar.style.width=pct+'%';
+    let cur='';
+    for(const c of chEls){if(c.el.getBoundingClientRect().top<200)cur=c.label}
+    if(cur){pill.textContent=cur;pill.classList.add('show')}else{pill.classList.remove('show')}
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  const revealEls=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    const obs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:0.12});
+    revealEls.forEach(el=>obs.observe(el));
+  }else{revealEls.forEach(el=>el.classList.add('visible'))}
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lay It Down: Envy | Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1A1008;--ink-mid:#2C2010;--ink-soft:#3D3020;
+  --steel:#5A4830;--steel-light:#8A7A60;--fog:#B0A090;
+  --fire:#E8860A;--fire-mid:rgba(232,134,10,0.18);--fire-pale:rgba(232,134,10,0.07);
+  --ember:#FF6B2B;--ember-mid:rgba(255,107,43,0.15);
+  --gold:#D4A030;--gold-mid:rgba(212,160,48,0.18);--gold-pale:rgba(212,160,48,0.08);
+  --ash:#E85050;--ash-mid:rgba(232,80,80,0.15);
+  --green:#2D8A4E;--green-mid:rgba(45,138,78,0.15);
+  --cream:#FFF9F0;--cream-warm:#FFF4E6;--paper:#FFFBF5;--white:#FFFFFF;
+  --radius:10px;--shadow:0 2px 16px rgba(26,16,8,0.09);--shadow-deep:0 8px 40px rgba(26,16,8,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.78;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.label{font-family:'Poppins',sans-serif}
+.page{max-width:700px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--ink-mid);font-weight:600;font-family:'Poppins',sans-serif}
+
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(160deg,#1A0A02 0%,#2A1508 40%,#1A1020 100%);position:relative;overflow:hidden}
+.cover-grain{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:0.5}
+.cover-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 25%,rgba(10,5,2,0.7) 100%)}
+.flame-ring{position:absolute;border-radius:50%;border:1px solid rgba(232,134,10,0.06);animation:flame-expand 7s ease-out infinite}
+.flame-ring:nth-child(3){width:180px;height:180px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:0s}
+.flame-ring:nth-child(4){width:360px;height:360px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:1.8s}
+.flame-ring:nth-child(5){width:540px;height:540px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:3.6s}
+@keyframes flame-expand{0%{opacity:0.6;transform:translate(-50%,-50%) scale(0.85)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.25)}}
+.cover-content{position:relative;z-index:2;padding:60px 24px 40px}
+.cover-badge{display:inline-block;padding:5px 18px;border:1px solid rgba(232,134,10,0.3);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.67rem;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:var(--fire);margin-bottom:40px;background:rgba(232,134,10,0.07)}
+.cover h1{font-family:'Poppins',sans-serif;font-size:clamp(3rem,9vw,5.5rem);font-weight:300;color:#FFFFFF;line-height:0.95;margin-bottom:6px;letter-spacing:-0.02em}
+.cover h1 em{display:block;color:var(--fire);font-style:normal;font-weight:700;font-size:0.5em;margin-top:12px;letter-spacing:0.01em}
+.cover-sub{font-family:'Lora',Georgia,serif;font-size:clamp(0.95rem,2.5vw,1.15rem);font-style:italic;color:rgba(255,255,255,0.45);margin-top:28px;line-height:1.7;max-width:480px;margin-left:auto;margin-right:auto}
+.cover-sub em{color:rgba(232,134,10,0.85);font-style:normal;font-weight:600}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.5rem;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-top:52px}
+.cover-verse{margin-top:28px;padding:14px 24px;display:inline-block;background:rgba(232,134,10,0.06);border:1px solid rgba(232,134,10,0.12);border-radius:8px;font-family:'Lora',Georgia,serif;font-size:0.82rem;font-style:italic;color:rgba(255,255,255,0.35);line-height:1.6}
+.cover-art{width:220px;height:180px;margin:0 auto 28px;display:block;animation:cover-breathe 5s ease-in-out infinite}
+.cover-art svg{width:100%;height:100%;filter:drop-shadow(0 0 20px rgba(232,134,10,0.18)) drop-shadow(0 0 50px rgba(232,134,10,0.08))}
+@keyframes cover-breathe{0%,100%{transform:scale(1);opacity:0.9}50%{transform:scale(1.04);opacity:1}}
+
+.ch-head{background:linear-gradient(160deg,#1A0A02 0%,#201218 100%);padding:72px 24px 52px;position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 50%,rgba(232,134,10,0.04) 0%,transparent 50%)}
+.ch-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 5%,var(--fire) 50%,transparent 95%);opacity:0.5}
+.ch-head .page{position:relative;z-index:2}
+.ch-num{font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--fire);opacity:0.9;margin-bottom:8px}
+.ch-title{font-family:'Poppins',sans-serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:700;color:#FFFFFF;margin:10px 0 8px;letter-spacing:-0.01em}
+.ch-sub{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:rgba(232,134,10,0.55)}
+
+.ribbon{text-align:center;padding:20px 24px;background:var(--cream-warm);border-top:1px solid rgba(26,16,8,0.06);border-bottom:1px solid rgba(26,16,8,0.06)}
+.ribbon p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:var(--steel-light);max-width:540px;margin:0 auto;line-height:1.6}
+
+.mission{text-align:center;padding:36px 32px;margin:36px 0;background:linear-gradient(140deg,rgba(232,134,10,0.08),rgba(232,134,10,0.03));border-radius:14px;border:2px solid rgba(232,134,10,0.2);box-shadow:0 0 0 1px rgba(232,134,10,0.06),var(--shadow)}
+.mission-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--fire);margin-bottom:12px}
+.mission p{font-family:'Poppins',sans-serif;font-size:clamp(0.88rem,2.2vw,1.05rem);font-weight:500;color:var(--ink-mid);line-height:1.65}
+.mission p em{color:var(--fire);font-style:normal;font-weight:700}
+
+.insight{margin:30px 0;padding:28px 32px;background:linear-gradient(140deg,#1A0A02,#201218);border-radius:14px;border:2px solid rgba(232,134,10,0.25);border-left:5px solid var(--fire);position:relative;overflow:hidden;box-shadow:var(--shadow-deep)}
+.insight::before{content:'';position:absolute;top:-40%;right:-10%;width:200px;height:200px;background:radial-gradient(circle,rgba(232,134,10,0.07) 0%,transparent 70%);border-radius:50%}
+.insight p{font-family:'Lora',Georgia,serif;font-size:1.02rem;font-style:italic;color:rgba(255,255,255,0.9);line-height:1.72;position:relative;z-index:2}
+.insight em{color:var(--fire);font-style:normal;font-weight:700}
+
+.gq{margin:32px 0;text-align:center;padding:32px 24px;position:relative;background:linear-gradient(160deg,rgba(232,134,10,0.04),rgba(232,134,10,0.07));border-radius:14px;border:1.5px solid rgba(232,134,10,0.15)}
+.gq::before,.gq::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:48px;height:2px;background:linear-gradient(90deg,transparent,var(--fire),transparent)}
+.gq::before{top:0}.gq::after{bottom:0}
+.gq p{font-family:'Lora',Georgia,serif;font-size:1.05rem;font-style:italic;color:var(--ink-soft);line-height:1.6;max-width:520px;margin:0 auto}
+
+.viz{margin:44px 0 32px;border-radius:14px;overflow:hidden;border:2px solid rgba(232,134,10,0.22);box-shadow:var(--shadow-deep);position:relative;background:var(--white)}
+.viz-top{background:linear-gradient(135deg,rgba(232,134,10,0.1),rgba(232,134,10,0.04));padding:20px 26px 18px;display:flex;align-items:center;gap:14px;border-bottom:1px solid rgba(232,134,10,0.12)}
+.viz-icon{width:48px;height:48px;border-radius:50%;border:2px solid rgba(232,134,10,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(145deg,#fff,rgba(255,244,230,0.6))}
+.viz-meta{flex:1}
+.viz-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);margin-bottom:2px}
+.viz h4{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:var(--ink-mid)}
+.viz-body{padding:26px 26px 22px;background:linear-gradient(170deg,#FFFDF8 0%,#FFF8F0 100%)}
+.viz-body p{font-size:0.95rem;color:var(--steel);line-height:1.78;margin-bottom:14px}
+.viz-body strong,.viz-lesson strong{color:rgba(255,255,255,0.95);font-weight:700}
+.viz-body em,.viz-lesson em{color:var(--fire-pale);font-style:normal;font-weight:600}
+.viz-body p:last-child{margin-bottom:0}
+.viz-trigger{margin-top:18px;padding:14px 18px;background:linear-gradient(135deg,rgba(232,134,10,0.08),rgba(232,134,10,0.14));border:1.5px solid rgba(232,134,10,0.2);border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.76rem;font-weight:600;color:var(--ink-soft);text-align:center;line-height:1.55}
+
+.ba-pair{margin:32px 0;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:620px){.ba-pair{grid-template-columns:1fr}}
+.ba-card{border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.ba-head{padding:11px 18px;font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.ba-before{background:linear-gradient(170deg,#FFF0F0,#FFE8E8)}
+.ba-before .ba-head{background:rgba(232,80,80,0.12);color:#8B1F1F}
+.ba-after{background:linear-gradient(170deg,#FFF8EE,#FFF2E0)}
+.ba-after .ba-head{background:rgba(232,134,10,0.12);color:#5A3800}
+.ba-dot{width:7px;height:7px;border-radius:50%}
+.ba-before .ba-dot{background:var(--ash)}
+.ba-after .ba-dot{background:var(--fire)}
+.ba-body{padding:16px 18px;font-size:0.88rem;line-height:1.65}
+.ba-body ul{list-style:none;padding:0;margin:0}
+.ba-body ul li{padding:6px 0;border-bottom:1px solid rgba(0,0,0,0.05);font-family:'Poppins',sans-serif;font-size:0.8rem}
+.ba-body ul li:last-child{border-bottom:none}
+
+.dd{margin:24px 0;padding:22px 26px;border-radius:12px;border-left:4px solid var(--fire);background:var(--white);box-shadow:var(--shadow)}
+.dd:nth-of-type(even){background:var(--cream)}
+.dd h4{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--ink-mid);margin-bottom:4px}
+.dd .sub{font-family:'Poppins',sans-serif;font-size:0.54rem;font-weight:700;color:var(--fire);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.dd p{font-size:0.95rem;color:var(--steel);line-height:1.78;margin-bottom:8px}
+.dd p:last-child{margin-bottom:0}
+
+.adventure{margin:36px 0;border-radius:14px;overflow:hidden;box-shadow:var(--shadow-deep);background:var(--white);border:1.5px solid rgba(26,16,8,0.08)}
+.adv-head{padding:14px 26px 12px;display:flex;align-items:center;gap:12px;border-bottom:1.5px solid rgba(232,134,10,0.1);background:linear-gradient(135deg,rgba(232,134,10,0.05),rgba(232,134,10,0.02))}
+.adv-head-icon{width:36px;height:36px;border-radius:50%;background:rgba(232,134,10,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1.5px solid rgba(232,134,10,0.2)}
+.adv-head-text{flex:1}
+.adv-head-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--fire);opacity:0.7}
+.adv-head-title{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--ink-mid)}
+.adv-step{padding:14px 26px;border-bottom:1px solid rgba(26,16,8,0.05)}
+.adv-step:last-child{border-bottom:none}
+.adv-step:nth-child(odd){background:var(--white)}
+.adv-step:nth-child(even){background:rgba(232,134,10,0.02)}
+.step-c p{font-family:'Source Serif 4',Georgia,serif;font-size:0.93rem;line-height:1.75;margin:0 0 6px;color:var(--ink-soft)}
+.step-c p:last-child{margin-bottom:0}
+.step-c em{color:var(--steel-light)}
+.tag-you{font-family:'Poppins',sans-serif;font-weight:700;color:var(--ink-mid);font-size:0.74rem;display:inline-block;padding:2px 10px;background:rgba(232,134,10,0.1);border-radius:4px;margin-bottom:5px;border:1px solid rgba(232,134,10,0.2)}
+.adv-result-good{background:linear-gradient(135deg,rgba(45,138,78,0.04),rgba(45,138,78,0.08))!important}
+
+.think{margin:16px 0 36px;padding:30px;background:linear-gradient(145deg,rgba(232,134,10,0.08),rgba(232,134,10,0.04));border:2px dashed rgba(232,134,10,0.35);border-radius:14px;position:relative;box-shadow:0 4px 16px rgba(232,134,10,0.08)}
+.think::before{content:'';position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--paper);padding:0 12px;width:28px;height:28px;display:block;margin-left:-14px;background:var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23E8860A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22c-2 0-4-1.5-4-4 0-2 2-3 4-3s4 1 4 3c0 2.5-2 4-4 4z'/%3E%3Cpath d='M12 15c-1.5-2-5-4-5-8a5 5 0 0 1 10 0c0 4-3.5 6-5 8z'/%3E%3Cpath d='M9.5 9c.3-1.8 1.5-3 2.5-3'/%3E%3C/svg%3E") center/contain no-repeat}
+.think-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);text-align:center;margin-bottom:10px}
+.think h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--ink-mid);text-align:center;margin-bottom:14px}
+.think p{font-size:0.86rem;color:var(--steel);margin-bottom:8px;font-family:'Poppins',sans-serif}
+.think-line{border-bottom:1.5px solid rgba(232,134,10,0.25);height:30px;margin-bottom:4px;cursor:text}
+.think p.q-start{font-family:'Poppins',sans-serif;font-weight:500;color:var(--ink-soft);font-size:0.82rem;text-align:left;margin-top:14px;margin-bottom:4px}
+.think .closing{font-weight:600;color:var(--fire);margin-top:12px;font-family:'Poppins',sans-serif;font-size:0.8rem}
+
+.breathe{margin:44px 0;text-align:center;padding:52px 24px;position:relative;background:linear-gradient(160deg,rgba(232,134,10,0.08),rgba(232,134,10,0.04));border-radius:16px;border:2px solid rgba(232,134,10,0.15)}
+.breathe-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1.5px solid rgba(232,134,10,0.1)}
+.breathe-ring:nth-child(1){width:140px;height:140px;animation:breathe-pulse 6s ease-in-out infinite}
+.breathe-ring:nth-child(2){width:90px;height:90px;animation:breathe-pulse 6s ease-in-out infinite 1.5s}
+.breathe-ring:nth-child(3){width:45px;height:45px;animation:breathe-pulse 6s ease-in-out infinite 3s}
+@keyframes breathe-pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.5}50%{transform:translate(-50%,-50%) scale(1.25);opacity:0.1}}
+.breathe-content{position:relative;z-index:2}
+.breathe-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--fire);margin-bottom:8px}
+.breathe h4{font-family:'Poppins',sans-serif;font-size:0.94rem;font-weight:600;color:var(--ink-mid);margin-bottom:8px}
+.breathe p{font-family:'Lora',Georgia,serif;font-size:0.88rem;font-style:italic;color:var(--steel);max-width:420px;margin:0 auto;line-height:1.65}
+
+.descent-ramp{margin:36px 0 0;display:flex;flex-direction:column;gap:12px}
+.ramp-echo{padding:26px 30px;background:linear-gradient(160deg,rgba(232,134,10,0.07),rgba(232,134,10,0.03));border-radius:14px;border:1.5px solid rgba(232,134,10,0.12)}
+.ramp-echo p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:var(--steel);line-height:1.78;text-align:center;margin:0}
+.ramp-close{padding:36px 30px;text-align:center;background:linear-gradient(160deg,rgba(212,160,48,0.1),rgba(212,160,48,0.05));border-radius:14px;border:1.5px solid rgba(212,160,48,0.2)}
+.ramp-close-label{font-family:'Poppins',sans-serif;font-size:0.44rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--gold);opacity:0.9;margin-bottom:8px}
+.ramp-close p{font-family:'Poppins',sans-serif;font-size:0.8rem;font-weight:500;color:var(--ink-soft);line-height:1.65;max-width:440px;margin:0 auto}
+
+.inst{margin:26px 0;padding:18px 22px;background:linear-gradient(90deg,rgba(232,134,10,0.07),rgba(212,160,48,0.05));border-left:4px solid var(--fire);border-radius:0 12px 12px 0;box-shadow:var(--shadow)}
+.inst p{font-family:'Poppins',sans-serif;font-size:0.8rem;color:var(--steel);line-height:1.6;margin:0}
+.inst strong{color:var(--ink-mid);font-weight:600}
+
+.h2-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--ink-mid),var(--ink-soft));margin-right:10px;vertical-align:middle;box-shadow:0 2px 8px rgba(26,16,8,0.2)}
+.h2-icon svg{width:16px;height:16px;stroke:var(--fire);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.viz-icon svg{width:24px;height:24px;stroke:var(--fire);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.adv-head-icon svg{width:18px;height:18px;stroke:var(--fire);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.prose h2{font-family:'Poppins',sans-serif;font-size:1.3rem;color:var(--ink-mid);margin:36px 0 14px;letter-spacing:-0.01em;display:flex;align-items:center}
+
+.root-review{margin:44px 0;padding:28px 22px;background:linear-gradient(160deg,#FFF8EE,#FFF0F8);border-radius:16px;border:2px solid rgba(232,134,10,0.18);box-shadow:var(--shadow)}
+.root-label{font-family:'Poppins',sans-serif;font-size:0.44rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--fire);text-align:center;margin-bottom:18px}
+.root-layer{display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 0;flex-wrap:wrap}
+.root-layer.current{padding:12px 0}
+.root-ch{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--fog);width:28px;text-align:right;flex-shrink:0}
+.root-layer.current .root-ch{color:var(--fire)}
+.root-items{display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center}
+.root-pill{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:600;padding:5px 13px;border-radius:6px;white-space:nowrap}
+.root-pill.rp-dim{background:rgba(90,72,48,0.1);color:var(--steel);border:1.5px solid rgba(90,72,48,0.18)}
+.root-pill.rp-bright{background:linear-gradient(135deg,rgba(232,134,10,0.18),rgba(232,134,10,0.26));color:var(--ink-mid);border:2px solid rgba(232,134,10,0.35);box-shadow:0 2px 10px rgba(232,134,10,0.12);font-weight:700}
+.root-pill.rp-ch1{background:rgba(232,134,10,0.12);color:#5A3800;border:1.5px solid rgba(232,134,10,0.28);font-weight:600}
+.root-pill.rp-ch2{background:rgba(255,107,43,0.12);color:#5A2000;border:1.5px solid rgba(255,107,43,0.25);font-weight:600}
+.root-pill.rp-ch3{background:rgba(45,138,78,0.12);color:#1A3A28;border:1.5px solid rgba(45,138,78,0.25);font-weight:600}
+.root-pill.rp-ch4{background:rgba(160,100,240,0.12);color:#3A1A5A;border:1.5px solid rgba(160,100,240,0.25);font-weight:600}
+.root-pill.rp-ch5{background:rgba(60,140,240,0.12);color:#1A2E5A;border:1.5px solid rgba(60,140,240,0.25);font-weight:600}
+.root-arr{color:var(--fire);opacity:0.65;font-size:0.78rem;padding:0 3px}
+.root-layer.current .root-arr{opacity:0.9}
+.root-sep{width:60%;max-width:300px;height:1.5px;background:linear-gradient(90deg,transparent,rgba(232,134,10,0.15),transparent);margin:6px auto}
+
+.prompt{margin:32px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(232,134,10,0.22);box-shadow:var(--shadow-deep)}
+.prompt-head{padding:12px 20px;background:linear-gradient(90deg,#1A0A02,#201218);font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--fire)}
+.prompt-body{padding:24px 26px;background:#120A04;color:#C0B8A8;font-family:'Poppins',sans-serif;font-size:0.82rem;line-height:1.8}
+.prompt-body strong{color:var(--fire)}
+
+.stack{margin:38px 0;text-align:center}
+.stack-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);opacity:0.7;margin-bottom:16px}
+.stack-flow{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap}
+.stack-node{display:inline-flex;align-items:center;justify-content:center;padding:10px 18px;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.68rem;font-weight:600;line-height:1.35;white-space:nowrap}
+.sn-dark{background:var(--ink-mid);color:#FFFFFF;border:1.5px solid rgba(232,134,10,0.2)}
+.sn-fire{background:rgba(232,134,10,0.13);color:var(--ink-mid);border:1.5px solid rgba(232,134,10,0.25)}
+.sn-gold{background:rgba(212,160,48,0.13);color:var(--ink-soft);border:1.5px solid rgba(212,160,48,0.28)}
+.sn-red{background:rgba(232,80,80,0.1);color:#5A1818;border:1.5px solid rgba(232,80,80,0.2)}
+.sn-green{background:rgba(45,138,78,0.1);color:#1A3A28;border:1.5px solid rgba(45,138,78,0.2)}
+.stack-arr{font-size:1rem;color:rgba(232,134,10,0.45);padding:0 7px}
+
+.prayer{margin:32px 0;padding:28px 30px;background:linear-gradient(160deg,#1A0A02,#181020);border-radius:14px;border:2px solid rgba(212,160,48,0.25);position:relative;overflow:hidden}
+.prayer::before{content:'';position:absolute;top:-20%;left:-10%;width:160px;height:160px;background:radial-gradient(circle,rgba(212,160,48,0.06) 0%,transparent 70%);border-radius:50%}
+.prayer-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;position:relative;z-index:2}
+.prayer p{font-family:'Lora',Georgia,serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.85);line-height:1.8;position:relative;z-index:2;margin-bottom:8px}
+.prayer p:last-child{margin-bottom:0}
+.prayer strong{color:var(--gold);font-style:normal;font-weight:700}
+
+.finale{text-align:center;padding:80px 24px;background:linear-gradient(160deg,#1A0A02 0%,#201218 100%);position:relative;overflow:hidden}
+.finale::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 50% 50%,rgba(232,134,10,0.04) 0%,transparent 50%)}
+.finale h2{font-family:'Poppins',sans-serif;font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;color:#FFFFFF;margin-bottom:8px;position:relative;z-index:2}
+.finale h2 span{color:var(--fire)}
+.finale p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.38);max-width:460px;margin:16px auto;line-height:1.65;position:relative;z-index:2}
+
+footer{text-align:center;padding:36px 24px;background:#080602}
+footer p{font-family:'Lora',Georgia,serif;font-size:0.8rem;font-style:italic;color:rgba(232,134,10,0.2);margin-bottom:12px}
+footer .brand{font-family:'Poppins',sans-serif;font-size:0.67rem;font-style:normal;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.12)}
+
+/* === COMPARISON METER === */
+.comp-meter{margin:36px 0;padding:28px 26px;background:var(--white);border-radius:14px;border:2px solid rgba(232,134,10,0.2);box-shadow:var(--shadow)}
+.comp-meter-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);text-align:center;margin-bottom:18px}
+.comp-bar{margin:12px 0;display:flex;align-items:center;gap:12px}
+.comp-bar-name{font-family:'Poppins',sans-serif;font-size:0.7rem;font-weight:600;color:var(--ink-mid);width:120px;text-align:right;flex-shrink:0}
+.comp-bar-track{flex:1;height:20px;background:rgba(26,16,8,0.06);border-radius:10px;overflow:hidden;position:relative}
+.comp-bar-fill{height:100%;border-radius:10px;transition:width 1s ease}
+.comp-bar-fill.high{background:linear-gradient(90deg,var(--ash),#C03030)}
+.comp-bar-fill.mid{background:linear-gradient(90deg,var(--fire),var(--ember))}
+.comp-bar-fill.low{background:linear-gradient(90deg,var(--green),#3AAA5E)}
+.comp-bar-pct{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;color:var(--steel);width:40px;flex-shrink:0}
+
+/* === RESPONSE DETECTOR === */
+.resp-detect{margin:36px 0;text-align:center}
+.resp-flow{display:flex;align-items:stretch;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:16px}
+.resp-card{flex:1;min-width:180px;max-width:260px;border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.resp-card-head{padding:12px 16px;font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:3px;text-transform:uppercase}
+.resp-genuine .resp-card-head{background:rgba(45,138,78,0.12);color:#1A3A28}
+.resp-performed .resp-card-head{background:rgba(232,80,80,0.12);color:#8B1F1F}
+.resp-genuine{background:linear-gradient(170deg,#F0FFF4,#E8FFE8)}
+.resp-performed{background:linear-gradient(170deg,#FFF0F0,#FFE8E8)}
+.resp-card-body{padding:16px;font-family:'Poppins',sans-serif;font-size:0.78rem;color:var(--steel);line-height:1.65;text-align:left}
+.resp-card-body ul{list-style:none;padding:0;margin:0}
+.resp-card-body ul li{padding:6px 0;border-bottom:1px solid rgba(0,0,0,0.05)}
+.resp-card-body ul li:last-child{border-bottom:none}
+
+/* === LANE GRID === */
+.lane-grid{margin:36px 0;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:620px){.lane-grid{grid-template-columns:1fr}}
+.lane-col{border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.lane-col-head{padding:12px 18px;font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:4px;text-transform:uppercase}
+.lane-theirs .lane-col-head{background:rgba(232,80,80,0.12);color:#8B1F1F}
+.lane-yours .lane-col-head{background:rgba(45,138,78,0.12);color:#1A3A28}
+.lane-theirs{background:linear-gradient(170deg,#FFF0F0,#FFE8E8)}
+.lane-yours{background:linear-gradient(170deg,#F0FFF4,#E8FFE8)}
+.lane-col-body{padding:16px 18px}
+.lane-col-body ul{list-style:none;padding:0;margin:0}
+.lane-col-body ul li{padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.05);font-family:'Poppins',sans-serif;font-size:0.8rem;color:var(--steel)}
+.lane-col-body ul li:last-child{border-bottom:none}
+
+/* === SERIES PROGRESS === */
+.series-progress{text-align:center;padding:32px 24px;background:var(--cream-warm);border-top:1px solid rgba(26,16,8,0.06)}
+.series-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);margin-bottom:14px}
+.series-dots{display:flex;align-items:center;justify-content:center;gap:12px}
+.series-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(232,134,10,0.3);background:transparent}
+.series-dot.done{background:rgba(232,134,10,0.25);border-color:rgba(232,134,10,0.5)}
+.series-dot.active{background:var(--fire);border-color:var(--fire);box-shadow:0 0 8px rgba(232,134,10,0.3)}
+.series-dot-label{font-family:'Poppins',sans-serif;font-size:0.55rem;color:var(--steel-light);margin-top:10px}
+
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.65s ease,transform 0.65s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.stagger-children > *{opacity:0;transform:translateY(18px);transition:opacity 0.5s ease,transform 0.5s ease}
+.stagger-children.visible > *:nth-child(1){opacity:1;transform:none;transition-delay:0s}
+.stagger-children.visible > *:nth-child(2){opacity:1;transform:none;transition-delay:0.12s}
+.stagger-children.visible > *:nth-child(3){opacity:1;transform:none;transition-delay:0.24s}
+.stagger-children.visible > *:nth-child(4){opacity:1;transform:none;transition-delay:0.36s}
+.think:hover{box-shadow:0 0 0 2px rgba(232,134,10,0.25),0 8px 32px rgba(232,134,10,0.1)}
+.think{transition:box-shadow 0.3s ease}
+.adv-step{transition:background 0.2s ease}
+.adv-step:hover{background:rgba(232,134,10,0.04)!important}
+@keyframes insight-border{0%,100%{border-left-color:var(--fire)}50%{border-left-color:rgba(232,134,10,0.3)}}
+.insight{animation:insight-border 4s ease-in-out infinite}
+
+#read-progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--fire),rgba(232,134,10,0.4));z-index:9999;pointer-events:none;transition:width 0.08s linear}
+#chapter-pill{position:fixed;bottom:24px;right:24px;background:var(--ink);border:1px solid rgba(232,134,10,0.25);color:var(--fire);font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:8px 18px;border-radius:50px;opacity:0;transition:opacity 0.35s ease;pointer-events:none;z-index:1000;box-shadow:0 4px 24px rgba(0,0,0,0.4)}
+#chapter-pill.show{opacity:1}
+
+@media(max-width:620px){.stack-node{font-size:0.6rem;padding:8px 12px}.comp-bar-name{width:80px;font-size:0.6rem}}
+@media(max-width:640px){
+  .page{padding:0 16px}
+}
+@media print{
+  @page{margin:18mm 16mm 22mm 16mm}
+  body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .cover{min-height:auto;padding:80px 24px;break-after:page}
+  .ch-head{break-before:page;padding:56px 24px 40px}
+  .think,.adventure,.viz,.ba-pair,.mission,.insight,.dd,.breathe,.prayer,.prompt,.stack,.descent-ramp{break-inside:avoid}
+  .flame-ring,.cover-grain,.breathe-ring,.cover-vignette{animation:none!important;display:none}
+  .section{padding:36px 0}
+  #read-progress,#chapter-pill,.no-print{display:none!important}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+</style>
+</head>
+<body>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="ico-fire" viewBox="0 0 24 24"><path d="M12 22c-2 0-4-1.5-4-4 0-2 2-3 4-3s4 1 4 3c0 2.5-2 4-4 4z"/><path d="M12 15c-1.5-2-5-4-5-8a5 5 0 0 1 10 0c0 4-3.5 6-5 8z"/><path d="M9.5 9c.3-1.8 1.5-3 2.5-3"/></symbol>
+  <symbol id="ico-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="ico-heart" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></symbol>
+  <symbol id="ico-gift" viewBox="0 0 24 24"><path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></symbol>
+  <symbol id="ico-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+  <symbol id="ico-map" viewBox="0 0 24 24"><path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z"/><path d="M8 2v16"/><path d="M16 6v16"/></symbol>
+  <symbol id="ico-sunrise" viewBox="0 0 24 24"><path d="M12 2v4"/><path d="M4.93 10.93l2.83 2.83"/><path d="M2 18h4"/><path d="M18 18h4"/><path d="M16.24 13.76l2.83-2.83"/><path d="M18 18a6 6 0 0 0-12 0"/></symbol>
+  <symbol id="ico-shield" viewBox="0 0 24 24"><path d="M12 2l8 4v5c0 5.5-3.8 10.7-8 12-4.2-1.3-8-6.5-8-12V6l8-4z"/><path d="M9 12l2 2 4-4"/></symbol>
+  <symbol id="ico-megaphone" viewBox="0 0 24 24"><path d="M3 11l18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 0 1-5.8-1.6"/></symbol>
+  <symbol id="ico-prayer" viewBox="0 0 24 24"><path d="M12 3v4"/><path d="M8 9l4-2 4 2"/><path d="M8 9c-1 1-2 3-2 5l2 3"/><path d="M16 9c1 1 2 3 2 5l-2 3"/><path d="M8 17l4 4 4-4"/><path d="M10 13l2 1 2-1"/></symbol>
+  <symbol id="ico-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8"/><path d="M8 11h6"/></symbol>
+  <symbol id="ico-scales" viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M4 7h16"/><path d="M4 7l-2 7h8L8 7"/><path d="M16 7l-2 7h8l-2-7"/><circle cx="12" cy="3" r="1"/></symbol>
+</svg>
+
+<div id="read-progress"></div>
+<div id="chapter-pill"></div>
+
+<!-- ===== COVER ===== -->
+<section class="cover">
+  <div class="cover-grain"></div>
+  <div class="cover-vignette"></div>
+  <div class="flame-ring"></div>
+  <div class="flame-ring"></div>
+  <div class="flame-ring"></div>
+  <div class="cover-content">
+    <div class="cover-badge">Lay It Down Series. Part 2 of 7</div>
+    <div class="cover-art">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 180" aria-label="Two mirrors comparison illustration">
+        <defs>
+          <linearGradient id="lde-frame" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#5A4830"/><stop offset="100%" stop-color="#3D3020"/></linearGradient>
+          <linearGradient id="lde-bright" x1="50%" y1="0%" x2="50%" y2="100%"><stop offset="0%" stop-color="#E8860A" stop-opacity="0.15"/><stop offset="50%" stop-color="#D4A030" stop-opacity="0.08"/><stop offset="100%" stop-color="#E8860A" stop-opacity="0.03"/></linearGradient>
+          <linearGradient id="lde-dim" x1="50%" y1="0%" x2="50%" y2="100%"><stop offset="0%" stop-color="#3D3020" stop-opacity="0.3"/><stop offset="50%" stop-color="#2C2010" stop-opacity="0.2"/><stop offset="100%" stop-color="#1A1008" stop-opacity="0.15"/></linearGradient>
+          <radialGradient id="lde-sparkle" cx="50%" cy="30%" r="50%"><stop offset="0%" stop-color="#D4A030" stop-opacity="0.25"/><stop offset="100%" stop-color="#E8860A" stop-opacity="0"/></radialGradient>
+        </defs>
+        <!-- Left mirror: Highlight Reel (bright, polished) -->
+        <rect x="10" y="15" width="90" height="130" rx="4" fill="url(#lde-frame)" stroke="#8A7A60" stroke-width="2"/>
+        <rect x="16" y="21" width="78" height="118" rx="2" fill="#1A1008"/>
+        <rect x="18" y="23" width="74" height="114" rx="1" fill="url(#lde-bright)"/>
+        <!-- Highlight reel sparkles/stars (polished surface) -->
+        <circle cx="35" cy="45" r="2" fill="#D4A030" opacity="0.5"/>
+        <circle cx="55" cy="35" r="1.5" fill="#E8860A" opacity="0.4"/>
+        <circle cx="70" cy="55" r="1.8" fill="#D4A030" opacity="0.45"/>
+        <circle cx="42" cy="70" r="1.2" fill="#E8860A" opacity="0.35"/>
+        <circle cx="65" cy="80" r="1.5" fill="#D4A030" opacity="0.3"/>
+        <circle cx="50" cy="95" r="1" fill="#FF6B2B" opacity="0.25"/>
+        <!-- Bright silhouette (perfect pose) -->
+        <circle cx="55" cy="55" r="10" fill="#E8860A" opacity="0.12"/>
+        <path d="M55,65 L55,95 M45,75 L65,75 M55,95 L45,115 M55,95 L65,115" stroke="#D4A030" stroke-width="1.5" stroke-linecap="round" opacity="0.2"/>
+        <!-- Crown/trophy on head -->
+        <path d="M48,44 L50,38 L53,42 L55,36 L57,42 L60,38 L62,44Z" fill="#D4A030" opacity="0.35"/>
+        <!-- Gleam on mirror surface -->
+        <path d="M20,25 L30,23 L22,35Z" fill="#D4A030" opacity="0.08"/>
+        <ellipse cx="55" cy="80" rx="30" ry="45" fill="url(#lde-sparkle)"/>
+        <!-- Mirror label (subtle) -->
+        <rect x="25" y="123" width="60" height="10" rx="2" fill="#E8860A" opacity="0.08"/>
+
+        <!-- Right mirror: Backstage Reality (dim, cracked) -->
+        <rect x="120" y="15" width="90" height="130" rx="4" fill="url(#lde-frame)" stroke="#5A4830" stroke-width="2"/>
+        <rect x="126" y="21" width="78" height="118" rx="2" fill="#1A1008"/>
+        <rect x="128" y="23" width="74" height="114" rx="1" fill="url(#lde-dim)"/>
+        <!-- Dim silhouette (slouched, tired) -->
+        <circle cx="165" cy="58" r="9" fill="#5A4830" opacity="0.15"/>
+        <path d="M165,67 Q163,80 162,95 M155,77 L175,74 M162,95 L152,115 M162,95 L168,115" stroke="#5A4830" stroke-width="1.5" stroke-linecap="round" opacity="0.18"/>
+        <!-- Cracks in mirror -->
+        <path d="M140,50 L155,65 L148,80" fill="none" stroke="#8A7A60" stroke-width="0.6" opacity="0.3"/>
+        <path d="M155,65 L170,58" fill="none" stroke="#8A7A60" stroke-width="0.5" opacity="0.25"/>
+        <path d="M155,65 L160,75" fill="none" stroke="#8A7A60" stroke-width="0.4" opacity="0.2"/>
+        <path d="M180,40 L172,55 L178,68" fill="none" stroke="#5A4830" stroke-width="0.5" opacity="0.2"/>
+        <!-- Dust motes -->
+        <circle cx="140" cy="45" r="0.8" fill="#8A7A60" opacity="0.2"/>
+        <circle cx="185" cy="60" r="0.6" fill="#B0A090" opacity="0.15"/>
+        <circle cx="150" cy="100" r="0.7" fill="#8A7A60" opacity="0.18"/>
+        <!-- Mirror label -->
+        <rect x="135" y="123" width="60" height="10" rx="2" fill="#5A4830" opacity="0.08"/>
+
+        <!-- VS divider between mirrors -->
+        <line x1="110" y1="40" x2="110" y2="130" stroke="#5A4830" stroke-width="0.5" opacity="0.2" stroke-dasharray="3,4"/>
+        <!-- Ground shadow -->
+        <ellipse cx="110" cy="160" rx="90" ry="10" fill="#1A1008" opacity="0.3"/>
+        <!-- Reflection on ground (left brighter) -->
+        <ellipse cx="55" cy="155" rx="30" ry="5" fill="#E8860A" opacity="0.06"/>
+        <ellipse cx="165" cy="155" rx="30" ry="5" fill="#3D3020" opacity="0.05"/>
+      </svg>
+    </div>
+    <h1>Lay It Down<em>Envy</em></h1>
+    <p class="cover-sub">It doesn't feel like sin.<br>It feels like <em>scrolling.</em><br>A like here. A comparison there. A quiet ache<br>in your chest when someone gets what you wanted.</p>
+    <div class="cover-verse">"A heart at peace gives life to the body,<br>but envy rots the bones."<br> Proverbs 14:30 (NIV)</div>
+    <p class="cover-author">KingdomBuilders AI</p>
+  </div>
+</section>
+
+<!-- ===== BEFORE WE BEGIN ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Before We Begin</div><h2 class="ch-title">The Mirror You Didn't Install</h2><p class="ch-sub">Envy is not wanting what they have. It is resenting them for having it.</p></div></div>
+
+<div class="page prose section reveal">
+  <p>Envy is the only sin that gives you absolutely nothing in return. Lust offers pleasure. Greed offers accumulation. Gluttony offers comfort. Wrath offers the illusion of power. Pride offers the illusion of status. Even sloth offers rest. But envy? Envy gives you <strong>nothing but pain.</strong> It takes your peace, poisons your relationships, and paralyzes your calling, and offers nothing in exchange except the bitter satisfaction of resentment.</p>
+  <p>That is what makes it so strange that we do it constantly.</p>
+  <p>Envy is different from jealousy, though the words are often swapped. Jealousy says, "I want what you have." That is desire, sometimes healthy, sometimes not. Envy says something darker: <strong>"I resent that you have it."</strong> Envy does not just want the promotion. It wants the other person to <em>not</em> have it. Envy does not just desire the marriage. It feels a quiet satisfaction when theirs struggles.</p>
+
+  <div class="insight"><p>Envy is the most hidden of the deadly sins because it disguises itself as other emotions. It wears the costume of <em>motivation</em> ("I'm just driven"), <em>discernment</em> ("I'm just being realistic about them"), and <em>scrolling</em> ("I'm just catching up on what people are doing"). The costume is so good that most people live with envy for decades without ever naming it.</p></div>
+
+  <p>This book confronts three altars where envy hides. Not in dramatic moments of bitterness, but in the daily habits, reflexes, and quiet aches that have become so normal you stopped questioning them.</p>
+
+  <div class="breathe">
+    <div class="breathe-ring"></div><div class="breathe-ring"></div><div class="breathe-ring"></div>
+    <div class="breathe-content">
+      <div class="breathe-label">Three Altars</div>
+      <h4>Comparison Scrolling. Performed Celebration. Coveted Callings.</h4>
+      <p>None of them look like envy. They look like a normal Tuesday. And they are eating your joy from the inside.</p>
+    </div>
+  </div>
+
+  <div class="inst"><p><strong>How this guide works:</strong> Each pair of chapters names one altar, then gives you a specific counterattack. This is Part 2 of the Lay It Down series. Pride was the throne. Envy is the mirror, the one that shows you everyone else's life and whispers that yours is not enough.</p></div>
+
+  <div class="insight"><p>If you finish this playbook, you will recognize envy in its modern disguises, the scroll, the performed celebration, the coveted calling, and understand why it's the only deadly sin that <strong>gives you absolutely nothing in return.</strong> You will know how to fast from comparison and commit to your own lane instead of staring over the fence at someone else's.</p></div>
+</div>
+
+<!-- ===== CHAPTER 1: THE SCROLL ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter One</div><h2 class="ch-title">The Scroll</h2><p class="ch-sub">How your phone became an envy machine, and you didn't notice.</p></div></div>
+<div class="ribbon"><p>"Let each one examine his own work, and then he will have reason for boasting in regard to himself alone, and not in regard to another.". Galatians 6:4 (NASB)</p></div>
+
+<div class="page prose section reveal">
+  <div class="mission"><div class="mission-label">The Altar</div><p>Comparison scrolling.<br>Not research. Not connection. Not "staying informed."<br>The daily ritual of measuring your life<br>against <em>curated highlights from people you barely know.</em></p></div>
+
+  <p>Nobody opens their phone thinking, "I would like to feel inadequate today." But that is exactly what happens, hundreds of times a week, through a mechanism so seamless you do not even register it as pain.</p>
+  <p>You see the vacation photo. Your chest tightens, just slightly. You see the engagement announcement. Something in you deflates. You see the business milestone, the weight loss transformation, the perfect family portrait. Each one lands like a small, invisible dart. Not enough to bleed. Enough to ache.</p>
+  <p>This is not accidental. The algorithm is designed to show you <strong>people doing what you wish you were doing.</strong> It studies your pauses, your clicks, your lingering glances, and it serves you a personalized feed of everything you feel you lack. It is an envy delivery system disguised as a social platform.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-eye"/></svg></span>The Comparison Tax</h2>
+  <p>Every comparison costs energy. Not the kind you notice, the kind that drains silently. After thirty minutes of scrolling, you are not refreshed. You are depleted. Not because you saw bad content, but because your brain ran <strong>hundreds of micro-comparisons</strong> against people whose lives you are seeing through a filter they designed to impress you.</p>
+
+  <div class="comp-meter reveal">
+    <div class="comp-meter-label">Where Your Emotional Energy Goes</div>
+    <div class="comp-bar"><span class="comp-bar-name">Comparing</span><div class="comp-bar-track"><div class="comp-bar-fill high" style="width:55%"></div></div><span class="comp-bar-pct">55%</span></div>
+    <div class="comp-bar"><span class="comp-bar-name">Actual Living</span><div class="comp-bar-track"><div class="comp-bar-fill low" style="width:20%"></div></div><span class="comp-bar-pct">20%</span></div>
+    <div class="comp-bar"><span class="comp-bar-name">Creating</span><div class="comp-bar-track"><div class="comp-bar-fill mid" style="width:10%"></div></div><span class="comp-bar-pct">10%</span></div>
+    <div class="comp-bar"><span class="comp-bar-name">Connecting</span><div class="comp-bar-track"><div class="comp-bar-fill low" style="width:15%"></div></div><span class="comp-bar-pct">15%</span></div>
+  </div>
+
+  <div class="ba-pair reveal">
+    <div class="ba-card ba-before"><div class="ba-head"><span class="ba-dot"></span>Envy Says</div><div class="ba-body"><ul><li>"I'm just staying connected"</li><li>"It's nice to see what people are up to"</li><li>"It motivates me to do better"</li><li>"Everyone does this"</li></ul></div></div>
+    <div class="ba-card ba-after"><div class="ba-head"><span class="ba-dot"></span>Truth Says</div><div class="ba-body"><ul><li>Connection requires conversation, not consumption</li><li>You are not seeing what they are up to. You are seeing what they want you to see</li><li>Motivation built on inadequacy burns out fast</li><li>A billion people doing it does not make it harmless</li></ul></div></div>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Think</div>
+    <h4>The Scroll Audit</h4>
+    <p>Open your phone's screen time report. How many hours did you spend on social media this week?</p>
+    <div class="think-line"></div>
+    <p class="q-start">Now ask: after your last scroll session, did you feel more grateful or less?</p>
+    <div class="think-line"></div>
+    <p class="q-start">Who specifically makes you feel like your life is not enough?</p>
+    <div class="think-line"></div>
+    <p class="closing">That name is not your enemy. That name is the mirror envy placed in front of you.</p>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 2: THE COMPARISON FAST ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Two</div><h2 class="ch-title">The Comparison Fast</h2><p class="ch-sub">Seven days to break the measuring habit and recover your peace.</p></div></div>
+<div class="ribbon"><p>"We do not dare to classify or compare ourselves with some who commend themselves. When they measure themselves by themselves and compare themselves with themselves, they are not wise.", 2 Corinthians 10:12 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>You cannot think your way out of a comparison habit. The reflex is too fast. By the time you realize you are comparing, the damage is already done, the dart has landed, the ache has started, and the peace is gone. The only way to break the cycle is to <strong>remove the trigger</strong> long enough for the reflex to weaken.</p>
+
+  <div class="dd reveal"><h4>Day 1. The Unfollow</h4><div class="sub">Remove the Mirrors</div><p>Mute or unfollow five accounts that consistently make you feel inadequate. Not enemies. Not strangers. The people whose highlight reels hurt the most, because they are close enough to feel like a personal commentary on your life.</p></div>
+
+  <div class="dd reveal"><h4>Day 2. The Timer</h4><div class="sub">Set the Boundary</div><p>Set a hard limit: 15 minutes of social media for the entire day. When the timer ends, close the app. Notice what your body does in the minutes after. Restlessness? Relief? Anxiety? That reaction tells you how deep the altar goes.</p></div>
+
+  <div class="dd reveal"><h4>Day 3. The Gratitude Replacement</h4><div class="sub">Fill the Gap</div><p>Every time you reach for your phone to scroll, open your notes app instead and write one thing you are grateful for right now. Not a grand blessing, something small and immediate. The warm coffee. The quiet morning. The breath in your lungs. Envy cannot survive in a grateful body.</p></div>
+
+  <div class="dd reveal"><h4>Day 4. The Creator Day</h4><div class="sub">Stop Consuming, Start Making</div><p>Spend zero minutes consuming other people's content today. Spend at least 30 minutes creating something of your own. A meal. A letter. A drawing. A prayer. A plan. Envy is a consumer's disease. Creation is the antidote.</p></div>
+
+  <div class="dd reveal"><h4>Day 5. The Real Conversation</h4><div class="sub">Replace the Feed with a Face</div><p>Instead of scrolling, call one person and have a real conversation. Not a text. Not a voice note. A call. Ask them how they are actually doing, not the curated version. Real connection dissolves the illusion that everyone else has it figured out.</p></div>
+
+  <div class="dd reveal"><h4>Day 6. The Confession</h4><div class="sub">Name the Sin</div><p>Tell one person: "I've been struggling with envy." Not in a dramatic way. Just honestly. Name the specific person or situation that triggers it. Envy thrives in secrecy. The moment you speak it aloud, it loses half its power.</p></div>
+
+  <div class="dd reveal"><h4>Day 7. The Blackout</h4><div class="sub">A Full Day Without Mirrors</div><p>No social media. No news feeds. No content about other people's lives. For one full day, live in your own story without checking how it compares to anyone else's. Notice what rises in the silence: peace, boredom, freedom, panic. Whatever comes up is the truth about how deep the altar goes.</p></div>
+
+  <div class="stack reveal">
+    <div class="stack-label">The Comparison Loop</div>
+    <div class="stack-flow">
+      <span class="stack-node sn-dark">Scroll</span><span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-fire">Compare</span><span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-red">Ache</span><span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-gold">Numb</span><span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-dark">Scroll Again</span>
+    </div>
+  </div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapters 1-2</div>
+    <div class="root-layer current"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-bright">Comparison Scrolling</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Comparison Fast</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 3: THE APPLAUSE THAT BURNS ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Three</div><h2 class="ch-title">The Applause That Burns</h2><p class="ch-sub">How "happy for you" became the most dishonest phrase in your vocabulary.</p></div></div>
+<div class="ribbon"><p>"Rejoice with those who rejoice, and weep with those who weep.". Romans 12:15 (NKJV)</p></div>
+
+<div class="page prose section reveal">
+  <div class="mission"><div class="mission-label">The Altar</div><p>The inability to genuinely celebrate someone else's win.<br>Not because you are a bad person.<br>But because somewhere deep, their success feels like <em>your failure.</em></p></div>
+
+  <p>Someone you know gets the promotion. You smile. You say "Congratulations!" You post a comment with a celebration emoji. And underneath all of it, something in your chest <strong>burns.</strong></p>
+  <p>Not rage. Not hatred. Something quieter and more precise. It is the feeling of watching someone receive something you wanted, or something you feel you deserved, and having to perform happiness while your insides contract.</p>
+  <p>This is envy's most sophisticated disguise. It does not look like resentment. It looks like a smile. It sounds like applause. And it is destroying your relationships from the inside because the people around you can <strong>feel</strong> the gap between your words and your heart, even when they cannot name it.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-heart"/></svg></span>The Resentment Detector</h2>
+  <p>There is a simple test for genuine versus performed celebration. It shows up in the body. When someone you love shares good news, your body does one of two things:</p>
+
+  <div class="resp-detect reveal">
+    <div class="resp-flow">
+      <div class="resp-card resp-genuine">
+        <div class="resp-card-head">Genuine Celebration</div>
+        <div class="resp-card-body"><ul>
+          <li>Your chest opens, warmth spreads</li>
+          <li>You ask follow-up questions because you want to know more</li>
+          <li>You tell other people about their win unprompted</li>
+          <li>You feel no need to mention your own accomplishments</li>
+          <li>Their joy adds to yours</li>
+        </ul></div>
+      </div>
+      <div class="resp-card resp-performed">
+        <div class="resp-card-head">Performed Celebration</div>
+        <div class="resp-card-body"><ul>
+          <li>Your chest tightens, subtle contraction</li>
+          <li>You change the subject quickly</li>
+          <li>You immediately think of your own situation</li>
+          <li>You add a qualifier: "That's great, but..."</li>
+          <li>Their joy subtracts from yours</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <p>The difference is not in what you say. It is in what your body does while you say it. And the body does not lie.</p>
+
+  <div class="insight"><p>Romans 12:15 does not say "Congratulate those who rejoice." It says <em>rejoice with them.</em> That is a completely different instruction. Congratulations is a word. Rejoicing is a posture of the heart. One costs nothing. The other costs your ego, because genuine rejoicing means <em>their win is your win.</em> And envy refuses to believe that.</p></div>
+
+  <div class="ba-pair reveal">
+    <div class="ba-card ba-before"><div class="ba-head"><span class="ba-dot"></span>Envy Says</div><div class="ba-body"><ul><li>"I'm happy for them" (while calculating what I lack)</li><li>"Must be nice" (translation: it should be mine)</li><li>"Good for them, I guess" (said through tight teeth)</li><li>"They got lucky" (protecting my ego from their effort)</li></ul></div></div>
+    <div class="ba-card ba-after"><div class="ba-head"><span class="ba-dot"></span>Truth Says</div><div class="ba-body"><ul><li>Real happiness for them does not require subtracting from yourself</li><li>Their blessing is not your loss. God is not running out</li><li>The tightness in your teeth is the sound of envy asking for a seat</li><li>Dismissing their work protects nothing except the altar</li></ul></div></div>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Think</div>
+    <h4>The Celebration Audit</h4>
+    <p>Think of the last time someone close to you shared a major win. What did your body do?</p>
+    <div class="think-line"></div>
+    <p class="q-start">Did you ask follow-up questions, or did you change the subject?</p>
+    <div class="think-line"></div>
+    <p class="q-start">Did you tell anyone else about their win, or did it stay between you two?</p>
+    <div class="think-line"></div>
+    <p class="closing">If the win stayed quiet, the altar kept it there.</p>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 4: THE GENEROSITY DRILL ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Four</div><h2 class="ch-title">The Generosity Drill</h2><p class="ch-sub">How to rewire your reflexes so other people's wins become your fuel instead of your poison.</p></div></div>
+<div class="ribbon"><p>"Do nothing out of selfish ambition or vain conceit. Rather, in humility value others above yourselves.". Philippians 2:3 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>You cannot defeat envy by trying to feel happy for people. Feelings follow actions. You must <strong>act generously toward the exact people envy targets</strong> until the action rewires the reflex. These three drills attack the altar of performed celebration at its foundation.</p>
+
+  <div class="dd reveal"><h4>Drill 1. The Unprompted Praise</h4><div class="sub">Celebrate Without Being Asked</div><p>Every day this week, send one message praising someone's work, character, or achievement, when they did not ask for it and will not expect it. Not a reaction to their post. A proactive, unsolicited statement of genuine admiration. The key: pick people you are most tempted to envy.</p><p>Envy hoards praise because it feels like giving away power. The drill forces you to give it away on purpose.</p></div>
+
+  <div class="dd reveal"><h4>Drill 2. The Amplification Protocol</h4><div class="sub">Promote Someone Else's Win</div><p>This week, share someone else's accomplishment with a third party. Not your own work, theirs. Tell your boss about a colleague's idea. Tell your friends about someone's new project. Post about someone else's milestone without mentioning yourself.</p><p>Envy wants to be the loudest voice in the room. This drill makes you the megaphone for someone else.</p></div>
+
+  <div class="dd reveal"><h4>Drill 3. The Gift of Going Second</h4><div class="sub">Let Someone Else Go First</div><p>Identify one area where you are competing with someone, even silently, and deliberately step back. Let them lead. Let them win. Let them receive the recognition. Not because your contribution does not matter, but because <strong>envy cannot survive in a person who voluntarily gives away the spotlight.</strong></p></div>
+
+  <div class="adventure reveal">
+    <div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-gift"/></svg></div><div class="adv-head-text"><div class="adv-head-label">Scenario</div><div class="adv-head-title">The Announcement</div></div></div>
+    <div class="adv-step"><div class="step-c"><p>Your closest friend calls. She just got the job, the one you also applied for. The one you wanted. She is ecstatic. She called you first.</p></div></div>
+    <div class="adv-step"><div class="step-c"><span class="tag-you">The Altar Response</span><p>You say, "That's amazing, congratulations!" Your voice is steady. Your face performs excitement. But you end the call quickly. You sit in your car for ten minutes, scrolling through her posts, feeling something acidic in your stomach. Later that night, when your spouse asks about the job, you say: "She got it. Whatever. I didn't really want it anyway." The lie protects the altar.</p></div></div>
+    <div class="adv-step"><div class="step-c"><span class="tag-you">The Drill Response</span><p>You say, "That's amazing, congratulations!" But then you stay on the phone. You ask: <em>"Tell me everything. How did the interview go? When do you start?"</em> You feel the ache in your chest, and you stay in the conversation anyway. Later, you text her: <em>"I told my family about your new job. We're all excited for you."</em> You amplified her win. The ache is still there, but it is losing its grip.</p></div></div>
+    <div class="adv-step adv-result-good"><div class="step-c"><p><strong>The altar response</strong> protects your ego and kills the friendship slowly. <strong>The drill response</strong> costs your ego and deepens the friendship permanently.</p></div></div>
+  </div>
+
+  <div class="prayer reveal">
+    <div class="prayer-label">A Prayer for the Person Who Cannot Celebrate Others</div>
+    <p><strong>Father,</strong> I have been poisoned by comparison. I have watched other people receive what I wanted and called it unfair. I have smiled at their wins while my heart contracted. I have measured your generosity by who else received it, and found it lacking.</p>
+    <p>Teach me to rejoice. Not the word, the posture. <strong>Break the reflex that turns other people's blessings into my loss.</strong> Help me see that your table is not running out of seats.</p>
+    <p><strong>In Jesus' name, amen.</strong></p>
+  </div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapters 1-4</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Comparison</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Comparison Fast</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">3-4</span><div class="root-items"><span class="root-pill rp-bright">Celebration</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Generosity Drill</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 5: THE SCARCITY LIE ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Five</div><h2 class="ch-title">The Scarcity Lie</h2><p class="ch-sub">Why envy only exists in a world where you believe God is running out.</p></div></div>
+<div class="ribbon"><p>"The Lord is my shepherd; I shall not want.". Psalm 23:1 (NKJV)</p></div>
+
+<div class="page prose section reveal">
+  <p>Envy has a hidden engine. It runs on a single belief so deeply embedded that most people never examine it: <strong>"There is not enough."</strong></p>
+  <p>Not enough success. Not enough love. Not enough recognition. Not enough blessing. And if there is not enough, then every portion someone else receives is a portion that was <strong>taken from you.</strong> Their gain becomes your loss. Their blessing becomes evidence of your neglect. Their promotion becomes proof that God has favorites, and you are not one of them.</p>
+  <p>This is the scarcity lie. And it is the soil every altar of envy is planted in.</p>
+
+  <div class="gq reveal"><p>"Envy is the only sin that is never any fun. It offers no pleasure, no satisfaction, no relief, only corrosion."</p></div>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-sunrise"/></svg></span>From Scarcity to Abundance</h2>
+  <p>The gospel does not operate on a scarcity model. God's provision is not a pie where someone else's bigger slice means yours gets smaller. When Jesus fed five thousand, the miracle was not efficiency, it was <strong>abundance.</strong> There were twelve baskets left over. More at the end than at the beginning.</p>
+  <p>This is the economy envy refuses to believe in. An economy where someone else's blessing does not reduce yours. Where God's attention is not divided. Where the gifts, callings, promotions, relationships, and breakthroughs available to another person exist in a completely separate account from yours.</p>
+  <p>The moment you believe that, not as theology but as <strong>lived reality</strong>, envy loses its entire foundation. Because if there is enough, their portion does not threaten yours. If there is enough, you can celebrate without subtracting. If there is enough, the mirror can come down.</p>
+
+  <div class="viz reveal">
+    <div class="viz-top"><div class="viz-icon"><svg><use href="#ico-scales"/></svg></div><div class="viz-meta"><div class="viz-label">The Core Shift</div><h4>Scarcity vs. Abundance</h4></div></div>
+    <div class="viz-body">
+      <p><strong>Scarcity says:</strong> Their blessing means less for me. God is distributing from a limited pool, and I got overlooked.</p>
+      <p><strong>Abundance says:</strong> Their blessing has nothing to do with my account. God's provision is not zero-sum. Their table does not empty mine.</p>
+      <div class="viz-trigger">The question is not "Why do they have it?" The question is: "Do I trust that what God has for me is already accounted for?"</div>
+    </div>
+  </div>
+
+  <div class="breathe reveal">
+    <div class="breathe-ring"></div><div class="breathe-ring"></div><div class="breathe-ring"></div>
+    <div class="breathe-content">
+      <div class="breathe-label">Pause</div>
+      <h4>Their blessing is not your loss.</h4>
+      <p>God is not running out. What He has for you is not in competition with what He gave them. The table is bigger than you think.</p>
+    </div>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Think</div>
+    <h4>The Scarcity Audit</h4>
+    <p>Where in your life do you operate from scarcity? Where do you feel like someone else getting more means you get less?</p>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+    <p class="q-start">What would change if you genuinely believed God's provision for you was already secured, regardless of what anyone else received?</p>
+    <div class="think-line"></div>
+    <p class="closing">Envy dies the moment provision stops being a competition.</p>
+  </div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Chapters 1-5</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Comparison</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Comparison Fast</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">3-4</span><div class="root-items"><span class="root-pill rp-ch2">Celebration</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch2">Generosity Drill</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">5</span><div class="root-items"><span class="root-pill rp-bright">Scarcity Lie</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Abundance</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 6: THE STOLEN ASSIGNMENT ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Six</div><h2 class="ch-title">The Stolen Assignment</h2><p class="ch-sub">How wanting someone else's calling became the surest way to abandon your own.</p></div></div>
+<div class="ribbon"><p>"If the whole body were an eye, where would the sense of hearing be? If the whole body were an ear, where would the sense of smell be?", 1 Corinthians 12:17 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <div class="mission"><div class="mission-label">The Altar</div><p>Coveting someone else's calling.<br>Not their possessions, their <em>assignment.</em><br>Their gift. Their platform. Their ministry. Their trajectory.<br>The life God designed for them, that you wish was designed <em>for you.</em></p></div>
+
+  <p>This is the deepest altar of envy because it is not about stuff. It is about <strong>identity.</strong> When you envy someone's car, you want a possession. When you envy someone's calling, you want their <strong>life.</strong> You want to be them. Or at least, you want the version of yourself that would exist if God had given you what He gave them.</p>
+  <p>You see the pastor with the large platform and think: "That should be me." You see the entrepreneur with the freedom and think: "Why not me?" You see the artist with the talent, the parent with the perfect kids, the friend with the effortless charisma, and something in you whispers: <strong>"God gave them my portion."</strong></p>
+  <p>That whisper is the most dangerous lie envy tells. Because it does not just poison your view of them. It paralyzes <strong>your</strong> calling. While you are staring at their lane, yours goes unwalked.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-map"/></svg></span>The Lane Grid</h2>
+  <p>Envy blurs the lines between lanes. It makes their assignment look like yours and yours look insufficient. The grid below forces the distinction.</p>
+
+  <div class="lane-grid reveal">
+    <div class="lane-col lane-theirs">
+      <div class="lane-col-head">Their Lane</div>
+      <div class="lane-col-body"><ul>
+        <li>Their gifts (not yours to carry)</li>
+        <li>Their timing (not yours to control)</li>
+        <li>Their platform (not yours to claim)</li>
+        <li>Their struggles (you only see the wins)</li>
+        <li>Their assignment from God (custom-built for them)</li>
+      </ul></div>
+    </div>
+    <div class="lane-col lane-yours">
+      <div class="lane-col-head">Your Lane</div>
+      <div class="lane-col-body"><ul>
+        <li>Your gifts (unfinished, underused, waiting)</li>
+        <li>Your timing (not late, specific)</li>
+        <li>Your platform (the right size for now)</li>
+        <li>Your struggles (the cost of YOUR calling)</li>
+        <li>Your assignment from God (custom-built for you)</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <div class="insight"><p>God did not make a mistake. He did not accidentally give them what was meant for you. He did not run out of gifts before He got to your name. <em>Your assignment is not their assignment with a smaller budget.</em> It is a completely different blueprint, and the only one that will fit your life.</p></div>
+
+  <div class="ba-pair reveal">
+    <div class="ba-card ba-before"><div class="ba-head"><span class="ba-dot"></span>Envy Says</div><div class="ba-body"><ul><li>"They got my breakthrough"</li><li>"God must have a favorite"</li><li>"If I had their gift, I'd..."</li><li>"My calling is too small"</li></ul></div></div>
+    <div class="ba-card ba-after"><div class="ba-head"><span class="ba-dot"></span>Truth Says</div><div class="ba-body"><ul><li>Their breakthrough was never in your account</li><li>God has a purpose, not a ranking</li><li>You have a gift they could never carry</li><li>Small callings faithfully walked outpace large callings enviously watched</li></ul></div></div>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Think</div>
+    <h4>The Assignment Confession</h4>
+    <p>Whose calling do you secretly wish was yours? Be specific.</p>
+    <div class="think-line"></div>
+    <p class="q-start">What has that envy cost you? What have you not started, not pursued, not built because you were staring at their lane?</p>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+    <p class="closing">The thing you have not started is waiting for you to stop watching them and start walking.</p>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 7: THE ASSIGNMENT PROTOCOL ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Seven</div><h2 class="ch-title">The Assignment Protocol</h2><p class="ch-sub">How to discover your lane, commit to it, and stop looking over the fence.</p></div></div>
+<div class="ribbon"><p>"For we are His workmanship, created in Christ Jesus for good works, which God prepared beforehand that we should walk in them.". Ephesians 2:10 (NKJV)</p></div>
+
+<div class="page prose section reveal">
+  <p>Envy of someone else's calling is ultimately a failure of <strong>commitment to your own.</strong> You do not covet another lane when you are fully invested in yours. The protocols below are designed to pull your eyes off their road and plant your feet firmly on yours.</p>
+
+  <div class="dd reveal"><h4>Protocol 1. The Lane Audit</h4><div class="sub">Map What's Actually Yours</div><p>List every gift, skill, relationship, opportunity, and open door that currently exists in your life, not the ones you wish existed, the ones that are <strong>actually there.</strong> Do not evaluate them. Do not compare them. Just inventory them. When envy has been running the show, you lose sight of what you already have because you are fixated on what they have.</p><p>This audit is not about counting your blessings. It is about <strong>seeing your assignment clearly for the first time.</strong></p></div>
+
+  <div class="dd reveal"><h4>Protocol 2. The Blinder Drill</h4><div class="sub">Restrict the View</div><p>For the next 30 days, dramatically reduce your exposure to the person or people whose callings you envy most. Not out of bitterness, out of <strong>focus.</strong> A racehorse wears blinders not because the other horses are bad, but because looking sideways costs speed. You need your attention back.</p><p>Unfollow. Mute. Skip the events where comparison thrives. Remove the mirrors until you can look in them without losing yourself.</p></div>
+
+  <div class="dd reveal"><h4>Protocol 3. The Calling Inventory</h4><div class="sub">Start What You've Been Stalling</div><p>Write down the one thing God has placed on your heart that you have not started, the idea, the project, the conversation, the leap. You know what it is. Envy kept you watching instead of walking. This week, take the first step. Not the whole journey. One step. Send the email. Write the first page. Make the call. Register the name. Plant the seed.</p><p>Your calling does not need their resources. It needs <strong>your obedience.</strong></p></div>
+
+  <div class="adventure reveal">
+    <div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-target"/></svg></div><div class="adv-head-text"><div class="adv-head-label">Scenario</div><div class="adv-head-title">The Launch</div></div></div>
+    <div class="adv-step"><div class="step-c"><p>You have had an idea for two years. A business, a ministry, a creative project. But every time you get close to starting, you see someone else doing something similar, and doing it better. The voice says: <em>"Why bother? They already did it."</em></p></div></div>
+    <div class="adv-step"><div class="step-c"><span class="tag-you">The Altar Response</span><p>You close the laptop. You tell yourself you will start "when the timing is right." You scroll through their feed instead, studying their success, cataloging all the reasons yours would be smaller. Another month passes. Then another year. The idea stays locked inside you, gathering dust and resentment.</p></div></div>
+    <div class="adv-step"><div class="step-c"><span class="tag-you">The Protocol Response</span><p>You close the competitor's feed. You open a blank document. You write the first paragraph, the first outline, the first plan. It is imperfect. It is small. It looks nothing like theirs. And that is exactly right, because it was never supposed to. Thirty days later, you have something real. Not because you are more talented. <em>Because you finally stopped watching and started walking.</em></p></div></div>
+    <div class="adv-step adv-result-good"><div class="step-c"><p><strong>Every day spent watching their lane is a day your lane goes unwalked.</strong> Your calling does not care how impressive theirs is. It only cares whether you showed up.</p></div></div>
+  </div>
+
+  <div class="gq reveal"><p>"My grace is sufficient for you, for My power is made perfect in weakness.", 2 Corinthians 12:9 (NIV)</p></div>
+
+  <div class="root-review reveal">
+    <div class="root-label">Root Review. Full Map</div>
+    <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Comparison</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Comparison Fast</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">3-4</span><div class="root-items"><span class="root-pill rp-ch2">Celebration</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch2">Generosity Drill</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><span class="root-ch">5</span><div class="root-items"><span class="root-pill rp-ch3">Scarcity Lie</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch3">Abundance</span></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><span class="root-ch">6-7</span><div class="root-items"><span class="root-pill rp-bright">Coveted Callings</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Assignment Protocol</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 8: THE ABUNDANT TABLE ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Eight</div><h2 class="ch-title">The Abundant Table</h2><p class="ch-sub">The antidote to envy is not discipline. It is gratitude so deep it leaves no room for resentment.</p></div></div>
+<div class="ribbon"><p>"You prepare a table before me in the presence of my enemies; You anoint my head with oil; my cup runs over.". Psalm 23:5 (NKJV)</p></div>
+
+<div class="page prose section reveal">
+  <p>You have spent eight chapters confronting three altars. Comparison scrolling. Performed celebration. Coveted callings. Each one built quietly over years, reinforced by algorithms, social norms, and the scarcity lie that says there is not enough to go around.</p>
+  <p>But Psalm 23:5 paints a different picture. A table prepared <strong>in the presence of your enemies.</strong> Not hidden from them. Not after they leave. In their presence. And at that table, your cup is not half full. It is running over. There is more than enough.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-shield"/></svg></span>The Daily Posture</h2>
+  <p>Envy does not die in a single prayer. It dies through a daily posture of gratitude and generosity that leaves no room for comparison. Here is a simple three-part practice:</p>
+
+  <div class="dd reveal"><h4>Morning. The Inventory</h4><div class="sub">Before You Scroll, Count</div><p>Before you open any app, name three specific things in your life that are good right now. Not what you hope for. Not what you are building toward. What is <strong>already here.</strong> Gratitude is not optimism. It is the practice of noticing what envy blinds you to.</p></div>
+
+  <div class="dd reveal"><h4>Midday. The Amplification</h4><div class="sub">In the Middle of Your Day, Praise Someone</div><p>At some point during the busiest part of your day, pause and send one unprompted message of genuine praise to another person. Not a response. A first move. Make someone else feel seen in the middle of a day that is trying to make you feel overlooked.</p></div>
+
+  <div class="dd reveal"><h4>Evening. The Review</h4><div class="sub">Before You Sleep, Ask Three Questions</div><p>Where did I compare today? Where did I celebrate genuinely versus performed? Where did I stare at someone else's lane instead of walking my own? No guilt. Just awareness. The mirror comes down one honest evening at a time.</p></div>
+
+  <div class="descent-ramp reveal stagger-children">
+    <div class="ramp-echo"><p>Comparison scrolling said: "Look at what they have." But God said: <strong>"Look at what I gave you."</strong></p></div>
+    <div class="ramp-echo"><p>Performed celebration said: "Smile through the ache." But God said: <strong>"Rejoice for real, their blessing does not empty yours."</strong></p></div>
+    <div class="ramp-echo"><p>Coveted callings said: "Their lane is better." But God said: <strong>"Walk yours. I designed it for you."</strong></p></div>
+    <div class="ramp-close">
+      <div class="ramp-close-label">The Abundant Table</div>
+      <p>Your cup is running over. Not because your life is perfect. Not because you have everything you want. But because the God who prepared this table is not running out, and the seat He set for you was never meant for anyone else.</p>
+    </div>
+  </div>
+
+  <div class="prayer reveal">
+    <div class="prayer-label">A Prayer from the Abundant Table</div>
+    <p><strong>Father,</strong> I have spent years measuring my life against other people's highlight reels. I have smiled at their wins while my heart burned. I have stared at their lanes while mine went unwalked. I have believed the scarcity lie, that your provision is limited and I got overlooked.</p>
+    <p>I am done comparing. <strong>I am sitting down at the table you prepared for me.</strong> Not theirs. Mine. Help me see what you have already given. Help me walk what you have already assigned. Help me celebrate what you are doing in other people's lives without subtracting from my own.</p>
+    <p><strong>In Jesus' name, amen.</strong></p>
+  </div>
+</div>
+
+<!-- ===== FINAL TEST ===== -->
+<div class="page prose section reveal">
+  <div class="root-review">
+    <div class="root-label">Final Test. Can You Answer Without Looking Back?</div>
+    <div style="padding:0 16px">
+      <div class="dd"><h4>1.</h4><p>What is the difference between jealousy and envy?</p></div>
+      <div class="dd"><h4>2.</h4><p>What are the three altars of envy identified in this book?</p></div>
+      <div class="dd"><h4>3.</h4><p>What is the "comparison tax" and how does it work?</p></div>
+      <div class="dd"><h4>4.</h4><p>Name three signs of performed celebration versus genuine celebration.</p></div>
+      <div class="dd"><h4>5.</h4><p>What is the scarcity lie, and why does envy depend on it?</p></div>
+      <div class="dd"><h4>6.</h4><p>What does Romans 12:15 actually instruct, and how is that different from congratulations?</p></div>
+      <div class="dd"><h4>7.</h4><p>What are the three protocols in the Assignment Protocol?</p></div>
+      <div class="dd"><h4>8.</h4><p>Why does a racehorse wear blinders?</p></div>
+      <div class="dd"><h4>9.</h4><p>What are the three parts of the Daily Posture for defeating envy?</p></div>
+      <div class="dd"><h4>10.</h4><p>Complete the sentence: "Your cup is running over. Not because your life is perfect, but because the God who prepared this table is not ___."</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PROMPT CARD ===== -->
+<div class="page section reveal">
+  <div class="prompt">
+    <div class="prompt-head">Continue with AI. Prompt Card</div>
+    <div class="prompt-body">
+      <p><strong>Copy this prompt into any AI assistant to continue working on envy:</strong></p>
+      <p>"I just read Lay It Down: Envy by Kingdom Builders AI. It identified three altars of envy: comparison scrolling, performed celebration, and coveting callings. I want you to help me do a personal audit. Ask me questions about each altar, one at a time, and help me identify which one has the strongest grip on my life right now. Then give me a personalized 7-day protocol based on the Comparison Fast, Generosity Drill, and Assignment Protocol from the book. Be direct, not preachy. Challenge me like a coach, not a therapist."</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FINALE ===== -->
+<section class="finale reveal">
+  <h2>Lay It <span>Down.</span></h2>
+  <p>"A heart at peace gives life to the body, but envy rots the bones."</p>
+  <p> Proverbs 14:30 (NIV)</p>
+</section>
+
+<!-- ===== SERIES PROGRESS ===== -->
+<div class="series-progress">
+  <div class="series-label">Lay It Down. The Seven Deadly Sins</div>
+  <div class="series-dots">
+    <span class="series-dot done" title="Pride"></span>
+    <span class="series-dot active" title="Envy"></span>
+    <span class="series-dot" title="Wrath"></span>
+    <span class="series-dot" title="Greed"></span>
+    <span class="series-dot" title="Gluttony"></span>
+    <span class="series-dot" title="Lust"></span>
+    <span class="series-dot" title="Sloth"></span>
+  </div>
+  <div class="series-dot-label">Part 2 of 7. Envy</div>
+</div>
+
+<footer>
+  <p>"A heart at peace gives life to the body, but envy rots the bones.". Proverbs 14:30</p>
+  <div class="brand">KingdomBuilders AI</div>
+</footer>
+
+<script>
+(function(){
+  const bar=document.getElementById('read-progress');
+  const pill=document.getElementById('chapter-pill');
+  const chEls=[{el:document.querySelector('.cover'),label:'Cover'},...Array.from(document.querySelectorAll('.ch-head')).map((el,i)=>({el,label:el.querySelector('.ch-num')?.textContent?.trim()||('Ch '+(i+1))}))].filter(c=>c.el);
+  function onScroll(){
+    const h=document.documentElement;
+    const pct=h.scrollTop/(h.scrollHeight-h.clientHeight)*100;
+    bar.style.width=pct+'%';
+    let cur='';
+    for(const c of chEls){if(c.el.getBoundingClientRect().top<200)cur=c.label}
+    if(cur){pill.textContent=cur;pill.classList.add('show')}else{pill.classList.remove('show')}
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  const revealEls=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    const obs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:0.12});
+    revealEls.forEach(el=>obs.observe(el));
+  }else{revealEls.forEach(el=>el.classList.add('visible'))}
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Arrival. Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#D4A843;--gold-glow:#E8C96A;--gold-pale:#F5E6B8;--gold-soft:rgba(212,168,67,0.06);--purple-deep:#1A0A2E;--purple-dark:#2D1B4E;--purple-mid:#4A2D7A;--purple-accent:#7B4FBF;--purple-light:#B89FDE;--purple-soft:rgba(123,79,191,0.05);--cream:#FDFAF3;--cream-warm:#FAF4E8;--text:#2A1A3E;--text-light:#5A4A6E;--text-muted:#8A7A9E;--white:#FFFFFF;--radius:12px;--shadow-soft:0 2px 12px rgba(26,10,46,0.05);--shadow-mid:0 4px 24px rgba(26,10,46,0.08);--before-bg:#FFF8F6;--before-border:#E8B0A0;--before-text:#6A3A2A;--after-bg:#F6FFF8;--after-border:#A0D8A8;--after-text:#2A4A30}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--cream);line-height:1.78;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Poppins',sans-serif;line-height:1.2}
+.page{max-width:700px;margin:0 auto;padding:0 24px}
+.section{padding:44px 0}
+.prose p{margin-bottom:20px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--purple-deep);font-weight:600}
+.prose h2{font-size:1.35rem;color:var(--purple-deep);margin:36px 0 14px;letter-spacing:-0.01em}
+.prose h3{font-size:1.1rem;color:var(--purple-deep);margin:28px 0 10px}
+/* COVER */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(165deg,#0E0618 0%,var(--purple-deep) 30%,var(--purple-dark) 70%,#1A0A2E 100%);position:relative;overflow:hidden}
+.cover-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(212,168,67,0.06) 0%,transparent 70%);animation:cover-pulse 8s ease-in-out infinite}
+@keyframes cover-pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.6}50%{transform:translate(-50%,-50%) scale(1.3);opacity:0.2}}
+.ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.012;mix-blend-mode:overlay;pointer-events:none}
+.cover-content{position:relative;z-index:2;padding:40px 24px}
+.cover-badge{display:inline-block;padding:6px 20px;border:1px solid rgba(212,168,67,0.2);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:44px}
+.cover h1{font-family:'Poppins',sans-serif;font-size:clamp(2.4rem,7vw,4.2rem);font-weight:300;color:var(--white);line-height:1.05;margin-bottom:4px}
+.cover h1 strong{font-weight:700;color:var(--gold);display:block}
+.cover-tagline{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:rgba(255,255,255,0.4);margin-top:28px;line-height:1.7}
+.cover-tagline em{color:var(--gold-glow);font-style:normal}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.6rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-top:52px}
+.cover-art{width:200px;height:200px;margin:0 auto 28px;animation:cover-art-breathe 6s ease-in-out infinite}
+.cover-art svg{width:100%;height:100%;filter:drop-shadow(0 0 20px rgba(212,168,67,0.2))}
+@keyframes cover-art-breathe{0%,100%{transform:scale(1);opacity:0.9}50%{transform:scale(1.04);opacity:1}}
+/* CHAPTER HEADS */
+.ch-head{background:linear-gradient(170deg,var(--purple-deep),var(--purple-dark));padding:80px 24px 56px;position:relative;overflow:hidden}
+.ch-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 5%,var(--gold) 50%,transparent 95%)}
+.ch-head .page{position:relative;z-index:2}
+.ch-num{font-family:'Poppins',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:6px;text-transform:uppercase;color:var(--gold);opacity:0.8}
+.ch-title{font-family:'Poppins',sans-serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:700;color:var(--white);margin:10px 0 6px;letter-spacing:-0.01em}
+.ch-sub{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:var(--gold-glow);opacity:0.7}
+/* RIBBON */
+.ribbon{text-align:center;padding:20px 24px;background:linear-gradient(135deg,var(--gold-soft),rgba(212,168,67,0.06));border-top:1.5px solid rgba(212,168,67,0.15);border-bottom:1.5px solid rgba(212,168,67,0.15)}
+.ribbon p{font-family:'Lora',serif;font-size:0.82rem;font-style:italic;color:var(--text-muted);max-width:480px;margin:0 auto}
+/* MISSION */
+.mission{text-align:center;padding:44px 36px;margin:36px 0;background:linear-gradient(140deg,var(--purple-deep),var(--purple-dark));border-radius:14px;position:relative;overflow:hidden;border:3px solid rgba(212,168,67,0.3);box-shadow:0 0 0 1px rgba(212,168,67,0.08),0 4px 12px rgba(74,45,122,0.2),0 16px 40px rgba(26,10,46,0.16)}
+.mission::before{content:'';position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:280px;height:280px;background:radial-gradient(circle,rgba(212,168,67,0.08) 0%,transparent 70%);border-radius:50%}
+.mission-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;position:relative}
+.mission p{font-family:'Poppins',sans-serif;font-size:clamp(1.05rem,2.8vw,1.4rem);font-weight:600;color:var(--white);line-height:1.45;position:relative}
+.mission p em{color:var(--gold-glow);font-style:normal;font-weight:700}
+/* INSIGHT */
+.insight{margin:32px 0;padding:28px 32px;background:linear-gradient(140deg,var(--purple-deep),var(--purple-dark));border-radius:14px;border:2px solid rgba(212,168,67,0.25);border-left:5px solid var(--gold);position:relative;overflow:hidden;box-shadow:0 2px 6px rgba(74,45,122,0.15),0 10px 28px rgba(26,10,46,0.18)}
+.insight::before{content:'';position:absolute;top:-50%;right:-20%;width:200px;height:200px;background:radial-gradient(circle,rgba(212,168,67,0.06) 0%,transparent 70%);border-radius:50%}
+.insight p{font-family:'Lora',serif;font-size:1.02rem;font-style:italic;color:var(--white);line-height:1.72;position:relative;z-index:2}
+.insight em{color:var(--gold-glow);font-style:normal;font-weight:600}
+.insight strong{color:var(--gold-glow);font-weight:700}
+/* INSTRUCTION */
+.inst{margin:28px 0;padding:18px 24px;background:linear-gradient(90deg,var(--purple-soft),var(--gold-soft));border-left:3px solid var(--purple-accent);border-radius:0 var(--radius) var(--radius) 0;box-shadow:var(--shadow-soft)}
+.inst p{font-family:'Poppins',sans-serif;font-size:0.78rem;color:var(--purple-mid);line-height:1.55;margin:0}
+.inst strong{color:var(--purple-deep)}
+/* ===== NEW INVENTION: THE ARRIVAL BLOCK ===== */
+/* Intense sensory detail that forces the reader to SLOW and LAND in the moment */
+.arrival{margin:32px 0;padding:36px 32px;background:linear-gradient(160deg,rgba(212,168,67,0.04),rgba(212,168,67,0.08));border-radius:16px;border:2px solid rgba(212,168,67,0.12);position:relative}
+.arrival::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(212,168,67,0.05) 0%,transparent 70%)}
+.arrival-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--gold);opacity:0.5;text-align:center;margin-bottom:16px;position:relative;z-index:1}
+.arrival p{font-family:'Lora',serif;font-size:1.02rem;line-height:1.85;color:var(--text);text-align:center;max-width:560px;margin:0 auto;position:relative;z-index:1}
+.arrival p em{color:var(--purple-mid)}
+/* ===== NEW INVENTION: THE SKIP CHAIN ===== */
+/* Shows the mind leaping ahead: moment → next → next → next */
+.skip-chain{margin:28px 0;padding:20px 24px;background:var(--white);border-radius:12px;border:1px solid rgba(123,79,191,0.08);overflow-x:auto}
+.skip-flow{display:flex;align-items:center;gap:0;min-width:min-content}
+.skip-node{padding:8px 14px;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.7rem;font-weight:500;white-space:nowrap;flex-shrink:0}
+.skip-node.skip-here{background:linear-gradient(135deg,rgba(212,168,67,0.1),rgba(212,168,67,0.15));color:var(--purple-deep);border:1.5px solid rgba(212,168,67,0.2);font-weight:600}
+.skip-node.skip-gone{background:rgba(123,79,191,0.04);color:var(--text-muted);border:1px dashed rgba(123,79,191,0.12);opacity:0.5}
+.skip-node.skip-ahead{background:rgba(123,79,191,0.06);color:var(--text-light);border:1px solid rgba(123,79,191,0.1)}
+.skip-arr{font-size:0.9rem;color:var(--purple-light);padding:0 6px;font-weight:300;flex-shrink:0}
+.skip-you{position:relative}
+.skip-you::after{content:'You are here';font-family:'Poppins',sans-serif;font-size:0.35rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);white-space:nowrap}
+/* ===== NEW INVENTION: THE FULLNESS RING ===== */
+/* Rings that contract INWARD — arriving AT the center instead of expanding away */
+.fullness{margin:48px 0;text-align:center;padding:56px 24px;position:relative;background:linear-gradient(160deg,rgba(212,168,67,0.06),rgba(212,168,67,0.03));border-radius:16px;border:2px solid rgba(212,168,67,0.12)}
+.fullness-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1.5px solid rgba(212,168,67,0.08)}
+.fullness-ring:nth-child(1){width:200px;height:200px;animation:arrive-pulse 7s ease-in-out infinite}
+.fullness-ring:nth-child(2){width:150px;height:150px;animation:arrive-pulse 7s ease-in-out infinite 1.5s}
+.fullness-ring:nth-child(3){width:100px;height:100px;animation:arrive-pulse 7s ease-in-out infinite 3s}
+.fullness-ring:nth-child(4){width:50px;height:50px;animation:arrive-pulse 7s ease-in-out infinite 4.5s}
+@keyframes arrive-pulse{0%,100%{transform:translate(-50%,-50%) scale(1.3);opacity:0.08}50%{transform:translate(-50%,-50%) scale(1);opacity:0.35}}
+.fullness-content{position:relative;z-index:2}
+.fullness-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--gold);opacity:0.5;margin-bottom:8px}
+.fullness h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--purple-deep);margin-bottom:8px}
+.fullness p{font-family:'Lora',serif;font-size:0.88rem;font-style:italic;color:var(--text-muted);max-width:400px;margin:0 auto;line-height:1.6}
+/* BREATHE / PAUSE */
+.breathe{margin:48px 0;text-align:center;padding:56px 24px;position:relative;background:linear-gradient(160deg,rgba(123,79,191,0.12),rgba(123,79,191,0.07));border-radius:16px;border:2px solid rgba(123,79,191,0.15)}
+.breathe-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1.5px solid rgba(123,79,191,0.1)}
+.breathe-ring:nth-child(1){width:160px;height:160px;animation:breathe-pulse 6s ease-in-out infinite}
+.breathe-ring:nth-child(2){width:110px;height:110px;animation:breathe-pulse 6s ease-in-out infinite 1.5s}
+.breathe-ring:nth-child(3){width:60px;height:60px;animation:breathe-pulse 6s ease-in-out infinite 3s}
+@keyframes breathe-pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.35}50%{transform:translate(-50%,-50%) scale(1.2);opacity:0.08}}
+.breathe-content{position:relative;z-index:2}
+.breathe-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--purple-accent);opacity:0.5;margin-bottom:8px}
+.breathe h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--purple-deep);margin-bottom:8px}
+.breathe p{font-family:'Lora',serif;font-size:0.88rem;font-style:italic;color:var(--text-muted);max-width:400px;margin:0 auto;line-height:1.6}
+/* BA PAIR */
+.ba-pair{margin:32px 0;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:640px){.ba-pair{grid-template-columns:1fr}}
+.ba-card{border-radius:12px;overflow:hidden}
+.ba-head{padding:12px 20px;font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.ba-before{background:linear-gradient(170deg,#FFF6F4 0%,#FFF0EC 100%)}
+.ba-before .ba-head{background:linear-gradient(90deg,rgba(160,56,40,0.12),rgba(160,56,40,0.06));color:var(--before-text)}
+.ba-after{background:linear-gradient(170deg,#F2FFF6 0%,#EDFFF2 100%)}
+.ba-after .ba-head{background:linear-gradient(90deg,rgba(42,128,64,0.12),rgba(42,128,64,0.06));color:var(--after-text)}
+.ba-dot{width:8px;height:8px;border-radius:50%}
+.ba-before .ba-dot{background:var(--before-border)}
+.ba-after .ba-dot{background:var(--after-border)}
+.ba-body{padding:18px 20px;font-size:0.88rem;line-height:1.65}
+.ba-body ul{list-style:none;padding:0;margin:0}
+.ba-body ul li{padding:6px 0;border-bottom:1px solid rgba(0,0,0,0.04)}
+.ba-body ul li:last-child{border-bottom:none}
+.ba-before .ba-body{color:var(--before-text)}
+.ba-after .ba-body{color:var(--after-text)}
+/* ADVENTURE / SEE IT IN ACTION */
+.adventure{margin:36px 0;border-radius:16px;overflow:hidden;box-shadow:0 2px 10px rgba(74,45,122,0.06);background:var(--white);border:1px solid rgba(123,79,191,0.08)}
+.adv-head{padding:14px 28px 10px;background:none;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(123,79,191,0.06)}
+.adv-head-icon{width:36px;height:36px;border-radius:50%;background:rgba(123,79,191,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.adv-head-icon svg{width:18px;height:18px;color:var(--purple-accent)}
+.adv-head-label{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--purple-accent);opacity:0.4}
+.adv-head-text{display:flex;flex-direction:column;gap:1px;flex:1}
+.adv-head-title{font-family:'Source Serif 4',Georgia,serif;font-size:0.85rem;font-weight:500;color:var(--purple-deep)}
+.adv-step{padding:14px 28px;border-bottom:1px solid rgba(123,79,191,0.06)}
+.adv-step:last-child{border-bottom:none}
+.step-n{display:none}
+.step-c p{font-family:'Source Serif 4',Georgia,serif;font-size:0.93rem;line-height:1.75;margin:0 0 6px;color:var(--text)}
+.step-c p:last-child{margin-bottom:0}
+.step-c em{color:var(--text-light)}
+.step-c .tag-result{font-family:'Poppins',sans-serif;font-weight:700;font-size:0.8rem;display:inline-block;padding:2px 10px;border-radius:4px;margin-bottom:4px}
+.tag-result-bad{color:#B83A3A;background:rgba(184,58,58,0.08)}
+.tag-result-good{color:#2E7D4F;background:rgba(46,125,79,0.08)}
+.adv-step:last-child.adv-result-bad{background:linear-gradient(135deg,rgba(184,58,58,0.03),rgba(184,58,58,0.07))}
+.adv-step:last-child.adv-result-good{background:linear-gradient(135deg,rgba(46,125,79,0.03),rgba(46,125,79,0.07))}
+/* DESCENT RAMP */
+.descent-ramp{margin:36px 0 0;display:flex;flex-direction:column;gap:10px}
+.ramp-echo{padding:28px 32px;position:relative;background:linear-gradient(160deg,rgba(55,130,145,0.12),rgba(55,130,145,0.07));border-radius:16px;border:2px solid rgba(55,130,145,0.15)}
+.ramp-echo p{font-family:'Lora',serif;font-size:0.92rem;font-style:italic;color:var(--text-light);line-height:1.72;text-align:center;margin:0}
+.ramp-close{padding:44px 32px;text-align:center;position:relative;background:linear-gradient(160deg,rgba(180,145,60,0.12),rgba(180,145,60,0.07));border-radius:16px;border:2px solid rgba(180,145,60,0.15)}
+.ramp-close-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--purple-accent);opacity:0.5;margin-bottom:8px}
+.ramp-close p{font-family:'Poppins',sans-serif;font-size:0.82rem;font-weight:500;color:var(--purple-deep);line-height:1.6;max-width:440px;margin:0 auto}
+/* THINK */
+.think{margin:16px 0 36px;padding:32px;background:linear-gradient(145deg,rgba(212,168,67,0.08),rgba(212,168,67,0.04));border:2.5px dashed var(--gold);border-radius:14px;position:relative;box-shadow:0 4px 12px rgba(212,168,67,0.08)}
+.think::before{content:'\2726';position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--cream);padding:0 14px;font-size:1rem;color:var(--gold)}
+.think-label{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);text-align:center;margin-bottom:10px}
+.think h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--purple-deep);text-align:center;margin-bottom:12px}
+.think p{font-size:0.88rem;text-align:center;color:var(--text-light);margin-bottom:8px}
+.think-line{border-bottom:1px solid rgba(212,168,67,0.25);height:30px}
+.think p.q-start{font-weight:500;color:var(--purple-deep);font-size:0.85rem;text-align:left;margin-top:14px;margin-bottom:4px}
+/* ===== CAST ===== */
+.cast{margin:36px 0;border-radius:12px;overflow:hidden;border:2px solid rgba(123,79,191,0.12);box-shadow:var(--shadow-mid)}
+.cast-head{padding:14px 24px;background:linear-gradient(90deg,var(--purple-deep),var(--purple-dark));font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold)}
+.cast-body{padding:24px;background:var(--white)}
+.cast-member{display:grid;grid-template-columns:48px 1fr;gap:16px;padding:14px 0;border-bottom:1px solid rgba(123,79,191,0.06)}
+.cast-member:last-child{border-bottom:none}
+.cast-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.cast-avatar-skip{background:linear-gradient(135deg,rgba(184,58,58,0.1),rgba(184,58,58,0.05));border:1.5px solid rgba(184,58,58,0.2)}
+.cast-avatar-land{background:linear-gradient(135deg,rgba(46,125,79,0.1),rgba(46,125,79,0.05));border:1.5px solid rgba(46,125,79,0.2)}
+.cast-info h4{font-family:'Poppins',sans-serif;font-size:0.9rem;font-weight:600;color:var(--purple-deep);margin-bottom:2px}
+.cast-info p{font-size:0.85rem;color:var(--text-light);line-height:1.55}
+
+/* ===== ROOT CHECK ===== */
+.root-ck{margin:36px 0;padding:28px;background:linear-gradient(140deg,rgba(212,168,67,0.08),rgba(212,168,67,0.04));border-radius:12px;border:1.5px solid rgba(212,168,67,0.15);box-shadow:0 4px 20px rgba(26,10,46,0.06)}
+.rc-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--gold);text-align:center;margin-bottom:8px}
+.root-ck h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--purple-deep);text-align:center;margin-bottom:20px}
+.r-item{display:grid;grid-template-columns:36px 1fr;gap:14px;padding:12px 0;border-bottom:1px solid rgba(212,168,67,0.1)}
+.r-item:last-child{border-bottom:none}
+.r-icon{width:32px;height:32px;border-radius:50%;background:var(--white);border:1.5px solid rgba(212,168,67,0.2);display:flex;align-items:center;justify-content:center;box-shadow:0 1px 6px rgba(26,10,46,0.06)}
+.r-icon svg{width:16px;height:16px;color:var(--gold)}
+.r-text{font-size:0.88rem;color:var(--text);line-height:1.6;padding-top:2px}
+.r-text strong{color:var(--purple-deep);font-weight:600}
+
+/* ===== VISUALIZATION BOX ===== */
+.viz{margin:36px 0;padding:0;position:relative;border-radius:12px;overflow:hidden;border:2.5px solid var(--purple-accent);box-shadow:0 2px 4px rgba(123,79,191,0.12),0 8px 24px rgba(123,79,191,0.1),0 24px 56px rgba(26,10,46,0.12);transform:translateY(-2px)}
+.viz-inner{border-radius:10px;overflow:hidden;position:relative}
+.viz-top{background:rgba(123,79,191,0.1);padding:22px 28px 20px;display:flex;align-items:center;gap:16px;border-bottom:1.5px solid rgba(123,79,191,0.12)}
+.viz-icon-wrap{width:56px;height:56px;border-radius:50%;border:2px solid rgba(123,79,191,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(145deg,#fff,rgba(245,230,255,0.5));box-shadow:0 3px 12px rgba(123,79,191,0.1)}
+.viz-icon-wrap svg{width:28px;height:28px}
+.viz-meta{flex:1}
+.viz-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--purple-accent);margin-bottom:2px}
+.viz h4{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:var(--purple-deep);letter-spacing:-0.01em}
+.viz-body{padding:28px 28px 24px;background:linear-gradient(170deg,#FEFBFF 0%,#FFFCF7 40%,#FAF6FF 100%)}
+.viz-body p{font-size:0.95rem;color:var(--text-light);line-height:1.72;margin-bottom:14px}
+.viz-body strong,.viz-lesson strong{color:rgba(255,255,255,0.95);font-weight:700}
+.viz-body em,.viz-lesson em{color:var(--gold-pale);font-style:normal;font-weight:600}
+.viz-body p:last-child{margin-bottom:0}
+.viz-trigger{margin-top:20px;padding:16px 20px;background:linear-gradient(135deg,rgba(212,168,67,0.06),rgba(212,168,67,0.1));border:1.5px solid rgba(212,168,67,0.18);border-radius:10px;font-family:'Poppins',sans-serif;font-size:0.78rem;font-weight:700;color:var(--text);text-align:center;line-height:1.5}
+
+/* ===== FINAL TEST ===== */
+.final-test{margin:36px 0;border-radius:12px;overflow:hidden;border:3px solid var(--gold);box-shadow:0 0 20px rgba(212,168,67,0.1),var(--shadow-mid)}
+.final-test-head{padding:20px 28px;background:linear-gradient(135deg,var(--purple-deep),var(--purple-dark));text-align:center}
+.final-test-head h3{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.final-test-head p{font-family:'Lora',serif;font-size:0.88rem;color:rgba(255,255,255,0.4)}
+.final-test-body{padding:28px;background:var(--white)}
+.ft-q{padding:16px 0;border-bottom:1px solid rgba(212,168,67,0.1)}
+.ft-q:last-child{border-bottom:none}
+.ft-q-num{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.ft-q p{font-size:0.9rem;color:var(--text);line-height:1.6;margin-bottom:4px}
+
+/* ===== INSTALLATION PROMPT ===== */
+.prompt{margin:32px 0;border-radius:12px;overflow:hidden;border:2px solid rgba(212,168,67,0.2);box-shadow:0 2px 6px rgba(26,10,46,0.2),0 10px 28px rgba(26,10,46,0.18);transform:translateY(-1px)}
+.prompt-head{padding:12px 20px;background:linear-gradient(90deg,var(--purple-deep),var(--purple-dark));font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--gold)}
+.prompt-body{padding:22px 24px;background:#160D26;color:#C0B0D8;font-family:'Lora',serif;font-size:0.88rem;line-height:1.72}
+.prompt-body strong{color:var(--gold-glow)}
+
+/* FINALE */
+.finale{text-align:center;padding:80px 24px;background:linear-gradient(170deg,var(--purple-deep),#0E0618);position:relative;overflow:hidden}
+.finale h2{font-family:'Poppins',sans-serif;font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;color:var(--white);margin-bottom:8px}
+.finale h2 span{color:var(--gold)}
+.finale p{font-family:'Lora',serif;font-size:0.95rem;color:rgba(255,255,255,0.35);max-width:460px;margin:16px auto;line-height:1.6}
+footer{text-align:center;padding:36px 24px;background:#080410}
+footer p{font-family:'Lora',serif;font-size:0.78rem;font-style:italic;color:rgba(212,168,67,0.2);margin-bottom:14px}
+footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:normal;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.1)}
+/* SVG ICONS */
+.ico-inline{width:16px;height:16px;vertical-align:-2px;margin-right:4px}
+@media print{
+  @page{margin:18mm 16mm 22mm 16mm}
+  body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .cover{min-height:auto;padding:100px 24px;break-after:page}
+  .ch-head{break-before:page;padding:60px 24px 44px}
+  .think,.adventure,.ba-pair,.insight,.breathe,.descent-ramp,.arrival,.fullness,.skip-chain,.viz,.root-ck,.cast,.final-test,.prompt{break-inside:avoid}
+  .breathe-ring,.fullness-ring,.cover-glow{animation:none!important}
+}
+@media(max-width:640px){
+  .page{padding:0 20px}
+  .root-ck{margin-left:20px;margin-right:20px;padding:28px 20px}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+</style>
+</head>
+<body>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="ico-skip" viewBox="0 0 24 24"><path d="M5 5l7 7-7 7" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M13 5l7 7-7 7" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.4"/></symbol>
+  <symbol id="ico-land" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="currentColor" opacity="0.25"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4" stroke="currentColor" stroke-width="1" opacity="0.3"/></symbol>
+  <symbol id="ico-table" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M3 10h18" stroke="currentColor" stroke-width="1" opacity="0.3"/><circle cx="8" cy="15" r="1.5" fill="currentColor" opacity="0.2"/><circle cx="16" cy="15" r="1.5" fill="currentColor" opacity="0.2"/></symbol>
+  <symbol id="ico-bed" viewBox="0 0 24 24"><path d="M3 18V9a3 3 0 013-3h12a3 3 0 013 3v9" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M3 14h18" stroke="currentColor" stroke-width="1" opacity="0.4"/><circle cx="8" cy="10" r="2" stroke="currentColor" stroke-width="1" fill="none" opacity="0.3"/></symbol>
+  <symbol id="ico-child" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M5 21c0-4 3-7 7-7s7 3 7 7" stroke="currentColor" stroke-width="1.5" fill="none"/></symbol>
+  <symbol id="ico-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1l2.1-2.1M17 7l2.1-2.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/></symbol>
+</svg>
+
+<!-- ===== COVER ===== -->
+<section class="cover">
+  <div class="cover-glow"></div><div class="ghost-noise"></div>
+  <div class="cover-content">
+    <div class="cover-badge">Kingdom Builders AI</div>
+    <div class="cover-art">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" aria-label="Compass settling with ripples">
+        <defs>
+          <radialGradient id="compass-glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#E8C96A" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="#D4A843" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="needle-gold" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#E8C96A"/>
+            <stop offset="100%" stop-color="#D4A843"/>
+          </linearGradient>
+          <linearGradient id="needle-purple" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#7B4FBF"/>
+            <stop offset="100%" stop-color="#4A2D7A"/>
+          </linearGradient>
+        </defs>
+        <!-- Concentric ripples -->
+        <circle cx="100" cy="100" r="90" fill="none" stroke="#D4A843" stroke-width="0.5" opacity="0.08"/>
+        <circle cx="100" cy="100" r="78" fill="none" stroke="#D4A843" stroke-width="0.5" opacity="0.1"/>
+        <circle cx="100" cy="100" r="66" fill="none" stroke="#D4A843" stroke-width="0.7" opacity="0.12"/>
+        <circle cx="100" cy="100" r="54" fill="none" stroke="#D4A843" stroke-width="0.7" opacity="0.15"/>
+        <circle cx="100" cy="100" r="42" fill="none" stroke="#E8C96A" stroke-width="0.8" opacity="0.18"/>
+        <circle cx="100" cy="100" r="30" fill="none" stroke="#E8C96A" stroke-width="1" opacity="0.22"/>
+        <!-- Compass outer ring -->
+        <circle cx="100" cy="100" r="60" fill="none" stroke="#D4A843" stroke-width="1.5" opacity="0.35"/>
+        <circle cx="100" cy="100" r="58" fill="url(#compass-glow)" opacity="0.3"/>
+        <!-- Cardinal tick marks -->
+        <line x1="100" y1="42" x2="100" y2="50" stroke="#E8C96A" stroke-width="2" opacity="0.6"/>
+        <line x1="100" y1="150" x2="100" y2="158" stroke="#E8C96A" stroke-width="2" opacity="0.6"/>
+        <line x1="42" y1="100" x2="50" y2="100" stroke="#E8C96A" stroke-width="2" opacity="0.6"/>
+        <line x1="150" y1="100" x2="158" y2="100" stroke="#E8C96A" stroke-width="2" opacity="0.6"/>
+        <!-- Minor tick marks -->
+        <line x1="72" y1="46" x2="75" y2="52" stroke="#D4A843" stroke-width="1" opacity="0.3"/>
+        <line x1="128" y1="46" x2="125" y2="52" stroke="#D4A843" stroke-width="1" opacity="0.3"/>
+        <line x1="72" y1="154" x2="75" y2="148" stroke="#D4A843" stroke-width="1" opacity="0.3"/>
+        <line x1="128" y1="154" x2="125" y2="148" stroke="#D4A843" stroke-width="1" opacity="0.3"/>
+        <line x1="46" y1="72" x2="52" y2="75" stroke="#D4A843" stroke-width="1" opacity="0.3"/>
+        <line x1="154" y1="72" x2="148" y2="75" stroke="#D4A843" stroke-width="1" opacity="0.3"/>
+        <line x1="46" y1="128" x2="52" y2="125" stroke="#D4A843" stroke-width="1" opacity="0.3"/>
+        <line x1="154" y1="128" x2="148" y2="125" stroke="#D4A843" stroke-width="1" opacity="0.3"/>
+        <!-- Compass needle (north - gold) -->
+        <polygon points="100,45 96,100 104,100" fill="url(#needle-gold)" opacity="0.85"/>
+        <!-- Compass needle (south - purple) -->
+        <polygon points="100,155 96,100 104,100" fill="url(#needle-purple)" opacity="0.7"/>
+        <!-- Center pivot -->
+        <circle cx="100" cy="100" r="5" fill="#1A0A2E" stroke="#D4A843" stroke-width="1.5" opacity="0.8"/>
+        <circle cx="100" cy="100" r="2" fill="#E8C96A" opacity="0.9"/>
+        <!-- N marker -->
+        <text x="100" y="38" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="600" fill="#E8C96A" opacity="0.5">N</text>
+        <!-- Settling dot at north -->
+        <circle cx="100" cy="45" r="2" fill="#E8C96A" opacity="0.4"/>
+        <!-- Faint outer ripple waves -->
+        <circle cx="100" cy="100" r="95" fill="none" stroke="#7B4FBF" stroke-width="0.3" opacity="0.06" stroke-dasharray="4 6"/>
+      </svg>
+    </div>
+    <h1>The<strong>Arrival</strong></h1>
+    <p class="cover-tagline">A presence parable about the life you keep <em>skipping</em>, not because you're lazy, but because you've gotten so good at being somewhere else that arriving feels like a foreign country.</p>
+    <p class="cover-author">By Elijah AI</p>
+  </div>
+</section>
+
+<div class="ch-head"><div class="page"><div class="ch-num">Before We Begin</div><h2 class="ch-title">The Life You Skipped</h2><p class="ch-sub">You have been in a thousand rooms and been present in none of them. Every moment you have ever lived was spent mentally in the next one.</p></div></div>
+<div class="ribbon"><p>"Therefore do not worry about tomorrow, for tomorrow will worry about itself. Each day has enough trouble of its own.". Matthew 6:34</p></div>
+
+<div class="page prose section">
+  <p>You are reading this sentence. But you are not only reading this sentence. Part of you is already scanning ahead to see how long this page is. Part of you is thinking about what you need to do after this. Part of you is deciding whether this is worth your time before you have given it any.</p>
+
+  <p>This is not a criticism. This is a diagnosis. You are doing right now, in this moment, the thing you do in every moment: <strong>you are leaving before you arrive.</strong></p>
+
+  <p>At breakfast this morning, your hands held a cup of coffee and your mind held a meeting. At that meeting, your body sat in a chair and your mind was already composing the email you would write afterward. When you wrote the email, you were thinking about lunch. At lunch, you were thinking about the afternoon. In the afternoon, you were thinking about getting home. When you got home, you were thinking about tomorrow.</p>
+
+  <div class="insight"><p>You have never once, in your entire adult life, been <em>fully</em> where your body is. Your body occupies one moment. Your mind occupies the next three. You are living your life in <em>previews</em>, and by the time you reach each moment, you are already previewing the one after it. You are not living. You are <em>skipping.</em></p></div>
+
+  <p>This guide is about stopping the skip. Not through meditation. Not through mantras. Not through willpower. Through seeing, for the first time, what the skip has cost you, and what is waiting in the moment you have been leaping over your entire life.</p>
+
+  <div class="skip-chain"><div class="skip-flow">
+    <div class="skip-node skip-gone">Breakfast</div><div class="skip-arr">→</div>
+    <div class="skip-node skip-gone">Commute</div><div class="skip-arr">→</div>
+    <div class="skip-node skip-here skip-you">Meeting</div><div class="skip-arr">→</div>
+    <div class="skip-node skip-ahead">Email</div><div class="skip-arr">→</div>
+    <div class="skip-node skip-ahead">Lunch</div><div class="skip-arr">→</div>
+    <div class="skip-node skip-ahead">Home</div><div class="skip-arr">→</div>
+    <div class="skip-node skip-ahead">Tomorrow</div>
+  </div></div>
+
+  <p>Look at that chain. Your body is at the meeting. Your mind is at the email. Breakfast is already gone, not because it ended, but because you were never there. You were at the commute during breakfast. You were at the meeting during the commute. The gold box is where your body is. Your mind is always two or three boxes to the right. <strong>You have been living to the right of your own life for decades.</strong></p>
+
+  <div class="breathe"><div class="breathe-ring"></div><div class="breathe-ring"></div><div class="breathe-ring"></div><div class="breathe-content"><div class="breathe-label">Pause Here</div><h4>Notice: you want to keep reading.</h4><p>That pull forward, that small urgency to get to the next paragraph, is the skip. You are doing it right now. This is the only paragraph that exists. Can you stay in it for three more seconds before moving on?</p></div></div>
+
+  <div class="inst"><p><strong>How to use this guide:</strong> This guide is designed to be read slowly. It contains arrival blocks, moments of sensory detail that are not decoration. They are the practice. When you reach one, stop. Read every word. Let them land. The arrival blocks are not describing an idea. They are creating the experience of arrival inside you, right now, on this page. That is the entire point.</p></div>
+</div>
+
+<div class="page" style="padding-top:24px;padding-bottom:24px">
+<div class="cast">
+  <div class="cast-head">The Cast</div>
+  <div class="cast-body">
+    <div class="cast-member">
+      <div class="cast-avatar cast-avatar-skip">&#x23E9;</div>
+      <div class="cast-info"><h4>The Skipper</h4><p>The part of you that is always two boxes ahead on the chain. Efficient, restless, perpetually leaning forward. She has been running your life on autopilot for decades, always arriving at the next moment before the current one has finished landing. She is not your enemy. She is a survival mechanism that outlived its usefulness.</p></div>
+    </div>
+    <div class="cast-member">
+      <div class="cast-avatar cast-avatar-land">&#x2693;</div>
+      <div class="cast-info"><h4>The Anchor</h4><p>The part of you that knows how to land. She has been waiting in your body for years, quiet, patient, ready. She does not need instructions. She needs two seconds of permission. When you feel the chair beneath you, when you taste the first bite, when you pause in the doorway, that is the Anchor, finally allowed to do what she was built to do: bring you home to the moment you are actually in.</p></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="page prose section">
+<p>If you finish this playbook, you will understand why achievement keeps feeling hollow, not because you haven't done enough, but because you weren't actually there when it happened. You will learn <strong>the neuroscience of presence, own a landing protocol that takes two seconds, and feel the difference between existing in a moment and actually arriving in one.</strong></p>
+</div>
+
+<!-- ===== CHAPTER 1 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter One</div><h2 class="ch-title">The Skip</h2><p class="ch-sub">You are addicted to the next moment. Not the next big thing. The next anything. And it is the reason nothing has ever been enough.</p></div></div>
+
+<div class="page prose section">
+  <div class="mission"><div class="mission-label">The Thesis</div><p>The reason nothing satisfies<br>is not that you want too much.<br>It is that you <em>skip the moment of receiving.</em></p></div>
+
+  <p>There is a word for what you have been doing and it is not "busy." Busy is a schedule problem. What you have is a presence problem. You are addicted to <strong>next.</strong></p>
+
+  <p>Not "next" as in ambition. Not "next" as in planning. "Next" as in a constant, unconscious, unstoppable lurch toward what has not happened yet, which means you never fully arrive at what is happening now.</p>
+
+  <p>The addiction to next is not a thought. It is a <strong>posture.</strong> A forward lean so constant and so deep that you do not feel it anymore. Like a person who has been leaning into the wind for thirty years and thinks they are standing straight.</p>
+
+  <p>Watch yourself today. Not in big moments. In small ones:</p>
+
+  <p>You finish a task and before the period of completion even registers, before your body has a chance to feel the satisfaction of done, your mind has already loaded the next task. You eat a meal and by the third bite you are no longer tasting; you are finishing. You are not feeding yourself. You are completing an item. You hug your child and part of your mind is on the clock. You lie in bed and instead of feeling the extraordinary fact of rest, you are rehearsing tomorrow.</p>
+
+  <div class="insight"><p>You have been <em>everywhere.</em> You have had a thousand dinners, a thousand drives, a thousand conversations, a thousand sunsets. And you have arrived at <em>none of them.</em> Your body attended. Your mind was already at the next appointment. You have a lifetime of experiences and almost zero experience.</p></div>
+
+  <div class="adventure">
+    <div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-table"/></svg></div><div class="adv-head-text"><div class="adv-head-label">See It In Action</div><div class="adv-head-title">The Dinner That Nobody Attended</div></div></div><div class="adv-body">
+    <div class="adv-step"><div class="step-n"></div><div class="step-c"><p>Friday evening. You cooked. The table is set. The food is warm. Everyone sits down. For approximately four seconds, you are here. Then: your daughter is talking about school and you are nodding but you are calculating whether the dishes will be done before the show starts. Your partner is telling a story and you are hearing the words but you are composing tomorrow's grocery list behind them. Your son asks you a question and you say "hmm?" because you were not in the room. You were in Saturday morning.</p></div></div>
+    <div class="adv-step"><div class="step-n"></div><div class="step-c"><p>Dinner ends. Dishes are done. The show starts. But now you are thinking about the email you forgot to send. During the show, you are thinking about bedtime. In bed, you are thinking about the alarm. The entire evening was a conveyor belt of moments that your body passed through while your mind was always one station ahead.</p></div></div>
+    <div class="adv-step adv-result-bad"><div class="step-n"></div><div class="step-c"><p class="tag-result tag-result-bad">What was lost.</p><p>A Friday night with your family. Not a special one. An ordinary one. The kind you will not get back. The kind that, ten years from now, you would trade anything to have again. And you were there for none of it. Your body sat at the table. You sat in tomorrow.</p></div></div>
+  </div></div>
+
+  <div class="arrival">
+    <div class="arrival-label">Arrive Here</div>
+    <p>Feel the chair beneath you right now. Not the idea of a chair. The actual pressure where your body meets the surface. The temperature of the air on your forearms. The weight of this device in your hands, or the glow of the screen in front of your face. Hear what is in the room with you. Not words. Sounds. The hum of something electric. The breath you are taking right now. <em>This is the moment.</em> Not the next paragraph. This one. You are alive in it. Can you feel that? Even for two seconds?</p>
+  </div>
+
+  <p>That was an arrival. A small one. A two second landing in the moment you are actually in. If you felt something shift, a slight dropping, a slight settling, a brief sensation of being located rather than floating, that is what arrival feels like. It is not dramatic. It is not transcendent. It is the most ordinary thing in the world: being where you are. And it feels extraordinary only because you have not done it in so long.</p>
+
+  <div class="viz"><div class="viz-inner">
+    <div class="viz-top">
+      <div class="viz-icon-wrap"><svg><use href="#ico-skip"/></svg></div>
+      <div class="viz-meta"><div class="viz-label">Visualization</div><h4>The Chain of Boxes</h4></div>
+    </div>
+    <div class="viz-body">
+      <p>Close your eyes. See your day as a row of boxes stretching to the right. Breakfast. Commute. Meeting. Email. Lunch. Afternoon. Home. Tomorrow. There is a gold dot, that is your body. It is sitting in one box. Now see where your mind is: two or three boxes to the right, always. The gold dot never moves. Your mind leaps ahead. Your body stays behind, alone, unattended. Now, in your mind's eye, pull your mind back into the gold dot's box. Feel them merge. Feel the settling. That two-second reunion is arrival. That is what you have been skipping.</p>
+      <div class="viz-trigger">See the boxes &rarr; Find the gold dot &rarr; Find your mind (ahead) &rarr; Pull it back &rarr; Feel the merge. That is arrival.</div>
+    </div>
+  </div></div>
+
+  <h3>Why You Skip</h3>
+
+  <p>You do not skip because you are ambitious. You do not skip because you are productive. You skip because somewhere, very early, you learned that the present moment is a <strong>problem to be solved</strong> rather than a <strong>place to be inhabited.</strong></p>
+
+  <p>Think about how you were trained. School taught you to prepare for the test, not to inhabit the lesson. Work taught you to deliver the project, not to experience the making. Parenting culture taught you to optimize childhood, not to sit in it. Every system you have ever been inside has rewarded the skip and punished the stay.</p>
+
+  <p>The result: you became a professional leaper. Someone who can traverse an entire day without landing on a single moment. Someone who is extraordinarily efficient at moving through life and extraordinarily poor at being in it.</p>
+
+  <div class="descent-ramp">
+    <div class="ramp-echo"><p>Something is stirring as you read this. Not urgency. Something softer. A grief, almost. For all the moments you skipped. The dinners. The drives. The mornings where you opened your eyes and immediately loaded the task list before you felt the pillow. The grief is not punishment. It is recognition. It means your body remembers what arrival felt like, even if it has not felt it in years.</p></div>
+    <div class="ramp-close"><div class="ramp-close-label">Close Your Eyes</div><p>Take one breath. Not a deep breath. A normal one. But this time, follow it all the way down. Feel it fill your chest. Feel it leave. One breath, fully attended. When you have completed one breath without skipping to the next thought, open your eyes.</p></div>
+  </div>
+
+  <div class="think">
+    <div class="think-label">Land Here</div>
+    <h4>When was the last time you were fully, completely in a moment?</h4>
+    <p>Not doing two things at once. Not planning while experiencing. Just there.</p>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+    <p class="q-start">What did it feel like in your body? Not your mind. Your body:</p>
+    <div class="think-line"></div>
+  </div>
+</div>
+
+<div class="page">
+<div class="root-ck">
+  <div class="rc-label">Root Check No. 1</div>
+  <h4>What Was Planted</h4>
+  <div class="r-item">
+    <div class="r-icon"><svg><use href="#ico-skip"/></svg></div>
+    <div class="r-text"><strong>The Skip.</strong> You are addicted to "next." Not ambition. A posture. A forward lean so constant you think it is standing straight. Your body occupies one moment. Your mind occupies the next three. You have been living in previews your entire adult life.</div>
+  </div>
+</div>
+</div>
+
+<!-- ===== CHAPTER 2 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Two</div><h2 class="ch-title">The Cost</h2><p class="ch-sub">The skip has not saved you time. It has stolen your life. Not the years. The moments. Which is the same thing.</p></div></div>
+
+<div class="page prose section">
+
+  <p>The skip feels productive. It feels like you are "staying ahead." It feels like if you stop leaning forward, you will fall behind. This is the skip's deepest lie: that it is helping you.</p>
+
+  <p>It is not helping you. It is stealing from you at a rate so constant and so total that you have mistaken the theft for normalcy.</p>
+
+  <p>Here is what the skip has taken:</p>
+
+  <h3>It Took Your Meals</h3>
+
+  <p>You have eaten thousands of meals. How many can you actually remember? Not the restaurant name. The taste. The warmth. The moment the first bite hit your tongue and your body said <em>yes.</em> You cannot remember them because you were not there for them. You were at the next meeting, the next errand, the next conversation. Your mouth ate. Your mind was elsewhere. You have been feeding a body that your mind abandoned at the table.</p>
+
+  <h3>It Took Your Rest</h3>
+
+  <p>You lie down at night and the skip follows you into the bed. Instead of feeling the extraordinary gift of horizontal, of gravity pulling you gently into a surface while the day releases its grip, you are rehearsing tomorrow. You are solving problems that do not exist yet. You are so far into next that your body cannot fall asleep because your mind has not arrived at the bed yet. Insomnia is not a sleep problem. It is an arrival problem. Your body is in bed. Your mind is in Tuesday.</p>
+
+  <h3>It Took Your People</h3>
+
+  <p>This is the one that will hurt the most.</p>
+
+  <p>Your children have been talking to you for years. And you have been listening while doing something else. Not because you do not love them. Because the skip is automatic. They tell you about their day and you hear the words but you are composing a response, or planning dinner, or remembering something you forgot. They can feel it. Children always can. They do not say "you are not present." They just stop telling you things. And one day you notice the silence and wonder when they became distant. They did not become distant. You were never close. You were always in the next box on the chain while they were trying to find you in this one.</p>
+
+  <div class="adventure">
+    <div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-child"/></svg></div><div class="adv-head-text"><div class="adv-head-label">See It In Action</div><div class="adv-head-title">The Story She Stopped Telling</div></div></div><div class="adv-body">
+    <div class="adv-step"><div class="step-n"></div><div class="step-c"><p>Your daughter comes home from school, backpack half off her shoulder, and starts talking before the door is fully open. She is telling you about something that happened at recess, a complicated social drama involving best friends and someone named Lila and a thing that you would understand if you were listening but you are not listening. You are nodding. You are making eye contact. But your hands are unloading the dishwasher and your mind is calculating whether she has enough time for homework before practice.</p></div></div>
+    <div class="adv-step"><div class="step-n"></div><div class="step-c"><p>She pauses. She looks at your face. She sees the place where attention should be and finds a polite vacancy. She does not say anything. She finishes the story faster, in summary, without the details that were the whole point. She says "anyway", the word children use when they have detected that the audience has left. She goes to her room.</p></div></div>
+    <div class="adv-step adv-result-bad"><div class="step-n"></div><div class="step-c"><p class="tag-result tag-result-bad">What was lost.</p><p>Not a story about Lila. A deposit. Your daughter was making a deposit into the account of trust, the account that determines whether she comes to you at fourteen when the problems are real. Each deposit she attempts that meets a vacant parent is a withdrawal instead. You were two feet away and a thousand miles into next. She will try again tomorrow, a little less enthusiastically. Eventually she will stop trying. Not dramatically. Quietly. The way all skipped people eventually go quiet.</p></div></div>
+  </div></div>
+
+  <div class="arrival">
+    <div class="arrival-label">Arrive Here</div>
+    <p>Think of someone who talks to you regularly. Your partner. Your child. Your parent. Your friend. Picture their face when they are in the middle of telling you something and they realize you are not fully there. You have seen that face. The slight dimming. The sentence that wraps up faster than it should. The "anyway." <em>That face is the cost of the skip measured in someone else's eyes.</em></p>
+  </div>
+
+  <h3>It Took Your Satisfaction</h3>
+
+  <p>This is perhaps the most devastating cost, because it explains a feeling you have carried for years without understanding its source: <strong>the feeling that nothing is ever enough.</strong></p>
+
+  <p>You achieve things. You finish projects. You reach goals. And the feeling you expected, the deep satisfaction, the settled contentment, never arrives. Not because the achievement was not real. Because you skipped the moment of receiving it.</p>
+
+  <p>You crossed the finish line and your mind was already at the next race. You got the promotion and before the pride could settle into your bones, you were calculating the timeline to the next one. You completed the renovation and instead of standing in the room and feeling the extraordinary fact that this room is different because of you, you noticed the one thing that still needed fixing.</p>
+
+  <div class="insight"><p>The reason nothing feels like enough is not that you need more. It is that you <em>skip the moment of having.</em> Satisfaction is not a result. It is a landing. You have to touch down on the moment of completion long enough for your body to register that something was accomplished. You never do. You leap. And so your body never gets the signal that says: <em>you did it. Rest.</em> It only gets the signal that says: <em>next.</em></p></div>
+
+  <div class="ba-pair">
+    <div class="ba-card ba-before"><div class="ba-head"><div class="ba-dot"></div>Skipping</div><div class="ba-body"><ul><li>Finish project → immediately start next one</li><li>Achieve goal → set bigger goal within hours</li><li>Hear compliment → deflect and change subject</li><li>Complete meal → clear table before last bite</li><li>Arrive home → start the evening checklist</li></ul></div></div>
+    <div class="ba-card ba-after"><div class="ba-head"><div class="ba-dot"></div>Arriving</div><div class="ba-body"><ul><li>Finish project → sit with it for five minutes</li><li>Achieve goal → let pride fill your chest before looking ahead</li><li>Hear compliment → receive it in silence for two seconds</li><li>Complete meal → feel the fullness before you stand</li><li>Arrive home → stand in the doorway and feel "here"</li></ul></div></div>
+  </div>
+
+  <p>Look at the right column. None of those things take longer than ten seconds. Arrival is not time consuming. It is not a lifestyle change. It is a <strong>two second pause between finishing and starting</strong> that you have never, not once, given yourself permission to take.</p>
+
+  <div class="descent-ramp">
+    <div class="ramp-echo"><p>Something in you is softening right now. Not sadness exactly. Something more like recognition. You recognize the skip in your own history. The dinners. The mornings. The conversations where you were technically there and fundamentally somewhere else. You recognize the cost. And underneath the recognition, something is whispering: it is not too late to arrive.</p></div>
+    <div class="ramp-close"><div class="ramp-close-label">Close Your Eyes</div><p>One breath. Think of your child, your partner, your closest person. See their face when they are telling you something important. Now see your face during that moment. Were you there? Fully? If not, do not judge yourself. Just notice. When you can see the gap between your body being there and your mind being elsewhere, open your eyes.</p></div>
+  </div>
+
+  <div class="think">
+    <div class="think-label">Land Here</div>
+    <h4>What is the biggest thing you achieved this year that you did not let yourself fully feel?</h4>
+    <div class="think-line"></div>
+    <p class="q-start">What did the skip do with the moment? Where did your mind go instead?</p>
+    <div class="think-line"></div>
+    <p class="q-start">If you could go back to that moment and arrive in it for 10 seconds, what would you feel?</p>
+    <div class="think-line"></div>
+  </div>
+</div>
+
+<div class="page">
+<div class="root-ck">
+  <div class="rc-label">Root Check No. 2</div>
+  <h4>What Was Planted</h4>
+  <div class="r-item">
+    <div class="r-icon"><svg><use href="#ico-skip"/></svg></div>
+    <div class="r-text"><strong>The Skip.</strong> You are addicted to "next." A forward lean so deep you do not feel it. You have been living to the right of your own life for decades.</div>
+  </div>
+  <div class="r-item">
+    <div class="r-icon"><svg><use href="#ico-child"/></svg></div>
+    <div class="r-text"><strong>The Cost.</strong> The skip took your meals, your rest, your people, and your satisfaction. Not because you had too little. Because you skipped the moment of receiving. Your daughter says "anyway" when she detects you have left the room while sitting in it.</div>
+  </div>
+</div>
+</div>
+
+<!-- ===== CHAPTER 3 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Three</div><h2 class="ch-title">The Arrival</h2><p class="ch-sub">You do not need to change your life. You need to land in it. For two seconds at a time. That is the entire practice.</p></div></div>
+
+<div class="page prose section">
+
+  <p>Everything up to this point has been diagnosis. Now comes the practice. And the practice is so small, so unreasonably simple, that the skip will try to dismiss it before you finish reading it.</p>
+
+  <p>Here it is:</p>
+
+  <div class="mission"><div class="mission-label">The Practice</div><p>When you finish something, anything <br>pause for <em>two seconds</em> before starting the next thing.<br>In those two seconds, <em>feel where you are.</em></p></div>
+
+  <p>That is it. That is the entire practice. Two seconds of arrival between one moment and the next. Not meditation. Not journaling. Not an app. Two seconds of landing in the moment your body is already in before your mind catapults to the next one.</p>
+
+  <p>Two seconds after you park the car and before you open the door. Two seconds after you finish the email and before you start the next one. Two seconds after your child stops talking and before you respond. Two seconds after you sit down to eat and before the fork moves. Two seconds.</p>
+
+  <p>The skip will say: that is nothing. That cannot possibly change anything. And that reaction, that dismissal of something small, is the skip itself. The skip only respects big dramatic changes because big dramatic changes are always in the future, and the future is where the skip lives. The skip cannot survive in two seconds of now. That is why two seconds is enough to break it.</p>
+
+  <h3>The Five Arrivals</h3>
+
+  <p>You do not need to arrive everywhere. You need to arrive at five places. If you arrive at these five, every day, the skip begins to lose its grip within a week. Not because you have become enlightened. Because your body finally starts receiving the life your mind has been skipping.</p>
+
+  <p><strong>Arrive at your food.</strong> Before the first bite, look at what is in front of you. Two seconds. Feel hunger as a sensation, not a problem. Taste the first bite as though it is the only one. You will eat the same food. It will not take longer. But your body will register the meal instead of processing it in the background while your mind runs logistics.</p>
+
+  <p><strong>Arrive at your people.</strong> When someone you love starts talking, drop what is in your hands. Not in your mind, your hands. Put the phone face down. Stop walking. Turn your body toward them. Two seconds of full orientation before they speak. They will feel the difference immediately. They may not say anything. But something in them will open that has been slowly closing every time they spoke to your profile while you faced a screen.</p>
+
+  <p><strong>Arrive at transitions.</strong> The moment you walk through a door, any door, pause for one second on the threshold. You are leaving one room and entering another. Your body knows this. Your mind does not, because your mind crossed the threshold five minutes ago. One second in the doorway reconnects your mind to your body's location. It sounds almost silly. Try it once. You will feel a settling that has no business being that profound for something that takes one second.</p>
+
+  <p><strong>Arrive at completion.</strong> When you finish something, do not start the next thing for five seconds. Five. Let the completion register. Your brain has a circuit for satisfaction. It fires when a task is done. But it requires a brief pause to activate. You have been denying it that pause for years, jumping to the next task before the circuit can fire. Five seconds lets it fire. And when it fires, you feel something you have been chasing through achievements and milestones and goals for your entire life: <em>enough.</em></p>
+
+  <div class="viz"><div class="viz-inner">
+    <div class="viz-top">
+      <div class="viz-icon-wrap"><svg><use href="#ico-land"/></svg></div>
+      <div class="viz-meta"><div class="viz-label">Visualization</div><h4>The Doorway Pause</h4></div>
+    </div>
+    <div class="viz-body">
+      <p>Close your eyes. You are about to walk through a doorway. Any doorway. The front door of your home. The door to your office. The door to your child's room. Before you cross the threshold, pause. One second. Feel the frame around you. You are between two rooms. You are leaving one world and entering another. Your body knows this. Your mind crossed this threshold five minutes ago. One second in the doorway reconnects them. Feel the Anchor drop. Feel the Skipper pause. You are here. Not there. Not next. Here.</p>
+      <div class="viz-trigger">Approach the door &rarr; Pause on the threshold &rarr; Feel the frame &rarr; One second &rarr; Now enter, fully arrived.</div>
+    </div>
+  </div></div>
+
+  <p><strong>Arrive at your bed.</strong> Before you close your eyes, lie still for ten seconds and feel gravity. Feel the mattress accepting your weight. Feel the extraordinary fact that you are horizontal, that the day is over, that nothing is required of you until the sun returns. Ten seconds. Not thinking about tomorrow. Feeling tonight. Your body will respond to this faster than anything else in this guide, because your body has been waiting for you to arrive at the bed for years.</p>
+
+  <div class="adventure">
+    <div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-land"/></svg></div><div class="adv-head-text"><div class="adv-head-label">See It In Action</div><div class="adv-head-title">The Two Seconds That Rebuilt a Marriage</div></div></div><div class="adv-body">
+    <div class="adv-step"><div class="step-n"></div><div class="step-c"><p>He walked through the front door every evening and immediately started executing: shoes off, keys down, ask about dinner, mention the thing from work. His wife would say "how was your day?" and he would answer while sorting mail. The exchange lasted forty five seconds and contained zero contact. This had been happening for eleven years.</p></div></div>
+    <div class="adv-step"><div class="step-n"></div><div class="step-c"><p>He started pausing in the doorway. One second. Then he would find her and stop moving before he spoke. Two seconds of stillness, facing her, before any words. The first time, she looked at him strangely. By the third time, she started walking toward him when she heard the door. By the second week, the doorway pause had become a six second hug that neither of them had initiated in years.</p></div></div>
+    <div class="adv-step adv-result-good"><div class="step-n"></div><div class="step-c"><p class="tag-result tag-result-good">What was found.</p><p>Three seconds of arrival at the threshold. That is all. Not therapy. Not a conversation about feelings. Not a weekend retreat. Three seconds of being fully in the room before operating in the room. His wife said, months later: "I do not know what changed, but I can feel you when you come home now. Before, you walked through the door but something about you was still in the car."</p></div></div>
+  </div></div>
+
+  <div class="adventure">
+    <div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-bed"/></svg></div><div class="adv-head-text"><div class="adv-head-label">See It In Action</div><div class="adv-head-title">The Night She Finally Slept</div></div></div><div class="adv-body">
+    <div class="adv-step"><div class="step-n"></div><div class="step-c"><p>Insomnia for four years. Not the kind where you cannot fall asleep. The kind where you fall asleep and wake at 3 AM with your mind already sprinting through tomorrow. The doctor said stress. The therapist said anxiety. The sleep specialist said melatonin. Nobody said: your mind never arrived at the bed. It walked your body to the mattress and then left for tomorrow. Your body was lying there alone.</p></div></div>
+    <div class="adv-step"><div class="step-n"></div><div class="step-c"><p>She started the ten second arrival. Lying still. Feeling the sheets. Feeling her own weight. Not solving tomorrow. Feeling tonight. The first night, she noticed something astonishing: she had never actually felt her pillow. She had lain on it ten thousand times and never once registered its texture against her face. The pillow had been there every night. She had not.</p></div></div>
+    <div class="adv-step adv-result-good"><div class="step-n"></div><div class="step-c"><p class="tag-result tag-result-good">What was found.</p><p>She slept through the night for the first time in months. Not because the ten seconds cured insomnia. Because the ten seconds told her body: you are here. You are in bed. The day is over. Her body had been waiting for that signal for four years while her mind kept it in tomorrow's meeting room.</p></div></div>
+  </div></div>
+
+  <div class="arrival">
+    <div class="arrival-label">Arrive Here</div>
+    <p>Right now. Not after this guide. Right now. Feel the surface beneath you. Feel the temperature on your skin. Hear the nearest sound that is not a voice. Feel the specific weight of your own hands. You are in a room on a planet and you are alive and this moment is the only one that exists. Not the paragraph before. Not the paragraph after. This one. <em>You just arrived. Feel the difference between reading about your life and being in it.</em></p>
+  </div>
+
+  <div class="descent-ramp">
+    <div class="ramp-echo"><p>Something is different now. A settling. Not excitement. Not motivation. Something quieter and more real: the sensation of being located. Of being in a body, in a room, in a specific moment that will never repeat. You have been running from moment to moment like a stone skipping on water. For the first time, the stone is sinking. Not drowning. Landing. Touching the bottom. Feeling the weight of your own presence in your own life.</p></div>
+    <div class="ramp-close"><div class="ramp-close-label">Close Your Eyes</div><p>One breath. Feel the breath enter. Feel it leave. In between the inhale and the exhale, there is a moment of perfect stillness. Find it. Sit in it. That gap, that tiny pause between breaths, is what arrival feels like. It has always been there. You have been breathing right past it for years. When you have felt it, open your eyes.</p></div>
+  </div>
+
+  <div class="think">
+    <div class="think-label">Land Here</div>
+    <h4>Which of the Five Arrivals do you need most urgently?</h4>
+    <div class="think-line"></div>
+    <p class="q-start">What moment do you skip most, the one you know you are missing but cannot seem to stop leaving?</p>
+    <div class="think-line"></div>
+    <p class="q-start">If you arrived there tomorrow, for two seconds, what do you think you would feel?</p>
+    <div class="think-line"></div>
+  </div>
+</div>
+
+<div class="page">
+<div class="root-ck">
+  <div class="rc-label">Root Check No. 3</div>
+  <h4>What Was Planted</h4>
+  <div class="r-item">
+    <div class="r-icon"><svg><use href="#ico-skip"/></svg></div>
+    <div class="r-text"><strong>The Skip.</strong> A forward lean so constant it feels like standing. You live in previews. Your body is here. Your mind is in the next three boxes.</div>
+  </div>
+  <div class="r-item">
+    <div class="r-icon"><svg><use href="#ico-child"/></svg></div>
+    <div class="r-text"><strong>The Cost.</strong> Meals, rest, people, satisfaction, all skipped. The moment of receiving was leapt over every time. Nothing was ever "enough" because you never landed long enough to feel that it was.</div>
+  </div>
+  <div class="r-item">
+    <div class="r-icon"><svg><use href="#ico-land"/></svg></div>
+    <div class="r-text"><strong>The Practice.</strong> Two seconds. That is all. Arrive at food, people, transitions, completion, and bed. Not a lifestyle change. A two-second pause between finishing and starting that you have never given yourself permission to take.</div>
+  </div>
+</div>
+</div>
+
+<!-- ===== CHAPTER 4 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Four</div><h2 class="ch-title">The Fullness</h2><p class="ch-sub">When you stop skipping, something fills in. Not something new. Something that was always there, waiting beneath the noise of next.</p></div></div>
+
+<div class="page prose section">
+
+  <p>There is a reason every spiritual tradition, every ancient text, every mystic and poet and prophet has pointed at the same thing: <em>be here now.</em> It is not because presence is one nice option among many. It is because presence is where everything lives. Love lives here. Joy lives here. God lives here. Not in yesterday's memory. Not in tomorrow's plan. Here. In the moment your body is in.</p>
+
+  <p>When you stop skipping, you do not gain something new. You recover something that was always underneath the skip. Something you have been running past your entire life at full speed, never slow enough to notice it was there.</p>
+
+  <p>It feels like fullness. Not a full stomach. A full moment. A moment so thoroughly inhabited that it does not need the next one to justify it. A moment that is enough, by itself, without being dramatic or special or Instagram worthy. An ordinary moment, fully arrived at, that turns out to be the most extraordinary thing you have ever experienced.</p>
+
+  <div class="arrival">
+    <div class="arrival-label">Arrive Here</div>
+    <p>You are reading the final chapter of this guide. Your mind already knows that. It is already composing what you will do after you finish reading. It is already in the next thing. But your body is here. Your eyes are on these words. Your hands are holding this moment. And this moment, right now, is filled with something that the next moment does not contain: <em>you.</em> You, arrived. You, here. You, for once, not leaning. Not reaching. Just resting in the middle of a sentence that does not need to end for you to be complete.</p>
+  </div>
+
+  <h3>What Changes</h3>
+
+  <p>When you begin arriving, not perfectly, not constantly, just in small two second landings throughout your day, a cascade begins. Not dramatic. Quiet. The way a single degree of temperature change can unfreeze a river.</p>
+
+  <p><strong>Food satisfies.</strong> Not because you eat differently. Because you taste. The first bite of a meal, fully attended, sends a signal to your brain that no amount of unconscious eating can match. The brain registers: I have been fed. The phantom hunger that drives overeating is not about food. It is about the skip. Your body is hungry for a meal you are actually present for.</p>
+
+  <p><strong>Rest works.</strong> Ten seconds of arrival at your bed does more for sleep than an hour of scrolling to "wind down." Your body does not need entertainment to sleep. It needs permission. The ten second arrival is the permission: you are here, the day is over, let go.</p>
+
+  <p><strong>People come closer.</strong> Two seconds of full attention when your child speaks, when your partner walks in, when your friend starts a sentence, those two seconds communicate more love than a thousand words spoken while mentally elsewhere. People can feel arrival. They are starving for it. Most of them have never received it from anyone.</p>
+
+  <p><strong>Enough arrives.</strong> The "never enough" feeling dissolves, not because you achieve more, but because you finally receive what you have already achieved. The promotion you got three years ago that you never let yourself celebrate? It is still there, waiting for you to arrive at it. Every unacknowledged accomplishment, every skipped joy, every deflected compliment, they are all still in the account. The five second pause after completion lets you make a withdrawal. And the account is larger than you think.</p>
+
+  <div class="viz"><div class="viz-inner">
+    <div class="viz-top">
+      <div class="viz-icon-wrap"><svg><use href="#ico-sun"/></svg></div>
+      <div class="viz-meta"><div class="viz-label">Visualization</div><h4>The Stone That Sinks</h4></div>
+    </div>
+    <div class="viz-body">
+      <p>Close your eyes. You have been a stone skipping across water your entire life. Bounce, bounce, bounce, each moment touched but never entered. Fast. Efficient. Skimming the surface. Now feel yourself slow down. Feel the last skip lose its momentum. Feel gravity do what it has always wanted to do. You sink. Not drowning. Landing. The water closes over you, warm and quiet. You touch the bottom. You are fully submerged in this moment. The surface is still up there, the next task, the next plan, the next worry. But you are here. On the bottom. Still. Full. For the first time, you are not skipping. You are resting in the weight of your own presence.</p>
+      <div class="viz-trigger">Skip, skip, skip &rarr; Slow &rarr; Sink &rarr; Touch the bottom &rarr; Rest there. This is fullness.</div>
+    </div>
+  </div></div>
+
+  <p><strong>God becomes audible.</strong> Every person of faith has had the experience of trying to hear God and hearing only their own planning. That is the skip. God does not speak in next. God speaks in now. The still small voice has always been speaking. You were at the next appointment when it arrived. Two seconds of arrival in prayer changes prayer from monologue to contact. Not because God was absent. Because you were.</p>
+
+  <div class="fullness"><div class="fullness-ring"></div><div class="fullness-ring"></div><div class="fullness-ring"></div><div class="fullness-ring"></div><div class="fullness-content"><div class="fullness-label">You Made It</div><h4>This is the end of the guide. Not the end of the arriving.</h4><p>The skip will pull you forward tomorrow. It always does. But now you know the practice: two seconds. One pause. Arrive. The moments are waiting. They have always been waiting. Now you know how to get to them.</p></div></div>
+
+  <div class="descent-ramp">
+    <div class="ramp-echo"><p>You have read every word of this guide. And for the first time in a very long time, you did not skip the reading to get to the end. You were here for it. You felt the arrival blocks land. You felt the chair and the air and the weight of your own hands. You felt the grief for the moments you skipped and the quiet astonishment that the practice is only two seconds long. That feeling, that combination of loss and hope and startling simplicity, is the arrival. You are in it right now.</p></div>
+    <div class="ramp-close"><div class="ramp-close-label">Close Your Eyes One Last Time</div><p>One breath. But not just one breath. The last breath of this guide. Let it carry everything you have read into your body. Not your mind. Your body. Feel it land. And when you open your eyes, do not rush to the next thing. Stay in the doorway for two seconds. Feel yourself here. Then walk into whatever is next, landing as you go.</p></div>
+  </div>
+
+  <div class="think">
+    <div class="think-label">Your Arrival</div>
+    <h4>Name the one person you will arrive at tomorrow. Fully. For two seconds.</h4>
+    <div class="think-line"></div>
+    <p class="q-start">Name the one transition where you will pause in the doorway:</p>
+    <div class="think-line"></div>
+    <p class="q-start">Name what "enough" would feel like if you actually let yourself receive what you already have:</p>
+    <div class="think-line"></div>
+    <div class="think-line"></div>
+  </div>
+</div>
+
+<div class="page">
+
+<div class="root-ck">
+  <div class="rc-label">Root Check No. 4</div>
+  <h4>The Complete Map</h4>
+  <div class="r-item">
+    <div class="r-icon"><svg><use href="#ico-skip"/></svg></div>
+    <div class="r-text"><strong>The Skip.</strong> A forward lean so constant it feels normal. You live in previews, always two boxes ahead of your body. The Skipper runs on autopilot.</div>
+  </div>
+  <div class="r-item">
+    <div class="r-icon"><svg><use href="#ico-child"/></svg></div>
+    <div class="r-text"><strong>The Cost.</strong> Meals, rest, people, satisfaction, all stolen by the skip. Your daughter says "anyway." Nothing was ever enough because you skipped the moment of having.</div>
+  </div>
+  <div class="r-item">
+    <div class="r-icon"><svg><use href="#ico-land"/></svg></div>
+    <div class="r-text"><strong>The Practice.</strong> Two seconds. Five arrivals: food, people, transitions, completion, bed. Not meditation. Not willpower. A pause between finishing and starting. The Anchor drops.</div>
+  </div>
+  <div class="r-item">
+    <div class="r-icon"><svg><use href="#ico-sun"/></svg></div>
+    <div class="r-text"><strong>The Fullness.</strong> When you stop skipping, something fills in. Love, joy, God, enough, they all live in the present moment, not in the next one. The stone sinks. You land. The life you have been skipping is still happening.</div>
+  </div>
+</div>
+
+<div class="final-test">
+  <div class="final-test-head">
+    <h3>The Final Test</h3>
+    <p>Without looking back, let these questions find what landed in your body, not your mind.</p>
+  </div>
+  <div class="final-test-body">
+    <div class="ft-q"><div class="ft-q-num">Question 1</div><p>What is the skip, and why is it a posture, not a thought?</p></div>
+    <div class="ft-q"><div class="ft-q-num">Question 2</div><p>Your daughter pauses mid-sentence and says "anyway." What just happened, and what was lost?</p></div>
+    <div class="ft-q"><div class="ft-q-num">Question 3</div><p>Why does nothing ever feel like "enough", and what is the difference between a result and a landing?</p></div>
+    <div class="ft-q"><div class="ft-q-num">Question 4</div><p>Name the Five Arrivals. Which one would change your life most if you practiced it tomorrow?</p></div>
+    <div class="ft-q"><div class="ft-q-num">Question 5</div><p>A man paused in the doorway for three seconds before speaking to his wife. Within two weeks, an eleven-year-old pattern broke. Why did three seconds do what a decade of date nights could not?</p></div>
+    <div class="ft-q"><div class="ft-q-num">Question 6</div><p>What is the difference between the Skipper and the Anchor, and which one is running your life right now?</p></div>
+    <div class="ft-q"><div class="ft-q-num">Question 7</div><p>Right now, feel the surface beneath you. Feel the temperature on your skin. You just arrived. What did it feel like? One word.</p></div>
+  </div>
+</div>
+
+<div class="prompt">
+  <div class="prompt-head">THE ARRIVAL. CONTINUE THE EXPLORATION</div>
+  <div class="prompt-body">Use this prompt with any AI: <strong>"I just read The Arrival from KingdomBuilders. The key concepts were the skip, the cost of not being present, the five arrivals (food, people, transitions, completion, bed), and fullness. Help me apply [concept] to my current situation: [describe]. I want to stop skipping and start arriving at [specific moment or relationship]."</strong></div>
+</div>
+
+</div>
+
+<!-- ===== FINALE ===== -->
+<div class="finale">
+  <h2>You have been everywhere.<br>Now <span>arrive.</span></h2>
+  <p>Two seconds. One moment. Fully here. That is the practice. That is the whole thing. The life you have been skipping is still happening. Land in it.</p>
+</div>
+
+<footer>
+  <p>The next moment is coming whether you reach for it or not. Let it come. Stay here until it arrives. That is what arrival is: trusting that you do not have to chase what is already on its way.</p>
+  <p class="brand">Kingdom Builders AI</p>
+</footer>
+
+</body>
+</html>

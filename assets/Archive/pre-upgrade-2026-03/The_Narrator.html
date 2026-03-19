@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Narrator. Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --crimson:#8B1A2E;--crimson-glow:#C4354E;--crimson-pale:#F5C8CE;--crimson-soft:rgba(139,26,46,0.06);
+  --bone:#E8E0D0;--bone-warm:#F2EBD8;--bone-glow:#FAF5EA;
+  --ink:#12100E;--ink-dark:#1C1916;--ink-mid:#2E2A26;--ink-accent:#4A3728;--ink-light:#7A6A58;
+  --cream:#FDFCF8;--cream-warm:#FAF6EE;--text:#1E1A16;--text-light:#4A3E32;--text-muted:#8A7A68;
+  --white:#FFFFFF;--radius:12px;
+  --shadow-soft:0 2px 12px rgba(18,16,14,0.06);--shadow-mid:0 4px 24px rgba(18,16,14,0.1);
+  --before-bg:#FFF8F4;--before-border:#D4907A;--before-text:#6A2A1A;
+  --after-bg:#F4FBF8;--after-border:#7AC4A8;--after-text:#1A4A38
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--cream);line-height:1.78;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Poppins',sans-serif;line-height:1.2}
+.page{max-width:700px;margin:0 auto;padding:0 24px}
+.section{padding:44px 0}
+.prose p{margin-bottom:20px;font-size:1rem}.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--ink);font-weight:600}
+.prose em{color:var(--crimson);font-style:normal;font-weight:600}
+.prose h2{font-size:1.35rem;color:var(--ink);margin:36px 0 14px;display:flex;align-items:center}
+.svg-sprites{position:absolute;width:0;height:0;overflow:hidden}
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(165deg,#070504 0%,#120E0A 25%,#1C1410 55%,#0E0B08 80%,#060403 100%);position:relative;overflow:hidden}
+.type-line{position:absolute;font-family:'Lora',serif;font-size:0.6rem;letter-spacing:2px;color:rgba(139,26,46,0.035);white-space:nowrap;animation:type-drift 20s linear infinite;pointer-events:none}
+.type-line:nth-child(1){top:12%;animation-duration:22s}
+.type-line:nth-child(2){top:28%;animation-delay:-7s;animation-duration:18s;color:rgba(139,26,46,0.025)}
+.type-line:nth-child(3){top:45%;animation-delay:-13s;animation-duration:24s}
+.type-line:nth-child(4){top:62%;animation-delay:-4s;animation-duration:20s;color:rgba(139,26,46,0.025)}
+.type-line:nth-child(5){top:78%;animation-delay:-10s;animation-duration:16s}
+@keyframes type-drift{from{transform:translateX(110vw)}to{transform:translateX(-110vw)}}
+.cover-cursor{position:absolute;bottom:22%;right:15%;width:2px;height:28px;background:rgba(139,26,46,0.25);animation:cursor-blink 1.2s step-end infinite}
+@keyframes cursor-blink{0%,100%{opacity:0}50%{opacity:1}}
+.ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.012;mix-blend-mode:overlay;pointer-events:none}
+.cover-content{position:relative;z-index:2;padding:40px 24px;max-width:600px}
+.cover-badge{display:inline-block;padding:6px 20px;border:1px solid rgba(139,26,46,0.28);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:var(--crimson-glow);margin-bottom:20px}
+.cover h1{font-family:'Poppins',sans-serif;font-size:clamp(2.4rem,7vw,4.4rem);font-weight:300;color:var(--white);line-height:1.05;margin-bottom:4px}
+.cover h1 strong{font-weight:700;color:var(--crimson-glow);display:block;letter-spacing:-0.02em}
+.cover-tagline{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:rgba(255,255,255,0.35);margin-top:28px;line-height:1.8}
+.cover-tagline em{color:var(--bone-glow);font-style:normal}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.6rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,0.15);margin-top:40px}
+.cover-art{width:280px;height:210px;margin:0 auto 28px;animation:cover-breathe 5s ease-in-out infinite}
+@keyframes cover-breathe{0%,100%{transform:scale(1);filter:brightness(1) drop-shadow(0 0 20px rgba(196,53,78,0.15))}50%{transform:scale(1.04);filter:brightness(1.12) drop-shadow(0 0 35px rgba(196,53,78,0.25))}}
+.ch-head{background:linear-gradient(170deg,var(--ink),var(--ink-dark));padding:80px 24px 56px;position:relative;overflow:hidden}
+.ch-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 5%,var(--crimson-glow) 50%,transparent 95%)}
+.ch-head .page{position:relative;z-index:2}
+.ch-num{font-family:'Poppins',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:6px;text-transform:uppercase;color:var(--crimson-glow);opacity:0.8}
+.ch-title{font-family:'Poppins',sans-serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:700;color:var(--white);margin:10px 0 6px}
+.ch-sub{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:var(--bone);opacity:0.6}
+.ribbon{text-align:center;padding:20px 24px;background:linear-gradient(135deg,var(--crimson-soft),rgba(139,26,46,0.04));border-top:1.5px solid rgba(139,26,46,0.12);border-bottom:1.5px solid rgba(139,26,46,0.12)}
+.ribbon p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:var(--text-muted);max-width:480px;margin:0 auto}
+.mission{text-align:center;padding:36px 32px;margin:36px 0;background:linear-gradient(140deg,rgba(245,200,206,0.18),rgba(253,252,248,0.25));border-radius:14px;border:2px solid rgba(139,26,46,0.18)}
+.mission::before{content:'';position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:280px;height:280px;background:radial-gradient(circle,rgba(139,26,46,0.06) 0%,transparent 70%);border-radius:50%}
+.mission-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--crimson);margin-bottom:14px;position:relative}
+.mission p{font-family:'Poppins',sans-serif;font-size:clamp(0.88rem,2.2vw,1.08rem);font-weight:500;color:var(--ink);line-height:1.55;position:relative}
+.mission p em{color:var(--crimson);font-style:normal;font-weight:700}
+.character-card{display:flex;gap:20px;align-items:flex-start;padding:28px;margin:28px 0;background:var(--white);border-radius:var(--radius);border:2px solid rgba(139,26,46,0.12);box-shadow:var(--shadow-soft)}
+.character-card .avatar{flex-shrink:0;width:64px;height:64px;display:flex;align-items:center;justify-content:center;border-radius:50%;overflow:hidden}
+.character-card .avatar svg{width:64px;height:64px}
+.character-card .info h3{font-size:1rem;color:var(--ink);margin-bottom:4px}
+.character-card .info .role{font-family:'Poppins',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--crimson);margin-bottom:8px}
+.character-card .info p{font-size:0.88rem;color:var(--text-light);line-height:1.65}
+.id-card{margin:32px 0;border-radius:14px;overflow:hidden;border:4px solid var(--crimson-glow)}
+.id-card-head{padding:14px 24px;background:linear-gradient(90deg,var(--crimson),var(--crimson-glow));font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--white)}
+.id-card-body{padding:28px;background:var(--white)}
+.id-card-body h3{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--ink);margin-bottom:14px}
+.id-old{font-size:0.88rem;color:var(--text-muted);text-decoration:line-through;margin-bottom:10px;line-height:1.5}
+.id-new{font-size:1rem;font-weight:500;color:var(--ink);font-style:italic;line-height:1.5}
+.viz{margin:48px 0 36px;border-radius:16px;overflow:hidden;border:2.5px solid var(--ink-accent)}
+.viz-inner{border-radius:13px;overflow:hidden}
+.viz-top{background:rgba(74,55,40,0.08);padding:22px 28px 20px;display:flex;align-items:center;gap:16px;border-bottom:1.5px solid rgba(74,55,40,0.1)}
+.viz-icon-wrap{width:56px;height:56px;border-radius:50%;border:2px solid rgba(74,55,40,0.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(145deg,#fff,rgba(232,224,208,0.5))}
+.viz-icon-wrap svg{width:28px;height:28px}
+.viz-meta{flex:1}
+.viz-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--ink-accent);margin-bottom:2px}
+.viz h4{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:var(--ink)}
+.viz-body{padding:28px;background:linear-gradient(170deg,#FDFCFA 0%,#FAF7F2 40%,#FDF9F5 100%)}
+.viz-body p{font-size:0.95rem;color:var(--text-light);line-height:1.72;margin-bottom:14px}
+.viz-body strong,.viz-lesson strong{color:rgba(255,255,255,0.95);font-weight:700}
+.viz-body em,.viz-lesson em{color:var(--crimson-pale);font-style:normal;font-weight:600}.viz-body p:last-child{margin-bottom:0}
+.viz-trigger{margin-top:20px;padding:16px 20px;background:linear-gradient(135deg,rgba(139,26,46,0.05),rgba(139,26,46,0.09));border:1.5px solid rgba(139,26,46,0.15);border-radius:10px;font-family:'Poppins',sans-serif;font-size:0.78rem;font-weight:700;color:var(--text);text-align:center}
+.viz-glow{position:absolute;top:-8px;left:-8px;right:-8px;bottom:-8px;border-radius:20px;background:linear-gradient(135deg,rgba(74,55,40,0.04),transparent);z-index:-1;pointer-events:none}
+.ba-pair{margin:32px 0;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:640px){.ba-pair{grid-template-columns:1fr}}
+.ba-card{border-radius:12px;overflow:hidden}
+.ba-head{padding:12px 20px;font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.ba-before{background:linear-gradient(170deg,#FFF6F3,#FFEDE8)}
+.ba-before .ba-head{background:linear-gradient(90deg,rgba(139,26,46,0.1),rgba(139,26,46,0.05));color:var(--before-text)}
+.ba-after{background:linear-gradient(170deg,#F3FBF8,#EAF8F2)}
+.ba-after .ba-head{background:linear-gradient(90deg,rgba(26,74,56,0.1),rgba(26,74,56,0.05));color:var(--after-text)}
+.ba-dot{width:8px;height:8px;border-radius:50%}
+.ba-before .ba-dot{background:var(--before-border)}.ba-after .ba-dot{background:var(--after-border)}
+.ba-body{padding:18px 20px;font-size:0.88rem;line-height:1.65}
+.ba-body ul{list-style:none;padding:0;margin:0}
+.ba-body ul li{padding:6px 0;border-bottom:1px solid rgba(0,0,0,0.04)}.ba-body ul li:last-child{border-bottom:none}
+.ba-before .ba-body{color:var(--before-text)}.ba-after .ba-body{color:var(--after-text)}
+.adventure{margin:36px 0;border-radius:16px;overflow:hidden;background:var(--white);border:1px solid rgba(74,55,40,0.08)}
+.adv-head{padding:14px 28px 10px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(74,55,40,0.06)}
+.adv-head-icon{width:36px;height:36px;border-radius:50%;background:rgba(74,55,40,0.07);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.adv-head-icon svg{width:18px;height:18px;color:var(--ink-accent)}
+.adv-head-text{display:flex;flex-direction:column;gap:1px;flex:1}
+.adv-head-label{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--ink-accent);opacity:0.4}
+.adv-head-title{font-family:'Source Serif 4',Georgia,serif;font-size:0.85rem;font-weight:500;color:var(--ink)}
+.adv-step{padding:14px 28px;border-bottom:1px solid rgba(74,55,40,0.05)}.adv-step:last-child{border-bottom:none}
+.step-n{display:none}
+.step-c p{font-family:'Source Serif 4',Georgia,serif;font-size:0.93rem;line-height:1.75;margin:0 0 6px;color:var(--text)}.step-c p:last-child{margin-bottom:0}
+.step-c em{color:var(--text-light)}
+.step-c .tag-you{font-family:'Poppins',sans-serif;font-weight:700;color:var(--ink);font-size:0.8rem;display:inline-block;padding:2px 10px;background:rgba(139,26,46,0.07);border-radius:4px;margin-bottom:4px}
+.step-c .tag-result{font-family:'Poppins',sans-serif;font-weight:700;font-size:0.8rem;display:inline-block;padding:2px 10px;border-radius:4px;margin-bottom:4px}
+.step-c .tag-result-bad{color:#8B1A2E;background:rgba(139,26,46,0.08)}
+.step-c .tag-result-good{color:#1A4A38;background:rgba(26,74,56,0.08)}
+.adv-step:last-child.adv-result-bad{background:linear-gradient(135deg,rgba(139,26,46,0.03),rgba(139,26,46,0.06))}
+.adv-step:last-child.adv-result-good{background:linear-gradient(135deg,rgba(26,74,56,0.03),rgba(26,74,56,0.07))}
+.descent-ramp{margin:36px 0 0;display:flex;flex-direction:column;gap:10px}
+.ramp-echo{padding:28px 32px;background:linear-gradient(160deg,rgba(74,55,40,0.08),rgba(74,55,40,0.04));border-radius:16px;border:2px solid rgba(74,55,40,0.12)}
+.ramp-echo p{font-family:'Lora',serif;font-size:0.92rem;font-style:italic;color:var(--text-light);line-height:1.72;text-align:center;margin:0}
+.ramp-close{padding:44px 32px;text-align:center;background:linear-gradient(160deg,rgba(139,26,46,0.08),rgba(139,26,46,0.04));border-radius:16px;border:2px solid rgba(139,26,46,0.12)}
+.ramp-close-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--crimson);opacity:0.5;margin-bottom:8px}
+.ramp-close p{font-family:'Poppins',sans-serif;font-size:0.82rem;font-weight:500;color:var(--ink);line-height:1.6;max-width:440px;margin:0 auto}
+.think{margin:16px 0 36px;padding:32px;background:linear-gradient(145deg,rgba(139,26,46,0.06),rgba(139,26,46,0.03));border:2.5px dashed var(--crimson);border-radius:14px;position:relative}
+.think::before{content:'\270E';position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--cream);padding:0 14px;font-size:1.1rem;color:var(--crimson)}
+.think-label{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--crimson);text-align:center;margin-bottom:10px}
+.think h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--ink);text-align:center;margin-bottom:12px}
+.think p{font-size:0.88rem;text-align:center;color:var(--text-light);margin-bottom:8px}
+.think-line{border-bottom:1px solid rgba(139,26,46,0.2);height:30px}
+.think p.q-start{font-weight:500;color:var(--ink);font-size:0.85rem;text-align:left;margin-top:14px;margin-bottom:4px}
+.insight{margin:32px 0;padding:28px 32px;background:linear-gradient(140deg,var(--ink),var(--ink-dark));border-radius:14px;border-left:5px solid var(--crimson-glow);position:relative;overflow:hidden}
+.insight p{font-family:'Lora',serif;font-size:1.02rem;font-style:italic;color:var(--white);line-height:1.72;position:relative;z-index:2}
+.insight em{color:var(--crimson-pale);font-style:normal;font-weight:600}
+.gq{margin:32px 0;text-align:center;padding:32px 24px;background:linear-gradient(160deg,rgba(139,26,46,0.02),rgba(139,26,46,0.04));border-radius:14px;border:1.5px solid rgba(139,26,46,0.1)}
+.gq::before,.gq::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:48px;height:1.5px;background:linear-gradient(90deg,transparent,var(--crimson-glow),transparent)}
+.gq::before{top:0}.gq::after{bottom:0}
+.gq p{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:var(--ink-mid);line-height:1.6;max-width:480px;margin:0 auto}
+.h2-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--ink-mid),var(--ink-accent));margin-right:10px}
+.h2-icon svg{width:14px;height:14px;color:var(--crimson-pale)}
+.dd{margin:28px 0;padding:24px 28px;border-radius:12px;border-left:4px solid var(--crimson-glow)}
+.dd:nth-of-type(odd){background:rgba(139,26,46,0.03)}.dd:nth-of-type(even){background:var(--white)}
+.dd h4{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--ink);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.dd h4 svg{width:16px;height:16px;color:var(--crimson);flex-shrink:0}
+.dd .sub{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:500;color:var(--ink-light);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px}
+.dd p{font-size:0.9rem;color:var(--text-light);line-height:1.68;margin-bottom:8px}.dd p:last-child{margin-bottom:0}
+.breathe{margin:48px 0;text-align:center;padding:56px 24px;position:relative;background:linear-gradient(160deg,rgba(139,26,46,0.07),rgba(139,26,46,0.03));border-radius:16px;border:2px solid rgba(139,26,46,0.1)}
+.breathe-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1.5px solid rgba(139,26,46,0.08)}
+.breathe-ring:nth-child(1){width:160px;height:160px;animation:breathe-pulse 6s ease-in-out infinite}
+.breathe-ring:nth-child(2){width:110px;height:110px;animation:breathe-pulse 6s ease-in-out infinite 1.5s}
+.breathe-ring:nth-child(3){width:60px;height:60px;animation:breathe-pulse 6s ease-in-out infinite 3s}
+@keyframes breathe-pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.35}50%{transform:translate(-50%,-50%) scale(1.2);opacity:0.08}}
+.breathe-content{position:relative;z-index:2}
+.breathe-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--crimson);opacity:0.5;margin-bottom:8px}
+.breathe h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--ink);margin-bottom:8px}
+.breathe p{font-family:'Lora',serif;font-size:0.88rem;font-style:italic;color:var(--text-muted);max-width:400px;margin:0 auto;line-height:1.6}
+.venn-wrap{margin:40px 0;padding:36px 20px 32px;background:linear-gradient(145deg,var(--ink),var(--ink-dark));border-radius:16px;border:2px solid rgba(139,26,46,0.2)}
+.venn-title{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--crimson-pale);opacity:0.5;text-align:center;margin-bottom:24px}
+.venn{position:relative;width:340px;height:220px;margin:0 auto}
+.venn-circle{position:absolute;width:200px;height:200px;border-radius:50%;top:10px;display:flex;align-items:center;justify-content:center}
+.venn-left{left:0;background:radial-gradient(circle at 40% 50%,rgba(139,26,46,0.35),rgba(139,26,46,0.12));border:2px solid rgba(196,53,78,0.4)}
+.venn-right{right:0;background:radial-gradient(circle at 60% 50%,rgba(232,224,208,0.25),rgba(232,224,208,0.08));border:2px solid rgba(232,224,208,0.35)}
+.venn-label{font-family:'Poppins',sans-serif;font-size:0.62rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;line-height:1.3;text-align:center;max-width:90px}
+.venn-left .venn-label{color:var(--crimson-pale);padding-right:30px}
+.venn-right .venn-label{color:var(--bone);padding-left:30px}
+.venn-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:3;text-align:center;padding:10px 14px;background:linear-gradient(135deg,rgba(196,53,78,0.9),rgba(139,26,46,0.95));border-radius:10px;box-shadow:0 0 20px rgba(196,53,78,0.4)}
+.venn-center span{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--white);display:block;line-height:1.3}
+.spectrum-wrap{margin:36px 0;padding:28px 24px;background:var(--white);border-radius:14px;border:2px solid rgba(139,26,46,0.12);box-shadow:var(--shadow-soft)}
+.spectrum-title{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--crimson);text-align:center;margin-bottom:20px}
+.spectrum-bar{position:relative;height:38px;border-radius:19px;background:linear-gradient(90deg,#3A1018 0%,#8B1A2E 25%,#C4A060 50%,#5A9A70 75%,#2A7048 100%);margin:0 0 8px}
+.spectrum-marker{position:absolute;top:-6px;width:3px;height:50px;background:var(--white);box-shadow:0 0 6px rgba(0,0,0,0.2)}
+.spectrum-marker:nth-child(1){left:20%}.spectrum-marker:nth-child(2){left:40%}.spectrum-marker:nth-child(3){left:60%}.spectrum-marker:nth-child(4){left:80%}
+.spectrum-labels{display:flex;justify-content:space-between;padding:0 2px}
+.spectrum-labels span{font-family:'Poppins',sans-serif;font-size:0.58rem;font-weight:600;color:var(--text-muted);text-align:center;flex:1;line-height:1.2}
+.spectrum-labels span:first-child{text-align:left;color:var(--crimson)}
+.spectrum-labels span:last-child{text-align:right;color:#2A7048}
+.spectrum-desc{font-family:'Lora',serif;font-size:0.82rem;font-style:italic;color:var(--text-muted);text-align:center;margin-top:14px}
+.script-box{margin:36px 0;border-radius:14px;overflow:hidden;background:var(--ink);border:2px solid rgba(139,26,46,0.2)}
+.script-box-head{padding:14px 24px;background:rgba(139,26,46,0.15);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(139,26,46,0.15)}
+.script-title{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--crimson-pale)}
+.script-author{font-family:'Lora',serif;font-size:0.72rem;font-style:italic;color:rgba(255,255,255,0.25)}
+.script-line{padding:14px 24px;border-bottom:1px solid rgba(255,255,255,0.04);display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:baseline}.script-line:last-child{border-bottom:none}
+.script-cue{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(196,53,78,0.5)}
+.script-text{font-family:'Lora',serif;font-size:0.88rem;color:rgba(255,255,255,0.5);font-style:italic;line-height:1.6}
+.script-text.crossed{text-decoration:line-through;color:rgba(255,255,255,0.25)}
+.script-text.authored{color:var(--crimson-pale);font-style:normal;font-weight:500}
+.audience{margin:36px 0;padding:28px;border-radius:14px;background:linear-gradient(145deg,rgba(139,26,46,0.06),rgba(139,26,46,0.02));border:2px solid rgba(139,26,46,0.1)}
+.audience-label{font-family:'Poppins',sans-serif;font-size:0.48rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--crimson);opacity:0.6;margin-bottom:16px;text-align:center}
+.audience-seats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.audience-seat{padding:14px 16px;border-radius:10px;border:1.5px solid rgba(139,26,46,0.08);background:var(--white)}
+.audience-who{font-family:'Poppins',sans-serif;font-size:0.72rem;font-weight:700;color:var(--ink);margin-bottom:4px}
+.audience-truth{font-family:'Lora',serif;font-size:0.8rem;font-style:italic;color:var(--crimson);line-height:1.4}
+.audience-reality{font-family:'Poppins',sans-serif;font-size:0.65rem;color:var(--text-muted);margin-top:6px;line-height:1.4}
+.frame-diagram{margin:40px 0;padding:32px 24px 40px;background:var(--ink);border-radius:16px}
+.frame-diagram-title{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--crimson-pale);opacity:0.5;text-align:center;margin-bottom:24px}
+.frame-row{display:grid;grid-template-columns:1fr 44px 1fr;align-items:center;margin-bottom:16px}
+.frame-event{text-align:right;padding-right:16px}.frame-response{text-align:left;padding-left:16px}
+.frame-event span,.frame-response span{font-family:'Poppins',sans-serif;font-size:0.75rem;font-weight:600;display:block}
+.frame-event span{color:rgba(255,255,255,0.45)}.frame-response span{color:var(--crimson-pale)}
+.frame-event em,.frame-response em{font-family:'Lora',serif;font-size:0.68rem;color:rgba(255,255,255,0.22);font-style:italic;display:block;margin-top:2px}
+.frame-arrow{width:44px;height:44px;display:flex;align-items:center;justify-content:center}
+.frame-arrow svg{width:18px;height:18px;color:rgba(196,53,78,0.5)}
+.frame-label-center{text-align:center;margin:12px 0 8px}
+.frame-label-center span{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:rgba(196,53,78,0.3);display:inline-block;padding:4px 14px;border:1px dashed rgba(196,53,78,0.15);border-radius:4px}
+.root-review{margin:44px 0;padding:28px 24px;background:linear-gradient(170deg,#F8F3EE,#F2EDE6,#F8F3EE);border-radius:16px}
+.root-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--crimson);opacity:0.5;text-align:center;margin-bottom:16px}
+.root-layer{display:flex;align-items:center;justify-content:center;gap:10px;padding:8px 0;flex-wrap:wrap}
+.root-layer.current{padding:12px 0}
+.root-ch{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);opacity:0.4;width:28px;text-align:right;flex-shrink:0}
+.root-layer.current .root-ch{color:var(--crimson);opacity:1}
+.root-items{display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center}
+.root-pill{font-family:'Poppins',sans-serif;font-size:0.65rem;font-weight:600;padding:5px 14px;border-radius:6px;white-space:nowrap}
+.root-pill.rp-dim{background:rgba(139,26,46,0.07);color:var(--text-muted);border:1px solid rgba(139,26,46,0.1)}
+.root-pill.rp-bright{background:linear-gradient(135deg,rgba(139,26,46,0.1),rgba(139,26,46,0.16));color:var(--ink);border:1px solid rgba(139,26,46,0.22)}
+.root-arr{color:var(--text-muted);opacity:0.3;font-size:0.8rem;padding:0 4px}
+.root-layer.current .root-arr{opacity:0.5;color:var(--crimson)}
+.root-sep{width:60%;max-width:300px;height:1px;background:linear-gradient(90deg,transparent,rgba(139,26,46,0.15),transparent);margin:4px auto}
+.author-chair{margin:36px 0;border-radius:16px;overflow:hidden;border:3px solid var(--crimson-glow)}
+.author-chair-head{padding:20px 28px;background:linear-gradient(135deg,var(--crimson),var(--crimson-glow));display:flex;align-items:center;gap:14px}
+.author-chair-head svg{width:24px;height:24px;color:rgba(255,255,255,0.7);flex-shrink:0}
+.author-chair-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:2px}
+.author-chair-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:var(--white)}
+.author-chair-body{padding:28px;background:var(--cream-warm)}
+.author-chair-body p{font-family:'Source Serif 4',Georgia,serif;font-size:0.92rem;line-height:1.72;color:var(--text);margin-bottom:14px}.author-chair-body p:last-child{margin-bottom:0}
+.author-chair-body strong{color:var(--crimson);font-weight:600}
+.scene{margin:36px 0;padding:32px;background:linear-gradient(140deg,var(--ink-dark),var(--ink));border-radius:var(--radius);border:1px solid rgba(139,26,46,0.15);position:relative;overflow:hidden}
+.scene::before{content:'';position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle,rgba(139,26,46,0.06) 0%,transparent 70%);border-radius:50%}
+.scene .scene-label{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--crimson-glow);margin-bottom:12px;position:relative;z-index:2}
+.scene p{font-family:'Lora',serif;font-size:0.95rem;color:rgba(255,255,255,0.75);line-height:1.78;position:relative;z-index:2;margin-bottom:12px}.scene p:last-child{margin-bottom:0}
+.scene em{color:var(--crimson-pale);font-style:normal;font-weight:600}
+.prompt-card{margin:40px 0;padding:36px;background:linear-gradient(150deg,var(--ink),var(--ink-mid));border-radius:var(--radius);border:2px solid var(--crimson)}
+.prompt-card .pc-label{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--crimson-glow);margin-bottom:16px}
+.prompt-card h3{font-size:1.1rem;color:var(--white);margin-bottom:16px}
+.prompt-card p{font-size:0.88rem;color:rgba(255,255,255,0.65);line-height:1.7;margin-bottom:8px}
+.prompt-card code{display:block;margin:16px 0;padding:16px 20px;background:rgba(0,0,0,0.3);border-radius:10px;font-family:'Lora',serif;font-size:0.88rem;color:var(--crimson-pale);line-height:1.7;font-style:italic;white-space:pre-wrap}
+.final-test{margin:40px 0;padding:36px;background:linear-gradient(145deg,rgba(139,26,46,0.08),rgba(139,26,46,0.04));border-radius:16px;border:3px solid var(--crimson)}
+.final-test .ft-label{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:6px;text-transform:uppercase;color:var(--crimson);text-align:center;margin-bottom:16px}
+.final-test h3{font-family:'Poppins',sans-serif;font-size:1.15rem;font-weight:700;color:var(--ink);text-align:center;margin-bottom:20px}
+.final-test .ft-q{padding:16px 20px;margin-bottom:12px;background:var(--white);border-radius:10px;border-left:4px solid var(--crimson-glow)}
+.final-test .ft-q p{font-size:0.88rem;color:var(--text);line-height:1.6;margin-bottom:6px}
+.final-test .ft-q .think-line{margin-top:4px}
+.finale{text-align:center;padding:80px 24px;background:linear-gradient(170deg,var(--ink),#060403)}
+.finale h2{font-family:'Poppins',sans-serif;font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;color:var(--white);margin-bottom:8px;line-height:1.25}
+.finale h2 span{color:var(--crimson-glow)}
+.finale p{font-family:'Lora',serif;font-size:0.95rem;color:rgba(255,255,255,0.3);max-width:460px;margin:16px auto;line-height:1.65}
+footer{text-align:center;padding:36px 24px;background:#060403}
+footer p{font-family:'Lora',serif;font-size:0.78rem;font-style:italic;color:rgba(139,26,46,0.2);margin-bottom:14px}
+footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:normal;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.1)}
+@media print{@page{margin:18mm 16mm 22mm 16mm}body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}.cover{min-height:auto;padding:100px 24px;break-after:page}.ch-head{break-before:page;padding:60px 24px 44px}.think,.adventure,.viz,.ba-pair,.id-card,.mission,.insight,.dd,.breathe,.venn-wrap,.spectrum-wrap,.final-test,.prompt-card,.character-card,.scene{break-inside:avoid}.type-line,.cover-cursor,.breathe-ring{animation:none!important}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+</style>
+</head>
+<body>
+
+<!-- ===== SVG SPRITE SHEET ===== -->
+<svg class="svg-sprites" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <!-- Cover Art: Vintage Typewriter with floating pages -->
+  <symbol id="icon-cover-typewriter" viewBox="0 0 400 300">
+    <defs>
+      <linearGradient id="tw-body" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2E2A26"/><stop offset="100%" stop-color="#1C1916"/></linearGradient>
+      <linearGradient id="tw-paper-glow" x1="0.5" y1="0" x2="0.5" y2="1"><stop offset="0%" stop-color="#FAF5EA"/><stop offset="60%" stop-color="#E8E0D0"/></linearGradient>
+      <radialGradient id="tw-warm" cx="0.5" cy="0.3" r="0.6"><stop offset="0%" stop-color="rgba(196,53,78,0.15)"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+    </defs>
+    <!-- Warm glow behind -->
+    <ellipse cx="200" cy="200" rx="140" ry="100" fill="url(#tw-warm)"/>
+    <!-- Typewriter base -->
+    <rect x="90" y="170" width="220" height="80" rx="8" fill="url(#tw-body)" stroke="#4A3728" stroke-width="2"/>
+    <rect x="100" y="180" width="200" height="14" rx="3" fill="#3A3430"/>
+    <!-- Keys row 1 -->
+    <circle cx="120" cy="210" r="8" fill="#2E2A26" stroke="#4A3728" stroke-width="1"/><circle cx="120" cy="210" r="5" fill="#3A3430"/>
+    <circle cx="142" cy="210" r="8" fill="#2E2A26" stroke="#4A3728" stroke-width="1"/><circle cx="142" cy="210" r="5" fill="#3A3430"/>
+    <circle cx="164" cy="210" r="8" fill="#2E2A26" stroke="#4A3728" stroke-width="1"/><circle cx="164" cy="210" r="5" fill="#3A3430"/>
+    <circle cx="186" cy="210" r="8" fill="#2E2A26" stroke="#4A3728" stroke-width="1"/><circle cx="186" cy="210" r="5" fill="#3A3430"/>
+    <circle cx="208" cy="210" r="8" fill="#2E2A26" stroke="#4A3728" stroke-width="1"/><circle cx="208" cy="210" r="5" fill="#3A3430"/>
+    <circle cx="230" cy="210" r="8" fill="#2E2A26" stroke="#4A3728" stroke-width="1"/><circle cx="230" cy="210" r="5" fill="#3A3430"/>
+    <circle cx="252" cy="210" r="8" fill="#2E2A26" stroke="#4A3728" stroke-width="1"/><circle cx="252" cy="210" r="5" fill="#3A3430"/>
+    <circle cx="274" cy="210" r="8" fill="#2E2A26" stroke="#4A3728" stroke-width="1"/><circle cx="274" cy="210" r="5" fill="#3A3430"/>
+    <!-- Keys row 2 -->
+    <circle cx="130" cy="232" r="8" fill="#2E2A26" stroke="#4A3728" stroke-width="1"/><circle cx="130" cy="232" r="5" fill="#3A3430"/>
+    <circle cx="152" cy="232" r="8" fill="#2E2A26" stroke="#4A3728" stroke-width="1"/><circle cx="152" cy="232" r="5" fill="#3A3430"/>
+    <circle cx="174" cy="232" r="8" fill="#2E2A26" stroke="#4A3728" stroke-width="1"/><circle cx="174" cy="232" r="5" fill="#3A3430"/>
+    <circle cx="196" cy="232" r="8" fill="#2E2A26" stroke="#4A3728" stroke-width="1"/><circle cx="196" cy="232" r="5" fill="#3A3430"/>
+    <circle cx="218" cy="232" r="8" fill="#2E2A26" stroke="#4A3728" stroke-width="1"/><circle cx="218" cy="232" r="5" fill="#3A3430"/>
+    <circle cx="240" cy="232" r="8" fill="#2E2A26" stroke="#4A3728" stroke-width="1"/><circle cx="240" cy="232" r="5" fill="#3A3430"/>
+    <circle cx="262" cy="232" r="8" fill="#2E2A26" stroke="#4A3728" stroke-width="1"/><circle cx="262" cy="232" r="5" fill="#3A3430"/>
+    <!-- Platen / roller -->
+    <rect x="120" y="152" width="160" height="22" rx="11" fill="#4A3728" stroke="#3A3430" stroke-width="1"/>
+    <rect x="125" y="155" width="150" height="16" rx="8" fill="#5A4A3A"/>
+    <!-- Paper in typewriter -->
+    <rect x="150" y="80" width="100" height="85" rx="2" fill="url(#tw-paper-glow)" stroke="#D4C8B0" stroke-width="0.5"/>
+    <line x1="162" y1="95" x2="238" y2="95" stroke="#C4B8A0" stroke-width="0.5" opacity="0.6"/>
+    <line x1="162" y1="103" x2="230" y2="103" stroke="#C4B8A0" stroke-width="0.5" opacity="0.5"/>
+    <line x1="162" y1="111" x2="235" y2="111" stroke="#C4B8A0" stroke-width="0.5" opacity="0.5"/>
+    <line x1="162" y1="119" x2="220" y2="119" stroke="#C4B8A0" stroke-width="0.5" opacity="0.4"/>
+    <line x1="162" y1="127" x2="228" y2="127" stroke="#C4B8A0" stroke-width="0.5" opacity="0.4"/>
+    <line x1="162" y1="135" x2="210" y2="135" stroke="#C4B8A0" stroke-width="0.5" opacity="0.3"/>
+    <!-- Floating page 1 (upper left) -->
+    <g transform="translate(50,40) rotate(-12)">
+      <rect width="60" height="75" rx="2" fill="#FAF5EA" opacity="0.7" stroke="#D4C8B0" stroke-width="0.3"/>
+      <line x1="8" y1="15" x2="52" y2="15" stroke="#C4B8A0" stroke-width="0.4" opacity="0.5"/>
+      <line x1="8" y1="22" x2="48" y2="22" stroke="#C4B8A0" stroke-width="0.4" opacity="0.4"/>
+      <line x1="8" y1="29" x2="50" y2="29" stroke="#C4B8A0" stroke-width="0.4" opacity="0.4"/>
+      <line x1="8" y1="36" x2="40" y2="36" stroke="#C4B8A0" stroke-width="0.4" opacity="0.3"/>
+    </g>
+    <!-- Floating page 2 (upper right) -->
+    <g transform="translate(290,30) rotate(8)">
+      <rect width="55" height="70" rx="2" fill="#FAF5EA" opacity="0.6" stroke="#D4C8B0" stroke-width="0.3"/>
+      <line x1="7" y1="14" x2="48" y2="14" stroke="#C4B8A0" stroke-width="0.4" opacity="0.5"/>
+      <line x1="7" y1="21" x2="44" y2="21" stroke="#C4B8A0" stroke-width="0.4" opacity="0.4"/>
+      <line x1="7" y1="28" x2="46" y2="28" stroke="#C4B8A0" stroke-width="0.4" opacity="0.3"/>
+    </g>
+    <!-- Floating page 3 (left mid) -->
+    <g transform="translate(30,120) rotate(-20)">
+      <rect width="50" height="65" rx="2" fill="#FAF5EA" opacity="0.5" stroke="#D4C8B0" stroke-width="0.3"/>
+      <line x1="6" y1="12" x2="44" y2="12" stroke="#C4B8A0" stroke-width="0.4" opacity="0.4"/>
+      <line x1="6" y1="19" x2="40" y2="19" stroke="#C4B8A0" stroke-width="0.4" opacity="0.3"/>
+    </g>
+    <!-- Floating page 4 (right mid) -->
+    <g transform="translate(320,110) rotate(15)">
+      <rect width="48" height="62" rx="2" fill="#FAF5EA" opacity="0.55" stroke="#D4C8B0" stroke-width="0.3"/>
+      <line x1="6" y1="12" x2="42" y2="12" stroke="#C4B8A0" stroke-width="0.4" opacity="0.4"/>
+      <line x1="6" y1="19" x2="38" y2="19" stroke="#C4B8A0" stroke-width="0.4" opacity="0.3"/>
+    </g>
+    <!-- Ink splatters -->
+    <circle cx="80" cy="260" r="4" fill="#8B1A2E" opacity="0.15"/>
+    <circle cx="85" cy="258" r="2" fill="#8B1A2E" opacity="0.1"/>
+    <circle cx="320" cy="265" r="3" fill="#8B1A2E" opacity="0.12"/>
+    <circle cx="315" cy="262" r="1.5" fill="#8B1A2E" opacity="0.08"/>
+    <circle cx="200" cy="280" r="5" fill="#8B1A2E" opacity="0.1"/>
+    <circle cx="195" cy="278" r="2" fill="#8B1A2E" opacity="0.08"/>
+  </symbol>
+
+  <!-- Old Narrator: Dark ink blot / shadowy quill -->
+  <symbol id="icon-old-narrator" viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="28" fill="#1C1916" opacity="0.9"/>
+    <circle cx="32" cy="32" r="24" fill="#2E2A26"/>
+    <ellipse cx="32" cy="28" rx="12" ry="14" fill="#1C1916"/>
+    <!-- Weary eye shapes -->
+    <ellipse cx="26" cy="26" rx="4" ry="2.5" fill="#3A3430"/>
+    <circle cx="26" cy="26" r="1.5" fill="#7A6A58"/>
+    <ellipse cx="38" cy="26" rx="4" ry="2.5" fill="#3A3430"/>
+    <circle cx="38" cy="26" r="1.5" fill="#7A6A58"/>
+    <!-- Drooping line (weary mouth) -->
+    <path d="M26 34 Q32 37 38 34" fill="none" stroke="#4A3728" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- Quill shape fading into ink -->
+    <path d="M32 44 L28 58 Q32 62 36 58 Z" fill="#4A3728" opacity="0.6"/>
+    <path d="M32 44 L32 52" stroke="#7A6A58" stroke-width="1" opacity="0.4"/>
+    <!-- Ink drips -->
+    <circle cx="28" cy="60" r="2" fill="#1C1916" opacity="0.5"/>
+    <circle cx="35" cy="62" r="1.5" fill="#1C1916" opacity="0.4"/>
+  </symbol>
+
+  <!-- New Narrator: Golden quill with radiant light -->
+  <symbol id="icon-new-narrator" viewBox="0 0 64 64">
+    <defs>
+      <radialGradient id="quill-glow" cx="0.5" cy="0.4" r="0.5">
+        <stop offset="0%" stop-color="#FAF5EA"/>
+        <stop offset="50%" stop-color="#F2EBD8"/>
+        <stop offset="100%" stop-color="#E8E0D0"/>
+      </radialGradient>
+    </defs>
+    <!-- Radiant circle -->
+    <circle cx="32" cy="30" r="26" fill="url(#quill-glow)"/>
+    <circle cx="32" cy="30" r="22" fill="#FAF5EA" stroke="#C4A060" stroke-width="1"/>
+    <!-- Light rays -->
+    <line x1="32" y1="4" x2="32" y2="10" stroke="#C4A060" stroke-width="1.5" opacity="0.4"/>
+    <line x1="52" y1="12" x2="48" y2="16" stroke="#C4A060" stroke-width="1.5" opacity="0.3"/>
+    <line x1="12" y1="12" x2="16" y2="16" stroke="#C4A060" stroke-width="1.5" opacity="0.3"/>
+    <line x1="56" y1="30" x2="50" y2="30" stroke="#C4A060" stroke-width="1.5" opacity="0.3"/>
+    <line x1="8" y1="30" x2="14" y2="30" stroke="#C4A060" stroke-width="1.5" opacity="0.3"/>
+    <!-- Golden quill -->
+    <path d="M32 14 Q28 30 24 48 L32 44 L40 48 Q36 30 32 14Z" fill="#C4A060" stroke="#8B7030" stroke-width="0.5"/>
+    <path d="M32 14 Q30 30 28 44" fill="none" stroke="#E8D080" stroke-width="1" opacity="0.6"/>
+    <!-- Quill tip -->
+    <path d="M30 48 L32 56 L34 48" fill="#8B1A2E" opacity="0.7"/>
+    <!-- Bright eye in center -->
+    <circle cx="32" cy="28" r="5" fill="#FFFFFF" stroke="#C4A060" stroke-width="1"/>
+    <circle cx="32" cy="28" r="2.5" fill="#8B1A2E"/>
+    <circle cx="33" cy="27" r="1" fill="#F5C8CE"/>
+  </symbol>
+
+  <!-- Icons -->
+  <symbol id="ico-pen" viewBox="0 0 24 24"><path d="M17 3a2.83 2.83 0 014 4L7.5 20.5 2 22l1.5-5.5L17 3z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/></symbol>
+  <symbol id="ico-mask" viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 5 2 9v4c0 4 4 7 10 7s10-3 10-7V9c0-4-4.5-7-10-7z" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M8 10c-.5 1-1.5 1.5-2 1M16 10c.5 1 1.5 1.5 2 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M9 15c.8.7 1.6 1 3 1s2.2-.3 3-1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" fill="none"/></symbol>
+  <symbol id="ico-script" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M14 2v6h6M8 13h8M8 17h5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></symbol>
+  <symbol id="ico-people" viewBox="0 0 24 24"><circle cx="8" cy="7" r="3" stroke="currentColor" stroke-width="1.2" fill="none"/><circle cx="16" cy="7" r="3" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M2 20c0-3 2.5-5 6-5s6 2 6 5M12 20c0-3 2.5-5 6-5s4 2 4 5" stroke="currentColor" stroke-width="1.2" fill="none"/></symbol>
+  <symbol id="ico-chair" viewBox="0 0 24 24"><path d="M6 10V6a2 2 0 012-2h8a2 2 0 012 2v4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M4 10h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2a1 1 0 011-1z" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M7 14v6M17 14v6M7 18h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="ico-mirror" viewBox="0 0 24 24"><ellipse cx="12" cy="11" rx="7" ry="9" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M9 21h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="ico-arrow-r" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+  <symbol id="ico-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5" fill="none"/></symbol>
+  <symbol id="ico-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M16 8l-5.5 2.5L8 16l5.5-2.5z" stroke="currentColor" stroke-width="1.2" fill="none"/></symbol>
+  <symbol id="ico-signal" viewBox="0 0 24 24"><path d="M4 12h2l2-4 2 8 2-6 2 4 2-2 2 3h2" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="ico-flame" viewBox="0 0 24 24"><path d="M12 3c-1 3-3 5-3 8a3 3 0 006 0c0-3-2-5-3-8z" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M8 20h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="ico-cut" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3" stroke="currentColor" stroke-width="1.4" fill="none"/><circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="1.4" fill="none"/><path d="M20 4L8.12 15.88M14.47 14.48L20 20M8.12 8.12L12 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></symbol>
+</defs>
+</svg>
+
+<!-- ===== COVER ===== -->
+<section class="cover">
+  <div class="type-line">you are not good with money ... you are too sensitive ... you are the responsible one ... you are just like your father ... you always give up ... you are not the creative type ...</div>
+  <div class="type-line">be realistic ... that is not who you are ... you are not good enough for that ... you have always been this way ... stop being so dramatic ...</div>
+  <div class="type-line">you are the funny one ... you do not deserve nice things ... you are too much ... you will never change ... people like you do not do things like that ...</div>
+  <div class="type-line">you are the strong one ... you cannot sing ... be grateful for what you have ... you are too old for that now ... this is just who you are ...</div>
+  <div class="type-line">you are not smart enough ... you are a people pleaser ... you are difficult ... you are not a leader ... you are better off staying where you are ...</div>
+  <div class="cover-cursor"></div>
+  <div class="ghost-noise"></div>
+  <div class="cover-content">
+    <div class="cover-badge">Kingdom Builders AI</div>
+    <div class="cover-art">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 180" aria-label="Theater masks with spotlight">
+        <defs>
+          <linearGradient id="mask-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#C4354E" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="#8B1A2E" stop-opacity="0.7"/>
+          </linearGradient>
+          <linearGradient id="mask-bone" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FAF5EA"/>
+            <stop offset="100%" stop-color="#E8E0D0"/>
+          </linearGradient>
+          <radialGradient id="spotlight" cx="50%" cy="0%" r="80%">
+            <stop offset="0%" stop-color="#C4354E" stop-opacity="0.25"/>
+            <stop offset="60%" stop-color="#C4354E" stop-opacity="0.05"/>
+            <stop offset="100%" stop-color="#C4354E" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <!-- Spotlight beams -->
+        <polygon points="100,0 60,180 140,180" fill="url(#spotlight)" opacity="0.4"/>
+        <polygon points="100,0 30,160 80,170" fill="url(#spotlight)" opacity="0.2"/>
+        <polygon points="100,0 120,170 170,160" fill="url(#spotlight)" opacity="0.2"/>
+        <!-- Spotlight source -->
+        <circle cx="100" cy="8" r="8" fill="#C4354E" opacity="0.3"/>
+        <circle cx="100" cy="8" r="4" fill="#FAF5EA" opacity="0.5"/>
+        <!-- Comedy mask (right, slightly behind) -->
+        <g transform="translate(110, 50) rotate(8)">
+          <path d="M0,0 Q-5,-20 15,-28 Q35,-35 55,-25 Q70,-15 65,10 Q62,30 50,42 Q35,52 20,50 Q5,45 -2,30 Z" fill="url(#mask-bone)" opacity="0.7" stroke="#E8E0D0" stroke-width="1"/>
+          <ellipse cx="18" cy="-2" rx="6" ry="7" fill="#2E2A26" opacity="0.5"/>
+          <ellipse cx="42" cy="-5" rx="6" ry="7" fill="#2E2A26" opacity="0.5"/>
+          <path d="M15,18 Q30,35 48,16" fill="none" stroke="#2E2A26" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+          <path d="M10,18 Q12,22 15,18" fill="none" stroke="#2E2A26" stroke-width="1" opacity="0.3"/>
+        </g>
+        <!-- Tragedy mask (left, foreground) -->
+        <g transform="translate(25, 45) rotate(-5)">
+          <path d="M0,5 Q-3,-18 18,-30 Q38,-38 58,-28 Q72,-18 68,8 Q65,32 52,46 Q38,56 22,54 Q6,48 0,32 Z" fill="url(#mask-gold)" stroke="#C4354E" stroke-width="1.5" opacity="0.9"/>
+          <ellipse cx="20" cy="0" rx="7" ry="8" fill="#12100E" opacity="0.7"/>
+          <ellipse cx="46" cy="-3" rx="7" ry="8" fill="#12100E" opacity="0.7"/>
+          <path d="M18,28 Q33,18 50,26" fill="none" stroke="#12100E" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+          <!-- Tear -->
+          <ellipse cx="22" cy="12" rx="2" ry="3" fill="#FAF5EA" opacity="0.4"/>
+        </g>
+        <!-- Decorative lines -->
+        <line x1="30" y1="140" x2="170" y2="140" stroke="#C4354E" stroke-width="0.5" opacity="0.2"/>
+        <line x1="50" y1="148" x2="150" y2="148" stroke="#C4354E" stroke-width="0.5" opacity="0.15"/>
+        <line x1="70" y1="156" x2="130" y2="156" stroke="#C4354E" stroke-width="0.5" opacity="0.1"/>
+        <!-- Side spotlight rays -->
+        <line x1="10" y1="20" x2="45" y2="55" stroke="#E8E0D0" stroke-width="0.5" opacity="0.15"/>
+        <line x1="190" y1="20" x2="155" y2="55" stroke="#E8E0D0" stroke-width="0.5" opacity="0.15"/>
+        <line x1="5" y1="35" x2="40" y2="65" stroke="#E8E0D0" stroke-width="0.5" opacity="0.1"/>
+        <line x1="195" y1="35" x2="160" y2="65" stroke="#E8E0D0" stroke-width="0.5" opacity="0.1"/>
+        <!-- Stars/sparkles -->
+        <circle cx="25" cy="15" r="1.5" fill="#FAF5EA" opacity="0.3"/>
+        <circle cx="175" cy="25" r="1" fill="#FAF5EA" opacity="0.2"/>
+        <circle cx="160" cy="10" r="1.5" fill="#C4354E" opacity="0.25"/>
+        <circle cx="40" cy="30" r="1" fill="#C4354E" opacity="0.2"/>
+      </svg>
+    </div>
+    <h1>The<strong>Narrator</strong></h1>
+    <p class="cover-tagline">You are not living your life.<br>You are performing a character someone else wrote <br>to an audience that <em>is no longer in the room.</em></p>
+    <p class="cover-author">KingdomBuilders AI</p>
+  </div>
+</section>
+
+<!-- ===== BEFORE WE BEGIN ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Before We Begin</div><h2 class="ch-title">The Voice You Mistake for Yourself</h2><p class="ch-sub">It has been running your life. And it is not you.</p></div></div>
+<div class="ribbon"><p>"For as he thinks in his heart, so is he.". Proverbs 23:7</p></div>
+
+<div class="page prose section">
+
+  <div class="character-card">
+    <div class="avatar"><svg><use href="#icon-old-narrator"/></svg></div>
+    <div class="info">
+      <h3>The Old Narrator</h3>
+      <div class="role">The Voice You Inherited</div>
+      <p>A composite of every verdict delivered before you could argue back. It speaks in first person so you cannot distinguish it from yourself. It runs your decisions, your emotional range, and your sense of what is possible. It was never yours.</p>
+    </div>
+  </div>
+
+  <p>There is a voice in your head that narrates your life as it happens. Not sometimes, always. When you walk into a room: <em>everyone is looking at you, you do not belong here.</em> When someone does not reply to your text: <em>they are pulling away, you did something wrong.</em> When you consider a risk: <em>you are not the kind of person who does that, stay where it is safe.</em></p>
+
+  <p>Most people have never once questioned this voice. They hear it as themselves, their instincts, their personality, their honest self assessment. They would no sooner argue with it than argue with the color of their own eyes.</p>
+
+  <div class="scene">
+    <div class="scene-label">Imagine This</div>
+    <p>You are sitting at your desk. An opportunity appears, a new role, a creative project, a conversation that could change everything. Before you can even form a complete thought, the voice arrives: <em>"That is not for someone like you. You know who you are. Stay in your lane."</em> You close the tab. You decline the invitation. You never mention it to anyone. The voice spoke. You obeyed. You did not even register that a choice had been made.</p>
+  </div>
+
+  <p>Here is the uncomfortable truth: <strong>that voice is not you.</strong> It is a character you were cast in, written by your parents, your teachers, your earliest experiences of pain and praise, your cultural inheritance, the offhand comments people made when you were too young to reject their authority over your identity. You did not write this character. You inherited it. And you have been performing it so faithfully, for so long, that you have forgotten there was ever a role to question.</p>
+
+  <div class="character-card">
+    <div class="avatar"><svg><use href="#icon-new-narrator"/></svg></div>
+    <div class="info">
+      <h3>The New Narrator</h3>
+      <div class="role">The Author Within</div>
+      <p>The version of you that holds the pen. It does not shout over the old voice. It simply asks: who wrote that line? And then it writes a different one. Not louder. Just truer.</p>
+    </div>
+  </div>
+
+  <p>This guide is not about mindset. It is not about confidence or positive thinking. It is about something far more structural: <strong>the discovery that you are living someone else's story about who you are, and the terrifying realization that there is a pen, and nobody is in the Author's Chair.</strong></p>
+
+  <div class="mission"><div class="mission-label">The Core Idea</div><p>You are not your Narrator.<br>The Narrator is a character written by others.<br>The Author's Chair is <em>empty.</em> It has always been <em>yours.</em></p></div>
+
+  <!-- VENN DIAGRAM -->
+  <div class="venn-wrap">
+    <div class="venn-title">The Identity Overlap</div>
+    <div class="venn">
+      <div class="venn-circle venn-left"><div class="venn-label">Stories Others Told You</div></div>
+      <div class="venn-circle venn-right"><div class="venn-label">Stories You Tell Yourself</div></div>
+      <div class="venn-center"><span>Your True<br>Identity</span></div>
+    </div>
+  </div>
+
+  <p>The discomfort of this guide is not accidental. It is the discomfort of a spotlight turned on something that has been operating in the dark for your entire life. You may need to read certain pages twice. You may feel a strange, specific grief, not for something lost, but for something you have been told was you, that is not. That grief is the Narrator losing its grip. Let it.</p>
+
+  <div class="id-card"><div class="id-card-head">THE IDENTITY CORRECTION</div><div class="id-card-body"><h3>What shifts when you find the Author's Chair:</h3><p class="id-old">"I am a person who does not take risks. I am not creative. I am too sensitive. I am just not a disciplined person. This is who I am."</p><p class="id-new">"These are lines the Narrator was given. I did not write them. I have been performing them as if they were truth because nobody told me I could put the script down. I can put it down. I am the Author. I decide what comes next."</p></div></div>
+
+  <!-- IDENTITY SPECTRUM -->
+  <div class="spectrum-wrap">
+    <div class="spectrum-title">The Identity Narrative Spectrum</div>
+    <div class="spectrum-bar">
+      <div class="spectrum-marker"></div>
+      <div class="spectrum-marker"></div>
+      <div class="spectrum-marker"></div>
+      <div class="spectrum-marker"></div>
+    </div>
+    <div class="spectrum-labels">
+      <span>Victim Narrative</span>
+      <span>Passive Acceptance</span>
+      <span>Awareness</span>
+      <span>Active Questioning</span>
+      <span>Author Narrative</span>
+    </div>
+    <p class="spectrum-desc">Most people live between Passive Acceptance and Awareness. The Author moves deliberately to the right, not once, but daily.</p>
+  </div>
+
+  
+  <div class="scene">
+    <div class="scene-label">How This Guide Works</div>
+    <p>This is not a book you read and set down. It is a mirror you hold up to the machinery that has been running your identity since before you could speak. Each chapter reveals a different component of that machinery, the Script that defines your character, the Audience you perform for, the comfort that keeps you captive, the Chair that has always been empty, and the daily practice that makes authorship your default.</p>
+    <p>Between the chapters, you will find visual tools, diagrams, spectrums, scene blocks, and writing prompts designed to make the abstract concrete. Use them. Write in the lines. The Narrator operates in abstraction and shadow. The Author works in specifics and daylight. Every time you name something specific, you weaken the Script's hold by one degree.</p>
+  </div>
+
+  <div class="character-card">
+    <div class="avatar"><svg><use href="#icon-old-narrator"/></svg></div>
+    <div class="info">
+      <h3>When You Hear This Voice</h3>
+      <div class="role">The Old Narrator Speaking</div>
+      <p>"You are not the kind of person who does that. Stay where it is safe. Do not draw attention. Be realistic. You know who you are." This voice sounds like wisdom. It feels like self knowledge. It is neither. It is the Script, reciting lines it was given decades ago.</p>
+    </div>
+  </div>
+
+  <div class="character-card">
+    <div class="avatar"><svg><use href="#icon-new-narrator"/></svg></div>
+    <div class="info">
+      <h3>Choose This Voice Instead</h3>
+      <div class="role">The Author Responding</div>
+      <p>"Who wrote that line? When was it written? Is it still true? If I were choosing right now, with no Script and no Audience, what would I actually do?" This voice is quieter. It requires effort. It is the only one that is actually yours.</p>
+    </div>
+  </div>
+
+  <div class="descent-ramp"><div class="ramp-echo"><p>Scroll back up for a moment. Read the lines of text drifting across the cover. Some of them will have landed. One or two may have felt uncomfortably familiar, not as something you heard, but as something you believe about yourself right now. That is the Narrator. It speaks in first person so you cannot tell it apart from you.</p></div><div class="ramp-close"><div class="ramp-close-label">Before You Continue</div><p>One breath. Let one line surface, something the voice in your head says about you regularly. Not a dramatic belief. A quiet, ordinary one you have stopped questioning. Hold it. We are going to find out who wrote it.</p></div></div>
+
+  <div class="gq"><p>"The most dangerous prison is the one built from a story you believe is true."</p></div>
+</div>
+
+<div class="section"><div class="page"><div class="prose">
+<p>If you finish this playbook, you will hear the narrator in your head, the voice that has been writing your story without your permission, and you will know <strong>how to fire that narrator and hire a new one. You will understand why you've been performing a character for an audience that left the room years ago, and own the tools to rewrite the script from the first line.</strong></p>
+</div></div></div>
+
+<!-- ===== CHAPTER 1 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter One</div><h2 class="ch-title">The Script</h2><p class="ch-sub">You were handed a story before you were old enough to read. You have been living it ever since.</p></div></div>
+<div class="ribbon"><p>"Do not conform to the pattern of this world, but be transformed by the renewing of your mind.". Romans 12:2</p></div>
+
+<div class="page prose section">
+  <div class="mission"><div class="mission-label">The Thesis</div><p>The Script is the complete story of who you are <br>written entirely by <em>other people</em>, before you could consent,<br>in the years when you had no choice but to believe it.</p></div>
+
+  <p>Every human being receives a Script. It begins before memory. Your parents looked at you and concluded things. Your siblings established a hierarchy and assigned you a role. Your teachers marked you as capable or not, creative or practical, a leader or a follower. Your peers confirmed or denied. Your failures added lines. Your praise added others. By the time you were ten years old, a detailed character description existed, and you had internalized it as autobiography.</p>
+
+  <p>The Script is not a collection of conscious beliefs you chose. It is something more intimate and more insidious: it is the <strong>layer between you and raw experience</strong>, the lens through which every new thing is interpreted before you can see it clearly.</p>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-script"/></svg></span>What Is In the Script</h2>
+
+  <div class="dd"><h4><svg><use href="#ico-script"/></svg>The Role Assignment</h4><div class="sub">The character you were cast as</div><p>Every family system needs characters to function. The responsible one. The funny one. The problem. The peacemaker. The one with potential. The difficult one. These roles are assigned before you have any say, based on what the system needs, not on who you actually are. And once assigned, the system enforces them with stunning consistency. Step outside your role and something gets corrected: a look, a comment, a withdrawal of warmth.</p></div>
+
+  <div class="ba-pair">
+    <div class="ba-card ba-before"><div class="ba-head"><div class="ba-dot"></div> The Assigned Role</div><div class="ba-body"><ul><li>"I am the responsible one"</li><li>"I am the one who holds it together"</li><li>"I do not ask for help"</li><li>"My needs come after everyone else's"</li></ul></div></div>
+    <div class="ba-card ba-after"><div class="ba-head"><div class="ba-dot"></div> The Authored Truth</div><div class="ba-body"><ul><li>"I can be responsible and still have needs"</li><li>"Asking for help is not weakness"</li><li>"My role was assigned, not chosen"</li><li>"I decide who I am in every room"</li></ul></div></div>
+  </div>
+
+  <div class="dd"><h4><svg><use href="#ico-signal"/></svg>The Capability Ceiling</h4><div class="sub">The lines about what you can and cannot do</div><p>Somewhere in your Script, there is a ceiling. A line where someone, a parent, a teacher, a failure, said or implied: <em>you are not the kind of person who does that.</em> Not creative. Not athletic. Not smart in that particular way. The capability ceiling is the Script's most effective tool. It does not say you are bad. It simply says you are limited. And limited people do not need to try things beyond their limits.</p></div>
+
+  <div class="script-box">
+    <div class="script-box-head"><span class="script-title">Sample Script. Version: Most Humans</span><span class="script-author">Author: Not You</span></div>
+    <div class="script-line"><div class="script-cue">Identity</div><div class="script-text">"I am a person who is not naturally confident."</div></div>
+    <div class="script-line"><div class="script-cue">Capability</div><div class="script-text">"I am not a creative person."</div></div>
+    <div class="script-line"><div class="script-cue">Worth</div><div class="script-text">"I need to earn love through usefulness."</div></div>
+    <div class="script-line"><div class="script-cue">Risk</div><div class="script-text">"People like me do not take chances like that."</div></div>
+    <div class="script-line"><div class="script-cue">Visibility</div><div class="script-text">"I should not take up too much space."</div></div>
+    <div class="script-line"><div class="script-cue">Failure</div><div class="script-text">"When things go wrong, it confirms what I already knew about myself."</div></div>
+    <div class="script-line"><div class="script-cue">Joy</div><div class="script-text">"I should not want too much. That is selfish."</div></div>
+  </div>
+
+  <p>Read those lines again. Not as statements about other people. About you. Which ones did you not even notice because they felt like facts? That invisibility, that frictionless agreement, is the Script working.</p>
+
+  <div class="dd"><h4><svg><use href="#ico-flame"/></svg>The Emotional Permission Set</h4><div class="sub">Which feelings were allowed, and which were edited out</div><p>The Script does not just define who you are. It defines which emotions you are allowed to have. Some families permit anger but not sadness. Some permit sadness but respond to anger with punishment. Whatever your permission set, you learned it before adolescence. And you have been editing your emotional life ever since to match it, suppressing the unpermitted feelings, performing the permitted ones, wondering why you feel vaguely false in your own skin.</p></div>
+
+  <div class="adventure"><div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-script"/></svg></div><div class="adv-head-text"><div class="adv-head-label">See It In Action</div><div class="adv-head-title">The Artist Who Was Cast As The Practical One</div></div></div><div class="adv-body">
+    <div class="adv-step"><div class="step-n"></div><div class="step-c"><p>Michael is 44. He is an accountant. He is good at it. What nobody knows is that at 17, before he chose accounting, he was painting. His father sat in front of one of his pieces and said: "It is nice. But you need something you can live on." Michael has not picked up a brush in 27 years.</p></div></div>
+    <div class="adv-step"><div class="step-n">1</div><div class="step-c"><p>The Script the Narrator received: <em>I am the practical one. Art is not serious. Wanting to make things is a child's wish.</em> These lines were delivered in one sentence by one person in one moment. Michael has been running them for 27 years as if they were a law of physics.</p></div></div>
+    <div class="adv-step adv-result-bad"><div class="step-n"></div><div class="step-c"><p class="tag-result tag-result-bad">At 44, Michael has a stable career, a quiet life, and a feeling he cannot name, the low grade grief of someone who has been playing a character for so long they can barely remember they had a choice.</p></div></div>
+  </div></div>
+
+
+  <div class="adventure"><div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-people"/></svg></div><div class="adv-head-text"><div class="adv-head-label">See It In Action</div><div class="adv-head-title">The Peacemaker at Seven</div></div></div><div class="adv-body">
+    <div class="adv-step"><div class="step-n"></div><div class="step-c"><p>Rachel is 38. She is known as the calm one, the person who holds everyone together. She is exhausted in a way she cannot explain. Her marriage has an imbalance she has never named. She has anger she has never voiced because in her family, anger was dangerous.</p></div></div>
+    <div class="adv-step"><div class="step-n">1</div><div class="step-c"><p>The Script: <em>I am the one who keeps the peace. My needs come after everyone else's.</em> These lines were written when Rachel was seven, managing the emotional weather of a home where her mother's moods were unpredictable.</p></div></div>
+    <div class="adv-step adv-result-bad"><div class="step-n"></div><div class="step-c"><p class="tag-result tag-result-bad">The strategy that protected her at seven is the walls of a prison at 38. And she calls those walls "who I am." The most dangerous Script line is the one you are proud of.</p></div></div>
+  </div></div>
+
+  <div class="scene">
+    <div class="scene-label">The Script's Fingerprints</div>
+    <p>Here is how to know whether something is the Script or is genuinely you: <em>if you have never once questioned it, it is almost certainly the Script.</em> The things that are genuinely yours have a different texture. They feel chosen, not automatic. They have been tested, not inherited. They survive questioning because they are true, not because they arrived before questioning was possible.</p>
+    <p>The Script's fingerprints are on everything you believe about yourself that you learned before the age of twelve. Not all of it is wrong. But none of it was chosen. And the unchosen beliefs are the ones running your life while you think you are making free decisions.</p>
+  </div>
+
+  <div class="root-review"><div class="root-label">Root System. Chapter One</div>
+    <div class="root-layer current"><div class="root-ch">Ch1</div><div class="root-items"><div class="root-pill rp-bright"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-script"/></svg>The Script</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-bright"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-mask"/></svg>Role Assigned</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-bright"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-eye"/></svg>Performed as Truth</div></div></div>
+  </div>
+
+  <div class="think"><div class="think-label">Your Turn: Name the Script</div><h4>The character you were cast as:</h4>
+    <p class="q-start">The role my family assigned me (the one word everyone would use): </p><div class="think-line"></div>
+    <p class="q-start">The capability ceiling I have never crossed: </p><div class="think-line"></div>
+    <p class="q-start">The emotion I am not permitted to have: </p><div class="think-line"></div>
+    <p class="q-start">Who wrote these lines? (When? From whom? How old were you?): </p><div class="think-line"></div>
+    <p style="font-weight:500;color:var(--crimson);margin-top:10px;">If the author is not you, the script is not autobiography. It is a role. And roles can be rewritten.</p>
+  </div>
+
+  <div class="breathe"><div class="breathe-ring"></div><div class="breathe-ring"></div><div class="breathe-ring"></div><div class="breathe-content"><div class="breathe-label">Sit With This</div><h4>The Script is not your enemy. It kept you safe.</h4><p>Every line in it was a survival strategy written by a child doing their best. The problem is not that you have a Script. The problem is that you forgot it was one.</p></div></div>
+
+  <div class="gq"><p>"You have been faithful to a character someone else invented. The question is not whether you played the role well. You played it brilliantly. The question is: who are you when the performance ends?"</p></div>
+</div>
+
+<!-- ===== CHAPTER 2 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Two</div><h2 class="ch-title">The Audience</h2><p class="ch-sub">You are performing to a full house. Most of the seats are empty.</p></div></div>
+<div class="ribbon"><p>"Am I now seeking the approval of man, or of God? If I were still trying to please man, I would not be a servant of Christ.". Galatians 1:10</p></div>
+
+<div class="page prose section">
+  <div class="mission"><div class="mission-label">The Thesis</div><p>The Narrator does not just perform, it performs <em>for someone.</em><br>The Audience it is playing to is almost entirely made of<br>people who are <em>not in the room.</em></p></div>
+
+  <p>The Script would mean nothing without an Audience. And the Narrator has one, a vivid, fully populated theater of people whose opinion you are managing right now, in this moment, in the choices you make and the ones you avoid.</p>
+
+  <p>Audit your Audience and you will find: a parent who has been dead for six years, whose approval you are still trying to earn. A teacher from seventh grade whose one comment about your abilities you have been disproving ever since. A group of teenagers from high school who have not thought about you in twenty years.</p>
+
+  <div class="audience">
+    <div class="audience-label">Audit Your Audience. Who Is Actually In The Seats</div>
+    <div class="audience-seats">
+      <div class="audience-seat"><div class="audience-who">The Parent</div><div class="audience-truth">"Still trying to make them proud"</div><div class="audience-reality">They see you through their own Script. Their verdict was never fully about you.</div></div>
+      <div class="audience-seat"><div class="audience-who">The Teacher Who Doubted</div><div class="audience-truth">"Still building the case that they were wrong"</div><div class="audience-reality">They have not thought of you in years. You carry their verdict alone.</div></div>
+      <div class="audience-seat"><div class="audience-who">The Ex</div><div class="audience-truth">"Still performing against their assessment"</div><div class="audience-reality">The relationship is over. The performance continues.</div></div>
+      <div class="audience-seat"><div class="audience-who">The Inner Critic</div><div class="audience-truth">"The harshest reviewer in the house"</div><div class="audience-reality">A composite of every critical presence from your past. Not an honest assessment.</div></div>
+    </div>
+  </div>
+
+  
+  <div class="scene">
+    <div class="scene-label">The Empty Theater</div>
+    <p>Close your eyes for a moment. Picture a grand theater, velvet seats, ornate balconies, a spotlight trained on the stage. You are on that stage, mid performance, delivering your lines with precision. Now look out at the seats. Really look. The parent in row three has been gone for years. The teacher in the balcony retired and moved to another state. The high school crowd, scattered across the country, living their own performances, not watching yours.</p>
+    <p>The theater is almost empty. The spotlight is still on. You are still performing. <em>For whom?</em></p>
+  </div>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-people"/></svg></span>The Performance Tax</h2>
+  <div class="dd"><h4><svg><use href="#ico-people"/></svg>What Performing Costs</h4><div class="sub">The hidden price of playing to an empty house</div><p>Every decision filtered through an imagined audience costs something. You do not take the job because someone from your past decided you were not that caliber. You do not express the opinion because the inner critic anticipates the crowd's response, and the crowd has not occupied the same room as you since 2002. The Performance Tax is paid in unlived life, in choices foregone, risks unrisked, rooms you did not enter.</p></div>
+
+  <div class="ba-pair">
+    <div class="ba-card ba-before"><div class="ba-head"><div class="ba-dot"></div> The Tax You Pay</div><div class="ba-body"><ul><li>Opportunities declined before consideration</li><li>Opinions withheld to manage perception</li><li>Relationships maintained past their purpose</li><li>Emotions suppressed to stay in character</li><li>Dreams dismissed as unrealistic</li></ul></div></div>
+    <div class="ba-card ba-after"><div class="ba-head"><div class="ba-dot"></div> What You Reclaim</div><div class="ba-body"><ul><li>The right to want what you want</li><li>The freedom to speak without rehearsal</li><li>Relationships built on truth, not performance</li><li>Access to your full emotional range</li><li>Permission to pursue what calls to you</li></ul></div></div>
+  </div>
+
+  <div class="frame-diagram"><div class="frame-diagram-title">The Audience in Every Decision</div>
+    <div class="frame-row"><div class="frame-event"><span>"Should I speak up?"</span><em>Actual audience: colleagues, now</em></div><div class="frame-arrow"><svg><use href="#ico-arrow-r"/></svg></div><div class="frame-response"><span>Narrator checks: the teacher from 1994. The parent who said "don't show off."</span><em>Decision made by ghosts</em></div></div>
+    <div class="frame-label-center"><span>The Phantom Audience</span></div>
+    <div class="frame-row"><div class="frame-event"><span>"Should I try something new?"</span><em>Actual risk: small, recoverable</em></div><div class="frame-arrow"><svg><use href="#ico-arrow-r"/></svg></div><div class="frame-response"><span>Narrator checks: every witness to a past failure. The crowd's memory of you.</span><em>Decision made by people who moved on</em></div></div>
+  </div>
+
+  <div class="insight"><p>The cruelest part of the Phantom Audience is this: the people in those seats are not even seeing you accurately. Your parent was seeing you through their own Script. Your teacher was having a bad year. Your ex was processing their own wounds. <em>Nobody in your Audience ever had access to the real you.</em></p></div>
+
+  <div class="think"><div class="think-label">Your Turn: Clear the House</div><h4>Your Audience audit:</h4>
+    <p class="q-start">The person whose approval I am still quietly managing:</p><div class="think-line"></div>
+    <p class="q-start">What verdict of theirs am I still proving or disproving?</p><div class="think-line"></div>
+    <p class="q-start">If that seat were empty, what would I choose differently?</p><div class="think-line"></div>
+    <p style="font-weight:500;color:var(--crimson);margin-top:10px;">Whatever you just wrote in that last line, that is an authored choice. It came from you, not the Script.</p>
+  </div>
+
+  <div class="gq"><p>"You have been brilliant at performing. The audience you performed for so faithfully, look out at those seats. They have been empty for years."</p></div>
+</div>
+
+
+  <div class="root-review"><div class="root-label">Root System. Chapter Two</div>
+    <div class="root-layer"><div class="root-ch">Ch1</div><div class="root-items"><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-script"/></svg>The Script</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-mask"/></svg>Role</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><div class="root-ch">Ch2</div><div class="root-items"><div class="root-pill rp-bright"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-people"/></svg>Phantom Audience</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-bright"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-flame"/></svg>Performance Tax</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-bright"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-mask"/></svg>Unlived Choices</div></div></div>
+  </div>
+
+<!-- ===== CHAPTER 3 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Three</div><h2 class="ch-title">The Dangerous Comfort</h2><p class="ch-sub">Most people will read this far and agree completely. And then go back to the Script.</p></div></div>
+<div class="ribbon"><p>"Many are called, but few are chosen.". Matthew 22:14</p></div>
+
+<div class="page prose section">
+  <div class="mission"><div class="mission-label">The Thesis</div><p>The Narrator is uncomfortable to question<br>because without it, there is a terrifying open space.<br>The Author fills it with <em>a question only they can answer.</em></p></div>
+
+  <p>Here is the part where this guide becomes uncomfortable in a different way. The previous chapters described something that happened to you, a Script you did not choose, an Audience you did not assemble. That is the comfortable part. It positions you as the victim of forces beyond your control.</p>
+
+  <p>This chapter is about the part you own. Because here is the truth that lands harder than anything the Script ever delivered: <strong>You are an adult. At some point you had enough awareness to question the Script, and you chose not to.</strong> Not because you are weak. Because questioning the Script requires sitting in the open space of not knowing who you are without it.</p>
+
+  <div class="scene">
+    <div class="scene-label">The Moment of Choice</div>
+    <p>Picture the fork in the road. On one side: the Script. It is narrow, familiar, and lit by the dim light of someone else's expectations. On the other side: a blank, unlit path with no markers. The Narrator says: <em>"Stay on the path you know. At least you know who you are here."</em> The Author whispers: <em>"You do not know who you are there. That is the point. Go find out."</em></p>
+  </div>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-mirror"/></svg></span>Three Reasons People Keep the Script</h2>
+
+  <div class="dd"><h4><svg><use href="#ico-mirror"/></svg>The Script Provides an Excuse</h4><div class="sub">Permission to stop before it gets hard</div><p>If I am not a creative person, then I do not have to face the terror of trying to create something and being mediocre. The Script's capability ceiling is not just a limitation. It is a get out clause. "I am just not good at relationships" means I do not have to do the terrifying work of becoming someone who is.</p></div>
+
+  <div class="dd"><h4><svg><use href="#ico-flame"/></svg>The Script Is Who People Know You As</h4><div class="sub">The social cost of becoming someone different</div><p>When you step out of the Script, people who love you will sometimes experience it as a threat. The responsible one who stops over functioning upsets the people who relied on that service. Some relationships are built on the Script, not on you. When you change Scripts, those relationships will be tested. Some will not survive.</p></div>
+
+  <div class="dd"><h4><svg><use href="#ico-eye"/></svg>Without the Script, You Do Not Know What You Want</h4><div class="sub">The terrifying blankness of genuine self authorship</div><p>Strip away the Script and you face something most people have never faced: the open, unwritten page of who they actually are. And it is blank. And blank requires you to <em>decide.</em> Not discover. <em>Decide.</em> This is the Author's Chair. It is empty because almost nobody sits in it. Not because people cannot. Because it requires choosing yourself out of infinite possibility.</p></div>
+
+  <div class="ba-pair">
+    <div class="ba-card ba-before"><div class="ba-head"><div class="ba-dot"></div> The Comfortable Captive</div><div class="ba-body"><ul><li>Knows the Script is limiting. Agrees completely.</li><li>Feels seen by this guide. Goes back to performing.</li><li>Changes vocabulary, not behavior</li><li>Trades one Script for another</li><li>Remains the character. More articulate about why.</li></ul></div></div>
+    <div class="ba-card ba-after"><div class="ba-head"><div class="ba-dot"></div> The Author</div><div class="ba-body"><ul><li>Sees the Script. Does not perform it. Edits it.</li><li>Sits in the blank space without filling it immediately</li><li>Loses some relationships. Finds them acceptable losses.</li><li>Makes choices that feel strange because they are actually theirs</li><li>Becomes someone the old Script never described</li></ul></div></div>
+  </div>
+
+  <div class="insight"><p>The most common thing people do when they discover the Script is replace it with a better looking one. They absorb the language, perform a new character, the awakened one, the healed one, and call it authorship. It is not. <em>The Author's Chair is not where you perform awakening. It is where you make choices that have no audience and no applause, and make them anyway, because they are true.</em></p></div>
+
+  
+  <div class="scene">
+    <div class="scene-label">The Moment Nobody Talks About</div>
+    <p>There is a moment between recognizing the Script and doing something about it. It is the most dangerous moment in this entire guide. In that moment, the Narrator offers you the most sophisticated trap of all: <em>understanding as a substitute for action.</em></p>
+    <p>You can understand perfectly that you have been performing a character. You can articulate it beautifully. You can explain the Script, name the Audience, describe the Author's Chair with eloquence. And still be sitting in the exact same seat you have always occupied, performing the exact same character, with better vocabulary for why.</p>
+    <p><em>Knowledge without action is the Script's final defense. It lets you feel like you have changed while changing nothing.</em></p>
+  </div>
+
+  <div class="think"><div class="think-label">Honest Check</div><h4>Are you reading or are you doing?</h4>
+    <p class="q-start">Something in this guide that felt true but that I have not yet acted on:</p><div class="think-line"></div>
+    <p class="q-start">The Script line that is running right now, as I read this, telling me why acting is not practical or safe:</p><div class="think-line"></div>
+    <p class="q-start">The smallest possible action I could take today, not next week, today, that would be authored instead of scripted:</p><div class="think-line"></div>
+    <p style="font-weight:500;color:var(--crimson);margin-top:10px;">If you wrote something in that last line and you do it today, you have crossed from reader to Author. That crossing is the entire point of this guide.</p>
+  </div>
+
+  <div class="adventure"><div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-cut"/></svg></div><div class="adv-head-text"><div class="adv-head-label">The Hardest Story</div><div class="adv-head-title">The Friendship That Did Not Survive</div></div></div><div class="adv-body">
+    <div class="adv-step"><div class="step-n"></div><div class="step-c"><p>Sarah and Lena had been friends for fourteen years. The Script of their friendship was clear: Lena was the advice giver. Sarah was the one who needed help. Neither questioned it.</p></div></div>
+    <div class="adv-step"><div class="step-n">1</div><div class="step-c"><p class="tag-you">Sarah begins authoring.</p><p>Over a year, Sarah started making decisions without calling Lena first. She showed up to dinners with opinions of her own, a fullness she had not had before.</p></div></div>
+    <div class="adv-step"><div class="step-n">2</div><div class="step-c"><p>Lena experienced this as distance. Then as betrayal: <em>"You have changed. You used to be real with me."</em> What Lena meant: <em>You have left your role in our Script. I do not know how to be your friend now.</em></p></div></div>
+    <div class="adv-step adv-result-bad"><div class="step-n"></div><div class="step-c"><p class="tag-result tag-result-bad">The friendship did not survive. Authorship has a cost. Some people are in relationship with your character, not with you. The loss is real. It is also the price of a life that is actually yours.</p></div></div>
+  </div></div>
+
+  <div class="gq"><p>"The people who changed the world were not discovered. They were written. They sat in the Author's Chair when it was frightening and empty and they decided who they were going to become."</p></div>
+</div>
+
+
+  <div class="root-review"><div class="root-label">Root System. Chapter Three</div>
+    <div class="root-layer"><div class="root-ch">Ch1</div><div class="root-items"><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-script"/></svg>Script</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-mask"/></svg>Role</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><div class="root-ch">Ch2</div><div class="root-items"><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-people"/></svg>Audience</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-flame"/></svg>Tax</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><div class="root-ch">Ch3</div><div class="root-items"><div class="root-pill rp-bright"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-mirror"/></svg>Dangerous Comfort</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-bright"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-eye"/></svg>The Real Choice</div></div></div>
+  </div>
+
+<!-- ===== CHAPTER 4 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Four</div><h2 class="ch-title">The Author's Chair</h2><p class="ch-sub">You are not finding yourself. You are writing yourself. There is no buried treasure. There is only the pen.</p></div></div>
+<div class="ribbon"><p>"I can do all things through Christ who strengthens me.". Philippians 4:13</p></div>
+
+<div class="page prose section">
+  <div class="mission"><div class="mission-label">The Thesis</div><p>There is no authentic self waiting to be uncovered.<br>There is only the self you are actively authoring <br>or the self <em>someone else wrote</em> that you are still performing.<br>The pen exists. The Chair is yours. <em>Sit down.</em></p></div>
+
+  <p>The self help industry has told you for fifty years that there is a real you buried under the conditioning, waiting to be found. That if you journal enough, meditate enough, do enough therapy, you will excavate the authentic self.</p>
+
+  <p>This is one of the most comforting and most paralyzing ideas in modern culture. And it is wrong.</p>
+
+  <p>There is no buried self. There was a self before the Script, soft, unformed, open to becoming almost anything. The Script wrote over it. But what it wrote over was not a preformed identity. It was potential. Pure, directionless, infinite potential. You cannot excavate potential. <strong>You can only actualize it. And actualization is not discovery. It is creation.</strong></p>
+
+  <div class="scene">
+    <div class="scene-label">The Empty Chair</div>
+    <p>Imagine a room. In the center, a single chair, worn leather, a desk with a blank page and one pen. This is the Author's Chair. Every person you have ever admired who changed something about themselves or the world sat in this chair. They were not born different from you. They simply picked up the pen when the Narrator told them they could not write.</p>
+    <p>The chair has been here your whole life. The Narrator told you it was for someone else. <em>It was always for you.</em></p>
+  </div>
+
+  <div class="author-chair">
+    <div class="author-chair-head">
+      <svg><use href="#ico-chair"/></svg>
+      <div><div class="author-chair-label">The Seat That Was Always Yours</div><div class="author-chair-title">What Sitting In The Author's Chair Actually Means</div></div>
+    </div>
+    <div class="author-chair-body">
+      <p><strong>It means making choices that have no precedent in your Script.</strong> Choosing the creative risk when the Script says you are practical. Choosing to need something when the Script says you do not need people. These choices will feel wrong at first. They will feel like you are performing someone else's character. You are not. You are writing a new line, and the newness feels false because you have never heard yourself deliver it before.</p>
+      <p><strong>It means tolerating the blank page.</strong> There will be moments where you do not know what to write. That silence is not emptiness. It is the sound of infinite possibility refusing to be rushed. Stay in the Chair.</p>
+      <p><strong>It means publishing imperfect drafts.</strong> You do not need to know who you are going to be. You need to write the next line differently than the Script would have, and see what emerges from that choice.</p>
+    </div>
+  </div>
+
+  <div class="script-box">
+    <div class="script-box-head"><span class="script-title">The Script Before and After the Chair</span><span class="script-author">Same Person. Different Author.</span></div>
+    <div class="script-line"><div class="script-cue">Identity</div><div class="script-text crossed">"I am not a confident person."</div></div>
+    <div class="script-line"><div class="script-cue">Authored</div><div class="script-text authored">"I act from my values in this moment. Confidence is what that looks like from the outside."</div></div>
+    <div class="script-line"><div class="script-cue">Capability</div><div class="script-text crossed">"I am not creative."</div></div>
+    <div class="script-line"><div class="script-cue">Authored</div><div class="script-text authored">"I create things. Some are bad. The act is not dependent on the outcome."</div></div>
+    <div class="script-line"><div class="script-cue">Audience</div><div class="script-text crossed">"I need approval before I move."</div></div>
+    <div class="script-line"><div class="script-cue">Authored</div><div class="script-text authored">"I consult the people I respect. Then I decide. The decision is mine."</div></div>
+    <div class="script-line"><div class="script-cue">Failure</div><div class="script-text crossed">"This confirms what I always suspected about myself."</div></div>
+    <div class="script-line"><div class="script-cue">Authored</div><div class="script-text authored">"This is a data point, not a verdict. I decide what it means."</div></div>
+  </div>
+
+  <div class="adventure"><div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-pen"/></svg></div><div class="adv-head-text"><div class="adv-head-label">See It In Action</div><div class="adv-head-title">The Line She Had Never Delivered Before</div></div></div><div class="adv-body">
+    <div class="adv-step"><div class="step-n"></div><div class="step-c"><p>At 51, Claudia sat at a table and wrote a list. Not gratitude. Not goals. Things she actually wanted, not what was realistic, not what she had permission to want. She cried writing it, not from sadness but from the strange sensation of hearing her own voice for possibly the first time.</p></div></div>
+    <div class="adv-step"><div class="step-n">1</div><div class="step-c"><p class="tag-you">She begins with one authored line.</p><p>She had been afraid of water her whole life, a Script line written at seven. She signed up for swimming lessons. Not because swimming mattered. Because <em>she</em> had decided something about herself, and it was the first time she had done that consciously.</p></div></div>
+    <div class="adv-step adv-result-good"><div class="step-n"></div><div class="step-c"><p class="tag-result tag-result-good">Eighteen months later, she is not a swimmer. She is something more significant: a person who learned that the Narrator's ceiling is not the actual ceiling. Every choice she makes now gets tested: <em>is this what the Script says, or what I say?</em></p></div></div>
+  </div></div>
+
+  <div class="adventure"><div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-compass"/></svg></div><div class="adv-head-text"><div class="adv-head-label">See It In Action</div><div class="adv-head-title">The Man Who Stopped Performing for His Father</div></div></div><div class="adv-body">
+    <div class="adv-step"><div class="step-n"></div><div class="step-c"><p>Thomas's father died when Thomas was 34. By 36, Thomas realized he was still performing for him. Still making career decisions based on what his father would have approved. His father had been dead for two years, and he was the most active member of Thomas's Audience.</p></div></div>
+    <div class="adv-step"><div class="step-n">1</div><div class="step-c"><p class="tag-you">Thomas clears the seat.</p><p>Not a ceremony. A decision: <em>the performance for my father is over. He is not watching. I am now the only audience that remains.</em></p></div></div>
+    <div class="adv-step adv-result-good"><div class="step-n"></div><div class="step-c"><p class="tag-result tag-result-good">Two years later, Thomas left the industry his father had pointed him toward. He is less certain, less approved of, and more alive than he has been in his adult life. The Chair is his. What he writes from it, his father could never have imagined.</p></div></div>
+  </div></div>
+
+  
+  <div class="scene">
+    <div class="scene-label">The Pen and the Page</div>
+    <p>The pen is not a metaphor for willpower. It is a metaphor for <em>choice.</em> Every day, in a hundred small moments, you pick up the pen or you let the Script auto fill. The Author does not need to rewrite every line at once. The Author simply needs to notice when the Script is writing and ask: <em>is this mine?</em></p>
+    <p>Sometimes the answer is yes. Some Script lines are true, they survived questioning and earned their place. Keep those. They are no longer the Script. They are authored lines that happen to match what someone else once said. The difference is that you chose them. That changes everything.</p>
+  </div>
+
+  <div class="ba-pair">
+    <div class="ba-card ba-before"><div class="ba-head"><div class="ba-dot"></div> Script Lines to Retire</div><div class="ba-body"><ul><li>"I am not the kind of person who..."</li><li>"People like me do not..."</li><li>"I have always been this way"</li><li>"That is just how I am"</li><li>"I could never..."</li></ul></div></div>
+    <div class="ba-card ba-after"><div class="ba-head"><div class="ba-dot"></div> Authored Replacements</div><div class="ba-body"><ul><li>"I have not done that yet. I can start."</li><li>"That was the old Script. I write new lines."</li><li>"I have been this way. I am deciding what is next."</li><li>"That was the character. Here is the Author."</li><li>"I do not know if I can. I will find out."</li></ul></div></div>
+  </div>
+
+  <div class="insight"><p>The Author's Chair is not a destination. It is a practice. You will fall out of it. The Narrator will reclaim the pen. Whole days will pass where you perform the old Script without noticing. This is not failure. This is the process. <em>The only failure is never sitting down in the first place.</em></p></div>
+
+  <div class="think"><div class="think-label">Your Turn: Write the First Line</div><h4>From the Author's Chair:</h4>
+    <p class="q-start">The Script line I am retiring:</p><div class="think-line"></div>
+    <p class="q-start">Who wrote that line?</p><div class="think-line"></div>
+    <p class="q-start">The authored version (what I actually say about myself):</p><div class="think-line"></div>
+    <p class="q-start">The first action that makes the authored line true, in the next seven days:</p><div class="think-line"></div>
+    <p style="font-weight:500;color:var(--crimson);margin-top:10px;">That action is your first authored line. The Narrator will call it reckless. The Author recognizes it as the beginning of a different story.</p>
+  </div>
+
+
+  <div class="root-review"><div class="root-label">Root System. Chapter Four</div>
+    <div class="root-layer"><div class="root-ch">Ch1</div><div class="root-items"><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-script"/></svg>Script</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-mask"/></svg>Role</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><div class="root-ch">Ch2</div><div class="root-items"><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-people"/></svg>Audience</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-flame"/></svg>Tax</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><div class="root-ch">Ch3</div><div class="root-items"><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-mirror"/></svg>Comfort</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-eye"/></svg>Choice</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><div class="root-ch">Ch4</div><div class="root-items"><div class="root-pill rp-bright"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-chair"/></svg>Author's Chair</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-bright"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-pen"/></svg>Write the Line</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-bright"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-compass"/></svg>Live It</div></div></div>
+  </div>
+
+  <div class="gq"><p>"You are not finding yourself. You are writing yourself. The only question is whether you are holding the pen, or letting a ghost hold it for you."</p></div>
+</div>
+
+<!-- ===== CHAPTER 5 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Five</div><h2 class="ch-title">The Daily Practice of Authorship</h2><p class="ch-sub">The Narrator is fast. The Author must practice. Not once, every day.</p></div></div>
+<div class="ribbon"><p>"Work out your own salvation with fear and trembling.". Philippians 2:12</p></div>
+
+<div class="page prose section">
+  <p>The Narrator has had decades of practice. It is fluent. It runs below consciousness. The Author is new. Unpracticed. It requires deliberate, daily attention. Not a heroic intervention once. A small, consistent practice that gradually makes authorship the default.</p>
+
+  <div class="viz"><div class="viz-glow"></div><div class="viz-inner">
+    <div class="viz-top"><div class="viz-icon-wrap"><svg style="color:var(--crimson)"><use href="#ico-pen"/></svg></div><div class="viz-meta"><div class="viz-label">Visualization</div><h4>The Morning Authorship Check</h4></div></div>
+    <div class="viz-body"><p>Every morning, before the day fills in, a single question. Ninety seconds, no journal required: <em>Is there anything I am about to do today that I am doing because the Script says so, rather than because I actually choose it?</em></p><p>Not everything. One thing. Name it. Then decide: perform the Script on this one, or write something different. <strong>One authored line per day, for a year, is 365 lines you did not have before.</strong></p>
+      <div class="viz-trigger">Morning &#x2192; Name one Script driven choice &#x2192; Decide: perform or author &#x2192; Make the authored move &#x2192; Note what it reveals &#x2192; Repeat.</div>
+    </div>
+  </div></div>
+
+  <h2><span class="h2-icon"><svg><use href="#ico-compass"/></svg></span>The Thirty Day Rewrite</h2>
+
+  <div class="dd"><h4><svg><use href="#ico-eye"/></svg>Week 1: Hear the Narrator</h4><div class="sub">Days 1 to 7</div><p>Do not fight it. Just hear it. Every evening, write down one thing the Narrator said today, one Script line that ran. Not the dramatic ones. The quiet assumptions so normal you barely noticed them. By day seven you will have a map of your Script's most active lines.</p></div>
+
+  <div class="ba-pair">
+    <div class="ba-card ba-before"><div class="ba-head"><div class="ba-dot"></div> Week 1: What You Hear</div><div class="ba-body"><ul><li>"I should not say that in the meeting"</li><li>"That opportunity is not for me"</li><li>"I need to keep the peace here"</li><li>"I am being too much right now"</li></ul></div></div>
+    <div class="ba-card ba-after"><div class="ba-head"><div class="ba-dot"></div> Week 1: What You Learn</div><div class="ba-body"><ul><li>The Narrator speaks in "should" and "cannot"</li><li>Most Script lines are about permission</li><li>The voice arrives before thought</li><li>Hearing it creates a gap between it and you</li></ul></div></div>
+  </div>
+
+  <div class="dd"><h4><svg><use href="#ico-people"/></svg>Week 2: Audit the Audience</h4><div class="sub">Days 8 to 14</div><p>For every decision you make this week, ask: who am I making this for? Name the person in the Audience seat. Each time you name them, you weaken their hold. By day fourteen, you will be making at least some choices with no Audience at all.</p></div>
+
+  <div class="dd"><h4><svg><use href="#ico-pen"/></svg>Week 3: Write One New Line Each Day</h4><div class="sub">Days 15 to 21</div><p>One authored line per day. A choice, a statement, an action that the Script would not have predicted. Say the opinion. Attempt the thing. Ask for what you need. Cross the capability ceiling on something small. By day twenty one, you will have written twenty one lines the Script never contained.</p></div>
+
+  <div class="dd"><h4><svg><use href="#ico-chair"/></svg>Week 4: Sit in the Chair Without Filling It</h4><div class="sub">Days 22 to 30</div><p>The final week is the hardest. Sit with the question the Script was invented to answer: who am I, if I am not the character? Do not rush to answer it. The Author who can tolerate the blank page is the Author who will eventually write something genuinely original. That blank space is not emptiness. It is the beginning of a life that is actually yours.</p></div>
+
+  
+  <div class="viz"><div class="viz-glow"></div><div class="viz-inner">
+    <div class="viz-top"><div class="viz-icon-wrap"><svg style="color:var(--crimson)"><use href="#ico-eye"/></svg></div><div class="viz-meta"><div class="viz-label">Visualization</div><h4>The Evening Reflection</h4></div></div>
+    <div class="viz-body"><p>At the end of each day, before sleep takes over, ask yourself two questions. First: <em>When did the Narrator speak today?</em> Name the moment. Name the line. Second: <em>Was there a moment today where I authored instead of performed?</em> If yes, notice what that felt like. If no, notice that too, without judgment.</p><p>This is not a guilt practice. It is an awareness practice. The Author cannot write what the Author cannot see. These two questions, asked daily, gradually illuminate the machinery that has been running in the dark. Once illuminated, it loses its power. Not all at once. But steadily, irreversibly, one evening at a time.</p>
+      <div class="viz-trigger">Evening &#x2192; Name the Narrator's loudest line today &#x2192; Name one authored moment &#x2192; Sleep knowing the difference &#x2192; Wake up and author again.</div>
+    </div>
+  </div></div>
+
+  <div class="breathe"><div class="breathe-ring"></div><div class="breathe-ring"></div><div class="breathe-ring"></div><div class="breathe-content"><div class="breathe-label">You Made It</div><h4>This is the end of the guide. Not the end of the writing.</h4><p>The Narrator will not disappear. It will speak every day for the rest of your life. What changes is whether you take dictation, or hold the pen yourself.</p></div></div>
+
+  <div class="descent-ramp"><div class="ramp-echo"><p>You have read the entire guide. You have heard your Narrator named. You have seen your Audience. You have sat, even briefly, in the Author's Chair. Something shifted. Not dramatically. But a gap has opened between the voice and you. That gap is everything.</p></div><div class="ramp-close"><div class="ramp-close-label">The Only Question That Remains</div><p>One breath. The Script was given to you. You performed it with extraordinary faithfulness. It kept you safe. Honor it for that. And then, gently, deliberately, set it down. Not forever. Not all of it. One line. Today. The next line is yours to write. What does it say?</p></div></div>
+
+  <div class="think"><div class="think-label">Your Commitment to the Chair</div><h4>The story I am beginning to author</h4>
+    <p class="q-start">The Script line I am no longer going to accept as autobiography:</p><div class="think-line"></div>
+    <p class="q-start">The Audience member I am clearing from the front row:</p><div class="think-line"></div>
+    <p class="q-start">The first authored line of who I am becoming:</p><div class="think-line"></div>
+    <p class="q-start">The action I will take this week that the old Script would have said was not for someone like me:</p><div class="think-line"></div>
+    <p style="font-weight:500;color:var(--crimson);margin-top:10px;">The Narrator wrote a character. The Author writes a life. You have always had the pen. You simply forgot. You have it now. Do not put it down again.</p>
+  </div>
+
+  <div class="insight"><p>This guide is a living tool. Feed it into your AI and let it help you hear the Narrator in real time, to see when you are performing and when you are authoring, to name the Audience member in the seat, to find the authored version of the line you are about to deliver from Script. <em>The Narrator is not your enemy. It is an old version of you, doing its best. The Author is simply the newest version, the one with the pen, the one in the Chair, the one who is finally telling the true story.</em></p></div>
+
+  
+  <!-- ===== EXPANDED: Root System Review ===== -->
+  <div class="root-review"><div class="root-label">Root System. What You Now Carry</div>
+    <div class="root-layer"><div class="root-ch">Ch1</div><div class="root-items"><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-script"/></svg>The Script</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-mask"/></svg>Role Assigned</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-eye"/></svg>Performed as Truth</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><div class="root-ch">Ch2</div><div class="root-items"><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-people"/></svg>Phantom Audience</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-mask"/></svg>Performance Tax</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-flame"/></svg>Unlived Choices</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><div class="root-ch">Ch3</div><div class="root-items"><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-mirror"/></svg>Dangerous Comfort</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-eye"/></svg>The Real Choice</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer"><div class="root-ch">Ch4</div><div class="root-items"><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-chair"/></svg>Author's Chair</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-dim"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-pen"/></svg>Write the Line</div></div></div>
+    <div class="root-sep"></div>
+    <div class="root-layer current"><div class="root-ch">Ch5</div><div class="root-items"><div class="root-pill rp-bright"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-compass"/></svg>Daily Practice</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-bright"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-pen"/></svg>365 Authored Lines</div><div class="root-arr">&#x2192;</div><div class="root-pill rp-bright"><svg style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;color:currentColor"><use href="#ico-chair"/></svg>A Life That Is Yours</div></div></div>
+  </div>
+
+  <!-- ===== EXPANDED: Additional Adventure &mdash; The Promotion ===== -->
+  <div class="adventure"><div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-flame"/></svg></div><div class="adv-head-text"><div class="adv-head-label">See It In Action</div><div class="adv-head-title">The Promotion He Did Not Apply For</div></div></div><div class="adv-body">
+    <div class="adv-step"><div class="step-n"></div><div class="step-c"><p>James, 41, did not apply for the leadership role. The qualifications described him almost exactly. He stared at the job posting for three days and then let the window close. His reason: <em>I am not really a leader. That is just not who I am.</em></p></div></div>
+    <div class="adv-step"><div class="step-n">1</div><div class="step-c"><p>His Narrator ran an Audience check before he could consciously form a thought. In that check, it found: his older brother, who held the leadership role in the family. A manager from age 27 who passed him over once and said "not yet." The accumulated memory of every group project where he had deferred to someone louder.</p></div></div>
+    <div class="adv-step"><div class="step-n">2</div><div class="step-c"><p>The verdict from the Audience: <em>leaders are other people. You are the support. You know your role.</em> James is 41 years old, performing a character assigned when he was ten, ratified by a manager at 27. His brother has not thought about family hierarchy since 2003. His manager does not remember his name.</p></div></div>
+    <div class="adv-step adv-result-bad"><div class="step-n"></div><div class="step-c"><p class="tag-result tag-result-bad">The job went to someone less qualified. James knows this. The Narrator told him it confirmed the right decision. What it actually confirmed: the Audience is still governing a grown man's career, assembled from ghosts.</p></div></div>
+  </div></div>
+
+  <!-- ===== EXPANDED: The Peacemaker Story ===== -->
+  <div class="adventure"><div class="adv-head"><div class="adv-head-icon"><svg><use href="#ico-people"/></svg></div><div class="adv-head-text"><div class="adv-head-label">See It In Action</div><div class="adv-head-title">The Peacemaker Who Cannot Have a Conflict</div></div></div><div class="adv-body">
+    <div class="adv-step"><div class="step-n"></div><div class="step-c"><p>Rachel is 38. She is known as the calm one, the diplomatic one. She is exhausted in a way she cannot explain because it sounds like complaining about being kind. Her marriage has an imbalance she has never named. She has opinions she has never expressed. She has anger she has never voiced.</p></div></div>
+    <div class="adv-step"><div class="step-n">1</div><div class="step-c"><p>The Script: <em>I am the one who keeps the peace. My needs come after everyone else's. My anger would damage things.</em> These lines were written when Rachel was seven, managing the emotional weather of a home where her mother's moods were unpredictable. She learned to read the room and smooth it before anything broke.</p></div></div>
+    <div class="adv-step"><div class="step-n">2</div><div class="step-c"><p>At 38, she is still saving rooms that do not need saving. She is suppressing anger that is entirely legitimate. She is performing strength for an audience that would love her just as fully if she were sometimes fragile. The strategy that protected her at seven is the walls of a prison at 38.</p></div></div>
+    <div class="adv-step adv-result-bad"><div class="step-n"></div><div class="step-c"><p class="tag-result tag-result-bad">The most dangerous line in any Script is the one you have decided to be proud of. Rachel is proud of being calm. She has built her identity on a coping strategy a seven year old invented. The Narrator calls it strength. The Author sees a role she can finally stop performing.</p></div></div>
+  </div></div>
+
+  <!-- ===== EXPANDED: Additional Venn section ===== -->
+  <div class="venn-wrap">
+    <div class="venn-title">The Author's Resolution</div>
+    <div class="venn">
+      <div class="venn-circle venn-left"><div class="venn-label">Who the Script Says You Are</div></div>
+      <div class="venn-circle venn-right"><div class="venn-label">Who You Choose to Become</div></div>
+      <div class="venn-center"><span>The Authored<br>Life</span></div>
+    </div>
+  </div>
+
+  <!-- ===== EXPANDED: Additional Spectrum ===== -->
+  <div class="spectrum-wrap">
+    <div class="spectrum-title">Where Are You Right Now?</div>
+    <div class="spectrum-bar">
+      <div class="spectrum-marker"></div>
+      <div class="spectrum-marker"></div>
+      <div class="spectrum-marker"></div>
+      <div class="spectrum-marker"></div>
+    </div>
+    <div class="spectrum-labels">
+      <span>Still Performing</span>
+      <span>Hearing the Voice</span>
+      <span>Questioning It</span>
+      <span>Writing New Lines</span>
+      <span>Living Authored</span>
+    </div>
+    <p class="spectrum-desc">Mark where you are today. Come back in thirty days and mark again. The movement is the proof.</p>
+  </div>
+
+  <!-- ===== EXPANDED: Scene Block ===== -->
+  <div class="scene">
+    <div class="scene-label">One Year From Now</div>
+    <p>Imagine yourself twelve months from today. You have been practicing authorship, not perfectly, not consistently, but persistently. The Narrator still speaks. But there is a pause now between the voice and your response. In that pause lives a question: <em>is that true, or is that the Script?</em></p>
+    <p>You have made choices the old version of you would not recognize. Some were small, an opinion voiced, a boundary held, a creative risk taken. Some were large, a relationship renegotiated, a career shifted, a conversation that changed everything. You are not a different person. You are the same person, <em>finally holding the pen.</em></p>
+  </div>
+
+  <!-- ===== EXPANDED: Additional Think Prompt ===== -->
+  <div class="think"><div class="think-label">The Author's Inventory</div><h4>Take stock of what you carry</h4>
+    <p class="q-start">The three most active Script lines in my daily life right now:</p>
+    <div class="think-line"></div><div class="think-line"></div><div class="think-line"></div>
+    <p class="q-start">The Audience members who have the most expensive seats:</p>
+    <div class="think-line"></div><div class="think-line"></div>
+    <p class="q-start">The area of my life where I am most ready to start authoring:</p>
+    <div class="think-line"></div>
+    <p class="q-start">What I would do differently if absolutely nobody were watching:</p>
+    <div class="think-line"></div>
+    <p style="font-weight:500;color:var(--crimson);margin-top:10px;">That last answer is the Author speaking. The distance between that answer and your current life is the distance the Script has created. Close it. One line at a time.</p>
+  </div>
+
+  <!-- ===== EXPANDED: Additional BA pair ===== -->
+  <div class="ba-pair">
+    <div class="ba-card ba-before"><div class="ba-head"><div class="ba-dot"></div> Living From Script</div><div class="ba-body"><ul><li>Decisions feel automatic, almost unconscious</li><li>Risks avoided because "that is not who I am"</li><li>Emotions filtered through what is permitted</li><li>Success measured by the Audience's standards</li><li>Comfort mistaken for peace</li></ul></div></div>
+    <div class="ba-card ba-after"><div class="ba-head"><div class="ba-dot"></div> Living From the Chair</div><div class="ba-body"><ul><li>Decisions feel deliberate, sometimes uncomfortable</li><li>Risks taken because "I am the one who decides"</li><li>Full emotional range, even the difficult parts</li><li>Success measured by alignment with chosen values</li><li>Aliveness, even when it is not comfortable</li></ul></div></div>
+  </div>
+
+  <!-- ===== EXPANDED: Additional Scene ===== -->
+  <div class="scene">
+    <div class="scene-label">The Letter You Will Never Send</div>
+    <p>There is a letter inside you. It is addressed to the person who wrote the most powerful line of your Script, the parent, the teacher, the moment. You will probably never send it. But writing it, even in your mind, even right now, changes something. Because in writing it, you stop being the child who received the Script and become the Author who acknowledges it, honors what it was for, and sets it down.</p>
+    <p><em>"Thank you for doing your best. Your best gave me a story that was not mine. I carried it faithfully. I am setting it down now. Not because it was wrong. Because it was yours, and I need to write my own."</em></p>
+  </div>
+
+  <div class="insight"><p>The Narrator speaks first. The Author speaks true. The difference between a life performed and a life authored is not volume, it is source. <em>The Narrator's voice comes from the past. The Author's voice comes from the present, aimed at the future. Listen for which one is speaking. Then choose which one you follow.</em></p></div>
+
+
+  <!-- ===== FINAL TEST ===== -->
+  <div class="final-test">
+    <div class="ft-label">Final Test</div>
+    <h3>Before You Close This Page</h3>
+    <div class="ft-q"><p>Name one Script line you heard today, one quiet assumption that ran without your permission:</p><div class="think-line"></div></div>
+    <div class="ft-q"><p>Who is in the Audience seat for that line? Whose verdict are you still managing?</p><div class="think-line"></div></div>
+    <div class="ft-q"><p>Write the authored version, what you, the Author, actually say:</p><div class="think-line"></div></div>
+    <div class="ft-q"><p>What is one choice you will make this week from the Author's Chair, not the Script?</p><div class="think-line"></div></div>
+    <div class="ft-q"><p>If you could say one thing to the child who first received this Script, what would it be?</p><div class="think-line"></div></div>
+  </div>
+
+  <!-- ===== PROMPT CARD ===== -->
+  <div class="prompt-card">
+    <div class="pc-label">The Narrator Installation Prompt</div>
+    <h3>Feed This to Your AI</h3>
+    <p>Copy the text below and use it as a starting prompt in any AI conversation to activate The Narrator framework:</p>
+    <code>I just read The Narrator. The model: I have been living as a character written by others, by my family, my failures, my earliest experiences of pain and approval, performing that character to an Audience assembled mostly from my past. The Script is the story of who I am that I did not write. The Audience is the phantom collection of people I am still performing for. The Author's Chair is the position I take when I consciously decide who I am going to be.
+
+My most active Script line: [the thing the Narrator says about me most often]
+The primary Audience member: [whose approval or disapproval am I still managing?]
+Where I most need to author vs. perform: [the area of life where the Script is most limiting]
+
+Help me hear the Narrator in real time. When I describe situations, show me when I am performing and when I am authoring. Name the Script line running. Name the Audience member in the seat. Then help me find the authored version of the choice.
+
+Do not be gentle with the Script. Be gentle with the person underneath it.</code>
+  </div>
+
+  <div class="gq"><p>"Every person you have ever called courageous was simply someone who heard the Narrator and chose not to take direction from it that day. That is the whole of it. That is all heroism ever was."</p></div>
+</div>
+
+<!-- ===== FINALE ===== -->
+<section class="finale">
+  <h2>The Script was not your fault.<br><span>Continuing to perform it is your choice.</span></h2>
+  <p>Hear the Narrator. Name the Audience. Sit in the Chair.<br>The pen has always been yours. The page has always been blank.<br>The story that begins now is the only one that is actually yours to tell.</p>
+</section>
+
+<footer>
+  <p>"For we are God's handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.". Ephesians 2:10</p>
+  <div class="brand">KingdomBuilders AI</div>
+  <p style="margin-top:14px">kingdombuilders.ai</p>
+</footer>
+
+<div style="text-align:center;padding:20px 24px 32px;background:#060403;border-top:1px solid rgba(139,26,46,0.08);font-family:'Poppins',sans-serif;font-size:0.65rem;color:rgba(255,255,255,0.2);line-height:1.6" class="no-print">
+  To save as PDF: Open this file in your browser &#x2192; File &#x2192; Print &#x2192; "Save as PDF"<br>
+  Works on desktop, iPhone, iPad, and Android.
+</div>
+<style>.no-print{display:block}@media print{.no-print{display:none!important}}@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+</style>
+
+</body>
+</html>

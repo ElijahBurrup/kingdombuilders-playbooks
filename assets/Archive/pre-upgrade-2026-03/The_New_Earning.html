@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The New Earning | Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --deep:#0A1A18;--mid:#0D2D28;--light:#155048;--pale:#1A6B5A;
+ --emerald:#10B981;--emerald-glow:#34D399;--emerald-pale:#A7F3D0;--emerald-soft:rgba(16,185,129,0.08);
+ --gold:#D4A843;--gold-glow:#E0BC5F;--gold-pale:#F0DCA0;
+ --silver:#8A9BB0;--silver-light:#B0BEC5;--silver-pale:#D8E0E8;
+ --cream:#F0FDF4;--cream-warm:#E8F5E9;--cream-deep:#C8E6C9;
+ --text:#1A1E2E;--text-light:#3A4058;--text-muted:#6A7088;
+ --white:#FFFFFF;--radius:16px;
+ --shadow-soft:0 2px 16px rgba(10,26,24,0.08);
+ --shadow-mid:0 4px 28px rgba(10,26,24,0.12);
+ --before-bg:#FFF8E1;--before-border:#D4A843;--before-text:#5A3E00;
+ --after-bg:#E0F2F1;--after-border:#10B981;--after-text:#0A1A18
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--cream);line-height:1.82;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
+.page{max-width:720px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--deep);font-weight:700}
+.prose h2{font-size:1.4rem;color:var(--deep);margin:40px 0 16px;letter-spacing:-0.01em;display:flex;align-items:center;gap:10px}
+
+/* ===== KNOWLEDGE LAYER ===== */
+dfn.def{font-style:normal;border-bottom:1.5px dotted var(--emerald);cursor:help;position:relative}
+dfn.def:hover::after{content:attr(data-def);position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:var(--deep);color:var(--emerald-pale);padding:8px 14px;border-radius:8px;font-size:0.78rem;line-height:1.5;white-space:normal;width:260px;text-align:center;z-index:10;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,0.3);font-family:'Nunito',sans-serif}
+
+/* ===== COVER ===== */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;
+ background:linear-gradient(175deg,#040F0D 0%,#0A1A18 20%,var(--mid) 45%,var(--light) 70%,#0A1A18 100%);
+ position:relative;overflow:hidden}
+/* Rising seed particles */
+.seed{position:absolute;border-radius:50%;animation:seed-rise linear infinite;pointer-events:none;opacity:0}
+.seed:nth-child(1){bottom:-10%;left:15%;width:6px;height:6px;background:rgba(16,185,129,0.5);animation-duration:6s;animation-delay:0s}
+.seed:nth-child(2){bottom:-10%;right:20%;width:4px;height:4px;background:rgba(52,211,153,0.4);animation-duration:8s;animation-delay:-1s}
+.seed:nth-child(3){bottom:-10%;left:35%;width:8px;height:8px;background:rgba(16,185,129,0.3);animation-duration:7s;animation-delay:-2s}
+.seed:nth-child(4){bottom:-10%;right:35%;width:5px;height:5px;background:rgba(167,243,208,0.5);animation-duration:9s;animation-delay:-3s}
+.seed:nth-child(5){bottom:-10%;left:55%;width:7px;height:7px;background:rgba(52,211,153,0.4);animation-duration:6.5s;animation-delay:-1.5s}
+.seed:nth-child(6){bottom:-10%;right:10%;width:5px;height:5px;background:rgba(16,185,129,0.6);animation-duration:7.5s;animation-delay:-4s}
+.seed:nth-child(7){bottom:-10%;left:75%;width:4px;height:4px;background:rgba(212,168,67,0.4);animation-duration:8.5s;animation-delay:-2.5s}
+.seed:nth-child(8){bottom:-10%;left:5%;width:6px;height:6px;background:rgba(167,243,208,0.3);animation-duration:10s;animation-delay:-5s}
+.seed:nth-child(9){bottom:-10%;right:45%;width:3px;height:3px;background:rgba(52,211,153,0.5);animation-duration:7s;animation-delay:-0.5s}
+@keyframes seed-rise{
+ 0%{transform:translateY(0) scale(0.3);opacity:0}
+ 10%{opacity:0.8}
+ 50%{transform:translateY(-50vh) scale(1);opacity:0.6}
+ 90%{opacity:0.2}
+ 100%{transform:translateY(-110vh) scale(0.5);opacity:0}
+}
+.ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.015;mix-blend-mode:overlay;pointer-events:none}
+.cover-content{position:relative;z-index:2;padding:48px 24px}
+.cover-badge{display:inline-block;padding:6px 22px;border:1px solid rgba(16,185,129,0.3);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.67rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--emerald-glow);margin-bottom:16px}
+.cover-series{display:inline-block;padding:4px 16px;border:1px solid rgba(16,185,129,0.2);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.58rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--emerald-pale);margin-bottom:12px}
+.series-dots{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:36px}
+.series-dot{width:10px;height:10px;border-radius:50%;border:2px solid rgba(16,185,129,0.4);background:transparent}
+.series-dot.done{background:var(--gold);border-color:var(--gold)}
+.series-dot.active{background:var(--emerald);border-color:var(--emerald);box-shadow:0 0 8px rgba(16,185,129,0.5)}
+.cover h1{font-family:'Nunito',sans-serif;font-size:clamp(2.2rem,6vw,3.8rem);font-weight:900;color:var(--white);line-height:1.08;margin-bottom:4px}
+.cover h1 strong{font-weight:900;color:var(--emerald-glow);display:block;font-size:clamp(2.6rem,7vw,4.4rem)}
+.cover-tagline{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.5);margin-top:24px;line-height:1.75;max-width:540px;margin-left:auto;margin-right:auto}
+.cover-tagline em{color:var(--emerald-pale);font-style:normal;font-weight:600}
+.cover-sub{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-top:12px}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.58rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,0.15);margin-top:48px}
+
+/* ===== CHAPTER HEADS ===== */
+.ch-head{background:linear-gradient(170deg,var(--deep),var(--mid));padding:72px 24px 52px;position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2310B981' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.ch-badge{display:inline-block;padding:4px 16px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;color:var(--emerald-pale);margin-bottom:20px}
+.ch-num{font-family:'Nunito',sans-serif;font-size:5.5rem;font-weight:900;line-height:0.9;color:rgba(16,185,129,0.15);margin-bottom:-10px}
+.ch-title{font-family:'Nunito',sans-serif;font-size:2.1rem;font-weight:900;color:var(--white);line-height:1.15;letter-spacing:-0.02em;margin-bottom:10px}
+.ch-sub{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.4);line-height:1.6}
+
+/* ===== RIBBON (scripture) ===== */
+.ribbon{text-align:center;padding:22px 24px;background:linear-gradient(135deg,rgba(16,185,129,0.04),rgba(16,185,129,0.07));border-top:1.5px solid rgba(16,185,129,0.15);border-bottom:1.5px solid rgba(16,185,129,0.15)}
+.ribbon p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:var(--text-muted);max-width:520px;margin:0 auto}
+.ribbon .ref{font-weight:600;color:var(--emerald);font-style:normal}
+
+/* ===== CHARACTER CARDS ===== */
+.char-grid{display:grid;gap:24px;margin:40px 0}
+@media(min-width:640px){.char-grid{grid-template-columns:1fr 1fr 1fr}}
+.char-card{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft);transition:all 0.3s ease}
+.char-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-mid)}
+.char-head{background:linear-gradient(135deg,var(--emerald-soft),rgba(16,185,129,0.03));padding:18px 20px;border-bottom:1px solid var(--cream-deep);display:flex;align-items:center;gap:14px}
+.char-emoji{font-size:2rem;line-height:1;display:flex;align-items:center;justify-content:center}
+.char-name{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;color:var(--deep);line-height:1.25}
+.char-title{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-top:2px}
+.char-body{padding:20px}
+.char-body p{font-size:0.92rem;color:var(--text-light);line-height:1.75;margin:0}
+
+/* ===== SCENE BLOCKS ===== */
+.scene{background:linear-gradient(135deg,var(--cream-warm),var(--cream));border:1px solid var(--cream-deep);border-radius:var(--radius);padding:28px;margin:32px 0;box-shadow:var(--shadow-soft)}
+.scene-label{font-family:'Nunito',sans-serif;font-size:0.68rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--emerald);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.scene h4{font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:800;color:var(--deep);margin-bottom:14px;line-height:1.3}
+.scene p{font-size:0.95rem;color:var(--text-light);line-height:1.78;margin-bottom:14px}
+.scene p:last-child{margin-bottom:0}
+
+/* ===== BEFORE / AFTER ===== */
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:36px 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft)}
+@media(max-width:600px){.ba-grid{grid-template-columns:1fr}}
+.ba-col{padding:28px 24px}
+.ba-col.before{background:var(--before-bg);border-right:2px solid var(--cream-deep)}
+.ba-col.after{background:var(--after-bg)}
+@media(max-width:600px){.ba-col.before{border-right:none;border-bottom:2px solid var(--cream-deep)}}
+.ba-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px}
+.ba-col.before .ba-label{color:var(--before-border)}
+.ba-col.after .ba-label{color:var(--after-border)}
+.ba-col h4{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;margin-bottom:10px;line-height:1.3}
+.ba-col.before h4{color:var(--before-text)}
+.ba-col.after h4{color:var(--after-text)}
+.ba-col p{font-size:0.88rem;line-height:1.7;margin-bottom:8px}
+.ba-col.before p{color:#6A4A10}
+.ba-col.after p{color:#0A2A2A}
+.ba-col ul{list-style:none;padding:0;margin:0}
+.ba-col ul li{font-size:0.88rem;line-height:1.7;padding:4px 0 4px 18px;position:relative}
+.ba-col.before ul li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:8px;border-radius:50%;background:var(--before-border);opacity:0.5}
+.ba-col.after ul li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:8px;border-radius:50%;background:var(--after-border);opacity:0.5}
+
+/* ===== DATA BOXES ===== */
+.data-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin:32px 0}
+.data-box{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:24px 16px;text-align:center;box-shadow:var(--shadow-soft)}
+.data-num{font-family:'Nunito',sans-serif;font-size:2rem;font-weight:900;color:var(--emerald);line-height:1;margin-bottom:6px}
+.data-label{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+
+/* ===== FLOW DIAGRAM ===== */
+.flow{display:flex;flex-direction:column;gap:0;margin:32px 0}
+.flow-step{display:flex;align-items:flex-start;gap:16px;padding:20px 0}
+.flow-dot{width:36px;height:36px;min-width:36px;border-radius:50%;background:linear-gradient(135deg,var(--emerald),var(--emerald-glow));display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:0.8rem;font-weight:900;color:var(--white);box-shadow:0 2px 8px rgba(16,185,129,0.3)}
+.flow-line{width:2px;height:20px;background:linear-gradient(to bottom,var(--emerald),transparent);margin-left:17px}
+.flow-text h4{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:var(--deep);margin-bottom:4px}
+.flow-text p{font-size:0.88rem;color:var(--text-light);line-height:1.65}
+
+/* ===== GLOW BOX ===== */
+.glow-box{background:linear-gradient(135deg,var(--deep),var(--mid));border:2px solid rgba(16,185,129,0.2);border-radius:var(--radius);padding:32px;margin:36px 0;position:relative;overflow:hidden;box-shadow:0 4px 24px rgba(10,26,24,0.2)}
+.glow-box::before{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(16,185,129,0.08) 0%,transparent 70%);border-radius:50%}
+.glow-box h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--emerald-glow);margin-bottom:14px;position:relative}
+.glow-box p{font-size:0.95rem;color:rgba(255,255,255,0.8);line-height:1.78;position:relative}
+.glow-box strong{color:var(--emerald-pale)}
+
+/* ===== GRAND QUOTE ===== */
+.grand-quote{text-align:center;padding:48px 24px;margin:40px 0;position:relative}
+.grand-quote::before{content:'\201C';font-family:'Lora',serif;font-size:8rem;color:rgba(16,185,129,0.12);position:absolute;top:-20px;left:50%;transform:translateX(-50%);line-height:1}
+.grand-quote blockquote{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:var(--deep);line-height:1.7;max-width:520px;margin:0 auto;position:relative}
+.grand-quote cite{display:block;margin-top:16px;font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--emerald);font-style:normal}
+
+/* ===== ROOT CHECK ===== */
+.root-ck{margin:40px auto;max-width:720px;padding:36px 32px;background:linear-gradient(135deg,rgba(16,185,129,0.04),rgba(16,185,129,0.08));border-radius:var(--radius);border:2px solid rgba(16,185,129,0.15)}
+.root-ck .rc-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--emerald);margin-bottom:12px}
+.root-ck h4{font-size:1.05rem;color:var(--deep);margin-bottom:20px}
+.r-item{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
+.r-item:last-child{margin-bottom:0}
+.r-dot{flex-shrink:0;width:8px;height:8px;border-radius:50%;background:var(--emerald);margin-top:7px}
+.r-dot.gold{background:var(--gold)}
+.r-text{font-size:0.92rem;color:var(--text-light);line-height:1.7}
+
+/* ===== VIZ (visualization box) ===== */
+.viz{margin:32px 0;border-radius:var(--radius);border:2px solid var(--emerald);overflow:hidden;box-shadow:0 0 20px rgba(16,185,129,0.08)}
+.viz-inner{padding:0}
+.viz-top{display:flex;align-items:center;gap:16px;padding:20px 28px;background:linear-gradient(135deg,rgba(16,185,129,0.08),rgba(16,185,129,0.03))}
+.viz-icon{flex-shrink:0;width:40px;height:40px;border-radius:50%;background:var(--emerald);color:var(--white);display:flex;align-items:center;justify-content:center}
+.viz-icon svg{width:20px;height:20px}
+.viz-meta .viz-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--emerald);margin-bottom:4px}
+.viz-meta h4{font-size:1rem;color:var(--deep);margin:0}
+.viz-body{padding:24px 28px}
+.viz-body p{font-size:0.92rem;color:var(--text-light);line-height:1.75;margin-bottom:12px}
+.viz-body strong{color:var(--deep);font-weight:700}
+.viz-body em{color:var(--emerald);font-style:normal;font-weight:600}
+.viz-body p:last-child{margin-bottom:0}
+.viz-trigger{padding:16px 28px;background:linear-gradient(135deg,rgba(16,185,129,0.06),rgba(16,185,129,0.02));border-top:1px solid rgba(16,185,129,0.12);font-size:0.88rem;color:var(--deep);font-style:italic}
+
+/* ===== THINK PROMPT ===== */
+.think{background:linear-gradient(135deg,rgba(16,185,129,0.06),rgba(16,185,129,0.02));border:2px solid rgba(16,185,129,0.15);border-radius:var(--radius);padding:28px;margin:36px 0}
+.think-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--emerald);margin-bottom:14px}
+.think p{font-size:0.95rem;color:var(--text-light);line-height:1.78;margin-bottom:12px}
+.think p:last-child{margin-bottom:0}
+.think-line{border:none;border-bottom:1.5px dashed rgba(16,185,129,0.3);margin:8px 0}
+
+/* ===== CATEGORY CARD ===== */
+.cat-grid{display:grid;gap:16px;margin:32px 0}
+.cat-card{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow-soft);transition:all 0.3s ease}
+.cat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-mid);border-color:var(--emerald)}
+.cat-num{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--emerald);margin-bottom:6px}
+.cat-card h4{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;color:var(--deep);margin-bottom:8px;line-height:1.3}
+.cat-card p{font-size:0.9rem;color:var(--text-light);line-height:1.7;margin:0}
+
+/* ===== FINAL TEST ===== */
+.final-test{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:36px;margin:40px 0;box-shadow:var(--shadow-soft)}
+.final-test h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--deep);margin-bottom:6px}
+.final-test .test-sub{font-size:0.85rem;color:var(--text-muted);margin-bottom:24px;font-style:italic}
+.test-q{padding:14px 0;border-bottom:1px solid var(--cream-deep)}
+.test-q:last-child{border-bottom:none}
+.test-num{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--emerald);margin-bottom:4px}
+.test-q p{font-size:0.92rem;color:var(--text);line-height:1.65}
+
+/* ===== PROMPT CARD ===== */
+.prompt-card{background:linear-gradient(135deg,var(--deep),var(--mid));border-radius:var(--radius);padding:36px;margin:40px 0;box-shadow:0 4px 24px rgba(10,26,24,0.2)}
+.prompt-card h3{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;color:var(--emerald-glow);margin-bottom:16px}
+.prompt-card p{font-size:0.88rem;color:rgba(255,255,255,0.65);line-height:1.65;margin-bottom:10px}
+.prompt-card code{background:rgba(255,255,255,0.08);padding:2px 8px;border-radius:4px;font-size:0.82rem;color:var(--emerald-pale)}
+
+/* ===== FOOTER ===== */
+.footer{text-align:center;padding:48px 24px;background:var(--deep);color:rgba(255,255,255,0.2);font-family:'Poppins',sans-serif;font-size:0.6rem;letter-spacing:2px;text-transform:uppercase}
+.footer a{color:var(--emerald);text-decoration:none;opacity:0.6}
+.footer a:hover{opacity:1}
+
+@media(max-width:640px){
+  .page{padding:0 20px}
+  .root-ck{margin-left:20px;margin-right:20px;padding:28px 20px}
+  .char-grid{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+</style>
+</head>
+<body>
+
+<!-- ===== COVER ===== -->
+<section class="cover">
+<div class="seed"></div><div class="seed"></div><div class="seed"></div>
+<div class="seed"></div><div class="seed"></div><div class="seed"></div>
+<div class="seed"></div><div class="seed"></div><div class="seed"></div>
+<div class="ghost-noise"></div>
+<div class="cover-content">
+<div class="cover-badge">Kingdom Builders AI</div><br>
+<div class="cover-series">The AI Economy &middot; Part 2 of 2</div>
+<div class="series-dots">
+<div class="series-dot done"></div>
+<div class="series-dot active"></div>
+</div>
+<h1>The New <strong>Earning</strong></h1>
+<p class="cover-tagline">The ceiling is gone. Now what do you do for a living? Part 1 proved the pattern: every technology that terrified the workforce made it richer. Now comes the harder question. When AI can write, draw, code, compose, and execute, <em>what is left for humans to sell?</em> More than you think.</p>
+<p class="cover-sub">What Humans Earn When AI Handles Production</p>
+<p class="cover-author">KingdomBuilders AI</p>
+</div>
+</section>
+
+<!-- ===== SCRIPTURE RIBBON ===== -->
+<div class="ribbon">
+<p>"See, I am doing a new thing! Now it springs up; do you not perceive it? I am making a way in the wilderness and streams in the wasteland."<br><span class="ref">Isaiah 43:19</span></p>
+</div>
+
+<!-- ===== CHARACTERS ===== -->
+<div class="page section">
+<div class="char-grid">
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji"><svg viewBox="0 0 64 64" width="48" height="48"><circle cx="32" cy="32" r="26" fill="#0D2D28"/><path d="M20,28 L32,18 L44,28" stroke="#10B981" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M24,34 L32,26 L40,34" stroke="#34D399" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="28" y="34" width="8" height="12" rx="1" fill="#10B981" opacity="0.6"/><circle cx="32" cy="22" r="3" fill="#34D399"><animate attributeName="opacity" values="0.4;1;0.4" dur="2s" repeatCount="indefinite"/></circle></svg></div>
+<div><div class="char-name">The Operator</div><div class="char-title">The Multiplier</div></div>
+</div>
+<div class="char-body"><p>The person who uses AI as a lever, not a threat. Does not fear the tool. Wields it. Earns more because the ceiling above them shattered and they were the first to look up.</p></div>
+</div>
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji"><svg viewBox="0 0 64 64" width="48" height="48"><circle cx="32" cy="32" r="26" fill="#0D2D28"/><circle cx="24" cy="28" r="6" fill="none" stroke="#10B981" stroke-width="2"/><circle cx="40" cy="28" r="6" fill="none" stroke="#34D399" stroke-width="2"/><path d="M30,28 L34,28" stroke="#A7F3D0" stroke-width="1.5"/><path d="M20,42 Q32,48 44,42" stroke="#10B981" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="24" cy="28" r="2" fill="#10B981"><animate attributeName="r" values="1.5;3;1.5" dur="3s" repeatCount="indefinite"/></circle><circle cx="40" cy="28" r="2" fill="#34D399"><animate attributeName="r" values="1.5;3;1.5" dur="3s" repeatCount="indefinite" begin="0.5s"/></circle></svg></div>
+<div><div class="char-name">The Curator</div><div class="char-title">The Selector</div></div>
+</div>
+<div class="char-body"><p>The person whose value is not what they make but what they choose. In an age of infinite content, selection is the scarce resource. The Curator's eye is worth more than the machine's output.</p></div>
+</div>
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji"><svg viewBox="0 0 64 64" width="48" height="48"><circle cx="32" cy="32" r="26" fill="#0D2D28"/><circle cx="32" cy="30" r="10" fill="none" stroke="#D4A843" stroke-width="2.5"/><circle cx="32" cy="30" r="4" fill="#D4A843" opacity="0.6"/><path d="M32,42 L32,50" stroke="#D4A843" stroke-width="2" stroke-linecap="round"/><path d="M26,46 L38,46" stroke="#D4A843" stroke-width="2" stroke-linecap="round"/><circle cx="32" cy="30" r="2" fill="#E0BC5F"><animate attributeName="opacity" values="0.5;1;0.5" dur="2.5s" repeatCount="indefinite"/></circle></svg></div>
+<div><div class="char-name">The Anchor</div><div class="char-title">The Irreplaceable</div></div>
+</div>
+<div class="char-body"><p>The person whose value is their physical presence, their trust, their human warmth. The handshake. The bedside manner. The thing AI cannot replicate because it requires a body, a face, and a soul.</p></div>
+</div>
+</div>
+</div>
+
+<!-- ===== PREGAME / BOLD CLAIM ===== -->
+<div class="page section prose">
+<p>If you finish this playbook, you will have a <strong>concrete map of 16 income categories that grow in value as AI grows in power.</strong> You will stop asking "will AI take my job?" and start asking "which of these new categories is my best fit?" You will understand why production becoming free is the greatest economic gift in history, why the highest paid humans of the next decade will not be the fastest producers, and why the skills you already have are probably worth more than you think.</p>
+</div>
+
+<!-- ===== CHAPTER 0: PREGAME ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Pregame</div>
+<div class="ch-num">00</div>
+<div class="ch-title">The Ceiling Is Gone</div>
+<div class="ch-sub">A quick look up before we map what is ahead.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Part 1 of this series made one argument: every technology that terrified the <dfn class="def" data-def="The total population of people available and willing to work for wages.">workforce</dfn> made it richer. The loom. The tractor. The assembly line. The computer. The internet. Every single time, the pattern held. Fewer jobs in the old category. More jobs in total. Higher wages. Better conditions. A bigger pie.</p>
+
+<p>That argument was about the past. This playbook is about the future.</p>
+
+<p>The jobs AI creates will not look like the jobs AI replaces. They never do. The <dfn class="def" data-def="Johannes Gutenberg's 15th century invention that mechanized book production, replacing hand-copying scribes.">printing press</dfn> did not create faster scribes. It created journalists, novelists, librarians, and a literate middle class that had never existed. The automobile did not create faster horses. It created gas stations, highways, suburbs, drive through restaurants, and an entire logistics industry.</p>
+
+<div class="glow-box">
+<h3>The Bold Claim</h3>
+<p>Within 10 years, the highest paid humans will not be the ones who produce the most. They will be the ones who <strong>judge, curate, trust, and connect.</strong> Production becomes free. Taste becomes premium. You will not need to compete with AI. You will need to do the things AI makes more valuable by existing.</p>
+</div>
+
+<p>That sounds abstract. By the end of this playbook, it will be concrete. You will have 16 specific income categories, each one real, each one growing, each one rooted in something AI cannot do or something AI makes more valuable.</p>
+
+<p>Let us start with the view from above.</p>
+
+</div>
+
+<!-- ===== CHAPTER 1 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter One</div>
+<div class="ch-num">01</div>
+<div class="ch-title">The Stack</div>
+<div class="ch-sub">Every ceiling in every industry breaking at the same time.</div>
+</div>
+</div>
+
+<div class="ribbon">
+<p>"The old order of things has passed away."<br><span class="ref">Revelation 21:4</span></p>
+</div>
+
+<div class="page section prose">
+
+<p>Previous technologies broke one ceiling at a time. The cotton gin broke the ceiling on textile processing. The tractor broke the ceiling on agricultural yield. The computer broke the ceiling on calculation speed. Each breakthrough was enormous, but it was <strong>local.</strong> It hit one industry, and the others watched from a safe distance.</p>
+
+<p>AI is different. AI is <dfn class="def" data-def="Affecting every category simultaneously rather than one sector at a time.">horizontal.</dfn> It writes legal briefs and children's stories. It composes symphonies and sales emails. It diagnoses medical scans and debugs software. It draws portraits and floor plans. It translates Mandarin to Swahili and code to plain English.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Morning of the Stack</h4>
+<p>The Operator woke up one morning and discovered three things before breakfast. Her image editing software could now remove backgrounds with a single click. Her email client had drafted eight replies that sounded exactly like her voice. And her accounting tool had categorized three months of transactions that used to take her a full weekend.</p>
+<p>Three ceilings. Three industries. One morning.</p>
+<p>"This is not like the tractor," she said. "The tractor changed one field. This is changing every field at the same time."</p>
+</div>
+
+<p>This is <strong>The Stack.</strong> Not one ceiling breaking. All of them. Simultaneously. Writing, art, music, code, analysis, translation, customer service, design, research, scheduling, data entry, content creation. The entire production layer of the <dfn class="def" data-def="The total system of production, distribution, and consumption of goods and services.">knowledge economy</dfn> is being compressed.</p>
+
+<p>That has never happened before. And the ratio of new opportunity to old displacement will be unprecedented, because the disruption is unprecedented.</p>
+
+<div class="data-row">
+<div class="data-box"><div class="data-num">1</div><div class="data-label">Ceiling Broken (Tractor)</div></div>
+<div class="data-box"><div class="data-num">1</div><div class="data-label">Ceiling Broken (Computer)</div></div>
+<div class="data-box"><div class="data-num">All</div><div class="data-label">Ceilings Broken (AI)</div></div>
+</div>
+
+<div class="viz"><div class="viz-inner">
+  <div class="viz-top"><div class="viz-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 3v18"/></svg></div><div class="viz-meta"><div class="viz-label">Visualize It</div><h4>The Vertical vs. the Horizontal</h4></div></div>
+  <div class="viz-body">
+    <p>Imagine a building with 50 floors, each floor representing a different industry. Previous technologies were like a wrecking ball that smashed through one floor. The workers on that floor panicked, but the other 49 floors barely noticed.</p>
+    <p>AI is not a wrecking ball. It is an earthquake. <em>Every floor shakes at the same time.</em> That is terrifying if you are only looking at the shaking. But earthquakes also reveal new land. And this one is revealing more new land than any single wrecking ball ever could.</p>
+  </div>
+  <div class="viz-trigger">Close your eyes. See the 50 story building. Feel every floor rumble at once. Then watch new rooms appear where walls used to be.</div>
+</div></div>
+
+<div class="think">
+<div class="think-label">Stop and Notice</div>
+<p>Name three tasks you did this week that AI could now assist with. Not replace. Assist. That is the Stack in your personal life. Those three tasks represent ceilings that are already cracking.</p>
+<hr class="think-line">
+<p>Now ask: what would you do with the time you save?</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Stack.</strong> AI breaks every ceiling simultaneously, across every knowledge industry at once. This has never happened before. The ratio of new opportunity to old displacement will be unprecedented because the disruption itself is unprecedented.</div></div>
+</div>
+
+<!-- ===== CHAPTER 2 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Two</div>
+<div class="ch-num">02</div>
+<div class="ch-title">The Lag</div>
+<div class="ch-sub">The gap between the old job disappearing and the new one arriving.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Every technology transition has a painful middle. The old jobs start vanishing before the new jobs are visible. That gap has a name. It is <strong>The Lag.</strong></p>
+
+<p>The Lag is real. It is not imaginary. It is not something optimists dismiss. People lose income during The Lag. Families struggle. Communities that depended on a single industry can be devastated. Acknowledging The Lag is not pessimism. It is honesty.</p>
+
+<p>But The Lag has a pattern, and the pattern is this: <strong>it gets shorter every cycle.</strong></p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Curator's Question</h4>
+<p>The Curator sat across from a friend who had just lost her copywriting job to an AI tool. The friend was angry. "They replaced ten writers with one person and a subscription," she said.</p>
+<p>"How long ago did desktop publishing replace typesetters?" The Curator asked.</p>
+<p>"The eighties. Maybe the nineties."</p>
+<p>"And what replaced the typesetter jobs?"</p>
+<p>The friend paused. "Graphic designers. Web designers. UX people. Content strategists."</p>
+<p>"How long was the gap?"</p>
+<p>"Maybe... ten years?"</p>
+<p>"The AI gap will be shorter," The Curator said. "Not because it is less painful. Because the new categories emerge faster when the tool is available to everyone, not just corporations."</p>
+</div>
+
+<p>The data supports this. When the <dfn class="def" data-def="A machine that automated the weaving of cloth, central to the Industrial Revolution.">power loom</dfn> replaced hand weavers in England, the transition took roughly 40 years. When ATMs replaced bank tellers in the 1970s, the transition took about 20 years, and bank employment actually increased because cheaper branches meant more branches. When e-commerce threatened retail in the 2000s, the shift to logistics, warehouse, and digital retail roles took roughly 10 years.</p>
+
+<p>The pattern: each Lag is shorter than the last. Not because the displacement is smaller, but because the tools that cause the displacement are also the tools that accelerate the creation of new roles.</p>
+
+<div class="data-row">
+<div class="data-box"><div class="data-num">~40yr</div><div class="data-label">Power Loom Lag</div></div>
+<div class="data-box"><div class="data-num">~20yr</div><div class="data-label">ATM Lag</div></div>
+<div class="data-box"><div class="data-num">~10yr</div><div class="data-label">E-Commerce Lag</div></div>
+<div class="data-box"><div class="data-num">~5yr?</div><div class="data-label">AI Lag (Estimated)</div></div>
+</div>
+
+<div class="ba-grid">
+<div class="ba-col before">
+<div class="ba-label">During the Lag</div>
+<h4>What It Feels Like</h4>
+<ul>
+<li>The old job is gone</li>
+<li>No replacement is visible</li>
+<li>Headlines scream about loss</li>
+<li>Skills feel worthless</li>
+<li>The future looks empty</li>
+</ul>
+</div>
+<div class="ba-col after">
+<div class="ba-label">After the Lag</div>
+<h4>What Actually Happened</h4>
+<ul>
+<li>More total jobs than before</li>
+<li>Higher average wages</li>
+<li>New categories nobody predicted</li>
+<li>Old skills recombined in new ways</li>
+<li>The pie grew larger</li>
+</ul>
+</div>
+</div>
+
+<div class="grand-quote">
+<blockquote>The Lag is not the story. The Lag is the intermission. The story is what comes after, and it has always been bigger than what came before.</blockquote>
+<cite>The Pattern of Every Transition</cite>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Stack.</strong> AI breaks every ceiling simultaneously. Unprecedented scope means unprecedented new opportunity.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Lag.</strong> The gap between old jobs vanishing and new jobs appearing is real, painful, and temporary. It gets shorter every cycle. The AI Lag may be the shortest yet because the same tool that displaces also accelerates the creation of replacements.</div></div>
+</div>
+
+<!-- ===== CHAPTER 3 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Three</div>
+<div class="ch-num">03</div>
+<div class="ch-title">The Flip</div>
+<div class="ch-sub">The moment the "lost" skill becomes luxury.</div>
+</div>
+</div>
+
+<div class="ribbon">
+<p>"The stone the builders rejected has become the cornerstone."<br><span class="ref">Psalm 118:22</span></p>
+</div>
+
+<div class="page section prose">
+
+<p>There is a moment in every technology cycle that almost nobody predicts. The skill that the technology made "obsolete" comes back as a <dfn class="def" data-def="A product or service consumed more as its price rises, because scarcity and exclusivity increase its perceived value.">premium good.</dfn> This is The Flip.</p>
+
+<p>Factories made handmade goods cheap and abundant. Then handmade became a luxury brand. "Artisan" bread costs four times what factory bread costs. Hand stitched leather bags sell for hundreds of dollars more than machine stitched alternatives. The word "handcrafted" on any product label instantly raises its price.</p>
+
+<p>Streaming made recorded music free and infinite. Then vinyl records came back. In 2023, vinyl outsold CDs for the second consecutive year. Not because vinyl sounds better objectively. Because vinyl is <strong>physical, intentional, scarce,</strong> and human in a way that a streaming playlist is not.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Anchor's Market Stall</h4>
+<p>The Anchor sold pottery at a farmers market. A customer held up a mug and asked, "Did you make this by hand?"</p>
+<p>"Every one," The Anchor said.</p>
+<p>"Is it perfect?"</p>
+<p>"No. The glaze pooled a little on the left side. The handle is slightly thicker than I planned."</p>
+<p>The customer smiled. "That is why I want it. I can get a perfect mug for two dollars at any store. I cannot get one with your fingerprints on it."</p>
+<p>The Anchor charged forty dollars. The customer did not hesitate.</p>
+</div>
+
+<p>The Flip is already happening with AI. As AI generated text floods the internet, <dfn class="def" data-def="Content verifiably created by a human being without AI generation tools.">human written content</dfn> is becoming a premium signal. Substack writers who guarantee "no AI" are commanding higher subscription prices. Live music venues are seeing record attendance because recordings are infinite but presence is not. Restaurants with visible kitchens and chef interaction are outpricing delivery apps.</p>
+
+<div class="flow">
+<div class="flow-step"><div class="flow-dot">1</div><div class="flow-text"><h4>Technology Arrives</h4><p>Factories, streaming, AI. The new tool makes the old method feel obsolete.</p></div></div>
+<div class="flow-line"></div>
+<div class="flow-step"><div class="flow-dot">2</div><div class="flow-text"><h4>Old Method "Dies"</h4><p>Handmade goods, vinyl records, human writing. Everyone writes obituaries.</p></div></div>
+<div class="flow-line"></div>
+<div class="flow-step"><div class="flow-dot">3</div><div class="flow-text"><h4>Abundance Creates Hunger</h4><p>The market is flooded with cheap, perfect, soulless product. People get bored.</p></div></div>
+<div class="flow-line"></div>
+<div class="flow-step"><div class="flow-dot">4</div><div class="flow-text"><h4>The Flip</h4><p>The "dead" method returns as luxury. Scarcity, authenticity, and human imperfection become premium.</p></div></div>
+</div>
+
+<div class="viz"><div class="viz-inner">
+  <div class="viz-top"><div class="viz-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="10"/></svg></div><div class="viz-meta"><div class="viz-label">Visualize It</div><h4>The Farmers Market After the Supermarket</h4></div></div>
+  <div class="viz-body">
+    <p>Supermarkets made food cheap, abundant, and anonymous. Nobody knows who grew the tomato in aisle seven. Then farmers markets exploded. People pay three times more for a tomato when the person who grew it is standing behind the table, explaining how they composted the soil and why they picked it this morning.</p>
+    <p><em>The supermarket did not kill the farmer. It made the farmer premium.</em> AI will do the same to human creators, advisors, craftspeople, and anyone who can prove their work carries a human signature.</p>
+  </div>
+  <div class="viz-trigger">Close your eyes. See the farmers market booth. The handwritten sign. The dirt on the farmer's hands. Feel why that is worth more than the supermarket aisle. That feeling is The Flip.</div>
+</div></div>
+
+<div class="grand-quote">
+<blockquote>Every technology that replaces a human skill eventually turns that skill into a luxury. The only question is how long The Flip takes. With AI, it is already happening.</blockquote>
+<cite>The Premium of Being Human</cite>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Stack.</strong> All ceilings breaking simultaneously. Unprecedented disruption creates unprecedented opportunity.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Lag.</strong> Real, painful, temporary, getting shorter. The tools of disruption accelerate recovery.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Flip.</strong> The skill technology "kills" always returns as premium. Handmade after factories. Vinyl after streaming. Human presence after AI. Abundance of the machine makes scarcity of the human more valuable, not less.</div></div>
+</div>
+
+<!-- ===== CHAPTER 4 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Four</div>
+<div class="ch-num">04</div>
+<div class="ch-title">The New Earning (Part I)</div>
+<div class="ch-sub">Eight income categories that grow when AI grows.</div>
+</div>
+</div>
+
+<div class="ribbon">
+<p>"Whatever you do, work at it with all your heart, as working for the Lord, not for human masters."<br><span class="ref">Colossians 3:23</span></p>
+</div>
+
+<div class="page section prose">
+
+<p>Here is the heart of this playbook. When <dfn class="def" data-def="The act of creating goods, content, code, images, text, or any output from raw inputs.">production</dfn> becomes free or nearly free, what do humans sell? The answer is not one thing. It is a map of 16 categories, each rooted in something AI either cannot do or something AI makes more valuable.</p>
+
+<p>We will walk through the first eight here, and the remaining eight in the next chapter. For each one, we will name it, explain it, and show you what it looks like in practice.</p>
+
+<div class="cat-grid">
+
+<div class="cat-card">
+<div class="cat-num">Category 01</div>
+<h4>Taste Architecture</h4>
+<p>AI can generate a thousand images in an hour. But who decides which one is worth using? The <dfn class="def" data-def="The trained ability to discern quality, relevance, and emotional resonance from a set of options.">Taste Architect</dfn> does. This is the photographer who does not take photos but selects the one in a thousand that matters. The playlist curator who does not compose music but arranges 40 songs into an emotional journey. The creative director who does not design anything but decides what gets published. In a world of infinite output, the person who filters, selects, and arranges is the most valuable person in the room. AI makes content. The Taste Architect makes it meaningful.</p>
+</div>
+
+<div class="cat-card">
+<div class="cat-num">Category 02</div>
+<h4>Trust Brokering</h4>
+<p>Your doctor could hand you an AI generated diagnosis and walk out of the room. The diagnosis might be correct. But you would not feel safe. You need the doctor to sit with you, look you in the eye, and say, "Here is what this means for your life." The <dfn class="def" data-def="A professional whose primary value is the human confidence they create around a decision or recommendation.">Trust Broker</dfn> is the human face of any consequential decision. Lawyers, financial advisors, therapists, doctors. The advice may be AI generated. The trust is always human generated. As AI handles more of the analytical work, the premium on the person who translates that analysis into human confidence grows.</p>
+</div>
+
+<div class="cat-card">
+<div class="cat-num">Category 03</div>
+<h4>Experience Design</h4>
+<p>AI cannot be in a room with you. It cannot cook you a meal. It cannot lead you through a meditation retreat or hold your hand during a difficult conversation. <dfn class="def" data-def="The craft of creating physical, emotional, or multi-sensory events that require human presence to deliver.">Experience Design</dfn> is the creation of moments that require physical presence, emotional attunement, and real time adaptation. Retreats, immersive dining, live events, therapeutic sessions, fitness coaching, guided travel. The experience economy was already the fastest growing sector before AI. Now it accelerates, because the contrast between screen and presence becomes starker every year.</p>
+</div>
+
+<div class="cat-card">
+<div class="cat-num">Category 04</div>
+<h4>Orchestration</h4>
+<p>Prompt engineering was the beginning. <dfn class="def" data-def="The practice of designing multi-model AI workflows, chaining tools and systems to produce outcomes beyond what any single model can deliver.">Orchestration</dfn> is the destination. The Orchestrator does not write one prompt. They design systems: chaining multiple AI models together, routing outputs from one tool into inputs for another, building workflows that automate entire business processes. Think of it as plumbing for intelligence. The person who connects the pipes earns more than the person who turns on one faucet. This is the Operator's highest expression: not using the tool, but building systems of tools.</p>
+</div>
+
+<div class="cat-card">
+<div class="cat-num">Category 05</div>
+<h4>Ethical Oversight</h4>
+<p>Every AI system needs a human who can say "no." The <dfn class="def" data-def="Systematic examination of AI systems for unfair patterns in training data that produce discriminatory outputs.">bias auditor</dfn> who reviews hiring algorithms for discrimination. The compliance officer who ensures AI generated financial advice meets regulatory standards. The content moderator who flags when generated images cross ethical lines. As AI handles more decisions, the demand for humans who check those decisions does not shrink. It multiplies. Every new AI deployment creates a new oversight role. The person in the loop is not a cost center. They are a safety net the market will pay a premium to maintain.</p>
+</div>
+
+<div class="cat-card">
+<div class="cat-num">Category 06</div>
+<h4>Embodied Services</h4>
+<p>A robot cannot snake your drain. Not yet, and not cheaply for a long time. <dfn class="def" data-def="Work that requires a human body to be physically present and manually engaged with the material world.">Embodied services</dfn> are the jobs that require hands in the physical world: plumbing, electrical work, surgery, massage therapy, childcare, eldercare, construction, landscaping. These roles have been undervalued for decades because knowledge work held the prestige. That is changing. As knowledge work gets automated, the trades that require a body in the room command higher wages and greater respect. The plumber is immune to the chatbot.</p>
+</div>
+
+<div class="cat-card">
+<div class="cat-num">Category 07</div>
+<h4>Authenticity Premium</h4>
+<p>This is The Flip turned into an income stream. Handmade goods, human written content, live performance, in person coaching. The label "human made" will function the same way "organic" does in food. It is a premium signal. A marker of intention, effort, and scarcity. The painter who can prove every brushstroke is theirs. The writer who can show their drafts, their process, their human struggle. The musician who plays live, imperfectly, beautifully, in a room with other humans. AI generates perfection. Humans generate <strong>authenticity.</strong> Authenticity is becoming the luxury good of the 21st century.</p>
+</div>
+
+<div class="cat-card">
+<div class="cat-num">Category 08</div>
+<h4>Community Facilitation</h4>
+<p>AI can answer questions. It cannot build a community. The <dfn class="def" data-def="A person skilled at creating safe, productive, and meaningful group interactions between humans.">facilitator</dfn> who runs a mastermind group, leads a coaching cohort, moderates a support community, or manages an online forum creates a kind of value that is deeply human: belonging. People will pay for information. They will pay more for connection. They will pay the most for a space where they feel seen, challenged, and supported by other humans. Community facilitation scales with AI because AI tools make communities easier to organize, but the human at the center remains irreplaceable.</p>
+</div>
+
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Stack.</strong> All ceilings breaking simultaneously.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Lag.</strong> Real, shrinking, temporary.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Flip.</strong> Replaced skills return as luxury.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The New Earning (1 of 8):</strong> Taste Architecture. Selection is the skill when production is free.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The New Earning (2 of 8):</strong> Trust Brokering. The human face of consequential decisions.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The New Earning (3 of 8):</strong> Experience Design. Presence required. Screens optional.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The New Earning (4 of 8):</strong> Orchestration. Building systems of AI tools, not just using one.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The New Earning (5 of 8):</strong> Ethical Oversight. The human who says "no" grows more essential as AI says "yes" to more things.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The New Earning (6 of 8):</strong> Embodied Services. Hands in the physical world. Immune to the chatbot.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The New Earning (7 of 8):</strong> Authenticity Premium. Human made is the new organic.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The New Earning (8 of 8):</strong> Community Facilitation. Belonging cannot be automated.</div></div>
+</div>
+
+<!-- ===== CHAPTER 5 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Five</div>
+<div class="ch-num">05</div>
+<div class="ch-title">The New Earning (Part II)</div>
+<div class="ch-sub">Eight more categories. The map gets complete.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>The first eight categories covered what AI cannot do (presence, trust, hands) and what AI makes more valuable (taste, curation, authenticity). These next eight cover the <strong>bridge roles</strong> and the <strong>emerging roles</strong> that sit at the intersection of human and machine.</p>
+
+<div class="cat-grid">
+
+<div class="cat-card">
+<div class="cat-num">Category 09</div>
+<h4>The Translation Layer</h4>
+<p>AI speaks in probabilities, vectors, and outputs that most humans cannot interpret. The <dfn class="def" data-def="A professional who converts technical AI output into language, decisions, and actions that non-technical people can understand and use.">Translation Layer</dfn> professional is the bridge: the person who takes AI output and makes it legible to a business owner, a patient, a parent, or a policymaker. This is not just "explaining technology." It is converting machine intelligence into human decisions. The more powerful AI becomes, the wider the gap between its output and the average person's comprehension. That gap is an income category.</p>
+</div>
+
+<div class="cat-card">
+<div class="cat-num">Category 10</div>
+<h4>Edge Cases</h4>
+<p>AI handles the middle of the bell curve brilliantly. It struggles at the edges. The <dfn class="def" data-def="Unusual, rare, or novel situations that fall outside the patterns an AI model was trained on.">edge case</dfn> specialist handles the 5% that AI gets wrong: the insurance claim that does not fit any category, the customer complaint that requires judgment, the medical case that contradicts the algorithm. These roles exist in every industry. They pay well because they require the combination of domain expertise and adaptive reasoning that AI lacks. The more AI handles the routine 95%, the more visible and valuable the 5% specialist becomes.</p>
+</div>
+
+<div class="cat-card">
+<div class="cat-num">Category 11</div>
+<h4>Regulatory Navigation</h4>
+<p>Governments are racing to regulate AI. The EU's AI Act. NIST frameworks. State level data privacy laws. Industry specific compliance requirements. Every new regulation creates a new market for professionals who can guide businesses through it. The <dfn class="def" data-def="The complex web of government rules, standards, and compliance requirements governing AI deployment.">regulatory landscape</dfn> for AI is young, complex, and changing fast. Lawyers, consultants, and compliance officers who specialize in AI regulation are building a category that did not exist five years ago and will be worth billions within ten.</p>
+</div>
+
+<div class="cat-card">
+<div class="cat-num">Category 12</div>
+<h4>Narrative Design</h4>
+<p>AI generates content. Humans create <strong>meaning.</strong> The <dfn class="def" data-def="The craft of constructing stories, brand identities, and meaning frameworks that shape how people understand and feel about information.">Narrative Designer</dfn> is the person who takes raw information and turns it into a story that moves people. Brand builders, campaign strategists, documentary filmmakers, speechwriters, sermon writers. AI can produce ten thousand words on any topic. But it cannot decide what the story should be about or why it matters. Meaning is a human product. And in a world drowning in content, meaning is the scarcest commodity.</p>
+</div>
+
+<div class="cat-card">
+<div class="cat-num">Category 13</div>
+<h4>Physical Space Design</h4>
+<p>The built environment still needs human vision. Architects, interior designers, urban planners, landscape designers. AI can generate floor plans and renderings in seconds. But the decision about how a space should <em>feel,</em> how light should enter a room, how a neighborhood should flow, how a park should invite rest: these are human judgments rooted in embodied experience. You have to have <dfn class="def" data-def="Knowledge gained through physically inhabiting and moving through three-dimensional environments.">lived in space</dfn> to design space. AI has never walked through a door.</p>
+</div>
+
+<div class="cat-card">
+<div class="cat-num">Category 14</div>
+<h4>Relationship Capital</h4>
+<p>Sales, partnerships, deal making, investor relations. The <dfn class="def" data-def="The accumulated trust, rapport, and social bonds between individuals that enable business transactions and collaboration.">handshake economy</dfn> gets more valuable as everything else automates. When two companies can both produce the same output using the same AI tools, the differentiator is the human relationship between their leaders. Trust built over dinners, introductions made through personal networks, deals closed because two people like and respect each other. AI levels the production playing field. Relationships become the tiebreaker. And tiebreakers win markets.</p>
+</div>
+
+<div class="cat-card">
+<div class="cat-num">Category 15</div>
+<h4>Legacy Craft</h4>
+<p>Teaching, parenting, coaching, mentoring, spiritual leadership. These are the trades that <dfn class="def" data-def="Professions whose primary output is not a product but a transformed human being.">shape humans,</dfn> not products. A teacher who inspires a student to love mathematics is not delivering information. They are performing an act of formation that shapes a lifetime. A parent who raises a resilient child is building something no AI can build. A pastor who walks with a grieving family is doing work that requires a soul. These roles do not compete with AI. They exist in a different dimension entirely. And their value, already immeasurable, becomes more visible as the noise of production clears.</p>
+</div>
+
+<div class="cat-card">
+<div class="cat-num">Category 16</div>
+<h4>Hybrid Roles</h4>
+<p>These are the jobs that do not exist yet. <dfn class="def" data-def="Professional roles that emerge from the intersection of human skills and AI capabilities, with no historical precedent.">Hybrid roles</dfn> live at the frontier where human and AI capabilities merge into something new. AI and human team leads who manage mixed workforces of people and models. Model trainers who curate and clean data to make AI systems better. Synthetic media editors who refine AI generated video, audio, and images into professional grade output. Attention ecologists who design systems to protect human focus in an age of infinite content. These jobs sound speculative today. In five years, they will have job postings, salary bands, and professional associations.</p>
+</div>
+
+</div>
+
+<div class="viz"><div class="viz-inner">
+  <div class="viz-top"><div class="viz-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-5"/></svg></div><div class="viz-meta"><div class="viz-label">Visualize It</div><h4>The 16 Branch Tree</h4></div></div>
+  <div class="viz-body">
+    <p>Imagine a tree. The trunk is "human earning." For a century, most of the branches were variations of production: make things, move things, process things, sell things. AI has just pruned the production branches. But the root system is massive and healthy.</p>
+    <p>Now watch 16 new branches grow from the same trunk. Taste. Trust. Presence. Systems. Ethics. Hands. Authenticity. Community. Translation. Edge cases. Regulation. Meaning. Space. Relationships. Formation. Hybrids. <em>The tree is not dying. It is branching in directions the old branches never imagined.</em></p>
+  </div>
+  <div class="viz-trigger">Close your eyes. See the tree. Count the new branches. Notice that they are growing upward, toward light that was blocked by the old canopy. The canopy fell. The light got in.</div>
+</div></div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Stack.</strong> All ceilings, all at once.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Lag.</strong> Painful, shrinking, temporary.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Flip.</strong> "Obsolete" becomes premium.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The New Earning (Categories 1 through 8):</strong> Taste Architecture, Trust Brokering, Experience Design, Orchestration, Ethical Oversight, Embodied Services, Authenticity Premium, Community Facilitation.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The New Earning (Categories 9 through 16):</strong> Translation Layer, Edge Cases, Regulatory Navigation, Narrative Design, Physical Space Design, Relationship Capital, Legacy Craft, Hybrid Roles.</div></div>
+</div>
+
+<!-- ===== CHAPTER 6 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Six</div>
+<div class="ch-num">06</div>
+<div class="ch-title">Your Position</div>
+<div class="ch-sub">How to find yourself on the map.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Sixteen categories is a map. But a map is useless if you do not know where <strong>you</strong> are standing on it. This chapter is about finding your position.</p>
+
+<p>Most people fit naturally into two or three categories. Not one. The power of this map is not picking a single lane. It is recognizing that your existing skills are already raw material for multiple new earning paths.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Operator's Inventory</h4>
+<p>The Operator sat down with a blank page and listed what she actually did well. Not her job title. Not her resume bullet points. Her <strong>real skills.</strong></p>
+<p>She was good at judging quality. That pointed to Taste Architecture.</p>
+<p>She was good at explaining complex things simply. That pointed to the Translation Layer.</p>
+<p>She was already building AI workflows for her team. That pointed to Orchestration.</p>
+<p>And people trusted her. They came to her with hard questions and left feeling clearer. That pointed to Trust Brokering.</p>
+<p>Four categories. From one person. With skills she already had.</p>
+</div>
+
+<p>Here is the exercise. It takes ten minutes and it will change how you see your economic future.</p>
+
+<div class="think">
+<div class="think-label">Your Position Finder</div>
+<p><strong>Step 1:</strong> List five things you do well. Not job titles. Skills. "I am good at calming anxious people." "I notice when a design looks wrong." "I can explain a spreadsheet to a six year old."</p>
+<hr class="think-line">
+<p><strong>Step 2:</strong> For each skill, find which of the 16 categories it maps to. Most skills map to at least two.</p>
+<hr class="think-line">
+<p><strong>Step 3:</strong> Circle the categories that appear most often. That is your cluster. That is where your earning power grows as AI grows.</p>
+<hr class="think-line">
+<p><strong>Step 4:</strong> Ask yourself: which of these categories excites me? Not which pays the most. Which one makes you lean forward?</p>
+<hr class="think-line">
+<p>The intersection of your natural skills and your natural excitement is your position on the map. That is where you invest your next thousand hours of learning.</p>
+</div>
+
+<div class="ba-grid">
+<div class="ba-col before">
+<div class="ba-label">Old Career Question</div>
+<h4>"What Job Should I Get?"</h4>
+<ul>
+<li>Pick one career path</li>
+<li>Climb the ladder in that field</li>
+<li>Hope the field survives</li>
+<li>Compete on output volume</li>
+<li>Specialize narrowly</li>
+</ul>
+</div>
+<div class="ba-col after">
+<div class="ba-label">New Career Question</div>
+<h4>"Which Categories Am I Built For?"</h4>
+<ul>
+<li>Identify two or three categories</li>
+<li>Build skills that serve all of them</li>
+<li>Adapt as categories evolve</li>
+<li>Compete on judgment and presence</li>
+<li>Combine broadly</li>
+</ul>
+</div>
+</div>
+
+<p>The Operator combines Orchestration and Trust Brokering. She builds AI systems and then explains them to clients who need a human face to trust the machine.</p>
+
+<p>The Curator combines Taste Architecture and Narrative Design. She selects the best AI output and weaves it into stories that create meaning for brands.</p>
+
+<p>The Anchor combines Embodied Services and Community Facilitation. She runs a physical therapy practice and leads a support community for people recovering from surgery.</p>
+
+<p>None of them picked one category. They combined. And the combination is what makes them irreplaceable. AI can do one thing well. Humans combine things in ways that create new value. That is the ultimate human advantage: <strong>the ability to blend categories in ways no model can predict or replicate.</strong></p>
+
+<div class="grand-quote">
+<blockquote>You do not need a new career. You need to see the career you already have through the lens of the 16 categories. The skills are already there. The map just changed.</blockquote>
+<cite>Your Position on the Map</cite>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Stack.</strong> All ceilings, simultaneously.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Lag.</strong> Shrinking gap between displacement and creation.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Flip.</strong> Replaced skills become premium goods.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The New Earning (all 16):</strong> Taste, Trust, Experience, Orchestration, Ethics, Embodied, Authenticity, Community, Translation, Edge Cases, Regulation, Narrative, Space, Relationships, Legacy, Hybrid.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Your Position.</strong> Most people fit two or three categories naturally. The power is in combination. Find where your skills cluster, where your excitement points, and invest there. The combination of categories is what makes a human irreplaceable.</div></div>
+</div>
+
+<!-- ===== CHAPTER 7 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Seven</div>
+<div class="ch-num">07</div>
+<div class="ch-title">The Ledger</div>
+<div class="ch-sub">The closing argument. The future always pays more.</div>
+</div>
+</div>
+
+<div class="ribbon">
+<p>"For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future."<br><span class="ref">Jeremiah 29:11</span></p>
+</div>
+
+<div class="page section prose">
+
+<p>Let us close the ledger.</p>
+
+<p>Every technology transition in recorded history has followed the same pattern. Short term pain. Long term gain. More jobs after than before. Higher wages after than before. Better conditions after than before. The printing press, the steam engine, electricity, the automobile, the computer, the internet. Every single one.</p>
+
+<p>The pessimists were always right about one thing: the old jobs did disappear. The scribes, the lamplighters, the switchboard operators, the typists, the video store clerks. Gone.</p>
+
+<p>But the pessimists were always wrong about the bigger thing: the new jobs that appeared were more numerous, more interesting, and better paid. Every single time. Without exception.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Anchor's Closing Story</h4>
+<p>The Anchor remembered her grandmother, who had worked as a telephone switchboard operator in the 1950s. When automatic switching arrived, her grandmother was devastated. "They are replacing us with machines," she told her family.</p>
+<p>Her grandmother's daughter became a software engineer. Her granddaughter became an experience designer running corporate retreats that generated more revenue in a weekend than the switchboard paid in a year.</p>
+<p>Three generations. Each one earning more than the last. Each one doing work the previous generation could not have imagined. The ledger always balanced. It just took time to see the full page.</p>
+</div>
+
+<p>AI is the most powerful technology transition in human history. It is horizontal where others were vertical. It is faster. It is more accessible. It is available to a solo entrepreneur in Nairobi at the same time as a Fortune 500 company in New York.</p>
+
+<p>That accessibility is the key. Previous technologies required enormous capital to deploy. You needed a factory to use the power loom. You needed a fleet to benefit from the automobile. You needed a data center to leverage the early internet.</p>
+
+<p>AI requires a laptop and a subscription. That means the new earning categories are available to <strong>everyone,</strong> not just those with capital. The <dfn class="def" data-def="The reduction or removal of financial, technical, and institutional obstacles that previously limited who could participate in an economic activity.">barriers to entry</dfn> for every one of those 16 categories are lower than they have ever been for any technology transition in history.</p>
+
+<div class="data-row">
+<div class="data-box"><div class="data-num">$10M+</div><div class="data-label">Cost to Deploy a Factory (1800s)</div></div>
+<div class="data-box"><div class="data-num">$100K+</div><div class="data-label">Cost to Build a Website (1995)</div></div>
+<div class="data-box"><div class="data-num">$20/mo</div><div class="data-label">Cost to Access AI (2025)</div></div>
+</div>
+
+<div class="glow-box">
+<h3>The Final Entry in the Ledger</h3>
+<p>The ledger has been running for 500 years. Every page tells the same story: technology destroys the old ceiling, people panic during The Lag, The Flip makes human skills premium, and the new earning categories outnumber and outpay the old ones.</p>
+<p><strong>There is no reason to believe this page will be different. There is every reason to believe it will be bigger.</strong></p>
+<p>Because this time, the ceiling is not in one room. It is in every room. And when every ceiling breaks, the sky becomes the floor of the next level.</p>
+</div>
+
+<p>You have the map. You have the mental models. You know the four forces: The Stack (unprecedented breadth), The Lag (getting shorter), The Flip (human premium), and The New Earning (16 concrete categories).</p>
+
+<p>The only question left is the one that has always mattered: <strong>what will you do with what you now know?</strong></p>
+
+<div class="viz"><div class="viz-inner">
+  <div class="viz-top"><div class="viz-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><div class="viz-meta"><div class="viz-label">Visualize It</div><h4>The View from the New Floor</h4></div></div>
+  <div class="viz-body">
+    <p>You are standing inside a building. You have been staring at the ceiling your entire career. That ceiling defined what was possible. How fast you could produce. How many clients you could serve. How much you could earn.</p>
+    <p>Now the ceiling shatters. Debris falls. Dust fills the air. For a moment, all you see is chaos.</p>
+    <p>Then the dust clears. And you realize <em>you are not standing in the same room anymore.</em> You are standing on a new floor. Above you is open sky. The ceiling was not just a limit. It was the floor of the next level. And you are already standing on it.</p>
+  </div>
+  <div class="viz-trigger">Close your eyes. Feel the ceiling crack above you. Watch it fall. Let the dust settle. Then look up. See the open sky. That is where the new earning lives.</div>
+</div></div>
+
+<div class="grand-quote">
+<blockquote>The ledger always favors the future. Always. Not because the future is easy, but because human beings are incapable of encountering a new tool without inventing a hundred new uses for it that the tool's creators never imagined.</blockquote>
+<cite>The Closing Argument</cite>
+</div>
+
+<div class="think">
+<div class="think-label">Your Next Move</div>
+<p>You now have a map of 16 income categories that grow as AI grows. You have identified two or three that match your skills and excite your imagination. Here is your next action.</p>
+<hr class="think-line">
+<p>Pick one category. Just one. Spend one hour this week learning more about it. Read one article. Watch one talk. Have one conversation with someone already working in that space. One hour. One category. That is the beginning of your position on the new map.</p>
+<hr class="think-line">
+<p>The ceiling is gone. The sky is open. The ledger is waiting for your entry.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>The Complete Map</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Stack.</strong> AI breaks every ceiling simultaneously. Unprecedented disruption. Unprecedented opportunity.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Lag.</strong> The gap between old and new is real, painful, and shorter every cycle. The AI Lag may be the shortest in history.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Flip.</strong> Every skill technology "kills" returns as a premium good. Human made is the new luxury.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The New Earning.</strong> 16 income categories that grow as AI grows: Taste Architecture, Trust Brokering, Experience Design, Orchestration, Ethical Oversight, Embodied Services, Authenticity Premium, Community Facilitation, Translation Layer, Edge Cases, Regulatory Navigation, Narrative Design, Physical Space Design, Relationship Capital, Legacy Craft, Hybrid Roles.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Your Position.</strong> Find your two or three category cluster. Combine them. The combination is what makes you irreplaceable.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Ledger.</strong> Every technology transition in 500 years has produced more jobs, higher wages, and better conditions on the other side. The barriers to entry for AI are the lowest in history. The ledger always favors the future.</div></div>
+</div>
+
+<!-- ===== FINAL TEST ===== -->
+<div class="page section">
+<div class="final-test">
+<h3>Can You Answer These Without Looking Back?</h3>
+<p class="test-sub">Eight questions, one for each mental model. If you can answer all eight, you understand the new economy better than most people worrying about it.</p>
+<div class="test-q"><div class="test-num">Question 1</div><p>What makes AI different from every previous technology disruption? What is "The Stack"?</p></div>
+<div class="test-q"><div class="test-num">Question 2</div><p>What is The Lag, and why does it get shorter with each technology cycle?</p></div>
+<div class="test-q"><div class="test-num">Question 3</div><p>Give three historical examples of The Flip, where a "killed" skill became a premium good.</p></div>
+<div class="test-q"><div class="test-num">Question 4</div><p>Name at least six of the 16 New Earning categories from memory.</p></div>
+<div class="test-q"><div class="test-num">Question 5</div><p>What is the difference between a Trust Broker and a Translation Layer professional?</p></div>
+<div class="test-q"><div class="test-num">Question 6</div><p>Why is the combination of categories more powerful than picking just one?</p></div>
+<div class="test-q"><div class="test-num">Question 7</div><p>Why are the barriers to entry for AI's new earning categories lower than for any previous technology transition?</p></div>
+<div class="test-q"><div class="test-num">Question 8</div><p>What are the two or three categories that best match your skills, and what is one action you can take this week to explore them?</p></div>
+</div>
+</div>
+
+<!-- ===== PROMPT CARD ===== -->
+<div class="page section">
+<div class="prompt-card">
+<h3>Install This Playbook in Your AI</h3>
+<p>Copy and paste this prompt to continue the conversation:</p>
+<p><code>"I just read The New Earning playbook from Kingdom Builders AI. It maps 16 income categories that grow as AI grows: Taste Architecture, Trust Brokering, Experience Design, Orchestration, Ethical Oversight, Embodied Services, Authenticity Premium, Community Facilitation, Translation Layer, Edge Cases, Regulatory Navigation, Narrative Design, Physical Space Design, Relationship Capital, Legacy Craft, and Hybrid Roles. My strongest skills are [LIST YOUR TOP 3 SKILLS]. Help me identify which two or three categories I should invest in, and give me a 90 day plan to build expertise in my best cluster."</code></p>
+<p><code>"Explain the concept of 'The Flip' using five more historical examples beyond handmade goods and vinyl records. For each example, show the exact moment the 'dead' skill became premium."</code></p>
+<p><code>"Which of the 16 New Earning categories are most likely to generate six figure incomes within the next five years, and what does the entry path look like for each one?"</code></p>
+<p><code>"I work in [YOUR FIELD]. Map my current role to the 16 New Earning categories and show me which parts of my job are at risk and which parts become more valuable with AI."</code></p>
+</div>
+</div>
+
+<!-- ===== CLOSING RIBBON ===== -->
+<div class="ribbon">
+<p>"The plans of the diligent lead to profit as surely as haste leads to poverty."<br><span class="ref">Proverbs 21:5</span></p>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+<p>The New Earning &middot; The AI Economy Part 2 of 2 &middot; KingdomBuilders AI<br><a href="./">View All Playbooks</a></p>
+</footer>
+
+</body>
+</html>

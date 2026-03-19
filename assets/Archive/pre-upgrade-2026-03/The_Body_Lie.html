@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The Body Lie</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+--ink:#1a1a1a;--ink-soft:#3a3a3a;--ink-muted:#6a6a6a;--ink-faint:#9a9a9a;
+--bone:#FAF8F5;--bone-warm:#F5F0E8;--bone-deep:#EDE6D8;
+--ember:#C44B2B;--ember-soft:rgba(196,75,43,0.08);--ember-glow:rgba(196,75,43,0.15);
+--sage:#3A6B5A;--sage-soft:rgba(58,107,90,0.08);--sage-glow:rgba(58,107,90,0.15);
+--coal:#2C2C2C;--coal-warm:#3D3530;
+--gold-quiet:#B8964A;--gold-soft:rgba(184,150,74,0.1);
+--white:#fff;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Source Serif 4',Georgia,serif;background:var(--bone);color:var(--ink);line-height:1.78;-webkit-font-smoothing:antialiased}
+.container{max-width:680px;margin:0 auto;padding:0 28px}
+
+/* COVER */
+.cover{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:60px 28px;position:relative;background:var(--coal);overflow:hidden}
+.cover::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(196,75,43,0.06) 0%,transparent 60%)}
+.cover-label{font-family:'DM Sans',sans-serif;font-size:0.55rem;font-weight:600;letter-spacing:8px;text-transform:uppercase;color:var(--ember);margin-bottom:24px;opacity:0.7}
+.cover h1{font-family:'Source Serif 4',Georgia,serif;font-size:clamp(2.8rem,6vw,4.2rem);font-weight:700;color:var(--bone);line-height:1.1;margin-bottom:20px}
+.cover h1 em{font-style:italic;color:var(--ember)}
+.cover-sub{font-family:'Source Serif 4',Georgia,serif;font-size:1.05rem;font-style:italic;color:var(--ink-faint);max-width:480px;line-height:1.6}
+.cover-line{width:40px;height:2px;background:var(--ember);margin:32px auto;opacity:0.4}
+.cover-start{font-family:'DM Sans',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:var(--bone-deep);opacity:0.3;margin-top:48px}
+.cover-art{width:180px;height:200px;margin:0 auto 28px;animation:body-breathe 4s ease-in-out infinite}
+.cover-art svg{width:100%;height:100%;filter:drop-shadow(0 0 20px rgba(196,75,43,0.2)) drop-shadow(0 0 50px rgba(196,75,43,0.1))}
+@keyframes body-breathe{0%,100%{transform:scale(1);opacity:0.9}50%{transform:scale(1.03);opacity:1}}
+
+/* TYPOGRAPHY */
+h2{font-family:'Source Serif 4',Georgia,serif;font-size:1.35rem;font-weight:700;color:var(--ink);margin:56px 0 8px;line-height:1.25}
+h2 .h2-num{font-family:'DM Sans',sans-serif;font-size:0.5rem;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:var(--ember);display:block;margin-bottom:6px;opacity:0.6}
+h3{font-family:'Source Serif 4',Georgia,serif;font-size:1.15rem;font-weight:600;color:var(--ink);margin:36px 0 10px}
+p{font-size:1rem;margin-bottom:16px;color:var(--ink-soft)}
+p:last-child{margin-bottom:0}
+strong{color:var(--ink);font-weight:600}
+em{color:var(--ink-muted)}
+
+/* CHAPTER OPENERS */
+.ch-open{margin:80px 0 40px;padding:48px 0 32px;border-top:1px solid rgba(0,0,0,0.06)}
+.ch-open .ch-num{font-family:'DM Sans',sans-serif;font-size:0.5rem;font-weight:600;letter-spacing:6px;text-transform:uppercase;color:var(--ember);opacity:0.5}
+.ch-open h2{margin:8px 0 12px;font-size:1.8rem}
+.ch-open .ch-premise{font-size:1.02rem;font-style:italic;color:var(--ink-muted);max-width:540px;line-height:1.7}
+
+/* INSIGHT BLOCKS */
+.truth{margin:28px 0;padding:24px 28px;background:var(--ember-soft);border-left:3px solid var(--ember);border-radius:0 10px 10px 0}
+.truth p{font-family:'Source Serif 4',Georgia,serif;font-size:0.95rem;font-weight:500;color:var(--ember);line-height:1.7;margin:0}
+
+/* REFRAME BLOCKS */
+.reframe{margin:28px 0;padding:24px 28px;background:var(--sage-soft);border-left:3px solid var(--sage);border-radius:0 10px 10px 0}
+.reframe p{font-family:'Source Serif 4',Georgia,serif;font-size:0.95rem;font-weight:500;color:var(--sage);line-height:1.7;margin:0}
+
+/* VOICE PAIR */
+.voice-pair{margin:28px 0;display:flex;flex-direction:column;gap:2px}
+.voice{padding:18px 24px;border-radius:10px}
+.voice-loud{background:linear-gradient(135deg,rgba(196,75,43,0.06),rgba(196,75,43,0.03))}
+.voice-quiet{background:linear-gradient(135deg,rgba(58,107,90,0.06),rgba(58,107,90,0.03))}
+.voice-tag{font-family:'DM Sans',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;margin-bottom:4px}
+.voice-loud .voice-tag{color:var(--ember);opacity:0.5}
+.voice-quiet .voice-tag{color:var(--sage);opacity:0.5}
+.voice p{font-size:0.92rem;margin:0;line-height:1.65}
+.voice-loud p{color:var(--ink-soft);font-style:italic}
+.voice-quiet p{color:var(--ink)}
+
+/* SCENES */
+.scene{margin:32px 0;border:1px solid rgba(0,0,0,0.05);border-radius:12px;overflow:hidden;background:var(--white)}
+.scene-head{padding:12px 24px 10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(0,0,0,0.04)}
+.scene-label{font-family:'DM Sans',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--ember);opacity:0.4}
+.scene-title{font-family:'Source Serif 4',Georgia,serif;font-size:0.85rem;font-weight:500;color:var(--ink)}
+.scene-head-text{display:flex;flex-direction:column;gap:1px}
+.scene-step{padding:14px 24px;border-bottom:1px solid rgba(0,0,0,0.03);font-family:'Source Serif 4',Georgia,serif}
+.scene-step:last-child{border-bottom:none}
+.scene-step p{font-size:0.93rem;line-height:1.75;margin:0 0 6px;color:var(--ink-soft)}
+.scene-step p:last-child{margin-bottom:0}
+.scene-result-bad{background:linear-gradient(135deg,rgba(196,75,43,0.02),rgba(196,75,43,0.06))}
+.scene-result-good{background:linear-gradient(135deg,rgba(58,107,90,0.02),rgba(58,107,90,0.06))}
+.scene-result-tag{font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.75rem;display:inline-block;padding:2px 8px;border-radius:4px;margin-bottom:4px}
+.scene-result-bad .scene-result-tag{color:var(--ember);background:var(--ember-soft)}
+.scene-result-good .scene-result-tag{color:var(--sage);background:var(--sage-soft)}
+
+/* MATH BLOCKS */
+.math-block{margin:28px 0;padding:28px;background:var(--coal);border-radius:12px;text-align:center}
+.math-block p{font-family:'Source Serif 4',Georgia,serif;font-size:1.05rem;color:var(--bone);margin:0 0 6px;line-height:1.6}
+.math-block p:last-child{margin:0}
+.math-block .math-vs{font-family:'DM Sans',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--ember);margin:12px 0;opacity:0.6}
+.math-block em{color:var(--bone-deep);font-style:normal;opacity:0.5}
+.math-block strong{color:var(--ember);font-weight:600}
+
+/* DESCENT RAMP */
+.descent{margin:36px 0;display:flex;flex-direction:column;gap:10px}
+.descent-echo{padding:24px 28px;background:linear-gradient(160deg,rgba(58,107,90,0.10),rgba(58,107,90,0.05));border-radius:14px;border:1.5px solid rgba(58,107,90,0.12)}
+.descent-echo p{font-family:'Source Serif 4',Georgia,serif;font-size:0.92rem;font-style:italic;color:var(--ink-muted);line-height:1.72;text-align:center;margin:0}
+.descent-close{padding:36px 28px;text-align:center;background:linear-gradient(160deg,rgba(184,150,74,0.10),rgba(184,150,74,0.05));border-radius:14px;border:1.5px solid rgba(184,150,74,0.12)}
+.descent-close-label{font-family:'DM Sans',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--gold-quiet);opacity:0.5;margin-bottom:8px}
+.descent-close p{font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:500;color:var(--ink);line-height:1.6;max-width:440px;margin:0 auto}
+
+/* PAUSE / BREATHE */
+.pause{margin:48px 0;text-align:center;padding:48px 24px;background:linear-gradient(160deg,rgba(44,44,44,0.06),rgba(44,44,44,0.03));border-radius:14px;border:1.5px solid rgba(44,44,44,0.08)}
+.pause-label{font-family:'DM Sans',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--ink-muted);opacity:0.4;margin-bottom:8px}
+.pause h4{font-family:'Source Serif 4',Georgia,serif;font-size:0.95rem;font-weight:600;color:var(--ink);margin-bottom:8px}
+.pause p{font-family:'Source Serif 4',Georgia,serif;font-size:0.88rem;font-style:italic;color:var(--ink-muted);max-width:420px;margin:0 auto;line-height:1.6}
+
+/* THINK BOXES */
+.think{margin:16px 0 32px;padding:28px;background:var(--gold-soft);border:2px dashed var(--gold-quiet);border-radius:12px;position:relative}
+.think::before{content:'\2726';position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--bone);padding:0 12px;font-size:0.9rem;color:var(--gold-quiet)}
+.think-label{font-family:'DM Sans',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold-quiet);text-align:center;margin-bottom:8px}
+.think h4{font-family:'Source Serif 4',Georgia,serif;font-size:0.92rem;font-weight:600;color:var(--ink);text-align:center;margin-bottom:10px}
+.think p{font-size:0.88rem;text-align:center;color:var(--ink-muted);margin-bottom:6px}
+.think-line{border-bottom:1px solid rgba(184,150,74,0.25);height:28px}
+.think p.q-start{font-weight:500;color:var(--ink);font-size:0.85rem;text-align:left;margin-top:12px;margin-bottom:4px}
+
+/* ALIVE TEST */
+.alive-test{margin:32px 0;padding:32px;background:var(--coal-warm);border-radius:14px;text-align:center;position:relative;overflow:hidden}
+.alive-test::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(196,75,43,0.08) 0%,transparent 60%)}
+.alive-test-label{font-family:'DM Sans',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--ember);opacity:0.5;margin-bottom:12px;position:relative;z-index:1}
+.alive-test h4{font-family:'Source Serif 4',Georgia,serif;font-size:1.1rem;font-weight:600;font-style:italic;color:var(--bone);margin-bottom:8px;position:relative;z-index:1}
+.alive-test p{font-family:'Source Serif 4',Georgia,serif;font-size:0.88rem;color:var(--bone-deep);opacity:0.7;max-width:440px;margin:0 auto;line-height:1.6;position:relative;z-index:1}
+
+/* SECTION DIVIDERS */
+.section-break{margin:48px auto;text-align:center;color:var(--ink-faint);font-size:0.7rem;letter-spacing:12px;opacity:0.3}
+
+/* RIBBON */
+.ribbon{text-align:center;padding:20px 24px;background:linear-gradient(135deg,var(--ember-soft),rgba(196,75,43,0.04));border-top:1.5px solid rgba(196,75,43,0.12);border-bottom:1.5px solid rgba(196,75,43,0.12)}
+.ribbon p{font-family:'Source Serif 4',Georgia,serif;font-size:0.95rem;font-style:italic;color:var(--ink-muted);max-width:480px;margin:0 auto}
+
+/* MISSION / BOLD PROMISE */
+.mission{text-align:center;padding:36px 32px;margin:36px 0;background:linear-gradient(140deg,var(--ember-soft),rgba(196,75,43,0.03));border-radius:14px;border:2px solid rgba(196,75,43,0.18);position:relative;overflow:hidden}
+.mission::before{content:'';position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:280px;height:280px;background:radial-gradient(circle,rgba(196,75,43,0.06) 0%,transparent 70%);border-radius:50%}
+.mission-label{font-family:'DM Sans',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--ember);margin-bottom:14px;position:relative}
+.mission p{font-family:'DM Sans',sans-serif;font-size:clamp(0.88rem,2.2vw,1.08rem);font-weight:500;color:var(--ink);line-height:1.55;position:relative}
+.mission p em{color:var(--ember);font-style:normal;font-weight:700}
+
+/* VIZ BOX */
+.viz{margin:32px 0;padding:32px;background:var(--white);border-radius:12px;border:2px solid rgba(58,107,90,0.15);box-shadow:0 2px 12px rgba(0,0,0,0.05);position:relative;overflow:hidden}
+.viz::before{content:'';position:absolute;top:-40%;right:-20%;width:300px;height:300px;background:radial-gradient(circle,rgba(58,107,90,0.04) 0%,transparent 70%);border-radius:50%}
+.viz-label{font-family:'DM Sans',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--sage);margin-bottom:12px;position:relative;z-index:2}
+.viz h4{font-family:'Source Serif 4',Georgia,serif;font-size:1.1rem;font-weight:600;color:var(--ink);margin-bottom:12px;position:relative;z-index:2}
+.viz p{font-size:0.9rem;color:var(--ink-soft);line-height:1.7;position:relative;z-index:2;margin-bottom:12px}
+.viz p:last-child{margin-bottom:0}
+.viz-trigger{margin-top:16px;padding:14px 18px;background:linear-gradient(135deg,rgba(58,107,90,0.06),rgba(58,107,90,0.1));border:1.5px solid rgba(58,107,90,0.18);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;color:var(--ink);text-align:center;line-height:1.5}
+
+/* ROOT SYSTEM */
+.root-review{margin:44px 0;padding:28px 24px;background:linear-gradient(170deg,var(--bone-warm),var(--bone-deep));border-radius:14px;position:relative;overflow:hidden}
+.root-label{font-family:'DM Sans',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--ember);text-align:center;margin-bottom:16px;position:relative;z-index:1}
+.root-layer{display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 0;position:relative;z-index:1;flex-wrap:wrap}
+.root-layer.current{padding:12px 0}
+.root-ch{font-family:'DM Sans',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink-faint);width:28px;text-align:right;flex-shrink:0}
+.root-layer.current .root-ch{color:var(--ember)}
+.root-items{display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center}
+.root-pill{font-family:'DM Sans',sans-serif;font-size:0.65rem;font-weight:600;padding:5px 14px;border-radius:6px;white-space:nowrap}
+.root-pill.rp-dim{background:rgba(0,0,0,0.04);color:var(--ink-faint);border:1px solid rgba(0,0,0,0.06)}
+.root-pill.rp-lit{background:var(--ember-soft);color:var(--ink-soft);border:1px solid rgba(196,75,43,0.15)}
+.root-pill.rp-bright{background:var(--ember-glow);color:var(--ink);border:1px solid rgba(196,75,43,0.25);box-shadow:0 0 6px rgba(196,75,43,0.08)}
+.root-arr{color:var(--ink-faint);opacity:0.3;font-size:0.8rem;padding:0 4px}
+.root-layer.current .root-arr{opacity:0.5;color:var(--ember)}
+.root-sep{width:60%;max-width:300px;height:1px;background:linear-gradient(90deg,transparent,rgba(196,75,43,0.15),transparent);margin:4px auto}
+
+/* FINAL TEST */
+.final-test{margin:40px 0;border-radius:14px;overflow:hidden;border:3px solid var(--ember);box-shadow:0 0 20px rgba(196,75,43,0.08)}
+.final-test-head{padding:20px 28px;background:linear-gradient(135deg,var(--coal),var(--coal-warm));text-align:center}
+.final-test-head h3{font-family:'DM Sans',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--ember);margin-bottom:4px}
+.final-test-head p{font-family:'Source Serif 4',Georgia,serif;font-size:0.88rem;color:rgba(255,255,255,0.4)}
+.final-test-body{padding:28px;background:var(--white)}
+.ft-q{padding:16px 0;border-bottom:1px solid rgba(196,75,43,0.08)}
+.ft-q:last-child{border-bottom:none}
+.ft-q-num{font-family:'DM Sans',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--ember);margin-bottom:6px}
+.ft-q p{font-size:0.9rem;color:var(--ink-soft);line-height:1.6;margin-bottom:4px}
+.ft-q .think-line{margin:8px 0 0}
+
+/* PROMPT CARD */
+.prompt-card{margin:32px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(196,75,43,0.2);box-shadow:0 2px 12px rgba(0,0,0,0.1)}
+.prompt-head{padding:12px 20px;background:linear-gradient(90deg,var(--coal),var(--coal-warm));font-family:'DM Sans',sans-serif;font-size:0.6rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--ember)}
+.prompt-body{padding:22px 24px;background:var(--coal);color:var(--bone-deep);font-family:'Source Serif 4',Georgia,serif;font-size:0.88rem;line-height:1.72}
+.prompt-body strong{color:var(--ember)}
+
+/* TIMELINE BLOCK */
+.timeline{margin:32px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(58,107,90,0.2);box-shadow:0 2px 12px rgba(0,0,0,0.05)}
+.timeline-head{padding:14px 24px;background:linear-gradient(135deg,var(--coal),var(--coal-warm));border-bottom:2px solid var(--sage)}
+.timeline-head h4{font-family:'DM Sans',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--sage);margin-bottom:2px}
+.timeline-head p{font-family:'Source Serif 4',Georgia,serif;font-size:0.82rem;color:rgba(255,255,255,0.35)}
+.timeline-body{background:var(--white)}
+.tl-phase{padding:20px 24px;border-bottom:1px solid rgba(58,107,90,0.08)}
+.tl-phase:last-child{border-bottom:none}
+.tl-week{font-family:'DM Sans',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--sage);margin-bottom:4px}
+.tl-phase h5{font-family:'Source Serif 4',Georgia,serif;font-size:0.95rem;font-weight:600;color:var(--ink);margin-bottom:6px}
+.tl-phase p{font-size:0.88rem;color:var(--ink-soft);line-height:1.65;margin-bottom:0}
+
+/* DIAGNOSTIC BLOCK */
+.diagnostic{margin:32px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(196,75,43,0.15);box-shadow:0 2px 12px rgba(0,0,0,0.05)}
+.diagnostic-head{padding:14px 24px;background:linear-gradient(135deg,var(--coal),var(--coal-warm));text-align:center}
+.diagnostic-head h4{font-family:'DM Sans',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--ember);margin-bottom:2px}
+.diagnostic-body{background:var(--white);display:grid;grid-template-columns:1fr 1fr;gap:0}
+@media(max-width:500px){.diagnostic-body{grid-template-columns:1fr}}
+.diag-col{padding:20px 24px}
+.diag-col:first-child{border-right:1px solid rgba(0,0,0,0.05)}
+.diag-col-label{font-family:'DM Sans',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;margin-bottom:12px}
+.diag-col-real .diag-col-label{color:var(--sage)}
+.diag-col-phantom .diag-col-label{color:var(--ember)}
+.diag-item{font-family:'Source Serif 4',Georgia,serif;font-size:0.85rem;color:var(--ink-soft);line-height:1.55;padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.04)}
+.diag-item:last-child{border-bottom:none}
+
+/* KNOWLEDGE LAYER (dfn tooltips) */
+dfn{border-bottom:1.5px dotted rgba(196,75,43,0.4);cursor:help;position:relative;font-style:normal}
+dfn::after{content:attr(data-def);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--coal);color:rgba(255,255,255,0.9);padding:8px 14px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.72rem;font-style:normal;font-weight:400;line-height:1.45;white-space:normal;width:max-content;max-width:260px;opacity:0;pointer-events:none;transition:opacity 0.2s ease;z-index:100;border:1px solid rgba(196,75,43,0.2);box-shadow:0 4px 16px rgba(0,0,0,0.3)}
+dfn:hover::after{opacity:1}
+
+/* FOOTER */
+footer{text-align:center;padding:36px 24px;background:var(--coal)}
+footer p{font-family:'Source Serif 4',Georgia,serif;font-size:0.78rem;font-style:italic;color:rgba(196,75,43,0.2);margin-bottom:12px}
+footer .brand{font-family:'DM Sans',sans-serif;font-size:0.5rem;font-style:normal;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.08)}
+
+@media(max-width:640px){
+  .page{padding:0 16px}
+  .diagnostic-body{grid-template-columns:1fr}
+  .diag-col:first-child{border-right:none;border-bottom:1px solid rgba(0,0,0,0.05)}
+}
+/* PRINT */
+@media print{
+body{background:#fff}
+.cover{min-height:auto;padding:60px 28px;break-after:page}
+.ch-open{break-before:page}
+.think,.viz,.mission,.root-review,.final-test,.prompt-card,.timeline,.diagnostic{break-inside:avoid}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+</style>
+</head>
+<body>
+
+<!-- ==================== COVER ==================== -->
+<div class="cover">
+  <div class="cover-label">A Mental Model</div>
+  <div class="cover-art">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 200" aria-label="Human figure with visible tension points">
+      <defs>
+        <linearGradient id="bl-body" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FAF8F5" stop-opacity="0.15"/><stop offset="100%" stop-color="#FAF8F5" stop-opacity="0.05"/></linearGradient>
+        <radialGradient id="bl-tension" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#C44B2B" stop-opacity="0.6"/><stop offset="50%" stop-color="#C44B2B" stop-opacity="0.2"/><stop offset="100%" stop-color="#C44B2B" stop-opacity="0"/></radialGradient>
+        <radialGradient id="bl-tension-sm" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#C44B2B" stop-opacity="0.45"/><stop offset="50%" stop-color="#C44B2B" stop-opacity="0.15"/><stop offset="100%" stop-color="#C44B2B" stop-opacity="0"/></radialGradient>
+        <radialGradient id="bl-sage-glow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#3A6B5A" stop-opacity="0.3"/><stop offset="100%" stop-color="#3A6B5A" stop-opacity="0"/></radialGradient>
+      </defs>
+      <g fill="none" stroke="#FAF8F5" stroke-width="1.2" opacity="0.25">
+        <ellipse cx="90" cy="28" rx="14" ry="17"/>
+        <line x1="82" y1="44" x2="80" y2="58"/>
+        <line x1="98" y1="44" x2="100" y2="58"/>
+        <path d="M80,58 Q75,56 60,60 Q48,64 38,72"/>
+        <path d="M100,58 Q105,56 120,60 Q132,64 142,72"/>
+        <path d="M60,60 Q58,80 62,100 Q65,120 70,135"/>
+        <path d="M120,60 Q122,80 118,100 Q115,120 110,135"/>
+        <path d="M70,75 Q90,82 110,75" opacity="0.15"/>
+        <path d="M38,72 Q32,88 30,105 Q28,118 32,130"/>
+        <path d="M142,72 Q148,88 150,105 Q152,118 148,130"/>
+        <path d="M32,130 Q30,138 28,145 Q27,148 28,150"/>
+        <path d="M148,130 Q150,138 152,145 Q153,148 152,150"/>
+        <ellipse cx="28" cy="153" rx="6" ry="5"/>
+        <ellipse cx="152" cy="153" rx="6" ry="5"/>
+        <path d="M70,135 Q90,140 110,135"/>
+      </g>
+      <circle cx="90" cy="38" r="12" fill="url(#bl-tension-sm)"/>
+      <g opacity="0.35">
+        <path d="M82,36 Q85,40 90,41 Q95,40 98,36" fill="none" stroke="#C44B2B" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="78" y1="32" x2="82" y2="36" stroke="#C44B2B" stroke-width="0.8" opacity="0.5"/>
+        <line x1="102" y1="32" x2="98" y2="36" stroke="#C44B2B" stroke-width="0.8" opacity="0.5"/>
+      </g>
+      <circle cx="55" cy="62" r="18" fill="url(#bl-tension)"/>
+      <g opacity="0.3">
+        <line x1="50" y1="55" x2="45" y2="50" stroke="#C44B2B" stroke-width="0.8"/>
+        <line x1="48" y1="60" x2="42" y2="57" stroke="#C44B2B" stroke-width="0.6"/>
+        <line x1="52" y1="68" x2="46" y2="70" stroke="#C44B2B" stroke-width="0.6"/>
+      </g>
+      <circle cx="125" cy="62" r="18" fill="url(#bl-tension)"/>
+      <g opacity="0.3">
+        <line x1="130" y1="55" x2="135" y2="50" stroke="#C44B2B" stroke-width="0.8"/>
+        <line x1="132" y1="60" x2="138" y2="57" stroke="#C44B2B" stroke-width="0.6"/>
+        <line x1="128" y1="68" x2="134" y2="70" stroke="#C44B2B" stroke-width="0.6"/>
+      </g>
+      <circle cx="28" cy="153" r="14" fill="url(#bl-tension-sm)"/>
+      <g opacity="0.3">
+        <path d="M24,150 L25,148 L27,148 L28,150" fill="none" stroke="#C44B2B" stroke-width="0.8"/>
+        <path d="M28,150 L30,148 L32,149 L32,151" fill="none" stroke="#C44B2B" stroke-width="0.8"/>
+        <line x1="22" y1="152" x2="18" y2="154" stroke="#C44B2B" stroke-width="0.6"/>
+        <line x1="24" y1="158" x2="20" y2="162" stroke="#C44B2B" stroke-width="0.5"/>
+      </g>
+      <circle cx="152" cy="153" r="14" fill="url(#bl-tension-sm)"/>
+      <g opacity="0.3">
+        <path d="M148,150 L149,148 L151,148 L152,150" fill="none" stroke="#C44B2B" stroke-width="0.8"/>
+        <path d="M152,150 L154,148 L156,149 L156,151" fill="none" stroke="#C44B2B" stroke-width="0.8"/>
+        <line x1="158" y1="152" x2="162" y2="154" stroke="#C44B2B" stroke-width="0.6"/>
+        <line x1="156" y1="158" x2="160" y2="162" stroke="#C44B2B" stroke-width="0.5"/>
+      </g>
+      <circle cx="90" cy="100" r="15" fill="url(#bl-tension-sm)"/>
+      <g opacity="0.25">
+        <circle cx="90" cy="100" r="5" fill="none" stroke="#C44B2B" stroke-width="0.6"/>
+        <circle cx="90" cy="100" r="10" fill="none" stroke="#C44B2B" stroke-width="0.4"/>
+      </g>
+      <circle cx="90" cy="78" r="12" fill="url(#bl-sage-glow)"/>
+      <circle cx="90" cy="78" r="4" fill="none" stroke="#3A6B5A" stroke-width="0.8" opacity="0.25"/>
+      <g stroke="#FAF8F5" stroke-width="0.4" opacity="0.08" fill="none">
+        <path d="M90,45 L90,58 Q88,70 90,78 L90,100 Q89,118 90,135"/>
+        <path d="M90,58 Q75,60 60,62 Q48,66 38,72 Q34,80 32,90"/>
+        <path d="M90,58 Q105,60 120,62 Q132,66 142,72 Q146,80 148,90"/>
+      </g>
+      <circle cx="55" cy="62" r="20" fill="none" stroke="#C44B2B" stroke-width="0.4" opacity="0.12"/>
+      <circle cx="125" cy="62" r="20" fill="none" stroke="#C44B2B" stroke-width="0.4" opacity="0.12"/>
+      <circle cx="90" cy="38" r="14" fill="none" stroke="#C44B2B" stroke-width="0.3" opacity="0.1"/>
+    </svg>
+  </div>
+  <h1>The Body <em>Lie</em></h1>
+  <div class="cover-line"></div>
+  <p class="cover-sub">Your body's compass has been pointing backwards your entire adult life. This is the story of how it was inverted, who profits from the inversion, and the precise pharmacology of turning it back.</p>
+  <div class="cover-start">Begin Reading &#8595;</div>
+</div>
+
+<div class="container">
+
+<!-- ==================== BOLD PROMISE ==================== -->
+<div class="mission">
+  <div class="mission-label">If You Finish This Playbook</div>
+  <p>You will learn to distinguish real hunger from <em>phantom appetite</em> using five diagnostic criteria you can apply at every meal for the rest of your life. You will understand the exact endocrine mechanism that made your body's compass point backwards. And you will know the specific physiological timeline, week by week, for turning it back. <strong>Not through willpower. Through pharmacology.</strong></p>
+</div>
+
+<!-- ==================== CHAPTER 1: THE INVERSION ==================== -->
+<div class="ch-open">
+  <div class="ch-num">Chapter One</div>
+  <h2>The Inversion</h2>
+  <p class="ch-premise">Your body's compass is pointing backwards. What registers as pleasure is killing you slowly. What registers as pain is the only thing that makes you alive. This is not weakness. This is navigational corruption.</p>
+</div>
+
+<div class="ribbon">
+  <p>"Do you not know that your bodies are temples of the Holy Spirit, who is in you, whom you have received from God? You are not your own." 1 Corinthians 6:19</p>
+</div>
+
+<p>This is not a diet book. This is not a fitness plan. This is not going to tell you to eat less and move more. You already know that. Everyone knows that. Knowing has never been the problem.</p>
+
+<p>The problem is that your body has been lying to you. Not about everything. About direction. About which way "alive" is.</p>
+
+<p>Here is the lie, stated as plainly as it can be stated:</p>
+
+<div class="truth">
+  <p>Your body experiences pleasure where pain should be, and pain where pleasure should be. This is not a preference. It is not a weakness. It is a complete inversion of the compass you were born with. You have the entire equation backwards, and every failed diet, every abandoned January resolution, every gym membership you stopped using was not a failure of character. It was an attempt to drive north using a map that reads north as south.</p>
+</div>
+
+<p>Consider this arithmetic. Not as theory. As something you have lived hundreds of times:</p>
+
+<div class="math-block">
+  <p>The pleasure of overeating lasts <strong>about 3 minutes.</strong></p>
+  <p><em>The heaviness, bloating, guilt, and lethargy last 3 to 5 hours.</em></p>
+  <div class="math-vs">versus</div>
+  <p>The discomfort of a workout lasts <strong>about 20 minutes.</strong></p>
+  <p><em>The energy, clarity, pride, and calm last 8 to 20 hours.</em></p>
+</div>
+
+<p>Look at those numbers. Not with your feelings. With your mind.</p>
+
+<p>You are trading 20 hours of feeling alive for 3 minutes of mouth pleasure. And here is the part that will change everything once you see it:</p>
+
+<div class="truth">
+  <p>You do not even enjoy the 3 minutes. You eat so fast you barely taste it. What you are experiencing is not pleasure. It is relief from a craving. Relief from craving is not pleasure. It is the absence of a pain that you created. You are starting a fire and calling the extinguisher "warmth."</p>
+</div>
+
+<p>Read that again. This is the body lie. The sensation that feels like pleasure is actually the brief pause between two pains: the craving before and the consequence after. The thing in the middle that you are chasing does not exist. It is a gap. A nothing. And you have been rearranging your entire life around a gap.</p>
+
+<div class="viz">
+  <div class="viz-label">Close Your Eyes and See</div>
+  <h4>The Inverted Compass</h4>
+  <p>Picture a compass in your chest. The needle has two ends, one marked ALIVE, one marked DEAD. In a child, the needle points true: hunger means eat, fullness means stop, restlessness means move. Now picture someone reaching in and spinning the needle 180 degrees. ALIVE now points where DEAD used to be. Every direction feels wrong. That is the compass you have been navigating with. Not broken. Inverted. And an inverted compass is worse than no compass at all, because you trust it.</p>
+  <div class="viz-trigger">Hold this image. You will need it in every chapter that follows.</div>
+</div>
+
+<div class="scene">
+  <div class="scene-head"><div class="scene-head-text"><div class="scene-label">See It In Action</div><div class="scene-title">The 11 PM Kitchen Visit</div></div></div>
+  <div class="scene-step"><p>You are on the couch. Full from dinner. Not hungry. The show is over and there is a gap, a small emptiness, a boredom, a restlessness. Your body says: <em>something sweet.</em> You walk to the kitchen. You open the pantry. You already know what you are reaching for.</p></div>
+  <div class="scene-step"><p>You eat it standing up. You do not sit down. You do not plate it. You do not savor it. The first two bites register. By the third, you are not tasting, you are finishing. The act of eating has become the act of completing. You are not feeding hunger. You are closing a loop that opened when you stood up.</p></div>
+  <div class="scene-step scene-result-bad"><p class="scene-result-tag">The math.</p><p>Duration of actual taste experience: 45 seconds. Duration of consequence, heaviness, disrupted sleep, sluggish morning: 10 hours. You traded a night and a morning for 45 seconds of sensation that you cannot even remember clearly right now.</p></div>
+</div>
+
+<div class="descent">
+  <div class="descent-echo"><p>While you read that, you recognized the kitchen. You recognized the standing. You recognized the speed. That recognition is not shame. It is the first moment of accurate seeing. The lie requires darkness to operate. You just turned on a light.</p></div>
+</div>
+
+<!-- ROOT CHECK 1 -->
+<div class="root-review">
+  <div class="root-label">Root System</div>
+  <div class="root-layer current">
+    <div class="root-ch">Ch1</div>
+    <div class="root-items">
+      <span class="root-pill rp-bright">The Body Lie</span>
+      <span class="root-arr">&#8250;</span>
+      <span class="root-pill rp-bright">Inverted Compass</span>
+      <span class="root-arr">&#8250;</span>
+      <span class="root-pill rp-bright">Fire / Extinguisher</span>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CHAPTER 2: THE ORIGINAL CALIBRATION ==================== -->
+<div class="ch-open">
+  <div class="ch-num">Chapter Two</div>
+  <h2>The Original Calibration</h2>
+  <p class="ch-premise">You were not always lost. There was a time when the compass worked perfectly. You were a child. And your body knew exactly what it needed without a single book, plan, or program.</p>
+</div>
+
+<div class="ribbon">
+  <p>"I praise you because I am fearfully and wonderfully made; your works are wonderful, I know that full well." Psalm 139:14</p>
+</div>
+
+<p>Watch a four year old eat. She takes three bites of a sandwich and walks away from the table. Not because she has discipline. Because she is full. The signal arrived and she obeyed it without thinking. There was no negotiation, no internal debate, no voice telling her to finish the plate. The <dfn data-def="A hormone produced by fat cells that signals the brain you have enough energy stored. When working properly, it suppresses appetite after eating. It is the body's 'full' signal.">leptin</dfn> signal fired, the brain received it, and the fork went down.</p>
+
+<p>Watch that same child on a playground. She runs. Not to burn calories. Not because it is good for her. Because her body cannot tolerate stillness. Movement is not exercise to a child. Movement is existence. Sitting still is the aberration. Running is the default state.</p>
+
+<p>Watch her sleep. She collapses at the end of the day not because a schedule says so but because her body spent its energy on living and now demands restoration. The cycle is airtight: move, eat what you need, sleep when you must, wake when you are done. No alarms. No willpower. No programs.</p>
+
+<p>This was the factory calibration of your compass. Hunger meant eat. Fullness meant stop. Restlessness meant move. Fatigue meant sleep. Every signal pointed toward survival and every response was automatic.</p>
+
+<div class="reframe">
+  <p>You were not born with a broken compass. You were born with the most sophisticated navigational instrument in biology: a body that knew exactly what it needed, exactly when it needed it, and exactly how much was enough. The compass did not fail. It was recalibrated. By forces that profit from the recalibration.</p>
+</div>
+
+<p>The child did not count calories because the <dfn data-def="The body's hunger/fullness communication system. Ghrelin rises to signal hunger; leptin rises to signal fullness. In an uncompromised system, this circuit regulates food intake automatically.">satiety circuit</dfn> was functioning. <dfn data-def="A hormone produced in the stomach that signals the brain you need food. Often called the 'hunger hormone.' It rises before meals and falls after eating.">Ghrelin</dfn> rose when energy was needed. Leptin rose when energy was sufficient. The conversation between stomach and brain was uninterrupted, clear, two signals trading back and forth like a thermostat and a furnace. No interference. No static.</p>
+
+<p>The child did not need a gym membership because movement had not been separated from life. There was no distinction between "exercise" and "existing." Effort was woven into every hour. The body spent its energy and replenished it in a cycle that required zero conscious management.</p>
+
+<p>The child did not crave engineered food because she had never encountered it. Her <dfn data-def="The brain's reward chemical. Released during pleasurable experiences as a learning signal: 'remember this, do it again.' Engineered food triggers dopamine release far beyond what natural food produces, overwhelming the reward circuit.">dopamine</dfn> system calibrated to natural rewards: the sweetness of fruit, the satisfaction of a full stomach, the rush of running fast. These rewards were moderate, earned, and self limiting. You ate the apple. The dopamine fired. The signal faded. You moved on. The system was designed for this rhythm.</p>
+
+<div class="viz">
+  <div class="viz-label">Close Your Eyes and See</div>
+  <h4>The Factory Settings</h4>
+  <p>Picture yourself at five years old. It is summer. You have been running in the yard for two hours without anyone telling you to exercise. You come inside and drink water because you are thirsty and eat a sandwich because you are hungry and stop eating because you are done. Nobody negotiated with you. Nobody bargained. Nobody said "just one more bite." Your body spoke and you listened and the conversation was over in seconds. Now feel the distance between that child and where you are today. That distance is not age. It is not character. It is calibration drift. The compass moved. And you did not move it.</p>
+  <div class="viz-trigger">The child is still in there. The compass still exists. It was not destroyed. It was overridden.</div>
+</div>
+
+<div class="descent">
+  <div class="descent-echo"><p>Something in you recognized that child. Not with nostalgia. With grief. Because you remember what it felt like to eat without guilt, to move without forcing yourself, to sleep without negotiation. That memory is not sentimental. It is diagnostic. It proves the compass once worked. Which means it can work again.</p></div>
+</div>
+
+<!-- ROOT CHECK 2 -->
+<div class="root-review">
+  <div class="root-label">Root System</div>
+  <div class="root-layer">
+    <div class="root-ch">Ch1</div>
+    <div class="root-items">
+      <span class="root-pill rp-dim">The Body Lie</span>
+      <span class="root-arr">&#8250;</span>
+      <span class="root-pill rp-dim">Inverted Compass</span>
+    </div>
+  </div>
+  <div class="root-sep"></div>
+  <div class="root-layer current">
+    <div class="root-ch">Ch2</div>
+    <div class="root-items">
+      <span class="root-pill rp-bright">Factory Calibration</span>
+      <span class="root-arr">&#8250;</span>
+      <span class="root-pill rp-bright">Satiety Circuit</span>
+      <span class="root-arr">&#8250;</span>
+      <span class="root-pill rp-bright">Movement as Existence</span>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CHAPTER 3: THE THREE RECALIBRATIONS ==================== -->
+<div class="ch-open">
+  <div class="ch-num">Chapter Three</div>
+  <h2>The Three Recalibrations</h2>
+  <p class="ch-premise">Your compass did not break from misuse. It was reverse engineered by industries that profit from the inversion. This is not metaphor. This is endocrinology.</p>
+</div>
+
+<div class="ribbon">
+  <p>"For our struggle is not against flesh and blood, but against the rulers, against the authorities, against the powers of this dark world." Ephesians 6:12</p>
+</div>
+
+<p>Between the child who stopped eating when full and the adult who eats standing in the kitchen at 11 PM, three things happened. Not vaguely. Not gradually. Three specific recalibrations of the compass, each one engineered, each one profitable for someone other than you.</p>
+
+<h3>Recalibration One: The Satiety Hijack</h3>
+
+<p><dfn data-def="Food products engineered in laboratories to maximize palatability and consumption. Defined by combinations of sugar, fat, and salt in ratios that do not exist in nature, designed to override the body's satiety signals.">Ultra processed food</dfn> did not appear in human history until the mid twentieth century. Before that, every food a human could eat had a built in off switch. You ate until leptin told your brain you were full. The signal was clear. The brain obeyed.</p>
+
+<p>Then food scientists discovered the <em>bliss point</em>: the exact ratio of sugar, fat, and salt that overrides the leptin signal. Not reduces it. Overrides it. The food industry spent billions engineering products that hit this ratio precisely. The result is a food that your stomach registers as full but your brain registers as "keep eating." The thermostat says the room is warm enough. The furnace keeps firing anyway.</p>
+
+<p>This is <dfn data-def="A condition where the brain stops responding to leptin despite high levels of the hormone in the blood. The 'full' signal is being sent but not received. Analogous to insulin resistance in type 2 diabetes. Caused primarily by chronic consumption of ultra-processed food.">leptin resistance</dfn>. The same mechanism as insulin resistance in diabetes. Your fat cells are screaming "we have enough energy stored." The leptin is being produced. The signal is being sent. But the brain has been deafened to it by chronic overstimulation. The "full" message is firing and nobody is picking up the phone.</p>
+
+<div class="truth">
+  <p>You are not someone who "eats too much." You are someone whose brain literally cannot hear the signal that says stop. The phone is ringing. The line is dead. And the food that killed the line is the same food you reach for when you think you are hungry.</p>
+</div>
+
+<h3>Recalibration Two: The Effort Erasure</h3>
+
+<p>Your great grandparents walked 8 to 14 miles a day without thinking about it. Not as exercise. As life. They walked to work, carried water, climbed stairs because there were no elevators, hauled groceries because there was no delivery. Movement was woven so deeply into existence that the concept of "working out" would have been incomprehensible to them. You do not "work out" breathing. You just breathe. That is how movement was.</p>
+
+<p>Every invention of the last century has had one purpose: eliminate physical effort from daily life. Cars, elevators, delivery services, remote controls, desk jobs, escalators, ride shares. Each one shaved minutes of movement from your day. Collectively, they removed hours.</p>
+
+<p>The result is not just less movement. It is a recalibration of what your body considers normal. When you move constantly, effort feels like existence. When you sit constantly, effort feels like emergency. Your body now treats a walk as exercise rather than as the baseline of being alive. The compass did not lose its understanding of movement. It recategorized movement from "default" to "optional" to "punishment."</p>
+
+<div class="reframe">
+  <p>You do not "hate exercise." Your body reclassified effort because effort disappeared from daily life. A fish does not hate swimming. But a fish that has been sitting on a shelf for twenty years might think water feels dangerous. Your body is the fish. Movement is the water. The aversion you feel is not preference. It is atrophy of the recognition that movement IS life, not an interruption of it.</p>
+</div>
+
+<h3>Recalibration Three: The Dopamine Flood</h3>
+
+<p>In the original calibration, dopamine was an earned reward. You chased something, caught it, ate it. The dopamine fired as a learning signal: <em>remember this, do it again.</em> The reward was proportional to the effort. A piece of fruit after a long walk. A meal after a day of work. The signal was moderate, specific, and self limiting.</p>
+
+<p><dfn data-def="The process by which engineered food, social media, and other modern stimuli release dopamine at levels far beyond what natural rewards produce. This overwhelms the reward circuit, raising the threshold for what registers as 'pleasurable' and making natural rewards feel insufficient.">Dopamine flooding</dfn> destroyed this proportionality. Ultra processed food delivers a dopamine spike that no natural food can match. Sugar combined with fat combined with salt in ratios that do not exist anywhere in nature. The spike is so large that it recalibrates the reward threshold. Natural food, the food your body actually needs, now registers as boring. Not because it is. Because your dopamine floor has been artificially raised.</p>
+
+<p>This is <dfn data-def="The process by which repeated exposure to a stimulus reduces the pleasure it produces, requiring increasingly intense stimulation to achieve the same reward. The 'tolerance' effect seen in all addictive cycles.">hedonic adaptation</dfn>. The same mechanism behind every addiction. The first cigarette is overwhelming. By the hundredth, it barely registers. The first engineered snack was a revelation. Now it is just Tuesday. And natural food, the food that would actually nourish you, tastes like nothing. Not because your taste buds changed. Because your reward threshold was moved.</p>
+
+<div class="truth">
+  <p>The compass was not inverted by your choices. It was inverted by an environment that profits from the inversion. The food industry profits when you cannot stop eating. The convenience industry profits when you cannot tolerate effort. The comfort industry profits when you interpret every discomfort as a problem to be solved with a purchase. You are not weak. You were engineered into this position by systems that spent billions learning how your neurology works and then used that knowledge against you.</p>
+</div>
+
+<div class="scene">
+  <div class="scene-head"><div class="scene-head-text"><div class="scene-label">See It In Action</div><div class="scene-title">The Supermarket Walk</div></div></div>
+  <div class="scene-step"><p>Walk into any supermarket. The perimeter contains food: vegetables, fruit, meat, dairy. The center aisles contain products: engineered combinations of sugar, salt, fat, and chemicals designed in laboratories to override your satiety circuit. Notice how much of the store is perimeter and how much is center. The ratio tells you everything about which business model is winning.</p></div>
+  <div class="scene-step"><p>Now notice the packaging. Every box on every shelf was designed by psychologists to trigger dopamine anticipation before you even open it. The colors, the fonts, the words "natural" and "wholesome" printed on products that contain thirty ingredients your grandmother could not pronounce. The engineering did not stop at the food. It extends to the shelf, the wrapper, the placement at eye level.</p></div>
+  <div class="scene-step scene-result-bad"><p class="scene-result-tag">The mechanism.</p><p>You did not walk in wanting those products. The products were designed to make you want them. The craving you feel in aisle seven is not your body talking. It is a trillion dollar industry talking through your body. The compass moved because someone moved it. And they did it so gradually you thought the direction was your own.</p></div>
+</div>
+
+<div class="descent">
+  <div class="descent-echo"><p>This is not conspiracy. This is economics. Companies that sell food engineered to override satiety make more money than companies that sell food that satisfies. The incentive structure guarantees that the most available, most advertised, most affordable food is the food most likely to deafen your leptin signal. You were outspent. Not outcharactered.</p></div>
+  <div class="descent-close"><div class="descent-close-label">Close Your Eyes</div><p>One breath. Let the weight of this land. You did not choose this. The compass was moved by hands that were not yours. When you feel that shift from self blame to accurate diagnosis, open your eyes.</p></div>
+</div>
+
+<!-- ROOT CHECK 3 -->
+<div class="root-review">
+  <div class="root-label">Root System</div>
+  <div class="root-layer">
+    <div class="root-ch">Ch1</div>
+    <div class="root-items">
+      <span class="root-pill rp-dim">The Body Lie</span>
+      <span class="root-arr">&#8250;</span>
+      <span class="root-pill rp-dim">Inverted Compass</span>
+    </div>
+  </div>
+  <div class="root-sep"></div>
+  <div class="root-layer">
+    <div class="root-ch">Ch2</div>
+    <div class="root-items">
+      <span class="root-pill rp-dim">Factory Calibration</span>
+      <span class="root-arr">&#8250;</span>
+      <span class="root-pill rp-dim">Satiety Circuit</span>
+    </div>
+  </div>
+  <div class="root-sep"></div>
+  <div class="root-layer current">
+    <div class="root-ch">Ch3</div>
+    <div class="root-items">
+      <span class="root-pill rp-bright">Leptin Hijack</span>
+      <span class="root-arr">&#8250;</span>
+      <span class="root-pill rp-bright">Effort Erasure</span>
+      <span class="root-arr">&#8250;</span>
+      <span class="root-pill rp-bright">Dopamine Flood</span>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CHAPTER 4: THE SALT WATER PRINCIPLE ==================== -->
+<div class="ch-open">
+  <div class="ch-num">Chapter Four</div>
+  <h2>The Salt Water Principle</h2>
+  <p class="ch-premise">Processed food does not satisfy hunger. It deepens it. You have been drinking salt water your entire life and wondering why you are always thirsty.</p>
+</div>
+
+<div class="ribbon">
+  <p>"Jesus answered, 'Everyone who drinks this water will be thirsty again, but whoever drinks the water I give them will never thirst.'" John 4:13</p>
+</div>
+
+<p>Imagine you are in a desert. Cracked earth, white sun. You are genuinely thirsty. Someone hands you a glass of water. You drink it. The relief lasts three seconds. Then the thirst doubles. You look down. There is salt crusted on the rim. You drink another glass from the same source. Same salt. Same momentary relief. Same deepening thirst. You could drink from this well forever and die of dehydration while your mouth stays wet.</p>
+
+<p>This is what ultra processed food does to hunger.</p>
+
+<p>When you eat food engineered to hit the bliss point, three things happen simultaneously. First, the sugar triggers a massive insulin spike that clears glucose from your blood so rapidly that within ninety minutes your blood sugar is lower than before you ate. Your brain reads low blood sugar as starvation. Hunger returns, amplified. Second, the dopamine spike from the engineered flavor combination is so far above baseline that when it crashes, the absence itself registers as craving. You are not hungry for food. You are hungry for the dopamine the food provided. Third, the leptin resistance deepens with each cycle. Each meal of ultra processed food makes the next "full" signal slightly quieter. The phone rings softer every time.</p>
+
+<div class="truth">
+  <p>The food you reach for when you think you are hungry is the food that is making you hungry. The salt water is creating the thirst it pretends to quench. And this is not a metaphor. This is the insulin/leptin/dopamine cycle operating exactly as the food was designed to make it operate. You are not failing to control your appetite. Your appetite is being manufactured by the last thing you ate.</p>
+</div>
+
+<div class="math-block">
+  <p>Engineered food: <strong>90 minutes of declining blood sugar</strong></p>
+  <p><em>followed by amplified craving, followed by more engineered food</em></p>
+  <div class="math-vs">versus</div>
+  <p>Whole food: <strong>4 to 6 hours of stable energy</strong></p>
+  <p><em>followed by gradual, genuine hunger, followed by reasonable appetite</em></p>
+</div>
+
+<p>This is why willpower based diets always fail. They say: be thirstier. Resist the water. But the water is salt. The solution was never to resist harder. It was to change the water.</p>
+
+<p>When you eat food that existed before laboratories, the satiety circuit functions. You eat an apple and the conversation with hunger ends. You eat a piece of grilled chicken and your body goes quiet for hours. Not because the food is "healthier" in some abstract way. Because it does not trigger the insulin crash, does not produce the dopamine spike, does not deafen the leptin signal. The thermostat works. The furnace turns off. Silence.</p>
+
+<div class="reframe">
+  <p>The absence of craving is not boring. It is freedom. When your body goes quiet after a meal, that silence is the compass reading true. You have been so accustomed to the constant noise of manufactured hunger that silence feels wrong. It is not wrong. It is the first honest signal you have received in years.</p>
+</div>
+
+<div class="scene">
+  <div class="scene-head"><div class="scene-head-text"><div class="scene-label">See It In Action</div><div class="scene-title">Two Lunches, One Week Apart</div></div></div>
+  <div class="scene-step"><p>Monday: fast food. The burger is engineered. The fries are engineered. The soda is engineered. Fifteen minutes of eating. By 1 PM you are sluggish. By 2 PM you want a snack. By 3 PM you are in a fog. By 5 PM you are craving dinner before you have left work. The "meal" created four hours of rolling hunger. Total calories consumed by end of day: enormous. Satisfaction: zero.</p></div>
+  <div class="scene-step"><p>The following Monday: grilled chicken, roasted vegetables, water. Twenty minutes of eating. By 1 PM you have energy. By 2 PM you are focused. By 3 PM you are still not thinking about food. By 5 PM you are ready for a reasonable dinner. Total calories consumed by end of day: half of last week. Satisfaction: complete.</p></div>
+  <div class="scene-step scene-result-good"><p class="scene-result-tag">The mechanism.</p><p>The first lunch was salt water. It created the next four hours of hunger. The second lunch was fresh water. It ended the conversation. The body went quiet. That quiet is not deprivation. It is the satiety circuit finally functioning without interference. The silence IS the reward.</p></div>
+</div>
+
+<div class="descent">
+  <div class="descent-echo"><p>Something is settling now. Not motivation. Something quieter and more dangerous to the lie: recognition. You recognize the salt water. You have been drinking it. And for the first time, you can see the salt on the rim of the glass.</p></div>
+  <div class="descent-close"><div class="descent-close-label">Close Your Eyes</div><p>One breath. Think of the food you reach for most often. The one that feels like reward. Now ask: does it end the hunger, or does it create the next hunger? When the answer arrives, open your eyes.</p></div>
+</div>
+
+<!-- ROOT CHECK 4 -->
+<div class="root-review">
+  <div class="root-label">Root System</div>
+  <div class="root-layer">
+    <div class="root-ch">Ch1</div>
+    <div class="root-items">
+      <span class="root-pill rp-dim">The Body Lie</span>
+      <span class="root-arr">&#8250;</span>
+      <span class="root-pill rp-dim">Inverted Compass</span>
+    </div>
+  </div>
+  <div class="root-sep"></div>
+  <div class="root-layer">
+    <div class="root-ch">Ch2</div>
+    <div class="root-items">
+      <span class="root-pill rp-dim">Factory Calibration</span>
+    </div>
+  </div>
+  <div class="root-sep"></div>
+  <div class="root-layer">
+    <div class="root-ch">Ch3</div>
+    <div class="root-items">
+      <span class="root-pill rp-dim">Three Recalibrations</span>
+    </div>
+  </div>
+  <div class="root-sep"></div>
+  <div class="root-layer current">
+    <div class="root-ch">Ch4</div>
+    <div class="root-items">
+      <span class="root-pill rp-bright">Salt Water Principle</span>
+      <span class="root-arr">&#8250;</span>
+      <span class="root-pill rp-bright">Insulin Crash Cycle</span>
+      <span class="root-arr">&#8250;</span>
+      <span class="root-pill rp-bright">Silence = Satiety</span>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CHAPTER 5: THE PHANTOM APPETITE ==================== -->
+<div class="ch-open">
+  <div class="ch-num">Chapter Five</div>
+  <h2>The Phantom Appetite</h2>
+  <p class="ch-premise">Most of what you call hunger is not hunger. It is emotional regulation, circadian habit, or hedonic memory. Learn to tell the difference and you will never experience eating the same way again.</p>
+</div>
+
+<div class="ribbon">
+  <p>"So whether you eat or drink or whatever you do, do it all for the glory of God." 1 Corinthians 10:31</p>
+</div>
+
+<p>Here is the question that separates the person who understands this playbook from the person who merely read it: when you feel "hungry," is it hunger?</p>
+
+<p>Most of the time, in a modern human living a modern life, the answer is no. What you are feeling is <dfn data-def="A false hunger signal generated not by the body's need for fuel but by emotional states, habitual timing, or the brain replaying the reward memory of previous meals. It mimics real hunger but responds to none of the same inputs.">phantom appetite</dfn>: a signal that mimics hunger perfectly but originates from an entirely different source.</p>
+
+<p>Phantom appetite has at least four generators, none of which have anything to do with your body needing fuel:</p>
+
+<p><strong>Generator one: emotional regulation.</strong> Stress, loneliness, boredom, anxiety, sadness. Each of these emotional states creates a physical discomfort in the body. Your nervous system learned, probably in childhood, that eating temporarily suppresses this discomfort. Food acts as an anxiolytic, a drug that reduces anxiety. The "hunger" you feel at 10 PM after a stressful day is not your stomach asking for calories. It is your nervous system asking for sedation.</p>
+
+<p><strong>Generator two: circadian habit loops.</strong> You are not hungry at noon. Your body expects food at noon because you have eaten at noon every day for years. The signal is not metabolic. It is clockwork. If you skipped lunch and waited, the "hunger" would fade within twenty minutes, because it was never hunger. It was a calendar reminder wired into your hypothalamus.</p>
+
+<p><strong>Generator three: hedonic memory echoes.</strong> Your brain stores the dopamine signature of every pleasurable meal you have eaten. When it encounters a trigger, the smell of baking, the sight of a restaurant logo, a commercial, it replays the reward signal. You feel a pull toward food that has nothing to do with energy needs. Your brain is showing you a highlight reel from yesterday's meal and asking you to re watch it.</p>
+
+<p><strong>Generator four: blood sugar artifacts.</strong> The insulin crash from ultra processed food creates a brief window where blood sugar drops below baseline. The brain reads this as genuine energy deficit. But it is an artifact of the previous spike, not a real need. If you ate whole food, this crash would not exist. The "hunger" is the echo of the salt water, not a signal from the body.</p>
+
+<div class="truth">
+  <p>If you cannot distinguish real hunger from phantom appetite, every eating decision you make is based on corrupted data. You are responding to signals that have nothing to do with fuel. You are feeding emotions, clocks, memories, and insulin artifacts while believing you are feeding your body.</p>
+</div>
+
+<h3>The Diagnostic</h3>
+
+<p>Real hunger and phantom appetite have completely different signatures. Once you learn to read them, the difference is as obvious as the difference between a headache and a stomachache. They do not feel the same. You have just never been taught to pay attention.</p>
+
+<div class="diagnostic">
+  <div class="diagnostic-head"><h4>Real Hunger vs. Phantom Appetite</h4></div>
+  <div class="diagnostic-body">
+    <div class="diag-col diag-col-real">
+      <div class="diag-col-label">Real Hunger</div>
+      <div class="diag-item">Gradual onset. Builds slowly over 1 to 2 hours.</div>
+      <div class="diag-item">Any food satisfies it. A plain meal sounds good.</div>
+      <div class="diag-item">Temporarily fades with a glass of water. Returns in 15 to 20 minutes.</div>
+      <div class="diag-item">Located in the stomach. A physical emptiness below the ribs.</div>
+      <div class="diag-item">Not accompanied by a specific emotional state. Just a quiet physical signal.</div>
+    </div>
+    <div class="diag-col diag-col-phantom">
+      <div class="diag-col-label">Phantom Appetite</div>
+      <div class="diag-item">Sudden onset. Arrives fully formed in seconds.</div>
+      <div class="diag-item">Only specific foods will do. You want <em>that</em> thing.</div>
+      <div class="diag-item">Water does nothing. The signal does not respond to hydration.</div>
+      <div class="diag-item">Located in the mouth, throat, or chest. A craving, not an emptiness.</div>
+      <div class="diag-item">Accompanied by an emotional state: stress, boredom, loneliness, restlessness.</div>
+    </div>
+  </div>
+</div>
+
+<p>Read that chart one more time. Slowly. Because if you internalize these five distinctions, you will never experience eating the same way again.</p>
+
+<p>The next time you feel "hungry," run the diagnostic. Where is the sensation? Stomach or mouth? When did it arrive? Gradually or suddenly? Would a plain piece of chicken satisfy it? Or do you need something specific?</p>
+
+<p>If the answers point to phantom appetite, you are not hungry. You are experiencing an emotional request, a habit loop, a memory echo, or a blood sugar artifact. And the correct response to a phantom appetite is not food. It is recognition. The moment you name it accurately, the signal loses most of its power. Not because you suppressed it. Because you diagnosed it.</p>
+
+<div class="scene">
+  <div class="scene-head"><div class="scene-head-text"><div class="scene-label">See It In Action</div><div class="scene-title">The 3 PM Craving</div></div></div>
+  <div class="scene-step"><p>It is 3 PM. You had lunch at noon. The signal arrives: you want something. Something sweet. Something crunchy. You are about to stand up and walk to the vending machine. But you pause. You run the diagnostic.</p></div>
+  <div class="scene-step"><p>Where is the sensation? Your mouth. Not your stomach. When did it arrive? Thirty seconds ago, fully formed. Would a plain piece of chicken satisfy it? No. You want chocolate specifically. Is there an emotional state? Yes. You are bored and the afternoon feels long.</p></div>
+  <div class="scene-step scene-result-good"><p class="scene-result-tag">The diagnosis.</p><p>Every answer points to phantom appetite. You are not hungry. You are bored and your brain is offering you the fastest dopamine solution it knows. You drink a glass of water. You stand up and walk for three minutes. The craving fades. Not because you fought it. Because it was never hunger and once you named it accurately, it had nowhere to hide.</p></div>
+</div>
+
+<div class="pause">
+  <div class="pause-label">Pause Here</div>
+  <h4>This diagnostic is the single most practical tool in this playbook.</h4>
+  <p>If you use it for one week, running it every time you feel "hungry," you will discover that the majority of your eating has been driven by signals that have nothing to do with your body needing fuel. That discovery alone changes everything.</p>
+</div>
+
+<div class="think">
+  <div class="think-label">Translate</div>
+  <h4>Think of the last time you ate when you were not truly hungry. Run the diagnostic backwards.</h4>
+  <p class="q-start">Where was the sensation located? Stomach or mouth/throat/chest?</p>
+  <div class="think-line"></div>
+  <p class="q-start">Did it arrive gradually or suddenly?</p>
+  <div class="think-line"></div>
+  <p class="q-start">Would any food have satisfied it, or only specific foods?</p>
+  <div class="think-line"></div>
+  <p class="q-start">What emotional state were you in?</p>
+  <div class="think-line"></div>
+</div>
+
+<!-- ROOT CHECK 5 -->
+<div class="root-review">
+  <div class="root-label">Root System</div>
+  <div class="root-layer">
+    <div class="root-ch">Ch1</div>
+    <div class="root-items">
+      <span class="root-pill rp-dim">The Body Lie</span>
+    </div>
+  </div>
+  <div class="root-sep"></div>
+  <div class="root-layer">
+    <div class="root-ch">Ch2</div>
+    <div class="root-items">
+      <span class="root-pill rp-dim">Factory Calibration</span>
+    </div>
+  </div>
+  <div class="root-sep"></div>
+  <div class="root-layer">
+    <div class="root-ch">Ch3</div>
+    <div class="root-items">
+      <span class="root-pill rp-dim">Three Recalibrations</span>
+    </div>
+  </div>
+  <div class="root-sep"></div>
+  <div class="root-layer">
+    <div class="root-ch">Ch4</div>
+    <div class="root-items">
+      <span class="root-pill rp-dim">Salt Water Principle</span>
+    </div>
+  </div>
+  <div class="root-sep"></div>
+  <div class="root-layer current">
+    <div class="root-ch">Ch5</div>
+    <div class="root-items">
+      <span class="root-pill rp-bright">Phantom Appetite</span>
+      <span class="root-arr">&#8250;</span>
+      <span class="root-pill rp-bright">Four Generators</span>
+      <span class="root-arr">&#8250;</span>
+      <span class="root-pill rp-bright">The Diagnostic</span>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CHAPTER 6: THE RECALIBRATION TIMELINE ==================== -->
+<div class="ch-open">
+  <div class="ch-num">Chapter Six</div>
+  <h2>The Recalibration Timeline</h2>
+  <p class="ch-premise">The compass can be turned back. Not through motivation. Through specific physiological recovery windows that follow a predictable sequence. This is pharmacology, not self help.</p>
+</div>
+
+<div class="ribbon">
+  <p>"Therefore, I urge you, brothers and sisters, in view of God's mercy, to offer your bodies as a living sacrifice, holy and pleasing to God." Romans 12:1</p>
+</div>
+
+<p>Everything described in the previous chapters, the leptin resistance, the dopamine flooding, the effort erasure, the phantom appetite, is reversible. Not theoretically. Measurably. The body's compass can be recalibrated to factory settings on a specific timeline that has been documented in clinical endocrinology.</p>
+
+<p>This is not motivation. This is pharmacology. And pharmacology does not care whether you believe in it.</p>
+
+<div class="timeline">
+  <div class="timeline-head">
+    <h4>The Recalibration Protocol</h4>
+    <p>What happens when you remove ultra processed food and reintroduce consistent movement</p>
+  </div>
+  <div class="timeline-body">
+    <div class="tl-phase">
+      <div class="tl-week">Days 1 through 5</div>
+      <h5>Withdrawal</h5>
+      <p>This is the hardest phase and the shortest. The dopamine system, deprived of its engineered stimulus, produces cravings that feel physical because they are physical. Headaches, irritability, fatigue, intense food fixation. The body is not dying. It is recalibrating. Every withdrawal symptom is evidence that the previous intake was pharmacologically active, that you were, in the clinical sense of the word, dependent. This phase ends. It always ends. Five days.</p>
+    </div>
+    <div class="tl-phase">
+      <div class="tl-week">Days 5 through 14</div>
+      <h5>Leptin Resensitization</h5>
+      <p>Without the chronic overstimulation of ultra processed food, the brain begins to hear the leptin signal again. Portions that previously felt inadequate start to feel sufficient. The "full" signal arrives earlier and louder. You stop thinking about food between meals. Not through willpower. Through restored receptor function. The phone is being repaired. The calls are starting to get through.</p>
+    </div>
+    <div class="tl-phase">
+      <div class="tl-week">Weeks 2 through 4</div>
+      <h5>Taste Recalibration</h5>
+      <p>The dopamine threshold begins to lower. Natural food starts to taste like something again. An apple has sweetness you forgot existed. The flavor of grilled vegetables registers as satisfying rather than boring. This is not imagination. The taste receptors are the same. The reward threshold has dropped, and moderate stimulus is now sufficient to trigger the "this is good" signal. The volume knob is turning down. Normal sounds like music again.</p>
+    </div>
+    <div class="tl-phase">
+      <div class="tl-week">Weeks 4 through 6</div>
+      <h5>Hedonic Recalibration</h5>
+      <p>The deep reset. Hedonic adaptation reverses. Pleasures that were invisible, a good night of sleep, the energy that follows clean eating, the absence of afternoon fog, begin to register as genuinely pleasurable. The reward system is no longer deaf to small signals. The compass needle is moving. Alive and Dead are approaching their correct positions.</p>
+    </div>
+    <div class="tl-phase">
+      <div class="tl-week">Weeks 6 through 8</div>
+      <h5>Movement Pleasure Returns</h5>
+      <p>If you have maintained consistent low intensity activity (walking, basic movement, anything that keeps the body in motion 30 to 45 minutes daily), the body's relationship with effort reverses during this window. Movement stops feeling like punishment and starts generating its own reward signal. The post exercise clarity, the open chest, the deep breath, these become something your body anticipates rather than dreads. Effort is reclassified from "emergency" back to "existence."</p>
+    </div>
+    <div class="tl-phase">
+      <div class="tl-week">Week 8 and Beyond</div>
+      <h5>The New Baseline</h5>
+      <p>The compass reads true. Hunger means hunger. Fullness means stop. Movement feels like life. The Quiet Voice is no longer quiet. It was never quiet. You were deafened. The deafness is lifting. And the world sounds completely different when you can hear again.</p>
+    </div>
+  </div>
+</div>
+
+<p>Notice what is absent from this timeline: willpower. Motivation. Discipline. The body does not need you to believe in recovery. It needs you to remove the interference for long enough that the hardware can repair itself. You are not building something new. You are uncovering something that was buried.</p>
+
+<div class="truth">
+  <p>Every phase of this timeline has been documented in peer reviewed endocrinology. Leptin resensitization, dopamine threshold normalization, hedonic recalibration. These are not theories. They are measurements. Your body knows how to do this. It has been trying to do this. You just kept giving it salt water before the repair could complete.</p>
+</div>
+
+<div class="scene">
+  <div class="scene-head"><div class="scene-head-text"><div class="scene-label">See It In Action</div><div class="scene-title">Day 12</div></div></div>
+  <div class="scene-step"><p>It is the twelfth day. The withdrawal ended around day five. The cravings are still present but they have changed character. They feel like suggestions instead of commands. You ate lunch, real food, simple ingredients, and something strange happened: you forgot about food until dinner. Not through effort. Through silence. The satiety circuit completed its conversation and closed the channel.</p></div>
+  <div class="scene-step"><p>You notice other things. Your sleep is deeper. You wake before the alarm. There is a clarity in the first hour of the morning that was not there two weeks ago. The afternoon fog has lifted. Not completely. But noticeably. These are not motivational feelings. They are metabolic facts. The hardware is coming back online.</p></div>
+  <div class="scene-step scene-result-good"><p class="scene-result-tag">The compass.</p><p>On day one, the needle was pointing backwards. On day twelve, it is trembling. It has not fully turned yet. But you can feel it moving. And for the first time, the movement is not your effort. It is your biology. The body is doing what it was always designed to do. You just stopped interfering.</p></div>
+</div>
+
+<div class="descent">
+  <div class="descent-echo"><p>Eight weeks. Not eight months. Not a lifetime of discipline. Eight weeks of removing the interference and letting the hardware repair itself. The compass was inverted over years. It returns in weeks. Because the factory calibration was never deleted. It was overwritten. And overwritten settings can be restored.</p></div>
+</div>
+
+<!-- ROOT CHECK 6 -->
+<div class="root-review">
+  <div class="root-label">Root System</div>
+  <div class="root-layer">
+    <div class="root-ch">Ch1</div>
+    <div class="root-items">
+      <span class="root-pill rp-dim">The Body Lie</span>
+    </div>
+  </div>
+  <div class="root-sep"></div>
+  <div class="root-layer">
+    <div class="root-ch">Ch2</div>
+    <div class="root-items">
+      <span class="root-pill rp-dim">Factory Calibration</span>
+    </div>
+  </div>
+  <div class="root-sep"></div>
+  <div class="root-layer">
+    <div class="root-ch">Ch3</div>
+    <div class="root-items">
+      <span class="root-pill rp-dim">Three Recalibrations</span>
+    </div>
+  </div>
+  <div class="root-sep"></div>
+  <div class="root-layer">
+    <div class="root-ch">Ch4</div>
+    <div class="root-items">
+      <span class="root-pill rp-dim">Salt Water Principle</span>
+    </div>
+  </div>
+  <div class="root-sep"></div>
+  <div class="root-layer">
+    <div class="root-ch">Ch5</div>
+    <div class="root-items">
+      <span class="root-pill rp-dim">Phantom Appetite</span>
+    </div>
+  </div>
+  <div class="root-sep"></div>
+  <div class="root-layer current">
+    <div class="root-ch">Ch6</div>
+    <div class="root-items">
+      <span class="root-pill rp-bright">Withdrawal</span>
+      <span class="root-arr">&#8250;</span>
+      <span class="root-pill rp-bright">Resensitization</span>
+      <span class="root-arr">&#8250;</span>
+      <span class="root-pill rp-bright">Recalibration</span>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CHAPTER 7: THE QUIET VOICE ==================== -->
+<div class="ch-open">
+  <div class="ch-num">Chapter Seven</div>
+  <h2>The Quiet Voice</h2>
+  <p class="ch-premise">The Quiet Voice was never quiet. You were deafened. This is what life sounds like when the compass is recalibrated and the noise finally stops.</p>
+</div>
+
+<div class="ribbon">
+  <p>"Dear friend, I pray that you may enjoy good health and that all may go well with you, even as your soul is getting along well." 3 John 1:2</p>
+</div>
+
+<p>Everything up to this point has been about the Loud Voice: what it is, how it was amplified, why it lies, how to diagnose its false signals. This chapter is about what remains when the Loud Voice loses its chemical advantage.</p>
+
+<p>The Quiet Voice is your body's actual operating system. It speaks in energy levels, sleep depth, morning clarity, breath capacity, the absence of inflammation, the ease of standing up, the desire to move without being told to move. It has been speaking your entire life. You could not hear it because the Loud Voice had a pharmaceutical megaphone and the Quiet Voice had nothing but the truth.</p>
+
+<p>When the recalibration completes, the Quiet Voice does not get louder. The noise around it gets softer. And what you hear is startling in its clarity.</p>
+
+<div class="voice-pair">
+  <div class="voice voice-loud"><div class="voice-tag">Before Recalibration</div><p>"I need something sweet. I deserve a treat. I am too tired to move. One more day off will not matter. Start Monday. Rest is what I need."</p></div>
+  <div class="voice voice-quiet"><div class="voice-tag">After Recalibration</div><p>"I have had enough. My body wants to move. That craving is not hunger, it is stress. Sleep now, wake clear. The effort is the reward."</p></div>
+</div>
+
+<p>Notice the structural difference. The Loud Voice negotiates. It gives reasons, justifications, deals. Every sentence is a sales pitch. The Quiet Voice states. It does not argue. It does not need to. Truth does not require a marketing budget.</p>
+
+<p>Here is what the recalibrated life actually feels like, described not as aspiration but as physiology:</p>
+
+<p><strong>You wake up and your body is already awake.</strong> Not because of caffeine. Because you slept well, because you ate well, because the inflammation that used to make your joints stiff has subsided. Getting vertical is not a negotiation. It is a continuation.</p>
+
+<p><strong>You eat and the conversation ends.</strong> The meal satisfies. There is no rolling hunger, no craving two hours later, no negotiation about seconds. The satiety circuit fires. The brain receives it. The fork goes down. You move on with your day and food does not occupy your thoughts until genuine hunger returns hours later.</p>
+
+<p><strong>Movement feels like breathing.</strong> Not exciting. Not painful. Just necessary and natural. Your body anticipates it the way it anticipates sleep. The resistance that used to precede every workout dissolves because the dopamine system has recalibrated to reward effort, not just consumption.</p>
+
+<p><strong>The mirror is neutral.</strong> Not a source of pride or shame. Just a reflection. The constant low grade self negotiation, the bargaining with your own appearance, the promises to do better, these go quiet. Not because you look different. Because you stopped fighting yourself and the war is over.</p>
+
+<div class="reframe">
+  <p>The Quiet Voice is not a spiritual metaphor. It is the sound of an endocrine system functioning without interference. When leptin sensitivity is restored, when dopamine thresholds are normalized, when the body moves enough to generate its own reward chemistry, the result is a signal environment so clear that the right choice is obvious. Not because you are disciplined. Because the data is finally accurate.</p>
+</div>
+
+<div class="viz">
+  <div class="viz-label">Close Your Eyes and See</div>
+  <h4>The Compass Restored</h4>
+  <p>Picture the compass in your chest one last time. The needle that was spun 180 degrees in Chapter One. See it now, gently, returning to true. ALIVE points toward real food, toward movement, toward sleep, toward the effort that builds capacity. DEAD points toward the engineered, the excessive, the numbing. The compass did not change. Your ability to read it was restored. And here is the strange part: when the compass reads true, you do not need willpower to follow it. You just walk. North is obvious. It always was. You were reading the needle backwards.</p>
+  <div class="viz-trigger">This is not a future visualization. The recalibration begins the moment you stop feeding the interference.</div>
+</div>
+
+<div class="alive-test">
+  <div class="alive-test-label">The Alive Test</div>
+  <h4>"Do I feel more alive or less alive right now?"</h4>
+  <p>After every meal. After every skipped workout. After every choice. Not tomorrow. Not in an hour. Right now. The answer never lies. It is the Quiet Voice, finally audible, giving you the only compass reading you will ever need.</p>
+</div>
+
+<div class="descent">
+  <div class="descent-echo"><p>You have read every word. Something has shifted. Not motivation. Motivation is loud and temporary, the Loud Voice's cousin. What shifted is perception. You see the mechanism now. Leptin resistance, dopamine flooding, phantom appetite, the salt water cycle. You cannot unsee a mechanism. And that is the point.</p></div>
+  <div class="descent-close"><div class="descent-close-label">Close Your Eyes One Last Time</div><p>One breath. Feel your body. The real one. The Quiet Voice one. Ask it what it needs right now. Not what the Loud Voice wants. What your body actually needs. When you hear the answer, and you will, open your eyes. Then do it.</p></div>
+</div>
+
+<div class="think">
+  <div class="think-label">Your Compass</div>
+  <h4>Write down what you now understand about your body that you did not understand before this playbook.</h4>
+  <div class="think-line"></div>
+  <div class="think-line"></div>
+  <p class="q-start">Name the phantom appetite trigger that operates most frequently in your life:</p>
+  <div class="think-line"></div>
+  <p class="q-start">What week of the recalibration timeline are you in right now, or when will you begin?</p>
+  <div class="think-line"></div>
+  <p class="q-start">Describe how "more alive" feels in YOUR body. Not in your mind. In your chest, your breath, your posture:</p>
+  <div class="think-line"></div>
+  <div class="think-line"></div>
+</div>
+
+<!-- FINAL ROOT CHECK -->
+<div class="root-review">
+  <div class="root-label">Complete Root System</div>
+  <div class="root-layer">
+    <div class="root-ch">Ch1</div>
+    <div class="root-items">
+      <span class="root-pill rp-lit">The Body Lie</span>
+      <span class="root-arr">&#8250;</span>
+      <span class="root-pill rp-lit">Inverted Compass</span>
+    </div>
+  </div>
+  <div class="root-sep"></div>
+  <div class="root-layer">
+    <div class="root-ch">Ch2</div>
+    <div class="root-items">
+      <span class="root-pill rp-lit">Factory Calibration</span>
+      <span class="root-arr">&#8250;</span>
+      <span class="root-pill rp-lit">Satiety Circuit</span>
+    </div>
+  </div>
+  <div class="root-sep"></div>
+  <div class="root-layer">
+    <div class="root-ch">Ch3</div>
+    <div class="root-items">
+      <span class="root-pill rp-lit">Leptin Hijack</span>
+      <span class="root-arr">&#8250;</span>
+      <span class="root-pill rp-lit">Effort Erasure</span>
+      <span class="root-arr">&#8250;</span>
+      <span class="root-pill rp-lit">Dopamine Flood</span>
+    </div>
+  </div>
+  <div class="root-sep"></div>
+  <div class="root-layer">
+    <div class="root-ch">Ch4</div>
+    <div class="root-items">
+      <span class="root-pill rp-lit">Salt Water Principle</span>
+      <span class="root-arr">&#8250;</span>
+      <span class="root-pill rp-lit">Insulin Crash Cycle</span>
+    </div>
+  </div>
+  <div class="root-sep"></div>
+  <div class="root-layer">
+    <div class="root-ch">Ch5</div>
+    <div class="root-items">
+      <span class="root-pill rp-lit">Phantom Appetite</span>
+      <span class="root-arr">&#8250;</span>
+      <span class="root-pill rp-lit">The Diagnostic</span>
+    </div>
+  </div>
+  <div class="root-sep"></div>
+  <div class="root-layer">
+    <div class="root-ch">Ch6</div>
+    <div class="root-items">
+      <span class="root-pill rp-lit">Recalibration Timeline</span>
+    </div>
+  </div>
+  <div class="root-sep"></div>
+  <div class="root-layer current">
+    <div class="root-ch">Ch7</div>
+    <div class="root-items">
+      <span class="root-pill rp-bright">The Quiet Voice</span>
+      <span class="root-arr">&#8250;</span>
+      <span class="root-pill rp-bright">Compass Restored</span>
+      <span class="root-arr">&#8250;</span>
+      <span class="root-pill rp-bright">The Alive Test</span>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== FINAL TEST ==================== -->
+<div class="final-test">
+  <div class="final-test-head">
+    <h3>The Final Test</h3>
+    <p>Seven questions to prove you heard the Quiet Voice</p>
+  </div>
+  <div class="final-test-body">
+    <div class="ft-q">
+      <div class="ft-q-num">Question 1</div>
+      <p>What is "the body lie"? Not what you should eat, but what the inversion actually is. Describe the fire and the extinguisher.</p>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+    </div>
+    <div class="ft-q">
+      <div class="ft-q-num">Question 2</div>
+      <p>Name the three recalibrations that inverted your compass. For each one, identify who profits from it.</p>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+    </div>
+    <div class="ft-q">
+      <div class="ft-q-num">Question 3</div>
+      <p>Explain the Salt Water Principle in terms of the insulin/leptin/dopamine cycle. Why does the salt water create the thirst it pretends to quench?</p>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+    </div>
+    <div class="ft-q">
+      <div class="ft-q-num">Question 4</div>
+      <p>List the five diagnostic criteria that separate real hunger from phantom appetite. Then identify which generator, emotional regulation, circadian habit, hedonic memory, or blood sugar artifact, operates most frequently in your life.</p>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+    </div>
+    <div class="ft-q">
+      <div class="ft-q-num">Question 5</div>
+      <p>What happens during days 5 through 14 of the recalibration? What is leptin resensitization and why does it mean you can stop counting calories?</p>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+    </div>
+    <div class="ft-q">
+      <div class="ft-q-num">Question 6</div>
+      <p>Why does this playbook call the recovery "pharmacology, not motivation"? What is the difference between a behavioral change and an endocrine restoration?</p>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+    </div>
+    <div class="ft-q">
+      <div class="ft-q-num">Question 7</div>
+      <p>Describe the Alive Test. When you ask "more alive or less alive," where in your body do you feel the answer? Describe the sensation, not the thought.</p>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== INSTALLATION PROMPT ==================== -->
+<div class="prompt-card">
+  <div class="prompt-head">Installation Prompt</div>
+  <div class="prompt-body">
+    <p>Copy the text below and use it as a starting prompt in any AI conversation to activate The Body Lie framework:</p>
+    <p><strong>I have read The Body Lie playbook. I understand the inverted compass: my body experiences pleasure where pain should be and pain where pleasure should be, and this is not willpower failure but navigational corruption caused by three specific recalibrations (leptin hijack from ultra processed food, effort erasure from engineered convenience, dopamine flooding from bliss point engineering). I understand the Salt Water Principle: processed food deepens hunger through the insulin crash/leptin resistance/dopamine spike cycle. I can distinguish real hunger from phantom appetite using the five diagnostic criteria (onset speed, food specificity, water response, body location, emotional state). I know the recalibration timeline: withdrawal (days 1 to 5), leptin resensitization (days 5 to 14), taste recalibration (weeks 2 to 4), hedonic recalibration (weeks 4 to 6), movement pleasure (weeks 6 to 8). I use the Alive Test after every choice: "Do I feel more alive or less alive right now?" Help me apply this framework to [describe your specific situation]. When I report phantom appetite, help me identify the generator. When I am drinking salt water, name it. This is pharmacology, not motivation.</strong></p>
+  </div>
+</div>
+
+<div class="section-break">&#8226; &nbsp; &#8226; &nbsp; &#8226;</div>
+
+</div><!-- end container -->
+
+<footer>
+  <p>The Quiet Voice was never quiet. You were deafened. Now you can hear.</p>
+  <div class="brand">Kingdom Builders AI</div>
+</footer>
+</body>
+</html>

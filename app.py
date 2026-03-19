@@ -136,13 +136,13 @@ def _slug_to_file():
         "the-ghost-frame": "The_Ghost_Frame.html",
         "the-gravity-well": "The_Gravity_Well.html",
         "the-narrator": "The_Narrator.html",
-        "the-salmon-journey": "The_Salmon_Journey.html",
+
         "the-squirrel-economy": "The_Squirrel_Economy_Modified.html",
         "conductors-playbook": "The_Conductors_Playbook.html",
         "the-wolfs-table": "The_Wolfs_Table.html",
         "the-crows-gambit": "The_Crows_Gambit.html",
         "the-eagles-lens": "The_Eagles_Lens.html",
-        "the-lighthouse-keepers-log": "The_Lighthouse_Keepers_Log.html",
+
         "the-octopus-protocol": "The_Octopus_Protocol.html",
         "the-starlings-murmuration": "The_Starlings_Murmuration.html",
         "the-chameleons-code": "The_Chameleons_Code.html",
@@ -161,7 +161,7 @@ def _slug_to_file():
         "the-elephants-ground": "The_Elephants_Ground.html",
         "the-bees-dance": "The_Bees_Dance.html",
         "the-otters-play": "The_Otters_Play.html",
-        "the-compass-rose": "The_Compass_Rose.html",
+
         "lay-it-down-pride": "Lay_It_Down_Pride.html",
         "lay-it-down-envy": "Lay_It_Down_Envy.html",
         "lay-it-down-wrath": "Lay_It_Down_Wrath.html",
@@ -169,7 +169,7 @@ def _slug_to_file():
         "dad-talks-the-dopamine-drought": "Dad_Talks_The_Dopamine_Drought.html",
         "dad-talks-the-mirror-test": "Dad_Talks_The_Mirror_Test.html",
         "dad-talks-the-flinch": "Dad_Talks_The_Flinch.html",
-        "dad-talks-the-two-wallets": "Dad_Talks_The_Two_Wallets.html",
+
         "dad-talks-the-invisible-contract": "Dad_Talks_The_Invisible_Contract.html",
         "dad-talks-the-scoreboard-lie": "Dad_Talks_The_Scoreboard_Lie.html",
         "dad-talks-the-first-punch": "Dad_Talks_The_First_Punch.html",
@@ -195,6 +195,9 @@ def _slug_to_file():
         "the-hermit-crabs-shell": "The_Hermit_Crabs_Shell.html",
         "the-scorpions-molt": "The_Scorpions_Molt.html",
         "the-vampire-squids-light": "The_Vampire_Squids_Light.html",
+        "the-three-tables": "The_Three_Tables.html",
+        "the-kintsugi-bowl": "The_Kintsugi_Bowl_The_Wandering_Eye.html",
+        "the-unfinished-song": "The_Unfinished_Song.html",
     }
 
 
@@ -240,10 +243,6 @@ def the_narrator():
     return send_from_directory("static", "the-narrator.html")
 
 
-@bp.route("/thesalmonjourney")
-def the_salmon_journey():
-    return send_from_directory("static", "the-salmon-journey.html")
-
 
 @bp.route("/thesquirreleconomy")
 def the_squirrel_economy():
@@ -264,10 +263,6 @@ def the_crows_gambit():
 def the_eagles_lens():
     return send_from_directory("static", "the-eagles-lens.html")
 
-
-@bp.route("/thelighthousekeeperslog")
-def the_lighthouse_keepers_log():
-    return send_from_directory("static", "the-lighthouse-keepers-log.html")
 
 
 @bp.route("/theoctopusprotocol")
@@ -329,10 +324,6 @@ def the_pangolins_armor():
 def the_horses_gait():
     return send_from_directory("static", "the-horses-gait.html")
 
-
-@bp.route("/thecompassrose")
-def the_compass_rose():
-    return send_from_directory("static", "the-compass-rose.html")
 
 
 # --- Lay It Down Series (7 Deadly Sins) ---
@@ -402,10 +393,6 @@ def dad_talks_the_mirror_test():
 def dad_talks_the_flinch():
     return send_from_directory("static", "dad-talks-the-flinch.html")
 
-
-@bp.route("/dadtalksthetwowallets")
-def dad_talks_the_two_wallets():
-    return send_from_directory("static", "dad-talks-the-two-wallets.html")
 
 
 @bp.route("/dadtalkstheinvisiblecontract")
@@ -656,7 +643,7 @@ def health():
 @bp.route("/subscribe", methods=["POST"])
 def subscribe():
     email = request.form.get("email", "").strip()
-    source = request.form.get("source", "salmon-journey-ch1")
+    source = request.form.get("source", "catalog")
     if not email:
         return redirect(url_for("main.catalog"))
     from database import create_subscriber
@@ -673,10 +660,6 @@ def subscribe():
 def thanks():
     return send_from_directory("static", "thanks.html")
 
-
-@bp.route("/free/salmon-journey-ch1")
-def free_salmon_ch1():
-    return send_from_directory("static", "free-salmon-ch1.html")
 
 
 # --- Stripe Checkout ---

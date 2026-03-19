@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Lifted Ceiling | Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --deep:#1A1008;--mid:#2D2010;--light:#4A3520;--pale:#5E4530;
+ --gold:#D4A843;--gold-glow:#E8C060;--gold-pale:#F5E0A8;--gold-soft:rgba(212,168,67,0.08);
+ --copper:#C87838;--copper-glow:#E09050;--copper-pale:#F0C0A0;
+ --silver:#8A7B6A;--silver-light:#B0A090;--silver-pale:#D8D0C0;
+ --cream:#FAF6EE;--cream-warm:#F5EDE0;--cream-deep:#E8DCC8;
+ --text:#1A1E2E;--text-light:#3A4058;--text-muted:#6A7088;
+ --white:#FFFFFF;--radius:16px;
+ --shadow-soft:0 2px 16px rgba(26,16,8,0.08);
+ --shadow-mid:0 4px 28px rgba(26,16,8,0.12);
+ --before-bg:#FFF5EE;--before-border:#C87838;--before-text:#5A2000;
+ --after-bg:#FFF8E8;--after-border:#8A6B20;--after-text:#1A1008
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--cream);line-height:1.82;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
+.page{max-width:720px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--deep);font-weight:700}
+.prose h2{font-size:1.4rem;color:var(--deep);margin:40px 0 16px;letter-spacing:-0.01em;display:flex;align-items:center;gap:10px}
+
+/* ===== KNOWLEDGE LAYER ===== */
+dfn.def{font-style:normal;border-bottom:1.5px dotted var(--gold);cursor:help;position:relative}
+dfn.def:hover::after{content:attr(data-def);position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:var(--deep);color:var(--cream);padding:8px 14px;border-radius:8px;font-size:0.78rem;font-family:'Nunito',sans-serif;white-space:normal;width:260px;text-align:center;z-index:100;box-shadow:0 4px 16px rgba(26,16,8,0.3);line-height:1.5;pointer-events:none}
+
+/* ===== COVER ===== */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;
+ background:linear-gradient(175deg,#0A0604 0%,#1A1008 20%,var(--mid) 45%,var(--light) 70%,#1A1008 100%);
+ position:relative;overflow:hidden}
+.spark{position:absolute;width:3px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;animation:spark-rise linear infinite;pointer-events:none;opacity:0}
+.spark:nth-child(1){left:10%;height:12px;background:rgba(212,168,67,0.6);animation-duration:4s;animation-delay:0s}
+.spark:nth-child(2){left:25%;height:8px;background:rgba(200,120,56,0.5);animation-duration:5s;animation-delay:-1s}
+.spark:nth-child(3){left:40%;height:10px;background:rgba(212,168,67,0.4);animation-duration:3.5s;animation-delay:-2s}
+.spark:nth-child(4){left:55%;height:6px;background:rgba(232,192,96,0.6);animation-duration:4.5s;animation-delay:-0.5s}
+.spark:nth-child(5){left:70%;height:14px;background:rgba(200,120,56,0.3);animation-duration:3.8s;animation-delay:-3s}
+.spark:nth-child(6){left:85%;height:9px;background:rgba(212,168,67,0.5);animation-duration:5.2s;animation-delay:-1.5s}
+.spark:nth-child(7){left:50%;height:7px;background:rgba(232,192,96,0.4);animation-duration:4.2s;animation-delay:-2.5s}
+.spark:nth-child(8){left:15%;height:11px;background:rgba(200,120,56,0.5);animation-duration:3.2s;animation-delay:-0.8s}
+.spark:nth-child(9){left:65%;height:5px;background:rgba(212,168,67,0.6);animation-duration:4.8s;animation-delay:-3.5s}
+.spark:nth-child(10){left:35%;height:8px;background:rgba(232,192,96,0.5);animation-duration:3.6s;animation-delay:-1.2s}
+@keyframes spark-rise{
+ 0%{bottom:-20px;opacity:0;transform:translateX(0)}
+ 10%{opacity:0.8}
+ 50%{opacity:0.5;transform:translateX(15px)}
+ 90%{opacity:0.1}
+ 100%{bottom:110%;opacity:0;transform:translateX(-10px)}
+}
+/* Gear silhouettes */
+.gear{position:absolute;border:2px solid rgba(212,168,67,0.08);border-radius:50%;animation:gear-spin linear infinite;pointer-events:none}
+.gear:nth-child(11){top:15%;right:10%;width:80px;height:80px;animation-duration:20s}
+.gear:nth-child(12){top:60%;left:8%;width:50px;height:50px;animation-duration:15s;animation-direction:reverse}
+.gear:nth-child(13){bottom:20%;right:20%;width:35px;height:35px;animation-duration:12s}
+@keyframes gear-spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.015;mix-blend-mode:overlay;pointer-events:none}
+.cover-content{position:relative;z-index:2;padding:48px 24px}
+.cover-badge{display:inline-block;padding:6px 22px;border:1px solid rgba(212,168,67,0.3);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.67rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--gold-glow);margin-bottom:16px}
+.cover-series{display:inline-block;padding:4px 16px;border:1px solid rgba(212,168,67,0.2);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.58rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:36px}
+.cover h1{font-family:'Nunito',sans-serif;font-size:clamp(2.2rem,6vw,3.8rem);font-weight:900;color:var(--white);line-height:1.08;margin-bottom:4px}
+.cover h1 strong{font-weight:900;color:var(--gold-glow);display:block;font-size:clamp(2.6rem,7vw,4.4rem)}
+.cover-tagline{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.5);margin-top:24px;line-height:1.75;max-width:560px;margin-left:auto;margin-right:auto}
+.cover-tagline em{color:var(--gold-pale);font-style:normal;font-weight:600}
+.cover-sub{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-top:12px}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.58rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,0.15);margin-top:48px}
+
+/* ===== SERIES PROGRESS ===== */
+.series-progress{text-align:center;padding:24px 24px 12px;background:transparent}
+.series-dots{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px}
+.series-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(212,168,67,0.3);background:transparent}
+.series-dot.active{background:var(--gold);border-color:var(--gold);box-shadow:0 0 8px rgba(212,168,67,0.3)}
+.series-dot-label{font-family:'Poppins',sans-serif;font-size:0.55rem;color:rgba(255,255,255,0.35);margin-top:4px}
+
+/* ===== CHAPTER HEADS ===== */
+.ch-head{background:linear-gradient(170deg,var(--deep),var(--mid));padding:72px 24px 52px;position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D4A843' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.ch-badge{display:inline-block;padding:4px 16px;background:rgba(212,168,67,0.1);border:1px solid rgba(212,168,67,0.25);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:20px}
+.ch-num{font-family:'Nunito',sans-serif;font-size:5.5rem;font-weight:900;line-height:0.9;color:rgba(212,168,67,0.15);margin-bottom:-10px}
+.ch-title{font-family:'Nunito',sans-serif;font-size:2.1rem;font-weight:900;color:var(--white);line-height:1.15;letter-spacing:-0.02em;margin-bottom:10px}
+.ch-sub{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.4);line-height:1.6}
+
+/* ===== RIBBON (scripture) ===== */
+.ribbon{text-align:center;padding:22px 24px;background:linear-gradient(135deg,rgba(212,168,67,0.04),rgba(212,168,67,0.07));border-top:1.5px solid rgba(212,168,67,0.15);border-bottom:1.5px solid rgba(212,168,67,0.15)}
+.ribbon p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:var(--text-muted);max-width:520px;margin:0 auto}
+.ribbon .ref{font-weight:600;color:var(--copper);font-style:normal}
+
+/* ===== CHARACTER CARDS ===== */
+.char-grid{display:grid;gap:24px;margin:40px 0}
+@media(min-width:640px){.char-grid{grid-template-columns:1fr 1fr 1fr}}
+.char-card{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft);transition:all 0.3s ease}
+.char-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-mid)}
+.char-head{background:linear-gradient(135deg,var(--gold-soft),rgba(212,168,67,0.03));padding:18px 20px;border-bottom:1px solid var(--cream-deep);display:flex;align-items:center;gap:14px}
+.char-emoji{font-size:2rem;line-height:1;display:flex;align-items:center;justify-content:center}
+.char-name{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;color:var(--deep);line-height:1.25}
+.char-title{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-top:2px}
+.char-body{padding:20px}
+.char-body p{font-size:0.92rem;color:var(--text-light);line-height:1.75;margin:0}
+
+/* ===== SCENE BLOCKS ===== */
+.scene{background:linear-gradient(135deg,var(--cream-warm),var(--cream));border:1px solid var(--cream-deep);border-radius:var(--radius);padding:28px;margin:32px 0;box-shadow:var(--shadow-soft)}
+.scene-label{font-family:'Nunito',sans-serif;font-size:0.68rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--copper);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.scene h4{font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:800;color:var(--deep);margin-bottom:14px;line-height:1.3}
+.scene p{font-size:0.95rem;color:var(--text-light);line-height:1.78;margin-bottom:14px}
+.scene p:last-child{margin-bottom:0}
+
+/* ===== BEFORE / AFTER ===== */
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:36px 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft)}
+@media(max-width:600px){.ba-grid{grid-template-columns:1fr}}
+.ba-col{padding:28px 24px}
+.ba-col.before{background:var(--before-bg);border-right:2px solid var(--cream-deep)}
+.ba-col.after{background:var(--after-bg)}
+@media(max-width:600px){.ba-col.before{border-right:none;border-bottom:2px solid var(--cream-deep)}}
+.ba-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px}
+.ba-col.before .ba-label{color:var(--before-border)}
+.ba-col.after .ba-label{color:var(--after-border)}
+.ba-col h4{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;margin-bottom:10px;line-height:1.3}
+.ba-col.before h4{color:var(--before-text)}
+.ba-col.after h4{color:var(--after-text)}
+.ba-col p{font-size:0.88rem;line-height:1.7;margin-bottom:8px}
+.ba-col.before p{color:#6A3010}
+.ba-col.after p{color:#2A1A08}
+.ba-col ul{list-style:none;padding:0;margin:0}
+.ba-col ul li{font-size:0.88rem;line-height:1.7;padding:4px 0 4px 18px;position:relative}
+.ba-col.before ul li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:8px;border-radius:50%;background:var(--before-border);opacity:0.5}
+.ba-col.after ul li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:8px;border-radius:50%;background:var(--after-border);opacity:0.5}
+
+/* ===== DATA BOXES ===== */
+.data-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin:32px 0}
+.data-box{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:24px 16px;text-align:center;box-shadow:var(--shadow-soft)}
+.data-num{font-family:'Nunito',sans-serif;font-size:2rem;font-weight:900;color:var(--copper);line-height:1;margin-bottom:6px}
+.data-label{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+
+/* ===== DATA HERO ===== */
+.data-hero{text-align:center;padding:48px 24px;margin:40px 0;background:linear-gradient(135deg,var(--deep),var(--mid));border-radius:var(--radius);position:relative;overflow:hidden}
+.data-hero::before{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(212,168,67,0.1) 0%,transparent 70%);border-radius:50%}
+.data-hero .dh-num{font-family:'Nunito',sans-serif;font-size:4rem;font-weight:900;color:var(--gold-glow);line-height:1;margin-bottom:10px;position:relative}
+.data-hero .dh-label{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.4);position:relative}
+.data-hero .dh-sub{font-family:'Lora',serif;font-size:0.92rem;font-style:italic;color:rgba(255,255,255,0.5);margin-top:12px;max-width:400px;margin-left:auto;margin-right:auto;position:relative}
+
+/* ===== FLOW DIAGRAM ===== */
+.flow{display:flex;flex-direction:column;gap:0;margin:32px 0}
+.flow-step{display:flex;align-items:flex-start;gap:16px;padding:20px 0}
+.flow-dot{width:36px;height:36px;min-width:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-glow));display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:0.8rem;font-weight:900;color:var(--white);box-shadow:0 2px 8px rgba(212,168,67,0.3)}
+.flow-line{width:2px;height:20px;background:linear-gradient(to bottom,var(--gold),transparent);margin-left:17px}
+.flow-text h4{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:var(--deep);margin-bottom:4px}
+.flow-text p{font-size:0.88rem;color:var(--text-light);line-height:1.65}
+
+/* ===== GLOW BOX ===== */
+.glow-box{background:linear-gradient(135deg,var(--deep),var(--mid));border:2px solid rgba(212,168,67,0.2);border-radius:var(--radius);padding:32px;margin:36px 0;position:relative;overflow:hidden;box-shadow:0 4px 24px rgba(26,16,8,0.2)}
+.glow-box::before{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(212,168,67,0.08) 0%,transparent 70%);border-radius:50%}
+.glow-box h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--gold-glow);margin-bottom:14px;position:relative}
+.glow-box p{font-size:0.95rem;color:rgba(255,255,255,0.8);line-height:1.78;position:relative;margin-bottom:12px}
+.glow-box p:last-child{margin-bottom:0}
+.glow-box strong{color:var(--gold-pale)}
+
+/* ===== GRAND QUOTE ===== */
+.grand-quote{text-align:center;padding:48px 24px;margin:40px 0;position:relative}
+.grand-quote::before{content:'\201C';font-family:'Lora',serif;font-size:8rem;color:rgba(212,168,67,0.12);position:absolute;top:-20px;left:50%;transform:translateX(-50%);line-height:1}
+.grand-quote blockquote{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:var(--deep);line-height:1.7;max-width:520px;margin:0 auto;position:relative}
+.grand-quote cite{display:block;margin-top:16px;font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--copper);font-style:normal}
+
+/* ===== ROOT CHECK ===== */
+.root-ck{margin:40px auto;max-width:720px;padding:36px 32px;background:linear-gradient(135deg,rgba(212,168,67,0.04),rgba(212,168,67,0.08));border-radius:var(--radius);border:2px solid rgba(212,168,67,0.15)}
+.root-ck .rc-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.root-ck h4{font-size:1.05rem;color:var(--deep);margin-bottom:20px}
+.r-item{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
+.r-item:last-child{margin-bottom:0}
+.r-dot{flex-shrink:0;width:8px;height:8px;border-radius:50%;background:var(--gold);margin-top:7px}
+.r-text{font-size:0.92rem;color:var(--text-light);line-height:1.7}
+
+/* ===== VIZ (visualization box) ===== */
+.viz{margin:32px 0;border-radius:var(--radius);border:2px solid var(--gold);overflow:hidden;box-shadow:0 0 20px rgba(212,168,67,0.08)}
+.viz-inner{padding:0}
+.viz-top{display:flex;align-items:center;gap:16px;padding:20px 28px;background:linear-gradient(135deg,rgba(212,168,67,0.08),rgba(212,168,67,0.03))}
+.viz-icon{flex-shrink:0;width:40px;height:40px;border-radius:50%;background:var(--gold);color:var(--white);display:flex;align-items:center;justify-content:center}
+.viz-icon svg{width:20px;height:20px}
+.viz-meta .viz-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.viz-meta h4{font-size:1rem;color:var(--deep);margin:0}
+.viz-body{padding:24px 28px}
+.viz-body p{font-size:0.92rem;color:var(--text-light);line-height:1.75;margin-bottom:12px}
+.viz-body strong{color:var(--deep);font-weight:700}
+.viz-body em{color:var(--copper);font-style:normal;font-weight:600}
+.viz-body p:last-child{margin-bottom:0}
+.viz-trigger{padding:16px 28px;background:linear-gradient(135deg,rgba(212,168,67,0.06),rgba(212,168,67,0.02));border-top:1px solid rgba(212,168,67,0.12);font-size:0.88rem;color:var(--deep);font-style:italic}
+
+/* ===== THINK PROMPT ===== */
+.think{background:linear-gradient(135deg,rgba(212,168,67,0.06),rgba(212,168,67,0.02));border:2px solid rgba(212,168,67,0.15);border-radius:var(--radius);padding:28px;margin:36px 0}
+.think-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.think p{font-size:0.95rem;color:var(--text-light);line-height:1.78;margin-bottom:12px}
+.think p:last-child{margin-bottom:0}
+.think-line{border:none;border-bottom:1.5px dashed rgba(212,168,67,0.3);margin:8px 0}
+
+/* ===== TIMELINE ===== */
+.timeline{margin:36px 0;padding:0;position:relative}
+.timeline::before{content:'';position:absolute;left:18px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--gold),var(--copper),var(--gold))}
+.tl-item{display:flex;gap:20px;align-items:flex-start;padding:14px 0;position:relative}
+.tl-dot{width:12px;height:12px;min-width:12px;border-radius:50%;background:var(--gold);margin-top:5px;position:relative;z-index:1;margin-left:12px;box-shadow:0 0 6px rgba(212,168,67,0.3)}
+.tl-content{flex:1}
+.tl-year{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--copper);margin-bottom:2px}
+.tl-title{font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:800;color:var(--deep);margin-bottom:2px}
+.tl-desc{font-size:0.85rem;color:var(--text-light);line-height:1.6}
+.tl-era{font-family:'Nunito',sans-serif;font-size:0.58rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin:28px 0 8px 44px}
+
+/* ===== FINAL TEST ===== */
+.final-test{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:36px;margin:40px 0;box-shadow:var(--shadow-soft)}
+.final-test h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--deep);margin-bottom:6px}
+.final-test .test-sub{font-size:0.85rem;color:var(--text-muted);margin-bottom:24px;font-style:italic}
+.test-q{padding:14px 0;border-bottom:1px solid var(--cream-deep)}
+.test-q:last-child{border-bottom:none}
+.test-num{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.test-q p{font-size:0.92rem;color:var(--text);line-height:1.65}
+
+/* ===== PROMPT CARD ===== */
+.prompt-card{background:linear-gradient(135deg,var(--deep),var(--mid));border-radius:var(--radius);padding:36px;margin:40px 0;box-shadow:0 4px 24px rgba(26,16,8,0.2)}
+.prompt-card h3{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;color:var(--gold-glow);margin-bottom:16px}
+.prompt-card p{font-size:0.88rem;color:rgba(255,255,255,0.65);line-height:1.65;margin-bottom:10px}
+.prompt-card code{background:rgba(255,255,255,0.08);padding:2px 8px;border-radius:4px;font-size:0.82rem;color:var(--gold-pale)}
+
+/* ===== FOOTER ===== */
+.footer{text-align:center;padding:48px 24px;background:var(--deep);color:rgba(255,255,255,0.2);font-family:'Poppins',sans-serif;font-size:0.6rem;letter-spacing:2px;text-transform:uppercase}
+.footer a{color:var(--gold);text-decoration:none;opacity:0.6}
+.footer a:hover{opacity:1}
+
+@media(max-width:640px){
+  .page{padding:0 20px}
+  .root-ck{margin-left:20px;margin-right:20px;padding:28px 20px}
+  .char-grid{grid-template-columns:1fr}
+  .data-hero .dh-num{font-size:3rem}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+</style>
+</head>
+<body>
+
+<!-- ===== COVER ===== -->
+<section class="cover">
+<div class="spark"></div><div class="spark"></div><div class="spark"></div>
+<div class="spark"></div><div class="spark"></div><div class="spark"></div>
+<div class="spark"></div><div class="spark"></div><div class="spark"></div><div class="spark"></div>
+<div class="gear"></div><div class="gear"></div><div class="gear"></div>
+<div class="ghost-noise"></div>
+<div class="cover-content">
+<div class="cover-badge">Kingdom Builders AI</div><br>
+<div class="cover-series">The AI Economy &middot; Part 1 of 2</div>
+<h1>The Lifted <strong>Ceiling</strong></h1>
+<p class="cover-tagline">For 600 years, every tool that terrified the workforce did the same thing. It did not destroy the floor. <em>It lifted the ceiling.</em> The printing press, the loom, the engine, the spreadsheet, the internet. Every single one. The ledger is not close. AI is next, and it is lifting every ceiling simultaneously.</p>
+<p class="cover-sub">Why Technology Creates More Than It Destroys</p>
+<div class="series-progress">
+  <div class="series-dots">
+    <span class="series-dot active" title="The Lifted Ceiling"></span>
+    <span class="series-dot" title="The New Earning"></span>
+  </div>
+  <div class="series-dot-label">Part 1 of 2</div>
+</div>
+<p class="cover-author">KingdomBuilders AI</p>
+</div>
+</section>
+
+<!-- ===== SCRIPTURE RIBBON ===== -->
+<div class="ribbon">
+<p>"Where there is no vision, the people perish."<br><span class="ref">Proverbs 29:18 (KJV)</span></p>
+</div>
+
+<!-- ===== CHAPTER 0: PREGAME ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Pregame</div>
+<div class="ch-num">00</div>
+<div class="ch-title">The Receipts</div>
+<div class="ch-sub">What you will know when you finish this playbook.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p><strong>If you finish this playbook, you will</strong> never again hear that technology is coming for your job and feel even a flicker of fear. You will hold a mental ledger of 600 years of proof that the panic is always wrong, and you will understand <em>why</em> it is always wrong. You will see the pattern behind every industrial revolution, every automation scare, every headline screaming that machines will replace humans. And you will know what to do about AI, specifically, because you will understand that what looks like a threat is the largest ceiling lift in human history.</p>
+
+<div class="glow-box">
+<h3>Three Bold Claims</h3>
+<p>Every technology that "killed jobs" created a larger, wealthier economy with more jobs than the one it replaced. Not most of them. <strong>All of them.</strong> The receipts go back to 1440.</p>
+<p>AI is not one ceiling breaking. It is every ceiling in every industry breaking at the same time. That has never happened before. The result will not be unemployment. <strong>It will be the largest reallocation of human effort in history.</strong></p>
+<p>In 10 years you will not recognize how people earn a living. <strong>You will recognize why.</strong></p>
+</div>
+
+<p>This is Part 1 of The AI Economy. This playbook installs the historical pattern. Part 2, <em>The New Earning</em>, will show you what the new jobs look like and how to position yourself for them. You need this one first. You need the receipts before the roadmap.</p>
+
+</div>
+
+<!-- ===== CHARACTERS ===== -->
+<div class="page">
+<div class="char-grid">
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji"><svg viewBox="0 0 48 48" width="42" height="42"><rect x="4" y="8" width="40" height="32" rx="3" fill="#2D2010" stroke="#D4A843" stroke-width="1.5"/><line x1="10" y1="16" x2="38" y2="16" stroke="#D4A843" stroke-width="1" opacity="0.5"/><line x1="10" y1="22" x2="34" y2="22" stroke="#D4A843" stroke-width="1" opacity="0.3"/><line x1="10" y1="28" x2="30" y2="28" stroke="#D4A843" stroke-width="1" opacity="0.3"/><circle cx="36" cy="28" r="4" fill="none" stroke="#C87838" stroke-width="1.5"><animate attributeName="r" values="3;5;3" dur="3s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.4;0.9;0.4" dur="3s" repeatCount="indefinite"/></circle></svg></div>
+<div><div class="char-name">The Scribe</div><div class="char-title">The Skilled Worker</div></div>
+</div>
+<div class="char-body"><p>The most skilled worker in any era. The one who copies manuscripts by hand, runs the switchboard, drives the cab. Always the first to panic when a new tool arrives. Always the last to disappear, because the skill transforms instead of vanishing.</p></div>
+</div>
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji"><svg viewBox="0 0 48 48" width="42" height="42"><rect x="6" y="6" width="36" height="36" rx="2" fill="#2D2010" stroke="#D4A843" stroke-width="1.5"/><line x1="24" y1="6" x2="24" y2="42" stroke="#D4A843" stroke-width="1" opacity="0.4"/><text x="14" y="22" fill="#C87838" font-size="8" font-family="Nunito" font-weight="700" text-anchor="middle">L</text><text x="34" y="22" fill="#D4A843" font-size="8" font-family="Nunito" font-weight="700" text-anchor="middle">R</text><text x="14" y="34" fill="#C87838" font-size="7" font-family="Nunito" opacity="0.6" text-anchor="middle">3</text><text x="34" y="34" fill="#D4A843" font-size="7" font-family="Nunito" opacity="0.6" text-anchor="middle">12</text></svg></div>
+<div><div class="char-name">The Ledger Keeper</div><div class="char-title">The Counter</div></div>
+</div>
+<div class="char-body"><p>The one who counts. Not emotions. Not predictions. Numbers. Jobs destroyed on the left column. Jobs created on the right. The Ledger Keeper does not argue. The Ledger Keeper opens the book and reads the totals.</p></div>
+</div>
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji"><svg viewBox="0 0 48 48" width="42" height="42"><rect x="10" y="30" width="28" height="12" rx="2" fill="#4A3520"/><rect x="14" y="22" width="20" height="10" rx="2" fill="#2D2010" stroke="#D4A843" stroke-width="1"/><rect x="18" y="14" width="12" height="10" rx="2" fill="#1A1008" stroke="#D4A843" stroke-width="1"/><circle cx="24" cy="10" r="3" fill="#D4A843" opacity="0.6"><animate attributeName="opacity" values="0.3;0.8;0.3" dur="2s" repeatCount="indefinite"/></circle></svg></div>
+<div><div class="char-name">The Builder</div><div class="char-title">The Opportunist</div></div>
+</div>
+<div class="char-body"><p>The person who shows up after the ceiling breaks and builds in the new space. Not the inventor of the tool. The one who sees the new room above and starts constructing floors, walls, and windows where there was only sky.</p></div>
+</div>
+</div>
+</div>
+
+<!-- ===== CHAPTER 1 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter One</div>
+<div class="ch-num">01</div>
+<div class="ch-title">The Ceiling</div>
+<div class="ch-sub">Every tool in history did one thing. Name it.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Before the printing press, a book took four months to copy by hand. One monk. One desk. One quill. Four months. The best scriptoria in Europe produced roughly 1,000 books per year across all of Christendom. That was the ceiling. Not a preference. Not a choice. A hard physical limit on how much written knowledge the human race could produce.</p>
+
+<p>Then Johannes Gutenberg finished his press in 1440. By 1500, sixty years later, an estimated 20 million books existed in Europe. The <dfn class="def" data-def="A hard limit on human output imposed by the tools available at the time. Every major technology in history removed one.">ceiling</dfn> on copying had been shattered so completely that the world could never go back under it.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Scribe's Lament, 1455</h4>
+<p>The Scribe sat at his desk in Mainz, a stack of vellum sheets before him. He had spent twenty years perfecting his hand. His letterforms were exquisite. Bishops paid gold for his work. He was the best in the region.</p>
+<p>Then he heard about the machine. A press. Metal letters. Ink on paper. One man could produce in a day what took the Scribe a month.</p>
+<p>"This is the end," he told his apprentice. "Why would anyone need us?"</p>
+<p>He was wrong. Not slightly. Completely. Within fifty years, the demand for people who could read, write, edit, translate, typeset, bind, sell, and distribute written material had exploded so far beyond anything the Scribe could imagine that his entire profession became <em>the floor</em> of an industry that had not existed the day before the press arrived.</p>
+</div>
+
+<p>This is the first mental model. The <strong>Ceiling</strong>. Every major technology in human history did the same thing. It removed a limit on human output. Not a small improvement. A hard physical barrier that had defined what was possible, and then the barrier was gone.</p>
+
+<p>Fire removed the raw food limit. Humans could cook, which meant they could extract more calories, which meant larger brains, which meant civilization. Writing removed the memory limit. Commerce, education, and governance became possible because knowledge could persist beyond a single human lifespan. The wheel removed the carry limit. Trade routes, cities, and empires became possible.</p>
+
+<p>Every tool. Every era. The same pattern. <strong>A ceiling existed. A tool removed it. The space above the old ceiling filled with activity, wealth, and jobs that had not existed before.</strong></p>
+
+<div class="viz"><div class="viz-inner">
+  <div class="viz-top"><div class="viz-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M3 7h18"/><path d="M12 7v14"/><path d="M8 3l4 4 4-4"/></svg></div><div class="viz-meta"><div class="viz-label">Visualize It</div><h4>The Room Above</h4></div></div>
+  <div class="viz-body">
+    <p>Imagine you live in a room with a low ceiling. You can stand, but you cannot jump. You have arranged your entire life around the height of that room. Your furniture, your posture, your ambitions are all shaped by the ceiling above you.</p>
+    <p>One morning the ceiling disappears. Above you is open sky. Within a year, people are building a second floor where the ceiling used to be. Within a decade, there are ten floors. Within a century, there are skyscrapers.</p>
+    <p><em>Nobody mourns the old ceiling.</em> Because the room that existed below it still exists. Nothing was taken away. <strong>Everything was added above.</strong></p>
+  </div>
+  <div class="viz-trigger">Hold this image: every technology in this playbook is a ceiling being removed. The room below stays. The sky above opens.</div>
+</div></div>
+
+<div class="think">
+<div class="think-label">Stop and Name Yours</div>
+<p>What ceiling are you currently working under? What hard limit on your output exists today that, if removed, would let you produce ten times more value?</p>
+<hr class="think-line">
+<p>Write it down. By the end of this playbook, you will know which AI tool is about to remove it.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Ceiling.</strong> Every major technology in history removed a hard limit on human output. The space above the old ceiling filled with new activity, new wealth, and new jobs that could not have existed before the limit was gone.</div></div>
+</div>
+
+<!-- ===== SCRIPTURE RIBBON ===== -->
+<div class="ribbon">
+<p>"See, I am doing a new thing! Now it springs up; do you not perceive it?"<br><span class="ref">Isaiah 43:19</span></p>
+</div>
+
+<!-- ===== CHAPTER 2 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Two</div>
+<div class="ch-num">02</div>
+<div class="ch-title">The Ledger</div>
+<div class="ch-sub">Jobs destroyed on the left. Jobs created on the right. The right column has never lost.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>The Ledger Keeper does not deal in feelings. The Ledger Keeper opens the book.</p>
+
+<p>Left column: jobs destroyed. Right column: jobs created. The rule is simple. After every major technological disruption in recorded history, tally both columns and compare. The result is so consistent across 600 years of data that it qualifies as an economic law.</p>
+
+<p><strong>The right column has never lost. Not once.</strong></p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Ledger Keeper Opens the Book</h4>
+<p>The Ledger Keeper sat across from the Scribe. "You say the press will end your livelihood. Let me count."</p>
+<p>Left column: scribes. Maybe 30,000 across Europe. Some would lose their copying work.</p>
+<p>Right column: typesetters, printers, ink manufacturers, paper mill workers, bookbinders, booksellers, librarians, teachers (because more people could now learn to read), translators, editors, publishers, journalists, postal workers (because letters became cheap), lawyers (because laws could be published), and accountants (because businesses could keep printed records).</p>
+<p>"I stopped counting at two hundred thousand," the Ledger Keeper said. "And I have not yet left the fifteenth century."</p>
+</div>
+
+<p>The <dfn class="def" data-def="The historical record of jobs destroyed versus jobs created after each major technology. In 600 years, the creation side has never been smaller than the destruction side.">Ledger</dfn> is not a theory. It is an accounting exercise. And the numbers are not subtle. They are overwhelming.</p>
+
+<div class="data-row">
+<div class="data-box"><div class="data-num">~30K</div><div class="data-label">Scribes in Europe, 1440</div></div>
+<div class="data-box"><div class="data-num">20M</div><div class="data-label">Books in Europe by 1500</div></div>
+<div class="data-box"><div class="data-num">~200K+</div><div class="data-label">New Jobs from Print by 1500</div></div>
+</div>
+
+<p>But here is the detail that most people miss. The <dfn class="def" data-def="The multiplier between jobs destroyed and jobs created by a new technology. Historical data shows the creation side is always larger, often dramatically so. The louder the initial panic, the larger the eventual ratio.">Ratio</dfn> is never 1:1. It is not as though one job disappears and one new job appears in its place. The creation side is almost always <em>much</em> larger. The printing press did not create 30,000 new jobs to replace 30,000 scribes. It created entire industries that employed hundreds of thousands, then millions.</p>
+
+<p>And there is a pattern within the pattern. <strong>The size of the ratio is proportional to how loud the panic was.</strong> The louder the fear, the bigger the eventual boom. The technologies that scared people the most created the most new wealth.</p>
+
+<div class="ba-grid">
+<div class="ba-col before">
+<div class="ba-label">What People Feared</div>
+<h4>Mass Unemployment</h4>
+<ul>
+<li>The press will end the scribes</li>
+<li>The loom will end the weavers</li>
+<li>The engine will end the horses (and their keepers)</li>
+<li>The ATM will end the bank tellers</li>
+<li>The internet will end retail</li>
+</ul>
+</div>
+<div class="ba-col after">
+<div class="ba-label">What Actually Happened</div>
+<h4>Mass Creation</h4>
+<ul>
+<li>Publishing, journalism, education industries born</li>
+<li>Fashion industry, textile economy, global trade</li>
+<li>Automotive, oil, trucking, suburbs, fast food</li>
+<li>Teller employment <em>increased</em> (more branches opened)</li>
+<li>E-commerce created 5x more jobs than retail lost</li>
+</ul>
+</div>
+</div>
+
+<p>The ATM example deserves special attention. When automated teller machines arrived in the late 1960s, conventional wisdom said bank tellers would vanish. The machines could handle withdrawals, deposits, and balance checks faster, cheaper, and around the clock. The prediction was logical. It was also completely wrong.</p>
+
+<p>What happened: ATMs made it cheaper to operate a bank branch. Because branches were cheaper, banks opened more of them. More branches meant more tellers. Between 1970 and 2010, the number of bank tellers in the United States actually <em>increased</em>. The role changed. Tellers stopped counting cash and started selling financial products. But the jobs grew.</p>
+
+<div class="data-hero">
+<div class="dh-num">+43%</div>
+<div class="dh-label">Growth in U.S. Bank Teller Employment, 1970 to 2010</div>
+<div class="dh-sub">Despite ATMs handling the vast majority of routine transactions.</div>
+</div>
+
+<div class="grand-quote">
+<blockquote>The Ledger has been open for six centuries. The right column has never lost. Not because humans are lucky. Because every ceiling that breaks opens a room that is larger than the room below it.</blockquote>
+<cite>The Ledger Keeper's Law</cite>
+</div>
+
+<div class="think">
+<div class="think-label">Stop and Notice</div>
+<p>The next time you hear "AI will eliminate X million jobs," ask the person making the claim to show you the right column. Ask them to count the new jobs. If they cannot, they have read half the Ledger. The half that sells newspapers.</p>
+<hr class="think-line">
+<p>The full Ledger always tells a different story.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Ceiling.</strong> Every major technology removed a hard limit on human output. The space above filled with new activity and new jobs.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Ledger.</strong> Jobs destroyed on the left. Jobs created on the right. In 600 years of data, the right column has never been smaller. The Ratio is never 1:1. Creation always dwarfs destruction, and the size of the ratio is proportional to the volume of the initial panic.</div></div>
+</div>
+
+<!-- ===== CHAPTER 3 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Three</div>
+<div class="ch-num">03</div>
+<div class="ch-title">The Ceilings Before the Engine</div>
+<div class="ch-sub">Fire, writing, paper, the press. The pattern starts long before factories.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>The pattern is older than industry. It is older than civilization. It begins with fire.</p>
+
+<div class="timeline">
+<div class="tl-era">Pre-Industrial Ceilings</div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">~400,000 BC</div><div class="tl-title">Fire</div><div class="tl-desc">Raw food limit removed. Cooking unlocked more calories per meal, which fueled larger brains, which produced language, planning, and eventually every civilization that followed.</div></div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">~3,500 BC</div><div class="tl-title">The Wheel</div><div class="tl-desc">Carry limit removed. A human can carry about 60 pounds. A wheeled cart pulled by an ox can move 2,000 pounds. Trade routes, cities, and empires became possible.</div></div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">~3,200 BC</div><div class="tl-title">Writing</div><div class="tl-desc">Memory limit removed. Knowledge could persist beyond a single human lifespan. Commerce, law, education, and governance became possible because agreements could be recorded.</div></div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">~100 AD</div><div class="tl-title">Paper</div><div class="tl-desc">Recording limit removed. Paper was lighter, cheaper, and more portable than clay, stone, or papyrus. Knowledge could travel and be stored at scale for the first time.</div></div></div>
+
+<div class="tl-era">Renaissance / Early Modern Ceilings</div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">1440</div><div class="tl-title">The Printing Press</div><div class="tl-desc">Copy limit removed. 30,000 scribes producing ~1,000 books per year became machines producing 20 million books in sixty years. Publishing, journalism, and mass education were born.</div></div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">1494</div><div class="tl-title">Double Entry Bookkeeping</div><div class="tl-desc">Trust limit removed. Luca Pacioli's system let businesses track debits and credits with mathematical certainty. Banking, credit, and insurance industries became possible.</div></div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">1656</div><div class="tl-title">The Pendulum Clock</div><div class="tl-desc">Time limit removed. Accurate timekeeping made wages per hour possible, which created the concept of "employment" as a measurable, contractual relationship.</div></div></div>
+</div>
+
+<p>Notice what is happening. Each ceiling removal does not just improve the old activity. It creates <em>entirely new categories of human effort</em>. Fire did not just make food taste better. It made civilization possible. Writing did not just help people remember things. It made law, commerce, and education possible. The press did not just make books cheaper. It made mass literacy, journalism, and the scientific method possible.</p>
+
+<div class="glow-box">
+<h3>The Builder's Opportunity</h3>
+<p>After the printing press, the Builder did not try to become a faster scribe. The Builder opened a bookshop. Then a publishing house. Then a newspaper. Then a school for newly literate citizens.</p>
+<p><strong>The Builder never competes with the tool. The Builder builds in the space the tool opened.</strong></p>
+</div>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Scribe Becomes the Editor</h4>
+<p>By 1480, the Scribe had stopped copying. Not because anyone fired him. Because the pay for editing and proofreading printed manuscripts was three times what he had earned copying them by hand. His knowledge of language, grammar, and style, the same skills he had spent twenty years developing, was now more valuable than ever. The ceiling above him had opened, and he had walked into a room he never knew existed.</p>
+<p>"I thought the press was the end," he told the Ledger Keeper.</p>
+<p>"It was," said the Ledger Keeper. "The end of the ceiling."</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Ceiling.</strong> Every technology removes a hard limit. The space above fills with new activity.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Ledger.</strong> Jobs destroyed on the left, created on the right. The right column has never lost. The Ratio is never 1:1.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Pre-industrial ceilings.</strong> Fire, the wheel, writing, paper, the press, bookkeeping, and the clock all followed the same pattern. Each removal created entirely new categories of human work, not just improvements to old ones.</div></div>
+</div>
+
+<!-- ===== CHAPTER 4 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Four</div>
+<div class="ch-num">04</div>
+<div class="ch-title">The Industrial Ceilings</div>
+<div class="ch-sub">When muscles became machines and the middle class was born.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>The <dfn class="def" data-def="The period roughly from 1712 to 1920 when mechanical and electrical technologies removed physical limits on human production. Created the concepts of the factory, the commute, the weekend, and the middle class.">Industrial Revolution</dfn> was not one ceiling breaking. It was a cascade. And the panic was deafening.</p>
+
+<div class="timeline">
+<div class="tl-era">Industrial Ceilings</div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">1712</div><div class="tl-title">The Steam Engine</div><div class="tl-desc">Muscle limit removed. One engine produced the output of 50 horses. Mining, manufacturing, and transportation were transformed within a generation.</div></div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">1794</div><div class="tl-title">The Cotton Gin</div><div class="tl-desc">Separation limit removed. One person could process 50 pounds of cotton per day instead of one pound. The global textile economy was born.</div></div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">1804</div><div class="tl-title">The Jacquard Loom</div><div class="tl-desc">Pattern limit removed. Punch cards automated complex weaving patterns. The fashion industry became possible. Those punch cards were also the direct ancestor of computer programming.</div></div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">1844</div><div class="tl-title">The Telegraph</div><div class="tl-desc">Distance limit removed. Information traveled at the speed of light instead of the speed of a horse. Wire services, stock tickers, and the modern news cycle were born.</div></div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">1846</div><div class="tl-title">The Sewing Machine</div><div class="tl-desc">Garment limit removed. A dress that took 14 hours by hand took one hour by machine. Ready made clothing became affordable. The fashion retail industry exploded.</div></div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">1856</div><div class="tl-title">Refrigeration</div><div class="tl-desc">Spoilage limit removed. Food could travel. Meatpacking, supermarkets, and the global food supply chain all trace their roots to mechanical refrigeration.</div></div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">1856</div><div class="tl-title">The Bessemer Process</div><div class="tl-desc">Steel limit removed. Cheap steel made skyscrapers, railroads, and bridges possible. The physical shape of modern cities was defined by this single process.</div></div></div>
+</div>
+
+<div class="data-hero">
+<div class="dh-num">$850 &rarr; $260</div>
+<div class="dh-label">Ford Model T Price, 1908 to 1925</div>
+<div class="dh-sub">The assembly line did not just make cars. It created the American middle class.</div>
+</div>
+
+<p>Henry Ford's <dfn class="def" data-def="A manufacturing process where a product moves through a sequence of workstations. Each worker performs one specialized task. Reduced car production time from 12 hours to 93 minutes.">assembly line</dfn> in 1908 is the clearest example of the Ceiling, the Ledger, and the Ratio all operating at once. Before the assembly line, building a car took 12 hours of skilled labor. After, it took 93 minutes. The price of a Model T dropped from $850 to $260. Cars went from luxury items for the wealthy to everyday tools for working families.</p>
+
+<p>The Scribe of that era was the skilled craftsman who built entire cars by hand. The panic was real. But the Ledger tells the story. The automobile industry did not just create factory jobs. It created gas stations, mechanics, tire manufacturers, road construction crews, traffic police, insurance agents, motels, drive in restaurants, suburbs, shopping malls, and the entire commuter economy.</p>
+
+<div class="ba-grid">
+<div class="ba-col before">
+<div class="ba-label">Before the Assembly Line</div>
+<h4>The Craftsman's World</h4>
+<ul>
+<li>Cars built by hand, one at a time</li>
+<li>12 hours per vehicle</li>
+<li>$850 per car (months of wages)</li>
+<li>Only the wealthy could afford them</li>
+<li>Horses dominated transportation</li>
+</ul>
+</div>
+<div class="ba-col after">
+<div class="ba-label">After the Assembly Line</div>
+<h4>The Builder's World</h4>
+<ul>
+<li>93 minutes per vehicle</li>
+<li>$260 per car (weeks of wages)</li>
+<li>Working families could own one</li>
+<li>Suburbs, highways, shopping malls</li>
+<li>Millions of new jobs in dozens of new industries</li>
+</ul>
+</div>
+</div>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Electrical Cascade</h4>
+<p>In 1879, Edison's light bulb removed the daylight limit. For the first time in human history, productive work was not bounded by the sun. Factories ran three shifts. Restaurants stayed open past dark. Theater, nightlife, and the entire entertainment economy became possible because humans could see after sunset.</p>
+<p>The telephone in 1876 removed the presence limit. You no longer had to be in the same room as someone to do business with them. Remote commerce, the service economy, and eventually the entire white collar workforce grew from that single removal.</p>
+<p>Radio in 1920 removed the broadcast limit. One voice could reach millions simultaneously. Advertising, pop culture, the celebrity economy, and political campaigning as we know them were all born from that ceiling breaking.</p>
+</div>
+
+<div class="viz"><div class="viz-inner">
+  <div class="viz-top"><div class="viz-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div><div class="viz-meta"><div class="viz-label">Visualize It</div><h4>The Cascade Effect</h4></div></div>
+  <div class="viz-body">
+    <p>Imagine a building with ten floors, each sealed by a concrete ceiling. A machine breaks through the first ceiling. People flood into the second floor and start building. Their activity generates enough force to crack the second ceiling. The third floor opens. Then the fourth. Then the fifth.</p>
+    <p><em>That is the Industrial Revolution.</em> Steam broke the muscle ceiling. Cheap power broke the manufacturing ceiling. Cheap goods broke the class ceiling. The middle class broke the demand ceiling. And demand broke every ceiling above it for the next 200 years.</p>
+  </div>
+  <div class="viz-trigger">Each ceiling break funds the next one. The cascade is self-reinforcing. This is why the Ratio gets larger, not smaller, over time.</div>
+</div></div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Ceiling.</strong> Every technology removes a hard limit on human output.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Ledger.</strong> The right column has never lost. The Ratio is never 1:1.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Pre-industrial ceilings.</strong> Fire, wheel, writing, paper, press, bookkeeping, clock. Each created new categories of work.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Industrial ceilings.</strong> Steam, cotton gin, loom, telegraph, sewing machine, refrigeration, steel, assembly line, light bulb, telephone, radio. Each removal cascaded into the next, creating the middle class, the service economy, and the modern world.</div></div>
+</div>
+
+<!-- ===== SCRIPTURE RIBBON ===== -->
+<div class="ribbon">
+<p>"The plans of the diligent lead to profit as surely as haste leads to poverty."<br><span class="ref">Proverbs 21:5</span></p>
+</div>
+
+<!-- ===== CHAPTER 5 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Five</div>
+<div class="ch-num">05</div>
+<div class="ch-title">The Digital Ceilings</div>
+<div class="ch-sub">Spreadsheets, barcodes, search engines, and the five billion.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>The computing era compressed the ceiling breaking cycle from centuries to decades, then to years. Every new digital tool followed the same pattern. Panic, then creation, then a Ledger entry that dwarfed the panic.</p>
+
+<div class="timeline">
+<div class="tl-era">Computing Ceilings</div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">1951</div><div class="tl-title">The Electronic Computer</div><div class="tl-desc">Calculation limit removed. A room-sized machine could compute in seconds what took a team of mathematicians weeks. The entire IT industry, programming profession, and digital economy grew from this ceiling break.</div></div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">1969</div><div class="tl-title">The ATM</div><div class="tl-desc">Banking hours limit removed. Teller employment increased because branches became cheaper to operate and banks opened more of them.</div></div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">1974</div><div class="tl-title">The Barcode</div><div class="tl-desc">Inventory limit removed. Products could be tracked automatically. Just-in-time manufacturing, Walmart-scale retail, and modern supply chains became possible.</div></div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">1979</div><div class="tl-title">The Spreadsheet</div><div class="tl-desc">Ledger limit removed. VisiCalc, then Lotus 1-2-3, then Excel. Financial modeling became accessible to anyone with a computer. The knowledge worker class was born.</div></div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">1982</div><div class="tl-title">CAD Software</div><div class="tl-desc">Drafting limit removed. An architect could iterate on a design in hours instead of weeks. Rapid prototyping and eventually 3D printing grew from this removal.</div></div></div>
+
+<div class="tl-era">Internet Ceilings</div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">1991</div><div class="tl-title">The World Wide Web</div><div class="tl-desc">Distribution limit removed. Anyone with a connection could publish to the world. E-commerce, the creator economy, and SaaS industries were born.</div></div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">1998</div><div class="tl-title">The Search Engine</div><div class="tl-desc">Finding limit removed. All human knowledge, indexed and searchable. Google built a $500 billion+ advertising economy on top of this single ceiling break.</div></div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">2004-2010</div><div class="tl-title">Social Media</div><div class="tl-desc">Audience limit removed. Anyone could build a following. The influencer economy, creator economy, and social commerce were born.</div></div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">2006</div><div class="tl-title">Cloud Computing</div><div class="tl-desc">Server limit removed. A startup no longer needed to buy hardware. Every software company founded since 2006 stands on this ceiling break.</div></div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">2007</div><div class="tl-title">The Smartphone</div><div class="tl-desc">Desktop limit removed. A computer in every pocket. Five billion humans connected. The app economy, ride sharing, food delivery, mobile banking, and the gig economy all grew from this one device.</div></div></div>
+</div>
+
+<p>The <dfn class="def" data-def="The electronic spreadsheet application, first released as VisiCalc in 1979. Turned every accountant into a financial modeler. Created the knowledge worker class and made personal computers a business necessity.">spreadsheet</dfn> is an instructive case. When VisiCalc shipped in 1979, bookkeepers feared for their jobs. A machine could now do in seconds what took hours with a pencil and ledger paper. The panic was real. The Ledger Keeper, of course, was not worried.</p>
+
+<p>What happened: the spreadsheet did not eliminate accountants. It made every accountant ten times more productive. And because accountants could now model complex financial scenarios quickly, businesses discovered they needed <em>more</em> financial analysis, not less. The demand for financial professionals exploded. The spreadsheet did not destroy the profession. It lifted the ceiling on what the profession could produce, and the room above filled immediately.</p>
+
+<div class="data-hero">
+<div class="dh-num">5 Billion</div>
+<div class="dh-label">Humans Connected by the Smartphone</div>
+<div class="dh-sub">Every one of them a potential customer, creator, or collaborator.</div>
+</div>
+
+<p>The smartphone alone created more new jobs than every <dfn class="def" data-def="The Luddites were English textile workers in the early 1800s who protested against labor-saving machinery. The term 'Luddite' now refers to anyone who opposes new technology out of fear of job loss.">Luddite</dfn> in history feared losing. App developers, UX designers, mobile marketers, social media managers, content creators, ride share drivers, food delivery couriers, mobile payment processors, podcast producers. None of these jobs existed in 2006. By 2020, they employed tens of millions of people worldwide.</p>
+
+<div class="grand-quote">
+<blockquote>The Scribe of 1979 was the bookkeeper with a pencil. The Builder of 1979 was the consultant who bought a copy of VisiCalc, learned to model a P&L in an afternoon, and charged ten times the hourly rate.</blockquote>
+<cite>The Spreadsheet Revolution</cite>
+</div>
+
+<div class="think">
+<div class="think-label">Stop and Count</div>
+<p>Pick any technology from the timeline above. Write down the jobs it was supposed to destroy. Now write down the jobs it actually created. How large is the gap between the two lists?</p>
+<hr class="think-line">
+<p>That gap is the Ratio. And the Ratio is your opportunity.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Ceiling.</strong> Every technology removes a hard limit on human output.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Ledger.</strong> Right column has never lost. Ratio is never 1:1.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Pre-industrial ceilings.</strong> Fire through the pendulum clock. Each created new categories.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Industrial ceilings.</strong> Steam through radio. The cascade effect, where each break funds the next.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Digital ceilings.</strong> Computer, ATM, barcode, spreadsheet, CAD, web, search, social, cloud, smartphone. The cycle compressed from centuries to years. Each ceiling created industries that employed millions.</div></div>
+</div>
+
+<!-- ===== CHAPTER 6 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Six</div>
+<div class="ch-num">06</div>
+<div class="ch-title">The Floor</div>
+<div class="ch-sub">When the ceiling lifts, the floor rises too. Luxuries become utilities.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Here is the fourth mental model, and it is the one that explains why the world keeps getting better even when it does not feel like it.</p>
+
+<p>When a ceiling lifts, the <dfn class="def" data-def="The baseline standard of living in a society. When a ceiling is removed and production costs drop, former luxuries become affordable utilities. The floor rises and never comes back down.">floor</dfn> rises too. Things that were luxuries become utilities. The baseline ratchets up. And it never comes back down.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Ledger Keeper's Inventory</h4>
+<p>The Ledger Keeper opened a different page. Not jobs this time. Things.</p>
+<p>"In 1900," the Ledger Keeper read, "electric light was a luxury for the wealthy. Running water was uncommon in rural homes. A cross-country telephone call cost the equivalent of a week's wages. A single book cost a day's labor."</p>
+<p>The Ledger Keeper looked up. "Today, all of those are considered basic utilities. A person below the poverty line in a developed nation has electric light, running water, a phone with access to every book ever written, and a refrigerator full of food that was shipped from the other side of the planet."</p>
+<p>"That is the Floor," the Ledger Keeper said. "It only moves in one direction."</p>
+</div>
+
+<p>The pattern is mechanical. When a ceiling breaks, the cost of producing something drops. When the cost drops, more people can afford it. When more people can afford it, demand increases. When demand increases, production scales further. When production scales, the cost drops again. The cycle continues until the thing that was once a luxury is so cheap and abundant that society reclassifies it as a basic expectation.</p>
+
+<div class="flow">
+<div class="flow-step"><div class="flow-dot">1</div><div class="flow-text"><h4>Ceiling Breaks</h4><p>A technology removes a production limit. Output per person increases dramatically.</p></div></div>
+<div class="flow-line"></div>
+<div class="flow-step"><div class="flow-dot">2</div><div class="flow-text"><h4>Cost Drops</h4><p>What took hours now takes minutes. What cost $100 now costs $5.</p></div></div>
+<div class="flow-line"></div>
+<div class="flow-step"><div class="flow-dot">3</div><div class="flow-text"><h4>Access Expands</h4><p>Millions of people who could not afford the product can now buy it.</p></div></div>
+<div class="flow-line"></div>
+<div class="flow-step"><div class="flow-dot">4</div><div class="flow-text"><h4>Demand Surges</h4><p>New customers create new demand. New demand creates new jobs to serve it.</p></div></div>
+<div class="flow-line"></div>
+<div class="flow-step"><div class="flow-dot">5</div><div class="flow-text"><h4>Floor Rises</h4><p>The product becomes a utility. Society builds the next ceiling on top of the new floor.</p></div></div>
+</div>
+
+<p>Electric light followed this cycle. Refrigeration followed this cycle. The automobile, the telephone, the television, the personal computer, the smartphone. Every single one went from luxury to utility within one or two generations. And every time the floor rose, it never came back down.</p>
+
+<div class="ba-grid">
+<div class="ba-col before">
+<div class="ba-label">Luxury (Then)</div>
+<h4>Available to the Few</h4>
+<ul>
+<li>Books (1440): months of wages</li>
+<li>Electric light (1880): wealthy homes only</li>
+<li>Refrigeration (1920): industrial facilities</li>
+<li>Telephone (1930): one per neighborhood</li>
+<li>Computer (1980): $3,000+ (a used car)</li>
+<li>GPS (2000): $500 military device</li>
+</ul>
+</div>
+<div class="ba-col after">
+<div class="ba-label">Utility (Now)</div>
+<h4>Available to Nearly Everyone</h4>
+<ul>
+<li>Books: free at any library or phone</li>
+<li>Electric light: universal in developed nations</li>
+<li>Refrigeration: in 99%+ of U.S. homes</li>
+<li>Telephone: 5 billion people carry one</li>
+<li>Computer: in your pocket, more powerful</li>
+<li>GPS: free app on every smartphone</li>
+</ul>
+</div>
+</div>
+
+<div class="viz"><div class="viz-inner">
+  <div class="viz-top"><div class="viz-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V4"/><path d="M5 12l7-8 7 8"/></svg></div><div class="viz-meta"><div class="viz-label">Visualize It</div><h4>The Ratchet</h4></div></div>
+  <div class="viz-body">
+    <p>Imagine a ratchet wrench. It turns in one direction only. You can push it forward, but it clicks and holds. It cannot slip backward.</p>
+    <p>The Floor is a ratchet. Once electric light became a utility, no society voluntarily went back to candles. Once refrigeration became standard, no one chose spoilage. Once the internet connected billions, no one unplugged.</p>
+    <p><em>Each ceiling break clicks the ratchet forward.</em> <strong>The baseline of human life moves up, and it locks in place.</strong></p>
+  </div>
+  <div class="viz-trigger">The question is not whether the Floor will rise with AI. It always rises. The question is how high and how fast.</div>
+</div></div>
+
+<div class="grand-quote">
+<blockquote>Your great-grandchildren will consider AI assistance as basic as running water. They will not thank the technology. They will not even notice it. That is what it means for the Floor to rise.</blockquote>
+<cite>The Floor Never Falls</cite>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Ceiling.</strong> Every technology removes a hard limit on human output.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Ledger.</strong> Right column has never lost. Ratio is never 1:1.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Ratio.</strong> Creation always dwarfs destruction. The louder the panic, the larger the eventual boom.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Floor.</strong> When the ceiling lifts, the floor rises too. Luxuries become utilities through a cycle of cost reduction, access expansion, demand surge, and baseline ratcheting. The floor never falls back down.</div></div>
+</div>
+
+<!-- ===== SCRIPTURE RIBBON ===== -->
+<div class="ribbon">
+<p>"For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future."<br><span class="ref">Jeremiah 29:11</span></p>
+</div>
+
+<!-- ===== CHAPTER 7 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Seven</div>
+<div class="ch-num">07</div>
+<div class="ch-title">The Stack</div>
+<div class="ch-sub">AI is not one ceiling. It is all of them. Simultaneously.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Every technology we have discussed broke one ceiling. Fire broke the food ceiling. The press broke the copy ceiling. The engine broke the muscle ceiling. The spreadsheet broke the ledger ceiling. The smartphone broke the desktop ceiling. One tool. One ceiling. One new room above.</p>
+
+<p><strong>AI is different.</strong></p>
+
+<p>AI is not one ceiling breaking. It is every ceiling in every industry breaking at the same time. That has never happened in human history. Not during the Industrial Revolution. Not during the invention of the internet. Nothing in the historical record matches what is currently underway.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Ledger Keeper Pauses</h4>
+<p>The Ledger Keeper set down the pen. For the first time in the story, the Ledger Keeper looked uncertain.</p>
+<p>"I have always been able to count the ceilings," the Ledger Keeper said. "One technology. One ceiling. I open the left column, I open the right column, and I count."</p>
+<p>"What is different now?" the Builder asked.</p>
+<p>"Everything is happening at once. The writing ceiling. The coding ceiling. The visual creation ceiling. The production ceiling. The composition ceiling. The execution ceiling. They are all breaking simultaneously. I cannot count fast enough."</p>
+<p>The Builder smiled. "Then the right column is going to be very, very long."</p>
+</div>
+
+<div class="timeline">
+<div class="tl-era">AI Ceilings (Breaking Now)</div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">2022</div><div class="tl-title">Large Language Models</div><div class="tl-desc">Writing and thinking limit removed. A single person can draft, edit, analyze, summarize, and translate at the speed of thought. Every knowledge worker's ceiling just disappeared.</div></div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">2022</div><div class="tl-title">Image Generation</div><div class="tl-desc">Visual creation limit removed. Professional quality images from a text description. Design, advertising, and visual communication are being rewritten.</div></div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">2023</div><div class="tl-title">Code Generation</div><div class="tl-desc">Programming limit removed. An idea can become a working prototype in hours instead of weeks. The barrier to building software just collapsed.</div></div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">2024</div><div class="tl-title">Video Generation</div><div class="tl-desc">Production limit removed. A single creator can produce video content that previously required a studio, a crew, and a six figure budget.</div></div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">2024</div><div class="tl-title">Music Generation</div><div class="tl-desc">Composition limit removed. Original music from a text description. Soundtracks, scores, and commercial audio are being democratized.</div></div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-year">2025</div><div class="tl-title">AI Agents</div><div class="tl-desc">Execution limit removed. AI can now perform multi-step tasks autonomously. Research, scheduling, purchasing, filing, and coordination no longer require a human at every step.</div></div></div>
+</div>
+
+<p>Count the ceilings. Writing. Visual art. Programming. Video production. Music composition. Task execution. Six major ceilings, all breaking within a three year window. The printing press broke <em>one</em> ceiling and created the Renaissance. The steam engine broke <em>one</em> ceiling and created the Industrial Revolution. The internet broke <em>one</em> ceiling and created the digital economy.</p>
+
+<p><strong>What happens when six break at the same time?</strong></p>
+
+<div class="glow-box">
+<h3>The Unprecedented Stack</h3>
+<p>Every previous <dfn class="def" data-def="A period when multiple ceiling breaks happen in rapid succession, each enabling the next. The Industrial Revolution was a slow stack. The AI era is a fast stack.">technology stack</dfn> broke ceilings sequentially. The steam engine enabled factories, which enabled railroads, which enabled telegraph lines, which enabled a national economy. Each step took decades.</p>
+<p>AI is breaking ceilings <strong>in parallel.</strong> Writing, coding, design, video, music, and autonomous execution are all being transformed at the same time. The cascade is not sequential. It is simultaneous. That means the Ratio is not going to be large. <strong>It is going to be historic.</strong></p>
+</div>
+
+<p>The Scribe of this era is every knowledge worker who does one cognitive task for a living. The writer, the coder, the designer, the analyst, the administrator. Every single one of them is hearing the same sound the Scribe heard in 1455. The sound of a machine that can do their task faster, cheaper, and around the clock.</p>
+
+<p>And every single one of them is about to make the same discovery the Scribe made. <strong>The ceiling above them just opened. The room above is enormous. And their skills are worth more in the new room than they ever were in the old one.</strong></p>
+
+<div class="data-row">
+<div class="data-box"><div class="data-num">6</div><div class="data-label">Major Ceilings Breaking</div></div>
+<div class="data-box"><div class="data-num">3 Years</div><div class="data-label">Window of Disruption</div></div>
+<div class="data-box"><div class="data-num">0</div><div class="data-label">Historical Precedents</div></div>
+</div>
+
+<div class="think">
+<div class="think-label">Stop and Locate Yourself</div>
+<p>Which of the six AI ceilings is breaking above your head right now? Writing? Coding? Design? Video? Music? Execution?</p>
+<hr class="think-line">
+<p>Name it. Because the Builder is already looking up at the new space and planning what to construct there. Part 2 of this series, <em>The New Earning</em>, will show you exactly what the Builder sees.</p>
+</div>
+
+<div class="grand-quote">
+<blockquote>The result will not be unemployment. It will be the largest reallocation of human effort in history. People will not stop working. They will stop working <em>under</em> the old ceiling.</blockquote>
+<cite>The Stack</cite>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Ceiling.</strong> Every technology removes a hard limit on human output.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Ledger.</strong> Right column has never lost. Ratio is never 1:1.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Ratio.</strong> Creation dwarfs destruction. Proportional to the volume of panic.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Floor.</strong> Luxuries become utilities. The baseline ratchets up and never falls.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Stack.</strong> AI is breaking six major ceilings simultaneously in a three year window. Writing, images, code, video, music, and autonomous execution. This has zero historical precedent. The Ratio will be historic.</div></div>
+</div>
+
+<!-- ===== CLOSING PROSE ===== -->
+<div class="page section prose">
+
+<p>You now hold four mental models that explain 600 years of economic history. The Ceiling, which every major technology removed. The Ledger, whose right column has never lost. The Ratio, which grows louder in proportion to the panic. And the Floor, which rises with every ceiling break and never falls back down.</p>
+
+<p>Together, these four models tell a single story. Every tool that terrified the workforce did the same thing. It did not destroy the floor. It lifted the ceiling. And the room above the old ceiling always, <em>always</em>, was larger, wealthier, and more full of human effort than the room below.</p>
+
+<p>AI is next. It is lifting every ceiling simultaneously. The Scribe is panicking, as the Scribe always does. The Ledger Keeper is counting, as the Ledger Keeper always does. And the Builder is already looking up.</p>
+
+<p><strong>The ceiling is gone. Now what do you do for a living?</strong></p>
+
+<p>That question is Part 2. <em>The New Earning.</em></p>
+
+<div class="glow-box">
+<h3>What Comes Next</h3>
+<p>Part 1 gave you the receipts. Six hundred years of proof that technology creates more than it destroys. Part 2 gives you the roadmap. <strong>What the new jobs look like. How the skills you already have translate into the new room. And exactly what the Builder is building above the broken ceiling.</strong></p>
+</div>
+
+</div>
+
+<!-- ===== SCRIPTURE RIBBON ===== -->
+<div class="ribbon">
+<p>"The Lord will open the heavens, the storehouse of his bounty, to send rain on your land in season and to bless all the work of your hands."<br><span class="ref">Deuteronomy 28:12</span></p>
+</div>
+
+<!-- ===== FINAL TEST ===== -->
+<div class="page section">
+<div class="final-test">
+<h3>Can You Answer These Without Looking Back?</h3>
+<p class="test-sub">Eight questions, one for each core concept. If you can answer all eight, you understand the economics of technological disruption better than most economists writing about it.</p>
+<div class="test-q"><div class="test-num">Question 1</div><p>What is the Ceiling? Name a technology from before 1800 that removed one, and describe what was built in the space above it.</p></div>
+<div class="test-q"><div class="test-num">Question 2</div><p>What does the Ledger show across 600 years of data? Has the right column ever lost?</p></div>
+<div class="test-q"><div class="test-num">Question 3</div><p>What happened to bank teller employment after the ATM was introduced, and why?</p></div>
+<div class="test-q"><div class="test-num">Question 4</div><p>What is the Ratio, and what is its relationship to the volume of initial panic?</p></div>
+<div class="test-q"><div class="test-num">Question 5</div><p>Explain the Floor using one specific example of a luxury that became a utility.</p></div>
+<div class="test-q"><div class="test-num">Question 6</div><p>How is AI different from every previous technology in terms of the number of ceilings it is breaking?</p></div>
+<div class="test-q"><div class="test-num">Question 7</div><p>Name the six AI ceilings currently breaking and the year each began.</p></div>
+<div class="test-q"><div class="test-num">Question 8</div><p>The Scribe panics. The Ledger Keeper counts. The Builder builds. Which one are you right now, and which one do you want to be?</p></div>
+</div>
+</div>
+
+<!-- ===== PROMPT CARD ===== -->
+<div class="page section">
+<div class="prompt-card">
+<h3>Continue the Conversation</h3>
+<p>Copy these prompts into any AI and keep learning:</p>
+<p><code>"Using historical data, compare the number of jobs destroyed versus jobs created by the automobile, the personal computer, and the smartphone. Show the Ratio for each."</code></p>
+<p><code>"What new job categories were created between 2010 and 2025 that did not exist before? How many of them are directly traceable to a specific technology's ceiling break?"</code></p>
+<p><code>"Explain the concept of the Floor using the history of refrigeration. How did the removal of the spoilage ceiling change the baseline standard of living worldwide?"</code></p>
+<p><code>"What industries are most likely to be created by AI agents, and what historical parallels exist for each one?"</code></p>
+</div>
+</div>
+
+<!-- ===== CLOSING RIBBON ===== -->
+<div class="ribbon">
+<p>"He has made everything beautiful in its time. He has also set eternity in the human heart; yet no one can fathom what God has done from beginning to end."<br><span class="ref">Ecclesiastes 3:11</span></p>
+</div>
+
+<!-- ===== SERIES PROGRESS ===== -->
+<div class="series-progress" style="padding:32px 24px;background:var(--cream-warm);border-top:1px solid rgba(26,16,8,0.06)">
+  <div style="font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:14px">The AI Economy</div>
+  <div class="series-dots">
+    <span class="series-dot active" title="The Lifted Ceiling"></span>
+    <span class="series-dot" title="The New Earning"></span>
+  </div>
+  <div class="series-dot-label" style="color:var(--text-muted)">Part 1 of 2 &middot; The Lifted Ceiling</div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+<p>The Lifted Ceiling &middot; The AI Economy (Part 1 of 2) &middot; KingdomBuilders AI<br><a href="./">View All Playbooks</a></p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Moth's Flame. He Flew a Thousand Miles by Moonlight, Then Burned Himself on a Porch Lamp</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --flame:#E8762A;--flame-bright:#F09840;--flame-pale:#F8C078;--flame-soft:rgba(232,118,42,0.07);
+  --moon:#C0D0E8;--moon-bright:#D8E4F4;--moon-pale:#E8F0FA;--moon-soft:rgba(192,208,232,0.07);
+  --midnight:#080810;--midnight-dark:#040408;--midnight-mid:#0E0E1A;--midnight-light:#1A1A2E;--midnight-pale:#2A2A44;
+  --ash:#F4F2EE;--ash-warm:#EDE8E2;--ash-deep:#D8D0C8;
+  --text:#181420;--text-light:#2E2838;--text-muted:#686070;
+  --white:#FFFFFF;--radius:16px;
+  --shadow-soft:0 2px 16px rgba(8,8,16,0.06);
+  --shadow-mid:0 4px 28px rgba(8,8,16,0.12);
+  --shadow-strong:0 8px 40px rgba(8,8,16,0.18);
+  --before-bg:#FFF4EE;--before-border:#D08040;--before-text:#4A2010;
+  --after-bg:#EEF4FA;--after-border:#6090C0;--after-text:#0A2040;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--ash);line-height:1.82;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
+.page{max-width:720px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--midnight-mid);font-weight:700}
+.prose em{color:var(--flame);font-style:normal;font-weight:600}
+
+/* ===== COVER ===== */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;
+  background:linear-gradient(175deg,#020208 0%,#080810 20%,#0E0E1A 48%,#080810 72%,#020208 100%);
+  position:relative;overflow:hidden}
+.star{position:absolute;border-radius:50%;pointer-events:none;background:rgba(192,208,232,0.4)}
+.star:nth-child(1){width:2px;height:2px;left:8%;top:12%;animation:twinkle 4s ease-in-out infinite}
+.star:nth-child(2){width:1px;height:1px;left:22%;top:8%;animation:twinkle 6s ease-in-out infinite;animation-delay:-1s}
+.star:nth-child(3){width:2px;height:2px;left:45%;top:5%;animation:twinkle 5s ease-in-out infinite;animation-delay:-2s}
+.star:nth-child(4){width:1px;height:1px;left:68%;top:15%;animation:twinkle 7s ease-in-out infinite;animation-delay:-3s}
+.star:nth-child(5){width:2px;height:2px;left:85%;top:10%;animation:twinkle 4.5s ease-in-out infinite;animation-delay:-0.5s}
+.star:nth-child(6){width:1px;height:1px;left:15%;top:30%;animation:twinkle 5.5s ease-in-out infinite;animation-delay:-4s}
+.star:nth-child(7){width:2px;height:2px;left:75%;top:25%;animation:twinkle 6.5s ease-in-out infinite;animation-delay:-2.5s}
+.star:nth-child(8){width:1px;height:1px;left:50%;top:35%;animation:twinkle 8s ease-in-out infinite;animation-delay:-1.5s}
+.moth-orbit{position:absolute;top:60%;left:55%;width:120px;height:120px;pointer-events:none}
+.moth-dot{position:absolute;width:4px;height:4px;background:rgba(192,208,232,0.5);border-radius:50%;animation:spiral 8s ease-in-out infinite}
+.flame-glow{position:absolute;top:60%;left:55%;width:8px;height:12px;background:radial-gradient(ellipse,rgba(232,118,42,0.7) 0%,rgba(232,118,42,0.2) 40%,transparent 70%);border-radius:50%;animation:flame-flicker 2s ease-in-out infinite;pointer-events:none}
+@keyframes twinkle{0%,100%{opacity:0.2}50%{opacity:0.9}}
+@keyframes spiral{0%{left:60px;top:0;opacity:0.6}25%{left:100px;top:50px;opacity:0.8}50%{left:60px;top:90px;opacity:0.5}75%{left:20px;top:50px;opacity:0.7}100%{left:60px;top:0;opacity:0.6}}
+@keyframes flame-flicker{0%,100%{opacity:0.6;transform:scale(1)}50%{opacity:1;transform:scale(1.3)}}
+.moon-glow{position:absolute;top:8%;right:12%;width:80px;height:80px;background:radial-gradient(circle,rgba(192,208,232,0.08) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+.moon-crescent{position:absolute;top:8%;right:12%;width:40px;height:40px;border-radius:50%;box-shadow:8px -4px 0 0 rgba(192,208,232,0.12);pointer-events:none}
+.ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.015;mix-blend-mode:overlay;pointer-events:none}
+.cover-content{position:relative;z-index:2;padding:48px 24px}
+.cover-badge{display:inline-block;padding:6px 18px;border:1px solid rgba(192,208,232,0.2);border-radius:40px;font-family:'Nunito',sans-serif;font-size:0.67rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--moon);margin-bottom:40px}
+.cover h1{font-size:clamp(2.6rem,7vw,4.4rem);font-weight:900;color:var(--white);line-height:1.05;margin-bottom:8px}
+.cover h1 span{display:block;background:linear-gradient(135deg,var(--flame),var(--flame-bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cover-sub{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:rgba(255,255,255,0.3);margin-top:24px;line-height:1.7}
+.cover-sub em{color:var(--flame-pale);font-style:normal}
+.cover-author{font-family:'Nunito',sans-serif;font-size:0.55rem;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.12);margin-top:48px}
+.cover-art{width:200px;height:190px;margin:0 auto 24px;animation:moth-breathe 4s ease-in-out infinite;display:block}
+.cover-art svg{width:100%;height:100%;filter:drop-shadow(0 0 30px rgba(232,118,42,0.3)) drop-shadow(0 0 60px rgba(232,118,42,0.15))}
+@keyframes moth-breathe{0%,100%{transform:scale(1);filter:brightness(1)}50%{transform:scale(1.05);filter:brightness(1.15)}}
+
+/* ===== RIBBON ===== */
+.ribbon{text-align:center;padding:22px 24px;background:linear-gradient(135deg,rgba(192,208,232,0.03),rgba(232,118,42,0.06));border-top:1.5px solid rgba(232,118,42,0.12);border-bottom:1.5px solid rgba(232,118,42,0.12)}
+.ribbon p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:var(--text-muted);max-width:500px;margin:0 auto}
+
+/* ===== CHAPTER HEADINGS ===== */
+.ch-head{padding:64px 24px 48px;text-align:center;background:linear-gradient(170deg,var(--midnight-dark),var(--midnight),var(--midnight-mid));position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(232,118,42,0.05) 0%,transparent 70%);border-radius:50%}
+.ch-head .ch-num{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:6px;text-transform:uppercase;color:var(--flame);margin-bottom:12px;position:relative;z-index:2}
+.ch-head h2{font-size:1.6rem;color:var(--white);position:relative;z-index:2;margin-bottom:8px}
+.ch-head .ch-sub{font-family:'Lora',serif;font-size:0.88rem;font-style:italic;color:rgba(255,255,255,0.5);position:relative;z-index:2;max-width:480px;margin:0 auto}
+
+/* ===== SCENES ===== */
+.scene{margin:36px 0;padding:32px;background:linear-gradient(140deg,var(--midnight-dark),var(--midnight));border-radius:var(--radius);border:1px solid rgba(232,118,42,0.1);position:relative;overflow:hidden}
+.scene::before{content:'';position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle,rgba(232,118,42,0.05) 0%,transparent 70%);border-radius:50%}
+.scene .scene-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--flame);margin-bottom:12px;position:relative;z-index:2}
+.scene p{font-family:'Lora',serif;font-size:0.95rem;color:rgba(255,255,255,0.7);line-height:1.78;position:relative;z-index:2;margin-bottom:12px}
+.scene p:last-child{margin-bottom:0}
+.scene em{color:var(--flame-pale);font-style:normal;font-weight:600}
+.scene strong{color:var(--moon-pale);font-weight:700}
+
+/* ===== CHARACTER CARDS ===== */
+.character-card{display:flex;gap:20px;align-items:flex-start;padding:28px;margin:28px 0;background:var(--white);border-radius:var(--radius);border:2px solid rgba(232,118,42,0.12);box-shadow:var(--shadow-soft)}
+.character-card .avatar{flex-shrink:0;width:64px;height:64px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--midnight),var(--midnight-mid));border-radius:50%;font-size:1.8rem}
+.character-card .info h3{font-size:1rem;color:var(--midnight-mid);margin-bottom:4px}
+.character-card .info .role{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--flame);margin-bottom:8px}
+.character-card .info p{font-size:0.88rem;color:var(--text-light);line-height:1.65}
+
+/* ===== SIGNAL GRID ===== */
+.signal-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:32px 0}
+@media(max-width:640px){.signal-grid{grid-template-columns:1fr}}
+.signal-card{padding:28px;border-radius:var(--radius);background:var(--white);border:2px solid rgba(232,118,42,0.1);box-shadow:var(--shadow-soft);position:relative;overflow:hidden}
+.signal-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;border-radius:2px 0 0 2px}
+.signal-card .card-icon{font-size:1.6rem;margin-bottom:12px;display:block}
+.signal-card .card-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;margin-bottom:8px;display:block}
+.signal-card h3{font-size:1rem;color:var(--midnight-mid);margin-bottom:8px}
+.signal-card p{font-size:0.85rem;color:var(--text-light);line-height:1.65;margin-bottom:8px}
+.signal-card p:last-child{margin-bottom:0}
+.card-flame::before{background:var(--flame)}
+.card-flame .card-label{color:var(--flame)}
+.card-moon::before{background:var(--moon)}
+.card-moon .card-label{color:#6080A0}
+.card-dark::before{background:var(--midnight-pale)}
+.card-dark .card-label{color:var(--midnight-pale)}
+.card-ash::before{background:#A09888}
+.card-ash .card-label{color:#A09888}
+
+/* ===== BA GRID ===== */
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:28px 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft)}
+@media(max-width:600px){.ba-grid{grid-template-columns:1fr}}
+.ba-before,.ba-after{padding:24px 28px}
+.ba-before{background:var(--before-bg);border-right:2px solid var(--before-border)}
+.ba-after{background:var(--after-bg);border-left:2px solid var(--after-border)}
+@media(max-width:600px){.ba-before{border-right:none;border-bottom:2px solid var(--before-border)}.ba-after{border-left:none;border-top:2px solid var(--after-border)}}
+.ba-before h4,.ba-after h4{font-size:0.6rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;margin-bottom:12px}
+.ba-before h4{color:var(--before-text)}.ba-after h4{color:var(--after-text)}
+.ba-before p,.ba-after p{font-size:0.88rem;line-height:1.65;margin-bottom:8px}
+.ba-before p:last-child,.ba-after p:last-child{margin-bottom:0}
+.ba-before p{color:var(--before-text)}.ba-after p{color:var(--after-text)}
+
+/* ===== DATA ROW ===== */
+.data-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:28px 0}
+@media(max-width:600px){.data-row{grid-template-columns:1fr}}
+.data-box{padding:28px;background:var(--white);border-radius:var(--radius);border:2px solid rgba(232,118,42,0.1);text-align:center;box-shadow:var(--shadow-soft)}
+.data-box .number{font-family:'Nunito',sans-serif;font-size:2.8rem;font-weight:900;line-height:1;margin-bottom:8px;background:linear-gradient(135deg,var(--flame),var(--moon));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.data-box p{font-size:0.8rem;color:var(--text-muted);line-height:1.5}
+
+/* ===== THINK ===== */
+.think{margin:32px 0;padding:28px 32px;background:linear-gradient(135deg,rgba(192,208,232,0.06),rgba(232,118,42,0.06));border-radius:var(--radius);border-left:5px solid var(--moon)}
+.think .think-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--flame);margin-bottom:12px}
+.think h4{font-size:1rem;color:var(--midnight-mid);margin-bottom:16px}
+.think p{font-size:0.88rem;color:var(--text-light);line-height:1.7;margin-bottom:12px}
+.think p:last-child{margin-bottom:0}
+.think .fill-line{display:block;border-bottom:1.5px dashed var(--flame);margin:20px 0;height:28px}
+
+/* ===== GRAND QUOTE ===== */
+.grand-quote{margin:40px 0;padding:48px 36px;text-align:center;position:relative}
+.grand-quote::before{content:'\201C';font-family:Georgia,serif;font-size:8rem;color:rgba(232,118,42,0.06);position:absolute;top:-20px;left:50%;transform:translateX(-50%);line-height:1}
+.grand-quote blockquote{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:var(--midnight-mid);line-height:1.7;max-width:560px;margin:0 auto;position:relative;z-index:2}
+.grand-quote .attribution{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--flame);margin-top:16px}
+
+/* ===== VIZ BOX ===== */
+.viz-box{margin:32px 0;padding:32px;background:var(--white);border-radius:var(--radius);border:2px solid var(--flame);box-shadow:0 0 20px rgba(232,118,42,0.08),var(--shadow-mid);position:relative;overflow:hidden}
+.viz-box::before{content:'';position:absolute;top:-40%;right:-20%;width:300px;height:300px;background:radial-gradient(circle,rgba(232,118,42,0.04) 0%,transparent 70%);border-radius:50%}
+.viz-box .viz-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--flame);margin-bottom:16px;position:relative;z-index:2}
+.viz-box h3{font-size:1.15rem;color:var(--midnight-mid);margin-bottom:16px;position:relative;z-index:2}
+.viz-box p{font-size:0.9rem;color:var(--text-light);line-height:1.7;position:relative;z-index:2;margin-bottom:12px}
+.viz-box p:last-child{margin-bottom:0}
+
+/* ===== DARK PANEL ===== */
+.dark-panel{margin:28px 0;padding:28px;background:linear-gradient(145deg,var(--midnight-dark),var(--midnight));border-radius:var(--radius);border:1px solid rgba(232,118,42,0.1)}
+.dark-panel .dp-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--flame);margin-bottom:12px}
+.dark-panel h3{font-size:1rem;color:var(--white);margin-bottom:12px}
+.dark-panel p{font-size:0.88rem;color:rgba(255,255,255,0.65);line-height:1.7;margin-bottom:8px}
+.dark-panel p:last-child{margin-bottom:0}
+.dark-panel em{color:var(--flame-pale);font-style:normal;font-weight:600}
+.dark-panel strong{color:var(--moon-pale)}
+
+/* ===== ADVENTURE ===== */
+.adventure{margin:32px 0;counter-reset:adventure-step}
+.adventure .adv-step{padding:24px 28px;margin-bottom:16px;background:var(--white);border-radius:var(--radius);border:2px solid rgba(232,118,42,0.1);box-shadow:var(--shadow-soft);position:relative;padding-left:72px}
+.adventure .adv-step::before{counter-increment:adventure-step;content:counter(adventure-step);position:absolute;left:20px;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--flame),var(--moon));color:var(--midnight);font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(232,118,42,0.3)}
+.adventure .adv-step h4{font-size:0.92rem;color:var(--midnight-mid);margin-bottom:6px}
+.adventure .adv-step p{font-size:0.85rem;color:var(--text-light);line-height:1.6}
+
+/* ===== FLOW ===== */
+.flow{margin:32px 0}
+.flow-step{display:flex;align-items:flex-start;gap:16px;margin-bottom:8px}
+.flow-marker{flex-shrink:0;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:900;color:var(--midnight);background:linear-gradient(135deg,var(--flame),var(--flame-bright));box-shadow:0 2px 8px rgba(232,118,42,0.25)}
+.flow-content{flex:1;padding:12px 0}
+.flow-content h4{font-size:0.95rem;color:var(--midnight-mid);margin-bottom:4px}
+.flow-content p{font-size:0.85rem;color:var(--text-light);line-height:1.6}
+.flow-arrow{text-align:center;color:var(--flame);font-size:1.2rem;margin:4px 0 4px 14px;opacity:0.5}
+
+/* ===== PROMPT CARD ===== */
+.prompt-card{margin:40px 0;padding:36px;background:linear-gradient(150deg,var(--midnight),var(--midnight-mid));border-radius:var(--radius);border:2px solid var(--moon);box-shadow:0 0 24px rgba(192,208,232,0.1)}
+.prompt-card .pc-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--moon);margin-bottom:16px}
+.prompt-card h3{font-size:1.1rem;color:var(--white);margin-bottom:16px}
+.prompt-card p{font-size:0.88rem;color:rgba(255,255,255,0.6);line-height:1.7;margin-bottom:8px}
+.prompt-card code{display:block;margin:16px 0;padding:16px 20px;background:rgba(0,0,0,0.3);border-radius:10px;font-family:'Lora',serif;font-size:0.88rem;color:var(--moon-pale);line-height:1.7;font-style:italic;white-space:pre-wrap}
+
+/* ===== FINALE ===== */
+.finale{padding:80px 24px;text-align:center;background:linear-gradient(175deg,var(--midnight-dark),var(--midnight),var(--midnight-mid));position:relative;overflow:hidden}
+.finale .finale-icon{font-size:3rem;margin-bottom:24px;display:block}
+.finale h2{font-size:1.6rem;color:var(--white);margin-bottom:16px}
+.finale h2 span{color:var(--moon-bright)}
+.finale p{font-family:'Lora',serif;font-size:0.95rem;color:rgba(255,255,255,0.4);max-width:520px;margin:0 auto 16px;line-height:1.7}
+.finale p:last-child{margin-bottom:0}
+
+/* ===== FOOTER ===== */
+footer{text-align:center;padding:32px 24px;background:#020208}
+footer p{font-family:'Lora',serif;font-size:0.78rem;font-style:italic;color:rgba(192,208,232,0.18);margin-bottom:12px}
+footer .brand{font-family:'Nunito',sans-serif;font-size:0.5rem;font-style:normal;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.06)}
+
+/* ===== ROOT CHECK ===== */
+.root-ck{margin:32px 0;padding:28px 32px;background:linear-gradient(135deg,rgba(120,120,120,0.04),rgba(120,120,120,0.07));border-radius:var(--radius);border-left:5px solid rgba(120,120,120,0.3)}
+.rc-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px}
+.root-ck h4{font-size:1rem;margin-bottom:16px}
+.r-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.r-item:last-child{margin-bottom:0}
+.r-dot{flex-shrink:0;width:8px;height:8px;border-radius:50%;background:var(--text-muted);margin-top:6px}
+.r-text{font-size:0.88rem;color:var(--text-light);line-height:1.6}
+@media(max-width:640px){
+  .page{padding:0 20px}
+  .root-ck{margin-left:20px;margin-right:20px;padding:28px 20px}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+</style>
+</head>
+<body>
+
+<!-- ========================= COVER ========================= -->
+<div class="cover">
+  <div class="star"></div>
+  <div class="star"></div>
+  <div class="star"></div>
+  <div class="star"></div>
+  <div class="star"></div>
+  <div class="star"></div>
+  <div class="star"></div>
+  <div class="star"></div>
+  <div class="moon-glow"></div>
+  <div class="moon-crescent"></div>
+  <div class="moth-orbit"><div class="moth-dot"></div></div>
+  <div class="flame-glow"></div>
+  <div class="ghost-noise"></div>
+  <div class="cover-content">
+    <div class="cover-badge">Mindset</div>
+    <div class="cover-art">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 190" aria-label="Moth near flame illustration">
+        <defs>
+          <radialGradient id="mt-flame" cx="50%" cy="70%" r="50%"><stop offset="0%" stop-color="#F09840" stop-opacity="0.9"/><stop offset="30%" stop-color="#E8762A" stop-opacity="0.6"/><stop offset="70%" stop-color="#E8762A" stop-opacity="0.15"/><stop offset="100%" stop-color="#E8762A" stop-opacity="0"/></radialGradient>
+          <radialGradient id="mt-flame-core" cx="50%" cy="80%" r="45%"><stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.7"/><stop offset="30%" stop-color="#F8C078" stop-opacity="0.8"/><stop offset="70%" stop-color="#E8762A" stop-opacity="0.4"/><stop offset="100%" stop-color="#E8762A" stop-opacity="0"/></radialGradient>
+          <radialGradient id="mt-moon" cx="40%" cy="40%" r="50%"><stop offset="0%" stop-color="#D8E4F4" stop-opacity="0.15"/><stop offset="60%" stop-color="#C0D0E8" stop-opacity="0.06"/><stop offset="100%" stop-color="#C0D0E8" stop-opacity="0"/></radialGradient>
+          <linearGradient id="mt-wing" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#C0D0E8" stop-opacity="0.5"/><stop offset="50%" stop-color="#686070" stop-opacity="0.3"/><stop offset="100%" stop-color="#2A2A44" stop-opacity="0.4"/></linearGradient>
+          <linearGradient id="mt-wing-burnt" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#686070" stop-opacity="0.4"/><stop offset="40%" stop-color="#E8762A" stop-opacity="0.2"/><stop offset="100%" stop-color="#2A2A44" stop-opacity="0.3"/></linearGradient>
+        </defs>
+        <!-- Distant moon glow (upper left) -->
+        <circle cx="35" cy="30" r="45" fill="url(#mt-moon)"/>
+        <circle cx="35" cy="30" r="15" fill="#C0D0E8" opacity="0.06"/>
+        <circle cx="35" cy="30" r="8" stroke="#C0D0E8" stroke-width="0.5" fill="none" opacity="0.12"/>
+        <!-- Light rays from flame -->
+        <line x1="140" y1="130" x2="100" y2="40" stroke="#E8762A" stroke-width="1" opacity="0.06"/>
+        <line x1="140" y1="130" x2="60" y2="60" stroke="#E8762A" stroke-width="0.8" opacity="0.04"/>
+        <line x1="140" y1="130" x2="180" y2="40" stroke="#E8762A" stroke-width="0.8" opacity="0.05"/>
+        <line x1="140" y1="130" x2="200" y2="80" stroke="#F09840" stroke-width="0.6" opacity="0.04"/>
+        <line x1="140" y1="130" x2="140" y2="30" stroke="#F09840" stroke-width="0.6" opacity="0.05"/>
+        <line x1="140" y1="130" x2="40" y2="110" stroke="#E8762A" stroke-width="0.5" opacity="0.03"/>
+        <line x1="140" y1="130" x2="190" y2="170" stroke="#E8762A" stroke-width="0.5" opacity="0.03"/>
+        <!-- Flame outer glow -->
+        <ellipse cx="140" cy="128" rx="22" ry="30" fill="url(#mt-flame)"/>
+        <!-- Flame shape -->
+        <path d="M140,95 Q148,108 150,120 Q152,132 148,142 Q144,150 140,152 Q136,150 132,142 Q128,132 130,120 Q132,108 140,95 Z" fill="#E8762A" opacity="0.7"/>
+        <path d="M140,105 Q145,115 146,125 Q147,135 144,142 Q141,147 140,148 Q139,147 136,142 Q133,135 134,125 Q135,115 140,105 Z" fill="url(#mt-flame-core)"/>
+        <!-- Flame inner core -->
+        <path d="M140,118 Q143,125 143,132 Q142,138 140,140 Q138,138 137,132 Q137,125 140,118 Z" fill="#FFFFFF" opacity="0.3"/>
+        <!-- Flame flicker wisps -->
+        <path d="M135,100 Q132,92 134,88" stroke="#F8C078" stroke-width="0.8" fill="none" opacity="0.3"/>
+        <path d="M145,98 Q148,90 146,86" stroke="#F09840" stroke-width="0.6" fill="none" opacity="0.25"/>
+        <!-- Moth body -->
+        <ellipse cx="85" cy="105" rx="4" ry="7" fill="#1A1A2E" transform="rotate(-20,85,105)"/>
+        <ellipse cx="83" cy="98" rx="3" ry="3.5" fill="#2A2A44"/>
+        <!-- Moth antennae -->
+        <path d="M81,95 Q75,85 72,80" stroke="#C0D0E8" stroke-width="0.6" fill="none" opacity="0.5"/>
+        <path d="M84,94 Q82,84 80,78" stroke="#C0D0E8" stroke-width="0.6" fill="none" opacity="0.5"/>
+        <circle cx="72" cy="80" r="1" fill="#C0D0E8" opacity="0.4"/>
+        <circle cx="80" cy="78" r="1" fill="#C0D0E8" opacity="0.4"/>
+        <!-- Left wing (intact, moonlit) -->
+        <path d="M80,100 Q60,80 45,75 Q35,73 38,85 Q40,95 55,105 Q65,108 78,105 Z" fill="url(#mt-wing)"/>
+        <path d="M78,106 Q62,112 52,118 Q45,124 50,125 Q58,124 70,115 Q76,110 78,106 Z" fill="url(#mt-wing)" opacity="0.7"/>
+        <!-- Wing vein patterns (left) -->
+        <path d="M78,102 Q65,90 50,82" stroke="#C0D0E8" stroke-width="0.4" fill="none" opacity="0.25"/>
+        <path d="M78,104 Q68,100 58,98" stroke="#C0D0E8" stroke-width="0.3" fill="none" opacity="0.2"/>
+        <!-- Eye spots on left wing -->
+        <circle cx="58" cy="88" r="4" fill="#2A2A44" opacity="0.3"/>
+        <circle cx="58" cy="88" r="2" fill="#C0D0E8" opacity="0.15"/>
+        <!-- Right wing (singed, closer to flame) -->
+        <path d="M88,100 Q105,82 118,80 Q128,80 124,90 Q118,100 105,106 Q95,108 88,105 Z" fill="url(#mt-wing-burnt)"/>
+        <path d="M88,106 Q100,112 108,118 Q112,122 108,123 Q102,122 94,114 Q90,110 88,106 Z" fill="url(#mt-wing-burnt)" opacity="0.6"/>
+        <!-- Singed edge on right wing -->
+        <path d="M118,80 Q125,78 128,82 Q126,88 120,92" stroke="#E8762A" stroke-width="1" fill="none" opacity="0.4"/>
+        <path d="M122,84 Q126,82 128,85" stroke="#F8C078" stroke-width="0.5" fill="none" opacity="0.3"/>
+        <!-- Ember particles from singed wing -->
+        <circle cx="120" cy="85" r="1" fill="#E8762A" opacity="0.5"/>
+        <circle cx="125" cy="80" r="0.8" fill="#F09840" opacity="0.4"/>
+        <circle cx="115" cy="78" r="0.7" fill="#F8C078" opacity="0.3"/>
+        <!-- Moth eye -->
+        <circle cx="82" cy="96" r="1.5" fill="#C0D0E8" opacity="0.5"/>
+        <circle cx="82" cy="96" r="0.6" fill="#FFFFFF" opacity="0.4"/>
+        <!-- Stars (distant, faint) -->
+        <circle cx="20" cy="15" r="0.8" fill="#C0D0E8" opacity="0.2"/>
+        <circle cx="170" cy="20" r="0.6" fill="#C0D0E8" opacity="0.15"/>
+        <circle cx="55" cy="45" r="0.5" fill="#D8E4F4" opacity="0.12"/>
+        <circle cx="185" cy="55" r="0.7" fill="#C0D0E8" opacity="0.1"/>
+      </svg>
+    </div>
+    <h1>The Moth's <span>Flame</span></h1>
+    <p class="cover-sub">A navigation parable where <em>every flight path</em> was perfect until the signal turned counterfeit, from the moonlight that guided to the porch lamp that burned, the compass that pointed true to the glow that promised everything and delivered ash.</p>
+    <p class="cover-author">KingdomBuilders AI</p>
+  </div>
+</div>
+
+<!-- Scripture Ribbon -->
+<div class="ribbon">
+  <p>"Turn my eyes away from worthless things; preserve my life according to your word.". Psalm 119:37</p>
+</div>
+
+
+<!-- ========================= CHAPTER 1: THE PERFECT NAVIGATOR ========================= -->
+
+<div class="section"><div class="page"><div class="prose">
+<p>If you finish this playbook, you will understand why you keep flying toward things that burn you, and it has nothing to do with weakness. You will know <strong>how transverse orientation makes you vulnerable to counterfeit signals, be able to identify the five most common porch lamps in modern life, and anchor to your true north so that no artificial light can pull you off course again.</strong></p>
+</div></div></div>
+
+<div class="ch-head">
+  <div class="ch-num">Chapter One</div>
+  <h2>The Perfect Navigator</h2>
+  <div class="ch-sub">How the moth flies a thousand miles without a map, a compass, or a single wrong turn</div>
+</div>
+
+<div class="section"><div class="page"><div class="prose">
+
+<div class="scene">
+  <div class="scene-label">The Night Sky, 10,000 Feet</div>
+  <p>Atlas had been flying for seven hours. The wind above the cornfields was brutal tonight, a crosswind that pushed him sideways with every wingbeat, but he held his course. He always held his course.</p>
+  <p>The moon sat at precisely 30 degrees off his right wing, where it had been since takeoff. He did not think about this. He did not calculate it. The angle between his body and that cold silver light was as natural to him as breathing, a line drawn in his nervous system before he ever left the cocoon. He simply flew, and the geometry took care of itself.</p>
+  <p>Below him, a thousand miles of dark earth scrolled past. He could not see it. He did not need to. <em>The moon was enough.</em></p>
+  <p>Then, somewhere over a small town in Ohio, he saw a second light. It was brighter than the moon. Warmer. Closer. It pulsed with an orange glow that seemed to reach out and pull at him. A porch lamp, mounted above a white door on a house at the end of a quiet street.</p>
+  <p>Atlas adjusted his angle. Just slightly. Just enough to keep that warm light at 30 degrees off his right wing. He did not know he had made a substitution. His navigation system did not distinguish between <strong>true light</strong> and <strong>counterfeit light</strong>. It only knew the angle.</p>
+  <p>He began to spiral.</p>
+</div>
+
+<p>This is not a fable. This is lepidopterology. The moth's navigation system is called <em>transverse orientation</em>, and it is one of the most elegant guidance mechanisms in the natural world. By maintaining a fixed angle relative to a celestial light source, moths can fly perfectly straight lines across hundreds of miles of open terrain with zero instruments, zero training, and zero error.</p>
+
+<p>The system has one flaw. It was designed for a world with exactly one bright light in the sky. It was never designed for a world full of artificial ones.</p>
+
+<div class="character-card">
+  <div class="avatar">🦋</div>
+  <div class="info">
+    <h3>Atlas</h3>
+    <div class="role">The Thousand-Mile Navigator</div>
+    <p>Strong, disciplined, built for distance. His transverse orientation is flawless. He has crossed mountain ranges and river valleys without a single wrong turn. But he has never encountered an artificial light source before tonight. His greatest strength, his unwavering trust in the brightest signal, is about to become his fatal weakness.</p>
+  </div>
+</div>
+
+<div class="character-card">
+  <div class="avatar">🌙</div>
+  <div class="info">
+    <h3>Meridian</h3>
+    <div class="role">The One Who Learned the Hard Way</div>
+    <p>Old, scarred, missing most of one antenna from a night she barely survived. She flies slower now, navigates by feel as much as by light, and has developed something no moth is supposed to have: the ability to distinguish between a moon and a lamp. She did not learn this from a book. She learned it from the burn.</p>
+  </div>
+</div>
+
+<p>Here is the principle that will frame everything in this playbook:</p>
+
+<div class="grand-quote">
+  <blockquote>"Your navigation system is not broken. Your signal environment is corrupted. The problem is never the compass. The problem is the counterfeit north."</blockquote>
+  <div class="attribution">True North vs. Bright Light</div>
+</div>
+
+<p>You have a navigation system too. It was built from your values, your upbringing, your faith, your experiences. And like the moth's transverse orientation, it works perfectly when the signals are real. But you live in a world that has filled the sky with <em>porch lamps</em>, artificial signals that are brighter, warmer, and closer than the real thing. And your navigation system cannot tell the difference.</p>
+
+<p>Social media metrics that feel like impact but measure nothing. Revenue that looks like success but generates no profit. Job titles that sound impressive but carry no authority. Relationships that look loving but extract energy. Busyness that feels productive but produces nothing lasting.</p>
+
+<p>These are all porch lamps. And you are spiraling toward them right now.</p>
+
+<div class="data-row">
+  <div class="data-box">
+    <div class="number">73%</div>
+    <p>Of professionals say they regularly pursue goals they later realize were never truly important to them (Harvard Business Review)</p>
+  </div>
+  <div class="data-box">
+    <div class="number">2.5hrs</div>
+    <p>Average daily time spent on social media, a signal environment engineered to mimic purpose and connection</p>
+  </div>
+</div>
+
+<div class="think">
+  <div class="think-label">Pause and Reflect</div>
+  <h4>What is your porch lamp?</h4>
+  <p><strong>1.</strong> Name one goal you are currently pursuing that, if you are honest, was never really yours. Whose light are you navigating by?</p>
+  <span class="fill-line"></span>
+  <p><strong>2.</strong> When was the last time you felt pulled toward something bright and warm that turned out to be a trap?</p>
+  <span class="fill-line"></span>
+  <p><strong>3.</strong> What is your moon? What is the one fixed, distant, unchanging signal that has always guided you when you trusted it?</p>
+  <span class="fill-line"></span>
+</div>
+
+</div></div></div>
+
+<div class="ribbon">
+  <p>"Do not conform to the pattern of this world, but be transformed by the renewing of your mind.". Romans 12:2</p>
+</div>
+
+
+
+<div class="section"><div class="page">
+<div class="root-ck">
+  <div class="rc-label">ROOT CHECK NO. 1</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text">Ch 1 -- Your navigation system is not broken; your signal environment is corrupted. The moth's flaw is trusting the brightest light, not the truest one.</div></div>
+</div>
+</div></div>
+
+<!-- ========================= CHAPTER 2: THE PORCH LAMP ========================= -->
+<div class="ch-head">
+  <div class="ch-num">Chapter Two</div>
+  <h2>The Porch Lamp</h2>
+  <div class="ch-sub">A field guide to the counterfeit signals that look like success but smell like smoke</div>
+</div>
+
+<div class="section"><div class="page"><div class="prose">
+
+<div class="scene">
+  <div class="scene-label">The Spiral</div>
+  <p>The first orbit was wide. Atlas barely noticed the curve. He was still flying forward, still making progress, still covering distance. But the distance was circular now, a slow arc that bent his thousand-mile journey into a tightening loop around a sixty-watt bulb.</p>
+  <p>The second orbit was tighter. He could feel the heat now, a warmth that the moon had never offered. It felt like <em>reward</em>. It felt like he was getting closer to something important. Every instinct said: <em>this is the way</em>.</p>
+  <p>The third orbit was so tight that his wing tips brushed the glass. The heat was intense. His flight muscles ached. He had stopped making progress entirely, but he had never felt more certain that he was exactly where he needed to be.</p>
+  <p>This is the anatomy of a spiral. It feels like focus. It looks like commitment. It is neither.</p>
+</div>
+
+<p>A porch lamp is any signal that mimics the properties of your true goal closely enough that your navigation system locks onto it. It is brighter than the moon, warmer than the moon, and closer than the moon. And that is exactly why it is dangerous. <em>The best counterfeits are always more attractive than the originals.</em></p>
+
+<p>Let us name the five most common porch lamps in modern life:</p>
+
+<div class="signal-grid">
+  <div class="signal-card card-flame">
+    <div class="card-icon">📊</div>
+    <div class="card-label">Porch Lamp One</div>
+    <h3>Vanity Metrics</h3>
+    <p>Followers, likes, page views, downloads, email list size. Numbers that feel like progress but measure attention, not impact. The business with 100,000 followers and zero paying customers is a moth circling a lamp.</p>
+  </div>
+  <div class="signal-card card-flame">
+    <div class="card-icon">💰</div>
+    <div class="card-label">Porch Lamp Two</div>
+    <h3>Revenue Without Profit</h3>
+    <p>A million dollars in revenue with $1.2 million in expenses is not success. It is a more expensive spiral. Revenue is the lamp. Profit is the moon. They are not the same light.</p>
+  </div>
+  <div class="signal-card card-flame">
+    <div class="card-icon">🏷️</div>
+    <div class="card-label">Porch Lamp Three</div>
+    <h3>Titles Without Authority</h3>
+    <p>"VP of Strategy." "Head of Innovation." "Chief Evangelist." Labels that sound powerful but carry no budget, no team, and no real decision-making power. The warmth of a title without the weight of authority.</p>
+  </div>
+  <div class="signal-card card-flame">
+    <div class="card-icon">⏰</div>
+    <div class="card-label">Porch Lamp Four</div>
+    <h3>Busyness Without Output</h3>
+    <p>Twelve meetings, fifty emails, three urgent Slack threads, and by 6 PM you have produced nothing. Busyness is the brightest porch lamp because it feels exactly like productivity. The heat is indistinguishable from purpose.</p>
+  </div>
+</div>
+
+<div class="dark-panel">
+  <div class="dp-label">Porch Lamp Five</div>
+  <h3>Someone Else's Definition of Success</h3>
+  <p>This is the most dangerous lamp of all because it does not even belong to you. It is your father's career ambition projected onto your life. It is your peer group's lifestyle standard adopted as your own. It is the Instagram version of success that you absorbed without ever choosing it.</p>
+  <p>The moth does not choose the porch lamp. It simply mistakes it for the moon. And the most insidious thing about navigating by someone else's definition of success is that <em>you will never know you are doing it until you start burning.</em></p>
+  <p>The heat feels like validation. The orbit feels like progress. The proximity feels like arrival. You are none of these things. You are spiraling.</p>
+</div>
+
+<div class="ba-grid">
+  <div class="ba-before">
+    <h4>Porch Lamp Thinking</h4>
+    <p>"More followers means more influence."</p>
+    <p>"Revenue is growing, so we're winning."</p>
+    <p>"I'm busy, so I must be productive."</p>
+    <p>"Everyone admires this path, so it must be right."</p>
+    <p>"It's bright, so it must be real."</p>
+  </div>
+  <div class="ba-after">
+    <h4>Moon Thinking</h4>
+    <p>"Are these followers becoming customers?"</p>
+    <p>"Is revenue exceeding cost of delivery?"</p>
+    <p>"Did I create something lasting today?"</p>
+    <p>"Does this path match my actual calling?"</p>
+    <p>"Is it bright because it's real, or because it's close?"</p>
+  </div>
+</div>
+
+<p>The critical distinction is <strong>distance</strong>. The moon is far away. It does not flatter you. It does not warm you. It does not make you feel special. It simply sits in the sky, cold and constant, and it guides you if you trust it. A porch lamp is close. It flatters. It warms. It makes you feel like you have arrived. And it will burn you alive.</p>
+
+<div class="grand-quote">
+  <blockquote>"The counterfeit is always warmer than the real thing. That is how you know it is counterfeit."</blockquote>
+  <div class="attribution">Atlas's Law</div>
+</div>
+
+</div></div></div>
+
+<div class="ribbon">
+  <p>"What good is it for someone to gain the whole world, yet forfeit their soul?". Mark 8:36</p>
+</div>
+
+
+
+<div class="section"><div class="page">
+<div class="root-ck">
+  <div class="rc-label">ROOT CHECK NO. 2</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text">Ch 1 -- Your navigation system is not broken; your signal environment is corrupted. The moth's flaw is trusting the brightest light, not the truest one.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text">Ch 2 -- Porch lamps are counterfeit signals: vanity metrics, revenue without profit, titles without authority, busyness without output, and borrowed definitions of success.</div></div>
+</div>
+</div></div>
+
+<!-- ========================= CHAPTER 3: THE SIGNAL AUDIT ========================= -->
+<div class="ch-head">
+  <div class="ch-num">Chapter Three</div>
+  <h2>The Signal Audit</h2>
+  <div class="ch-sub">Five questions that separate the moon from every lamp on the street</div>
+</div>
+
+<div class="section"><div class="page"><div class="prose">
+
+<div class="scene">
+  <div class="scene-label">The Conversation</div>
+  <p>Meridian found Atlas on a windowsill at dawn, his wings singed, his left antenna fused into a curl of blackened chitin. He was alive, but barely. And he was confused, which was worse than being injured, because confusion meant he would fly back to the lamp tonight.</p>
+  <p>"Why did it pull me?" he asked.</p>
+  <p>"Because you trusted brightness," Meridian said. She settled next to him, her own scarred wing folding awkwardly. "You navigated by <em>intensity</em> instead of by <em>identity</em>. The lamp was brighter than the moon. So you followed the brightness. But brightness is not truth. <strong>Constancy</strong> is truth."</p>
+  <p>"How do you tell the difference?"</p>
+  <p>She paused. "You ask five questions. And you answer them honestly."</p>
+</div>
+
+<p>The Signal Audit is the core framework of this playbook. It is five questions, asked of any goal, pursuit, relationship, or opportunity, that distinguish true north from counterfeit light. They are simple. They are brutal. They work.</p>
+
+<div class="viz-box">
+  <div class="viz-label">Framework</div>
+  <h3>The Five-Question Signal Audit</h3>
+  <p><strong>Question 1: Is this signal getting closer or staying constant?</strong></p>
+  <p>The moon stays the same distance no matter how far you fly. A porch lamp gets brighter as you approach. If a goal or opportunity seems to get more exciting the closer you get, it may be a lamp. True purpose does not seduce you with proximity. It guides you with constancy.</p>
+  <p><strong>Question 2: Did I choose this signal, or did it choose me?</strong></p>
+  <p>The moon does not advertise. It does not target you. It does not optimize for your attention. Porch lamps do. If something found you through an algorithm, a sales funnel, a peer pressure loop, or a cultural expectation, ask whether you would have sought it in the dark.</p>
+  <p><strong>Question 3: Does this signal survive daylight?</strong></p>
+  <p>When you strip away the urgency, the social proof, the emotional high, and the fear of missing out, does this goal still matter? The moon is visible in daylight. A porch lamp is invisible. Goals that evaporate under sober examination were never real.</p>
+  <p><strong>Question 4: Who benefits most if I follow this signal?</strong></p>
+  <p>If the primary beneficiary of your pursuit is not you, your family, or your mission, then you are orbiting someone else's lamp. Social media platforms benefit when you chase followers. Your employer benefits when you chase titles. The question is whether <em>you</em> benefit.</p>
+  <p><strong>Question 5: Would I still pursue this if no one could see me doing it?</strong></p>
+  <p>This is the kill shot. Remove the audience. Remove the status. Remove the ability to tell anyone about it. If the goal collapses without witnesses, it was never your moon. It was a performance, and the audience was the lamp.</p>
+</div>
+
+<div class="adventure">
+  <div class="adv-step">
+    <h4>Run the Audit</h4>
+    <p>Pick your current biggest goal. Write it down. Then answer all five questions honestly. If you answer "lamp" to three or more, you are spiraling. It does not mean the goal is wrong. It means your relationship to it is wrong.</p>
+  </div>
+  <div class="adv-step">
+    <h4>Identify the Heat</h4>
+    <p>What specifically makes this goal feel warm? Is it the goal itself, or the validation attached to it? Separate the outcome from the applause. If the applause is the real draw, you have found your lamp.</p>
+  </div>
+  <div class="adv-step">
+    <h4>Find Your Moon</h4>
+    <p>Name the one pursuit in your life that has never changed regardless of circumstance, audience, or reward. The thing you would do in a dark room with no one watching. That is your moon. Write it down. Tape it to your wall.</p>
+  </div>
+  <div class="adv-step">
+    <h4>Map the Replacement</h4>
+    <p>For every lamp you identified, ask: what would this goal look like if I navigated by my moon instead? The goal might stay the same. The orientation changes entirely.</p>
+  </div>
+</div>
+
+<div class="dark-panel">
+  <div class="dp-label">The Hardest Truth</div>
+  <h3>Most People Fail the Audit</h3>
+  <p>And not because they lack self-awareness. They fail because the audit asks them to give up warmth. The moon is cold. The moon is distant. The moon asks nothing of you emotionally. It just sits there, indifferent and reliable.</p>
+  <p>The lamp flatters you. The lamp rewards you with heat. The lamp makes you feel like you are almost there. <em>Giving up the lamp feels like giving up progress.</em> It is not. It is giving up the illusion of progress in exchange for actual direction.</p>
+  <p>This is why most people keep spiraling. Not because they cannot see the lamp. But because <strong>the lamp feels better than the moon.</strong></p>
+</div>
+
+</div></div></div>
+
+
+
+<div class="section"><div class="page">
+<div class="root-ck">
+  <div class="rc-label">ROOT CHECK NO. 3</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text">Ch 1 -- Your navigation system is not broken; your signal environment is corrupted. The moth's flaw is trusting the brightest light, not the truest one.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text">Ch 2 -- Porch lamps are counterfeit signals: vanity metrics, revenue without profit, titles without authority, busyness without output, and borrowed definitions of success.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text">Ch 3 -- The Signal Audit: five questions that separate moons from lamps. Distance, consistency, cost, and longevity reveal what is real.</div></div>
+</div>
+</div></div>
+
+<!-- ========================= CHAPTER 4: THE SPIRAL ========================= -->
+<div class="ch-head">
+  <div class="ch-num">Chapter Four</div>
+  <h2>The Spiral</h2>
+  <div class="ch-sub">Why intelligent people tighten their orbit around the wrong light</div>
+</div>
+
+<div class="section"><div class="page"><div class="prose">
+
+<div class="scene">
+  <div class="scene-label">The Physics of the Spiral</div>
+  <p>Meridian drew a circle in the dust on the windowsill with her good antenna. Then another inside it. Then another.</p>
+  <p>"The spiral has three stages," she said. "And the cruelest part is that each stage feels like the right decision."</p>
+  <p>"<em>Stage one: the wide orbit.</em> You are still making forward progress. You are still covering new ground. But your path has started to curve. You do not notice because the bend is so gentle. You think you are flying straight. You are not."</p>
+  <p>"<em>Stage two: the tightening.</em> You feel the heat now, and it feels like reward. The closer you get, the more certain you become. Your speed increases. Your energy burns hotter. Everyone watching thinks you are focused. You think you are focused. You are not focused. You are trapped."</p>
+  <p>"<em>Stage three: the burn.</em> Your wings touch the glass. You cannot pull away because pulling away would mean admitting that everything you invested in the approach was wrong. So you press closer. The sunk cost of the spiral holds you tighter than the lamp ever could."</p>
+  <p>She stopped drawing. "That is not a lamp problem, Atlas. <strong>That is a pride problem.</strong>"</p>
+</div>
+
+<p>The three cognitive traps that power every spiral:</p>
+
+<div class="signal-grid">
+  <div class="signal-card card-flame">
+    <div class="card-icon">🎯</div>
+    <div class="card-label">Trap One</div>
+    <h3>The Proximity Illusion</h3>
+    <p>When a goal seems closer, we assume it must be the right goal. Proximity creates certainty. But proximity to a lamp is not the same as proximity to purpose. The moth feels most confident at the moment its wings catch fire.</p>
+  </div>
+  <div class="signal-card card-dark">
+    <div class="card-icon">⚓</div>
+    <div class="card-label">Trap Two</div>
+    <h3>The Sunk Cost Orbit</h3>
+    <p>"I have already invested three years, $40,000, and my reputation in this direction. I cannot turn away now." Yes, you can. The cost of the spiral is already spent. The only question is whether you spend the rest of your flight on the same orbit.</p>
+  </div>
+  <div class="signal-card card-flame">
+    <div class="card-icon">👥</div>
+    <div class="card-label">Trap Three</div>
+    <h3>The Social Proof Loop</h3>
+    <p>You look around and see other moths spiraling toward the same lamp. You conclude it must be the right light because so many others are flying toward it. But a thousand moths circling a bulb does not make the bulb the moon. It makes it a popular trap.</p>
+  </div>
+  <div class="signal-card card-moon">
+    <div class="card-icon">🛡️</div>
+    <div class="card-label">The Defense</div>
+    <h3>The 30-Degree Check</h3>
+    <p>Every month, ask: is the angle between me and my stated purpose changing? Am I curving? Am I covering new ground, or am I covering the same ground faster? If the answer is circular, you are in a spiral. Get out before stage three.</p>
+  </div>
+</div>
+
+<div class="viz-box">
+  <div class="viz-label">The Spiral vs. The Straight Line</div>
+  <h3>How to Tell the Difference</h3>
+  <p><strong>The spiral feels like intensity.</strong> Speed increases. Emotion increases. Certainty increases. But the landscape never changes. You keep passing the same landmarks.</p>
+  <p><strong>The straight line feels like patience.</strong> Speed is steady. Emotion is calm. Certainty comes from the constancy of the reference point, not from proximity to it. The landscape changes constantly because you are actually going somewhere.</p>
+  <p>The spiral is exciting. The straight line is boring. <em>And that is the entire trap.</em> We are wired to prefer excitement over boredom, intensity over constancy, heat over cold. The moth does not choose the lamp because it is stupid. It chooses the lamp because the lamp feels better than the moon.</p>
+</div>
+
+<div class="grand-quote">
+  <blockquote>"The spiral always feels like focus. That is how you know it is a spiral. Real direction does not feel intense. It feels inevitable."</blockquote>
+  <div class="attribution">Meridian's Rule</div>
+</div>
+
+<div class="think">
+  <div class="think-label">Pause and Reflect</div>
+  <h4>Are you in a spiral right now?</h4>
+  <p><strong>1.</strong> Name one area of your life where your effort has increased but your progress has not. Are you covering new ground, or the same ground faster?</p>
+  <span class="fill-line"></span>
+  <p><strong>2.</strong> What have you invested too much in to walk away from? Is the sunk cost keeping you in orbit?</p>
+  <span class="fill-line"></span>
+  <p><strong>3.</strong> Are other people spiraling toward the same goal? Does their presence make you more or less confident that it is real?</p>
+  <span class="fill-line"></span>
+</div>
+
+</div></div></div>
+
+<div class="ribbon">
+  <p>"Teach us to number our days, that we may gain a heart of wisdom.". Psalm 90:12</p>
+</div>
+
+
+
+<div class="section"><div class="page">
+<div class="root-ck">
+  <div class="rc-label">ROOT CHECK NO. 4</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text">Ch 1 -- Your navigation system is not broken; your signal environment is corrupted. The moth's flaw is trusting the brightest light, not the truest one.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text">Ch 2 -- Porch lamps are counterfeit signals: vanity metrics, revenue without profit, titles without authority, busyness without output, and borrowed definitions of success.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text">Ch 3 -- The Signal Audit: five questions that separate moons from lamps. Distance, consistency, cost, and longevity reveal what is real.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text">Ch 4 -- The Sunk-Cost Spiral: intelligent people tighten their orbit around wrong lights because abandoning them feels like wasting the flight already invested.</div></div>
+</div>
+</div></div>
+
+<!-- ========================= CHAPTER 5: THE DARK FLIGHT ========================= -->
+<div class="ch-head">
+  <div class="ch-num">Chapter Five</div>
+  <h2>The Dark Flight</h2>
+  <div class="ch-sub">The counterintuitive power of turning away from every bright thing</div>
+</div>
+
+<div class="section"><div class="page"><div class="prose">
+
+<div class="scene">
+  <div class="scene-label">The Lesson</div>
+  <p>"There is a trick," Meridian said, "that no moth wants to learn. Because it feels like dying."</p>
+  <p>Atlas waited.</p>
+  <p>"When you cannot tell the moon from the lamp, <em>fly dark</em>. Turn away from every light source. Every single one. Fly into the blackest part of the sky and hold your course by feel. By memory. By the faint pull of the magnetic field beneath you. By anything except brightness."</p>
+  <p>"That sounds terrifying."</p>
+  <p>"It is. That is how you know it is right." Meridian flexed her damaged wing. "I lost this antenna to a lamp in Kentucky. I lost half this wing to a lamp in Virginia. After the second burn, I spent six nights flying dark. No visual reference. No brightness. Just the pull of the earth and the memory of where I was going."</p>
+  <p>"And?"</p>
+  <p>"<em>I arrived.</em> For the first time in my life, I flew straight."</p>
+</div>
+
+<p>The Dark Flight is the most counterintuitive principle in this playbook, and the most powerful. It says: <strong>when your signal environment is corrupted, the correct response is to navigate without signals at all.</strong></p>
+
+<p>In practical terms, this means:</p>
+
+<div class="adventure">
+  <div class="adv-step">
+    <h4>Delete the Metrics Dashboard</h4>
+    <p>For 30 days, stop checking your follower count, your website traffic, your email open rates. Do the work without measuring the work. See what changes in your behavior when the scoreboard goes dark.</p>
+  </div>
+  <div class="adv-step">
+    <h4>Say No to Every New Opportunity</h4>
+    <p>For one quarter, accept nothing new. No new projects, no new partnerships, no new platforms. Every opportunity is a potential lamp. When you cannot tell moon from lamp, the safest strategy is darkness.</p>
+  </div>
+  <div class="adv-step">
+    <h4>Stop Announcing Your Plans</h4>
+    <p>Research shows that announcing your intentions gives your brain a premature sense of completion, reducing your motivation to follow through. Fly dark. Tell no one. Let the arrival speak for itself.</p>
+  </div>
+  <div class="adv-step">
+    <h4>Sit with the Discomfort</h4>
+    <p>The Dark Flight is uncomfortable because you lose all feedback. No applause. No metrics. No external validation. Just the quiet hum of your own purpose, which is much harder to hear than a porch lamp's buzz. But it is the only sound that matters.</p>
+  </div>
+</div>
+
+<div class="dark-panel">
+  <div class="dp-label">The Paradox</div>
+  <h3>Darkness Is Not the Absence of Direction</h3>
+  <p>It is the absence of <em>distraction</em>. When you remove every external signal, you are not lost. You are finally able to hear the one signal that was always there but was drowned out by the noise: <strong>your own.</strong></p>
+  <p>The moth navigates by celestial light because it has no internal compass. You do. You have values. You have faith. You have a sense of calling that does not require Instagram to confirm it. The Dark Flight forces you to use what you already have instead of outsourcing your direction to whatever is brightest.</p>
+  <p>Meridian did not learn to fly straight by finding a better lamp. She learned to fly straight by <em>flying without any lamp at all.</em></p>
+</div>
+
+<div class="ba-grid">
+  <div class="ba-before">
+    <h4>Signal-Dependent Navigation</h4>
+    <p>Checks metrics daily for validation</p>
+    <p>Adjusts strategy based on likes and engagement</p>
+    <p>Announces plans for accountability and applause</p>
+    <p>Follows the brightest opportunity in view</p>
+    <p>Feels lost without external feedback</p>
+  </div>
+  <div class="ba-after">
+    <h4>Dark Flight Navigation</h4>
+    <p>Does the work without checking the scoreboard</p>
+    <p>Holds strategy based on conviction, not reaction</p>
+    <p>Works in silence, lets results announce themselves</p>
+    <p>Follows the fixed internal reference point</p>
+    <p>Feels grounded without external validation</p>
+  </div>
+</div>
+
+<div class="grand-quote">
+  <blockquote>"She flew six nights without a single light to guide her. And for the first time in her life, she flew perfectly straight. Because the only signal she followed was the one that had been inside her all along."</blockquote>
+  <div class="attribution">The Dark Flight</div>
+</div>
+
+</div></div></div>
+
+<div class="ribbon">
+  <p>"Be still, and know that I am God.". Psalm 46:10</p>
+</div>
+
+
+
+<div class="section"><div class="page">
+<div class="root-ck">
+  <div class="rc-label">ROOT CHECK NO. 5</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text">Ch 1 -- Your navigation system is not broken; your signal environment is corrupted. The moth's flaw is trusting the brightest light, not the truest one.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text">Ch 2 -- Porch lamps are counterfeit signals: vanity metrics, revenue without profit, titles without authority, busyness without output, and borrowed definitions of success.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text">Ch 3 -- The Signal Audit: five questions that separate moons from lamps. Distance, consistency, cost, and longevity reveal what is real.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text">Ch 4 -- The Sunk-Cost Spiral: intelligent people tighten their orbit around wrong lights because abandoning them feels like wasting the flight already invested.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text">Ch 5 -- The Dark Reset: sometimes you must turn away from every bright thing and sit in darkness until your true signal becomes visible again.</div></div>
+</div>
+</div></div>
+
+<!-- ========================= CHAPTER 6: THE MOON IS ENOUGH ========================= -->
+<div class="ch-head">
+  <div class="ch-num">Chapter Six</div>
+  <h2>The Moon Is Enough</h2>
+  <div class="ch-sub">How to anchor to true north and fly the rest of your life in a straight line</div>
+</div>
+
+<div class="section"><div class="page"><div class="prose">
+
+<div class="scene">
+  <div class="scene-label">The Return</div>
+  <p>Atlas flew dark for three nights. No porch lamps. No highway lights. No neon signs from the gas stations below. Just the magnetic pull of the earth beneath him and the memory of where he was going.</p>
+  <p>On the fourth night, he found the moon again. Not the lamp-moon, not the counterfeit. The real one. Cold, distant, indifferent. It did not care whether he followed it. It did not reward him with warmth. It simply existed, constant and true, exactly where it had always been.</p>
+  <p>He set his angle. Thirty degrees off his right wing. And he flew.</p>
+  <p>The porch lamps were still below him. He could see them, hundreds of them, scattered across the towns like orange stars fallen from a lesser sky. They were beautiful. They were warm. <em>And they were not for him.</em></p>
+  <p>He flew on. The moon held steady. The miles unrolled beneath him like a promise being kept. And for the first time since Ohio, Atlas was not spiraling. He was <strong>arriving</strong>.</p>
+</div>
+
+<p>This is the final framework. Everything else in this playbook was diagnosis. This chapter is the prescription.</p>
+
+<div class="viz-box">
+  <div class="viz-label">Framework</div>
+  <h3>The Moon Protocol</h3>
+  <p><strong>Step 1: Name your moon.</strong> Write it in one sentence. Not a goal. Not a metric. A direction. "I exist to build things that serve families." "I exist to teach what I have learned through suffering." "I exist to steward the resources God gave me." Your moon is not what you do. It is why you do anything at all.</p>
+  <p><strong>Step 2: Set your angle.</strong> Every decision, every opportunity, every relationship gets measured against your moon. Does this hold the angle steady, or does it bend my course? If it bends, it is a lamp. Decline it. No matter how warm it feels.</p>
+  <p><strong>Step 3: Accept the cold.</strong> The moon does not flatter you. It does not send you dopamine hits. It does not make you feel special. It just guides you. And that has to be enough. If you need warmth from your purpose, you will always end up at a lamp.</p>
+  <p><strong>Step 4: Check monthly.</strong> Run the 30-Degree Check. Am I covering new ground? Is my angle steady? Have I started orbiting something without realizing it? One honest check per month prevents spirals before they tighten.</p>
+  <p><strong>Step 5: Fly for the arrival, not the applause.</strong> Atlas did not need anyone to see him cross the mountain range. He did not need a notification when he passed the river. He flew because flying was the purpose. The arrival was between him and the sky. Remove the audience from your purpose and see if it survives. If it does, you have found your moon.</p>
+</div>
+
+
+<div class="section"><div class="page">
+<div class="think">
+  <div class="think-label">The Final Test</div>
+  <h4>Can You Answer Without Looking Back?</h4>
+  <p class="q-start"><strong>1.</strong> What is transverse orientation, and why does it fail in a world full of artificial lights?</p>
+  <div class="think-line"></div>
+  <p class="q-start"><strong>2.</strong> Name at least three of the five porch lamps described in Chapter 2. Which one are you most susceptible to?</p>
+  <div class="think-line"></div>
+  <p class="q-start"><strong>3.</strong> What is the critical difference between a moon and a porch lamp? (Hint: it involves distance and warmth.)</p>
+  <div class="think-line"></div>
+  <p class="q-start"><strong>4.</strong> Explain the Sunk-Cost Spiral. Why do intelligent people tighten their orbit instead of breaking free?</p>
+  <div class="think-line"></div>
+  <p class="q-start"><strong>5.</strong> What is the Dark Reset, and why must you turn away from every bright thing before you can see the real one?</p>
+  <div class="think-line"></div>
+  <p class="q-start"><strong>6.</strong> What did Atlas's spiral teach about the relationship between certainty and accuracy?</p>
+  <div class="think-line"></div>
+</div>
+</div></div>
+
+<div class="prompt-card">
+  <div class="pc-label">Your Moon Statement</div>
+  <h3>Write this down. Tape it where you will see it every morning.</h3>
+  <p>Complete this sentence:</p>
+  <code>"I exist to ________________________________. This does not change with the market, the audience, the season, or the applause. This is my moon. It is cold, it is distant, and it is enough."</code>
+</div>
+
+<div class="dark-panel">
+  <div class="dp-label">The Final Distinction</div>
+  <h3>Lamps Reward You for Orbiting. The Moon Rewards You for Arriving.</h3>
+  <p>Every porch lamp in your life pays you in small, immediate, warm doses of validation for going nowhere. The moon pays you nothing for years and then delivers you exactly where you were meant to be.</p>
+  <p>This is why most people choose lamps. The payment schedule is better. But the destination is a sixty-watt bulb. And the destination of the moth who trusts the moon is <em>a thousand miles of straight flight and a life that actually went somewhere.</em></p>
+  <p>Atlas lost an antenna and half his wing dust to a porch lamp in Ohio. Meridian lost her wing to two. Both of them still fly. Both of them navigate by the moon now. <strong>Neither of them misses the warmth.</strong></p>
+</div>
+
+<div class="grand-quote">
+  <blockquote>"He flew a thousand miles by moonlight, then burned himself on a porch lamp. The navigation was never the problem. The signal was. Choose your light carefully. Then trust it for the rest of the flight."</blockquote>
+  <div class="attribution">The Moth's Flame</div>
+</div>
+
+<div class="think">
+  <div class="think-label">Your Commitment</div>
+  <h4>Before you close this playbook:</h4>
+  <p><strong>1.</strong> Write your Moon Statement. One sentence. Non-negotiable.</p>
+  <span class="fill-line"></span>
+  <p><strong>2.</strong> Name your three biggest porch lamps right now. The things that are warm, bright, close, and bending your course.</p>
+  <span class="fill-line"></span>
+  <p><strong>3.</strong> What is one lamp you will walk away from this week? Name it. Commit.</p>
+  <span class="fill-line"></span>
+</div>
+
+</div></div></div>
+
+
+<!-- ========================= FINALE ========================= -->
+<div class="finale">
+  <div class="finale-icon">🌙</div>
+  <h2>The Moon Is <span>Enough</span></h2>
+  <p>You do not need a brighter signal. You do not need a warmer light. You need the cold, constant, distant truth that has been sitting in your sky since the day you were born.</p>
+  <p>Fly by it. Trust it. And stop orbiting lamps.</p>
+  <p><em>The moth's navigation was never broken. The world just filled up with counterfeits. Yours is not broken either. Recalibrate. And fly straight.</em></p>
+</div>
+
+<footer>
+  <p>"Your word is a lamp for my feet, a light on my path.". Psalm 119:105</p>
+  <div class="brand">KingdomBuilders AI</div>
+</footer>
+
+</body>
+</html>
