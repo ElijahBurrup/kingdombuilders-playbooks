@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The Roche Limit</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --roche:#7B8FD4;
+  --roche-bright:#9AAFE8;
+  --roche-pale:#C4D0F0;
+  --roche-soft:rgba(123,143,212,0.07);
+  --fracture:#E85A5A;
+  --fracture-glow:#FF7A7A;
+  --fracture-pale:#FFBABA;
+  --heal:#5AB88A;
+  --heal-glow:#70D0A0;
+  --heal-pale:#B0E8C8;
+  --deep:#08080E;
+  --deep-mid:#10101A;
+  --deep-dark:#040408;
+  --deep-light:#1A1A2A;
+  --void:#0C0C18;
+  --paper:#FAFBFE;
+  --sea:#F2F4FA;
+  --white:#FFFFFF;
+  --text:#0E0E1A;
+  --text-light:#2A2A40;
+  --text-muted:#5A5A78;
+  --radius:10px;
+  --shadow:0 2px 16px rgba(14,14,26,0.09);
+  --shadow-deep:0 8px 40px rgba(14,14,26,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--paper);line-height:1.78;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.label{font-family:'Poppins',sans-serif}
+.page{max-width:700px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+
+/* ── COVER ── */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(160deg,#040408 0%,#08080E 30%,#10101A 60%,#0C0C18 100%);position:relative;overflow:hidden}
+.cover-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,transparent 30%,rgba(4,4,8,0.7) 100%);z-index:1}
+.cover-content{position:relative;z-index:2;padding:40px 24px}
+.cover-badge{display:inline-block;padding:6px 20px;border:1.5px solid rgba(123,143,212,0.3);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--roche);margin-bottom:28px}
+.cover h1{font-family:'Poppins',sans-serif;font-size:clamp(2.2rem,6vw,3.8rem);font-weight:800;color:#FFFFFF;line-height:1.05;margin:0 0 16px;letter-spacing:-0.02em}
+.cover h1 span{background:linear-gradient(135deg,var(--roche-bright),var(--roche-pale));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cover-sub{font-family:'Lora',Georgia,serif;font-size:1rem;font-style:italic;color:rgba(123,143,212,0.45);max-width:480px;margin:0 auto;line-height:1.6}
+
+/* Orbiting ring animation */
+.cover-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1px solid rgba(123,143,212,0.06);z-index:0}
+.cover-ring:nth-child(1){width:500px;height:500px;animation:ring-drift 30s linear infinite}
+.cover-ring:nth-child(2){width:700px;height:700px;animation:ring-drift 45s linear infinite reverse}
+.cover-ring:nth-child(3){width:900px;height:900px;animation:ring-drift 60s linear infinite}
+@keyframes ring-drift{0%{transform:translate(-50%,-50%) rotate(0deg)}100%{transform:translate(-50%,-50%) rotate(360deg)}}
+
+/* Fragments floating */
+.fragment{position:absolute;width:3px;height:3px;background:var(--roche);border-radius:50%;opacity:0.15;z-index:1}
+.fragment:nth-child(4){top:30%;left:20%;animation:frag-float 8s ease-in-out infinite}
+.fragment:nth-child(5){top:60%;left:75%;animation:frag-float 12s ease-in-out infinite 2s;width:2px;height:2px}
+.fragment:nth-child(6){top:45%;left:40%;animation:frag-float 10s ease-in-out infinite 4s;width:4px;height:4px;opacity:0.1}
+.fragment:nth-child(7){top:70%;left:55%;animation:frag-float 9s ease-in-out infinite 1s}
+.fragment:nth-child(8){top:25%;left:65%;animation:frag-float 11s ease-in-out infinite 3s;width:2px;height:2px}
+@keyframes frag-float{0%,100%{transform:translateY(0) translateX(0);opacity:0.15}50%{transform:translateY(-20px) translateX(10px);opacity:0.3}}
+
+/* ── RIBBON ── */
+.ribbon{text-align:center;padding:20px 24px;background:rgba(123,143,212,0.04);border-top:1px solid rgba(123,143,212,0.08);border-bottom:1px solid rgba(123,143,212,0.08)}
+.ribbon p{font-family:'Lora',Georgia,serif;font-size:0.88rem;font-style:italic;color:var(--text-muted);max-width:540px;margin:0 auto;line-height:1.6}
+
+/* ── CHAPTER HEAD ── */
+.ch-head{background:linear-gradient(160deg,var(--deep-dark) 0%,var(--deep) 50%,var(--deep-mid) 100%);padding:72px 24px 52px;position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 50%,rgba(123,143,212,0.04) 0%,transparent 50%)}
+.ch-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 5%,var(--roche) 50%,transparent 95%);opacity:0.4}
+.ch-head .page{position:relative;z-index:2}
+.ch-num{font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--roche);opacity:0.9;margin-bottom:8px}
+.ch-title{font-family:'Poppins',sans-serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:700;color:#FFFFFF;margin:10px 0 8px;letter-spacing:-0.01em}
+.ch-sub{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:rgba(123,143,212,0.55)}
+
+/* ── SCENE ── */
+.scene{margin:36px 0;padding:32px;background:linear-gradient(140deg,var(--deep-dark),var(--deep),var(--deep-mid));border-radius:var(--radius);border:1px solid rgba(123,143,212,0.1);position:relative;overflow:hidden}
+.scene::before{content:'';position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle,rgba(123,143,212,0.05) 0%,transparent 70%);border-radius:50%}
+.scene .scene-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--roche);margin-bottom:12px;position:relative;z-index:2}
+.scene p{font-family:'Lora',serif;font-size:0.95rem;color:rgba(255,255,255,0.7);line-height:1.78;position:relative;z-index:2;margin-bottom:12px}
+.scene p:last-child{margin-bottom:0}
+.scene em{color:var(--roche-pale);font-style:normal;font-weight:600}
+.scene strong{color:var(--roche-pale);font-weight:700}
+
+/* ── VIZ ── */
+.viz{margin:44px 0 32px;border-radius:14px;overflow:hidden;border:2px solid rgba(123,143,212,0.22);box-shadow:var(--shadow-deep);position:relative;background:var(--white)}
+.viz-top{background:linear-gradient(135deg,rgba(123,143,212,0.1),rgba(123,143,212,0.04));padding:20px 26px 18px;display:flex;align-items:center;gap:14px;border-bottom:1px solid rgba(123,143,212,0.12)}
+.viz-icon{width:48px;height:48px;border-radius:50%;border:2px solid rgba(123,143,212,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(145deg,#fff,rgba(242,244,250,0.6));font-size:1.3rem}
+.viz-meta{flex:1}
+.viz-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--roche);margin-bottom:2px}
+.viz h4{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:var(--deep-light)}
+.viz-body{padding:26px 26px 22px;background:linear-gradient(170deg,#FAFBFE 0%,#F2F4FA 100%)}
+.viz-body p{font-size:0.95rem;color:var(--text-muted);line-height:1.78;margin-bottom:14px}
+.viz-body p:last-child{margin-bottom:0}
+.viz-body strong{color:var(--deep-light);font-weight:700}
+.viz-body em{color:var(--roche);font-style:normal;font-weight:600}
+
+.viz-dark{margin:36px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(123,143,212,0.2);box-shadow:var(--shadow-deep)}
+.viz-dark .viz-top{background:linear-gradient(135deg,var(--deep),var(--deep-mid));border-bottom:1px solid rgba(123,143,212,0.15)}
+.viz-dark .viz-top .viz-label{color:var(--roche-bright)}
+.viz-dark .viz-top h4{color:#FFFFFF}
+.viz-dark .viz-body{background:linear-gradient(170deg,var(--deep-dark),var(--deep));padding:26px}
+.viz-dark .viz-body p{color:rgba(255,255,255,0.65);font-size:0.93rem}
+.viz-dark .viz-body strong{color:var(--roche-pale)}
+.viz-dark .viz-body em{color:var(--roche-bright);font-style:normal;font-weight:600}
+
+/* ── THINK ── */
+.think{margin:16px 0 36px;padding:30px;background:linear-gradient(145deg,rgba(123,143,212,0.08),rgba(123,143,212,0.04));border:2px dashed rgba(123,143,212,0.35);border-radius:14px;position:relative;box-shadow:0 4px 16px rgba(123,143,212,0.08)}
+.think-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--roche);text-align:center;margin-bottom:10px}
+.think h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--deep-light);text-align:center;margin-bottom:14px}
+.think p{font-size:0.86rem;color:var(--text-muted);margin-bottom:8px;font-family:'Poppins',sans-serif}
+.think-line{border-bottom:1.5px solid rgba(123,143,212,0.25);height:30px;margin-bottom:4px;cursor:text}
+.think p.q-start{font-family:'Poppins',sans-serif;font-weight:500;color:var(--text-light);font-size:0.82rem;text-align:left;margin-top:14px;margin-bottom:4px}
+.think .closing{font-weight:600;color:var(--roche);margin-top:12px;font-family:'Poppins',sans-serif;font-size:0.8rem}
+.think:hover{box-shadow:0 0 0 2px rgba(123,143,212,0.25),0 8px 32px rgba(123,143,212,0.1)}
+
+/* ── GRAND QUOTE ── */
+.gq{margin:32px 0;text-align:center;padding:32px 24px;position:relative;background:linear-gradient(160deg,rgba(123,143,212,0.04),rgba(123,143,212,0.07));border-radius:14px;border:1.5px solid rgba(123,143,212,0.15)}
+.gq::before,.gq::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:48px;height:2px;background:linear-gradient(90deg,transparent,var(--roche),transparent)}
+.gq::before{top:0}
+.gq::after{bottom:0}
+.gq p{font-family:'Lora',Georgia,serif;font-size:1.05rem;font-style:italic;color:var(--deep-light);line-height:1.6;max-width:540px;margin:0 auto}
+.gq .gq-attr{font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--roche);margin-top:14px;font-style:normal}
+
+/* ── BEFORE / AFTER ── */
+.ba-pair{margin:32px 0;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:620px){.ba-pair{grid-template-columns:1fr}}
+.ba-card{border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.ba-head{padding:11px 18px;font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.ba-before{background:linear-gradient(170deg,#FFF0F0,#FFE8E8)}
+.ba-before .ba-head{background:rgba(232,90,90,0.12);color:#8B1F1F}
+.ba-after{background:linear-gradient(170deg,#F2F4FA,#E8ECF8)}
+.ba-after .ba-head{background:rgba(123,143,212,0.12);color:#2A2A60}
+.ba-dot{width:7px;height:7px;border-radius:50%}
+.ba-before .ba-dot{background:var(--fracture)}
+.ba-after .ba-dot{background:var(--roche)}
+.ba-body{padding:16px 18px;font-size:0.88rem;line-height:1.65}
+.ba-body ul{list-style:none;padding:0;margin:0}
+.ba-body ul li{padding:6px 0;border-bottom:1px solid rgba(0,0,0,0.05);font-family:'Poppins',sans-serif;font-size:0.8rem}
+.ba-body ul li:last-child{border-bottom:none}
+
+/* ── DARK PANEL ── */
+.dark-panel{margin:28px 0;padding:28px;background:linear-gradient(145deg,var(--deep-dark),var(--deep));border-radius:var(--radius);border:1px solid rgba(123,143,212,0.1)}
+.dark-panel .dp-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--roche);margin-bottom:12px}
+.dark-panel h3{font-size:1rem;color:var(--white);margin-bottom:12px;font-family:'Poppins',sans-serif}
+.dark-panel p{font-size:0.88rem;color:rgba(255,255,255,0.65);line-height:1.7;margin-bottom:8px}
+.dark-panel p:last-child{margin-bottom:0}
+.dark-panel em{color:var(--roche-pale);font-style:normal;font-weight:600}
+.dark-panel strong{color:var(--roche-pale)}
+
+/* ── ROOT CHECK ── */
+.root-ck{margin:40px auto;max-width:680px;padding:36px 32px;background:linear-gradient(135deg,rgba(123,143,212,0.04),rgba(90,184,138,0.06));border-radius:var(--radius);border:2px solid rgba(123,143,212,0.15)}
+.root-ck .rc-label{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--roche);margin-bottom:12px}
+.root-ck h4{font-size:1.05rem;color:var(--deep-light);margin-bottom:20px}
+.r-item{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
+.r-item:last-child{margin-bottom:0}
+.r-dot{flex-shrink:0;width:8px;height:8px;border-radius:50%;background:var(--roche);margin-top:7px}
+.r-text{font-size:0.92rem;color:var(--text-light);line-height:1.7}
+
+/* ── DFN TOOLTIPS ── */
+dfn.def{cursor:help;font-style:normal;font-weight:600;color:var(--roche);border-bottom:1.5px dotted rgba(123,143,212,0.4);position:relative}
+dfn.def::after{content:attr(data-def);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--deep);color:var(--roche-pale);font-family:'Poppins',sans-serif;font-size:0.7rem;font-weight:400;line-height:1.5;padding:8px 14px;border-radius:8px;border:1px solid rgba(123,143,212,0.2);white-space:normal;width:max-content;max-width:260px;opacity:0;pointer-events:none;transition:opacity 0.25s ease;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,0.3)}
+dfn.def:hover::after,dfn.def:focus::after{opacity:1}
+@media(max-width:640px){dfn.def::after{left:0;transform:none}}
+
+/* Scene variants */
+.scene-fracture{border-color:rgba(232,90,90,0.15)}
+.scene-fracture .scene-label{color:var(--fracture)}
+.scene-fracture em{color:var(--fracture-pale)}
+.scene-heal{border-color:rgba(90,184,138,0.15)}
+.scene-heal .scene-label{color:var(--heal)}
+.scene-heal em{color:var(--heal-pale)}
+
+/* ── GLOW BOX ── */
+.glow{margin:32px 0;padding:28px;background:linear-gradient(145deg,rgba(123,143,212,0.06),rgba(90,184,138,0.04));border-radius:14px;border:2px solid rgba(123,143,212,0.2);box-shadow:0 0 30px rgba(123,143,212,0.06)}
+.glow .gl-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--heal);margin-bottom:10px}
+.glow p{font-size:0.95rem;color:var(--text-light);line-height:1.78;margin-bottom:10px}
+.glow p:last-child{margin-bottom:0}
+.glow strong{color:var(--roche)}
+.glow em{color:var(--heal);font-style:normal;font-weight:600}
+
+/* ── POLARITY TABLE ── */
+.polarity{margin:28px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(123,143,212,0.15);box-shadow:var(--shadow)}
+.polarity-head{display:grid;grid-template-columns:1fr 40px 1fr;background:linear-gradient(135deg,var(--deep),var(--deep-mid));padding:14px 20px}
+.polarity-head span{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:4px;text-transform:uppercase}
+.polarity-head .ph-left{color:var(--fracture-pale)}
+.polarity-head .ph-mid{text-align:center;color:rgba(255,255,255,0.2)}
+.polarity-head .ph-right{color:var(--roche-pale);text-align:right}
+.polarity-row{display:grid;grid-template-columns:1fr 40px 1fr;padding:14px 20px;border-bottom:1px solid rgba(123,143,212,0.08);font-family:'Poppins',sans-serif;font-size:0.82rem}
+.polarity-row:nth-child(even){background:rgba(123,143,212,0.03)}
+.polarity-row .pr-left{color:var(--fracture)}
+.polarity-row .pr-mid{text-align:center;color:var(--text-muted);font-size:0.7rem}
+.polarity-row .pr-right{text-align:right;color:var(--roche)}
+
+/* ── FINALE ── */
+.finale{padding:80px 24px;text-align:center;background:linear-gradient(175deg,var(--deep-dark),var(--deep),var(--deep-mid));position:relative;overflow:hidden}
+.finale h2{font-size:1.6rem;color:var(--white);margin-bottom:16px;font-family:'Poppins',sans-serif}
+.finale h2 span{color:var(--roche-bright)}
+.finale p{font-family:'Lora',serif;font-size:0.95rem;color:rgba(255,255,255,0.4);max-width:540px;margin:0 auto 16px;line-height:1.7}
+.finale p:last-child{margin-bottom:0}
+.finale strong{color:var(--roche-pale)}
+
+/* ── FINAL TEST ── */
+.final-test{margin:40px 0;border-radius:14px;overflow:hidden;border:3px solid var(--roche);box-shadow:0 0 20px rgba(123,143,212,0.08)}
+.ft-head{background:linear-gradient(135deg,var(--deep),var(--deep-mid));padding:22px 26px;display:flex;align-items:center;gap:14px;border-bottom:2px solid rgba(123,143,212,0.2)}
+.ft-head .ft-icon{width:44px;height:44px;border-radius:50%;border:2px solid var(--roche);display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+.ft-head .ft-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--roche);margin-bottom:2px}
+.ft-head h3{font-family:'Poppins',sans-serif;font-size:1rem;color:var(--white);margin:0}
+.ft-body{padding:22px 26px;background:var(--paper)}
+.ft-q{padding:18px 0;border-bottom:1px solid rgba(123,143,212,0.1);cursor:pointer}
+.ft-q:last-child{border-bottom:none}
+.ft-q .ft-num{font-family:'Poppins',sans-serif;font-size:0.7rem;font-weight:700;color:var(--roche);margin-bottom:4px}
+.ft-q .ft-question{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:500;color:var(--text);margin-bottom:4px}
+.ft-q .ft-tap{font-family:'Poppins',sans-serif;font-size:0.65rem;color:var(--text-muted);letter-spacing:1px}
+.ft-q .ft-answer{display:none;margin-top:10px;padding:14px 18px;background:linear-gradient(135deg,rgba(123,143,212,0.06),rgba(123,143,212,0.03));border-radius:8px;border-left:3px solid var(--roche)}
+.ft-q .ft-answer p{font-size:0.85rem;color:var(--text-light);line-height:1.65;margin:0}
+.ft-q.revealed .ft-answer{display:block}
+.ft-q.revealed .ft-tap{display:none}
+
+/* ── FOOTER ── */
+footer{text-align:center;padding:32px 24px;background:var(--deep-dark)}
+footer p{font-family:'Lora',serif;font-size:0.78rem;font-style:italic;color:rgba(123,143,212,0.18);margin-bottom:12px}
+footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:normal;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.06)}
+
+/* ── PROGRESS + PILL ── */
+#read-progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--roche),rgba(123,143,212,0.4));z-index:9999;pointer-events:none;transition:width 0.08s linear}
+#chapter-pill{position:fixed;bottom:24px;right:24px;background:var(--deep);border:1px solid rgba(123,143,212,0.25);color:var(--roche);font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:8px 18px;border-radius:50px;opacity:0;transition:opacity 0.35s ease;pointer-events:none;z-index:1000;box-shadow:0 4px 24px rgba(0,0,0,0.4)}
+#chapter-pill.show{opacity:1}
+
+/* ── SCROLL REVEAL ── */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity 0.55s ease,transform 0.55s ease}
+.reveal.visible{opacity:1;transform:none}
+
+/* ── RESPONSIVE ── */
+@media(max-width:640px){
+  html{font-size:16px}
+  .cover h1{font-size:2rem}
+  .ch-title{font-size:1.6rem}
+  .scene{padding:24px}
+  .think{padding:22px}
+  .viz-body{padding:20px}
+}
+@media(prefers-reduced-motion:reduce){
+  .cover-ring,.fragment{animation:none!important}
+  .reveal{opacity:1;transform:none;transition:none}
+}
+</style>
+</head>
+<body>
+<div id="read-progress"></div>
+<div id="chapter-pill"></div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     COVER
+     ═══════════════════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-ring"></div>
+  <div class="cover-ring"></div>
+  <div class="cover-ring"></div>
+  <div class="fragment"></div>
+  <div class="fragment"></div>
+  <div class="fragment"></div>
+  <div class="fragment"></div>
+  <div class="fragment"></div>
+  <div class="cover-vignette"></div>
+  <div class="cover-content">
+    <div class="cover-badge">Kingdom Builders AI</div>
+    <h1>The Roche <span>Limit</span></h1>
+    <p class="cover-sub">Why closeness keeps destroying you. And how to become dense enough to survive it.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     RIBBON
+     ═══════════════════════════════════════════════════════════ -->
+<div class="ribbon">
+  <p>"Above all else, guard your heart, for everything you do flows from it." Proverbs 4:23</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     INTRO
+     ═══════════════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="page reveal">
+    <p>This playbook is not about toxic relationships. It is not about narcissists, or red flags, or learning to "set boundaries." You have read that playbook. It did not work. Not because the advice was wrong, but because it addressed the symptom while ignoring the physics.</p>
+    <p>The real question is not "why do they treat me this way?" The real question is: <strong>why does closeness keep structurally destroying you?</strong></p>
+    <p>The answer is in astrophysics. Specifically, in a number called the <dfn class="def" data-def="The minimum distance at which a celestial body, held together only by its own gravity, can orbit a larger body without being torn apart by tidal forces." tabindex="0">Roche limit</dfn>. Every moon in the solar system has one. You do too. And you have been living inside it.</p>
+    <p>This playbook will show you exactly why you keep shattering, what was hijacked, why your own body fights your recovery, why boundaries feel like oxygen instead of walls, and how to become dense enough to survive the closeness you actually want.</p>
+    <p>Five chapters. Three scientific domains. One arc that does not restart.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     CHAPTER 1: THE SHATTERING
+     ═══════════════════════════════════════════════════════════ -->
+<section class="ch-head" data-chapter="The Shattering">
+  <div class="page">
+    <div class="ch-num">Chapter 01</div>
+    <h2 class="ch-title">The Shattering</h2>
+    <p class="ch-sub">How you disintegrated into a ring</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="page">
+
+    <div class="scene reveal">
+      <div class="scene-label">The Physics</div>
+      <p>In 1848, the French astronomer <dfn class="def" data-def="Edouard Albert Roche (1820 to 1883), French astronomer who calculated the tidal disruption limit for orbiting bodies." tabindex="0">Edouard Roche</dfn> calculated something that changed our understanding of the solar system. He proved that for any moon orbiting a planet, there exists a critical distance. Get closer than that distance and the moon does not crash into the planet. It does not get absorbed. It <em>disintegrates</em>.</p>
+      <p>The math is elegant and merciless. The planet's <dfn class="def" data-def="Differential gravitational pull across an extended body. The near side is pulled harder than the far side, creating a stretching force." tabindex="0">tidal forces</dfn> grow stronger as the moon approaches. At the Roche limit, the tidal force pulling the moon apart exceeds the moon's own <dfn class="def" data-def="The internal gravitational force that holds a celestial body together as a coherent whole. Determined by the body's mass and density." tabindex="0">self-gravity</dfn> holding it together. The moon fractures into millions of fragments. These fragments spread into a ring that orbits the planet forever.</p>
+      <p>Saturn's rings are not decoration. They are the debris of moons that got too close.</p>
+    </div>
+
+    <p class="reveal">Read that again. The moon was whole. It approached something massive. It crossed an invisible threshold. And it did not merge with the planet. It shattered into a ring <em>orbiting</em> the planet. The fragments are still "there." They still contain the same mass. But they no longer form a body. They no longer have a center. They are distributed around someone else's center, forever.</p>
+
+    <div class="gq reveal">
+      <p>"You did not merge. You shattered. And the fragments orbit them now."</p>
+    </div>
+
+    <p class="reveal">This is the precise physics of codependency. You approached someone whose gravitational pull exceeded your own self-cohesion. You crossed the Roche limit. And you did not become one with them. You disintegrated into a ring of service, vigilance, anxiety, and anticipation that orbits their center of gravity. Your fragments are still you. But they no longer form a you.</p>
+
+    <div class="viz reveal">
+      <div class="viz-top">
+        <div class="viz-icon">&#x1F300;</div>
+        <div class="viz-meta">
+          <div class="viz-label">The Roche Equation</div>
+          <h4>What Determines Your Limit</h4>
+        </div>
+      </div>
+      <div class="viz-body">
+        <p>The Roche limit is not fixed. It depends on two variables:</p>
+        <p><strong>1. The density of the orbiting body (you).</strong> A dense moon can orbit much closer to a planet without shattering. A diffuse, loosely held moon shatters at great distance. Your density is your <em>self-cohesion</em>: the strength of your own identity, values, friendships, and internal life.</p>
+        <p><strong>2. The mass of the primary body (them).</strong> A more massive planet creates stronger tidal forces. But here is what most people miss: you cannot control their mass. You can only control your density.</p>
+        <p>Two dense bodies can orbit millimeters apart without breaking. Two diffuse ones shatter across the room. <strong>The goal is not distance. The goal is density.</strong></p>
+      </div>
+    </div>
+
+    <div class="dark-panel reveal">
+      <div class="dp-label">The Diagnostic</div>
+      <h3>Signs You Are Living Inside Your Roche Limit</h3>
+      <p>You know their mood before they speak. You do not know your own mood at all.</p>
+      <p>You can list everything they need. You cannot list three things you want that have nothing to do with them.</p>
+      <p>When they are happy, you feel relief, not joy. When they are upset, you feel responsible, not concerned.</p>
+      <p>You have not called a friend for your own sake in months. Your social life is a satellite of theirs.</p>
+      <p>You feel a deep, physical anxiety when you do something they have not approved of, even silently.</p>
+      <p><strong>These are not character flaws. They are the physics of a body that has crossed its Roche limit. The fragments are orbiting. You are no longer at your own center.</strong></p>
+    </div>
+
+    <div class="think reveal">
+      <div class="think-label">Stop and Map</div>
+      <h4>Locate the Shattering</h4>
+      <p class="q-start">When was the last time you made a decision based entirely on what you wanted, without calculating their reaction?</p>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+      <p class="q-start">Name three fragments of yourself that are currently orbiting someone else's center:</p>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+      <p class="closing">If you cannot answer the first question, you have your answer.</p>
+    </div>
+
+    <div class="root-ck reveal">
+      <div class="rc-label">Root Check No. 1</div>
+      <h4>What you should now understand</h4>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text">The Roche limit is the distance at which tidal forces exceed self-gravity, causing a body to disintegrate into a ring.</div></div>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text">Codependency is not "loving too much." It is orbiting closer than your density can sustain.</div></div>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text">The solution is not distance. It is density. Two dense bodies can orbit closer than two diffuse ones ever could.</div></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     CHAPTER 2: THE HIJACK
+     ═══════════════════════════════════════════════════════════ -->
+<section class="ch-head" data-chapter="The Hijack">
+  <div class="page">
+    <div class="ch-num">Chapter 02</div>
+    <h2 class="ch-title">The Hijack</h2>
+    <p class="ch-sub">Whose goals you are actually serving</p>
+  </div>
+</section>
+
+<div class="ribbon">
+  <p>"For what will it profit a man if he gains the whole world and forfeits his soul?" Matthew 16:26</p>
+</div>
+
+<section class="section">
+  <div class="page">
+
+    <p class="reveal">Chapter 1 explained how you shattered. This chapter explains something worse: <strong>you do not know you shattered.</strong> The fragments still function. You still go to work, still smile, still take care of things. But you are no longer steering. Something else is.</p>
+
+    <div class="scene reveal">
+      <div class="scene-label">The Biology</div>
+      <p>In the cold waters of the North Atlantic, there lives a barnacle called <dfn class="def" data-def="A parasitic barnacle (genus Sacculina) that infects crabs by injecting cells through their joints, then grows a root network throughout the host's body, hijacking its reproductive and behavioral systems." tabindex="0">Sacculina carcini</dfn>. It begins life as a free-swimming larva, indistinguishable from any other barnacle. But when it encounters a crab, it does not attach to the shell. It finds a joint in the crab's armor, punctures it, and injects a microscopic clump of cells into the crab's bloodstream.</p>
+      <p>Over the following weeks, those cells grow a <dfn class="def" data-def="The branching network of tendrils that Sacculina extends throughout the host crab's body, wrapping around organs and infiltrating the nervous system." tabindex="0">root network</dfn> throughout the crab's entire body. Tendrils wrap around organs, infiltrate the nervous system, and penetrate the brain. The roots connect to the crab's hormonal system and begin issuing commands.</p>
+      <p>The crab stops molting. It stops growing. It stops reproducing. Instead, it begins nurturing a bulging sac on its abdomen: the Sacculina's eggs. <em>The crab tends these eggs with the same instinctive care it would give its own offspring.</em> It fans them with water, protects them from predators, and releases them at exactly the right time.</p>
+      <p>Male crabs infected with Sacculina begin displaying female brooding behaviors. Their bodies widen. Their claws shrink. Their entire behavioral repertoire rewrites to serve the parasite's reproduction.</p>
+      <p>The crab is alive. Functional. And utterly redirected.</p>
+    </div>
+
+    <p class="reveal">Here is what makes Sacculina the most terrifying organism on Earth: <strong>the crab does not know.</strong> There is no struggle. No resistance. The parasite does not override the crab's will. It <em>becomes</em> the crab's will. The crab genuinely wants to nurture those eggs. It would fight to protect them. It experiences the parasitic imperatives as its own desires.</p>
+
+    <div class="gq reveal">
+      <p>"The most dangerous sign of codependency is not unhappiness. It is contentment in service of someone else's reproduction."</p>
+    </div>
+
+    <div class="viz-dark reveal">
+      <div class="viz-top">
+        <div class="viz-icon">&#x1FAB3;</div>
+        <div class="viz-meta">
+          <div class="viz-label">The Parasitic Test</div>
+          <h4>Whose Goals Are You Nurturing?</h4>
+        </div>
+      </div>
+      <div class="viz-body">
+        <p>The Sacculina test is simple and devastating. Look at the last ten decisions you made. Not the small ones. The ones about your time, your career, your energy, your body.</p>
+        <p><strong>For each decision, ask: if this person did not exist, would I still make this choice?</strong></p>
+        <p>If you moved cities for them, would you have chosen that city alone? If you abandoned a friendship, was that friend actually toxic, or just inconvenient to the parasite's root network? If you changed careers, did you want the new career, or did it simply create less friction with their preferences?</p>
+        <p>The crab cannot answer these questions. <em>That is the mechanism.</em> The roots do not announce themselves. They feel like preferences. They feel like maturity. They feel like "growing together."</p>
+        <p>If you are angry right now, the roots have not reached deep enough to prevent you from noticing. <strong>That anger is your immune system working.</strong> Listen to it.</p>
+      </div>
+    </div>
+
+    <p class="reveal">Sacculina is not a metaphor for an abusive partner. Your partner may not be trying to hijack you at all. The parasite in codependency is not a person. It is a <em>pattern</em>. A relational template, often installed in childhood, that converts your goal-setting apparatus into a service provider for someone else's comfort. The pattern can attach to anyone: a partner, a parent, a boss, a church, a friend group. It looks for joints in your armor and grows roots.</p>
+
+    <div class="ba-pair reveal">
+      <div class="ba-card ba-before">
+        <div class="ba-head"><div class="ba-dot"></div>Parasitic Goals</div>
+        <div class="ba-body">
+          <ul>
+            <li>"I want them to be happy" (their emotional regulation)</li>
+            <li>"I should be more understanding" (their accountability)</li>
+            <li>"It's fine, I don't mind" (your needs, muted)</li>
+            <li>"They need me" (your worth, externalized)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="ba-card ba-after">
+        <div class="ba-head"><div class="ba-dot"></div>Self-Generated Goals</div>
+        <div class="ba-body">
+          <ul>
+            <li>"I want to feel happy" (your emotional state)</li>
+            <li>"I need to understand myself" (your accountability)</li>
+            <li>"This matters to me" (your needs, spoken)</li>
+            <li>"I am valuable regardless" (your worth, internal)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="think reveal">
+      <div class="think-label">Stop and Trace</div>
+      <h4>Find the Roots</h4>
+      <p class="q-start">Name one goal you are currently pursuing that you cannot trace back to your own desire:</p>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+      <p class="q-start">When did you stop distinguishing between "what I want" and "what keeps the peace"?</p>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+      <p class="closing">The crab would say the eggs are its own. What would you say?</p>
+    </div>
+
+    <div class="root-ck reveal">
+      <div class="rc-label">Root Check No. 2</div>
+      <h4>What you should now understand</h4>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text">Sacculina hijacks the crab's goal-setting system so completely that parasitic imperatives register as self-generated desires.</div></div>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text">Codependency is not about a bad partner. It is a relational pattern that converts your decision-making into a service for someone else's comfort.</div></div>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text">The most dangerous indicator is not suffering. It is contentment with goals you cannot trace back to yourself.</div></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     CHAPTER 3: THE IMMUNE RESPONSE
+     ═══════════════════════════════════════════════════════════ -->
+<section class="ch-head" data-chapter="The Immune Response">
+  <div class="page">
+    <div class="ch-num">Chapter 03</div>
+    <h2 class="ch-title">The Immune Response</h2>
+    <p class="ch-sub">Why recovery triggers guilt</p>
+  </div>
+</section>
+
+<div class="ribbon">
+  <p>"If the world hates you, keep in mind that it hated me first." John 15:18</p>
+</div>
+
+<section class="section">
+  <div class="page">
+
+    <p class="reveal">You read the first two chapters and something shifted. Maybe anger. Maybe recognition. Maybe the beginnings of a plan. You are going to set a boundary. You are going to say no. You are going to reclaim a fragment.</p>
+    <p class="reveal">And then your body will stop you.</p>
+    <p class="reveal">Not with logic. With <em>guilt</em>. A deep, visceral, nauseating guilt that floods your chest the moment you prioritize yourself. You will feel selfish. You will feel cruel. You will feel like you are betraying everything you value. And you will fold.</p>
+    <p class="reveal">This chapter explains why. The answer is in immunology.</p>
+
+    <div class="scene reveal">
+      <div class="scene-label">The Biology</div>
+      <p>Your <dfn class="def" data-def="The biological system that identifies and neutralizes foreign pathogens (viruses, bacteria, parasites) while preserving the body's own healthy tissue." tabindex="0">immune system</dfn> has one primary job: distinguishing <em>self</em> from <em>non-self</em>. Every cell in your body carries molecular identity markers called <dfn class="def" data-def="Major Histocompatibility Complex. Surface proteins on every cell that act as molecular 'identity badges,' allowing the immune system to distinguish the body's own cells from foreign invaders." tabindex="0">MHC proteins</dfn>. Your immune cells patrol the body, checking these markers. If a cell carries the right MHC signature, it is left alone. If a cell carries a foreign signature, it is attacked.</p>
+      <p>In <dfn class="def" data-def="A condition in which the immune system's self/non-self recognition fails, causing it to attack the body's own healthy tissue as if it were a foreign pathogen." tabindex="0">autoimmune disease</dfn>, this recognition system fails. The immune system begins tagging the body's own healthy tissue as foreign. Joints. Nerves. Organs. The attack is indistinguishable from a real immune response because the immune system is not malfunctioning. It is functioning perfectly against the wrong target.</p>
+      <p>Rheumatoid arthritis attacks joint lining. Lupus attacks skin, joints, kidneys, and brain. Multiple sclerosis attacks nerve insulation. In every case, the destruction is real, the pain is genuine, and the immune system is absolutely certain it is doing the right thing.</p>
+    </div>
+
+    <p class="reveal">This is the immunology of codependent guilt. Your psychological immune system, the part of you that distinguishes "my needs" from "threats to the relationship," has lost its calibration. It now tags your own healthy impulses as foreign invaders.</p>
+
+    <div class="viz reveal">
+      <div class="viz-top">
+        <div class="viz-icon">&#x1F9EC;</div>
+        <div class="viz-meta">
+          <div class="viz-label">The Autoimmune Map</div>
+          <h4>Healthy Tissue Your System Is Attacking</h4>
+        </div>
+      </div>
+      <div class="viz-body">
+        <p><strong>Wanting time alone</strong> gets tagged as "abandonment." Your guilt fires. You stay.</p>
+        <p><strong>Feeling angry about mistreatment</strong> gets tagged as "being difficult." Your guilt fires. You apologize.</p>
+        <p><strong>Pursuing a personal goal</strong> gets tagged as "selfishness." Your guilt fires. You quit.</p>
+        <p><strong>Saying no</strong> gets tagged as "cruelty." Your guilt fires. You say yes.</p>
+        <p><strong>Enjoying something without them</strong> gets tagged as "betrayal." Your guilt fires. You stop enjoying it.</p>
+        <p>In every case, the guilt feels <em>real</em> because it is a real immune response. The problem is not the intensity of the response. The problem is the target. <strong>Your immune system is attacking your own healthy tissue.</strong></p>
+      </div>
+    </div>
+
+    <div class="dark-panel reveal">
+      <div class="dp-label">The Recalibration</div>
+      <h3>How Autoimmune Treatment Actually Works</h3>
+      <p>Doctors do not cure autoimmune disease by eliminating the immune system. That would leave you defenseless. Instead, they recalibrate it. <dfn class="def" data-def="Medications that selectively modulate the immune response, reducing attacks on self-tissue while preserving the ability to fight actual foreign pathogens." tabindex="0">Immunomodulators</dfn> help the system re-learn which cells are self and which are genuinely foreign.</p>
+      <p>The same principle applies to codependent guilt. You do not need to become "selfish." You do not need to stop caring. You need to <strong>recalibrate what your system identifies as self.</strong></p>
+      <p>The process is slow. Every time you act on a healthy impulse and survive the guilt, you are teaching your immune system a new MHC signature. You are showing it: <em>this is self. Do not attack this.</em> The guilt will fire anyway, the same way an autoimmune flare fires during treatment. The difference is that you stop obeying the flare.</p>
+      <p><strong>Feeling the guilt and acting anyway is the immunomodulator.</strong></p>
+    </div>
+
+    <div class="gq reveal">
+      <p>"The guilt you feel for prioritizing yourself is your immune system attacking healthy tissue. It feels real because it is real. It is simply aimed at the wrong target."</p>
+    </div>
+
+    <div class="think reveal">
+      <div class="think-label">Stop and Diagnose</div>
+      <h4>What Is Your System Attacking?</h4>
+      <p class="q-start">Name one healthy impulse that consistently triggers guilt:</p>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+      <p class="q-start">What does your immune system tag it as? (Selfish? Cruel? Abandonment?)</p>
+      <div class="think-line"></div>
+      <p class="q-start">Is this impulse actually a threat, or is it healthy tissue that got mislabeled?</p>
+      <div class="think-line"></div>
+      <p class="closing">The flare will come. Let it come. And do not obey it.</p>
+    </div>
+
+    <div class="root-ck reveal">
+      <div class="rc-label">Root Check No. 3</div>
+      <h4>What you should now understand</h4>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text">Autoimmune disease is the immune system attacking healthy tissue because self/non-self recognition failed. Codependent guilt is the same mechanism applied to identity.</div></div>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text">The guilt feels real because it IS a real immune response. The problem is the target, not the intensity.</div></div>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text">Recovery is not eliminating the immune system (becoming callous). It is recalibrating what it identifies as self. This happens by acting on healthy impulses and surviving the guilt.</div></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     CHAPTER 4: THE OXYGEN
+     ═══════════════════════════════════════════════════════════ -->
+<section class="ch-head" data-chapter="The Oxygen">
+  <div class="page">
+    <div class="ch-num">Chapter 04</div>
+    <h2 class="ch-title">The Oxygen</h2>
+    <p class="ch-sub">Why boundaries are not walls. They are air.</p>
+  </div>
+</section>
+
+<div class="ribbon">
+  <p>"He makes me lie down in green pastures, he leads me beside quiet waters, he refreshes my soul." Psalm 23:2-3</p>
+</div>
+
+<section class="section">
+  <div class="page">
+
+    <p class="reveal">Everyone tells you to "set boundaries." The word sounds like construction: building walls, erecting barriers, putting distance between yourself and someone you love. No wonder you resist. Walls feel cold. Walls feel like punishment. Walls feel like the opposite of love.</p>
+    <p class="reveal">Here is the reframe that will change everything: boundaries are not walls. <strong>Boundaries are oxygen.</strong></p>
+
+    <div class="scene reveal">
+      <div class="scene-label">The Biochemistry</div>
+      <p>Every cell in your body runs on <dfn class="def" data-def="Adenosine triphosphate. The molecular unit of energy used by all living cells. Produced by mitochondria through cellular respiration." tabindex="0">ATP</dfn>, the universal energy molecule. Your cells produce ATP through one of two metabolic pathways.</p>
+      <p>With oxygen, cells perform <dfn class="def" data-def="The metabolic process that breaks down glucose using oxygen to produce energy. Yields approximately 36 ATP per glucose molecule. Occurs in the mitochondria." tabindex="0">aerobic respiration</dfn>. One molecule of glucose produces approximately 36 molecules of ATP. Clean, efficient, abundant energy.</p>
+      <p>Without oxygen, cells switch to <dfn class="def" data-def="The metabolic process that breaks down glucose without oxygen. Yields only 2 ATP per glucose molecule and produces toxic byproducts including lactic acid (in muscles) and ethanol (in yeast)." tabindex="0">anaerobic fermentation</dfn>. The same molecule of glucose produces only 2 molecules of ATP. And it generates toxic byproducts: <em>lactic acid</em> in muscles, <em>ethanol</em> in yeast. The same fuel. One eighteenth the energy. Plus poison.</p>
+      <p>This is not a matter of effort or desire. The biochemistry is non-negotiable. No organism in four billion years of evolution has found a workaround. Without oxygen, the same inputs produce radically less output and literal toxins.</p>
+    </div>
+
+    <div class="gq reveal">
+      <p>"You are not running out of love. You are metabolizing it without oxygen."</p>
+    </div>
+
+    <div class="viz reveal">
+      <div class="viz-top">
+        <div class="viz-icon">&#x1F9EA;</div>
+        <div class="viz-meta">
+          <div class="viz-label">The Metabolic Equation</div>
+          <h4>Love With and Without Boundaries</h4>
+        </div>
+      </div>
+      <div class="viz-body">
+        <p><strong>Aerobic love</strong> (with boundaries): You give from a replenished source. Every act of care produces connection, gratitude, and mutual growth. 36 ATP. Clean energy. Sustainable indefinitely.</p>
+        <p><strong>Anaerobic love</strong> (without boundaries): You give from depletion. Every act of care produces a fraction of the connection and generates toxic byproducts: resentment, exhaustion, passive aggression, martyrdom, emotional shutdown. 2 ATP. Plus poison.</p>
+        <p>The resentment you feel toward the person you love most? That is lactic acid. It is the inevitable byproduct of anaerobic metabolism. It is not a character flaw. It is not ingratitude. <strong>It is chemistry.</strong> Your love is fermenting because there is no oxygen in the system.</p>
+        <p>The oxygen is boundaries. Not walls. Not distance. Not coldness. Oxygen. The thing that makes the same fuel produce 18 times more energy and zero poison.</p>
+      </div>
+    </div>
+
+    <div class="dark-panel reveal">
+      <div class="dp-label">The Diving Bell</div>
+      <h3>How to Breathe Without Leaving the Water</h3>
+      <p>There is a spider called the <dfn class="def" data-def="Argyroneta aquatica, the only spider that lives entirely underwater. It constructs a silk 'diving bell' filled with air bubbles, functioning as an external lung." tabindex="0">diving bell spider</dfn> that lives entirely underwater despite being an air-breathing animal. It does not grow gills. It does not become a fish. Instead, it spins a silk dome, fills it with air bubbles carried from the surface, and creates an underwater air supply.</p>
+      <p>But the oxygen in the bell depletes. The spider must surface regularly to replenish it. Every trip to the surface is a temporary departure from the underwater world it loves.</p>
+      <p>Your boundaries are the diving bell. Your solo friendships, your private interests, your time alone, your right to say no: these are the silk dome that holds the air you need. <strong>Surfacing to refill the bell is not abandoning the relationship. It is the only reason you can survive inside it.</strong></p>
+      <p>When your partner feels abandoned by your trip to the surface, they are seeing departure. What is actually happening is <em>return preparation</em>. You are not leaving. You are getting the oxygen that allows you to stay.</p>
+    </div>
+
+    <p class="reveal">Here is the hardest truth in this chapter: anaerobic love feels more intense than aerobic love. Fermentation is dramatic. It burns. It produces visible suffering and visible sacrifice. People mistake the burning for passion. They mistake the poison for depth. But no one would drink lactic acid and call it wine just because both came from the same glucose.</p>
+
+    <div class="ba-pair reveal">
+      <div class="ba-card ba-before">
+        <div class="ba-head"><div class="ba-dot"></div>Anaerobic (Without Oxygen)</div>
+        <div class="ba-body">
+          <ul>
+            <li>"I'll cancel my plans for you" (oxygen depletion)</li>
+            <li>"I'm fine" when you're not (toxin accumulation)</li>
+            <li>"They need me more than I need rest" (2 ATP logic)</li>
+            <li>Resentment building silently (lactic acid)</li>
+            <li>Explosive fights over nothing (fermentation overflow)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="ba-card ba-after">
+        <div class="ba-head"><div class="ba-dot"></div>Aerobic (With Oxygen)</div>
+        <div class="ba-body">
+          <ul>
+            <li>"I'll see you after my plans" (oxygen preserved)</li>
+            <li>"I'm struggling with this" (no toxin stored)</li>
+            <li>"I need rest so I can show up fully" (36 ATP logic)</li>
+            <li>Gratitude replenished naturally (clean metabolism)</li>
+            <li>Honest conversations before pressure builds (no overflow)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="think reveal">
+      <div class="think-label">Stop and Measure</div>
+      <h4>Your Oxygen Audit</h4>
+      <p class="q-start">Name your diving bell (the parts of your life that exist without the other person):</p>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+      <p class="q-start">When did you last surface to replenish? What happened when you did?</p>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+      <p class="q-start">Where is the lactic acid building? (Resentment, exhaustion, passive aggression, numbness?)</p>
+      <div class="think-line"></div>
+      <p class="closing">Every toxic byproduct in your relationship has a single cause: not enough oxygen.</p>
+    </div>
+
+    <div class="root-ck reveal">
+      <div class="rc-label">Root Check No. 4</div>
+      <h4>What you should now understand</h4>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text">Without oxygen, the same glucose produces 1/18th the ATP and generates toxic byproducts. Without boundaries, the same love produces a fraction of the connection and generates resentment.</div></div>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text">Boundaries are not walls. They are oxygen. The thing that makes the same inputs produce radically more output and zero poison.</div></div>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text">The diving bell spider breathes air underwater by building a silk dome and surfacing to refill it. Your solo life, friendships, and interests are the bell. Surfacing is not departure. It is return preparation.</div></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     CHAPTER 5: THE DENSITY
+     ═══════════════════════════════════════════════════════════ -->
+<section class="ch-head" data-chapter="The Density">
+  <div class="page">
+    <div class="ch-num">Chapter 05</div>
+    <h2 class="ch-title">The Density</h2>
+    <p class="ch-sub">How to become dense enough to survive closeness</p>
+  </div>
+</section>
+
+<div class="ribbon">
+  <p>"I have told you these things, so that in me you may have peace. In this world you will have trouble. But take heart! I have overcome the world." John 16:33</p>
+</div>
+
+<section class="section">
+  <div class="page">
+
+    <p class="reveal">You know the diagnosis now. You shattered because you orbited too close for your density. Your goals were hijacked by a parasitic pattern. Your immune system attacks your own healthy tissue. Your love ferments without oxygen.</p>
+    <p class="reveal">Now the question: how do you rebuild?</p>
+    <p class="reveal">Not by leaving. Not by becoming cold. Not by swearing off closeness. <strong>By becoming denser.</strong></p>
+
+    <div class="scene reveal">
+      <div class="scene-label">Return to the Physics</div>
+      <p>The Roche limit formula contains a variable most people ignore: the <dfn class="def" data-def="Mass per unit volume. In astrophysics, a denser body has stronger self-gravity relative to its size, allowing it to resist tidal forces at closer distances." tabindex="0">density</dfn> of the orbiting body. A moon made of iron can orbit closer to a planet than a moon made of ice. Same mass. Same planet. Completely different Roche limit.</p>
+      <p>A <dfn class="def" data-def="A collapsed star so dense that a teaspoon of its material weighs approximately 6 billion kilograms. Neutron stars can orbit black holes at distances that would disintegrate any normal star." tabindex="0">neutron star</dfn> can orbit a black hole at a distance that would annihilate an ordinary star. Not because the neutron star is bigger. Because it is denser. Its self-gravity is so intense that tidal forces cannot pull it apart.</p>
+      <p>Density, in relationship terms, is the concentration of your identity per unit of your life. How much of you is <em>you</em> versus how much of you is distributed across someone else's needs?</p>
+    </div>
+
+    <div class="viz reveal">
+      <div class="viz-top">
+        <div class="viz-icon">&#x1F48E;</div>
+        <div class="viz-meta">
+          <div class="viz-label">The Density Protocol</div>
+          <h4>Five Practices That Increase Self-Cohesion</h4>
+        </div>
+      </div>
+      <div class="viz-body">
+        <p><strong>1. Reclaim one decision per day.</strong> Make one choice based entirely on what you want, without calculating their reaction. Start small: what to eat, where to walk, what to watch. This is not rebellion. It is <em>gravitational recovery</em>. Each self-generated decision is mass returning to your center.</p>
+        <p><strong>2. Maintain the diving bell.</strong> Identify three oxygen sources that exist without the other person: a friendship, a hobby, a practice. Schedule them as non-negotiable. When the guilt fires (and it will), recognize it as an autoimmune flare, not a moral signal. Surface anyway.</p>
+        <p><strong>3. Name the Sacculina.</strong> Write down the pattern, not the person. "I convert my needs into service for other people's comfort." Read it every morning. The parasite survives by being invisible. Naming it disrupts the root network.</p>
+        <p><strong>4. Let the lactic acid speak.</strong> Resentment is not a character flaw. It is a metabolic byproduct telling you the system is anaerobic. When you feel it, do not push it down. Trace it: "Where am I fermenting? What boundary would add oxygen here?" Then add the oxygen.</p>
+        <p><strong>5. Test your Roche limit.</strong> Gradually increase closeness and monitor for fragmentation. Can you spend a weekend together without losing your center? Can you disagree without disintegrating? The goal is not to avoid closeness. It is to approach it with enough density that tidal forces cannot pull you apart.</p>
+      </div>
+    </div>
+
+    <div class="dark-panel reveal">
+      <div class="dp-label">The Remora's Return</div>
+      <h3>Your Attachment Organ Used to Be Your Independence Organ</h3>
+      <p>The <dfn class="def" data-def="A fish (family Echeneidae) that attaches to sharks and other large marine animals via a modified dorsal fin that has been evolutionarily converted into a flat suction disc." tabindex="0">remora</dfn> attaches to sharks using a suction disc on top of its head. That disc is a modified dorsal fin. The structure that evolved for independent swimming was repurposed for attachment.</p>
+      <p>After years of attachment, the remora's swimming muscles atrophy. The fin forgot it was a fin. But the structure is still there. <strong>It was repurposed, not removed.</strong></p>
+      <p>Whatever you use to attach to others, your caretaking, your hypervigilance, your ability to read a room, these are not weaknesses. They are extraordinary capacities that were repurposed. Your emotional radar, the thing that scans everyone else's needs, was originally built to scan your own. Your ability to sacrifice was originally the ability to prioritize. Your loyalty was originally self-respect.</p>
+      <p><em>Recovery is not learning new skills. It is reconverting the disc back into a fin.</em></p>
+    </div>
+
+    <div class="scene scene-heal reveal">
+      <div class="scene-label">The Destination</div>
+      <p>What does healthy closeness look like?</p>
+      <p>Not two halves making a whole. Not two fragments orbiting a shared center. Not two diffuse moons carefully maintaining safe distance.</p>
+      <p><strong>Two dense bodies. Orbiting close. Each held together by its own gravity.</strong></p>
+      <p>Nuclear <dfn class="def" data-def="The process by which two atomic nuclei combine to form a heavier nucleus, releasing enormous energy. Requires two complete, separate atoms and enough internal energy to overcome electromagnetic repulsion." tabindex="0">fusion</dfn> produces the energy of stars. It requires two complete, separate atoms brought close enough for the strong nuclear force to bind them. But electromagnetic repulsion pushes them apart at close range. You need enormous internal energy to overcome the repulsion.</p>
+      <p>The repulsion you feel at healthy boundaries is not a sign that something is wrong. It is the electromagnetic force doing its job. You overcome it with your own internal energy, your own density, your own center of gravity. Not by eliminating the boundary.</p>
+      <p>Codependency is fission: mutual destruction that releases energy but destroys both nuclei. Love is fusion: two complete atoms producing the energy of a star because they each had enough internal density to survive the approach.</p>
+    </div>
+
+    <div class="gq reveal">
+      <p>"You did not love too much. You orbited too close for your density. The solution is not to love less. It is to become denser."</p>
+    </div>
+
+    <div class="think reveal">
+      <div class="think-label">Stop and Commit</div>
+      <h4>Your Density Inventory</h4>
+      <p class="q-start">On a scale of ice to neutron star, how dense is your identity right now?</p>
+      <div class="think-line"></div>
+      <p class="q-start">Which of the five density practices will you begin this week?</p>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+      <p class="q-start">What is one fragment currently orbiting someone else that you are going to bring back to your center?</p>
+      <div class="think-line"></div>
+      <div class="think-line"></div>
+      <p class="closing">Dense bodies do not shatter. They orbit close, stay whole, and light up.</p>
+    </div>
+
+    <div class="root-ck reveal">
+      <div class="rc-label">Root Check No. 5</div>
+      <h4>What you should now understand</h4>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text">Density determines your Roche limit. A denser body can orbit closer without shattering. Increasing your self-cohesion is the only way to survive the closeness you want.</div></div>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text">Your attachment capacities (hypervigilance, caretaking, people-reading) are repurposed independence skills, like the remora's fin converted to a disc. They can be reconverted.</div></div>
+      <div class="r-item"><div class="r-dot"></div><div class="r-text">Healthy love is fusion, not fission. Two complete atoms with enough internal energy to overcome repulsion and produce the energy of a star.</div></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     FINALE
+     ═══════════════════════════════════════════════════════════ -->
+<section class="finale">
+  <div class="page">
+    <h2>Map Your <span>Orbit</span></h2>
+    <p>You now carry five instruments that no one else in your life has given you.</p>
+    <p><strong>The Roche Limit</strong> tells you why you shattered. Not because you loved wrong, but because you approached closer than your density could sustain.</p>
+    <p><strong>Sacculina</strong> tells you whose goals you have been nurturing. The parasite survives by being invisible. You made it visible.</p>
+    <p><strong>The Autoimmune Map</strong> tells you why guilt fires when you heal. Your immune system is attacking healthy tissue. The flare is real. The target is wrong.</p>
+    <p><strong>The Metabolic Equation</strong> tells you why boundaries are not punishment. They are oxygen. The same love produces 18 times more energy when you can breathe.</p>
+    <p><strong>The Density Protocol</strong> tells you how to rebuild. Not by retreating. By concentrating. Fragment by fragment, decision by decision, bringing your mass back to your own center.</p>
+    <p>You did not love too much. You did not give too much. You orbited too close for your density. And now you know the physics well enough to change the equation.</p>
+    <p><strong>Become denser. Orbit closer. Stay whole.</strong></p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     FINAL TEST
+     ═══════════════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="page">
+    <div class="final-test reveal">
+      <div class="ft-head">
+        <div class="ft-icon">&#x1F52D;</div>
+        <div>
+          <div class="ft-label">Final Test</div>
+          <h3>Seven questions. Tap to reveal.</h3>
+        </div>
+      </div>
+      <div class="ft-body">
+
+        <div class="ft-q" onclick="this.classList.toggle('revealed')">
+          <div class="ft-num">01</div>
+          <div class="ft-question">What is the Roche limit, and why does it explain codependency better than "loving too much"?</div>
+          <div class="ft-tap">TAP TO REVEAL</div>
+          <div class="ft-answer"><p>The Roche limit is the distance at which tidal forces exceed a body's self-gravity, causing it to disintegrate into a ring. Codependency is not excessive love. It is proximity that exceeds your density, causing structural disintegration into fragments that orbit someone else's center.</p></div>
+        </div>
+
+        <div class="ft-q" onclick="this.classList.toggle('revealed')">
+          <div class="ft-num">02</div>
+          <div class="ft-question">How does Sacculina hijack a crab, and what is the human equivalent?</div>
+          <div class="ft-tap">TAP TO REVEAL</div>
+          <div class="ft-answer"><p>Sacculina injects cells through the crab's joints and grows a root network that infiltrates the nervous and hormonal systems, making the crab nurture the parasite's eggs as its own. The human equivalent is a relational pattern that converts your goal-setting apparatus into a service provider for someone else's comfort, making their priorities feel like your desires.</p></div>
+        </div>
+
+        <div class="ft-q" onclick="this.classList.toggle('revealed')">
+          <div class="ft-num">03</div>
+          <div class="ft-question">Why does guilt fire when you try to set a boundary?</div>
+          <div class="ft-tap">TAP TO REVEAL</div>
+          <div class="ft-answer"><p>Codependent guilt is an autoimmune response. Your self/non-self recognition has failed, causing your psychological immune system to tag healthy impulses (wanting time alone, saying no, prioritizing yourself) as foreign threats. The guilt is real, but it is aimed at the wrong target.</p></div>
+        </div>
+
+        <div class="ft-q" onclick="this.classList.toggle('revealed')">
+          <div class="ft-num">04</div>
+          <div class="ft-question">What is the difference between aerobic and anaerobic love?</div>
+          <div class="ft-tap">TAP TO REVEAL</div>
+          <div class="ft-answer"><p>Aerobic love (with boundaries as oxygen) produces 36 ATP per glucose: abundant energy, clean metabolism, sustainable connection. Anaerobic love (without boundaries) produces 2 ATP and toxic byproducts: resentment, exhaustion, passive aggression. Same fuel, 1/18th the output, plus poison.</p></div>
+        </div>
+
+        <div class="ft-q" onclick="this.classList.toggle('revealed')">
+          <div class="ft-num">05</div>
+          <div class="ft-question">What is the diving bell spider's strategy, and how does it apply to relationships?</div>
+          <div class="ft-tap">TAP TO REVEAL</div>
+          <div class="ft-answer"><p>The diving bell spider lives underwater but breathes air by building a silk dome and filling it with air bubbles from the surface. It must surface regularly to replenish. Your solo friendships, interests, and time alone are the diving bell. Surfacing is not abandonment. It is the only reason you can survive inside the relationship.</p></div>
+        </div>
+
+        <div class="ft-q" onclick="this.classList.toggle('revealed')">
+          <div class="ft-num">06</div>
+          <div class="ft-question">Why is the solution to codependency "density" rather than "distance"?</div>
+          <div class="ft-tap">TAP TO REVEAL</div>
+          <div class="ft-answer"><p>The Roche limit depends on the density of the orbiting body, not just the distance. A dense moon (strong identity, internal life, self-generated goals) can orbit much closer without shattering. Two neutron stars can orbit millimeters apart. The goal is not to retreat but to concentrate your identity until your Roche limit shrinks enough to survive the closeness you want.</p></div>
+        </div>
+
+        <div class="ft-q" onclick="this.classList.toggle('revealed')">
+          <div class="ft-num">07</div>
+          <div class="ft-question">What did the remora's suction disc used to be, and what does that mean for recovery?</div>
+          <div class="ft-tap">TAP TO REVEAL</div>
+          <div class="ft-answer"><p>The remora's suction disc is a modified dorsal fin, an organ that originally enabled independent swimming. It was repurposed for attachment, not built from scratch. Your codependent traits (hypervigilance, caretaking, people-reading) are repurposed independence skills. Recovery is reconversion, not reinvention. The fin is still there.</p></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════════════════════════ -->
+<footer>
+  <p>"He heals the brokenhearted and binds up their wounds. He determines the number of the stars and calls them each by name." Psalm 147:3-4</p>
+  <div class="brand">KingdomBuilders.AI</div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SCRIPTS
+     ═══════════════════════════════════════════════════════════ -->
+<script>
+// Scroll reveal
+const revealEls = document.querySelectorAll('.reveal');
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); }});
+}, { threshold: 0.15 });
+revealEls.forEach(el => revealObs.observe(el));
+
+// Reading progress
+const bar = document.getElementById('read-progress');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  bar.style.width = (window.scrollY / h * 100) + '%';
+});
+
+// Chapter pill
+const pill = document.getElementById('chapter-pill');
+const chapters = document.querySelectorAll('.ch-head');
+const chObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      pill.textContent = e.target.dataset.chapter || '';
+      pill.classList.add('show');
+      clearTimeout(pill._t);
+      pill._t = setTimeout(() => pill.classList.remove('show'), 2500);
+    }
+  });
+}, { threshold: 0.5 });
+chapters.forEach(ch => chObs.observe(ch));
+</script>
+</body>
+</html>

@@ -85,6 +85,7 @@ const PLAYBOOKS = [
   { title: "The Three Tables", slug: "the-three-tables", tag: "Faith" },
   { title: "The Kintsugi Bowl", catalogTitle: "The Kintsugi Protocol", slug: "the-kintsugi-bowl", tag: "Faith" },
   { title: "The Unfinished Song", slug: "the-unfinished-song", tag: "Health" },
+  { title: "The Roche Limit", slug: "the-roche-limit", tag: "Health" },
 ];
 
 const FREE_PLAYBOOKS = PLAYBOOKS.filter((pb) => pb.free);
