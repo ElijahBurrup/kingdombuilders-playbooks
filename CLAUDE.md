@@ -60,6 +60,7 @@ Playbooks/
 
 ## Key Files
 - `api/main.py` — FastAPI app factory with all router mounts, CORS, static files
+- `playbook_registry.py` — **Single source of truth** for SLUG_TO_FILE mapping (imported by both app.py and legacy.py)
 - `api/routers/legacy.py` — Reader routes, landing pages, purchase gate, checkout, tracking, admin, PDF download
 - `api/routers/feedback.py` — Topic suggestions, playbook ratings, user progress, download tracking
 - `api/config.py` — All env vars via Pydantic Settings
@@ -108,7 +109,8 @@ Playbooks/
 
 ## Architecture Notes
 - Each playbook has a landing page (static/*.html) and a full reader page (assets/*.html)
-- Legacy routes are data-driven via `LANDING_ROUTES` and `SLUG_TO_FILE` dicts in `api/routers/legacy.py`
+- `SLUG_TO_FILE` lives in `playbook_registry.py` (single source of truth, imported by both `app.py` and `api/routers/legacy.py`)
+- `LANDING_ROUTES` dict lives in `api/routers/legacy.py`
 - New playbooks added via admin API or seed script (no more manual route registration)
 - "SetHut" command generates new playbooks as visual experiences (see full checklist below)
 - **NO HYPHENS/DASHES in playbook text**: Never use em dashes (—), en dashes (–), or hyphens (-) as punctuation in prose. Use commas, periods, or restructure sentences instead. This applies to ALL visible text content in assets/*.html files. CSS properties and HTML attributes with hyphens are fine.
@@ -219,9 +221,9 @@ Every new playbook requires ALL of these steps. Do not skip any.
 - [ ] Footer with same scripture as the reader page
 - [ ] Or run `python scripts/update_landing_pages.py` after creation to auto-apply the standard structure
 
-### Step 3: Register Routes (`api/routers/legacy.py`)
-- [ ] Add to `LANDING_ROUTES` dict: `"/theslug": "the-slug.html"` (no hyphens in URL path)
-- [ ] Add to `SLUG_TO_FILE` dict: `"the-slug": "The_Title.html"`
+### Step 3: Register Routes
+- [ ] Add to `playbook_registry.py` SLUG_TO_FILE dict: `"the-slug": "The_Title.html"` (this is the **single source of truth**, imported by both app.py and legacy.py)
+- [ ] Add to `LANDING_ROUTES` dict in `api/routers/legacy.py`: `"/theslug": "the-slug.html"` (no hyphens in URL path)
 - [ ] Verify: URL path in LANDING_ROUTES has NO hyphens (e.g., `/thehermitcrabsshell` not `/the-hermit-crabs-shell`)
 
 ### Step 4: Add to Catalog Page (`static/index.html`)

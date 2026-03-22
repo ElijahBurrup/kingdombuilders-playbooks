@@ -1,0 +1,80 @@
+"""
+Single source of truth for playbook slug-to-file mappings.
+
+Both app.py (Flask local dev) and api/routers/legacy.py (FastAPI production)
+import from this module. Adding a new playbook here automatically registers
+it in both environments.
+"""
+
+SLUG_TO_FILE: dict[str, str] = {
+    "lay-it-down": "Lay_It_Down.html",
+    "the-ant-network": "The_Ant_Network.html",
+    "the-cost-ledger": "The_Cost_Ledger.html",
+    "the-ghost-frame": "The_Ghost_Frame.html",
+    "the-gravity-well": "The_Gravity_Well.html",
+    "the-narrator": "The_Narrator.html",
+    "the-squirrel-economy": "The_Squirrel_Economy_Modified.html",
+    "conductors-playbook": "The_Conductors_Playbook.html",
+    "the-wolfs-table": "The_Wolfs_Table.html",
+    "the-crows-gambit": "The_Crows_Gambit.html",
+    "the-eagles-lens": "The_Eagles_Lens.html",
+    "the-octopus-protocol": "The_Octopus_Protocol.html",
+    "the-starlings-murmuration": "The_Starlings_Murmuration.html",
+    "the-chameleons-code": "The_Chameleons_Code.html",
+    "the-spiders-loom": "The_Spiders_Loom.html",
+    "the-geckos-grip": "The_Geckos_Grip.html",
+    "the-fireflys-signal": "The_Fireflys_Signal.html",
+    "the-foxs-trail": "The_Foxs_Trail.html",
+    "the-moths-flame": "The_Moths_Flame.html",
+    "the-bears-winter": "The_Bears_Winter.html",
+    "the-coyotes-laugh": "The_Coyotes_Laugh.html",
+    "the-pangolins-armor": "The_Pangolins_Armor.html",
+    "the-horses-gait": "The_Horses_Gait.html",
+    "the-tide-pools-echo": "The_Tide_Pools_Echo.html",
+    "the-whales-breath": "The_Whales_Breath.html",
+    "the-butterflys-crossing": "The_Butterflys_Crossing.html",
+    "the-elephants-ground": "The_Elephants_Ground.html",
+    "the-bees-dance": "The_Bees_Dance.html",
+    "the-otters-play": "The_Otters_Play.html",
+    "lay-it-down-pride": "Lay_It_Down_Pride.html",
+    "lay-it-down-envy": "Lay_It_Down_Envy.html",
+    "lay-it-down-wrath": "Lay_It_Down_Wrath.html",
+    "the-mockingbirds-song": "The_Mockingbirds_Song.html",
+    "dad-talks-the-dopamine-drought": "Dad_Talks_The_Dopamine_Drought.html",
+    "dad-talks-the-mirror-test": "Dad_Talks_The_Mirror_Test.html",
+    "dad-talks-the-flinch": "Dad_Talks_The_Flinch.html",
+    "dad-talks-the-invisible-contract": "Dad_Talks_The_Invisible_Contract.html",
+    "dad-talks-the-scoreboard-lie": "Dad_Talks_The_Scoreboard_Lie.html",
+    "dad-talks-the-first-punch": "Dad_Talks_The_First_Punch.html",
+    "the-arrival": "The_Arrival.html",
+    "the-body-lie": "The_Body_Lie.html",
+    "the-mycelium-network": "The_Mycelium_Network.html",
+    "the-termite-cathedral": "The_Termite_Cathedral.html",
+    "the-bonsai-method": "The_Bonsai_Method.html",
+    "the-fibonacci-trim": "The_Fibonacci_Trim.html",
+    "lay-it-down-sloth": "Lay_It_Down_Sloth.html",
+    "lay-it-down-greed": "Lay_It_Down_Greed.html",
+    "lay-it-down-gluttony": "Lay_It_Down_Gluttony.html",
+    "lay-it-down-lust": "Lay_It_Down_Lust.html",
+    "the-mantis-shrimps-eye": "The_Mantis_Shrimps_Eye.html",
+    "the-porcupines-quills": "The_Porcupines_Quills.html",
+    "the-tardigrade-protocol": "The_Tardigrade_Protocol.html",
+    "the-cuttlefishs-canvas": "The_Cuttlefishs_Canvas.html",
+    "the-centipedes-march": "The_Centipedes_March.html",
+    "the-lyrebirds-echo": "The_Lyrebirds_Echo.html",
+    "the-ravens-trial": "The_Ravens_Trial.html",
+    "the-lifted-ceiling": "The_Lifted_Ceiling.html",
+    "the-new-earning": "The_New_Earning.html",
+    "the-hermit-crabs-shell": "The_Hermit_Crabs_Shell.html",
+    "the-scorpions-molt": "The_Scorpions_Molt.html",
+    "the-vampire-squids-light": "The_Vampire_Squids_Light.html",
+    "the-three-tables": "The_Three_Tables.html",
+    "the-kintsugi-bowl": "The_Kintsugi_Bowl_The_Wandering_Eye.html",
+    "the-unfinished-song": "The_Unfinished_Song.html",
+    "the-roche-limit": "The_Roche_Limit.html",
+}
+
+
+def get_all_slugs() -> list[str]:
+    """Return list of all playbook slugs."""
+    return list(SLUG_TO_FILE.keys())
