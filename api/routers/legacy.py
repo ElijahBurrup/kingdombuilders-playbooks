@@ -1280,24 +1280,19 @@ async def auth_page(request: Request):
     if user_id:
         return RedirectResponse(url=next_url, status_code=303)
 
-    try:
-        return templates.TemplateResponse(
-            "auth.html",
-            {
-                "request": request,
-                "prefix": prefix,
-                "next_url": next_url,
-                "error": request.query_params.get("error"),
-                "tab": request.query_params.get("tab", "login"),
-                "email": request.query_params.get("email", ""),
-                "google_client_id": settings.GOOGLE_CLIENT_ID,
-                "ga_id": settings.GA_MEASUREMENT_ID,
-            },
-        )
-    except Exception as exc:
-        import traceback
-        tb = traceback.format_exc()
-        return HTMLResponse(content=f"<pre>{tb}</pre>", status_code=500)
+    return templates.TemplateResponse(
+        "auth.html",
+        {
+            "request": request,
+            "prefix": prefix,
+            "next_url": next_url,
+            "error": request.query_params.get("error"),
+            "tab": request.query_params.get("tab", "login"),
+            "email": request.query_params.get("email", ""),
+            "google_client_id": settings.GOOGLE_CLIENT_ID,
+            "ga_id": settings.GA_MEASUREMENT_ID,
+        },
+    )
 
 
 @router.post("/auth/register", include_in_schema=False)
