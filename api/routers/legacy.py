@@ -1287,18 +1287,27 @@ async def auth_page(request: Request):
     if user_id:
         return RedirectResponse(url=next_url, status_code=303)
 
-    return templates.TemplateResponse(
-        "auth.html",
-        {
-            "request": request,
-            "prefix": prefix,
-            "next_url": next_url,
-            "error": request.query_params.get("error"),
-            "tab": request.query_params.get("tab", "login"),
-            "email": request.query_params.get("email", ""),
-            "google_client_id": settings.GOOGLE_CLIENT_ID,
-            "ga_id": settings.GA_MEASUREMENT_ID,
-        },
+    try:
+        return templates.TemplateResponse(
+            "auth.html",
+            {
+                "request": request,
+                "prefix": prefix,
+                "next_url": next_url,
+                "error": request.query_params.get("error"),
+                "tab": request.query_params.get("tab", "login"),
+                "email": request.query_params.get("email", ""),
+                "google_client_id": settings.GOOGLE_CLIENT_ID,
+                "ga_id": settings.GA_MEASUREMENT_ID,
+            },
+        )
+    except Exception:
+        import traceback, sys, jinja2
+        return HTMLResponse(
+            f"<pre>Py={sys.version}\nJ2={jinja2.__version__}\n"
+            f"cache={templates.env.cache!r}\ntype={type(templates.env.cache)}\n\n"
+            f"{traceback.format_exc()}</pre>",
+            status_code=500,
         )
 
 
