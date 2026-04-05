@@ -51,6 +51,9 @@ ASSETS_DIR = BASE_DIR / "assets"
 TEMPLATES_DIR = BASE_DIR / "templates"
 
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
+# Disable Jinja2 LRU template cache to avoid unhashable-key bug (jinja2#2042)
+templates.env.auto_reload = True
+templates.env.cache = None
 
 router = APIRouter(tags=["legacy"])
 
@@ -1280,29 +1283,18 @@ async def auth_page(request: Request):
     if user_id:
         return RedirectResponse(url=next_url, status_code=303)
 
-    try:
-        return templates.TemplateResponse(
-            "auth.html",
-            {
-                "request": request,
-                "prefix": prefix,
-                "next_url": next_url,
-                "error": request.query_params.get("error"),
-                "tab": request.query_params.get("tab", "login"),
-                "email": request.query_params.get("email", ""),
-                "google_client_id": settings.GOOGLE_CLIENT_ID,
-                "ga_id": settings.GA_MEASUREMENT_ID,
-            },
-        )
-    except Exception as e:
-        import traceback, sys
-        tb = traceback.format_exc()
-        py_ver = sys.version
-        import jinja2
-        j2_ver = jinja2.__version__
-        return HTMLResponse(
-            f"<pre>Python: {py_ver}\nJinja2: {j2_ver}\n\n{tb}</pre>",
-            status_code=500,
+    return templates.TemplateResponse(
+        "auth.html",
+        {
+            "request": request,
+            "prefix": prefix,
+            "next_url": next_url,
+            "error": request.query_params.get("error"),
+            "tab": request.query_params.get("tab", "login"),
+            "email": request.query_params.get("email", ""),
+            "google_client_id": settings.GOOGLE_CLIENT_ID,
+            "ga_id": settings.GA_MEASUREMENT_ID,
+        },
         )
 
 
