@@ -1302,10 +1302,11 @@ async def auth_page(request: Request):
             },
         )
     except Exception:
-        import traceback, sys, jinja2
+        import traceback, sys, jinja2, starlette
         return HTMLResponse(
             f"<pre>Py={sys.version}\nJ2={jinja2.__version__}\n"
-            f"cache={templates.env.cache!r}\ntype={type(templates.env.cache)}\n\n"
+            f"Starlette={starlette.__version__}\n"
+            f"cache={templates.env.cache!r}\n\n"
             f"{traceback.format_exc()}</pre>",
             status_code=500,
         )
