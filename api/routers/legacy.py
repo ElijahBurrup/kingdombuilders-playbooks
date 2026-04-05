@@ -19,6 +19,7 @@ from fastapi import APIRouter, Depends, Form, HTTPException, Request, status
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, RedirectResponse
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from jinja2 import Environment, FileSystemLoader
 from starlette.templating import Jinja2Templates
 
 from api.config import settings
@@ -50,10 +51,13 @@ STATIC_DIR = BASE_DIR / "static"
 ASSETS_DIR = BASE_DIR / "assets"
 TEMPLATES_DIR = BASE_DIR / "templates"
 
+_jinja_env = Environment(
+    loader=FileSystemLoader(str(TEMPLATES_DIR)),
+    autoescape=True,
+    cache_size=0,
+)
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
-# Disable Jinja2 LRU template cache to avoid unhashable-key bug (jinja2#2042)
-templates.env.auto_reload = True
-templates.env.cache = None
+templates.env = _jinja_env
 
 router = APIRouter(tags=["legacy"])
 
