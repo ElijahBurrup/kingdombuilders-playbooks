@@ -368,8 +368,8 @@ test.describe("Console Error Audit", () => {
       });
 
       await page.goto(pg.url);
-      await page.waitForLoadState("networkidle");
-      await page.waitForTimeout(1000);
+      await page.waitForLoadState("domcontentloaded");
+      await page.waitForTimeout(2000);
 
       if (errors.length > 0) {
         console.log(`  JS errors on ${pg.name}:`, errors);

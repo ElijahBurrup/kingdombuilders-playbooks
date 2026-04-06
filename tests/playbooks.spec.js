@@ -279,7 +279,8 @@ test.describe("Reader Pages", () => {
   }
 
   // Paid playbooks — unlock first, then verify content
-  test("all paid playbooks load after admin unlock", async ({ page }) => {
+  test("all paid playbooks load after admin unlock", async ({ page }, testInfo) => {
+    testInfo.setTimeout(180_000); // 57 paid playbooks need more than 45s
     // Unlock once via ?buy=1 to reach purchase gate
     const first = PAID_PLAYBOOKS[0];
     await page.goto(`read/${first.slug}?buy=1`);

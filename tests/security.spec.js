@@ -183,7 +183,7 @@ test.describe("Admin Unlock Security", () => {
 
 test.describe("Admin Dashboard Protection", () => {
   test("admin dashboard requires authentication", async ({ page }) => {
-    const response = await page.goto("admin");
+    const response = await page.goto("admin/manage");
     // Should redirect to catalog or show 401/403, not analytics data
     const url = page.url();
     const hasAnalytics = await page.locator("table, .analytics, .admin-stats").count();
@@ -202,7 +202,7 @@ test.describe("Admin Dashboard Protection", () => {
       page.locator(".admin-submit").click(),
     ]);
     // Now try admin
-    const response = await page.goto("admin");
+    const response = await page.goto("admin/manage");
     expect(response.status()).toBe(200);
     const url = page.url();
     expect(url).toContain("/admin");

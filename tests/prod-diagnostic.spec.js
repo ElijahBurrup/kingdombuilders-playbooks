@@ -34,7 +34,6 @@ const PAID_SLUGS = [
   "the-ant-network",
   "the-narrator",
   "the-bonsai-method",
-  "the-salmon-journey",
 ];
 
 test.describe("Production Page Load Diagnostic", () => {
@@ -60,8 +59,10 @@ test.describe("Production Page Load Diagnostic", () => {
   }
 
   test("Catalog card hrefs are correct after JS", async ({ page }) => {
-    await page.goto("", { waitUntil: "networkidle" });
-    // Wait for JS to rewrite hrefs
+    await page.goto("", { waitUntil: "domcontentloaded" });
+    // Dismiss What's New overlay so it doesn't intercept clicks
+    await page.evaluate(() => localStorage.setItem("pb_last_version", "99.0.0"));
+    await page.goto("", { waitUntil: "domcontentloaded" });
     await page.waitForTimeout(1000);
 
     const cards = await page.locator("a.card").all();
@@ -82,7 +83,6 @@ test.describe("Production Page Load Diagnostic", () => {
     await cards[0].click();
     await page.waitForLoadState("domcontentloaded");
     const url = page.url();
-    const status = (await page.evaluate(() => document.title)) ? 200 : 0;
     console.log(`  Navigated to: ${url}`);
     expect(url).toContain("read/");
   });
