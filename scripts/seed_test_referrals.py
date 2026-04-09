@@ -1,8 +1,8 @@
 """
 Seed test referral data for elijah@kingdombuilders.ai.
 
-Creates 79 total referrals across 3 levels, monthly commissions
-for the past 6 months, and 4 completed payouts.
+Creates 70 total referrals across 3 levels (4 L1, 16 L2, 50 L3),
+monthly commissions for the past 6 months, and 4 completed payouts.
 
 Usage:
     python -m scripts.seed_test_referrals
@@ -35,10 +35,10 @@ from api.services.referral_service import ensure_referral_code
 ADMIN_EMAIL = "elijah@kingdombuilders.ai"
 NOW = datetime.now(timezone.utc)
 
-# Distribution: 15 L1, 35 L2, 29 L3 = 79 total
-L1_COUNT = 15
-L2_COUNT = 35
-L3_COUNT = 29
+# Distribution: 4 L1, 16 L2, 50 L3 = 70 total
+L1_COUNT = 4
+L2_COUNT = 16
+L3_COUNT = 50
 
 # Fake user name pools
 FIRST_NAMES = [
@@ -180,50 +180,53 @@ async def seed():
                 ))
                 l2_idx += 1
 
-        # Level 3: some L2 users referred L3 users
+        # Level 3: distribute L3 users across L2 users evenly
         l3_idx = 0
         for i, l2_user in enumerate(l2_users):
             if l3_idx >= len(l3_users):
                 break
-            if i % 2 != 0:
-                continue
-            l3_user = l3_users[l3_idx]
-            days_ago = 90 - (l3_idx * 2)
-            ts = NOW - timedelta(days=max(days_ago, 3))
-
-            # L2 user -> L3 user (L2 user's direct referral)
-            db.add(Referral(
-                referrer_id=l2_user.id,
-                referred_id=l3_user.id,
-                level=1,
-                root_referrer_id=admin_id,
-                created_at=ts,
-            ))
-            # Find which L1 user referred this L2 user, they get level 2
-            l1_parent_idx = 0
-            count = 0
-            for k, l1u in enumerate(l1_users):
-                share = L2_COUNT // L1_COUNT + (1 if k < L2_COUNT % L1_COUNT else 0)
-                if count + share > i:
-                    l1_parent_idx = k
+            # Distribute: each L2 user gets ~3 L3 referrals (50/16 ≈ 3.1)
+            share = L3_COUNT // L2_COUNT + (1 if i < L3_COUNT % L2_COUNT else 0)
+            for _ in range(share):
+                if l3_idx >= len(l3_users):
                     break
-                count += share
-            db.add(Referral(
-                referrer_id=l1_users[l1_parent_idx].id,
-                referred_id=l3_user.id,
-                level=2,
-                root_referrer_id=admin_id,
-                created_at=ts,
-            ))
-            # Admin -> L3 user at level 3
-            db.add(Referral(
-                referrer_id=admin_id,
-                referred_id=l3_user.id,
-                level=3,
-                root_referrer_id=admin_id,
-                created_at=ts,
-            ))
-            l3_idx += 1
+                l3_user = l3_users[l3_idx]
+                days_ago = 90 - (l3_idx * 1)
+                ts = NOW - timedelta(days=max(days_ago, 3))
+
+                # L2 user -> L3 user (L2 user's direct referral)
+                db.add(Referral(
+                    referrer_id=l2_user.id,
+                    referred_id=l3_user.id,
+                    level=1,
+                    root_referrer_id=admin_id,
+                    created_at=ts,
+                ))
+                # Find which L1 user referred this L2 user, they get level 2
+                l1_parent_idx = 0
+                l1_count = 0
+                for k, l1u in enumerate(l1_users):
+                    l1_share = L2_COUNT // L1_COUNT + (1 if k < L2_COUNT % L1_COUNT else 0)
+                    if l1_count + l1_share > i:
+                        l1_parent_idx = k
+                        break
+                    l1_count += l1_share
+                db.add(Referral(
+                    referrer_id=l1_users[l1_parent_idx].id,
+                    referred_id=l3_user.id,
+                    level=2,
+                    root_referrer_id=admin_id,
+                    created_at=ts,
+                ))
+                # Admin -> L3 user at level 3
+                db.add(Referral(
+                    referrer_id=admin_id,
+                    referred_id=l3_user.id,
+                    level=3,
+                    root_referrer_id=admin_id,
+                    created_at=ts,
+                ))
+                l3_idx += 1
 
         await db.flush()
         print(f"Created referrals: {L1_COUNT} L1, {L2_COUNT} L2, {l3_idx} L3")
@@ -356,7 +359,7 @@ async def seed():
         await db.commit()
 
         print(f"\nDone! Summary:")
-        print(f"  79 total referrals (15 L1, 35 L2, 29 L3)")
+        print(f"  70 total referrals (4 L1, 16 L2, 50 L3)")
         print(f"  {active_count} active subscribers")
         print(f"  {commission_count} commissions over 6 months")
         print(f"  4 completed payouts, lifetime: ${total_paid / 100:.2f}")

@@ -13,31 +13,36 @@ class ReferralStatsResponse(BaseModel):
 
 
 class ReferralTreeLevel1(BaseModel):
+    referred_id: str
     display_name: str
-    masked_email: str
-    signup_date: str
-    subscription_status: str
+    email: str
+    signup_date: str | None
+    status: str
     monthly_commission_cents: int
+
+
+class ReferralTreeSummary(BaseModel):
+    count: int
+    total_commission_cents: int
 
 
 class ReferralTreeResponse(BaseModel):
     level_1: list[ReferralTreeLevel1]
-    level_2_count: int
-    level_2_total_commission_cents: int
-    level_3_count: int
-    level_3_total_commission_cents: int
+    level_1_commission_cents: int
+    level_2_summary: ReferralTreeSummary
+    level_3_summary: ReferralTreeSummary
 
 
 class EarningsMonth(BaseModel):
     month: str
     amount_cents: int
+    label: str
 
 
 class EarningsResponse(BaseModel):
-    monthly_breakdown: list[EarningsMonth]
-    current_balance_cents: int
-    next_payout_estimate_cents: int
-    lifetime_total_cents: int
+    monthly: list[EarningsMonth]
+    balance_cents: int
+    lifetime_cents: int
 
 
 class PayoutItem(BaseModel):

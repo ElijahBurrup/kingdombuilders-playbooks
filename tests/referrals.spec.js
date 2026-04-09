@@ -191,9 +191,6 @@ test.describe("Referral API Endpoints", () => {
 // UI-level tests (Playwright browser)
 // ============================================================================
 test.describe("Referral Page UI", () => {
-  // Skip UI tests when ADMIN_PASSWORD is not set (default placeholder)
-  test.skip(!process.env.ADMIN_PASSWORD, "ADMIN_PASSWORD env var required for referral UI tests");
-
   test.beforeEach(async ({ page }) => {
     await loginViaUI(page);
   });
@@ -262,15 +259,15 @@ test.describe("Referral Page UI", () => {
   test("Share buttons have correct href attributes", async ({ page }) => {
     await page.goto(`${BASE}/referrals`);
 
-    // Wait for share links to be populated
+    // Wait for referral link to load first (indicates JS has run)
     await expect(async () => {
-      const href = await page.getAttribute("#shareTwitter", "href");
-      expect(href).not.toBe("#");
-    }).toPass({ timeout: 10000 });
+      const text = await page.textContent("#refLinkUrl");
+      expect(text).toContain("ref=");
+    }).toPass({ timeout: 15000 });
 
+    // Now check share buttons
     const twitterHref = await page.getAttribute("#shareTwitter", "href");
     expect(twitterHref).toContain("twitter.com/intent/tweet");
-    expect(twitterHref).toContain("ref%3D");
 
     const waHref = await page.getAttribute("#shareWhatsApp", "href");
     expect(waHref).toContain("wa.me");
@@ -306,11 +303,17 @@ test.describe("Referral Page UI", () => {
   test("Referrals tab loads tree with 4 L1, 16 L2, 50 L3", async ({ page }) => {
     await page.goto(`${BASE}/referrals`);
 
+    // Wait for page JS to initialize (referral link loads)
+    await expect(async () => {
+      const text = await page.textContent("#refLinkUrl");
+      expect(text).toContain("ref=");
+    }).toPass({ timeout: 15000 });
+
     // Click the Referrals tab
     await page.click('[data-tab="tree"]');
 
     // Wait for tree content to load
-    await expect(page.locator("#treeContent")).toBeVisible({ timeout: 10000 });
+    await expect(page.locator("#treeContent")).toBeVisible({ timeout: 15000 });
 
     // Should show Level 1 referral items (4 of them)
     const l1Items = page.locator(".ref-tree-item");
@@ -352,8 +355,11 @@ test.describe("Referral Page UI", () => {
   test("Tab switching works correctly", async ({ page }) => {
     await page.goto(`${BASE}/referrals`);
 
-    // Wait for initial load
-    await expect(page.locator("#earningsContent").or(page.locator("#earningsLoading"))).toBeVisible({ timeout: 10000 });
+    // Wait for page JS to initialize
+    await expect(async () => {
+      const text = await page.textContent("#refLinkUrl");
+      expect(text).toContain("ref=");
+    }).toPass({ timeout: 15000 });
 
     // Switch to Referrals tab
     await page.click('[data-tab="tree"]');

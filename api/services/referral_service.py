@@ -538,7 +538,8 @@ async def get_referral_stats(user_id: UUID, db: AsyncSession) -> dict:
         lifetime_earnings_cents = int(lifetime_result.scalar())
 
     base_url = settings.BASE_URL.rstrip("/")
-    referral_link = f"{base_url}/?ref={code_row.code}"
+    prefix = settings.URL_PREFIX.rstrip("/") if settings.URL_PREFIX else ""
+    referral_link = f"{base_url}{prefix}/?ref={code_row.code}"
 
     return {
         "referral_code": code_row.code,
@@ -598,14 +599,15 @@ async def get_referral_tree(user_id: UUID, db: AsyncSession) -> dict:
         )
         total_commission_cents = int(commission_result.scalar())
 
+        sub_status = "active" if active_sub else "inactive"
+
         level_1_detail.append({
             "referred_id": str(ref.referred_id),
             "display_name": user.display_name or masked_email,
-            "email_masked": masked_email,
-            "signed_up_at": ref.created_at.isoformat() if ref.created_at else None,
-            "has_active_subscription": active_sub is not None,
-            "plan_type": active_sub.plan_type if active_sub else None,
-            "total_commission_cents": total_commission_cents,
+            "email": masked_email,
+            "signup_date": ref.created_at.isoformat() if ref.created_at else None,
+            "status": sub_status,
+            "monthly_commission_cents": total_commission_cents,
         })
 
     # Level 2 — count and total only
@@ -646,18 +648,19 @@ async def get_referral_tree(user_id: UUID, db: AsyncSession) -> dict:
     )
     l3_earnings = int(l3_earnings_result.scalar())
 
+    # Sum L1 commissions for the header
+    l1_total_commission = sum(r["monthly_commission_cents"] for r in level_1_detail)
+
     return {
-        "level_1": {
-            "count": len(level_1_detail),
-            "referrals": level_1_detail,
-        },
-        "level_2": {
+        "level_1": level_1_detail,
+        "level_1_commission_cents": l1_total_commission,
+        "level_2_summary": {
             "count": l2_count,
-            "total_earnings_cents": l2_earnings,
+            "total_commission_cents": l2_earnings,
         },
-        "level_3": {
+        "level_3_summary": {
             "count": l3_count,
-            "total_earnings_cents": l3_earnings,
+            "total_commission_cents": l3_earnings,
         },
     }
 
@@ -693,10 +696,13 @@ async def get_earnings_breakdown(user_id: UUID, db: AsyncSession) -> dict:
 
     months = []
     for row in monthly_rows:
+        # Skip one-time purchase billing periods for monthly chart
+        if row.billing_period and row.billing_period.startswith("one-time:"):
+            continue
         months.append({
-            "billing_period": row.billing_period,
-            "total_cents": int(row.total_cents),
-            "commission_count": row.commission_count,
+            "month": row.billing_period,
+            "amount_cents": int(row.total_cents),
+            "label": row.billing_period,
         })
 
     # Current balance
@@ -722,9 +728,9 @@ async def get_earnings_breakdown(user_id: UUID, db: AsyncSession) -> dict:
     lifetime_total_cents = int(lifetime_result.scalar())
 
     return {
-        "months": months,
-        "current_balance_cents": current_balance_cents,
-        "lifetime_total_cents": lifetime_total_cents,
+        "monthly": months,
+        "balance_cents": current_balance_cents,
+        "lifetime_cents": lifetime_total_cents,
     }
 
 
