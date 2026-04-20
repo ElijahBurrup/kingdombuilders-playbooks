@@ -539,7 +539,7 @@ async def get_referral_stats(user_id: UUID, db: AsyncSession) -> dict:
 
     base_url = settings.BASE_URL.rstrip("/")
     prefix = settings.URL_PREFIX.rstrip("/") if settings.URL_PREFIX else ""
-    referral_link = f"{base_url}{prefix}/?ref={code_row.code}"
+    referral_link = f"{base_url}{prefix}/r/{code_row.code}"
 
     return {
         "referral_code": code_row.code,

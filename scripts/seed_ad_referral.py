@@ -36,7 +36,7 @@ async def seed():
         await db.commit()
 
         print(f"Ad referral code for elijah@kingdombuilders.ai: {code.code}")
-        print(f"Ad link: https://kingdombuilders.ai/playbooks/?ref={code.code}")
+        print(f"Ad link: https://kingdombuilders.ai/playbooks/r/{code.code}")
         print()
         print("Embed this link in all ad campaigns. Users who register through")
         print("this link will be attributed to the admin account, blocking")

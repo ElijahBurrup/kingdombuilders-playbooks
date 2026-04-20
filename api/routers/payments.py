@@ -184,7 +184,6 @@ async def create_subscription_checkout(
             line_items=[{"price": price_id, "quantity": 1}],
             success_url=f"{settings.BASE_URL}/success?session_id={{CHECKOUT_SESSION_ID}}",
             cancel_url=f"{settings.BASE_URL}/?payment=cancelled",
-            customer_creation="always",
             metadata={
                 "product": "subscription",
                 "plan_type": body.plan_type,

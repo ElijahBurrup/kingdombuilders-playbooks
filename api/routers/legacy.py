@@ -2060,13 +2060,12 @@ async def checkout(
             session_params["customer_creation"] = "always"
 
         session = stripe.checkout.Session.create(**session_params)
-        return RedirectResponse(url=session.url, status_code=303)
+        # Use JS redirect instead of 303 — Cloudflare Worker follows 303
+        # redirects server-side, which breaks cross-origin Stripe redirects.
+        return _redirect_with_cookie(session.url)
     except Exception as e:
         print(f"Stripe checkout error: {e}")
-        return RedirectResponse(
-            url=f"{base}{cancel_path}?payment=error",
-            status_code=303,
-        )
+        return _redirect_with_cookie(f"{base}{cancel_path}?payment=error")
 
 
 
@@ -2597,10 +2596,11 @@ async def manage_subscription(request: Request, db: AsyncSession = Depends(get_d
             customer=sc.stripe_customer_id,
             return_url=f"{settings.BASE_URL}/my-playbooks",
         )
-        return RedirectResponse(url=portal.url, status_code=303)
+        # Use JS redirect — Cloudflare Worker follows 303 redirects server-side
+        return _redirect_with_cookie(portal.url)
     except Exception as e:
         print(f"Stripe portal error: {e}")
-        return RedirectResponse(url=f"{prefix}/my-playbooks", status_code=303)
+        return _redirect_with_cookie(f"{prefix}/my-playbooks")
 
 
 @router.get("/funnel", include_in_schema=False)

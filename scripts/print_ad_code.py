@@ -15,7 +15,7 @@ async def run():
         c = res.scalar_one_or_none()
         if c:
             print(f"CODE: {c.code}")
-            print(f"LINK: https://kingdombuilders.ai/playbooks/?ref={c.code}")
+            print(f"LINK: https://kingdombuilders.ai/playbooks/r/{c.code}")
         else:
             print("NOT FOUND")
 
