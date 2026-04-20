@@ -15,22 +15,24 @@ oauth2_scheme = OAuth2PasswordBearer(
 
 
 async def get_current_user(
+    request: Request,
     token: str | None = Depends(oauth2_scheme),
     db: AsyncSession = Depends(get_db),
 ) -> User:
-    if token is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Not authenticated",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+    # Try JWT first, then fall back to session cookie so browser-based
+    # pages (referrals dashboard, etc.) work after form login.
+    user_id = None
 
-    payload = decode_access_token(token)
-    user_id = payload.get("sub")
+    if token:
+        payload = decode_access_token(token)
+        user_id = payload.get("sub")
+    else:
+        user_id = get_session_user_id(request)
+
     if user_id is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid token payload",
+            detail="Not authenticated",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
@@ -55,18 +57,22 @@ async def get_current_user(
 
 
 async def get_current_user_optional(
+    request: Request,
     token: str | None = Depends(oauth2_scheme),
     db: AsyncSession = Depends(get_db),
 ) -> User | None:
-    if token is None:
-        return None
+    user_id = None
 
-    try:
-        payload = decode_access_token(token)
-    except HTTPException:
-        return None
+    if token:
+        try:
+            payload = decode_access_token(token)
+            user_id = payload.get("sub")
+        except HTTPException:
+            pass
 
-    user_id = payload.get("sub")
+    if user_id is None:
+        user_id = get_session_user_id(request)
+
     if user_id is None:
         return None
 
