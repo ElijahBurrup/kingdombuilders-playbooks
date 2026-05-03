@@ -256,6 +256,23 @@ TAGS = {
         ("ai", 1.0), ("technology", 1.0), ("creativity", 0.9), ("systems", 0.8),
         ("mastery", 0.7), ("perception", 0.6), ("communication", 0.5), ("discipline", 0.4),
     ],
+    # --- The Eden Pattern series ---
+    "before-the-garden-returns": [
+        ("faith", 1.0), ("identity", 1.0), ("growth", 0.9), ("ai", 0.9),
+        ("future", 0.9), ("systems", 0.7), ("self_awareness", 0.7), ("resilience", 0.6),
+    ],
+    "the-source": [
+        ("faith", 1.0), ("identity", 1.0), ("self_awareness", 0.9), ("growth", 0.8),
+        ("vulnerability", 0.6), ("future", 0.6), ("resilience", 0.5), ("ai", 0.4),
+    ],
+    "the-soil": [
+        ("resilience", 1.0), ("growth", 1.0), ("discipline", 0.9), ("faith", 0.8),
+        ("self_awareness", 0.7), ("courage", 0.7), ("vulnerability", 0.5), ("future", 0.5),
+    ],
+    "the-fruit": [
+        ("systems", 1.0), ("identity", 0.9), ("creativity", 0.8), ("faith", 0.8),
+        ("future", 0.9), ("ai", 0.8), ("mastery", 0.6), ("growth", 0.6),
+    ],
 }
 
 
@@ -920,6 +937,51 @@ CONNECTIONS = {
         ("surprise", "the-tide-pools-echo",
          "The lyrebird echoes every sound in the forest. The tide pool echoes every process in nature. Both teach that listening is the beginning of creation.",
          "AI music learning meets philosophical process models"),
+    ],
+    # --- The Eden Pattern series ---
+    "before-the-garden-returns": [
+        ("deeper", "the-source",
+         "The frame revealed your weakest pillar. The Source goes deeper into the first one.",
+         "Part 1 to Part 2 of the Eden Pattern series. Identity is the most common weakest pillar."),
+        ("bridge", "the-lifted-ceiling",
+         "Both name what is coming. One zooms out to economic history. This one zooms in to interior architecture.",
+         "External case for AI abundance meets internal pregame for it"),
+        ("surprise", "the-tide-pools-echo",
+         "Both teach that the structure of a life is recognized, not built. Eden and Gendlin agree.",
+         "Process Model philosophy meets the trinitarian human architecture"),
+    ],
+    "the-source": [
+        ("deeper", "the-soil",
+         "The well is dug. Now the soil it sits in has to be turned.",
+         "Part 2 to Part 3 of the Eden Pattern series. Source feeds Soil."),
+        ("bridge", "the-narrator",
+         "The Source replaces the narrator. The narrator constructed identity. The Source receives it.",
+         "Self constructed narrative meets received identity"),
+        ("surprise", "the-bonsai-method",
+         "Both teach that identity is shaped, not chosen. The bonsai prunes external life. The Source rebuilds internal foundation.",
+         "External life shaping meets internal identity rooting"),
+    ],
+    "the-soil": [
+        ("deeper", "the-fruit",
+         "The soil is worked. Now the tree can bear what was always meant to grow.",
+         "Part 3 to Part 4 of the Eden Pattern series. Soil refines Fruit."),
+        ("bridge", "lay-it-down-sloth",
+         "Voluntary discomfort versus chosen sloth. The same battle from two angles.",
+         "Affirmative discipline of suffering meets the sin that avoids it"),
+        ("surprise", "the-tardigrade-protocol",
+         "The tardigrade survives because it was built for stress. The Soil pillar builds the same capacity in humans.",
+         "Biological resilience meets installed psychological resilience"),
+    ],
+    "the-fruit": [
+        ("deeper", "before-the-garden-returns",
+         "Re-run the diagnostic. The trinity has shifted. Notice which pillar is now the limiting one.",
+         "Series completion brings the reader back to the starting frame, transformed"),
+        ("bridge", "the-new-earning",
+         "Both describe what humans will do for a living when machines do the rest.",
+         "Practical AI economy career path meets the spiritual fruit framework"),
+        ("surprise", "the-octopus-protocol",
+         "The octopus builds many income streams. The Fruit pillar names which streams are actually fruit and which are just response.",
+         "Income diversification meets the discretionary output test"),
     ],
 }
 

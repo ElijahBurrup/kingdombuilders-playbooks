@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Fruit | Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --night:#0F0807;--soil:#1F1410;--bark:#2E1F18;--rust:#6E2E18;
+ --copper:#B86A38;--copper-glow:#D49060;
+ --orchard:#8A4830;--grain:#C49060;
+ --gold:#D4A843;--gold-glow:#E8C96A;--gold-pale:#F5E0A8;--gold-soft:rgba(212,168,67,0.08);
+ --amber:#C8923A;
+ --cream:#F5EFE0;--cream-warm:#EBE2D0;--cream-deep:#D4C8B0;
+ --text:#1F1410;--text-light:#4A3A2D;--text-muted:#7A6A55;
+ --white:#FFFFFF;--radius:16px;
+ --shadow-soft:0 2px 16px rgba(15,8,7,0.08);
+ --shadow-mid:0 4px 28px rgba(15,8,7,0.14);
+ --before-bg:#F2E5D2;--before-border:#8A4830;--before-text:#5A2010;
+ --after-bg:#F0E6D0;--after-border:#B86A38;--after-text:#1F1410
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--cream);line-height:1.82;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
+.page{max-width:720px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--soil);font-weight:700}
+.prose em{color:var(--copper);font-style:italic}
+.prose h2{font-size:1.4rem;color:var(--soil);margin:40px 0 16px;letter-spacing:-0.01em}
+
+dfn.def{font-style:normal;border-bottom:1.5px dotted var(--gold);cursor:help;position:relative}
+dfn.def:hover::after{content:attr(data-def);position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:var(--soil);color:var(--cream);padding:8px 14px;border-radius:8px;font-size:0.78rem;font-family:'Nunito',sans-serif;white-space:normal;width:280px;text-align:center;z-index:100;box-shadow:0 4px 16px rgba(15,8,7,0.3);line-height:1.5;pointer-events:none}
+
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;
+ background:linear-gradient(175deg,#080403 0%,var(--night) 25%,var(--soil) 55%,var(--rust) 88%,var(--bark) 100%);
+ position:relative;overflow:hidden}
+.fruit-d{position:absolute;width:8px;height:8px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(212,168,67,0.6),rgba(184,106,56,0.4));pointer-events:none;animation:fruit-pulse ease-in-out infinite}
+.fruit-d:nth-child(1){top:18%;left:14%;animation-duration:5s;animation-delay:0s}
+.fruit-d:nth-child(2){top:24%;left:78%;animation-duration:6s;animation-delay:-1s;width:6px;height:6px}
+.fruit-d:nth-child(3){top:32%;left:42%;animation-duration:5.5s;animation-delay:-2s}
+.fruit-d:nth-child(4){top:38%;left:65%;animation-duration:6.5s;animation-delay:-1.5s;width:7px;height:7px}
+.fruit-d:nth-child(5){top:44%;left:22%;animation-duration:5s;animation-delay:-3s;width:6px;height:6px}
+.fruit-d:nth-child(6){top:52%;left:55%;animation-duration:6s;animation-delay:-2.5s}
+.fruit-d:nth-child(7){top:62%;left:18%;animation-duration:5.5s;animation-delay:-0.8s;width:7px;height:7px}
+.fruit-d:nth-child(8){top:68%;left:75%;animation-duration:6s;animation-delay:-2s}
+.fruit-d:nth-child(9){top:28%;left:32%;animation-duration:5.5s;animation-delay:-3.5s;width:5px;height:5px}
+.fruit-d:nth-child(10){top:48%;left:88%;animation-duration:6.5s;animation-delay:-4s}
+@keyframes fruit-pulse{0%,100%{opacity:0.3;transform:scale(1)}50%{opacity:0.8;transform:scale(1.1);box-shadow:0 0 8px rgba(212,168,67,0.4)}}
+.harvest-moon{position:absolute;top:8%;right:12%;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(245,224,168,0.4),rgba(212,168,67,0.18) 50%,transparent 80%);box-shadow:0 0 80px rgba(212,168,67,0.2);pointer-events:none}
+.ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.02;mix-blend-mode:overlay;pointer-events:none}
+.cover-content{position:relative;z-index:2;padding:48px 24px}
+.cover-badge{display:inline-block;padding:6px 22px;border:1px solid rgba(212,168,67,0.3);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.67rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--gold-glow);margin-bottom:16px}
+.cover-series{display:inline-block;padding:4px 16px;border:1px solid rgba(212,168,67,0.2);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.58rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:36px}
+.cover h1{font-family:'Nunito',sans-serif;font-size:clamp(2.4rem,6.4vw,4rem);font-weight:900;color:var(--white);line-height:1.06;margin-bottom:4px}
+.cover h1 strong{font-weight:900;color:var(--gold-glow);display:block;font-size:clamp(2.8rem,7.6vw,4.8rem)}
+.cover-tagline{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.62);margin-top:24px;line-height:1.75;max-width:580px;margin-left:auto;margin-right:auto}
+.cover-tagline em{color:var(--gold-pale);font-style:normal;font-weight:600}
+.cover-sub{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.32);margin-top:14px}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.58rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-top:48px}
+
+.series-progress{text-align:center;padding:24px 24px 12px;background:transparent}
+.series-dots{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px}
+.series-dot{width:12px;height:12px;border-radius:50%;border:2px solid rgba(212,168,67,0.3);background:transparent}
+.series-dot.active{background:var(--gold);border-color:var(--gold);box-shadow:0 0 8px rgba(212,168,67,0.4)}
+.series-dot.done{background:rgba(212,168,67,0.4);border-color:rgba(212,168,67,0.5)}
+.series-dot-label{font-family:'Poppins',sans-serif;font-size:0.55rem;color:rgba(255,255,255,0.42);letter-spacing:3px;text-transform:uppercase}
+
+.ch-head{background:linear-gradient(170deg,var(--soil),var(--bark));padding:72px 24px 52px;position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23B86A38' fill-opacity='0.05'%3E%3Ccircle cx='15' cy='15' r='3'/%3E%3Ccircle cx='45' cy='15' r='3'/%3E%3Ccircle cx='15' cy='45' r='3'/%3E%3Ccircle cx='45' cy='45' r='3'/%3E%3Ccircle cx='30' cy='30' r='3'/%3E%3C/g%3E%3C/svg%3E")}
+.ch-badge{display:inline-block;padding:4px 16px;background:rgba(212,168,67,0.12);border:1px solid rgba(212,168,67,0.3);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:20px;position:relative;z-index:2}
+.ch-num{font-family:'Nunito',sans-serif;font-size:5.5rem;font-weight:900;line-height:0.9;color:rgba(212,168,67,0.18);margin-bottom:-10px;position:relative;z-index:2}
+.ch-title{font-family:'Nunito',sans-serif;font-size:2.1rem;font-weight:900;color:var(--white);line-height:1.15;letter-spacing:-0.02em;margin-bottom:10px;position:relative;z-index:2}
+.ch-sub{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.58);line-height:1.6;position:relative;z-index:2}
+
+.ribbon{text-align:center;padding:22px 24px;background:linear-gradient(135deg,rgba(212,168,67,0.05),rgba(184,106,56,0.07));border-top:1.5px solid rgba(212,168,67,0.15);border-bottom:1.5px solid rgba(212,168,67,0.15)}
+.ribbon p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:var(--text-light);max-width:540px;margin:0 auto}
+.ribbon .ref{font-weight:600;color:var(--copper);font-style:normal}
+
+.char-grid{display:grid;gap:24px;margin:40px 0}
+@media(min-width:640px){.char-grid{grid-template-columns:1fr 1fr 1fr}}
+.char-card{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft);transition:all 0.3s ease}
+.char-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-mid)}
+.char-head{background:linear-gradient(135deg,var(--gold-soft),rgba(184,106,56,0.06));padding:18px 20px;border-bottom:1px solid var(--cream-deep);display:flex;align-items:center;gap:14px}
+.char-emoji{font-size:2rem;line-height:1;display:flex;align-items:center;justify-content:center}
+.char-name{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;color:var(--soil);line-height:1.25}
+.char-title{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-top:2px}
+.char-body{padding:20px}
+.char-body p{font-size:0.92rem;color:var(--text-light);line-height:1.75;margin:0}
+
+.scene{background:linear-gradient(135deg,var(--cream-warm),var(--cream));border:1px solid var(--cream-deep);border-radius:var(--radius);padding:28px;margin:32px 0;box-shadow:var(--shadow-soft)}
+.scene-label{font-family:'Nunito',sans-serif;font-size:0.68rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--copper);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.scene h4{font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:800;color:var(--soil);margin-bottom:14px;line-height:1.3}
+.scene p{font-size:0.95rem;color:var(--text-light);line-height:1.78;margin-bottom:14px}
+.scene p:last-child{margin-bottom:0}
+
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:36px 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft)}
+@media(max-width:600px){.ba-grid{grid-template-columns:1fr}}
+.ba-col{padding:28px 24px}
+.ba-col.before{background:var(--before-bg);border-right:2px solid var(--cream-deep)}
+.ba-col.after{background:var(--after-bg)}
+@media(max-width:600px){.ba-col.before{border-right:none;border-bottom:2px solid var(--cream-deep)}}
+.ba-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px}
+.ba-col.before .ba-label{color:var(--before-border)}
+.ba-col.after .ba-label{color:var(--after-border)}
+.ba-col h4{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;margin-bottom:10px;line-height:1.3}
+.ba-col.before h4{color:var(--before-text)}
+.ba-col.after h4{color:var(--after-text)}
+.ba-col p{font-size:0.88rem;line-height:1.7;margin-bottom:8px}
+.ba-col.before p{color:#5A2010}
+.ba-col.after p{color:#1F1410}
+.ba-col ul{list-style:none;padding:0;margin:0}
+.ba-col ul li{font-size:0.88rem;line-height:1.7;padding:4px 0 4px 18px;position:relative}
+.ba-col.before ul li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:8px;border-radius:50%;background:var(--before-border);opacity:0.55}
+.ba-col.after ul li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:8px;border-radius:50%;background:var(--after-border);opacity:0.55}
+
+.data-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin:32px 0}
+.data-box{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:24px 16px;text-align:center;box-shadow:var(--shadow-soft)}
+.data-num{font-family:'Nunito',sans-serif;font-size:1.8rem;font-weight:900;color:var(--copper);line-height:1;margin-bottom:6px}
+.data-label{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+
+.data-hero{text-align:center;padding:48px 24px;margin:40px 0;background:linear-gradient(135deg,var(--soil),var(--bark));border-radius:var(--radius);position:relative;overflow:hidden}
+.data-hero::before{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(212,168,67,0.1) 0%,transparent 70%);border-radius:50%}
+.data-hero .dh-num{font-family:'Nunito',sans-serif;font-size:3.4rem;font-weight:900;color:var(--gold-glow);line-height:1;margin-bottom:10px;position:relative}
+.data-hero .dh-label{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.5);position:relative}
+.data-hero .dh-sub{font-family:'Lora',serif;font-size:0.92rem;font-style:italic;color:rgba(255,255,255,0.6);margin-top:12px;max-width:440px;margin-left:auto;margin-right:auto;position:relative}
+
+.glow-box{background:linear-gradient(135deg,var(--soil),var(--bark));border:2px solid rgba(212,168,67,0.22);border-radius:var(--radius);padding:32px;margin:36px 0;position:relative;overflow:hidden;box-shadow:0 4px 24px rgba(15,8,7,0.2)}
+.glow-box::before{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(212,168,67,0.1) 0%,transparent 70%);border-radius:50%}
+.glow-box h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--gold-glow);margin-bottom:14px;position:relative}
+.glow-box p{font-size:0.95rem;color:rgba(255,255,255,0.85);line-height:1.78;position:relative;margin-bottom:12px}
+.glow-box p:last-child{margin-bottom:0}
+.glow-box strong{color:var(--gold-pale)}
+.glow-box em{color:var(--copper-glow);font-style:italic}
+
+.grand-quote{text-align:center;padding:48px 24px;margin:40px 0;position:relative}
+.grand-quote::before{content:'\201C';font-family:'Lora',serif;font-size:8rem;color:rgba(212,168,67,0.15);position:absolute;top:-20px;left:50%;transform:translateX(-50%);line-height:1}
+.grand-quote blockquote{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:var(--soil);line-height:1.7;max-width:540px;margin:0 auto;position:relative}
+.grand-quote cite{display:block;margin-top:16px;font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--copper);font-style:normal}
+
+.root-ck{margin:40px auto;max-width:720px;padding:36px 32px;background:linear-gradient(135deg,rgba(212,168,67,0.05),rgba(184,106,56,0.06));border-radius:var(--radius);border:2px solid rgba(212,168,67,0.18)}
+.root-ck .rc-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.root-ck h4{font-size:1.05rem;color:var(--soil);margin-bottom:20px}
+.r-item{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
+.r-item:last-child{margin-bottom:0}
+.r-dot{flex-shrink:0;width:8px;height:8px;border-radius:50%;background:var(--gold);margin-top:7px;box-shadow:0 0 6px rgba(212,168,67,0.3)}
+.r-text{font-size:0.92rem;color:var(--text-light);line-height:1.7}
+
+.viz{margin:32px 0;border-radius:var(--radius);border:2px solid var(--gold);overflow:hidden;box-shadow:0 0 20px rgba(212,168,67,0.1)}
+.viz-inner{padding:0}
+.viz-top{display:flex;align-items:center;gap:16px;padding:20px 28px;background:linear-gradient(135deg,rgba(212,168,67,0.1),rgba(212,168,67,0.04))}
+.viz-icon{flex-shrink:0;width:40px;height:40px;border-radius:50%;background:var(--gold);color:var(--white);display:flex;align-items:center;justify-content:center}
+.viz-icon svg{width:20px;height:20px}
+.viz-meta .viz-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.viz-meta h4{font-size:1rem;color:var(--soil);margin:0}
+.viz-body{padding:24px 28px;background:var(--white)}
+.viz-body p{font-size:0.92rem;color:var(--text-light);line-height:1.78;margin-bottom:12px}
+.viz-body strong{color:var(--soil);font-weight:700}
+.viz-body em{color:var(--copper);font-style:italic;font-weight:500}
+.viz-body p:last-child{margin-bottom:0}
+.viz-trigger{padding:16px 28px;background:linear-gradient(135deg,rgba(212,168,67,0.07),rgba(212,168,67,0.02));border-top:1px solid rgba(212,168,67,0.15);font-size:0.88rem;color:var(--soil);font-style:italic}
+
+.think{background:linear-gradient(135deg,rgba(212,168,67,0.07),rgba(184,106,56,0.05));border:2px solid rgba(212,168,67,0.18);border-radius:var(--radius);padding:28px;margin:36px 0}
+.think-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.think p{font-size:0.95rem;color:var(--text-light);line-height:1.78;margin-bottom:12px}
+.think p:last-child{margin-bottom:0}
+.think-line{border:none;border-bottom:1.5px dashed rgba(212,168,67,0.3);margin:8px 0}
+
+/* Forms grid (5 forms of fruit) */
+.forms-grid{display:grid;gap:16px;margin:36px 0}
+@media(min-width:640px){.forms-grid{grid-template-columns:1fr 1fr}}
+.form-card{background:var(--white);border:2px solid var(--cream-deep);border-left:5px solid var(--gold);border-radius:var(--radius);padding:24px 22px;box-shadow:var(--shadow-soft)}
+.form-num{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.form-name{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:900;color:var(--soil);margin-bottom:8px}
+.form-card p{font-size:0.88rem;color:var(--text-light);line-height:1.7;margin:0}
+.form-card strong{color:var(--copper);font-weight:700}
+
+/* Protocol */
+.protocol{margin:36px 0}
+.protocol-head{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--copper);margin-bottom:16px;text-align:center}
+.protocol-grid{display:grid;gap:14px}
+@media(min-width:640px){.protocol-grid{grid-template-columns:1fr 1fr 1fr}}
+.protocol-card{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:22px 20px;box-shadow:var(--shadow-soft);position:relative;overflow:hidden}
+.protocol-card::before{content:'';position:absolute;top:0;left:0;height:3px;width:60%;background:linear-gradient(90deg,var(--gold),transparent)}
+.protocol-num{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.protocol-title{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:var(--soil);margin-bottom:8px}
+.protocol-card p{font-size:0.85rem;color:var(--text-light);line-height:1.65;margin:0}
+
+.final-test{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:36px;margin:40px 0;box-shadow:var(--shadow-soft)}
+.final-test h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--soil);margin-bottom:6px}
+.final-test .test-sub{font-size:0.85rem;color:var(--text-muted);margin-bottom:24px;font-style:italic}
+.test-q{padding:14px 0;border-bottom:1px solid var(--cream-deep)}
+.test-q:last-child{border-bottom:none}
+.test-num{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.test-q p{font-size:0.92rem;color:var(--text);line-height:1.65}
+
+.prompt-card{background:linear-gradient(135deg,var(--soil),var(--bark));border-radius:var(--radius);padding:36px;margin:40px 0;box-shadow:0 4px 24px rgba(15,8,7,0.2)}
+.prompt-card h3{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;color:var(--gold-glow);margin-bottom:16px}
+.prompt-card p{font-size:0.88rem;color:rgba(255,255,255,0.75);line-height:1.65;margin-bottom:10px}
+.prompt-card code{background:rgba(255,255,255,0.08);padding:2px 8px;border-radius:4px;font-size:0.82rem;color:var(--gold-pale)}
+
+.series-conclusion{background:linear-gradient(135deg,var(--bark),var(--soil));border-radius:var(--radius);padding:42px 32px;margin:40px 0;box-shadow:0 4px 24px rgba(15,8,7,0.2);text-align:center;position:relative;overflow:hidden}
+.series-conclusion::before{content:'';position:absolute;top:-30%;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(245,224,168,0.12) 0%,transparent 70%);border-radius:50%}
+.series-conclusion .sc-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:12px;position:relative}
+.series-conclusion h3{font-family:'Nunito',sans-serif;font-size:1.6rem;font-weight:900;color:var(--white);margin-bottom:14px;position:relative}
+.series-conclusion p{font-family:'Lora',serif;font-size:0.95rem;color:rgba(255,255,255,0.78);line-height:1.7;position:relative;max-width:540px;margin:0 auto}
+
+.finale{background:linear-gradient(170deg,var(--night),var(--soil));padding:80px 24px;text-align:center;position:relative;overflow:hidden}
+.finale::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(212,168,67,0.06) 0%,transparent 70%);border-radius:50%}
+.finale h2{font-family:'Nunito',sans-serif;font-size:clamp(1.6rem,4.4vw,2.4rem);font-weight:300;color:rgba(255,255,255,0.78);line-height:1.3;position:relative;margin-bottom:8px}
+.finale h2 strong{font-weight:900;color:var(--gold-glow);display:block}
+
+.footer{text-align:center;padding:48px 24px;background:var(--night);color:rgba(255,255,255,0.3);font-family:'Poppins',sans-serif;font-size:0.6rem;letter-spacing:2px;text-transform:uppercase}
+.footer a{color:var(--gold);text-decoration:none;opacity:0.65}
+.footer a:hover{opacity:1}
+
+@media(max-width:640px){
+  .page{padding:0 20px}
+  .root-ck{margin-left:20px;margin-right:20px;padding:28px 20px}
+  .char-grid,.protocol-grid,.forms-grid{grid-template-columns:1fr}
+  .data-hero .dh-num{font-size:2.6rem}
+  .ch-title{font-size:1.7rem}
+  .ch-num{font-size:4rem}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+</style>
+</head>
+<body>
+
+<section class="cover">
+<div class="fruit-d"></div><div class="fruit-d"></div><div class="fruit-d"></div><div class="fruit-d"></div><div class="fruit-d"></div>
+<div class="fruit-d"></div><div class="fruit-d"></div><div class="fruit-d"></div><div class="fruit-d"></div><div class="fruit-d"></div>
+<div class="harvest-moon"></div>
+<div class="ghost-noise"></div>
+<div class="cover-content">
+<div class="cover-badge">Kingdom Builders AI</div><br>
+<div class="cover-series">The Eden Pattern &middot; Part 4 of 4</div>
+<h1>The <strong>Fruit</strong></h1>
+<p class="cover-tagline">Pillar Three: Execution as discretion, not necessity. What you would still produce if no one was paying you to produce it. The five forms of human only fruit, revealed precisely when the machines start <em>doing the rest of the work for free.</em></p>
+<p class="cover-sub">Building When You Do Not Have To</p>
+<div class="series-progress">
+  <div class="series-dots">
+    <span class="series-dot done" title="Before The Garden Returns"></span>
+    <span class="series-dot done" title="The Source"></span>
+    <span class="series-dot done" title="The Soil"></span>
+    <span class="series-dot active" title="The Fruit"></span>
+  </div>
+  <div class="series-dot-label">Part 4 of 4</div>
+</div>
+<p class="cover-author">KingdomBuilders AI</p>
+</div>
+</section>
+
+<div class="ribbon">
+<p>"By their fruit you will recognize them. Do people pick grapes from thornbushes, or figs from thistles?"<br><span class="ref">Matthew 7:16</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Pregame</div>
+<div class="ch-num">00</div>
+<div class="ch-title">What You Would Still Make</div>
+<div class="ch-sub">What you will know when you finish this playbook.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p><strong>If you finish this playbook, you will know what your actual fruit is and what was just response to pressure dressed up as a life.</strong> You will be able to distinguish between activity and output, between productivity and fruit, between what you do because the world is paying you to do it and what you would still make if no one was paying. You will hold the five forms of fruit that remain meaningfully human even when machines do most of the rest, and you will have a 90 day protocol to begin shifting your output toward those forms before abundance does it for you on its own brutal schedule.</p>
+
+<div class="glow-box">
+<h3>Three Bold Claims</h3>
+<p>The pillar most people assume they are strongest at is the one most people are wrong about. <strong>Fruit is not what you produce. Fruit is what you would still produce if no one was paying you.</strong> Most current life cannot pass this test. Take away the paycheck, the deadline, the recognition, and watch the output collapse to near zero for months. The collapse reveals that the engine was never the person. The engine was the pressure.</p>
+<p>In the world being built, the pressure that has been holding up most fruit is being removed. <em>The work is automating. The deadlines are softening. The economic necessity is dwindling.</em> When the scaffolding comes down, what is exposed is whatever fruit was actually yours. For most people, this is a small percentage of their current output. The rest was scaffolding wearing a costume.</p>
+<p>Five forms of fruit remain meaningfully human in an automated world: <strong>relational, creative, servant, stewardship, generative.</strong> Whatever you build the third pillar from, build it from these. The other forms of output are not bad. They are just not what you will be remembered for, and they are not what abundance will leave you with.</p>
+</div>
+
+<p>This is Part 4 of <em>The Eden Pattern</em>, the final installment. If your diagnostic in Part 1 placed you in Mode 3 (Contemplative Stuck) or Mode 6 (Hustler), this is your starting playbook. If you have read the first three parts, this is the synthesis. The work is no smaller. The output is the visible test of the pillars beneath it.</p>
+
+</div>
+
+<div class="page">
+<div class="char-grid">
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji"><svg viewBox="0 0 48 48" width="42" height="42"><path d="M24 38 L24 18" stroke="#6E2E18" stroke-width="3" stroke-linecap="round"/><path d="M24 18 L18 12 M24 18 L30 12 M20 22 L14 18 M28 22 L34 18 M22 28 L16 26 M26 28 L32 26" stroke="#586A48" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="20" r="3" fill="#B86A38"/><circle cx="32" cy="20" r="3" fill="#B86A38"/><circle cx="20" cy="14" r="2.5" fill="#D4A843"/><circle cx="28" cy="14" r="2.5" fill="#D4A843"/><circle cx="24" cy="24" r="3" fill="#B86A38"/></svg></div>
+<div><div class="char-name">The Fruitful Tree</div><div class="char-title">Output From Source</div></div>
+</div>
+<div class="char-body"><p>Bears fruit because the roots are deep, the soil is worked, and the light is reaching the canopy. Does not strain to produce. Produces what is in the nature of the tree. Continues bearing in any season because the structure underneath is alive. Most rare. Most beautiful. Most useful in the era ahead.</p></div>
+</div>
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji"><svg viewBox="0 0 48 48" width="42" height="42"><path d="M24 38 L24 18" stroke="#3D2C18" stroke-width="3" stroke-linecap="round"/><path d="M24 18 L18 14 M24 18 L30 14" stroke="#586A48" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="16" r="2.5" fill="#A86A30" opacity="0.6"/><circle cx="32" cy="16" r="2.5" fill="#A86A30" opacity="0.6"/><path d="M20 32 L24 35 L28 32" stroke="#7A6A55" stroke-width="1.5" fill="none" opacity="0.5"/><path d="M14 36 L24 36 L34 36" stroke="#7A6A55" stroke-width="1" opacity="0.4"/></svg></div>
+<div><div class="char-name">The Productive Tree</div><div class="char-title">Output From Pressure</div></div>
+</div>
+<div class="char-body"><p>Looks fruitful in season. Bears because the conditions force it. Take the pressure away and the productivity collapses. Most modern fruit is in this category. The tree is not bad. The tree is just not what it appears to be. When the conditions change, the harvest goes with them.</p></div>
+</div>
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji"><svg viewBox="0 0 48 48" width="42" height="42"><path d="M24 38 L24 14" stroke="#2E1F18" stroke-width="3" stroke-linecap="round"/><path d="M24 14 L18 8 M24 14 L30 8" stroke="#7A6A55" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M20 18 L14 12 M28 18 L34 12" stroke="#7A6A55" stroke-width="1.5" fill="none" opacity="0.6"/><path d="M14 36 L24 36 L34 36" stroke="#7A6A55" stroke-width="1" opacity="0.5"/></svg></div>
+<div><div class="char-name">The Bare Tree</div><div class="char-title">No Output, No Roots</div></div>
+</div>
+<div class="char-body"><p>Has the form of a tree but no fruit at all. Sometimes because the soil is hardpan. Sometimes because the roots never went down. Sometimes because the tree got comfortable taking sun without producing. In abundance this tree becomes invisible. The world stops noticing. The tree stops noticing too.</p></div>
+</div>
+</div>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter One</div>
+<div class="ch-num">01</div>
+<div class="ch-title">The Test Of The Sabbatical</div>
+<div class="ch-sub">Most fruit collapses without pressure. The collapse is the diagnostic.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Begin with the brutal test. Pick anyone you know who has taken a long sabbatical, retired with full resources, won enough money to never work again, or otherwise had every external pressure removed at once. Watch what happens to their output across the first year. <strong>The pattern is so consistent it qualifies as data.</strong> Output collapses. Often dramatically. Often for months. The person tells everyone, including themselves, that they are resting, that the great work is coming, that the freedom is being savored. The honest version is that the engine was never them. The engine was the pressure.</p>
+
+<p>This is not a moral failing. It is a structural exposure. Most modern adults have built their entire output capacity around responding to external scaffolding, the deadline, the boss, the bills, the calendar imposed by the children, the pressure of the next mortgage payment. The scaffolding has been doing the work of activation. <em>Without it, the muscle does not exist.</em> The muscle was a response to the scaffolding, not a property of the person.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Year Off That Did Not Happen</h4>
+<p>A woman saves for a decade and takes a year off to write the novel she has been talking about for fifteen years. She has the time, the money, the talent, and the support. By every external measure, she is set up to succeed.</p>
+<p>By month three, no chapter has been written. She is reading. Walking. Reflecting. Letting the story come. By month six she is starting to lie about it. <em>"It is coming along. I'm in the deep work phase."</em> By month nine, the novel is dead and she does not say it out loud. By month eleven, she takes a part time job that did not need to exist, and within a week of starting it she is writing again. <strong>Not the novel.</strong> Marketing copy for the part time job, which has the deadlines she needed.</p>
+<p>The novel was always going to be a fantasy. Her engine was the deadline, not the writing. She would have been a happier and more honest person if she had spent the year confronting that, instead of pretending to write.</p>
+</div>
+
+<p>The pattern shows up across categories. The retired executive who plans to mentor and write. The freed creative who plans to make the masterwork. The empty nester who plans to start the foundation. <em>The vast majority of these projects do not happen.</em> Not because the people are weak. Because their fruit was a function of the conditions they were under, and removing the conditions removed the fruit.</p>
+
+<div class="data-hero">
+<div class="dh-num">~70%</div>
+<div class="dh-label">of long sabbatical creative projects abandoned within 12 months</div>
+<div class="dh-sub">The pressure was the engine. The freedom revealed it. The collapse is not failure. It is information.</div>
+</div>
+
+<p>This is also why this pillar is the easiest to assume you are strong in and the hardest to actually be strong in. You are producing a lot right now. You see your output and you assume the output represents fruit. <strong>Most of it does not.</strong> Most of it is response to pressure. The diagnostic for which is which is the sabbatical test, even imagined. Imagine the income guaranteed, the deadlines removed, the recognition unavailable. Now imagine your one year of output. The honest answer is your real fruit. The rest was scaffolding wearing a costume.</p>
+
+<div class="think">
+<div class="think-label">Stop and Take The Test</div>
+<p>Imagine the year. The bank account is full. The job is gone. The expectations have been silenced. What do you actually produce by the end of month twelve? Not what you would say. What you would actually do.</p>
+<hr class="think-line">
+<p>If the answer is "I do not know," you are about to find out, and finding out now is far better than finding out then. The diagnostic is the test. The test reveals which of the five forms of fruit, if any, you have been quietly building underneath the scaffolding.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Test Of The Sabbatical.</strong> Most fruit collapses when the pressure is removed. The collapse is the diagnostic. The engine was not the person. The engine was the pressure.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"I am the vine; you are the branches. If you remain in me and I in you, you will bear much fruit; apart from me you can do nothing."<br><span class="ref">John 15:5</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Two</div>
+<div class="ch-num">02</div>
+<div class="ch-title">Discretionary Output</div>
+<div class="ch-sub">What fruit actually is, when the costume comes off.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>If response to pressure is not fruit, what is? <dfn class="def" data-def="Output a person continues to generate even when no necessity, recognition, or external pressure requires it. The portion of output that is genuinely yours, that reveals what you actually wanted to make of your life when the choice was unforced.">Discretionary output</dfn> is the framework's name for it. Output that a person continues to generate even when no necessity, recognition, or external pressure requires it. The portion of output that survives the sabbatical test. The portion that is genuinely yours.</p>
+
+<p>This output has specific characteristics. It is generally smaller than the response output, especially at first. It is often slower. It is often less impressive externally because no external incentive shaped it for impressiveness. <strong>It is also the only output that fully belongs to you.</strong> When you make it, you discover what you actually wanted to make of your life. When you stop making it, you notice your absence in a way you do not notice the absence of the response output. The discretionary output is the one your friends would still recognize as yours after twenty years of you not making it.</p>
+
+<div class="ba-grid">
+<div class="ba-col before">
+<div class="ba-label">Response Output</div>
+<h4>The Pressure Engine</h4>
+<ul>
+<li>Triggered by external deadline, expectation, or pressure</li>
+<li>Sized to the size of the pressure, not the person</li>
+<li>Disappears when the pressure disappears</li>
+<li>Often impressive in volume</li>
+<li>Often forgettable in nature</li>
+</ul>
+</div>
+<div class="ba-col after">
+<div class="ba-label">Discretionary Output</div>
+<h4>The Source Engine</h4>
+<ul>
+<li>Triggered by internal sense that this is yours to make</li>
+<li>Sized to what the person actually has to give</li>
+<li>Continues regardless of conditions</li>
+<li>Often modest in volume</li>
+<li>Often unforgettable in nature</li>
+</ul>
+</div>
+</div>
+
+<p>The shift from response to discretionary is the central work of this pillar. It does not require quitting your job. It does not require dropping out. It requires <em>identifying which of your current output is which</em>, and slowly increasing the discretionary while maintaining the response. Over time, the discretionary becomes large enough that the response can shrink. Most people will not retire from response output. They will gradually dial it down as the discretionary fills the space. <strong>The transition is years, not days.</strong></p>
+
+<p>This is also why the playbook claims this pillar is most useful right now and not just in abundance. The current world rewards almost any output that responds to pressure. It severely under rewards discretionary output, which is why most of you have not built any. <em>Abundance reverses the incentive.</em> When the response output is automated, discretionary output becomes the only output that anyone bothers to value. The market is going to reprice this whole category over the next ten to twenty years. The people who built discretionary output during the current era, when nobody was paying for it, will be the ones who arrive in the new era with something to offer.</p>
+
+<div class="grand-quote">
+<blockquote>Discretionary output is what you would still make if you stopped getting paid for it. The world is about to stop paying for almost everything else. Make what you would still make.</blockquote>
+<cite>The Discretionary Test</cite>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Test Of The Sabbatical.</strong> Most fruit collapses without pressure.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Discretionary Output.</strong> The portion of output that survives the sabbatical test. The output that fully belongs to you. Smaller. Slower. More yours. The shift from response to discretionary is the central work of this pillar.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"Whatever you do, work at it with all your heart, as working for the Lord, not for human masters."<br><span class="ref">Colossians 3:23</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Three</div>
+<div class="ch-num">03</div>
+<div class="ch-title">The Five Forms</div>
+<div class="ch-sub">Whatever you build, build it from these.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>In a world where machines produce most of the things humans used to produce for survival, fruit becomes more specific, not less. The forms of fruit that remain meaningfully human are narrower than people assume. They are also exactly the forms that machines cannot generate, because they require something machines do not have, namely a human soul on the producing end. <strong>The list is short and durable.</strong></p>
+
+<div class="forms-grid">
+<div class="form-card">
+<div class="form-num">Form One</div>
+<div class="form-name">Relational</div>
+<p><strong>Depth of presence with another human.</strong> Friendship. Marriage. Mentorship. Showing up at the hospital, the funeral, the wedding, the difficult Tuesday. Cannot be automated because the value of presence is the human behind it. The hardest fruit to fake. The one your children will remember for life. The one machines will not learn how to substitute for.</p>
+</div>
+<div class="form-card">
+<div class="form-num">Form Two</div>
+<div class="form-name">Creative</div>
+<p><strong>Making something whose value is the human behind it.</strong> The painting. The song. The book. The dinner. The garden. Machines can imitate the form. They cannot generate the soul that wanted to make it. As AI gets better at output, the value moves toward authorship and away from execution. The hand that made it becomes the entire point.</p>
+</div>
+<div class="form-card">
+<div class="form-num">Form Three</div>
+<div class="form-name">Servant</div>
+<p><strong>Showing up in the suffering of others.</strong> Hospice. Foster care. Recovery rooms. Prison ministry. The places where a human face is the entire point. Machines cannot substitute here, no matter how sophisticated. People in pain need to be witnessed by other people, not by code. This fruit is increasing in value as automation reduces the supply of humans in those rooms.</p>
+</div>
+<div class="form-card">
+<div class="form-num">Form Four</div>
+<div class="form-name">Stewardship</div>
+<p><strong>Caring for what cannot be priced.</strong> The elderly. The broken. The wild. The beautiful. The forgotten places. The discipline of preserving things that the market does not value. Stewardship is the form of fruit that holds civilization together while everyone else is optimizing. Machines do not understand this category. The market does not pay for it. Most of it is invisible.</p>
+</div>
+<div class="form-card">
+<div class="form-num">Form Five</div>
+<div class="form-name">Generative</div>
+<p><strong>Raising other humans.</strong> Children. Disciples. Apprentices. Spiritual sons and daughters. The patient, slow, unautomatable work of forming a person. The most important fruit any human can bear and the one most undervalued by current culture. The next generation does not get raised by code. It gets raised by adults who chose to invest themselves in raising it.</p>
+</div>
+</div>
+
+<p>These are not the only forms of fruit. They are the ones that <em>remain</em> as the mechanical fruits get automated away. They are also, not coincidentally, the forms of fruit that most readily produce a life worth remembering. Most people on their deathbeds describe the meaning of their lives in the language of these five forms. They do not describe their meaningful work in terms of spreadsheets, quarterly reports, or marketing campaigns, even when those took the bulk of their hours. <strong>The dying tell the truth about what was actually fruit.</strong> The framework is asking you to tell yourself the same truth while there is still time to act on it.</p>
+
+<div class="viz"><div class="viz-inner">
+  <div class="viz-top"><div class="viz-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 L12 20"/><circle cx="8" cy="6" r="2"/><circle cx="16" cy="8" r="2"/><circle cx="6" cy="12" r="2"/><circle cx="18" cy="14" r="2"/><circle cx="10" cy="18" r="2"/></svg></div><div class="viz-meta"><div class="viz-label">Visualize It</div><h4>Five Branches, One Tree</h4></div></div>
+  <div class="viz-body">
+    <p>Picture a single tree with five fruit bearing branches. Each branch is one of the five forms. Most lives are heavily weighted toward two or three of the five and missing one or two entirely. The most useful question is not <em>which branch am I best at.</em> The question is <strong>which branch is most missing, and what would it look like to grow it.</strong></p>
+    <p>The relational branch grows by spending unrushed hours with specific humans. The creative branch grows by making things whose value is your authorship. The servant branch grows by showing up where the pay is impossible and the need is real. The stewardship branch grows by caring for what the market is not protecting. The generative branch grows by raising specific humans on purpose.</p>
+    <p>Five branches. One tree. A life worth remembering produces something on each.</p>
+  </div>
+  <div class="viz-trigger">Pick the branch most missing in your tree. The protocol in Chapter Six begins by growing that one.</div>
+</div></div>
+
+<div class="think">
+<div class="think-label">Stop and Map The Tree</div>
+<p>Walk through the five forms again. Score yourself honestly from 1 to 5 on each. Relational. Creative. Servant. Stewardship. Generative.</p>
+<hr class="think-line">
+<p>Two of those will be obvious strengths. One will be obviously absent. The absent one is your starting point. The work in Chapter Six begins by growing the form that is most missing, not by improving the forms you are already good at.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Test Of The Sabbatical.</strong> Most fruit collapses without pressure.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Discretionary Output.</strong> The output that survives the test.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Five Forms.</strong> Relational, Creative, Servant, Stewardship, Generative. The forms that remain meaningfully human in an automated world. The forms the dying describe as the meaning of their lives. The forms that produce a life worth remembering.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"But the fruit of the Spirit is love, joy, peace, forbearance, kindness, goodness, faithfulness, gentleness and self control."<br><span class="ref">Galatians 5:22-23</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Four</div>
+<div class="ch-num">04</div>
+<div class="ch-title">The Audit</div>
+<div class="ch-sub">What is actually fruit. What was costume.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Time for the hard work. List your output from the past year. All of it. The work projects. The side projects. The hours spent. The deliverables. The relationships maintained. The things you built or made. <em>Now run each item through two filters.</em></p>
+
+<p>First filter: <strong>would I have produced this if no one was paying me, watching me, or expecting it?</strong> If yes, it stays in the fruit column. If no, it goes in the response column. Be brutally honest. Most of what you have been calling fruit will fail this filter. That is not a failure of your year. That is a discovery about your year. The discovery is the entire point of the audit.</p>
+
+<p>Second filter: <strong>does this fall into one of the five forms?</strong> If yes, that branch of your tree is being fed. If no, the output may have been valuable, useful, even profitable, but it was not building any of the five forms that produce a life worth remembering. Note which of the five forms received output and which received none. The branches receiving none are the dying ones.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Audit That Hurt</h4>
+<p>A man does the audit. Forty seven items in the work column. Twelve items in the side projects column. Eight items in personal life. The audit takes him three hours. By the end he is quiet.</p>
+<p>Of fifty nine items, fifty one were response output. Eight were discretionary. Of the eight, six were Relational, one was Creative, one was Stewardship. <em>Zero were Servant. Zero were Generative.</em></p>
+<p>He has three children. He has not invested himself in raising them in any deliberate way for at least four years. The Generative branch of his tree has been dying while he has been building things that scored high on every other measure his life uses to evaluate itself.</p>
+<p>He cries that night. He calls his oldest the next morning. <em>The audit had told him the truth.</em> He had not been bearing the fruit he most wanted to bear. The good news was that he had time. The hard news was that he had been spending the time on things that would not survive the audit of his own life.</p>
+</div>
+
+<p>This is what the audit does. It strips the costume off and shows you which of your output was you and which was scaffolding. <strong>Most readers will discover that the gap between their identity and their actual fruit is much larger than they realized.</strong> They thought they were one kind of person. The output reveals they are a different kind of person. This is uncomfortable. It is also the most useful piece of information they will receive in years.</p>
+
+<div class="data-hero">
+<div class="dh-num">~80%</div>
+<div class="dh-label">of typical adult output is response, not fruit</div>
+<div class="dh-sub">For most readers. The audit will tell you yours. The number is information, not condemnation. The information is what the protocol uses to point at the next move.</div>
+</div>
+
+<div class="think">
+<div class="think-label">Stop and Run The Audit</div>
+<p>Take thirty minutes today. Open a blank document. Walk through your last twelve months. Run each item of output through both filters. Count the response. Count the discretionary. Notice which of the five forms got fed and which did not.</p>
+<hr class="think-line">
+<p>This audit is not optional in the protocol. It is the first move. The protocol cannot work without it because the protocol depends on knowing which form is most missing.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Test Of The Sabbatical.</strong> Most fruit collapses without pressure.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Discretionary Output.</strong> The output that survives.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Five Forms.</strong> Relational, Creative, Servant, Stewardship, Generative.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Audit.</strong> Two filters: would I have produced this without pressure, and does it fall into one of the five forms? Most output is response, not fruit. The gap between identity and actual fruit is usually larger than the person realized.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"Examine yourselves to see whether you are in the faith; test yourselves."<br><span class="ref">2 Corinthians 13:5</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Five</div>
+<div class="ch-num">05</div>
+<div class="ch-title">Fruit In Community</div>
+<div class="ch-sub">No tree bears fruit alone. The orchard is the unit, not the tree.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Last hole in the framework, addressed clearly here. Fruit, like the other two pillars, is not produced in isolation. <strong>The orchard is the unit.</strong> A single tree, even a healthy one, produces less and dies sooner than a tree in an orchard. Pollination requires neighbors. Wind protection requires neighbors. The microbial network of the soil reaches across roots that are not yours. <em>You will not bear the fullness of the fruit you were made to bear by working alone, no matter how disciplined you are.</em></p>
+
+<p>This is one of the most counter cultural truths in modern productivity culture. Almost everything written about fruit, output, and execution treats the individual as the unit and the team as a vehicle. The framework treats the relational network as the unit and the individual as a contributor inside it. The relational, servant, stewardship, and generative forms of fruit are inherently relational. <em>You cannot bear them alone.</em> The creative form can be borne alone for a while, but the deep creative work that lasts is almost always cross pollinated by other minds.</p>
+
+<div class="ba-grid">
+<div class="ba-col before">
+<div class="ba-label">The Solo Tree</div>
+<h4>Alone In The Field</h4>
+<ul>
+<li>Treats output as an individual project</li>
+<li>Optimizes for personal productivity metrics</li>
+<li>Bears fruit only the individual can imagine</li>
+<li>Has no protection in storms</li>
+<li>Dies younger and produces less</li>
+</ul>
+</div>
+<div class="ba-col after">
+<div class="ba-label">The Orchard Tree</div>
+<h4>In Covenant Field</h4>
+<ul>
+<li>Treats output as a network project</li>
+<li>Optimizes for collective fruit, not personal credit</li>
+<li>Bears fruit no single tree could produce</li>
+<li>Survives storms because the orchard does</li>
+<li>Lives longer and produces deeper</li>
+</ul>
+</div>
+</div>
+
+<p>Practically, this means the protocol has a relational component, even when working on what looks like a solo form like creative output. Find or assemble a small set of people who are doing the same kind of fruit work and meet with them regularly. Share the work. Receive feedback. Pollinate. <strong>Most readers will notice that they have been farming alone, even when they thought they had a community.</strong> The community of acquaintances is not the orchard. The orchard is the small set who know your tree, see your fruit, and are tending their own trees alongside yours.</p>
+
+<div class="grand-quote">
+<blockquote>The orchard is the unit. The tree is a contributor. The man who works alone bears less fruit than he was capable of, no matter how disciplined the work was.</blockquote>
+<cite>The Orchard Principle</cite>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Test Of The Sabbatical.</strong> Most fruit collapses without pressure.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Discretionary Output.</strong> The output that survives.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Five Forms.</strong> Relational, Creative, Servant, Stewardship, Generative.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Audit.</strong> Two filters reveal what is fruit and what is response.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Fruit In Community.</strong> The orchard is the unit. Four of the five forms cannot be borne alone. Most readers have been farming alone even when they thought they had community. The orchard is the small set who know your tree, see your fruit, and are tending alongside yours.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"As iron sharpens iron, so one person sharpens another."<br><span class="ref">Proverbs 27:17</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Six</div>
+<div class="ch-num">06</div>
+<div class="ch-title">The Fruit Protocol</div>
+<div class="ch-sub">Ninety days. The audit. The shift. The orchard.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Final concrete protocol. Cumulative phases. Designed to work whether you read this playbook first or last in the series. The protocol assumes you have done at least the basic work of Source and Soil. If you have not, the fruit work will be shallow because the engine will not have caught up. Run this protocol after your Source pillar has been in motion for at least 60 days.</p>
+
+<div class="protocol">
+<div class="protocol-head">Days 1 to 30 &middot; Phase One</div>
+<div class="protocol-grid">
+<div class="protocol-card">
+<div class="protocol-num">Day 1</div>
+<div class="protocol-title">Run The Audit</div>
+<p>The full audit from Chapter Four. Last twelve months of output. Both filters. Count response. Count discretionary. Map to the five forms. Note the dying branches. The audit is the foundation of everything that follows.</p>
+</div>
+<div class="protocol-card">
+<div class="protocol-num">Daily</div>
+<div class="protocol-title">15 Minute Discretionary</div>
+<p>Each day, fifteen minutes on output that would not happen if no one was paying you. Could be writing, calling someone, working on the side project, building a relationship. The fifteen minutes do not have to be productive. They have to be discretionary.</p>
+</div>
+<div class="protocol-card">
+<div class="protocol-num">By Day 30</div>
+<div class="protocol-title">First Discretionary Habit</div>
+<p>The fifteen minutes have stuck. You notice the day feels different on the days you do it. Small. Real. The first crack in response output's monopoly on your week.</p>
+</div>
+</div>
+</div>
+
+<div class="protocol">
+<div class="protocol-head">Days 31 to 60 &middot; Phase Two</div>
+<div class="protocol-grid">
+<div class="protocol-card">
+<div class="protocol-num">Identify</div>
+<div class="protocol-title">The Most Missing Form</div>
+<p>From the audit, name the form most absent in your tree. Likely Servant or Generative for most readers, both being most undervalued by current culture. Commit to growing this form for the next 60 days, not just the discretionary output in general.</p>
+</div>
+<div class="protocol-card">
+<div class="protocol-num">Add</div>
+<div class="protocol-title">One Weekly Practice In That Form</div>
+<p>If Servant: schedule one weekly hour somewhere humans need a face. If Generative: schedule one weekly hour with a specific person you are intentionally raising. Specific. Scheduled. Small enough to do.</p>
+</div>
+<div class="protocol-card">
+<div class="protocol-num">By Day 60</div>
+<div class="protocol-title">First Form Growth</div>
+<p>The dying branch is no longer dying. You have produced fruit in the form that was empty. The fruit is small. The branch is alive. The growth from here is years, but the growth has begun.</p>
+</div>
+</div>
+</div>
+
+<div class="protocol">
+<div class="protocol-head">Days 61 to 90 &middot; Phase Three</div>
+<div class="protocol-grid">
+<div class="protocol-card">
+<div class="protocol-num">Find</div>
+<div class="protocol-title">The Orchard</div>
+<p>Identify two or three people who are doing the same fruit work, especially in the form you are growing. Schedule monthly meetings. Share the work. Pollinate. The orchard is the missing infrastructure for almost every solo grower.</p>
+</div>
+<div class="protocol-card">
+<div class="protocol-num">Reduce</div>
+<div class="protocol-title">One Response Output</div>
+<p>Identify one piece of response output you have been doing that does not feed any of the five forms. Eliminate it. Use the recovered time for discretionary output. The shift is gradual. This is the first piece.</p>
+</div>
+<div class="protocol-card">
+<div class="protocol-num">By Day 90</div>
+<div class="protocol-title">First Re Audit</div>
+<p>Run the audit again, just for the past 90 days. The discretionary count should be higher. The five forms should show more balance. The dying branch should have leaves. The pillar has begun to hold.</p>
+</div>
+</div>
+</div>
+
+<div class="grand-quote">
+<blockquote>The pillar is not built in ninety days. The orchard is not raised in ninety days. But ninety days is enough to taste the first fruit that you would have produced even if no one was paying.</blockquote>
+<cite>The Fruit Protocol</cite>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Test Of The Sabbatical.</strong> Most fruit collapses without pressure.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Discretionary Output.</strong> The output that survives.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Five Forms.</strong> Relational, Creative, Servant, Stewardship, Generative.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Audit.</strong> Two filters.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Fruit In Community.</strong> The orchard is the unit.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Fruit Protocol.</strong> 90 days. The audit. 15 minutes daily discretionary. One weekly practice in the most missing form. The orchard. One reduced response output. By day 90 the dying branch has leaves.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"The fruit of righteousness will be peace; the effect of righteousness will be quietness and confidence forever."<br><span class="ref">Isaiah 32:17</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Seven</div>
+<div class="ch-num">07</div>
+<div class="ch-title">Fruit In The Coming World</div>
+<div class="ch-sub">When the response output is automated, the discretionary output is the only output left.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>The pattern of the last decade is already telling the story. Each year, more of what humans were paid to do for response output gets automated. The administrative work. The analytical work. The basic creative production. The customer service. The data entry. The translation. The transcription. The first level of medical, legal, and financial advice. None of this disappears overnight. <em>It thins.</em> The response engine that has been the default source of human income gets less and less compensated and less and less satisfying.</p>
+
+<p>What survives, in the new economy, is the discretionary output. Specifically, the output in the five forms. <strong>The relational, creative, servant, stewardship, and generative branches are the parts of the orchard that AI cannot fully automate, because the value of these forms is the human producing them.</strong> The economy is going to reprice these slowly, as the response output gets cheaper. People who built discretionary output during the current era will have a head start that may compound into the largest advantage of their lives.</p>
+
+<div class="glow-box">
+<h3>The Coming Reprice</h3>
+<p>For the past century, the market has paid heavily for response output and barely paid at all for the five forms. <em>That is going to invert.</em> Response output is being automated to near zero. The five forms are being unmasked as what humans were always supposed to be doing. <strong>Watch what happens to the price of presence over the next twenty years.</strong> Watch what happens to the demand for actual mentorship, actual servant work, actual creative authorship. The repricing is already starting.</p>
+<p>This means the work in this playbook is not just spiritual or philosophical. It is also <em>financial preparation</em> for the world that is coming. The people who built fruit in the five forms during the current era will be valued differently in the new era. The people who only built response output will be the ones whose work disappears.</p>
+</div>
+
+<p>The both realities frame holds especially well for this pillar. Right now, the audit tells you the truth about what your life has actually been producing, which is information you can use today regardless of any future. The fifteen minute daily discretionary practice produces immediate compounding benefit. The shift to the five forms produces a more meaningful current life and a more durable future life. <em>Whatever the timing of the abundance, the work itself is independent of the timing.</em> The work was always the right work. Abundance just makes the right work more obvious by removing the wrong work.</p>
+
+<div class="data-hero">
+<div class="dh-num">5 forms</div>
+<div class="dh-label">remain meaningfully human in an automated world</div>
+<div class="dh-sub">Relational. Creative. Servant. Stewardship. Generative. Build your tree from these. The market will eventually reward what the framework already names.</div>
+</div>
+
+<div class="think">
+<div class="think-label">Stop and Decide</div>
+<p>You have read four thousand words on what fruit actually is and the protocol to begin growing the right kind. The older voices will start arguing within the hour. They will tell you the audit is dramatic, the five forms are too narrow, that you can do this later, that your current output is fine.</p>
+<hr class="think-line">
+<p>Decide right now whether you will run the audit this week. Decide whether you will install the fifteen minute daily discretionary practice. The decision is the entire fork in the road.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Test Of The Sabbatical.</strong> Most fruit collapses without pressure.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Discretionary Output.</strong> The output that survives.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Five Forms.</strong> Relational, Creative, Servant, Stewardship, Generative.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Audit.</strong> Reveals fruit versus response.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Fruit In Community.</strong> The orchard is the unit.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Fruit Protocol.</strong> 90 days, three phases.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Fruit In The Coming World.</strong> Response output is automating to near zero. The five forms are being unmasked. The market will reprice. The work in this playbook is also financial preparation for the world that is coming.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"Whoever sows generously will also reap generously."<br><span class="ref">2 Corinthians 9:6</span></p>
+</div>
+
+<div class="page section prose">
+
+<p>You now hold the architecture of the third pillar and the completion of the framework. The Test Of The Sabbatical. Discretionary Output. The Five Forms. The Audit. Fruit In Community. The Fruit Protocol. Fruit In The Coming World. Combined with the Source pillar and the Soil pillar from the previous playbooks, you now hold the entire trinity. <strong>Source, Soil, Fruit. Identity, Stability, Execution. Three pillars, three protocols, three rebuilds.</strong></p>
+
+<p>You also hold a decade of work. None of these pillars get built in ninety days. The protocols are entry points. The well gets deeper across years. The soil gets richer across years. The orchard grows across years. <em>What you have at the end of the protocols is the beginning, not the destination.</em> But the beginning is what most people never reach. Most people read frameworks and never start. The reader who starts is in a different category by the second week.</p>
+
+</div>
+
+<div class="page">
+<div class="series-conclusion">
+<div class="sc-label">The Series Complete</div>
+<h3>The Eden Pattern</h3>
+<p>Four playbooks. The frame, then each pillar. Identity received from a Source. Stability built through pruning. Execution as discretion. The trinity that holds a human life together in any era, scarcity or abundance. The pregame is over. The work is yours. The garden is returning. <strong>Arrive ready.</strong></p>
+</div>
+</div>
+
+<div class="page section">
+<div class="final-test">
+<h3>Can You Answer These Without Looking Back?</h3>
+<p class="test-sub">Eight questions for the third pillar plus the synthesis of the whole trinity.</p>
+<div class="test-q"><div class="test-num">Question 1</div><p>What is the Test Of The Sabbatical, and what does it reveal about most modern output?</p></div>
+<div class="test-q"><div class="test-num">Question 2</div><p>What is discretionary output, and how does it differ from response output?</p></div>
+<div class="test-q"><div class="test-num">Question 3</div><p>Name the five forms of fruit that remain meaningfully human in an automated world.</p></div>
+<div class="test-q"><div class="test-num">Question 4</div><p>What are the two filters of the audit, and what does the audit typically reveal?</p></div>
+<div class="test-q"><div class="test-num">Question 5</div><p>Why is the orchard the unit and not the tree?</p></div>
+<div class="test-q"><div class="test-num">Question 6</div><p>Walk through the three phases of the 90 day Fruit Protocol.</p></div>
+<div class="test-q"><div class="test-num">Question 7</div><p>How will the market reprice the five forms over the next twenty years?</p></div>
+<div class="test-q"><div class="test-num">Question 8</div><p>Connect the three pillars: how does Source feed Soil, how does Soil refine Fruit, and how does Fruit feed back to Source?</p></div>
+</div>
+</div>
+
+<div class="page section">
+<div class="prompt-card">
+<h3>Continue The Conversation</h3>
+<p>Copy these prompts into any AI and let the work deepen:</p>
+<p><code>"Walk me through running the fruit audit on my last twelve months. Ask me diagnostic questions to separate response output from discretionary output."</code></p>
+<p><code>"Help me identify which of the five forms is most absent in my tree. Then design a weekly practice to begin growing that form."</code></p>
+<p><code>"I want to find an orchard for my [Servant / Creative / Generative] form work. Help me identify two or three people I could meet with monthly."</code></p>
+<p><code>"Map the trinity to a specific decision I am facing right now. How is each pillar being tested, and which one is the actual fork in the road?"</code></p>
+</div>
+</div>
+
+<div class="ribbon">
+<p>"He has made everything beautiful in its time. He has also set eternity in the human heart."<br><span class="ref">Ecclesiastes 3:11</span></p>
+</div>
+
+<div class="series-progress" style="padding:32px 24px;background:var(--cream-warm);border-top:1px solid rgba(15,8,7,0.06)">
+  <div style="font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:14px">The Eden Pattern</div>
+  <div class="series-dots">
+    <span class="series-dot done" title="Before The Garden Returns"></span>
+    <span class="series-dot done" title="The Source"></span>
+    <span class="series-dot done" title="The Soil"></span>
+    <span class="series-dot active" title="The Fruit"></span>
+  </div>
+  <div class="series-dot-label" style="color:var(--text-muted)">Part 4 of 4 &middot; The Fruit</div>
+</div>
+
+<section class="finale">
+<h2>Bear what you would still bear<br><strong>if no one was paying you to bear it.</strong></h2>
+</section>
+
+<footer class="footer">
+<p>The Fruit &middot; The Eden Pattern (Part 4 of 4) &middot; KingdomBuilders AI<br><a href="./">View All Playbooks</a></p>
+</footer>
+</body>
+</html>

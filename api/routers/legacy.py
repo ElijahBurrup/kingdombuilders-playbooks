@@ -261,6 +261,10 @@ LANDING_ROUTES: dict[str, str] = {
     "/thethreetables": "the-three-tables.html",
     "/thekintsugibow": "the-kintsugi-bowl.html",
     "/theunfinishedsong": "the-unfinished-song.html",
+    "/beforethegardenreturns": "before-the-garden-returns.html",
+    "/thesource": "the-source.html",
+    "/thesoil": "the-soil.html",
+    "/thefruit": "the-fruit.html",
 }
 
 # ============================================================================

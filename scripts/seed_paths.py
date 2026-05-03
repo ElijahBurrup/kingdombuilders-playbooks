@@ -185,6 +185,24 @@ PATHS = [
              "You have seen AI generate text, images, and video. Now hear it generate music. The lyrebird learned every sound in the forest. She did not write any of them. She learned to play them all."),
         ],
     },
+    {
+        "slug": "eden-pattern",
+        "title": "The Eden Pattern",
+        "description": "Four playbooks. A pregame manual for AI super abundance. The trinity that holds a human life together in any era: Source, Soil, Fruit. The frame and the diagnostic, then each pillar deeply rebuilt. Useful now. Critical in five years.",
+        "theme_tag": "faith",
+        "emoji": "\U0001F33F",
+        "color": "#4A5D3E",
+        "steps": [
+            ("before-the-garden-returns",
+             None),
+            ("the-source",
+             "The diagnostic named your weakest pillar. For most readers it is Identity. Pillar One is rebuilt by switching Sources, not by trying harder. Prayer is the daily mechanism."),
+            ("the-soil",
+             "Source is being dug. Now turn the soil it sits in. Voluntary suffering replaces the involuntary kind that abundance is removing. Seven domains. Three picked. Begin this week."),
+            ("the-fruit",
+             "Soil is worked. Source is flowing. Now bear what would still grow if no one was paying you to grow it. Run the audit. Find the dying branch. The five forms remain when the rest is automated."),
+        ],
+    },
 ]
 
 

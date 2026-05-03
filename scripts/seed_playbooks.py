@@ -80,6 +80,12 @@ SERIES_DEFS = [
         "description": "A 4-part series explaining how AI actually works: LLMs, images, video, and music, each through a different animal parable.",
         "display_order": 5,
     },
+    {
+        "name": "The Eden Pattern",
+        "slug": "eden-pattern",
+        "description": "A 4-part series. A pregame manual for the AI super abundance world. The trinity that holds a human life together in any era: Source, Soil, Fruit. Plus the 7 imbalance modes that diagnose which pillar to rebuild first.",
+        "display_order": 6,
+    },
 ]
 
 # ---------------------------------------------------------------------------
@@ -131,6 +137,10 @@ PLAYBOOKS_DATA = [
     {"slug": "the-cuttlefishs-canvas", "title": "The Cuttlefish\u2019s Canvas", "route": "/thecuttlefishscanvas", "category": "technology", "series": "how-ai-works", "series_order": 2, "landing_file": "the-cuttlefishs-canvas.html", "asset_file": "The_Cuttlefishs_Canvas.html", "cover_emoji": "\U0001f9ac"},
     {"slug": "the-centipedes-march", "title": "The Centipede\u2019s March", "route": "/thecentipedesmarch", "category": "technology", "series": "how-ai-works", "series_order": 3, "landing_file": "the-centipedes-march.html", "asset_file": "The_Centipedes_March.html", "cover_emoji": "\U0001fab1"},
     {"slug": "the-lyrebirds-echo", "title": "The Lyrebird\u2019s Echo", "route": "/thelyrebirdsecho", "category": "technology", "series": "how-ai-works", "series_order": 4, "landing_file": "the-lyrebirds-echo.html", "asset_file": "The_Lyrebirds_Echo.html", "cover_emoji": "\U0001f426"},
+    {"slug": "before-the-garden-returns", "title": "Before The Garden Returns", "route": "/beforethegardenreturns", "category": "faith", "series": "eden-pattern", "series_order": 1, "landing_file": "before-the-garden-returns.html", "asset_file": "Before_The_Garden_Returns.html", "cover_emoji": "\U0001f33f"},
+    {"slug": "the-source", "title": "The Source", "route": "/thesource", "category": "faith", "series": "eden-pattern", "series_order": 2, "landing_file": "the-source.html", "asset_file": "The_Source.html", "cover_emoji": "\U0001f4a7"},
+    {"slug": "the-soil", "title": "The Soil", "route": "/thesoil", "category": "resilience", "series": "eden-pattern", "series_order": 3, "landing_file": "the-soil.html", "asset_file": "The_Soil.html", "cover_emoji": "\U0001f33e"},
+    {"slug": "the-fruit", "title": "The Fruit", "route": "/thefruit", "category": "productivity", "series": "eden-pattern", "series_order": 4, "landing_file": "the-fruit.html", "asset_file": "The_Fruit.html", "cover_emoji": "\U0001f350"},
 ]
 
 

@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Soil | Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --night:#0E0A06;--loam:#1A1208;--bark:#2A1E10;--mid:#3D2C18;
+ --copper:#A86A30;--copper-glow:#C88A50;--rust:#8A4A20;
+ --gold:#D4A843;--gold-glow:#E8C96A;--gold-pale:#F5E0A8;--gold-soft:rgba(212,168,67,0.08);
+ --amber:#C8923A;--moss-dark:#586A48;
+ --cream:#F2EDE0;--cream-warm:#E8DECC;--cream-deep:#D4C8B0;
+ --text:#1F1610;--text-light:#4A3D2D;--text-muted:#7A6A55;
+ --white:#FFFFFF;--radius:16px;
+ --shadow-soft:0 2px 16px rgba(14,10,6,0.08);
+ --shadow-mid:0 4px 28px rgba(14,10,6,0.14);
+ --before-bg:#F0E5D8;--before-border:#A86A30;--before-text:#5A2E10;
+ --after-bg:#E8E5D4;--after-border:#586A48;--after-text:#1F1610
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--cream);line-height:1.82;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
+.page{max-width:720px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--loam);font-weight:700}
+.prose em{color:var(--copper);font-style:italic}
+.prose h2{font-size:1.4rem;color:var(--loam);margin:40px 0 16px;letter-spacing:-0.01em}
+
+dfn.def{font-style:normal;border-bottom:1.5px dotted var(--gold);cursor:help;position:relative}
+dfn.def:hover::after{content:attr(data-def);position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:var(--loam);color:var(--cream);padding:8px 14px;border-radius:8px;font-size:0.78rem;font-family:'Nunito',sans-serif;white-space:normal;width:280px;text-align:center;z-index:100;box-shadow:0 4px 16px rgba(14,10,6,0.3);line-height:1.5;pointer-events:none}
+
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;
+ background:linear-gradient(175deg,#06040A 0%,var(--night) 25%,var(--loam) 55%,var(--bark) 85%,var(--mid) 100%);
+ position:relative;overflow:hidden}
+.root{position:absolute;background:linear-gradient(to bottom,transparent,rgba(168,106,48,0.18));pointer-events:none;animation:root-pulse ease-in-out infinite}
+.root:nth-child(1){left:10%;top:20%;width:2px;height:60%;animation-duration:6s}
+.root:nth-child(2){left:25%;top:30%;width:1.5px;height:55%;animation-duration:7s;animation-delay:-2s;transform:rotate(8deg)}
+.root:nth-child(3){left:42%;top:25%;width:2px;height:65%;animation-duration:8s;animation-delay:-4s;transform:rotate(-4deg)}
+.root:nth-child(4){left:60%;top:32%;width:1.5px;height:50%;animation-duration:6.5s;animation-delay:-1s;transform:rotate(6deg)}
+.root:nth-child(5){left:75%;top:22%;width:2px;height:62%;animation-duration:7.5s;animation-delay:-3s;transform:rotate(-7deg)}
+.root:nth-child(6){left:88%;top:35%;width:1.5px;height:48%;animation-duration:6s;animation-delay:-5s;transform:rotate(5deg)}
+@keyframes root-pulse{0%,100%{opacity:0.3}50%{opacity:0.7}}
+.dust{position:absolute;width:1.5px;height:1.5px;background:rgba(232,192,96,0.6);border-radius:50%;animation:dust-drift linear infinite;pointer-events:none}
+.dust:nth-child(7){left:18%;animation-duration:18s;animation-delay:0s}
+.dust:nth-child(8){left:45%;animation-duration:22s;animation-delay:-5s}
+.dust:nth-child(9){left:68%;animation-duration:20s;animation-delay:-9s}
+.dust:nth-child(10){left:85%;animation-duration:24s;animation-delay:-14s}
+@keyframes dust-drift{0%{top:110%;opacity:0}10%{opacity:0.7}90%{opacity:0.3}100%{top:-5%;opacity:0;transform:translateX(40px)}}
+.sun-fade{position:absolute;top:8%;right:12%;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle at 50% 50%,rgba(212,168,67,0.25) 0%,rgba(168,106,48,0.1) 50%,transparent 80%);box-shadow:0 0 50px rgba(168,106,48,0.18);pointer-events:none}
+.ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.025;mix-blend-mode:overlay;pointer-events:none}
+.cover-content{position:relative;z-index:2;padding:48px 24px}
+.cover-badge{display:inline-block;padding:6px 22px;border:1px solid rgba(212,168,67,0.3);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.67rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--gold-glow);margin-bottom:16px}
+.cover-series{display:inline-block;padding:4px 16px;border:1px solid rgba(212,168,67,0.2);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.58rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:36px}
+.cover h1{font-family:'Nunito',sans-serif;font-size:clamp(2.4rem,6.4vw,4rem);font-weight:900;color:var(--white);line-height:1.06;margin-bottom:4px}
+.cover h1 strong{font-weight:900;color:var(--gold-glow);display:block;font-size:clamp(2.8rem,7.6vw,4.8rem)}
+.cover-tagline{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.6);margin-top:24px;line-height:1.75;max-width:580px;margin-left:auto;margin-right:auto}
+.cover-tagline em{color:var(--gold-pale);font-style:normal;font-weight:600}
+.cover-sub{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.32);margin-top:14px}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.58rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-top:48px}
+
+.series-progress{text-align:center;padding:24px 24px 12px;background:transparent}
+.series-dots{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px}
+.series-dot{width:12px;height:12px;border-radius:50%;border:2px solid rgba(212,168,67,0.3);background:transparent}
+.series-dot.active{background:var(--gold);border-color:var(--gold);box-shadow:0 0 8px rgba(212,168,67,0.4)}
+.series-dot.done{background:rgba(212,168,67,0.4);border-color:rgba(212,168,67,0.5)}
+.series-dot-label{font-family:'Poppins',sans-serif;font-size:0.55rem;color:rgba(255,255,255,0.42);letter-spacing:3px;text-transform:uppercase}
+
+.ch-head{background:linear-gradient(170deg,var(--loam),var(--bark));padding:72px 24px 52px;position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23A86A30' stroke-width='0.4' opacity='0.08'%3E%3Cpath d='M40 0 L40 80 M0 40 L80 40 M10 10 L70 70 M70 10 L10 70'/%3E%3C/g%3E%3C/svg%3E")}
+.ch-badge{display:inline-block;padding:4px 16px;background:rgba(212,168,67,0.12);border:1px solid rgba(212,168,67,0.3);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:20px;position:relative;z-index:2}
+.ch-num{font-family:'Nunito',sans-serif;font-size:5.5rem;font-weight:900;line-height:0.9;color:rgba(212,168,67,0.18);margin-bottom:-10px;position:relative;z-index:2}
+.ch-title{font-family:'Nunito',sans-serif;font-size:2.1rem;font-weight:900;color:var(--white);line-height:1.15;letter-spacing:-0.02em;margin-bottom:10px;position:relative;z-index:2}
+.ch-sub{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.55);line-height:1.6;position:relative;z-index:2}
+
+.ribbon{text-align:center;padding:22px 24px;background:linear-gradient(135deg,rgba(212,168,67,0.05),rgba(168,106,48,0.07));border-top:1.5px solid rgba(212,168,67,0.15);border-bottom:1.5px solid rgba(212,168,67,0.15)}
+.ribbon p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:var(--text-light);max-width:540px;margin:0 auto}
+.ribbon .ref{font-weight:600;color:var(--copper);font-style:normal}
+
+.char-grid{display:grid;gap:24px;margin:40px 0}
+@media(min-width:640px){.char-grid{grid-template-columns:1fr 1fr 1fr}}
+.char-card{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft);transition:all 0.3s ease}
+.char-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-mid)}
+.char-head{background:linear-gradient(135deg,var(--gold-soft),rgba(168,106,48,0.06));padding:18px 20px;border-bottom:1px solid var(--cream-deep);display:flex;align-items:center;gap:14px}
+.char-emoji{font-size:2rem;line-height:1;display:flex;align-items:center;justify-content:center}
+.char-name{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;color:var(--loam);line-height:1.25}
+.char-title{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-top:2px}
+.char-body{padding:20px}
+.char-body p{font-size:0.92rem;color:var(--text-light);line-height:1.75;margin:0}
+
+.scene{background:linear-gradient(135deg,var(--cream-warm),var(--cream));border:1px solid var(--cream-deep);border-radius:var(--radius);padding:28px;margin:32px 0;box-shadow:var(--shadow-soft)}
+.scene-label{font-family:'Nunito',sans-serif;font-size:0.68rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--copper);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.scene h4{font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:800;color:var(--loam);margin-bottom:14px;line-height:1.3}
+.scene p{font-size:0.95rem;color:var(--text-light);line-height:1.78;margin-bottom:14px}
+.scene p:last-child{margin-bottom:0}
+
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:36px 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft)}
+@media(max-width:600px){.ba-grid{grid-template-columns:1fr}}
+.ba-col{padding:28px 24px}
+.ba-col.before{background:var(--before-bg);border-right:2px solid var(--cream-deep)}
+.ba-col.after{background:var(--after-bg)}
+@media(max-width:600px){.ba-col.before{border-right:none;border-bottom:2px solid var(--cream-deep)}}
+.ba-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px}
+.ba-col.before .ba-label{color:var(--before-border)}
+.ba-col.after .ba-label{color:var(--after-border)}
+.ba-col h4{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;margin-bottom:10px;line-height:1.3}
+.ba-col.before h4{color:var(--before-text)}
+.ba-col.after h4{color:var(--after-text)}
+.ba-col p{font-size:0.88rem;line-height:1.7;margin-bottom:8px}
+.ba-col.before p{color:#5A2E10}
+.ba-col.after p{color:#1F1610}
+.ba-col ul{list-style:none;padding:0;margin:0}
+.ba-col ul li{font-size:0.88rem;line-height:1.7;padding:4px 0 4px 18px;position:relative}
+.ba-col.before ul li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:8px;border-radius:50%;background:var(--before-border);opacity:0.55}
+.ba-col.after ul li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:8px;border-radius:50%;background:var(--after-border);opacity:0.55}
+
+.data-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin:32px 0}
+.data-box{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:24px 16px;text-align:center;box-shadow:var(--shadow-soft)}
+.data-num{font-family:'Nunito',sans-serif;font-size:1.8rem;font-weight:900;color:var(--copper);line-height:1;margin-bottom:6px}
+.data-label{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+
+.data-hero{text-align:center;padding:48px 24px;margin:40px 0;background:linear-gradient(135deg,var(--loam),var(--bark));border-radius:var(--radius);position:relative;overflow:hidden}
+.data-hero::before{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(212,168,67,0.1) 0%,transparent 70%);border-radius:50%}
+.data-hero .dh-num{font-family:'Nunito',sans-serif;font-size:3.4rem;font-weight:900;color:var(--gold-glow);line-height:1;margin-bottom:10px;position:relative}
+.data-hero .dh-label{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.5);position:relative}
+.data-hero .dh-sub{font-family:'Lora',serif;font-size:0.92rem;font-style:italic;color:rgba(255,255,255,0.6);margin-top:12px;max-width:440px;margin-left:auto;margin-right:auto;position:relative}
+
+.glow-box{background:linear-gradient(135deg,var(--loam),var(--bark));border:2px solid rgba(212,168,67,0.22);border-radius:var(--radius);padding:32px;margin:36px 0;position:relative;overflow:hidden;box-shadow:0 4px 24px rgba(14,10,6,0.2)}
+.glow-box::before{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(212,168,67,0.1) 0%,transparent 70%);border-radius:50%}
+.glow-box h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--gold-glow);margin-bottom:14px;position:relative}
+.glow-box p{font-size:0.95rem;color:rgba(255,255,255,0.85);line-height:1.78;position:relative;margin-bottom:12px}
+.glow-box p:last-child{margin-bottom:0}
+.glow-box strong{color:var(--gold-pale)}
+.glow-box em{color:var(--copper-glow);font-style:italic}
+
+.grand-quote{text-align:center;padding:48px 24px;margin:40px 0;position:relative}
+.grand-quote::before{content:'\201C';font-family:'Lora',serif;font-size:8rem;color:rgba(212,168,67,0.15);position:absolute;top:-20px;left:50%;transform:translateX(-50%);line-height:1}
+.grand-quote blockquote{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:var(--loam);line-height:1.7;max-width:540px;margin:0 auto;position:relative}
+.grand-quote cite{display:block;margin-top:16px;font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--copper);font-style:normal}
+
+.root-ck{margin:40px auto;max-width:720px;padding:36px 32px;background:linear-gradient(135deg,rgba(212,168,67,0.05),rgba(168,106,48,0.06));border-radius:var(--radius);border:2px solid rgba(212,168,67,0.18)}
+.root-ck .rc-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.root-ck h4{font-size:1.05rem;color:var(--loam);margin-bottom:20px}
+.r-item{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
+.r-item:last-child{margin-bottom:0}
+.r-dot{flex-shrink:0;width:8px;height:8px;border-radius:50%;background:var(--gold);margin-top:7px;box-shadow:0 0 6px rgba(212,168,67,0.3)}
+.r-text{font-size:0.92rem;color:var(--text-light);line-height:1.7}
+
+.viz{margin:32px 0;border-radius:var(--radius);border:2px solid var(--gold);overflow:hidden;box-shadow:0 0 20px rgba(212,168,67,0.1)}
+.viz-inner{padding:0}
+.viz-top{display:flex;align-items:center;gap:16px;padding:20px 28px;background:linear-gradient(135deg,rgba(212,168,67,0.1),rgba(212,168,67,0.04))}
+.viz-icon{flex-shrink:0;width:40px;height:40px;border-radius:50%;background:var(--gold);color:var(--white);display:flex;align-items:center;justify-content:center}
+.viz-icon svg{width:20px;height:20px}
+.viz-meta .viz-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.viz-meta h4{font-size:1rem;color:var(--loam);margin:0}
+.viz-body{padding:24px 28px;background:var(--white)}
+.viz-body p{font-size:0.92rem;color:var(--text-light);line-height:1.78;margin-bottom:12px}
+.viz-body strong{color:var(--loam);font-weight:700}
+.viz-body em{color:var(--copper);font-style:italic;font-weight:500}
+.viz-body p:last-child{margin-bottom:0}
+.viz-trigger{padding:16px 28px;background:linear-gradient(135deg,rgba(212,168,67,0.07),rgba(212,168,67,0.02));border-top:1px solid rgba(212,168,67,0.15);font-size:0.88rem;color:var(--loam);font-style:italic}
+
+.think{background:linear-gradient(135deg,rgba(212,168,67,0.07),rgba(168,106,48,0.05));border:2px solid rgba(212,168,67,0.18);border-radius:var(--radius);padding:28px;margin:36px 0}
+.think-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.think p{font-size:0.95rem;color:var(--text-light);line-height:1.78;margin-bottom:12px}
+.think p:last-child{margin-bottom:0}
+.think-line{border:none;border-bottom:1.5px dashed rgba(212,168,67,0.3);margin:8px 0}
+
+/* Domain grid (7 voluntary discomforts) */
+.domain-grid{display:grid;gap:14px;margin:36px 0}
+@media(min-width:640px){.domain-grid{grid-template-columns:1fr 1fr}}
+.domain{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:22px 20px;box-shadow:var(--shadow-soft);position:relative;overflow:hidden;border-left:5px solid var(--copper)}
+.domain-num{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--copper);margin-bottom:6px}
+.domain-name{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:var(--loam);margin-bottom:6px}
+.domain p{font-size:0.85rem;color:var(--text-light);line-height:1.65;margin:0}
+
+/* Protocol */
+.protocol{margin:36px 0}
+.protocol-head{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--copper);margin-bottom:16px;text-align:center}
+.protocol-grid{display:grid;gap:14px}
+@media(min-width:640px){.protocol-grid{grid-template-columns:1fr 1fr 1fr}}
+.protocol-card{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:22px 20px;box-shadow:var(--shadow-soft);position:relative;overflow:hidden}
+.protocol-card::before{content:'';position:absolute;top:0;left:0;height:3px;width:60%;background:linear-gradient(90deg,var(--gold),transparent)}
+.protocol-num{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.protocol-title{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:var(--loam);margin-bottom:8px}
+.protocol-card p{font-size:0.85rem;color:var(--text-light);line-height:1.65;margin:0}
+
+.final-test{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:36px;margin:40px 0;box-shadow:var(--shadow-soft)}
+.final-test h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--loam);margin-bottom:6px}
+.final-test .test-sub{font-size:0.85rem;color:var(--text-muted);margin-bottom:24px;font-style:italic}
+.test-q{padding:14px 0;border-bottom:1px solid var(--cream-deep)}
+.test-q:last-child{border-bottom:none}
+.test-num{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.test-q p{font-size:0.92rem;color:var(--text);line-height:1.65}
+
+.prompt-card{background:linear-gradient(135deg,var(--loam),var(--bark));border-radius:var(--radius);padding:36px;margin:40px 0;box-shadow:0 4px 24px rgba(14,10,6,0.2)}
+.prompt-card h3{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;color:var(--gold-glow);margin-bottom:16px}
+.prompt-card p{font-size:0.88rem;color:rgba(255,255,255,0.75);line-height:1.65;margin-bottom:10px}
+.prompt-card code{background:rgba(255,255,255,0.08);padding:2px 8px;border-radius:4px;font-size:0.82rem;color:var(--gold-pale)}
+
+.next-card{background:linear-gradient(135deg,var(--bark),var(--loam));border-radius:var(--radius);padding:36px 32px;margin:40px 0;box-shadow:0 4px 24px rgba(14,10,6,0.2);text-align:center;position:relative;overflow:hidden}
+.next-card::before{content:'';position:absolute;top:-30%;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(245,224,168,0.12) 0%,transparent 70%);border-radius:50%}
+.next-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:12px;position:relative}
+.next-title{font-family:'Nunito',sans-serif;font-size:1.6rem;font-weight:900;color:var(--white);margin-bottom:10px;position:relative}
+.next-tag{font-family:'Lora',serif;font-size:0.92rem;font-style:italic;color:rgba(255,255,255,0.75);margin-bottom:14px;position:relative}
+
+.finale{background:linear-gradient(170deg,var(--night),var(--loam));padding:80px 24px;text-align:center;position:relative;overflow:hidden}
+.finale::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(212,168,67,0.06) 0%,transparent 70%);border-radius:50%}
+.finale h2{font-family:'Nunito',sans-serif;font-size:clamp(1.6rem,4.4vw,2.4rem);font-weight:300;color:rgba(255,255,255,0.75);line-height:1.3;position:relative;margin-bottom:8px}
+.finale h2 strong{font-weight:900;color:var(--gold-glow);display:block}
+
+.footer{text-align:center;padding:48px 24px;background:var(--night);color:rgba(255,255,255,0.3);font-family:'Poppins',sans-serif;font-size:0.6rem;letter-spacing:2px;text-transform:uppercase}
+.footer a{color:var(--gold);text-decoration:none;opacity:0.65}
+.footer a:hover{opacity:1}
+
+@media(max-width:640px){
+  .page{padding:0 20px}
+  .root-ck{margin-left:20px;margin-right:20px;padding:28px 20px}
+  .char-grid,.protocol-grid,.domain-grid{grid-template-columns:1fr}
+  .data-hero .dh-num{font-size:2.6rem}
+  .ch-title{font-size:1.7rem}
+  .ch-num{font-size:4rem}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+</style>
+</head>
+<body>
+
+<section class="cover">
+<div class="root"></div><div class="root"></div><div class="root"></div><div class="root"></div><div class="root"></div><div class="root"></div>
+<div class="dust"></div><div class="dust"></div><div class="dust"></div><div class="dust"></div>
+<div class="sun-fade"></div>
+<div class="ghost-noise"></div>
+<div class="cover-content">
+<div class="cover-badge">Kingdom Builders AI</div><br>
+<div class="cover-series">The Eden Pattern &middot; Part 3 of 4</div>
+<h1>The <strong>Soil</strong></h1>
+<p class="cover-tagline">Pillar Two: Stability through pruning, not equilibrium. The capacity to absorb disturbance without losing your center. In abundance, suffering becomes a discipline because the involuntary kind is being <em>engineered out of the world.</em></p>
+<p class="cover-sub">How To Suffer On Purpose Before You Have To</p>
+<div class="series-progress">
+  <div class="series-dots">
+    <span class="series-dot done" title="Before The Garden Returns"></span>
+    <span class="series-dot done" title="The Source"></span>
+    <span class="series-dot active" title="The Soil"></span>
+    <span class="series-dot" title="The Fruit"></span>
+  </div>
+  <div class="series-dot-label">Part 3 of 4</div>
+</div>
+<p class="cover-author">KingdomBuilders AI</p>
+</div>
+</section>
+
+<div class="ribbon">
+<p>"Every branch in me that does not bear fruit he takes away, and every branch that does bear fruit he prunes, that it may bear more fruit."<br><span class="ref">John 15:2</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Pregame</div>
+<div class="ch-num">00</div>
+<div class="ch-title">The Pillar Most People Will Not Build</div>
+<div class="ch-sub">What you will know when you finish this playbook.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p><strong>If you finish this playbook, you will hold the most counter cultural truth in the entire framework, and you will know how to live by it.</strong> You will understand why the soul that has never been disturbed is not strong but hardpan, why the involuntary suffering that has shaped human character for millennia is being engineered out of the world right now, and what to do about it before your stability pillar atrophies past the point of easy recovery. You will hold the seven domains of voluntary discomfort, the communal mechanism through which real pruning happens, and a 90 day protocol for installing the rhythms that build a soil capable of absorbing what is coming.</p>
+
+<div class="glow-box">
+<h3>Three Bold Claims</h3>
+<p>Real stability is not the absence of disturbance. <strong>It is the capacity to absorb disturbance without losing your center.</strong> It is built only by being disturbed. The soul never broken is not strong. It is hardpan, and the first real disturbance reveals what was actually underneath.</p>
+<p>The world being built around you is removing involuntary suffering at a rate unprecedented in human history. Backbreaking labor, sudden death, famine, disease, financial pressure. The pruning is dwindling. <em>The soil that was being worked for free, by life itself, is going untouched.</em> Anxiety, depression, and identity collapse are climbing in exactly the populations that have the most material abundance. The two facts are connected.</p>
+<p>In abundance, suffering becomes a discipline, not a circumstance. <strong>If you do not deliberately install rhythms of voluntary discomfort, your soil will go unworked.</strong> When real disturbance arrives, and it will, you will have nothing to absorb it with. This playbook is the discipline.</p>
+</div>
+
+<p>This is Part 3 of <em>The Eden Pattern</em>. If your diagnostic in Part 1 placed you in Mode 2 (Pharisee), Mode 5 (Permanent Patient), or Mode 7 (Drift), this is your starting playbook. If you placed in another mode but you have read Part 2, this is your second playbook. The order matters less than the doing. Begin where the diagnostic pointed.</p>
+
+</div>
+
+<div class="page">
+<div class="char-grid">
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji"><svg viewBox="0 0 48 48" width="42" height="42"><path d="M14 8 L14 24 L20 36" stroke="#A86A30" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M14 8 C14 6 16 4 18 4" stroke="#586A48" stroke-width="2" fill="none" stroke-linecap="round"/><line x1="14" y1="14" x2="22" y2="20" stroke="#A86A30" stroke-width="1.5"/><line x1="14" y1="20" x2="22" y2="14" stroke="#A86A30" stroke-width="1.5"/><circle cx="34" cy="20" r="6" fill="none" stroke="#586A48" stroke-width="1.5"/><circle cx="34" cy="20" r="2" fill="#586A48"/></svg></div>
+<div><div class="char-name">The Vinedresser</div><div class="char-title">The One Who Cuts</div></div>
+</div>
+<div class="char-body"><p>Carries the curved blade. Walks the rows in late winter. Cuts the productive branches because the vine cannot feed all of them. Knows which cuts make the plant smaller and which make it stronger. The Vinedresser is rare. In your life, the Vinedresser is sometimes God, sometimes a friend, sometimes hardship itself.</p></div>
+</div>
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji"><svg viewBox="0 0 48 48" width="42" height="42"><rect x="6" y="20" width="36" height="20" fill="#3D2C18"/><line x1="6" y1="20" x2="42" y2="20" stroke="#7A6A55" stroke-width="2"/><circle cx="18" cy="14" r="3" fill="#586A48" opacity="0.4"/><circle cx="32" cy="14" r="3" fill="#586A48" opacity="0.4"/><path d="M18 14 L18 19" stroke="#586A48" stroke-width="1" opacity="0.4"/><path d="M32 14 L32 19" stroke="#586A48" stroke-width="1" opacity="0.4"/></svg></div>
+<div><div class="char-name">The Hardpan</div><div class="char-title">The Soul Untouched</div></div>
+</div>
+<div class="char-body"><p>The soul that has lived in comfort for so long that the surface has crusted over. Looks stable from outside. The plants on the surface are wilting because the roots cannot penetrate. The first real storm reveals what was always underneath. Most modern lives are at this stage and do not know it.</p></div>
+</div>
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji"><svg viewBox="0 0 48 48" width="42" height="42"><path d="M24 8 L24 38" stroke="#586A48" stroke-width="2.5" stroke-linecap="round"/><path d="M24 16 L18 12 M24 16 L30 12" stroke="#586A48" stroke-width="2" stroke-linecap="round"/><path d="M24 24 L16 22 M24 24 L32 22" stroke="#586A48" stroke-width="2" stroke-linecap="round"/><path d="M24 32 L18 30 M24 32 L30 30" stroke="#586A48" stroke-width="2" stroke-linecap="round"/><circle cx="24" cy="40" r="3" fill="#A86A30"/></svg></div>
+<div><div class="char-name">The Wild Root</div><div class="char-title">The Soul Pruned</div></div>
+</div>
+<div class="char-body"><p>The soul that has been cut and grew back stronger. Carries the marks of what was removed. Tolerates disturbance without flinching. Does not seek pain but does not run from it. Becomes the steady presence in other people's storms because the storms cannot move them. Built only one way: by being cut.</p></div>
+</div>
+</div>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter One</div>
+<div class="ch-num">01</div>
+<div class="ch-title">Hardpan</div>
+<div class="ch-sub">The soil that was never disturbed cannot grow anything.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Before any abundance argument, before any AI argument, before any spiritual argument, the agricultural fact has to land. <dfn class="def" data-def="Compacted soil that has not been turned, broken, or amended for so long that it forms a crust. Looks stable. Cannot grow anything because roots cannot penetrate it and water runs off it. Used here as the metaphor for a soul that has lived in comfort long enough that disturbance can no longer move it.">Hardpan</dfn> is what soil becomes when it is not worked. The earth stops accepting water. The roots cannot push through. The microbial life dies. The surface looks stable, even attractive, but nothing grows in it. A farmer who lets a field become hardpan loses the field. The remedy is not gentle. The remedy is to break the surface with a deep tilling blade, fracture the crust, expose the lower layers to air and water, and amend with material that the soil has lost. <em>The healing of hardpan looks identical to the destruction of a normal field.</em></p>
+
+<p>Now extend the metaphor inward. The soul lives by similar rules. A life that arranges itself to never feel resistance, never face hard truths, never grieve, never confess, never let anything be taken from it, becomes hardpan. The surface is calm. The structure looks stable. Nothing is growing. The first real disturbance arrives and the soul cannot absorb it because it has not been worked in years. <strong>What looks like a foundation turns out to be a crust over emptiness.</strong></p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Cancellation</h4>
+<p>A man has avoided difficulty for fifteen years. He has constructed his life so the temperature stays the same. The same job. The same friends, all of whom agree with him. The same routines. He thinks of himself as steady. People around him think of him as steady. He is, in the way hardpan is steady.</p>
+<p>Then his daughter is hurt by another adult, severely, and he has to confront the adult publicly to protect her. He has not had a hard conversation in fifteen years. <em>His system has no tools for this.</em> He freezes. He overreacts. He says the wrong things. He damages the relationship in a way he did not have to. His wife is disappointed. His daughter is disappointed. He is disappointed in himself.</p>
+<p>The crisis was not large by historical standards. Plenty of fathers have faced worse. <strong>But his soil had not been worked.</strong> The first real disturbance found him with no capacity. He had built a life around avoiding the disturbance that would have built the capacity.</p>
+</div>
+
+<p>This is the diagnostic. Walk back through the last twelve months. Try to remember the last genuinely hard conversation you had, the last time you let someone tell you something painful about yourself, the last time you sat with a difficult feeling without immediately routing around it. <em>Hardpan does not look like avoidance.</em> It looks like calm. It looks like maturity. It looks like having figured your life out. It is none of those. It is a soul that has gone unworked long enough that the surface has crusted, and the next storm, when it arrives, will reveal what is actually underneath.</p>
+
+<div class="data-hero">
+<div class="dh-num">~30%</div>
+<div class="dh-label">Increase in major depressive episodes among Gen Z vs prior generations at the same age</div>
+<div class="dh-sub">Material conditions improved. Interior conditions did not. The soil was never worked. The first generation raised in near total comfort is also the first to discover that comfort does not produce stability.</div>
+</div>
+
+<p>This is also the part of the framework that most modern self help refuses to say out loud. The current culture treats discomfort as a problem to be solved. <em>The framework treats discomfort as the medium through which stability is built.</em> These are not the same thing. Most contemporary advice optimizes for comfort and then wonders why anxiety scales with the amount of comfort. The wondering is unnecessary. The mechanism is visible in any garden. <strong>The soil that is never turned cannot grow anything, including the person standing on it.</strong></p>
+
+<div class="think">
+<div class="think-label">Stop and Test The Surface</div>
+<p>Press a thumb into your life right now and notice the resistance. When was the last time you were genuinely, voluntarily uncomfortable? When did you last receive a hard truth about yourself and let it change you? When did you last welcome a season you did not choose?</p>
+<hr class="think-line">
+<p>If the answer to any of these is "I cannot remember," the surface has crusted. The work in this playbook is the deep tilling that breaks the crust before life does it for you on its own brutal schedule.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Hardpan.</strong> The soul that has lived in comfort long enough that the surface has crusted. Looks stable. Cannot absorb disturbance. The first real storm reveals what was underneath. The healing looks like the destruction of a normal field.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"Break up your unplowed ground; for it is time to seek the Lord."<br><span class="ref">Hosea 10:12</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Two</div>
+<div class="ch-num">02</div>
+<div class="ch-title">The Pruning</div>
+<div class="ch-sub">Why growth requires being cut, every season, for life.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>John 15 is the densest agricultural metaphor in scripture and the one most readers have never let actually land. Two sentences. <em>Every branch that does not bear fruit He takes away. Every branch that does bear fruit He prunes, that it may bear more fruit.</em> Read it again. Notice the second sentence. The branches that are <strong>already producing</strong> get cut. Not as punishment. Not because they are doing badly. Because the vine cannot feed every productive branch and continue to produce fruit worth eating. The vinedresser cuts the productive branches so the remaining ones can grow what the field actually needs.</p>
+
+<p>This is the principle. Pruning is not the response to failure. Pruning is what happens to anything that is healthy and growing. <strong>If you are not being pruned, you are not growing.</strong> The absence of cutting in your life is not a sign of doing it right. It is a sign that the vinedresser has not been allowed to walk your rows, or that there is no vinedresser, or that the branches have grown so wild that the cut would now be too painful to receive.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Branches That Were Producing</h4>
+<p>A pastor has built three things over the past decade. A growing church. A small consulting practice. A weekly podcast. All three are bearing fruit. He is proud of all three. He is also exhausted, distant from his wife, and increasingly snappy with his elders. He cannot see the connection because all three things are objectively going well.</p>
+<p>His mentor, a man older and quieter than him, asks one question over lunch. <em>"Which two are you willing to cut?"</em></p>
+<p>The pastor blinks. "Cut? They're all working. Why would I cut them?"</p>
+<p>"Because the vine is exhausting itself feeding all three. The fruit on each one is getting smaller every year. By year four, you'll look healthy and produce nothing worth eating. <strong>The cuts are not punishment. They are protection.</strong> Pick two."</p>
+<p>The pastor cuts the consulting practice and the podcast. Within a year, the church is deeper, the marriage is healed, and the elders trust him again. He had been confusing volume with fruit. The pruning was the only path back to what actually mattered.</p>
+</div>
+
+<p>The application is broader than ministry. Every life accumulates productive branches that have to be cut to keep the whole thing growing. <em>Most people refuse to cut them because the branches are visibly producing.</em> The role at work that pays well but is consuming the marriage. The hobby that started as joy and has become a second job. The friendship that was good five years ago and is now slowly poisoning the soul. The success that was a stretch goal at thirty and is now the ceiling at fifty. None of these are bad. All of them might need cutting. Pruning is not the removal of bad things. <strong>It is the removal of good things in service of better things.</strong></p>
+
+<div class="ba-grid">
+<div class="ba-col before">
+<div class="ba-label">The Avoidance Pattern</div>
+<h4>Refusing The Blade</h4>
+<ul>
+<li>Treat all current productivity as untouchable</li>
+<li>Add new commitments without removing old ones</li>
+<li>Avoid mentors who would name what needs cutting</li>
+<li>Mistake busyness for fruit</li>
+<li>Become exhausted while looking successful</li>
+</ul>
+</div>
+<div class="ba-col after">
+<div class="ba-label">The Pruning Pattern</div>
+<h4>Welcoming The Blade</h4>
+<ul>
+<li>Audit branches annually for what to cut</li>
+<li>Add only when something has been removed</li>
+<li>Invite older voices to name what is overgrown</li>
+<li>Measure fruit, not activity</li>
+<li>Stay in season instead of permanent harvest</li>
+</ul>
+</div>
+</div>
+
+<div class="viz"><div class="viz-inner">
+  <div class="viz-top"><div class="viz-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 L12 22"/><path d="M12 8 L7 5 M12 8 L17 5"/><path d="M12 14 L6 12 M12 14 L18 12"/><path d="M12 19 L8 17 M12 19 L16 17"/></svg></div><div class="viz-meta"><div class="viz-label">Visualize It</div><h4>The Vine In Late Winter</h4></div></div>
+  <div class="viz-body">
+    <p>Picture the vinedresser walking his rows in February. The ground is hard. The wind is sharp. The vine looks dead. He stops at each plant. He studies it. <em>He cuts.</em> Most of what comes off was alive last summer. Most of it produced fruit last fall. He cuts it anyway.</p>
+    <p>An amateur stands at the edge of the field and is horrified. <strong>"You're killing the vine."</strong> The vinedresser does not look up. <em>"I am keeping it alive."</em> Without the cut, the plant exhausts itself feeding too many branches and the fruit gets smaller every year. With the cut, fewer branches but stronger ones, and the fruit, when it arrives, is what wine is made from.</p>
+    <p>This is happening to your life right now whether you welcome it or not. The only question is whether you will work with the vinedresser or against him.</p>
+  </div>
+  <div class="viz-trigger">The cuts are not punishment. They are protection. Welcome the blade in late winter and the vine produces in spring.</div>
+</div></div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Hardpan.</strong> The soul not worked becomes a crust.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Pruning.</strong> The principle from John 15. Pruning happens to what is already producing, not just to what is failing. Healthy growth requires it. Productive branches get cut so the vine does not exhaust itself. Pruning is the removal of good things in service of better things. If you are not being pruned, you are not growing.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"My son, do not despise the Lord's discipline, and do not resent his rebuke, because the Lord disciplines those he loves."<br><span class="ref">Proverbs 3:11-12</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Three</div>
+<div class="ch-num">03</div>
+<div class="ch-title">The Disappearing Disturbance</div>
+<div class="ch-sub">Why involuntary suffering is dwindling, and why that is a problem.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Here is the part of the framework that most readers will instinctively resist. Most of human history has involved continuous involuntary suffering. <em>Famine. Disease. Backbreaking labor. Sudden death. Brutal weather. Loss of children to childhood illness. Unrelenting physical demand.</em> The pruning was constant and unchosen. Even people who did not pursue growth got it anyway, because life delivered it to their doorstep without asking. The ancient world worked the soil for free.</p>
+
+<p>The modern world does not. And the curve is accelerating. Material abundance is rising. Medicine is extending healthy life. Comfort is everywhere. Climate control. Painkillers. Conveniences. Entertainment. <strong>The friction that did the involuntary pruning is dwindling.</strong> Not in a bad way. The reduction of suffering is, on the whole, good. People are not dying of preventable diseases. Children are not buried at the rate they used to be. Backs are not broken from labor. This is real progress.</p>
+
+<p>But there is a second order effect that is rarely named. <em>Stability has historically been a byproduct of involuntary suffering.</em> Humans got pruned whether they wanted to or not. The soil got worked because life worked it. As suffering recedes, the working of the soil recedes with it, unless something replaces the mechanism. <strong>For most people in modern abundance, nothing has replaced it.</strong> The first generation in human history is being raised in conditions of near total material comfort and historically unprecedented psychological fragility. The two are not unconnected.</p>
+
+<div class="data-row">
+<div class="data-box"><div class="data-num">~52%</div><div class="data-label">U.S. teens reporting persistent feelings of sadness or hopelessness</div></div>
+<div class="data-box"><div class="data-num">~3x</div><div class="data-label">anxiety disorder prevalence vs three decades ago</div></div>
+<div class="data-box"><div class="data-num">~70%</div><div class="data-label">young adults reporting feeling unable to handle life's demands</div></div>
+</div>
+
+<p>The numbers describe a population that has more than its grandparents in every external measure and is doing worse than its grandparents in every internal measure. <em>Material abundance is at all time highs. Interior stability is collapsing.</em> The simplest hypothesis that fits the data: when life stopped working the soil, no one installed a replacement mechanism. The hardpan crusted over an entire generation. The first real disturbances now arrive and there is nothing in the soil to absorb them.</p>
+
+<div class="glow-box">
+<h3>The Implication You Have To Hold</h3>
+<p>If life is no longer doing the pruning for free, and if the resulting hardpan produces the kind of fragility we are seeing across the West, then <strong>voluntary suffering is no longer optional.</strong> It is the only way to keep the soil worked. The amateur reads this and recoils. <em>Why would I voluntarily suffer when I do not have to?</em> Because if you do not, the pillar atrophies. And when real disturbance comes, and it will, you will have nothing to absorb it with.</p>
+<p>This is the most counter cultural sentence in the entire framework. It is also the one most people avoid for the longest. <em>It is the sentence that, if received, changes how a person lives.</em> In abundance, suffering becomes a discipline, not a circumstance. The discipline is yours to install. Nobody else will do it for you. Life will not deliver it on the schedule it used to.</p>
+</div>
+
+<p>This is also the strongest argument for why the framework matters now and not just later. Every year that passes, the involuntary pruning gets thinner. Every year, more of the soil work has to be voluntary. The earlier you install the discipline, the deeper the soil gets before the storm. <strong>Most people will install it only after the storm has done its damage.</strong> The framework asks you to install it before.</p>
+
+<div class="think">
+<div class="think-label">Stop and Confront The Math</div>
+<p>If you removed all involuntary discomfort from the last ninety days of your life, and then asked which of the remaining discomforts were chosen by you to build something, what would the answer be?</p>
+<hr class="think-line">
+<p>If the honest answer is "almost none," your soil is being worked almost entirely by accident, and the accidents are getting rarer. The discipline is the part that does not depend on accidents.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Hardpan.</strong> The soul not worked becomes a crust.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Pruning.</strong> Healthy growth requires being cut.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Disappearing Disturbance.</strong> Involuntary suffering has done the soil work for most of human history. The modern world is removing it. Material abundance is rising. Interior stability is collapsing. The two are connected. In abundance, voluntary suffering becomes a discipline. The discipline is yours to install. Nobody will do it for you.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"Consider it pure joy, my brothers and sisters, whenever you face trials of many kinds, because you know that the testing of your faith produces perseverance."<br><span class="ref">James 1:2-3</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Four</div>
+<div class="ch-num">04</div>
+<div class="ch-title">The Seven Domains</div>
+<div class="ch-sub">Where to install voluntary discomfort. Pick at least three.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Voluntary suffering is not abstract. It happens in specific domains, and it has specific protocols. The discipline can be installed by picking at least three of the seven domains below and committing to weekly rhythms in each. Not all seven at once. Not even five at once. <strong>Three, sustained, beats seven, abandoned.</strong> The point is the regularity, not the heroism. Heroic seasons of voluntary suffering followed by months of soft living do not work. The soil needs steady disturbance, not occasional shock.</p>
+
+<div class="domain-grid">
+<div class="domain">
+<div class="domain-num">Domain One</div>
+<div class="domain-name">The Body</div>
+<p>Hard physical work the body does not want. Cold exposure. Fasting. Heavy weights. Long fasted walks. The body learns to absorb stress when stress is delivered on purpose. The body that has never been stressed cannot tolerate the stress that life eventually brings.</p>
+</div>
+<div class="domain">
+<div class="domain-num">Domain Two</div>
+<div class="domain-name">The Mind</div>
+<p>Sustained attention to material that is harder than what the algorithm feeds you. Long form reading. Theology. Memorization. Slow careful argument. The mind that has only consumed easy content cannot think when thinking gets hard.</p>
+</div>
+<div class="domain">
+<div class="domain-num">Domain Three</div>
+<div class="domain-name">The Relational</div>
+<p>Hard conversations the soul wants to avoid. Confession. Apology. Asking for what you need. Saying no to people who expect a yes. The soul that has only had easy conversations is unprepared for the conversations that determine the trajectory of a life.</p>
+</div>
+<div class="domain">
+<div class="domain-num">Domain Four</div>
+<div class="domain-name">The Financial</div>
+<p>Voluntary financial restraint when you can afford more. Generosity that costs something. Refusing the upgrade. Limiting the lifestyle. The soul that has only known financial comfort cannot hold itself when finances tighten or, paradoxically, when they expand without limit.</p>
+</div>
+<div class="domain">
+<div class="domain-num">Domain Five</div>
+<div class="domain-name">The Silent</div>
+<p>Time without input. No phone. No music. No company. The soul that has never been alone with itself does not know itself. Modern life makes this discomfort uniquely available because most people have engineered every silence out of their day.</p>
+</div>
+<div class="domain">
+<div class="domain-num">Domain Six</div>
+<div class="domain-name">The Sacrificial</div>
+<p>Putting yourself in costly service. Hospice volunteering. Serving the poor. Caring for the dying or the broken. The soul that has only been on the receiving end of comfort does not know what it is made of until it has carried someone else's weight.</p>
+</div>
+<div class="domain">
+<div class="domain-num">Domain Seven</div>
+<div class="domain-name">The Confessional</div>
+<p>Naming the thing you do not want named. Out loud. To a person who can hear it. Sin, weakness, addiction, fear, pride, the secret you have carried alone. The soul that has never confessed has never been known. The shadow grows in private and only shrinks in the open.</p>
+</div>
+</div>
+
+<p>The protocol is concrete. Pick three domains. For each, install one weekly practice. The practice has to be specific, scheduled, and small enough that you will actually do it. <em>Not "I will exercise more."</em> "I will do a 20 minute heavy lift on Tuesday and Thursday morning." Not "I will be more open." "I will tell my wife the thing I have been hiding by Sunday night." Not "I will read more." "I will read 30 minutes of the same theology book every weekday before checking my phone." Specificity is the only thing that turns intention into discipline.</p>
+
+<div class="grand-quote">
+<blockquote>The amateur waits for life to bring the disturbance. The disciplined invite the disturbance every week so that when life finally brings the storm, the soil is ready.</blockquote>
+<cite>The Vinedresser's Calendar</cite>
+</div>
+
+<div class="think">
+<div class="think-label">Stop and Pick Three</div>
+<p>Read the seven domains again. Three of them are the ones your soul most needs and most resists. The resistance is the diagnostic. The domain you do not want to pick is probably one of the three you most need.</p>
+<hr class="think-line">
+<p>Write the three down. The protocol in Chapter Six begins with these three. The selection is half the work.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Hardpan.</strong> The soul not worked becomes a crust.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Pruning.</strong> Healthy growth requires being cut.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Disappearing Disturbance.</strong> Involuntary suffering is dwindling. Voluntary suffering must replace it.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Seven Domains.</strong> Body, Mind, Relational, Financial, Silent, Sacrificial, Confessional. Pick at least three. Three sustained beats seven abandoned. The domain you most resist is probably one you most need.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"No discipline seems pleasant at the time, but painful. Later on, however, it produces a harvest of righteousness and peace for those who have been trained by it."<br><span class="ref">Hebrews 12:11</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Five</div>
+<div class="ch-num">05</div>
+<div class="ch-title">The Communal Pruning</div>
+<div class="ch-sub">You cannot prune yourself in private. The blade has to come from outside.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>This is the second hole in most stability frameworks. They assume the work is solo. The model is one person, alone, engineering their own discomfort and processing their own pain. <strong>This works for some of the work. It does not work for all of it.</strong> Some pruning has to come from outside the self because the self cannot see what needs to be cut. The very thing that needs removal is hidden from the person who would have to remove it. <em>The vinedresser is rarely you.</em></p>
+
+<p>Specifically, the pruning that is hardest to do alone is the pruning of self deception. Every person carries blind spots, recurring sins, and unflattering patterns that are visible to the people closest to them and invisible to the person living them. The mechanism is not stupidity. The mechanism is that the eye cannot see itself. The brain has structural reasons for protecting its own self image. <strong>You will not voluntarily prune what you cannot see, and you cannot see what you have spent decades not seeing.</strong> Someone else has to point.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Conversation The Wife Could Not Have</h4>
+<p>A woman has been complaining to her husband for years that he is distant. He hears it. He acknowledges it. He says he will do better. Nothing changes. <em>He cannot see what she is seeing.</em> She is too close, too entangled, too much a part of the problem to be the voice that finally lands.</p>
+<p>One evening, a friend of the husband, a man he has met with weekly for a decade, says it differently. "Your wife is right. You are not present. I have watched you do this for two years. Here is what it looks like from outside the marriage."</p>
+<p>What follows is the same content the wife has been delivering. From a different mouth, with different authority, in a different relationship, it lands. The husband cries. By the next week he is showing up differently. <em>His wife had been right the whole time.</em> The marriage could not deliver the pruning. The third party could.</p>
+</div>
+
+<p>This is why the Source pillar in Part 2 of this series and the Soil pillar in this playbook are connected. Both require <strong>covenant relationships</strong>, the small set of people who know you well, are committed to your formation, and have permission to say what spouses and family members often cannot. Without them, the pruning that the soul most needs simply does not happen. Most modern men have a wide network of acquaintances and zero people who can prune them. The hardpan in the modern soul is partly a function of this. <em>The vinedresser was never invited into the field.</em></p>
+
+<div class="ba-grid">
+<div class="ba-col before">
+<div class="ba-label">The Solo Field</div>
+<h4>No Vinedresser</h4>
+<ul>
+<li>No one is allowed to name what is overgrown</li>
+<li>Self assessment is the only assessment</li>
+<li>Blind spots remain blind for decades</li>
+<li>The same patterns repeat across seasons</li>
+<li>What gets cut is what the self can see, which is the wrong things</li>
+</ul>
+</div>
+<div class="ba-col after">
+<div class="ba-label">The Pruned Field</div>
+<h4>Invited Blade</h4>
+<ul>
+<li>Two to three people can name what they see</li>
+<li>External assessment is welcomed before agreed</li>
+<li>Blind spots are surfaced because someone is looking from outside</li>
+<li>Patterns are interrupted because they are named</li>
+<li>What gets cut is often the thing the self protected most</li>
+</ul>
+</div>
+</div>
+
+<p>The protocol for this is the same as Part 2's covenant voices, sharpened for the soil work. <strong>Once a quarter, ask one of your covenant people: what are you watching me become that I cannot see?</strong> Receive whatever they say without arguing for forty eight hours. Sleep on it. Pray over it. Then respond. Most of what they say will land hard. Some of it will be wrong. Most of it will be right. The wrong parts you set aside. The right parts you let into the field. <em>That is the pruning that solo work cannot produce.</em></p>
+
+<div class="think">
+<div class="think-label">Stop and Find Your Vinedressers</div>
+<p>Name the two or three people who could speak hard truth into your life with authority. Not friends in the casual sense. People with permission to cut you, who would do so out of love and not malice, and whose judgment you would trust enough to receive without fighting.</p>
+<hr class="think-line">
+<p>If the list is short or empty, the work to find them comes before the deeper soil work. The discipline alone, without the vinedressers, is half the practice and produces half the result.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Hardpan.</strong> The soul not worked becomes a crust.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Pruning.</strong> Growth requires being cut.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Disappearing Disturbance.</strong> Involuntary suffering is dwindling.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Seven Domains.</strong> Pick at least three.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Communal Pruning.</strong> Some pruning must come from outside the self because the self cannot see what needs to be cut. Covenant relationships are the mechanism. Quarterly question: what are you watching me become that I cannot see? The vinedresser is rarely you.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"Wounds from a friend can be trusted, but an enemy multiplies kisses."<br><span class="ref">Proverbs 27:6</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Six</div>
+<div class="ch-num">06</div>
+<div class="ch-title">The Soil Protocol</div>
+<div class="ch-sub">Ninety days. Three phases. Beginning this week.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Concrete protocol. The phases are cumulative, meaning you keep doing the previous and add the new. The protocol assumes you are starting from a soft life. If you are further along, accelerate. If you are not, you have everything you need to begin this week.</p>
+
+<div class="protocol">
+<div class="protocol-head">Days 1 to 30 &middot; Phase One</div>
+<div class="protocol-grid">
+<div class="protocol-card">
+<div class="protocol-num">Pick</div>
+<div class="protocol-title">Three Domains</div>
+<p>From the seven, select three. The ones you most resist are usually the ones you most need. Body, Mind, Relational, Financial, Silent, Sacrificial, Confessional.</p>
+</div>
+<div class="protocol-card">
+<div class="protocol-num">Install</div>
+<div class="protocol-title">One Weekly Practice Per Domain</div>
+<p>Specific. Scheduled. Small enough that you will do it. Three practices, three times a week. Cold shower Tuesday. Hard reading Wednesday. Hard conversation by Sunday. Whatever fits your three.</p>
+</div>
+<div class="protocol-card">
+<div class="protocol-num">By Day 30</div>
+<div class="protocol-title">First Discomfort Tolerance</div>
+<p>The first time you face an unwelcome surprise and notice you absorbed it without flinching. The soil is starting to accept water. Small evidence. Real evidence.</p>
+</div>
+</div>
+</div>
+
+<div class="protocol">
+<div class="protocol-head">Days 31 to 60 &middot; Phase Two</div>
+<div class="protocol-grid">
+<div class="protocol-card">
+<div class="protocol-num">Continue</div>
+<div class="protocol-title">The Three Practices</div>
+<p>Same domains. Same rhythm. The depth comes from repetition, not novelty. Missed days do not require catch up. Resume the rhythm.</p>
+</div>
+<div class="protocol-card">
+<div class="protocol-num">Add</div>
+<div class="protocol-title">Quarterly Vinedresser Question</div>
+<p>One conversation with one of your covenant voices. The question: what are you watching me become that I cannot see? Receive without arguing for 48 hours.</p>
+</div>
+<div class="protocol-card">
+<div class="protocol-num">By Day 60</div>
+<div class="protocol-title">First Named Blind Spot</div>
+<p>Something the vinedresser will say that you did not see and cannot deny. Write it down. The soil cannot turn what is hidden. The naming is the start of the turning.</p>
+</div>
+</div>
+</div>
+
+<div class="protocol">
+<div class="protocol-head">Days 61 to 90 &middot; Phase Three</div>
+<div class="protocol-grid">
+<div class="protocol-card">
+<div class="protocol-num">Continue</div>
+<div class="protocol-title">All Practices Stack</div>
+<p>Three weekly disciplines. One quarterly vinedresser conversation. Both are now part of the year, every year, for life. Not seasons of practice. Permanent rhythms.</p>
+</div>
+<div class="protocol-card">
+<div class="protocol-num">Add</div>
+<div class="protocol-title">A Fourth Domain</div>
+<p>Add one more domain when the original three feel like floor, not wall. The marker is when the discomfort no longer registers as suffering, only as routine. Then expand.</p>
+</div>
+<div class="protocol-card">
+<div class="protocol-num">By Day 90</div>
+<div class="protocol-title">First Survivable Disturbance</div>
+<p>Life will deliver something hard within the 90 days. Note how you handle it. The soil that was crusted ninety days ago is now loose enough to absorb water. The pillar has begun to hold.</p>
+</div>
+</div>
+</div>
+
+<div class="grand-quote">
+<blockquote>The pillar is not built in ninety days. The hardpan is not broken in ninety days. But ninety days is enough to feel the soil accept water for the first time and to know the work is real.</blockquote>
+<cite>The Soil Protocol</cite>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Hardpan.</strong> The soul not worked becomes a crust.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Pruning.</strong> Growth requires being cut.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Disappearing Disturbance.</strong> Voluntary suffering replaces involuntary.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Seven Domains.</strong> Pick at least three.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Communal Pruning.</strong> Vinedressers from outside the self.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Soil Protocol.</strong> Ninety days, three phases, three weekly disciplines, quarterly vinedresser question. By day 90, the first survivable disturbance arrives and the soil holds.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"Sow for yourselves righteousness; reap the fruit of unfailing love. Break up your unplowed ground."<br><span class="ref">Hosea 10:12</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Seven</div>
+<div class="ch-num">07</div>
+<div class="ch-title">Soil In The Coming World</div>
+<div class="ch-sub">The pillar that becomes most counter cultural in abundance.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Here is the prediction the framework is willing to make. <em>The single largest behavior change required by the AI abundance world will be the deliberate installation of voluntary suffering as a daily and weekly discipline.</em> Not because suffering is good. Because the soil work that has shaped human stability for millennia has historically been delivered by life itself, and life is delivering less and less of it. <strong>Without a replacement mechanism, the soil that produces stable humans goes unworked across an entire civilization.</strong></p>
+
+<p>This is not a hypothetical. It is happening now in the early adopters of abundance. Lottery winners. Trust funders. Retirees with full pensions. Successful founders post exit. The collapse rates are documented. The mechanism is the same in every case. The soil that the work was working got abandoned when the work stopped. Anxiety, depression, addiction, identity collapse, suicide rates, all rise sharply when the involuntary disturbance is removed and nothing replaces it. <em>Abundance does not soften the soul. Abundance reveals the soul that was never being formed.</em></p>
+
+<div class="glow-box">
+<h3>What This Pillar Looks Like In Five Years</h3>
+<p>The early indicators are already visible. The voluntary discomfort movements (cold plunges, fasting, stoicism revival, monastic interest, hard physical practice) are growing fastest in exactly the populations that have the least involuntary suffering. <strong>The market is voting.</strong> People who have everything are seeking the discomfort that previous generations would have done anything to escape. They sense the hardpan forming. They are reaching for the blade.</p>
+<p>In five years this will not be a niche movement. It will be the central organizing question of mental health, ministry, and personal formation. <em>How do humans build stability in conditions that no longer build it for them?</em> The answer is in this playbook and in every wisdom tradition that has produced stable people in any era. The discipline is not new. The urgency is.</p>
+</div>
+
+<p>The both realities frame holds here especially well. Right now, in your current life, the seven domains build a more stable, more resilient, more useful person inside the pressures you currently face. Cold tolerance. Hard conversations. Financial restraint. Confession. Sacrificial service. <em>None of these wait for abundance to be useful.</em> All of them produce immediate compounding benefit. The current world rewards them. The future world will require them. The investment is the same in either case. The only thing that changes is what is at stake when the soil has not been worked.</p>
+
+<div class="data-hero">
+<div class="dh-num">~5x</div>
+<div class="dh-label">Growth in voluntary discomfort movements among under 40s in the past decade</div>
+<div class="dh-sub">The market is sensing the problem before the framework names it. The discipline is being reinvented in fragments. This playbook assembles them into the whole.</div>
+</div>
+
+<div class="think">
+<div class="think-label">Stop and Decide</div>
+<p>You have read four thousand words on the discipline of voluntary suffering. The older voices in your head are already arguing you out of starting. They will tell you you are too busy, too soft, too tired, that you can begin next week, that this is not for your life stage.</p>
+<hr class="think-line">
+<p>Decide right now whether you will install the first practice this week. Pick one domain. Schedule one practice. The decision is the entire fork in the road.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Hardpan.</strong> The soul not worked becomes a crust.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Pruning.</strong> Growth requires being cut.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Disappearing Disturbance.</strong> Voluntary replaces involuntary.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Seven Domains.</strong> Body, Mind, Relational, Financial, Silent, Sacrificial, Confessional.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Communal Pruning.</strong> Vinedressers from outside.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Soil Protocol.</strong> 90 days, three phases.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Soil In The Coming World.</strong> The largest behavior change required by abundance is the deliberate installation of voluntary suffering. Useful in current world. Required in the next. The discipline is not new. The urgency is.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"And we know that in all things God works for the good of those who love him, who have been called according to his purpose."<br><span class="ref">Romans 8:28</span></p>
+</div>
+
+<div class="page section prose">
+
+<p>You now hold the architecture of the second pillar. Hardpan. The Pruning. The Disappearing Disturbance. The Seven Domains. The Communal Pruning. The Soil Protocol. Soil In The Coming World. Seven mental models that, taken together, describe the rebuild of the pillar most modern people have neglected longest.</p>
+
+<p>You also hold a 90 day protocol that begins this week. Three domains. Three weekly practices. One quarterly vinedresser question. <strong>The protocol is small. The compound effect is large.</strong> Soil work is not glamorous. The amateur waits for the storm. The disciplined invites the disturbance every week so that when life finally brings the storm, the soil is ready.</p>
+
+<p>The next playbook in the series is <em>The Fruit</em>. Read it next if your diagnostic placed you in Mode 3 or 6 in Part 1. Most readers benefit from finishing at least Phase One of this protocol before moving to Part 4. Soil work and fruit work are connected, but the soil has to accept water before the fruit can grow.</p>
+
+<p><strong>The garden returns. You are now turning the soil. Keep turning.</strong></p>
+
+</div>
+
+<div class="page">
+<div class="next-card">
+<div class="next-label">Next In The Series</div>
+<div class="next-title">The Fruit</div>
+<div class="next-tag">Pillar Three. Execution as discretion, not necessity. The five forms of human only fruit. Building when you do not have to.</div>
+</div>
+</div>
+
+<div class="page section">
+<div class="final-test">
+<h3>Can You Answer These Without Looking Back?</h3>
+<p class="test-sub">Eight questions, one for each core concept. If you can answer all eight, the architecture has installed.</p>
+<div class="test-q"><div class="test-num">Question 1</div><p>What is hardpan, and how does it form in a human soul?</p></div>
+<div class="test-q"><div class="test-num">Question 2</div><p>What does John 15:2 reveal about pruning, and why is it the productive branches that get cut?</p></div>
+<div class="test-q"><div class="test-num">Question 3</div><p>Why is involuntary suffering dwindling in the modern world, and what is the second order effect?</p></div>
+<div class="test-q"><div class="test-num">Question 4</div><p>Name the seven domains of voluntary discomfort. Pick the three you most resist.</p></div>
+<div class="test-q"><div class="test-num">Question 5</div><p>Why must some pruning come from outside the self?</p></div>
+<div class="test-q"><div class="test-num">Question 6</div><p>What is the quarterly vinedresser question, and why is it answered without arguing for 48 hours?</p></div>
+<div class="test-q"><div class="test-num">Question 7</div><p>Walk through the three phases of the 90 day Soil Protocol.</p></div>
+<div class="test-q"><div class="test-num">Question 8</div><p>Why will voluntary suffering be the largest behavior change required by AI abundance?</p></div>
+</div>
+</div>
+
+<div class="page section">
+<div class="prompt-card">
+<h3>Continue The Conversation</h3>
+<p>Copy these prompts into any AI and let the work deepen:</p>
+<p><code>"Design a weekly practice for me in the [Body / Mind / Relational / Financial / Silent / Sacrificial / Confessional] domain. Make it specific, scheduled, and small enough I will actually do it."</code></p>
+<p><code>"Help me identify two or three people in my life who could be vinedressers. Ask diagnostic questions about my existing relationships."</code></p>
+<p><code>"Walk me through how to receive a hard truth without arguing for 48 hours. What does that look like operationally?"</code></p>
+<p><code>"Map the seven domains to the specific shape of my life right now. Which three should I start with given my current conditions?"</code></p>
+</div>
+</div>
+
+<div class="ribbon">
+<p>"He has shown you, O mortal, what is good. And what does the Lord require of you? To act justly and to love mercy and to walk humbly with your God."<br><span class="ref">Micah 6:8</span></p>
+</div>
+
+<div class="series-progress" style="padding:32px 24px;background:var(--cream-warm);border-top:1px solid rgba(14,10,6,0.06)">
+  <div style="font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:14px">The Eden Pattern</div>
+  <div class="series-dots">
+    <span class="series-dot done" title="Before The Garden Returns"></span>
+    <span class="series-dot done" title="The Source"></span>
+    <span class="series-dot active" title="The Soil"></span>
+    <span class="series-dot" title="The Fruit"></span>
+  </div>
+  <div class="series-dot-label" style="color:var(--text-muted)">Part 3 of 4 &middot; The Soil</div>
+</div>
+
+<section class="finale">
+<h2>Welcome the blade.<br><strong>The harvest depends on the cut.</strong></h2>
+</section>
+
+<footer class="footer">
+<p>The Soil &middot; The Eden Pattern (Part 3 of 4) &middot; KingdomBuilders AI<br><a href="./">View All Playbooks</a></p>
+</footer>
+</body>
+</html>

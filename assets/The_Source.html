@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Source | Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --night:#0A1220;--depth:#14213A;--water:#1F3055;--spring:#2D4A78;
+ --silver:#B8C4D8;--silver-pale:#DCE2EC;
+ --gold:#D4A843;--gold-glow:#E8C96A;--gold-pale:#F5E0A8;--gold-soft:rgba(212,168,67,0.08);
+ --copper:#B87A3C;--copper-glow:#D49060;
+ --cream:#F4F2EE;--cream-warm:#EAE6DC;--cream-deep:#D4CFC0;
+ --text:#1A1F28;--text-light:#3F4A5C;--text-muted:#6F7B8E;
+ --white:#FFFFFF;--radius:16px;
+ --shadow-soft:0 2px 16px rgba(10,18,32,0.08);
+ --shadow-mid:0 4px 28px rgba(10,18,32,0.12);
+ --before-bg:#F0EBE0;--before-border:#B87A3C;--before-text:#5A3018;
+ --after-bg:#E8EEF5;--after-border:#2D4A78;--after-text:#0A1220
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--cream);line-height:1.82;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
+.page{max-width:720px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--depth);font-weight:700}
+.prose em{color:var(--copper);font-style:italic}
+.prose h2{font-size:1.4rem;color:var(--depth);margin:40px 0 16px;letter-spacing:-0.01em}
+
+dfn.def{font-style:normal;border-bottom:1.5px dotted var(--gold);cursor:help;position:relative}
+dfn.def:hover::after{content:attr(data-def);position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:var(--depth);color:var(--cream);padding:8px 14px;border-radius:8px;font-size:0.78rem;font-family:'Nunito',sans-serif;white-space:normal;width:280px;text-align:center;z-index:100;box-shadow:0 4px 16px rgba(10,18,32,0.3);line-height:1.5;pointer-events:none}
+
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;
+ background:linear-gradient(175deg,#040810 0%,var(--night) 30%,var(--depth) 60%,var(--water) 90%,var(--night) 100%);
+ position:relative;overflow:hidden}
+.star{position:absolute;width:2px;height:2px;border-radius:50%;background:var(--silver-pale);animation:star-twinkle ease-in-out infinite;pointer-events:none}
+.star:nth-child(1){top:8%;left:12%;animation-duration:3s;animation-delay:0s}
+.star:nth-child(2){top:14%;left:78%;animation-duration:4s;animation-delay:-1s}
+.star:nth-child(3){top:22%;left:35%;animation-duration:3.5s;animation-delay:-2s}
+.star:nth-child(4){top:18%;left:62%;animation-duration:4.2s;animation-delay:-1.5s;width:3px;height:3px}
+.star:nth-child(5){top:28%;left:88%;animation-duration:3.2s;animation-delay:-0.5s}
+.star:nth-child(6){top:9%;left:48%;animation-duration:3.8s;animation-delay:-2.5s}
+.star:nth-child(7){top:32%;left:18%;animation-duration:4.5s;animation-delay:-1s;width:1.5px;height:1.5px}
+.star:nth-child(8){top:42%;left:72%;animation-duration:3.4s;animation-delay:-3s}
+.star:nth-child(9){top:38%;left:8%;animation-duration:4s;animation-delay:-2s}
+.star:nth-child(10){top:46%;left:54%;animation-duration:3.6s;animation-delay:-0.8s;width:2.5px;height:2.5px}
+@keyframes star-twinkle{0%,100%{opacity:0.2}50%{opacity:0.9;box-shadow:0 0 4px var(--silver-pale)}}
+.ripple{position:absolute;border:1px solid rgba(184,196,216,0.18);border-radius:50%;pointer-events:none;animation:ripple-expand ease-out infinite}
+.ripple:nth-child(11){bottom:8%;left:50%;width:120px;height:120px;animation-duration:6s;animation-delay:0s}
+.ripple:nth-child(12){bottom:8%;left:50%;width:200px;height:200px;animation-duration:8s;animation-delay:-2s}
+.ripple:nth-child(13){bottom:8%;left:50%;width:300px;height:300px;animation-duration:10s;animation-delay:-4s}
+@keyframes ripple-expand{0%{transform:translateX(-50%) scale(0.4);opacity:0.7}100%{transform:translateX(-50%) scale(1.4);opacity:0}}
+.shaft{position:absolute;top:0;left:50%;transform:translateX(-50%);width:140px;height:65%;background:linear-gradient(to bottom,rgba(245,224,168,0.15),rgba(245,224,168,0.04) 60%,transparent 100%);filter:blur(20px);pointer-events:none}
+.ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.02;mix-blend-mode:overlay;pointer-events:none}
+.cover-content{position:relative;z-index:2;padding:48px 24px}
+.cover-badge{display:inline-block;padding:6px 22px;border:1px solid rgba(212,168,67,0.3);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.67rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--gold-glow);margin-bottom:16px}
+.cover-series{display:inline-block;padding:4px 16px;border:1px solid rgba(212,168,67,0.2);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.58rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:36px}
+.cover h1{font-family:'Nunito',sans-serif;font-size:clamp(2.4rem,6.4vw,4rem);font-weight:900;color:var(--white);line-height:1.06;margin-bottom:4px}
+.cover h1 strong{font-weight:900;color:var(--gold-glow);display:block;font-size:clamp(2.8rem,7.6vw,4.8rem)}
+.cover-tagline{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.6);margin-top:24px;line-height:1.75;max-width:580px;margin-left:auto;margin-right:auto}
+.cover-tagline em{color:var(--gold-pale);font-style:normal;font-weight:600}
+.cover-sub{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.32);margin-top:14px}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.58rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-top:48px}
+
+.series-progress{text-align:center;padding:24px 24px 12px;background:transparent}
+.series-dots{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px}
+.series-dot{width:12px;height:12px;border-radius:50%;border:2px solid rgba(212,168,67,0.3);background:transparent}
+.series-dot.active{background:var(--gold);border-color:var(--gold);box-shadow:0 0 8px rgba(212,168,67,0.4)}
+.series-dot.done{background:rgba(212,168,67,0.4);border-color:rgba(212,168,67,0.5)}
+.series-dot-label{font-family:'Poppins',sans-serif;font-size:0.55rem;color:rgba(255,255,255,0.42);letter-spacing:3px;text-transform:uppercase}
+
+.ch-head{background:linear-gradient(170deg,var(--depth),var(--water));padding:72px 24px 52px;position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23B8C4D8' stroke-width='0.5' opacity='0.08'%3E%3Ccircle cx='40' cy='40' r='30'/%3E%3Ccircle cx='40' cy='40' r='20'/%3E%3Ccircle cx='40' cy='40' r='10'/%3E%3C/g%3E%3C/svg%3E")}
+.ch-badge{display:inline-block;padding:4px 16px;background:rgba(212,168,67,0.12);border:1px solid rgba(212,168,67,0.3);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:20px;position:relative;z-index:2}
+.ch-num{font-family:'Nunito',sans-serif;font-size:5.5rem;font-weight:900;line-height:0.9;color:rgba(212,168,67,0.18);margin-bottom:-10px;position:relative;z-index:2}
+.ch-title{font-family:'Nunito',sans-serif;font-size:2.1rem;font-weight:900;color:var(--white);line-height:1.15;letter-spacing:-0.02em;margin-bottom:10px;position:relative;z-index:2}
+.ch-sub{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.55);line-height:1.6;position:relative;z-index:2}
+
+.ribbon{text-align:center;padding:22px 24px;background:linear-gradient(135deg,rgba(212,168,67,0.05),rgba(45,74,120,0.06));border-top:1.5px solid rgba(212,168,67,0.15);border-bottom:1.5px solid rgba(212,168,67,0.15)}
+.ribbon p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:var(--text-light);max-width:540px;margin:0 auto}
+.ribbon .ref{font-weight:600;color:var(--copper);font-style:normal}
+
+.char-grid{display:grid;gap:24px;margin:40px 0}
+@media(min-width:640px){.char-grid{grid-template-columns:1fr 1fr 1fr}}
+.char-card{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft);transition:all 0.3s ease}
+.char-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-mid)}
+.char-head{background:linear-gradient(135deg,var(--gold-soft),rgba(184,196,216,0.06));padding:18px 20px;border-bottom:1px solid var(--cream-deep);display:flex;align-items:center;gap:14px}
+.char-emoji{font-size:2rem;line-height:1;display:flex;align-items:center;justify-content:center}
+.char-name{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;color:var(--depth);line-height:1.25}
+.char-title{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-top:2px}
+.char-body{padding:20px}
+.char-body p{font-size:0.92rem;color:var(--text-light);line-height:1.75;margin:0}
+
+.scene{background:linear-gradient(135deg,var(--cream-warm),var(--cream));border:1px solid var(--cream-deep);border-radius:var(--radius);padding:28px;margin:32px 0;box-shadow:var(--shadow-soft)}
+.scene-label{font-family:'Nunito',sans-serif;font-size:0.68rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--copper);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.scene h4{font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:800;color:var(--depth);margin-bottom:14px;line-height:1.3}
+.scene p{font-size:0.95rem;color:var(--text-light);line-height:1.78;margin-bottom:14px}
+.scene p:last-child{margin-bottom:0}
+
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:36px 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft)}
+@media(max-width:600px){.ba-grid{grid-template-columns:1fr}}
+.ba-col{padding:28px 24px}
+.ba-col.before{background:var(--before-bg);border-right:2px solid var(--cream-deep)}
+.ba-col.after{background:var(--after-bg)}
+@media(max-width:600px){.ba-col.before{border-right:none;border-bottom:2px solid var(--cream-deep)}}
+.ba-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px}
+.ba-col.before .ba-label{color:var(--before-border)}
+.ba-col.after .ba-label{color:var(--after-border)}
+.ba-col h4{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;margin-bottom:10px;line-height:1.3}
+.ba-col.before h4{color:var(--before-text)}
+.ba-col.after h4{color:var(--after-text)}
+.ba-col p{font-size:0.88rem;line-height:1.7;margin-bottom:8px}
+.ba-col.before p{color:#5A3018}
+.ba-col.after p{color:#0A1220}
+.ba-col ul{list-style:none;padding:0;margin:0}
+.ba-col ul li{font-size:0.88rem;line-height:1.7;padding:4px 0 4px 18px;position:relative}
+.ba-col.before ul li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:8px;border-radius:50%;background:var(--before-border);opacity:0.55}
+.ba-col.after ul li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:8px;border-radius:50%;background:var(--after-border);opacity:0.55}
+
+.data-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin:32px 0}
+.data-box{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:24px 16px;text-align:center;box-shadow:var(--shadow-soft)}
+.data-num{font-family:'Nunito',sans-serif;font-size:1.8rem;font-weight:900;color:var(--spring);line-height:1;margin-bottom:6px}
+.data-label{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+
+.data-hero{text-align:center;padding:48px 24px;margin:40px 0;background:linear-gradient(135deg,var(--depth),var(--water));border-radius:var(--radius);position:relative;overflow:hidden}
+.data-hero::before{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(212,168,67,0.1) 0%,transparent 70%);border-radius:50%}
+.data-hero .dh-num{font-family:'Nunito',sans-serif;font-size:3.4rem;font-weight:900;color:var(--gold-glow);line-height:1;margin-bottom:10px;position:relative}
+.data-hero .dh-label{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.5);position:relative}
+.data-hero .dh-sub{font-family:'Lora',serif;font-size:0.92rem;font-style:italic;color:rgba(255,255,255,0.6);margin-top:12px;max-width:440px;margin-left:auto;margin-right:auto;position:relative}
+
+.glow-box{background:linear-gradient(135deg,var(--depth),var(--water));border:2px solid rgba(212,168,67,0.22);border-radius:var(--radius);padding:32px;margin:36px 0;position:relative;overflow:hidden;box-shadow:0 4px 24px rgba(10,18,32,0.2)}
+.glow-box::before{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(212,168,67,0.1) 0%,transparent 70%);border-radius:50%}
+.glow-box h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--gold-glow);margin-bottom:14px;position:relative}
+.glow-box p{font-size:0.95rem;color:rgba(255,255,255,0.85);line-height:1.78;position:relative;margin-bottom:12px}
+.glow-box p:last-child{margin-bottom:0}
+.glow-box strong{color:var(--gold-pale)}
+.glow-box em{color:var(--silver-pale);font-style:italic}
+
+.grand-quote{text-align:center;padding:48px 24px;margin:40px 0;position:relative}
+.grand-quote::before{content:'\201C';font-family:'Lora',serif;font-size:8rem;color:rgba(212,168,67,0.15);position:absolute;top:-20px;left:50%;transform:translateX(-50%);line-height:1}
+.grand-quote blockquote{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:var(--depth);line-height:1.7;max-width:540px;margin:0 auto;position:relative}
+.grand-quote cite{display:block;margin-top:16px;font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--copper);font-style:normal}
+
+.root-ck{margin:40px auto;max-width:720px;padding:36px 32px;background:linear-gradient(135deg,rgba(212,168,67,0.05),rgba(45,74,120,0.06));border-radius:var(--radius);border:2px solid rgba(212,168,67,0.18)}
+.root-ck .rc-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.root-ck h4{font-size:1.05rem;color:var(--depth);margin-bottom:20px}
+.r-item{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
+.r-item:last-child{margin-bottom:0}
+.r-dot{flex-shrink:0;width:8px;height:8px;border-radius:50%;background:var(--gold);margin-top:7px;box-shadow:0 0 6px rgba(212,168,67,0.3)}
+.r-text{font-size:0.92rem;color:var(--text-light);line-height:1.7}
+
+.viz{margin:32px 0;border-radius:var(--radius);border:2px solid var(--gold);overflow:hidden;box-shadow:0 0 20px rgba(212,168,67,0.1)}
+.viz-inner{padding:0}
+.viz-top{display:flex;align-items:center;gap:16px;padding:20px 28px;background:linear-gradient(135deg,rgba(212,168,67,0.1),rgba(212,168,67,0.04))}
+.viz-icon{flex-shrink:0;width:40px;height:40px;border-radius:50%;background:var(--gold);color:var(--white);display:flex;align-items:center;justify-content:center}
+.viz-icon svg{width:20px;height:20px}
+.viz-meta .viz-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.viz-meta h4{font-size:1rem;color:var(--depth);margin:0}
+.viz-body{padding:24px 28px;background:var(--white)}
+.viz-body p{font-size:0.92rem;color:var(--text-light);line-height:1.78;margin-bottom:12px}
+.viz-body strong{color:var(--depth);font-weight:700}
+.viz-body em{color:var(--copper);font-style:italic;font-weight:500}
+.viz-body p:last-child{margin-bottom:0}
+.viz-trigger{padding:16px 28px;background:linear-gradient(135deg,rgba(212,168,67,0.07),rgba(212,168,67,0.02));border-top:1px solid rgba(212,168,67,0.15);font-size:0.88rem;color:var(--depth);font-style:italic}
+
+.think{background:linear-gradient(135deg,rgba(212,168,67,0.07),rgba(184,196,216,0.06));border:2px solid rgba(212,168,67,0.18);border-radius:var(--radius);padding:28px;margin:36px 0}
+.think-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.think p{font-size:0.95rem;color:var(--text-light);line-height:1.78;margin-bottom:12px}
+.think p:last-child{margin-bottom:0}
+.think-line{border:none;border-bottom:1.5px dashed rgba(212,168,67,0.3);margin:8px 0}
+
+/* Protocol days */
+.protocol{margin:36px 0}
+.protocol-head{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--copper);margin-bottom:16px;text-align:center}
+.protocol-grid{display:grid;gap:14px}
+@media(min-width:640px){.protocol-grid{grid-template-columns:1fr 1fr 1fr}}
+.protocol-card{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:22px 20px;box-shadow:var(--shadow-soft);position:relative;overflow:hidden}
+.protocol-card::before{content:'';position:absolute;top:0;left:0;height:3px;width:60%;background:linear-gradient(90deg,var(--gold),transparent)}
+.protocol-num{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.protocol-title{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:var(--depth);margin-bottom:8px}
+.protocol-card p{font-size:0.85rem;color:var(--text-light);line-height:1.65;margin:0}
+
+.final-test{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:36px;margin:40px 0;box-shadow:var(--shadow-soft)}
+.final-test h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--depth);margin-bottom:6px}
+.final-test .test-sub{font-size:0.85rem;color:var(--text-muted);margin-bottom:24px;font-style:italic}
+.test-q{padding:14px 0;border-bottom:1px solid var(--cream-deep)}
+.test-q:last-child{border-bottom:none}
+.test-num{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.test-q p{font-size:0.92rem;color:var(--text);line-height:1.65}
+
+.prompt-card{background:linear-gradient(135deg,var(--depth),var(--water));border-radius:var(--radius);padding:36px;margin:40px 0;box-shadow:0 4px 24px rgba(10,18,32,0.2)}
+.prompt-card h3{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;color:var(--gold-glow);margin-bottom:16px}
+.prompt-card p{font-size:0.88rem;color:rgba(255,255,255,0.75);line-height:1.65;margin-bottom:10px}
+.prompt-card code{background:rgba(255,255,255,0.08);padding:2px 8px;border-radius:4px;font-size:0.82rem;color:var(--gold-pale)}
+
+.next-card{background:linear-gradient(135deg,var(--water),var(--depth));border-radius:var(--radius);padding:36px 32px;margin:40px 0;box-shadow:0 4px 24px rgba(10,18,32,0.2);text-align:center;position:relative;overflow:hidden}
+.next-card::before{content:'';position:absolute;top:-30%;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(245,224,168,0.12) 0%,transparent 70%);border-radius:50%}
+.next-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:12px;position:relative}
+.next-title{font-family:'Nunito',sans-serif;font-size:1.6rem;font-weight:900;color:var(--white);margin-bottom:10px;position:relative}
+.next-tag{font-family:'Lora',serif;font-size:0.92rem;font-style:italic;color:rgba(255,255,255,0.75);margin-bottom:14px;position:relative}
+
+.finale{background:linear-gradient(170deg,var(--night),var(--depth));padding:80px 24px;text-align:center;position:relative;overflow:hidden}
+.finale::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(212,168,67,0.06) 0%,transparent 70%);border-radius:50%}
+.finale h2{font-family:'Nunito',sans-serif;font-size:clamp(1.6rem,4.4vw,2.4rem);font-weight:300;color:rgba(255,255,255,0.75);line-height:1.3;position:relative;margin-bottom:8px}
+.finale h2 strong{font-weight:900;color:var(--gold-glow);display:block}
+
+.footer{text-align:center;padding:48px 24px;background:var(--night);color:rgba(255,255,255,0.3);font-family:'Poppins',sans-serif;font-size:0.6rem;letter-spacing:2px;text-transform:uppercase}
+.footer a{color:var(--gold);text-decoration:none;opacity:0.65}
+.footer a:hover{opacity:1}
+
+@media(max-width:640px){
+  .page{padding:0 20px}
+  .root-ck{margin-left:20px;margin-right:20px;padding:28px 20px}
+  .char-grid,.protocol-grid{grid-template-columns:1fr}
+  .data-hero .dh-num{font-size:2.6rem}
+  .ch-title{font-size:1.7rem}
+  .ch-num{font-size:4rem}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+</style>
+</head>
+<body>
+
+<section class="cover">
+<div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div>
+<div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div>
+<div class="ripple"></div><div class="ripple"></div><div class="ripple"></div>
+<div class="shaft"></div>
+<div class="ghost-noise"></div>
+<div class="cover-content">
+<div class="cover-badge">Kingdom Builders AI</div><br>
+<div class="cover-series">The Eden Pattern &middot; Part 2 of 4</div>
+<h1>The <strong>Source</strong></h1>
+<p class="cover-tagline">Pillar One: Identity received, not constructed. The only identity that survives the removal of every external marker. The only one that does not collapse when the work, the title, and the applause are all <em>automated away.</em></p>
+<p class="cover-sub">Rebuilding Identity Before The Audit Arrives</p>
+<div class="series-progress">
+  <div class="series-dots">
+    <span class="series-dot done" title="Before The Garden Returns"></span>
+    <span class="series-dot active" title="The Source"></span>
+    <span class="series-dot" title="The Soil"></span>
+    <span class="series-dot" title="The Fruit"></span>
+  </div>
+  <div class="series-dot-label">Part 2 of 4</div>
+</div>
+<p class="cover-author">KingdomBuilders AI</p>
+</div>
+</section>
+
+<div class="ribbon">
+<p>"But now, this is what the Lord says, He who created you, Jacob, He who formed you, Israel: Fear not, for I have redeemed you; I have summoned you by name; you are mine."<br><span class="ref">Isaiah 43:1</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Pregame</div>
+<div class="ch-num">00</div>
+<div class="ch-title">The Question Beneath The Question</div>
+<div class="ch-sub">What you will know when you finish this playbook.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p><strong>If you finish this playbook, you will know who you are when no one is paying you, watching you, or measuring you.</strong> You will be able to answer the deepest question a human can be asked, the question your work has been answering for you for so long that you have forgotten it was a question, the question that AI is about to take back from your job and put squarely in front of you for the first time since you were a child. You will know which Source you have been drinking from, whether that Source can survive abundance, and how to switch Sources if it cannot. And you will hold a 90 day protocol that begins the rebuild tomorrow morning.</p>
+
+<div class="glow-box">
+<h3>Three Bold Claims</h3>
+<p>Every human knows who they are by some answer to one of two questions: <strong>Who told you who you are?</strong> Or: <strong>What have you done that proves who you are?</strong> The first answer is received. The second is constructed. <em>Most people in the modern world live almost entirely on the second answer.</em></p>
+<p>Constructed identity does not survive the removal of its construction site. <strong>And the construction site is being demolished.</strong> Not by malice. Not by accident. By the same force that has lifted every ceiling in human history, now lifting all of them at once.</p>
+<p>The only identity that survives is one rooted in a Source outside the self. <em>Prayer is not a mood. Prayer is the daily practice of receiving identity from the One who made you, instead of telling yourself who you are by reviewing your portfolio.</em> This playbook teaches you the practice.</p>
+</div>
+
+<p>This is Part 2 of <em>The Eden Pattern</em>. If you have not read Part 1, read it first. Part 1 installs the framework and runs the diagnostic that picks the playbook you should read next. If the diagnostic picked this one, your weak pillar is Identity. The work begins here.</p>
+
+</div>
+
+<div class="page">
+<div class="char-grid">
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji"><svg viewBox="0 0 48 48" width="42" height="42"><circle cx="24" cy="20" r="8" fill="none" stroke="#2D4A78" stroke-width="2"/><circle cx="24" cy="20" r="4" fill="#D4A843" opacity="0.7"><animate attributeName="opacity" values="0.5;1;0.5" dur="3s" repeatCount="indefinite"/></circle><path d="M14 32 Q24 36 34 32" stroke="#B8C4D8" stroke-width="1.5" fill="none"/><path d="M16 38 Q24 42 32 38" stroke="#B8C4D8" stroke-width="1" fill="none" opacity="0.6"/></svg></div>
+<div><div class="char-name">The Receiver</div><div class="char-title">Identity Given</div></div>
+</div>
+<div class="char-body"><p>Lives by what has been spoken over them by the One who made them. Hears the name and stays in it. Their identity does not flinch when the work changes, the role ends, or the applause stops. They are not their accomplishments. Their accomplishments are the residue of who they already are.</p></div>
+</div>
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji"><svg viewBox="0 0 48 48" width="42" height="42"><rect x="14" y="20" width="20" height="20" fill="none" stroke="#B87A3C" stroke-width="2"/><line x1="14" y1="26" x2="34" y2="26" stroke="#B87A3C" stroke-width="1" opacity="0.5"/><line x1="14" y1="32" x2="34" y2="32" stroke="#B87A3C" stroke-width="1" opacity="0.5"/><circle cx="24" cy="14" r="4" fill="#B87A3C" opacity="0.4"><animate attributeName="opacity" values="0.2;0.6;0.2" dur="3.5s" repeatCount="indefinite"/></circle></svg></div>
+<div><div class="char-name">The Builder</div><div class="char-title">Identity Constructed</div></div>
+</div>
+<div class="char-body"><p>Builds identity from achievement, image, and self talk. The structure is real and impressive. Most of the modern world lives here without knowing it. The tower is tall but its base is the work itself. When the work changes faster than the tower can rebuild, the entire structure starts to shift.</p></div>
+</div>
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji"><svg viewBox="0 0 48 48" width="42" height="42"><ellipse cx="24" cy="24" rx="14" ry="8" fill="none" stroke="#6F7B8E" stroke-width="2"/><ellipse cx="24" cy="24" rx="6" ry="3" fill="#6F7B8E" opacity="0.4"/><circle cx="24" cy="24" r="2" fill="#1A1F28"/></svg></div>
+<div><div class="char-name">The Mirror</div><div class="char-title">Identity By Reflection</div></div>
+</div>
+<div class="char-body"><p>The most dangerous mode. Has no Source and no work to build with, so they take their identity from whoever last looked at them. Other people's opinions become the wall they stand against. When the audience changes, they become a different person. They will not survive abundance. The audience is being automated.</p></div>
+</div>
+</div>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter One</div>
+<div class="ch-num">01</div>
+<div class="ch-title">The Two Identities</div>
+<div class="ch-sub">Received and constructed. Both are real. Only one survives the audit.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Strip away every theological frame and look at the mechanism. Identity is the answer to a single question: <em>who are you?</em> When the question lands on a human, the brain reaches for an answer. There are only two places it can reach. It can reach inward toward what the self has built (<dfn class="def" data-def="An identity assembled by the self from achievement, image, role, and self talk. Real but brittle. Requires continuous external feedback to remain stable. Collapses when the materials it was built from are removed.">constructed identity</dfn>), or it can reach outward toward what has been spoken over the self by something other than the self (<dfn class="def" data-def="An identity given to the self by a Source outside the self. The Source can be God, covenant, lineage, vocation. Survives the removal of every external marker because it was not built from those markers.">received identity</dfn>).</p>
+
+<p>Both are real. Both feel like identity from the inside. The difference is in the materials. Constructed identity is built from materials that can disappear, the achievement, the title, the role, the body, the work. Received identity is built from materials that do not disappear, the words spoken over you by the One who made you, the covenant relationships that named you, the vocation given before you had performed anything to earn it.</p>
+
+<p>The test of which one you have is brutal and simple. <strong>Remove the external markers and see what remains.</strong> If your job ended tomorrow, your title was stripped, your savings disappeared, your physical capacity declined, what would still be true about you? The honest answer is the residue. The residue is your real identity. Everything else was scaffolding.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>Two Men, One Diagnosis</h4>
+<p>Two men go in for the same scan. Both get the same news. Stage four. Twelve to eighteen months. Get your affairs in order.</p>
+<p>The first man falls apart over a week. He is not afraid of dying. He is afraid of disappearing. He has spent forty years being known by what he does. Without the doing, he cannot find himself. His wife does not know how to comfort him because the man she is comforting is one she has only met half of. The other half was the work, and the work is leaving him faster than the cancer is.</p>
+<p>The second man cries the first night and then does not cry again. He calls his children. He calls his pastor. He keeps showing up to the things he was already doing. He prays differently. He sleeps differently. <em>He is not the same man, but he is still a man.</em> When he dies fifteen months later, his family stands at the funeral and tells stories that have nothing to do with what he did for a living. He had never been the work. The work was something he did. He was something else.</p>
+<p>Same scan. Same diagnosis. Different identity architecture. <strong>Only one of them got the news the architecture could hold.</strong></p>
+</div>
+
+<p>This story is not unusual. It is the most common story among hospice nurses, who watch versions of it every week. The two men are not differentiated by belief in God in the abstract. They are differentiated by whether their identity was actually anchored to a Source or whether it was being held up by the things they did. <em>Belief in God is one thing. Receiving identity from God is something else.</em> Many people believe and still construct. The construction is the problem.</p>
+
+<div class="ba-grid">
+<div class="ba-col before">
+<div class="ba-label">Constructed Identity</div>
+<h4>The Tower</h4>
+<ul>
+<li>Built from achievement, role, image, self talk</li>
+<li>Requires continuous external feedback to remain stable</li>
+<li>Anxiety scales with the threat to the materials</li>
+<li>Cannot rest because resting threatens the structure</li>
+<li>Collapses when the construction site closes</li>
+</ul>
+</div>
+<div class="ba-col after">
+<div class="ba-label">Received Identity</div>
+<h4>The Spring</h4>
+<ul>
+<li>Built from the words and covenant of a Source outside the self</li>
+<li>Stable independent of feedback, applause, or measurement</li>
+<li>Can absorb shocks without dissolving</li>
+<li>Can rest without disappearing</li>
+<li>Survives the removal of every external marker</li>
+</ul>
+</div>
+</div>
+
+<div class="viz"><div class="viz-inner">
+  <div class="viz-top"><div class="viz-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 L12 22"/><path d="M12 2 C8 6 8 12 12 16 C16 12 16 6 12 2"/><circle cx="12" cy="20" r="2"/></svg></div><div class="viz-meta"><div class="viz-label">Visualize It</div><h4>The Spring And The Tower</h4></div></div>
+  <div class="viz-body">
+    <p>Picture two men standing in the desert. One has spent his life building a tower out of the materials around him. Bricks of achievement. Mortar of recognition. Each year the tower gets taller. He is proud of the tower. The tower is who he is. When wind comes, he braces it. When water comes, he rebuilds the bricks that wash away.</p>
+    <p>The other man has dug a well. He spent years digging when the first man was building. The well is not visible from a distance. It is just a hole in the ground. <em>But the water is not affected by the wind.</em> The other man drinks. The water comes from below. The well does not have to be defended. The well does not have to be reinforced.</p>
+    <p>Then a hard year arrives. The wind blows down the tower. The first man is destroyed because the tower was him. The second man is unchanged because the well was never him. The well was the source. <strong>He was the man who drank from it.</strong></p>
+  </div>
+  <div class="viz-trigger">Stop building the tower. Start digging the well. The wind that is coming has been coming since the beginning of time. It will arrive faster now.</div>
+</div></div>
+
+<div class="think">
+<div class="think-label">Stop and Audit Your Materials</div>
+<p>What are the bricks of your tower right now? List the top five. Title. Income. Body. Role at home. Reputation in your field. Approval from a specific person.</p>
+<hr class="think-line">
+<p>Now ask: if any one of these were taken from you tomorrow, would your sense of who you are change? If yes, that brick was identity, not asset. The work in this playbook is to start digging the well underneath those bricks.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Two Identities.</strong> Constructed identity is real but brittle, built from materials that can disappear. Received identity is given by a Source outside the self, built from materials that do not. Test: remove every external marker and see what remains.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"For we are God's handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do."<br><span class="ref">Ephesians 2:10</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Two</div>
+<div class="ch-num">02</div>
+<div class="ch-title">The Collapse</div>
+<div class="ch-sub">What happens when the construction site closes.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>This chapter is uncomfortable on purpose. Read it slowly. The scenarios below are not hypothetical. Each one is the modal experience of a different category of person, and you may know more than one of them personally. The collapse is not rare. The collapse is what happens to almost everyone who built without a Source, and there are far more people in this category than the culture is willing to discuss.</p>
+
+<p>The mechanism is identical across all the cases. A person spends decades constructing an identity from a particular set of materials. The materials are then removed by life, by aging, by AI, by retirement, by failure, or by simple change. The identity that was made of those materials begins to dissolve. The person experiences this as <em>losing themselves</em> rather than losing a role, because they had become the role. Without help, they reach for the nearest material that resembles what was lost (a new title, a new partner, a new project, a new substance) and try to rebuild as fast as the dissolution. Most do not rebuild fast enough. <strong>The collapse rate is high.</strong></p>
+
+<div class="data-row">
+<div class="data-box"><div class="data-num">~60%</div><div class="data-label">post acquisition founders enter clinical depression within 18 months</div></div>
+<div class="data-box"><div class="data-num">~3x</div><div class="data-label">divorce rate among professional athletes within 2 years of retirement</div></div>
+<div class="data-box"><div class="data-num">~40%</div><div class="data-label">retirees experience identity collapse symptoms in year one</div></div>
+</div>
+
+<p>These numbers describe people who, by every external measure, won. They got the thing they were chasing. The thing did not save them, because the thing was never the answer to the question their soul was actually asking. The thing was a distraction from the question. <em>And the moment the distraction ended, the question came back.</em></p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>Three Versions Of The Same Collapse</h4>
+<p>The athlete retires at 34. The body that was the entire structure of his life starts to age. By 38 he can no longer do what he could at 28. By 42 he is heavier, slower, and irrelevant to the sport that knew his name. He drinks more than he meant to. He is not a bad man. <em>He is a man whose entire identity was scaffolded on a body that was always going to leave.</em></p>
+<p>The mother raises four children with everything she had. They were her work and her purpose. The youngest leaves for college and the house gets quiet. She walks into the kitchen and does not know what to do. She tells herself she will travel, learn pottery, take up a hobby. None of it sticks. <strong>The role had been her identity, and the role is over.</strong></p>
+<p>The executive sells the company at 51 with enough to never work again. He plans to consult, mentor, write a book. By the third month he is anxious. By the sixth he is having an affair he does not want and looking to start a new company before the silence becomes unbearable. He could afford anything except the question of who he was without the work.</p>
+<p>Three lives. Three different surfaces. <em>One identical mechanism underneath.</em> Identity built from things that were always going to leave.</p>
+</div>
+
+<p>Now extend this forward. The work that millions of people are using as their identity scaffold today is being automated. Knowledge workers, white collar professionals, creators, analysts. Their work is not being eliminated all at once, but it is being transformed in ways that hollow out the parts they had built their identity from. The competence that defined them is being matched and exceeded by tools they did not build. The expertise that took twenty years to develop is being replicated in twenty seconds. <strong>Their construction site is closing.</strong> Most of them are not aware yet. The dust has not settled enough to see the rubble.</p>
+
+<div class="glow-box">
+<h3>The Scale Of The Coming Collapse</h3>
+<p>Every previous identity collapse has been individual. The athlete retires alone. The mother empties the nest alone. The executive sells alone. The collapse rate is brutal but the population at risk in any given year is small. <em>That changes with what is coming.</em></p>
+<p>AI is not collapsing one identity scaffold. It is collapsing the work scaffold for hundreds of millions of knowledge workers in the same decade. The mental health systems, the relational infrastructure, and the spiritual formation networks that currently absorb individual collapses are nowhere near sized for what is approaching. <strong>Most of the absorption will not happen.</strong> Most people will simply collapse and not be caught.</p>
+<p>Unless. <em>Unless they did the work to dig the well before the wind arrived.</em> That is the entire purpose of this playbook.</p>
+</div>
+
+<div class="think">
+<div class="think-label">Stop and Locate Yourself</div>
+<p>Imagine your work was automated to the point that your contribution to it was no longer materially needed. Not in twenty years. In five. What is the first feeling that lands when you sit with that for thirty seconds?</p>
+<hr class="think-line">
+<p>If the feeling is fear, panic, or despair, you have found your weak pillar. The fear is not a flaw. The fear is the diagnostic. It is telling you exactly which Source you have been drinking from.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Two Identities.</strong> Received versus constructed. Only received survives the audit.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Collapse.</strong> When the materials dissolve, the identity built from them dissolves. The collapse rate is high in individual cases. AI is about to make it collective. Most absorption infrastructure will fail. The well must be dug before the wind arrives.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"He brought me out into a spacious place; he rescued me because he delighted in me."<br><span class="ref">Psalm 18:19</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Three</div>
+<div class="ch-num">03</div>
+<div class="ch-title">The Source Itself</div>
+<div class="ch-sub">What makes a Source actually transcendent.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Most modern self help frameworks acknowledge that identity needs to be rooted in something. They use words like "your why," "your values," "your vision," "your purpose." These words feel transcendent but they are not. They are still self constructed. Your why was built by you. Your values were chosen by you. Your vision is your projection of your future. <em>The Source you point to is still a mirror.</em> It looks like an external anchor, but it is just your reflection in different clothing.</p>
+
+<p>For a Source to actually hold under abundance, it has to meet three criteria. First, it has to be <strong>genuinely outside the self</strong>, meaning it was not invented or chosen by the person it is anchoring. Second, it has to be <strong>stable across time and conditions</strong>, meaning it does not change as the self changes or as the world changes. Third, it has to <strong>actively speak</strong>, meaning it has to be capable of telling the self things the self does not already know about itself. A static value system fails the third test. A vision board fails all three. <em>The Source has to be a Person.</em></p>
+
+<div class="glow-box">
+<h3>Why The Source Has To Be A Person</h3>
+<p>An impersonal Source cannot do what identity formation requires. Identity formation is not the absorption of facts about yourself. <strong>It is the experience of being known.</strong> A document cannot know you. A value cannot know you. A vision cannot know you. The Source has to be capable of relating to the self, addressing the self, correcting the self, and revealing things to the self that the self could not have generated alone.</p>
+<p>This is why the framework keeps using <em>God</em> rather than vaguer words. Not because the language is supposed to be exclusively Christian. The language is precise. The Source that survives abundance has to be the kind of Source that can know you. <em>That kind of Source is a Someone, not a something.</em> Most of the major wisdom traditions agree on this point even when they disagree on everything else.</p>
+</div>
+
+<p>The practical consequence is unavoidable. If the Source has to be a Person, then identity formation becomes a relationship, not a posture. You do not "have" received identity the way you have a value system. You receive it ongoingly, the way you receive love, in the actual moments of being known by the One who knows you. The relationship is the mechanism. <strong>If the relationship is not real, the identity will not form.</strong></p>
+
+<p>This is also where the framework starts asking something hard of you. To dig the well that holds, you cannot just believe in a Source in the abstract. You have to actually let the Source speak to you and let what it says become more real than what you say to yourself. For most modern people, this is harder than it sounds. We have been trained to be the loudest voice in our own life. The Source has been competing with our self talk and losing. Most of our self talk is not even our own, it is our parents and our pastors and our teachers and our enemies, all running concurrently in our heads at higher volume than the Source we say we believe in. <em>That is why the practice has to be deliberate.</em></p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Day The Mirror Cracked</h4>
+<p>A man sits down in his car after a meeting that did not go his way. The voice in his head starts immediately. <em>You're not as good as you used to be. You're slipping. People are noticing. You should have been sharper.</em> He has heard this voice for thirty years. It sounds so familiar he assumes it is just thinking.</p>
+<p>His pastor had asked him a question the week before. "Whose voice is that?" The man had not understood the question. The pastor had pressed. "When the voice tells you you're not enough, who is talking? Is it God's voice? Is it yours? Or is it someone else's voice that you started hearing so early you thought it was yours?"</p>
+<p>The man sits in the car and listens. <em>The voice does not sound like God. The voice sounds like his father.</em></p>
+<p>He had been receiving identity from a Source he did not even realize he was drinking from. <strong>The well had been dug for him by someone else, and the water was bitter.</strong> He had spent thirty years tasting it and calling it his own.</p>
+</div>
+
+<p>This is why the work cannot stop at "find a Source." Most people already have a Source. Most of the time it is a parent, a culture, a former pastor, an old wound, or a media voice that landed early. The work is to <em>switch Sources</em>. Switching is harder than starting from scratch, because the bitter well has years of habit behind it. The voice that has been telling you who you are has authority just by the weight of repetition. The Source that should be telling you who you are has to be amplified deliberately until it can be heard over the noise.</p>
+
+<div class="grand-quote">
+<blockquote>The Source that holds under abundance is the One who knew you before you had achieved anything to be known for. Receive what He says. Refuse what does not match.</blockquote>
+<cite>The Receiver's First Lesson</cite>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Two Identities.</strong> Received versus constructed.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Collapse.</strong> Constructed identity dissolves with its materials. AI scales the collapse to populations.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Source Itself.</strong> Must be outside the self, stable across conditions, capable of speaking. Has to be a Person, not a value system. Identity is not posture, it is relationship. Most people already have a Source. The work is often to switch Sources, not to find one.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"The Lord appeared to us in the past, saying: 'I have loved you with an everlasting love; I have drawn you with unfailing kindness.'"<br><span class="ref">Jeremiah 31:3</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Four</div>
+<div class="ch-num">04</div>
+<div class="ch-title">Prayer As The Practice</div>
+<div class="ch-sub">The daily mechanism of receiving identity.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Prayer in this framework is not a mood, a feeling, or a religious accessory. <strong>Prayer is the daily, deliberate, repeated practice of letting yourself be told who you are by the One who made you.</strong> It is the operating mechanism by which received identity actually gets received. Without it, the Source can be technically true and functionally absent. With it, the Source becomes louder than the older voices that have been impersonating identity formation for years.</p>
+
+<p>Most people misunderstand prayer because they were taught it as a shopping list. Asking for things. Confessing sins. Interceding for others. All of these are forms of prayer, but none of them are the form that builds the Source pillar. <em>The form that builds the pillar is contemplative reception.</em> You sit, you become quiet, you listen, and you let the Source speak. The Source mostly speaks through scripture, through the felt sense of presence, through the words other believers speak with authority, and through the shape of your life when you pay attention. The Source does not usually speak in dramatic voices. The Source speaks in the way water speaks to a thirsty man. You do not have to argue. You have to drink.</p>
+
+<div class="ba-grid">
+<div class="ba-col before">
+<div class="ba-label">Prayer As Performance</div>
+<h4>Talking</h4>
+<ul>
+<li>Approach prayer as a list of requests</li>
+<li>Fill the time with your own words</li>
+<li>Treat silence as awkward and avoid it</li>
+<li>Measure prayer by how you felt afterward</li>
+<li>End the prayer the same person who started it</li>
+</ul>
+</div>
+<div class="ba-col after">
+<div class="ba-label">Prayer As Reception</div>
+<h4>Listening</h4>
+<ul>
+<li>Approach prayer to be told who you are</li>
+<li>Become quiet and stay quiet</li>
+<li>Let scripture speak before you do</li>
+<li>Measure prayer by what you heard</li>
+<li>End the prayer slightly more known than when you started</li>
+</ul>
+</div>
+</div>
+
+<p>The pattern that has worked across centuries is simple, and you can install it tomorrow morning. Sit in a quiet place for fifteen minutes. Read one short passage of scripture, slowly. Let it land. Ask the Source: <em>What are you saying about who I am right now?</em> Then sit. Resist the urge to fill the silence. Most of what surfaces in the first minute is your own self talk. Let it pass. The voice you are listening for is quieter than your own. After several minutes, a thought, an image, a phrase, or a felt sense of presence will arrive. Receive it. Write it down if it helps. End by thanking the Source. Repeat the next day.</p>
+
+<p>This is not original to this playbook. It is the daily practice of every contemplative tradition that has produced people who could survive abundance with their identity intact. <em>Lectio divina, centering prayer, hesychasm, the daily office, the morning watch.</em> Different names for the same mechanism. The mechanism works. The challenge is not learning the mechanism. The challenge is doing it every day for years until the new well runs deeper than the old voices.</p>
+
+<div class="data-hero">
+<div class="dh-num">15 min</div>
+<div class="dh-label">Daily reception practice. Minimum effective dose.</div>
+<div class="dh-sub">Less than the average person spends scrolling between waking and breakfast. The dose is not large. The consistency is the variable.</div>
+</div>
+
+<div class="think">
+<div class="think-label">Stop and Notice Your Voices</div>
+<p>Sit for two minutes right now. Do not pray. Do not plan. Just listen to what your mind says without your direction. Notice how many of the thoughts are evaluating you, judging you, critiquing you, or pressuring you.</p>
+<hr class="think-line">
+<p>That is the volume the Source has been competing with. The work is to amplify the Source until it is louder than this. The work is daily and the work is slow. The work is also the only thing that builds the pillar.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Two Identities.</strong> Received versus constructed.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Collapse.</strong> Constructed identity dissolves with its materials.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Source Itself.</strong> Must be a Person, not a value system. Switching Sources is often harder than finding one.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Prayer As The Practice.</strong> Daily reception, not performance. Sit, listen, let the Source speak through scripture and presence. 15 minutes minimum. The dose is small. The consistency is the variable. The new well runs deeper than the old voices only if you dig every day.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"Be still, and know that I am God."<br><span class="ref">Psalm 46:10</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Five</div>
+<div class="ch-num">05</div>
+<div class="ch-title">The Voices Over You</div>
+<div class="ch-sub">Identity is received in covenant, not in solitude.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Here is one of the holes in most identity frameworks: they treat identity as something an individual builds in private. The model is one person, alone, doing inner work. <strong>This is wrong.</strong> Identity is not constructed in private and it is not received in private. It is received in <em>covenant</em>, which means in committed, durable relationship with people who are positioned to speak truth into your life and whose words carry weight because of the relationship.</p>
+
+<p>This is why pure individual prayer, while necessary, is not sufficient. The Source speaks directly through prayer and scripture. The Source also speaks <em>through other people</em>, specifically through the small set of people who know you well, love you honestly, and are willing to tell you things you cannot see about yourself. In Christian tradition this is the church, the small group, the spiritual director, the marriage covenant. In other traditions it has different names. The function is the same. <em>You cannot become a fully formed self alone.</em> The materials of received identity are partly transmitted through covenant relationships, and trying to receive them in isolation will leave half the work undone.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Friend Who Said It</h4>
+<p>A man is in a hard season. He has been performing badly. He has been short with his wife, distant from his kids, and quietly drinking more than he wants to admit. He is going through the motions. He is praying, kind of. He is reading scripture, sometimes. None of it is landing. <em>He is alone with his own voices, and his voices are winning.</em></p>
+<p>His friend, one of three men he meets with weekly, looks at him over coffee. "You're not yourself," the friend says. "I'm watching you become someone you're not, and I don't think you can see it. Here is what I see."</p>
+<p>What follows is hard to hear. The friend is not cruel. The friend is precise. The friend names patterns the man has been hiding from himself. The man wants to argue. He does not, because the friend has earned the right to say it through years of showing up. <em>The friend is not telling the man who he is. The friend is reminding the man of who he is.</em></p>
+<p>The man cries in his car after the coffee. By the next morning, he is praying differently. The Source had been speaking. The man could not hear it alone. The friend was the amplifier.</p>
+</div>
+
+<p>The implication for the work ahead is concrete. <strong>You cannot rebuild the Source pillar by yourself.</strong> Even if you do the daily prayer practice perfectly, you will need a small set of people who can speak into you with authority. If you do not have those people right now, that becomes the priority second move. Find them. The first move is the prayer. The second move is the covenant relationships. Without both, the well will be shallow. With both, it will run deep enough to hold against any wind.</p>
+
+<div class="glow-box">
+<h3>The Three Voices</h3>
+<p>Healthy identity is reinforced by three voices, all in agreement. <strong>The Source</strong>, who speaks through scripture, prayer, and the felt sense of presence. <strong>The Covenant</strong>, the small set of people who know you well and are committed to your formation, the spouse, the deep friends, the spiritual director, the trusted pastor. <strong>The Self</strong>, your own internal voice, when it has been formed by the other two long enough that it speaks the same language.</p>
+<p>When all three voices agree, identity is solid. When they disagree, the disagreement itself is the diagnostic. Usually the Source and the Covenant are in alignment, and the Self is out. The work is to bring the Self into alignment with the other two, not to argue them down to the Self's level. <em>Most identity collapse happens when the Self has been arguing alone with itself for too long.</em></p>
+</div>
+
+<p>This is also why isolation is one of the most catastrophic conditions for an identity in formation. If you are alone right now, you are not safe. Get into a small set of committed relationships before you do anything else. The relationships do not have to be perfect. They have to be honest, durable, and oriented toward your formation rather than your comfort. Most modern men have a wide network and zero of these relationships. <em>Most modern men are also in an identity crisis they cannot name.</em> The two facts are connected.</p>
+
+<div class="think">
+<div class="think-label">Stop and Count Your Voices</div>
+<p>Name the three to five people who are currently positioned to tell you a hard truth about yourself and have you receive it. Not friends in the casual sense. Covenant relationships, where the relationship is durable and the truth telling is welcome.</p>
+<hr class="think-line">
+<p>If the list is short or empty, that is your most urgent work. Sources cannot reach you fully through prayer alone. The Source uses people. If there are no people, the channel is mostly closed.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Two Identities.</strong> Received versus constructed.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Collapse.</strong> Constructed dissolves with its materials.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Source Itself.</strong> Must be a Person, not a value system.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Prayer As The Practice.</strong> Daily reception. 15 minutes minimum.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Voices Over You.</strong> Identity is received in covenant, not in solitude. Three voices in agreement: Source, Covenant relationships, Self. Most modern people have no covenant relationships. Most are in identity crises they cannot name. The two are connected.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"As iron sharpens iron, so one person sharpens another."<br><span class="ref">Proverbs 27:17</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Six</div>
+<div class="ch-num">06</div>
+<div class="ch-title">The Source Protocol</div>
+<div class="ch-sub">Ninety days. Three phases. Beginning tomorrow.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Concrete protocol. No padding. The next ninety days have three phases of thirty days each. Each phase is cumulative, meaning you keep doing what the previous phase taught and add the new layer. <strong>The protocol assumes you start from zero.</strong> If you are further along, accelerate. If you are not, you have everything you need to begin.</p>
+
+<div class="protocol">
+<div class="protocol-head">Days 1 to 30 &middot; Phase One</div>
+<div class="protocol-grid">
+<div class="protocol-card">
+<div class="protocol-num">Daily</div>
+<div class="protocol-title">15 Minute Reception</div>
+<p>Sit. Quiet. One short scripture passage. Ask the Source what He is saying about who you are. Listen. Resist filling the silence with your own words. Same time, same place, every day.</p>
+</div>
+<div class="protocol-card">
+<div class="protocol-num">Weekly</div>
+<div class="protocol-title">Voice Audit</div>
+<p>One time per week, write down the dominant self talk that ran in your head that week. Identify whose voice it actually sounds like. Often it is not yours. Mark which lines are agreeing with the Source and which are not.</p>
+</div>
+<div class="protocol-card">
+<div class="protocol-num">By Day 30</div>
+<div class="protocol-title">First Spoken Identity</div>
+<p>You will know one thing the Source has spoken about you that you are willing to receive as true. Write it on paper. Carry it in your pocket. Read it when the older voices start. This is the first brick of the new well.</p>
+</div>
+</div>
+</div>
+
+<div class="protocol">
+<div class="protocol-head">Days 31 to 60 &middot; Phase Two</div>
+<div class="protocol-grid">
+<div class="protocol-card">
+<div class="protocol-num">Continue</div>
+<div class="protocol-title">Daily Reception</div>
+<p>Same practice. The depth comes from repetition, not novelty. If you have missed days, do not catch up. Just resume. The point is the rhythm, not the streak.</p>
+</div>
+<div class="protocol-card">
+<div class="protocol-num">Add</div>
+<div class="protocol-title">Find Or Confirm Two Voices</div>
+<p>Identify two people who can speak truth into your life with authority. If they exist, schedule weekly time with them. If they do not, this phase is mostly the search. Do not skip this. Solo will not work.</p>
+</div>
+<div class="protocol-card">
+<div class="protocol-num">By Day 60</div>
+<div class="protocol-title">First Hard Conversation</div>
+<p>Have one conversation with one of the two voices where you ask: what are you watching me become that I cannot see? Receive whatever they say without arguing for two days before responding.</p>
+</div>
+</div>
+</div>
+
+<div class="protocol">
+<div class="protocol-head">Days 61 to 90 &middot; Phase Three</div>
+<div class="protocol-grid">
+<div class="protocol-card">
+<div class="protocol-num">Continue</div>
+<div class="protocol-title">Reception And Voices</div>
+<p>Daily prayer. Weekly check ins with the two voices. The two practices begin to reinforce each other. The Source speaks through both channels and the channels start to agree.</p>
+</div>
+<div class="protocol-card">
+<div class="protocol-num">Add</div>
+<div class="protocol-title">Identity Removal Test</div>
+<p>One day per week, deliberately remove an identity scaffold. Do not check email. Do not work. Do not look in the mirror. Notice what fear or grief surfaces. The fear is a map of where the well is still shallow.</p>
+</div>
+<div class="protocol-card">
+<div class="protocol-num">By Day 90</div>
+<div class="protocol-title">First Survivable Loss</div>
+<p>Identify one external marker that previously defined you and notice that it no longer does. Not gone. Just no longer load bearing. The first brick has moved from the tower to the well. The pillar has begun to hold.</p>
+</div>
+</div>
+</div>
+
+<div class="grand-quote">
+<blockquote>The pillar is not built in ninety days. The well is not dug in ninety days. But ninety days is enough to feel the water rise the first time and to know the digging is working.</blockquote>
+<cite>The Source Protocol</cite>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Two Identities.</strong> Received versus constructed.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Collapse.</strong> Constructed dissolves with its materials.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Source Itself.</strong> A Person, not a value system.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Prayer As The Practice.</strong> Daily reception. 15 minutes minimum.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Voices Over You.</strong> Three voices in agreement. Identity received in covenant.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Source Protocol.</strong> Ninety day, three phase rebuild. Daily reception, voice audit, two covenant voices, identity removal test. By day 90, the first brick has moved from tower to well.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"You will be like a well watered garden, like a spring whose waters never fail."<br><span class="ref">Isaiah 58:11</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Seven</div>
+<div class="ch-num">07</div>
+<div class="ch-title">Source In The Coming World</div>
+<div class="ch-sub">Why this pillar matters more, not less, when the conditions change.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>The framing question for this chapter: <em>does the Source pillar matter more or less when AI removes the survival pressure that currently defines most lives?</em> The answer is more, by a large margin. Most readers will assume less. They will assume that abundance reduces the urgency of identity work because the conditions become friendlier. <strong>The opposite is true.</strong> Abundance does not soften the question of identity. It makes the question unavoidable, because the distractions that have been answering it for you are being removed.</p>
+
+<p>Right now, in this current world, you can outsource the question to your work. Your job tells you who you are every day. Your bills tell you what to optimize for. Your schedule tells you what to do next. The infrastructure of necessity is doing the work of identity formation by accident. You do not have to ask the deep question because the surface questions are loud enough to fill the day. <em>That is being removed.</em> When the surface questions go quiet, the deep question gets louder. The deep question has been waiting for its turn for most of your life.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Quiet Mornings</h4>
+<p>Imagine the year your work no longer needs you. The income is replaced. The system runs without you. You wake up Monday and there is no one waiting to be told what to do. <em>Nothing requires you for the first time in your life.</em></p>
+<p>For most people, the first three weeks feel like vacation. The next three feel like aimlessness. By month three, the deep question has fully arrived. <strong>Who am I?</strong> The work is not answering anymore. The bills are not asking anymore. The phone is not pulling anymore.</p>
+<p>The man who built the well drinks. The man who built the tower starts looking for a new tower to build, fast, because the silence is worse than any storm. The well drinker walks through his quiet mornings without panic. <em>The tower builder cannot stand still long enough to find out what is underneath.</em></p>
+<p>This will be the test. This is already the test for the early adopters of abundance, the post acquisition founders, the FIRE retirees, the inheritors. <strong>The test is coming for everyone.</strong></p>
+</div>
+
+<p>This is also why the playbook frames the Source pillar as useful right now and not just for the future. The work to dig the well takes years. The well does not appear when you need it. It has to be there before you need it. <em>You cannot build identity in the storm.</em> You can only build it in the quiet seasons before the storm. Right now, in the current configuration of the world, is the quiet season for most of you. The storm is on the horizon. The well has to be dug while the wind is still soft.</p>
+
+<div class="glow-box">
+<h3>The Both Realities Test</h3>
+<p>This pillar is the most useful pillar to start with regardless of when you read this playbook. <strong>In the current world</strong>, it gives you anxiety relief, sustainable performance, capacity to fail without disintegrating, and the ability to take risks because your identity is not on the table. The current world rewards Source rooted identity even before abundance arrives, because the people who are not running on external scaffolding outperform the people who are over long time horizons.</p>
+<p>In the abundance world, it is not optional. <em>It is the only thing that holds.</em> The collapse rates among populations without received identity will be brutal. The collapse rates among populations with received identity will be similar to what they have always been, because Source rooted identity has always known how to live in the garden. The conditions are not the test. The Source is.</p>
+</div>
+
+<div class="think">
+<div class="think-label">Stop and Decide</div>
+<p>You have read three thousand words on identity. You are about to close the playbook and the older voices in your head will begin to argue you out of the protocol within the next hour. They have decades of authority. They will tell you you are too busy, this is too religious, you can do it later, you have already heard this before.</p>
+<hr class="think-line">
+<p>Decide right now whether you will sit for fifteen minutes tomorrow morning. Set the time. Set the place. Set the alarm. The decision is the entire fork in the road.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Two Identities.</strong> Received versus constructed.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Collapse.</strong> Constructed dissolves with its materials.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Source Itself.</strong> A Person, not a value system.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Prayer As The Practice.</strong> Daily reception.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Voices Over You.</strong> Three voices, covenant relationships.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Source Protocol.</strong> 90 days, three phases.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Source In The Coming World.</strong> Matters more, not less, in abundance. The deep question gets louder when the surface questions are removed. The well must be dug in the quiet season before the storm. Useful in both realities. Critical in the second.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"The Lord is my shepherd, I lack nothing."<br><span class="ref">Psalm 23:1</span></p>
+</div>
+
+<div class="page section prose">
+
+<p>You now hold the architecture of the first pillar. The Two Identities. The Collapse. The Source Itself. Prayer As The Practice. The Voices Over You. The Source Protocol. Source In The Coming World. Seven mental models that, taken together, describe the rebuild of the most important load bearing structure of a human life.</p>
+
+<p>You also have a 90 day protocol that begins tomorrow morning. The protocol is concrete. The work is doable. The hardest part is showing up the second day, then the seventh day, then the thirty first day, then the day after a missed day. <strong>The well is not dug in dramatic moments. It is dug fifteen minutes at a time, every day, for years.</strong></p>
+
+<p>The next playbook in the series is <em>The Soil</em>. Read it next if your diagnostic placed you in Mode 2, 5, or 7 in Part 1. If you placed in Mode 1 or 4, finish at least Phase One of this protocol before moving to Part 3. If you placed in Mode 7, all three pillars need work and you read all three playbooks. The order matters less than the doing.</p>
+
+<p><strong>The garden returns. You are now digging the first well. Keep digging.</strong></p>
+
+</div>
+
+<div class="page">
+<div class="next-card">
+<div class="next-label">Next In The Series</div>
+<div class="next-title">The Soil</div>
+<div class="next-tag">Pillar Two. Stability through pruning, not equilibrium. Voluntary suffering as a discipline in the world that is removing the involuntary kind.</div>
+</div>
+</div>
+
+<div class="page section">
+<div class="final-test">
+<h3>Can You Answer These Without Looking Back?</h3>
+<p class="test-sub">Eight questions, one for each core concept. If you can answer all eight, the architecture has installed.</p>
+<div class="test-q"><div class="test-num">Question 1</div><p>What is the difference between received and constructed identity, and why does only one survive the audit?</p></div>
+<div class="test-q"><div class="test-num">Question 2</div><p>Describe the mechanism of identity collapse. Why is AI about to scale the collapse from individual to population?</p></div>
+<div class="test-q"><div class="test-num">Question 3</div><p>What three criteria does a Source have to meet to actually hold under abundance?</p></div>
+<div class="test-q"><div class="test-num">Question 4</div><p>Why does the Source have to be a Person rather than a value system?</p></div>
+<div class="test-q"><div class="test-num">Question 5</div><p>What is contemplative reception, and why is it different from prayer as performance?</p></div>
+<div class="test-q"><div class="test-num">Question 6</div><p>Name the three voices that reinforce healthy identity. What happens when they disagree?</p></div>
+<div class="test-q"><div class="test-num">Question 7</div><p>Walk through the three phases of the 90 day Source Protocol.</p></div>
+<div class="test-q"><div class="test-num">Question 8</div><p>Why does the Source pillar matter more, not less, in the abundance world being built around you?</p></div>
+</div>
+</div>
+
+<div class="page section">
+<div class="prompt-card">
+<h3>Continue The Conversation</h3>
+<p>Copy these prompts into any AI and let the work deepen:</p>
+<p><code>"Walk me through a 15 minute contemplative prayer practice for someone who has never sat in silence before. Give me a script for the first five sessions."</code></p>
+<p><code>"Help me identify three people in my life who could be covenant voices. Ask me diagnostic questions about my existing relationships to find them."</code></p>
+<p><code>"My self talk runs in [voice or phrase]. Help me identify whose voice that actually is and what scripture or truth would replace it."</code></p>
+<p><code>"Design a weekly identity removal test for my specific life. What scaffold should I take down each week, and what should I notice?"</code></p>
+</div>
+</div>
+
+<div class="ribbon">
+<p>"See, I have engraved you on the palms of my hands."<br><span class="ref">Isaiah 49:16</span></p>
+</div>
+
+<div class="series-progress" style="padding:32px 24px;background:var(--cream-warm);border-top:1px solid rgba(10,18,32,0.06)">
+  <div style="font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:14px">The Eden Pattern</div>
+  <div class="series-dots">
+    <span class="series-dot done" title="Before The Garden Returns"></span>
+    <span class="series-dot active" title="The Source"></span>
+    <span class="series-dot" title="The Soil"></span>
+    <span class="series-dot" title="The Fruit"></span>
+  </div>
+  <div class="series-dot-label" style="color:var(--text-muted)">Part 2 of 4 &middot; The Source</div>
+</div>
+
+<section class="finale">
+<h2>Dig the well.<br><strong>Drink while it is quiet.</strong></h2>
+</section>
+
+<footer class="footer">
+<p>The Source &middot; The Eden Pattern (Part 2 of 4) &middot; KingdomBuilders AI<br><a href="./">View All Playbooks</a></p>
+</footer>
+</body>
+</html>
