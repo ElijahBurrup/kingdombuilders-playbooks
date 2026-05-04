@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tending The Garden | Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --night:#0F1A14;--mist:#1F2A22;--leaf-dark:#2E3D2D;--leaf:#4A5D3E;
+ --sage:#7B8C5B;--sage-pale:#A8B587;
+ --gold:#D4A843;--gold-glow:#E8C96A;--gold-pale:#F5E0A8;--gold-soft:rgba(212,168,67,0.08);
+ --dawn:#E8B870;--bloom:#C88A6E;--copper:#B87A3C;
+ --grain:#C49060;
+ --cream:#F8F4E8;--cream-warm:#EFE8D2;--cream-deep:#DDD2BC;
+ --text:#1F2419;--text-light:#4A5340;--text-muted:#7B8470;
+ --white:#FFFFFF;--radius:16px;
+ --shadow-soft:0 2px 16px rgba(15,26,20,0.08);
+ --shadow-mid:0 4px 28px rgba(15,26,20,0.14);
+ --before-bg:#F2EBDB;--before-border:#B87A3C;--before-text:#5A3018;
+ --after-bg:#EBF0DD;--after-border:#4A5D3E;--after-text:#1F2419
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--cream);line-height:1.82;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
+.page{max-width:720px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--leaf-dark);font-weight:700}
+.prose em{color:var(--copper);font-style:italic}
+.prose h2{font-size:1.4rem;color:var(--leaf-dark);margin:40px 0 16px;letter-spacing:-0.01em}
+
+dfn.def{font-style:normal;border-bottom:1.5px dotted var(--gold);cursor:help;position:relative}
+dfn.def:hover::after{content:attr(data-def);position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:var(--leaf-dark);color:var(--cream);padding:8px 14px;border-radius:8px;font-size:0.78rem;font-family:'Nunito',sans-serif;white-space:normal;width:280px;text-align:center;z-index:100;box-shadow:0 4px 16px rgba(15,26,20,0.3);line-height:1.5;pointer-events:none}
+
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;
+ background:linear-gradient(175deg,#06100A 0%,var(--night) 25%,var(--mist) 55%,var(--leaf-dark) 80%,var(--leaf) 100%);
+ position:relative;overflow:hidden}
+.dawn-glow{position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse at center top,rgba(232,184,112,0.18),rgba(212,168,67,0.08) 50%,transparent 80%);filter:blur(40px);pointer-events:none}
+.spark{position:absolute;width:2px;height:2px;border-radius:50%;background:rgba(245,224,168,0.7);pointer-events:none;animation:gentle-twinkle ease-in-out infinite}
+.spark:nth-child(2){top:14%;left:18%;animation-duration:4s;animation-delay:0s}
+.spark:nth-child(3){top:22%;left:78%;animation-duration:5s;animation-delay:-1s;width:3px;height:3px}
+.spark:nth-child(4){top:28%;left:42%;animation-duration:4.5s;animation-delay:-2s}
+.spark:nth-child(5){top:35%;left:62%;animation-duration:5.5s;animation-delay:-1.5s}
+.spark:nth-child(6){top:46%;left:25%;animation-duration:4s;animation-delay:-3s}
+.spark:nth-child(7){top:55%;left:75%;animation-duration:5s;animation-delay:-2.5s;width:1.5px;height:1.5px}
+@keyframes gentle-twinkle{0%,100%{opacity:0.2}50%{opacity:0.9;box-shadow:0 0 6px rgba(245,224,168,0.5)}}
+.leaf-d{position:absolute;width:6px;height:10px;border-radius:50% 0% 50% 0%;background:rgba(123,140,91,0.4);transform-origin:center;animation:leaf-drift linear infinite;pointer-events:none}
+.leaf-d:nth-child(8){left:12%;animation-duration:18s;animation-delay:0s}
+.leaf-d:nth-child(9){left:32%;animation-duration:22s;animation-delay:-5s}
+.leaf-d:nth-child(10){left:55%;animation-duration:20s;animation-delay:-9s;background:rgba(168,181,135,0.3)}
+.leaf-d:nth-child(11){left:78%;animation-duration:24s;animation-delay:-14s}
+@keyframes leaf-drift{0%{top:-20px;opacity:0;transform:rotate(0deg) translateX(0)}10%{opacity:0.6}50%{opacity:0.4;transform:rotate(180deg) translateX(20px)}90%{opacity:0.2}100%{top:110%;opacity:0;transform:rotate(360deg) translateX(-15px)}}
+.ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.02;mix-blend-mode:overlay;pointer-events:none}
+.cover-content{position:relative;z-index:2;padding:48px 24px}
+.cover-badge{display:inline-block;padding:6px 22px;border:1px solid rgba(212,168,67,0.3);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.67rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--gold-glow);margin-bottom:16px}
+.cover-series{display:inline-block;padding:4px 16px;border:1px solid rgba(212,168,67,0.2);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.58rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:36px}
+.cover h1{font-family:'Nunito',sans-serif;font-size:clamp(2.2rem,6vw,3.6rem);font-weight:900;color:var(--white);line-height:1.06;margin-bottom:4px}
+.cover h1 strong{font-weight:900;color:var(--gold-glow);display:block;font-size:clamp(2.6rem,7.2vw,4.5rem)}
+.cover-tagline{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.62);margin-top:24px;line-height:1.75;max-width:580px;margin-left:auto;margin-right:auto}
+.cover-tagline em{color:var(--gold-pale);font-style:normal;font-weight:600}
+.cover-sub{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.32);margin-top:14px}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.58rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-top:48px}
+
+.series-progress{text-align:center;padding:24px 24px 12px;background:transparent}
+.series-dots{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px}
+.series-dot{width:12px;height:12px;border-radius:50%;border:2px solid rgba(212,168,67,0.3);background:transparent}
+.series-dot.active{background:var(--gold);border-color:var(--gold);box-shadow:0 0 8px rgba(212,168,67,0.4)}
+.series-dot.done{background:rgba(212,168,67,0.4);border-color:rgba(212,168,67,0.5)}
+.series-dot-label{font-family:'Poppins',sans-serif;font-size:0.55rem;color:rgba(255,255,255,0.42);letter-spacing:3px;text-transform:uppercase}
+
+.ch-head{background:linear-gradient(170deg,var(--leaf-dark),var(--leaf));padding:72px 24px 52px;position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23D4A843' fill-opacity='0.05'%3E%3Cpath d='M40 10 L42 38 L40 70 L38 38 Z'/%3E%3Cpath d='M10 40 L38 42 L70 40 L38 38 Z'/%3E%3C/g%3E%3C/svg%3E")}
+.ch-badge{display:inline-block;padding:4px 16px;background:rgba(212,168,67,0.12);border:1px solid rgba(212,168,67,0.3);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:20px;position:relative;z-index:2}
+.ch-num{font-family:'Nunito',sans-serif;font-size:5.5rem;font-weight:900;line-height:0.9;color:rgba(212,168,67,0.18);margin-bottom:-10px;position:relative;z-index:2}
+.ch-title{font-family:'Nunito',sans-serif;font-size:2.1rem;font-weight:900;color:var(--white);line-height:1.15;letter-spacing:-0.02em;margin-bottom:10px;position:relative;z-index:2}
+.ch-sub{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.55);line-height:1.6;position:relative;z-index:2}
+
+.ribbon{text-align:center;padding:22px 24px;background:linear-gradient(135deg,rgba(212,168,67,0.05),rgba(123,140,91,0.07));border-top:1.5px solid rgba(212,168,67,0.15);border-bottom:1.5px solid rgba(212,168,67,0.15)}
+.ribbon p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:var(--text-light);max-width:540px;margin:0 auto}
+.ribbon .ref{font-weight:600;color:var(--copper);font-style:normal}
+
+.char-grid{display:grid;gap:24px;margin:40px 0}
+@media(min-width:640px){.char-grid{grid-template-columns:1fr 1fr 1fr}}
+.char-card{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft);transition:all 0.3s ease}
+.char-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-mid)}
+.char-head{background:linear-gradient(135deg,var(--gold-soft),rgba(123,140,91,0.05));padding:18px 20px;border-bottom:1px solid var(--cream-deep);display:flex;align-items:center;gap:14px}
+.char-emoji{font-size:2rem;line-height:1;display:flex;align-items:center;justify-content:center}
+.char-name{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;color:var(--leaf-dark);line-height:1.25}
+.char-title{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-top:2px}
+.char-body{padding:20px}
+.char-body p{font-size:0.92rem;color:var(--text-light);line-height:1.75;margin:0}
+
+.scene{background:linear-gradient(135deg,var(--cream-warm),var(--cream));border:1px solid var(--cream-deep);border-radius:var(--radius);padding:28px;margin:32px 0;box-shadow:var(--shadow-soft)}
+.scene-label{font-family:'Nunito',sans-serif;font-size:0.68rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--copper);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.scene h4{font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:800;color:var(--leaf-dark);margin-bottom:14px;line-height:1.3}
+.scene p{font-size:0.95rem;color:var(--text-light);line-height:1.78;margin-bottom:14px}
+.scene p:last-child{margin-bottom:0}
+
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:36px 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft)}
+@media(max-width:600px){.ba-grid{grid-template-columns:1fr}}
+.ba-col{padding:28px 24px}
+.ba-col.before{background:var(--before-bg);border-right:2px solid var(--cream-deep)}
+.ba-col.after{background:var(--after-bg)}
+@media(max-width:600px){.ba-col.before{border-right:none;border-bottom:2px solid var(--cream-deep)}}
+.ba-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px}
+.ba-col.before .ba-label{color:var(--before-border)}
+.ba-col.after .ba-label{color:var(--after-border)}
+.ba-col h4{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;margin-bottom:10px;line-height:1.3}
+.ba-col.before h4{color:var(--before-text)}
+.ba-col.after h4{color:var(--after-text)}
+.ba-col p{font-size:0.88rem;line-height:1.7;margin-bottom:8px}
+.ba-col.before p{color:#5A3018}
+.ba-col.after p{color:#1F2419}
+.ba-col ul{list-style:none;padding:0;margin:0}
+.ba-col ul li{font-size:0.88rem;line-height:1.7;padding:4px 0 4px 18px;position:relative}
+.ba-col.before ul li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:8px;border-radius:50%;background:var(--before-border);opacity:0.55}
+.ba-col.after ul li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:8px;border-radius:50%;background:var(--after-border);opacity:0.55}
+
+.data-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin:32px 0}
+.data-box{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:24px 16px;text-align:center;box-shadow:var(--shadow-soft)}
+.data-num{font-family:'Nunito',sans-serif;font-size:1.8rem;font-weight:900;color:var(--leaf);line-height:1;margin-bottom:6px}
+.data-label{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+
+.data-hero{text-align:center;padding:48px 24px;margin:40px 0;background:linear-gradient(135deg,var(--leaf-dark),var(--leaf));border-radius:var(--radius);position:relative;overflow:hidden}
+.data-hero::before{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(212,168,67,0.1) 0%,transparent 70%);border-radius:50%}
+.data-hero .dh-num{font-family:'Nunito',sans-serif;font-size:3.4rem;font-weight:900;color:var(--gold-glow);line-height:1;margin-bottom:10px;position:relative}
+.data-hero .dh-label{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.5);position:relative}
+.data-hero .dh-sub{font-family:'Lora',serif;font-size:0.92rem;font-style:italic;color:rgba(255,255,255,0.6);margin-top:12px;max-width:440px;margin-left:auto;margin-right:auto;position:relative}
+
+.glow-box{background:linear-gradient(135deg,var(--leaf-dark),var(--leaf));border:2px solid rgba(212,168,67,0.22);border-radius:var(--radius);padding:32px;margin:36px 0;position:relative;overflow:hidden;box-shadow:0 4px 24px rgba(15,26,20,0.2)}
+.glow-box::before{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(212,168,67,0.1) 0%,transparent 70%);border-radius:50%}
+.glow-box h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--gold-glow);margin-bottom:14px;position:relative}
+.glow-box p{font-size:0.95rem;color:rgba(255,255,255,0.85);line-height:1.78;position:relative;margin-bottom:12px}
+.glow-box p:last-child{margin-bottom:0}
+.glow-box strong{color:var(--gold-pale)}
+.glow-box em{color:var(--sage-pale);font-style:italic}
+
+.grand-quote{text-align:center;padding:48px 24px;margin:40px 0;position:relative}
+.grand-quote::before{content:'\201C';font-family:'Lora',serif;font-size:8rem;color:rgba(212,168,67,0.15);position:absolute;top:-20px;left:50%;transform:translateX(-50%);line-height:1}
+.grand-quote blockquote{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:var(--leaf-dark);line-height:1.7;max-width:540px;margin:0 auto;position:relative}
+.grand-quote cite{display:block;margin-top:16px;font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--copper);font-style:normal}
+
+.root-ck{margin:40px auto;max-width:720px;padding:36px 32px;background:linear-gradient(135deg,rgba(212,168,67,0.05),rgba(123,140,91,0.07));border-radius:var(--radius);border:2px solid rgba(212,168,67,0.18)}
+.root-ck .rc-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.root-ck h4{font-size:1.05rem;color:var(--leaf-dark);margin-bottom:20px}
+.r-item{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
+.r-item:last-child{margin-bottom:0}
+.r-dot{flex-shrink:0;width:8px;height:8px;border-radius:50%;background:var(--gold);margin-top:7px;box-shadow:0 0 6px rgba(212,168,67,0.3)}
+.r-text{font-size:0.92rem;color:var(--text-light);line-height:1.7}
+
+.viz{margin:32px 0;border-radius:var(--radius);border:2px solid var(--gold);overflow:hidden;box-shadow:0 0 20px rgba(212,168,67,0.1)}
+.viz-inner{padding:0}
+.viz-top{display:flex;align-items:center;gap:16px;padding:20px 28px;background:linear-gradient(135deg,rgba(212,168,67,0.1),rgba(212,168,67,0.04))}
+.viz-icon{flex-shrink:0;width:40px;height:40px;border-radius:50%;background:var(--gold);color:var(--white);display:flex;align-items:center;justify-content:center}
+.viz-icon svg{width:20px;height:20px}
+.viz-meta .viz-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.viz-meta h4{font-size:1rem;color:var(--leaf-dark);margin:0}
+.viz-body{padding:24px 28px;background:var(--white)}
+.viz-body p{font-size:0.92rem;color:var(--text-light);line-height:1.78;margin-bottom:12px}
+.viz-body strong{color:var(--leaf-dark);font-weight:700}
+.viz-body em{color:var(--copper);font-style:italic;font-weight:500}
+.viz-body p:last-child{margin-bottom:0}
+.viz-trigger{padding:16px 28px;background:linear-gradient(135deg,rgba(212,168,67,0.07),rgba(212,168,67,0.02));border-top:1px solid rgba(212,168,67,0.15);font-size:0.88rem;color:var(--leaf-dark);font-style:italic}
+
+.think{background:linear-gradient(135deg,rgba(212,168,67,0.07),rgba(123,140,91,0.05));border:2px solid rgba(212,168,67,0.18);border-radius:var(--radius);padding:28px;margin:36px 0}
+.think-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.think p{font-size:0.95rem;color:var(--text-light);line-height:1.78;margin-bottom:12px}
+.think p:last-child{margin-bottom:0}
+.think-line{border:none;border-bottom:1.5px dashed rgba(212,168,67,0.3);margin:8px 0}
+
+/* Interaction grid (the six interactions) */
+.intx-grid{display:grid;gap:16px;margin:36px 0}
+@media(min-width:640px){.intx-grid{grid-template-columns:1fr 1fr}}
+.intx{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:24px 22px;box-shadow:var(--shadow-soft);position:relative;overflow:hidden}
+.intx::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--gold),var(--leaf))}
+.intx-arrow{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.intx-name{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:900;color:var(--leaf-dark);margin-bottom:8px}
+.intx-tag{font-family:'Lora',serif;font-size:0.85rem;font-style:italic;color:var(--copper);margin-bottom:10px}
+.intx p{font-size:0.86rem;color:var(--text-light);line-height:1.65;margin-bottom:8px}
+.intx p:last-child{margin-bottom:0}
+.intx-diag{font-size:0.82rem;color:var(--leaf-dark);background:rgba(123,140,91,0.08);padding:10px 14px;border-radius:8px;margin-top:10px;border-left:3px solid var(--leaf)}
+.intx-diag strong{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--leaf);display:block;margin-bottom:4px}
+
+/* Liturgy / day timeline */
+.liturgy{margin:36px 0;padding:0;position:relative}
+.liturgy::before{content:'';position:absolute;left:18px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--gold),var(--leaf),var(--copper),var(--gold))}
+.lit-item{display:flex;gap:20px;align-items:flex-start;padding:18px 0;position:relative}
+.lit-dot{width:14px;height:14px;min-width:14px;border-radius:50%;background:var(--gold);margin-top:5px;position:relative;z-index:1;margin-left:11px;box-shadow:0 0 8px rgba(212,168,67,0.4)}
+.lit-content{flex:1}
+.lit-time{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--copper);margin-bottom:4px}
+.lit-title{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:var(--leaf-dark);margin-bottom:4px}
+.lit-pillars{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.lit-desc{font-size:0.88rem;color:var(--text-light);line-height:1.65}
+
+/* Cadence grid (week/year) */
+.cadence{display:grid;gap:14px;margin:32px 0}
+@media(min-width:640px){.cadence{grid-template-columns:1fr 1fr}}
+.cad-card{background:var(--white);border:2px solid var(--cream-deep);border-left:5px solid var(--copper);border-radius:var(--radius);padding:22px 20px;box-shadow:var(--shadow-soft)}
+.cad-when{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--copper);margin-bottom:6px}
+.cad-title{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:var(--leaf-dark);margin-bottom:6px}
+.cad-card p{font-size:0.85rem;color:var(--text-light);line-height:1.65;margin:0}
+
+.final-test{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:36px;margin:40px 0;box-shadow:var(--shadow-soft)}
+.final-test h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--leaf-dark);margin-bottom:6px}
+.final-test .test-sub{font-size:0.85rem;color:var(--text-muted);margin-bottom:24px;font-style:italic}
+.test-q{padding:14px 0;border-bottom:1px solid var(--cream-deep)}
+.test-q:last-child{border-bottom:none}
+.test-num{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.test-q p{font-size:0.92rem;color:var(--text);line-height:1.65}
+
+.prompt-card{background:linear-gradient(135deg,var(--leaf-dark),var(--leaf));border-radius:var(--radius);padding:36px;margin:40px 0;box-shadow:0 4px 24px rgba(15,26,20,0.2)}
+.prompt-card h3{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;color:var(--gold-glow);margin-bottom:16px}
+.prompt-card p{font-size:0.88rem;color:rgba(255,255,255,0.75);line-height:1.65;margin-bottom:10px}
+.prompt-card code{background:rgba(255,255,255,0.08);padding:2px 8px;border-radius:4px;font-size:0.82rem;color:var(--gold-pale)}
+
+.series-conclusion{background:linear-gradient(135deg,var(--leaf),var(--leaf-dark));border-radius:var(--radius);padding:42px 32px;margin:40px 0;box-shadow:0 4px 24px rgba(15,26,20,0.2);text-align:center;position:relative;overflow:hidden}
+.series-conclusion::before{content:'';position:absolute;top:-30%;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(245,224,168,0.15) 0%,transparent 70%);border-radius:50%}
+.series-conclusion .sc-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:12px;position:relative}
+.series-conclusion h3{font-family:'Nunito',sans-serif;font-size:1.6rem;font-weight:900;color:var(--white);margin-bottom:14px;position:relative}
+.series-conclusion p{font-family:'Lora',serif;font-size:0.95rem;color:rgba(255,255,255,0.8);line-height:1.7;position:relative;max-width:540px;margin:0 auto}
+
+.finale{background:linear-gradient(170deg,var(--night),var(--leaf-dark));padding:80px 24px;text-align:center;position:relative;overflow:hidden}
+.finale::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(212,168,67,0.06) 0%,transparent 70%);border-radius:50%}
+.finale h2{font-family:'Nunito',sans-serif;font-size:clamp(1.6rem,4.4vw,2.4rem);font-weight:300;color:rgba(255,255,255,0.78);line-height:1.3;position:relative;margin-bottom:8px}
+.finale h2 strong{font-weight:900;color:var(--gold-glow);display:block}
+
+.footer{text-align:center;padding:48px 24px;background:var(--night);color:rgba(255,255,255,0.3);font-family:'Poppins',sans-serif;font-size:0.6rem;letter-spacing:2px;text-transform:uppercase}
+.footer a{color:var(--gold);text-decoration:none;opacity:0.65}
+.footer a:hover{opacity:1}
+
+@media(max-width:640px){
+  .page{padding:0 20px}
+  .root-ck{margin-left:20px;margin-right:20px;padding:28px 20px}
+  .char-grid,.intx-grid,.cadence{grid-template-columns:1fr}
+  .data-hero .dh-num{font-size:2.6rem}
+  .ch-title{font-size:1.7rem}
+  .ch-num{font-size:4rem}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+</style>
+</head>
+<body>
+
+<section class="cover">
+<div class="dawn-glow"></div>
+<div class="spark"></div><div class="spark"></div><div class="spark"></div><div class="spark"></div><div class="spark"></div><div class="spark"></div>
+<div class="leaf-d"></div><div class="leaf-d"></div><div class="leaf-d"></div><div class="leaf-d"></div>
+<div class="ghost-noise"></div>
+<div class="cover-content">
+<div class="cover-badge">Kingdom Builders AI</div><br>
+<div class="cover-series">The Eden Pattern &middot; Part 5 of 5</div>
+<h1>Tending The <strong>Garden</strong></h1>
+<p class="cover-tagline">The pillars are built. Now learn how to live with all three running at once. <em>The interactions are where the trinity compounds.</em> The day where you pray while you work, grow through what you build, and bear what only the three together can produce.</p>
+<p class="cover-sub">A Daily Operating Manual For The Eden Pattern</p>
+<div class="series-progress">
+  <div class="series-dots">
+    <span class="series-dot done" title="Before The Garden Returns"></span>
+    <span class="series-dot done" title="The Source"></span>
+    <span class="series-dot done" title="The Soil"></span>
+    <span class="series-dot done" title="The Fruit"></span>
+    <span class="series-dot active" title="Tending The Garden"></span>
+  </div>
+  <div class="series-dot-label">Part 5 of 5</div>
+</div>
+<p class="cover-author">KingdomBuilders AI</p>
+</div>
+</section>
+
+<div class="ribbon">
+<p>"This is what the Lord says: Stand at the crossroads and look; ask for the ancient paths, ask where the good way is, and walk in it, and you will find rest for your souls."<br><span class="ref">Jeremiah 6:16</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Pregame</div>
+<div class="ch-num">00</div>
+<div class="ch-title">The Hardest Layer</div>
+<div class="ch-sub">What you will know when you finish this playbook.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p><strong>If you finish this playbook, you will know how to run an actual Tuesday with all three pillars in operation at once.</strong> You will hold the six interactions between Source, Soil, and Fruit, where the trinity compounds and produces what no single pillar can produce alone. You will hold a daily liturgy structured around <em>overlap</em> rather than scheduling. You will hold a weekly cadence that extends the rhythm past one day. You will hold protocols for when the rhythm breaks (illness, travel, grief, transition) and the year long view of how the garden moves through seasons. By the time you finish, the architecture you built in the first four playbooks will be tended every day for the rest of your life, not stored in a binder you reread on retreats.</p>
+
+<div class="glow-box">
+<h3>Three Bold Claims</h3>
+<p>The trinity is not a list of three things to do. <strong>It is a single integrated system that produces unique outputs in the overlap.</strong> Praying while working is not multitasking. It is the Source pillar feeding the Fruit pillar in real time, and it produces a kind of work that pure prayer cannot produce and pure work cannot produce. The interactions are the point.</p>
+<p>The hardest pillar that is not a pillar is the orchestration. <em>Most people who finish a Source rebuild, a Soil rebuild, and a Fruit rebuild still fail to live a life that compounds the three.</em> They run them in separate compartments. The compartments do not interact. The trinity does not light up. The work was real but the harvest never multiplies.</p>
+<p>The discipline of overlap is the most counter cultural rhythm in modern life. <strong>The day is not three buckets. The day is a sequence of acts where each act is doing two or three pillars at once.</strong> This is the discipline that turns the architecture into a living garden. This playbook teaches it.</p>
+</div>
+
+<p>This is Part 5 of <em>The Eden Pattern</em>. Read it last. The integration cannot be installed before the pillars exist. If you have not done at least the basic protocol of each prior pillar, the orchestration in this playbook will land as theory and dissolve. If you have done the work, this playbook gives you the operating manual. <strong>The architecture is built. Now tend the garden.</strong></p>
+
+</div>
+
+<div class="page">
+<div class="char-grid">
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji"><svg viewBox="0 0 48 48" width="42" height="42"><circle cx="24" cy="34" r="3" fill="#7B8C5B"/><path d="M24 34 L24 22" stroke="#4A5D3E" stroke-width="2" stroke-linecap="round"/><path d="M24 22 C20 22 16 18 16 14" stroke="#4A5D3E" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M24 22 C28 22 32 18 32 14" stroke="#4A5D3E" stroke-width="1.8" fill="none" stroke-linecap="round"/><circle cx="16" cy="14" r="3" fill="#9BA582"/><circle cx="32" cy="14" r="3" fill="#9BA582"/><circle cx="24" cy="10" r="4" fill="#D4A843" opacity="0.85"><animate attributeName="opacity" values="0.5;1;0.5" dur="3s" repeatCount="indefinite"/></circle><path d="M22 38 L26 38 L26 42 L22 42 Z" fill="#2D3825"/></svg></div>
+<div><div class="char-name">The Tender</div><div class="char-title">Reprised</div></div>
+</div>
+<div class="char-body"><p>Returns from Part 1. The one who keeps all three pillars in operation simultaneously. The Tender does not multitask. The Tender does not compartmentalize. The Tender lets each pillar feed the others in real time. Most rare. Most useful. The whole series has been preparing you to become this character.</p></div>
+</div>
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji"><svg viewBox="0 0 48 48" width="42" height="42"><rect x="6" y="6" width="11" height="11" rx="1" fill="none" stroke="#586A48" stroke-width="1.5"/><rect x="19" y="6" width="11" height="11" rx="1" fill="none" stroke="#586A48" stroke-width="1.5"/><rect x="6" y="19" width="11" height="11" rx="1" fill="none" stroke="#586A48" stroke-width="1.5"/><rect x="19" y="19" width="11" height="11" rx="1" fill="none" stroke="#586A48" stroke-width="1.5"/><rect x="32" y="13" width="10" height="10" rx="1" fill="none" stroke="#7A6A55" stroke-width="1.5"/><line x1="11.5" y1="11.5" x2="11.5" y2="11.5" stroke="#A86A30" stroke-width="2"/><circle cx="11.5" cy="11.5" r="1.5" fill="#A86A30"/><circle cx="24.5" cy="11.5" r="1.5" fill="#586A48"/><circle cx="11.5" cy="24.5" r="1.5" fill="#D4A843"/><circle cx="24.5" cy="24.5" r="1.5" fill="#7A6A55" opacity="0.5"/></svg></div>
+<div><div class="char-name">The Compartmentalizer</div><div class="char-title">Pillars In Boxes</div></div>
+</div>
+<div class="char-body"><p>Has all three pillars but keeps them in separate compartments. Prays at 6 a.m. Works from 9 to 5. Hits the gym at 6 p.m. Reads scripture before bed. Each pillar is real. None of them touch each other. The day produces less than the sum of its parts. Most readers default here without realizing it. Compartments are the comfortable failure mode of the pillar work.</p></div>
+</div>
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji"><svg viewBox="0 0 48 48" width="42" height="42"><circle cx="24" cy="24" r="14" fill="none" stroke="#B87A3C" stroke-width="1.5" stroke-dasharray="3 3"><animate attributeName="r" values="12;16;12" dur="3s" repeatCount="indefinite"/></circle><path d="M14 14 L34 34 M34 14 L14 34" stroke="#B87A3C" stroke-width="1.5"/><circle cx="24" cy="24" r="3" fill="#B87A3C"/></svg></div>
+<div><div class="char-name">The Multitasker</div><div class="char-title">All At Once Always</div></div>
+</div>
+<div class="char-body"><p>Tries to do all three pillars simultaneously, every minute, in maximum overlap. Listens to scripture while exercising while reviewing the calendar while replying to texts. The intent is right but the execution shatters the practice. Each pillar gets thinner attention. The interactions never deepen because nothing is given full presence. The Multitasker burns out and cannot tell you why.</p></div>
+</div>
+</div>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter One</div>
+<div class="ch-num">01</div>
+<div class="ch-title">The Three Are Not Three</div>
+<div class="ch-sub">Why integration is the layer that determines whether the architecture compounds.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>The temptation is to read the trinity as a list. Source, Soil, Fruit, three things to do, three boxes to check. <strong>This reading guarantees failure.</strong> The trinity is not three things. It is one integrated system that produces unique outputs in the overlap. The compounding does not happen inside any single pillar. The compounding happens where two or three pillars meet in the same act, the same hour, the same conversation.</p>
+
+<p>Think about the actual texture of a healthy life. A man prays in his shop while planing a board for a friend's table. He is not stopping to pray. He is not stopping to work. The two are the same act. The Source is feeding the Fruit while the Fruit is being made. The work has a quality that pure work cannot have because the Source is in the room. The prayer has a quality that pure prayer cannot have because it is being prayed by hands that are also building. <em>That single hour is doing the work of multiple compartments at once, and the output is more than additive.</em></p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Two Hospital Visits</h4>
+<p>Two men visit the same friend in the hospital on the same afternoon. The friend is dying. Both visits last an hour. From outside, the visits look identical.</p>
+<p>The first man arrived having compartmentalized his day. He prayed in the morning. He did his hard work at the office. He took a break to come visit. The visit is its own slot. He sits with his friend, says the right things, holds the right hand, leaves at the right time. <em>The visit was a kindness.</em> It also leaves no residue. By the next morning, he has moved on.</p>
+<p>The second man arrived having woven the day differently. The visit was not a slot. It was the deepest expression of all three pillars in a single hour. <strong>Source</strong>: he prayed silently the entire time, asking that whatever this man needed would land. <strong>Soil</strong>: he stayed in the room with the smell of dying for an hour without flinching, letting the discomfort form him. <strong>Fruit</strong>: his presence was the entire output, no words required. The visit did the work of three compartments compounded.</p>
+<p>His friend died two days later. The first man went to the funeral. <em>The second man had already been at the funeral, on Tuesday afternoon.</em> The compounding had happened in the overlap. There was no compartment for it.</p>
+</div>
+
+<p>This is what the trinity is for. Not three boxes. One <dfn class="def" data-def="The discipline of structuring acts so that each one is doing two or three pillars at once, not by multitasking but by full presence to overlapping dimensions of the same act. The day stops being a calendar and becomes a single integrated motion.">overlap discipline</dfn> where the day becomes a sequence of acts that each carry multiple pillars. <strong>This is the layer that determines whether the architecture compounds.</strong> Without it, the pillars are real but they sit in separate rooms. With it, the pillars share air. The output multiplies.</p>
+
+<div class="ba-grid">
+<div class="ba-col before">
+<div class="ba-label">The Compartmentalized Day</div>
+<h4>Three Boxes</h4>
+<ul>
+<li>Pray for 15 minutes at 6 a.m.</li>
+<li>Hit the gym at 7 a.m.</li>
+<li>Work from 9 to 5</li>
+<li>Have a hard conversation at 7 p.m.</li>
+<li>Read scripture before bed</li>
+<li>Each act is real. None of them touch each other.</li>
+</ul>
+</div>
+<div class="ba-col after">
+<div class="ba-label">The Tended Day</div>
+<h4>Acts That Overlap</h4>
+<ul>
+<li>Pray while running. Source plus Soil.</li>
+<li>Build the project as service. Fruit plus Source.</li>
+<li>Confess on the walk. Soil plus relational Fruit.</li>
+<li>Mentor while pruning yourself. Generative plus Soil.</li>
+<li>Worship in the work. Source plus the day.</li>
+<li>The day stops being a calendar. It becomes a motion.</li>
+</ul>
+</div>
+</div>
+
+<div class="viz"><div class="viz-inner">
+  <div class="viz-top"><div class="viz-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="10" r="6"/><circle cx="16" cy="10" r="6"/><circle cx="12" cy="18" r="6"/></svg></div><div class="viz-meta"><div class="viz-label">Visualize It</div><h4>Three Circles, Six Overlaps</h4></div></div>
+  <div class="viz-body">
+    <p>Picture three overlapping circles. Source. Soil. Fruit. Where any two circles meet, there is an interaction. Where all three meet at the center, there is the most powerful version of life a human can live. <strong>Most people stay inside one circle most of the day, pretending the other two do not exist.</strong> The Tender lives in the overlap zones, drifting through the day so that almost every hour touches at least two circles, and the best hours touch all three.</p>
+    <p>The geometry is not abstract. <em>The center of the diagram is the moment your friend dies and you are already in the room praying with worked soil and present hands.</em> The center is the single hour with your child where you are praying for them, letting them prune you, and giving them your presence as fruit, all at once. The center is rare. The overlap zones around it are the daily target.</p>
+  </div>
+  <div class="viz-trigger">Hold this image. The day is not three lists. It is three circles, and the goal is to live in the overlap.</div>
+</div></div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Three Are Not Three.</strong> The trinity is one integrated system, not a list. The compounding happens in the overlap, not inside any single pillar. The day is not three boxes. It is a sequence of acts that each carry multiple pillars. The center of the diagram is the most powerful version of life a human can live.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"And whatever you do, whether in word or deed, do it all in the name of the Lord Jesus, giving thanks to God the Father through him."<br><span class="ref">Colossians 3:17</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Two</div>
+<div class="ch-num">02</div>
+<div class="ch-title">The Six Interactions</div>
+<div class="ch-sub">Where the trinity actually compounds. Six combinations. Each one named.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Three pillars produce six interactions. Each direction matters because each one produces something different. <strong>Source feeding Soil is not the same as Soil feeding Source.</strong> The arrows are not symmetric. Each interaction has a specific output, a specific diagnostic, and a specific risk when it goes missing. This chapter names all six. Read slowly. The names are the entire teaching.</p>
+
+<div class="intx-grid">
+
+<div class="intx">
+<div class="intx-arrow">Source &rarr; Soil</div>
+<div class="intx-name">Humility That Can Be Taught</div>
+<div class="intx-tag">Receiving identity makes you teachable</div>
+<p>When identity is received from a Source outside the self, correction stops being a threat. The self does not have to defend itself because the self is not what is being threatened. <em>Source feeds Soil by making the soul receivable.</em> Hardpan often forms because the self refuses correction to protect identity. When identity is anchored, correction can land.</p>
+<div class="intx-diag"><strong>Diagnostic</strong>If correction still feels like an attack on who you are, your Source pillar is not yet feeding your Soil. The audit is to notice what feels personal and ask whose voice you are defending.</div>
+</div>
+
+<div class="intx">
+<div class="intx-arrow">Soil &rarr; Fruit</div>
+<div class="intx-name">The Selection Of Real Output</div>
+<div class="intx-tag">Suffering filters what is actually yours to make</div>
+<p>When the soil is being worked, only certain kinds of fruit survive the conditions. Voluntary discomfort and processed pain reveal which projects, relationships, and outputs are worth carrying. <em>Soil feeds Fruit by selecting against shallow output.</em> Without the Soil pillar, fruit defaults to whatever is easiest to produce. With it, fruit narrows to what is genuinely yours.</p>
+<div class="intx-diag"><strong>Diagnostic</strong>If your output has not changed in years even though you have changed, the Soil is not feeding the Fruit. Suffering should be killing some projects and birthing others. Static output is a sign the soil is hardpan.</div>
+</div>
+
+<div class="intx">
+<div class="intx-arrow">Fruit &rarr; Source</div>
+<div class="intx-name">The Mirror Of Becoming</div>
+<div class="intx-tag">The work reveals who you became</div>
+<p>What you actually produced over a year tells the truth about who you became that year. Not what you said. Not what you intended. What you bore. <em>Fruit feeds Source by giving you accurate data about which Source you have actually been drinking from.</em> If the fruit is bitter, the well was bitter, no matter what the inscription on the well said. The Source pillar gets sharpened by looking at what came out the other end.</p>
+<div class="intx-diag"><strong>Diagnostic</strong>Audit the past year of your output. If the fruit does not match the Source you say you were drinking from, you were drinking from a different Source. The Fruit is the mirror that the Source pillar cannot see itself in.</div>
+</div>
+
+<div class="intx">
+<div class="intx-arrow">Source &rarr; Fruit</div>
+<div class="intx-name">The Engine Of Sustained Work</div>
+<div class="intx-tag">Prayer becomes the engine of the work</div>
+<p>When the Source is operating in real time during the work, the work has a quality and a sustainability that pure work cannot have. The man who prays while building does not need the same external dopamine as the man who only builds. <em>Source feeds Fruit by becoming the engine instead of the manager.</em> The work is no longer driven by deadline or recognition. It is driven by the presence of the One who called you to it.</p>
+<div class="intx-diag"><strong>Diagnostic</strong>If your output collapses without external pressure (the Sabbatical Test from Part 4), the Source is not feeding the Fruit. The pressure was the engine. The Source has not yet replaced it.</div>
+</div>
+
+<div class="intx">
+<div class="intx-arrow">Soil &rarr; Source</div>
+<div class="intx-name">The Well Dug By Breaking</div>
+<div class="intx-tag">Being broken opens the channel to the Source</div>
+<p>The soul that has been broken by suffering, properly processed, becomes more receptive to the Source. The cracks that the Soil pillar produces are not damage. <em>They are the openings through which the Source flows in deeper than it could before.</em> The most Source-anchored people you will ever meet have all been broken in specific, processed, named ways. The breaking did not deplete their Source. It deepened it.</p>
+<div class="intx-diag"><strong>Diagnostic</strong>If your prayer life has been the same depth for years, the Soil is probably not being worked. Real Soil work cracks the soul open in ways that change the prayer. Static prayer is often a sign of hardpan beneath it.</div>
+</div>
+
+<div class="intx">
+<div class="intx-arrow">Fruit &rarr; Soil</div>
+<div class="intx-name">The Audit That Cuts</div>
+<div class="intx-tag">Output reveals where you are still hardpan</div>
+<p>The work you produce, especially the work you fail to produce, reveals the parts of your soul that are still hardpan. The unfinished project. The relationship you abandoned. The fruit that died on the vine. <em>Each one is data about where the Soil pillar is still untouched.</em> Fruit feeds Soil by surfacing what needs to be turned next. Without this audit, the Soil work runs on guesses. With it, the Soil work runs on evidence.</p>
+<div class="intx-diag"><strong>Diagnostic</strong>Map your last year of unfinished or failed fruit to the part of your soul that produced the failure. Patterns across multiple failures point to a specific layer of hardpan. The pattern is the next domain to install voluntary discomfort in.</div>
+</div>
+
+</div>
+
+<div class="grand-quote">
+<blockquote>The pillars produce the architecture. The interactions produce the life. Most people build the pillars and never live in the interactions. This is why most lives stay smaller than they were designed to be.</blockquote>
+<cite>The Tender's Second Lesson</cite>
+</div>
+
+<div class="think">
+<div class="think-label">Stop and Map Yours</div>
+<p>Walk through the six interactions one at a time. Score yourself honestly from 1 to 5 on each. Source to Soil. Soil to Fruit. Fruit to Source. Source to Fruit. Soil to Source. Fruit to Soil.</p>
+<hr class="think-line">
+<p>The lowest scoring interaction is your most undervalued source of compounding. Most readers find one or two interactions are alive and four or five are essentially dormant. The dormant ones are where the protocol in this playbook will produce the largest change.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Three Are Not Three.</strong> One integrated system. The compounding lives in the overlap.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Six Interactions.</strong> Source feeds Soil with humility. Soil feeds Fruit by selecting real output. Fruit feeds Source as the mirror of becoming. Source feeds Fruit as the engine of sustained work. Soil feeds Source as the well dug by breaking. Fruit feeds Soil through the audit that cuts. Each direction is its own teaching. The dormant interactions are where the protocol produces the largest change.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"As iron sharpens iron, so one person sharpens another."<br><span class="ref">Proverbs 27:17</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Three</div>
+<div class="ch-num">03</div>
+<div class="ch-title">The Daily Liturgy</div>
+<div class="ch-sub">A day structured around overlap, not scheduling.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>This is the most tactical chapter in the entire series. Print it. Tape it inside a cabinet. Run a Tuesday through it. <strong>The point is not to do all of this every day.</strong> The point is to recognize that each act on the list is a candidate for the overlap discipline, and the day fills naturally when you stop trying to slot the pillars and start letting them share air.</p>
+
+<div class="liturgy">
+
+<div class="lit-item"><div class="lit-dot"></div><div class="lit-content">
+<div class="lit-time">5:30 to 6:30</div>
+<div class="lit-title">The Source Hour</div>
+<div class="lit-pillars">Source primarily. Soil quietly.</div>
+<div class="lit-desc">Quiet. Scripture. Prayer. Listening. The Source hour is one of the few slots that is not deliberately overlapping. It is the daily reception practice from Part 2, undiluted. But the Soil pillar is being worked even here, because sitting in silence for 30 minutes is itself a discipline of voluntary discomfort. The hour ends with the question: <em>what are you saying about who I am right now?</em></div>
+</div></div>
+
+<div class="lit-item"><div class="lit-dot"></div><div class="lit-content">
+<div class="lit-time">6:30 to 7:30</div>
+<div class="lit-title">Body And Source</div>
+<div class="lit-pillars">Soil plus Source.</div>
+<div class="lit-desc">Hard physical practice while praying. The body suffers on purpose while the soul receives. Cold exposure while reciting psalms. Heavy lifting with the Lord's name. Long fasted walk while listening for direction. The two pillars feed each other. The body learns what the prayer means. The prayer learns what the body knows.</div>
+</div></div>
+
+<div class="lit-item"><div class="lit-dot"></div><div class="lit-content">
+<div class="lit-time">7:30 to 8:30</div>
+<div class="lit-title">The Generative Hour</div>
+<div class="lit-pillars">Fruit (generative) plus Source plus Soil.</div>
+<div class="lit-desc">Time with a specific person you are forming. Spouse. Child. Disciple. Apprentice. The conversation is unhurried, prayed over, and willing to be costly. This is the most three-pillar overlap of the morning. Source is in the air. Soil is in your willingness to hear what is hard. Fruit is the relationship being deepened. <em>One hour, three pillars, compounding.</em></div>
+</div></div>
+
+<div class="lit-item"><div class="lit-dot"></div><div class="lit-content">
+<div class="lit-time">9:00 to 12:00</div>
+<div class="lit-title">The Worked Work</div>
+<div class="lit-pillars">Fruit primarily. Source carrying. Soil intermittent.</div>
+<div class="lit-desc">Deep work on whatever you are building, carried by the Source instead of the deadline. Pray briefly at the start. Pray again at the resistance. Pray again at the breakthrough. The work is the work. The prayer is the engine. When friction shows up, treat it as the Soil pillar surfacing, and let it form you instead of routing around it.</div>
+</div></div>
+
+<div class="lit-item"><div class="lit-dot"></div><div class="lit-content">
+<div class="lit-time">12:00 to 1:00</div>
+<div class="lit-title">The Common Meal</div>
+<div class="lit-pillars">Fruit (relational) plus Source.</div>
+<div class="lit-desc">Eat with a person, not alone with a phone. The meal is a practice of presence with another human, which is one of the five forms of fruit. Bless the food. Listen more than you speak. The meal is a small reset between the morning's work and the afternoon's. Sabbath in miniature.</div>
+</div></div>
+
+<div class="lit-item"><div class="lit-dot"></div><div class="lit-content">
+<div class="lit-time">1:00 to 5:00</div>
+<div class="lit-title">The Worked Work, Continued</div>
+<div class="lit-pillars">Fruit primarily. Source carrying. Soil rising.</div>
+<div class="lit-desc">Same as the morning, with one addition: the afternoon is when the Soil pillar tends to surface naturally. Tiredness. Frustration. The hard conversation that has to happen. Welcome it. The afternoon is the part of the day where Soil work shows up unscheduled. Take it as a gift.</div>
+</div></div>
+
+<div class="lit-item"><div class="lit-dot"></div><div class="lit-content">
+<div class="lit-time">5:00 to 6:30</div>
+<div class="lit-title">The Hard Thing</div>
+<div class="lit-pillars">Soil plus Fruit (servant or stewardship).</div>
+<div class="lit-desc">A weekly slot, not a daily one. Voluntary discomfort that also serves someone else. Hospice visit. Mentoring conversation. Hard conversation with someone you love. Sacrificial service. The Soil pillar is being worked AND fruit is being borne. This slot is where the highest leverage compounding happens for most readers.</div>
+</div></div>
+
+<div class="lit-item"><div class="lit-dot"></div><div class="lit-content">
+<div class="lit-time">6:30 to 9:00</div>
+<div class="lit-title">The Common Hours</div>
+<div class="lit-pillars">Fruit (relational and generative) plus Source.</div>
+<div class="lit-desc">Family. Spouse. Children. Friends. The hours that look ordinary from outside and contain most of the actual fruit a life produces. Pray for them while you are with them. The Source is silent in the background. The Fruit is loud in the foreground. The two pillars run together for the rest of the evening.</div>
+</div></div>
+
+<div class="lit-item"><div class="lit-dot"></div><div class="lit-content">
+<div class="lit-time">9:00 to 9:30</div>
+<div class="lit-title">The Examen</div>
+<div class="lit-pillars">All three.</div>
+<div class="lit-desc">Five minutes, sometimes ten. Walk back through the day. Where did the Source show up? Where did the Soil get worked? Where did the Fruit appear? Where did all three intersect? Confess what was missing. Thank what was given. The day closes with the trinity audited, not scheduled. <em>This is the smallest practice in the liturgy and the one most readers skip.</em> Do not skip it.</div>
+</div></div>
+
+</div>
+
+<div class="glow-box">
+<h3>The Liturgy Is A Skeleton, Not A Cage</h3>
+<p>Do not treat the times as commandments. The hours will move depending on your job, your family, your season. <strong>The pattern is what matters.</strong> A morning Source hour. A practice that overlaps body and Source. Generative time with someone you are forming. Worked work where the Source is the engine. A common meal. A weekly hard thing that serves someone else. Common hours of relational fruit. An examen at the end. <em>Eight rhythms, woven into whatever your day is.</em></p>
+<p>The discipline is not the schedule. The discipline is the overlap. <strong>If your day has even three of the eight, with each act doing two pillars at once, you are tending the garden.</strong></p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Three Are Not Three.</strong> One integrated system, compounding in the overlap.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Six Interactions.</strong> Each direction has its own teaching.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Daily Liturgy.</strong> Eight rhythms structured around overlap. Source hour, body and Source, generative hour, worked work, common meal, worked work continued, the hard thing, common hours, examen. The discipline is not the schedule. The discipline is the overlap.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"This is the day that the Lord has made; let us rejoice and be glad in it."<br><span class="ref">Psalm 118:24</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Four</div>
+<div class="ch-num">04</div>
+<div class="ch-title">The Weekly Cadence</div>
+<div class="ch-sub">How the rhythm extends past one day so the trinity actually compounds.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>One day cannot carry the entire trinity at full intensity. Some practices are weekly, not daily, by their nature. Some require depth that an hour cannot deliver. <strong>The week is the smallest unit where the full trinity gets exercised at the depth it needs.</strong> Daily liturgy keeps the rhythm warm. Weekly cadence keeps the rhythm deep.</p>
+
+<div class="cadence">
+
+<div class="cad-card">
+<div class="cad-when">Once Per Week</div>
+<div class="cad-title">A Sabbath Day</div>
+<p>Twenty four hours where the work stops and the Source is the foreground. Not a vacation. A discipline. The day that proves the work is not your god. Most modern people find this the hardest weekly practice. Install it anyway.</p>
+</div>
+
+<div class="cad-card">
+<div class="cad-when">Once Per Week</div>
+<div class="cad-title">A Vinedresser Conversation</div>
+<p>From Part 3. Meet with one of the two or three people who can speak truth into your life. Receive whatever they say without arguing for 48 hours. Sleep on it. The Soil cannot stay loose without this rhythm.</p>
+</div>
+
+<div class="cad-card">
+<div class="cad-when">Once Per Week</div>
+<div class="cad-title">A Servant Hour</div>
+<p>Show up where humans need a face. Hospice. Recovery group. The lonely neighbor. Foster care. The same place every week so the relationships deepen. The Servant form of fruit cannot grow on a once-a-quarter schedule.</p>
+</div>
+
+<div class="cad-card">
+<div class="cad-when">Once Per Week</div>
+<div class="cad-title">A Body Block</div>
+<p>One block long enough that the body suffers on purpose at depth. Long run. Long fast. Cold immersion. Heavy lift to failure. The body learns what daily exercise cannot teach. The Soil pillar gets the depth that daily practice cannot give.</p>
+</div>
+
+<div class="cad-card">
+<div class="cad-when">Once Per Week</div>
+<div class="cad-title">A Creative Block</div>
+<p>Two to four uninterrupted hours on something only you can make. Writing. Building. Music. The thing your hands want to make if no one was paying. The Creative form of fruit needs blocks, not minutes. Defend this slot like a marriage.</p>
+</div>
+
+<div class="cad-card">
+<div class="cad-when">Once Per Week</div>
+<div class="cad-title">A Family Anchor</div>
+<p>One reliable hour where the family knows you will be present. Sunday dinner. Friday game night. Saturday morning walk. The same time every week. Children especially measure love by predictability. The Generative form of fruit grows on the calendar more than in the moment.</p>
+</div>
+
+</div>
+
+<p>Six weekly anchors. None of them require a heroic season. <strong>All six fit inside a normal week with normal commitments, if the day has been freed from the things that were never bearing fruit.</strong> Most readers find that adding the weekly cadence forces them to remove things from their week, and the things that get removed turn out to have been response output (Part 4) all along. The cadence does the cutting that the audit pointed at.</p>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Three Are Not Three.</strong> Integrated system.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Six Interactions.</strong> Each direction matters.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Daily Liturgy.</strong> Eight rhythms of overlap.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Weekly Cadence.</strong> Sabbath, Vinedresser, Servant, Body block, Creative block, Family anchor. Six weekly anchors. Adding them forces the week to remove what was not bearing fruit.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"There is a time for everything, and a season for every activity under the heavens."<br><span class="ref">Ecclesiastes 3:1</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Five</div>
+<div class="ch-num">05</div>
+<div class="ch-title">When Rhythms Break</div>
+<div class="ch-sub">The protocol for illness, travel, grief, transition. The garden does not die in winter.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>The rhythm will break. The week comes when you are sick, the child is in the hospital, the trip lasts longer than expected, the grief lands heavier than predicted. <strong>Most readers experience the broken week as failure and abandon the rhythm entirely.</strong> The framework calls this response wrong. Broken weeks are not failure. They are the conditions in which the rhythm is supposed to flex without dissolving.</p>
+
+<p>The principle is simple. <em>When the full rhythm cannot run, run a smaller rhythm.</em> Not none. Smaller. The Source hour can shrink to ten minutes. The body block can shrink to a five minute walk. The vinedresser conversation can be a text. The creative block can be a single sentence written on a phone. The smaller rhythm keeps the trinity warm so that when the conditions return, the rhythm picks up where it left off instead of restarting from cold.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Hospital Week</h4>
+<p>A man's child is hospitalized for a week. The full rhythm collapses on day one. The Source hour. The body block. The creative block. The hard conversation. None of them are happening. He is in a chair beside a bed.</p>
+<p>By day three, he notices himself spiraling. He has been telling himself he will return to the rhythm when the crisis is over. The internal voices are climbing.</p>
+<p>He texts his vinedresser one sentence: <em>"I'm in the hospital with my kid. I'm losing the thread."</em> The friend responds: <em>"Smaller version. Five minutes of scripture before sleep. One walk down the hall. One conversation with the nurse where you ask how she's doing. That's the rhythm this week. Do that."</em></p>
+<p>He does. Five minutes of scripture. One hallway walk. One conversation with the nurse where he prays silently for her while she talks. By the end of the week, the rhythm has not died. <strong>It has shrunk. It is still the trinity. The garden survived the storm because he did not abandon the practice when the practice could not be the size it usually is.</strong></p>
+</div>
+
+<div class="cadence">
+
+<div class="cad-card">
+<div class="cad-when">When Sick</div>
+<div class="cad-title">Five Minute Source. Stillness As Soil. Service Through Receiving.</div>
+<p>Receiving help is itself a fruit. Letting people serve you is the form of generosity available to the sick. Source shrinks to five focused minutes. Soil is the discipline of letting the body rest. Fruit is being a gentle patient.</p>
+</div>
+
+<div class="cad-card">
+<div class="cad-when">When Traveling</div>
+<div class="cad-title">Walk Anywhere. Pray Everywhere. Make Space For Strangers.</div>
+<p>Hotels and airports are excellent spaces for the body and Source overlap. The lack of obligations creates room for new fruit, not the absence of fruit. The Servant form of fruit is uniquely available to the traveler because strangers are everywhere.</p>
+</div>
+
+<div class="cad-card">
+<div class="cad-when">When Grieving</div>
+<div class="cad-title">Let The Grief Be The Soil. Sit. Receive. Cry. Pray Less, Listen More.</div>
+<p>Grief is the most powerful Soil pillar work most people will ever experience. The temptation is to push through it. Do not. Let it form you. Source moves from speaking to listening. Fruit narrows to receiving. The trinity contracts but does not disappear.</p>
+</div>
+
+<div class="cad-card">
+<div class="cad-when">When In Transition</div>
+<div class="cad-title">Anchor One Practice. Let The Others Adapt.</div>
+<p>Move. New job. New baby. New season. Pick one practice from the daily liturgy that you will protect through the transition. Usually the Source hour. The other practices reform around the anchor over six to twelve weeks. The trinity does not require all eight rhythms during transitions. It requires the anchor.</p>
+</div>
+
+</div>
+
+<div class="grand-quote">
+<blockquote>The garden does not die in winter. It rests under snow and waits for spring. The rhythm in broken seasons is not abandonment. It is contraction. Tend the smaller rhythm and the larger one returns.</blockquote>
+<cite>The Tender In Winter</cite>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Three Are Not Three.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Six Interactions.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Daily Liturgy.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Weekly Cadence.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>When Rhythms Break.</strong> Broken weeks are not failure. They are the conditions in which the rhythm flexes without dissolving. The smaller rhythm keeps the trinity warm. Anchor one practice during transitions. The garden does not die in winter.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"He has made everything beautiful in its time."<br><span class="ref">Ecclesiastes 3:11</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Six</div>
+<div class="ch-num">06</div>
+<div class="ch-title">The Year Of Tending</div>
+<div class="ch-sub">Seasons of the garden. Each pillar gets its season.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>The day cannot carry every pillar at maximum intensity. The week cannot either. <strong>The year is the unit at which each pillar gets its season of focus.</strong> A wise gardener does not plant in the same week he prunes. A wise life does not run all three pillars at full force in every quarter. The year of tending rotates emphasis without abandoning any pillar.</p>
+
+<div class="cadence">
+
+<div class="cad-card">
+<div class="cad-when">Spring (March, April, May)</div>
+<div class="cad-title">Source Season</div>
+<p>The natural season for the deepest Source work. Lent. Easter. The longer days that allow earlier wakefulness. Plant the prayer rhythms here. Add depth to the daily reception practice. Read theology that goes deeper than the rest of the year. Source primary. Soil and Fruit at maintenance.</p>
+</div>
+
+<div class="cad-card">
+<div class="cad-when">Summer (June, July, August)</div>
+<div class="cad-title">Fruit Season</div>
+<p>The natural season for visible output. Build the project. Plant the relationships that need long days. Travel with intent, not escape. The body is in its strongest natural rhythm. The Fruit pillar gets its season. Source and Soil are still operating but they are not the foreground.</p>
+</div>
+
+<div class="cad-card">
+<div class="cad-when">Autumn (September, October, November)</div>
+<div class="cad-title">Soil Season</div>
+<p>The pruning season. Naturally. The light is shrinking. The body slows. The Soil pillar gets foreground. Cut what needs to be cut. Confront what needs to be confronted. Process the losses. Receive the corrections. The annual vinedresser conversations belong here. The compost of the year is laid down for next spring's growth.</p>
+</div>
+
+<div class="cad-card">
+<div class="cad-when">Winter (December, January, February)</div>
+<div class="cad-title">Rest Season</div>
+<p>Every garden has a fallow season. The year ends with rest, not achievement. Receive Christmas as a gift instead of a deadline. January is for stillness, not for doubling effort. The Source pillar deepens by going quiet. The body recovers. The next year is set up by the rest, not by the resolutions.</p>
+</div>
+
+</div>
+
+<p>Four seasons. Four emphases. <strong>Each pillar gets its time on stage every year, and the year as a whole still has the trinity in operation throughout.</strong> The seasons do not replace the daily liturgy or the weekly cadence. They tilt them. The Source hour stays daily, but in spring it is longer and deeper. The hard thing stays weekly, but in autumn it is more confronting. The creative block stays weekly, but in summer it expands.</p>
+
+<div class="data-hero">
+<div class="dh-num">365</div>
+<div class="dh-label">days a year, three pillars, six interactions, four seasons</div>
+<div class="dh-sub">The year is the unit at which the full trinity actually gets tended. The day keeps it warm. The week keeps it deep. The year keeps it whole.</div>
+</div>
+
+<div class="think">
+<div class="think-label">Stop and Locate The Season</div>
+<p>Find today on the calendar. Which season is it for the garden? What pillar should be in foreground for the next eight to twelve weeks? What practices need to be deepened in this season, and what can stay at maintenance?</p>
+<hr class="think-line">
+<p>The answer is the next quarter of your tending. Most readers discover that they have been running the same intensity across all four seasons, and the result is exhaustion in two of them and shallow work in the other two. The seasons are designed to fix this.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Three Are Not Three.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Six Interactions.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Daily Liturgy.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Weekly Cadence.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>When Rhythms Break.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Year Of Tending.</strong> Spring is Source. Summer is Fruit. Autumn is Soil. Winter is Rest. Each pillar gets its season. The day, week, and year together hold the full trinity.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"The Lord will guide you always; he will satisfy your needs in a sun-scorched land and will strengthen your frame. You will be like a well-watered garden, like a spring whose waters never fail."<br><span class="ref">Isaiah 58:11</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Seven</div>
+<div class="ch-num">07</div>
+<div class="ch-title">The Tender's Calendar</div>
+<div class="ch-sub">Synthesis. What 365 days actually looks like.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>This is the synthesis chapter. Short. Tactical. The Tender's Calendar at three time scales, designed to be printed, taped, and run.</p>
+
+<div class="glow-box">
+<h3>The Day</h3>
+<p><strong>Source Hour.</strong> 30 minutes silent reception. <strong>Body and Source.</strong> 60 minutes physical practice while praying. <strong>Generative Hour.</strong> One person formed at unhurried depth. <strong>Worked Work.</strong> Deep work carried by the Source. <strong>Common Meal.</strong> Eat with humans. <strong>The Hard Thing</strong> (weekly, on the day it lands). <strong>Common Hours.</strong> Family and friends. <strong>The Examen.</strong> Five minutes at end of day.</p>
+</div>
+
+<div class="glow-box">
+<h3>The Week</h3>
+<p><strong>Sabbath.</strong> 24 hours where work stops. <strong>Vinedresser conversation.</strong> One covenant voice receives a hard truth. <strong>Servant hour.</strong> Same place every week, presence as the entire output. <strong>Body block.</strong> Long, depth-producing physical practice. <strong>Creative block.</strong> Two to four uninterrupted hours. <strong>Family anchor.</strong> One reliable hour your people can count on.</p>
+</div>
+
+<div class="glow-box">
+<h3>The Year</h3>
+<p><strong>Spring.</strong> Source season. Deepen the prayer life. <strong>Summer.</strong> Fruit season. Build, plant, travel with intent. <strong>Autumn.</strong> Soil season. Prune, confess, process, cut. <strong>Winter.</strong> Rest season. Receive instead of achieve. Each season tilts the daily and weekly rhythms without abandoning them.</p>
+</div>
+
+<div class="grand-quote">
+<blockquote>The trinity is now an architecture. The architecture is now a practice. The practice is now a year. The year is now a life. <em>This is what tending looks like.</em></blockquote>
+<cite>The Tender's Calendar</cite>
+</div>
+
+<p>The work of the entire series ends here. <strong>You hold the framework. You hold the diagnostic. You hold the three pillars and their protocols. You hold the six interactions, the daily liturgy, the weekly cadence, the year of seasons.</strong> The architecture is complete. The garden is yours to tend. Whatever conditions arrive, scarcity or abundance, transition or storm, the trinity inside you is now a load bearing structure tended by a daily, weekly, and yearly practice. The pregame is over. The garden returns. <em>You are the Tender.</em></p>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Three Are Not Three.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Six Interactions.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Daily Liturgy.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Weekly Cadence.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>When Rhythms Break.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Year Of Tending.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Tender's Calendar.</strong> Day, week, year. Three scales of practice. The architecture is complete. The garden is yours to tend.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"I am the vine; you are the branches. If you remain in me and I in you, you will bear much fruit."<br><span class="ref">John 15:5</span></p>
+</div>
+
+<div class="page">
+<div class="series-conclusion">
+<div class="sc-label">The Eden Pattern Complete</div>
+<h3>Five Playbooks. One Architecture. A Life.</h3>
+<p>The frame. The diagnostic. The three pillars. The integration. The tending. You now hold every layer of the operating system the framework set out to install. The garden is yours. The trinity is in operation. Whatever the conditions, scarcity or abundance, transition or storm, you have what you need to live well in the world being built. <strong>Arrive ready. Tend faithfully.</strong></p>
+</div>
+</div>
+
+<div class="page section">
+<div class="final-test">
+<h3>Can You Answer These Without Looking Back?</h3>
+<p class="test-sub">Eight questions on the integration layer plus the synthesis of the whole series.</p>
+<div class="test-q"><div class="test-num">Question 1</div><p>Why is the trinity not a list of three things, and what does it mean to live in the overlap?</p></div>
+<div class="test-q"><div class="test-num">Question 2</div><p>Name the six interactions and what each one produces.</p></div>
+<div class="test-q"><div class="test-num">Question 3</div><p>Walk through the eight rhythms of the daily liturgy and identify which two pillars each one carries.</p></div>
+<div class="test-q"><div class="test-num">Question 4</div><p>Name the six weekly anchors and explain why depth requires the week, not just the day.</p></div>
+<div class="test-q"><div class="test-num">Question 5</div><p>What is the protocol when rhythms break, and why is contraction not abandonment?</p></div>
+<div class="test-q"><div class="test-num">Question 6</div><p>Map the four seasons of the year to the pillar that gets foreground in each.</p></div>
+<div class="test-q"><div class="test-num">Question 7</div><p>What is the difference between The Compartmentalizer and The Tender, and which one is your default mode?</p></div>
+<div class="test-q"><div class="test-num">Question 8</div><p>Of the day, the week, and the year, which time scale is currently weakest in your life, and what is the next move?</p></div>
+</div>
+</div>
+
+<div class="page section">
+<div class="prompt-card">
+<h3>Continue The Conversation</h3>
+<p>Copy these prompts into any AI and let the work deepen:</p>
+<p><code>"Score me from 1 to 5 on each of the six interactions in the Eden Pattern. Ask me diagnostic questions to figure out which interaction is most dormant in my life right now."</code></p>
+<p><code>"Design a daily liturgy specifically for my current life shape (job, family, season). Use the eight rhythms as a template but adapt the times to my reality."</code></p>
+<p><code>"Help me identify which of the six weekly anchors is most missing from my week. Then help me find the slot to install it in the next 14 days."</code></p>
+<p><code>"What season is it in my life right now (Spring/Source, Summer/Fruit, Autumn/Soil, Winter/Rest), and which daily and weekly rhythms should be deepened for the next quarter?"</code></p>
+</div>
+</div>
+
+<div class="ribbon">
+<p>"The Lord bless you and keep you; the Lord make his face shine on you and be gracious to you; the Lord turn his face toward you and give you peace."<br><span class="ref">Numbers 6:24-26</span></p>
+</div>
+
+<div class="series-progress" style="padding:32px 24px;background:var(--cream-warm);border-top:1px solid rgba(15,26,20,0.06)">
+  <div style="font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:14px">The Eden Pattern</div>
+  <div class="series-dots">
+    <span class="series-dot done" title="Before The Garden Returns"></span>
+    <span class="series-dot done" title="The Source"></span>
+    <span class="series-dot done" title="The Soil"></span>
+    <span class="series-dot done" title="The Fruit"></span>
+    <span class="series-dot active" title="Tending The Garden"></span>
+  </div>
+  <div class="series-dot-label" style="color:var(--text-muted)">Part 5 of 5 &middot; Tending The Garden</div>
+</div>
+
+<section class="finale">
+<h2>The architecture is complete.<br><strong>Now tend.</strong></h2>
+</section>
+
+<footer class="footer">
+<p>Tending The Garden &middot; The Eden Pattern (Part 5 of 5) &middot; KingdomBuilders AI<br><a href="./">View All Playbooks</a></p>
+</footer>
+</body>
+</html>

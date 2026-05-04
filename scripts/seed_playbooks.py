@@ -83,7 +83,7 @@ SERIES_DEFS = [
     {
         "name": "The Eden Pattern",
         "slug": "eden-pattern",
-        "description": "A 4-part series. A pregame manual for the AI super abundance world. The trinity that holds a human life together in any era: Source, Soil, Fruit. Plus the 7 imbalance modes that diagnose which pillar to rebuild first.",
+        "description": "A 5-part series. A pregame manual for the AI super abundance world. The trinity that holds a human life together in any era: Source, Soil, Fruit. The 7 imbalance modes diagnose which pillar to rebuild first. Tending The Garden teaches how to live with all three pillars in operation at once.",
         "display_order": 6,
     },
 ]
@@ -141,6 +141,7 @@ PLAYBOOKS_DATA = [
     {"slug": "the-source", "title": "The Source", "route": "/thesource", "category": "faith", "series": "eden-pattern", "series_order": 2, "landing_file": "the-source.html", "asset_file": "The_Source.html", "cover_emoji": "\U0001f4a7"},
     {"slug": "the-soil", "title": "The Soil", "route": "/thesoil", "category": "resilience", "series": "eden-pattern", "series_order": 3, "landing_file": "the-soil.html", "asset_file": "The_Soil.html", "cover_emoji": "\U0001f33e"},
     {"slug": "the-fruit", "title": "The Fruit", "route": "/thefruit", "category": "productivity", "series": "eden-pattern", "series_order": 4, "landing_file": "the-fruit.html", "asset_file": "The_Fruit.html", "cover_emoji": "\U0001f350"},
+    {"slug": "tending-the-garden", "title": "Tending The Garden", "route": "/tendingthegarden", "category": "faith", "series": "eden-pattern", "series_order": 5, "landing_file": "tending-the-garden.html", "asset_file": "Tending_The_Garden.html", "cover_emoji": "\U0001f33f"},
 ]
 
 

@@ -273,6 +273,10 @@ TAGS = {
         ("systems", 1.0), ("identity", 0.9), ("creativity", 0.8), ("faith", 0.8),
         ("future", 0.9), ("ai", 0.8), ("mastery", 0.6), ("growth", 0.6),
     ],
+    "tending-the-garden": [
+        ("faith", 1.0), ("discipline", 1.0), ("systems", 0.9), ("identity", 0.8),
+        ("growth", 0.8), ("self_awareness", 0.7), ("future", 0.6), ("resilience", 0.6),
+    ],
 }
 
 
@@ -973,15 +977,26 @@ CONNECTIONS = {
          "Biological resilience meets installed psychological resilience"),
     ],
     "the-fruit": [
-        ("deeper", "before-the-garden-returns",
-         "Re-run the diagnostic. The trinity has shifted. Notice which pillar is now the limiting one.",
-         "Series completion brings the reader back to the starting frame, transformed"),
+        ("deeper", "tending-the-garden",
+         "The architecture is built. Now learn to live with all three pillars in operation at once.",
+         "Part 4 to Part 5 of the Eden Pattern series. Architecture to orchestration."),
         ("bridge", "the-new-earning",
          "Both describe what humans will do for a living when machines do the rest.",
          "Practical AI economy career path meets the spiritual fruit framework"),
         ("surprise", "the-octopus-protocol",
          "The octopus builds many income streams. The Fruit pillar names which streams are actually fruit and which are just response.",
          "Income diversification meets the discretionary output test"),
+    ],
+    "tending-the-garden": [
+        ("deeper", "before-the-garden-returns",
+         "Re-run the diagnostic. The trinity has shifted. Which pillar is now the limiting one given the integration you have learned?",
+         "Series completion brings the reader back to the starting frame, transformed by the orchestration layer."),
+        ("bridge", "the-bonsai-method",
+         "Both teach that the shape of a life is tended, not built. Daily, weekly, yearly rhythm meets the discipline of pruning.",
+         "Daily integration practice meets external life shaping."),
+        ("surprise", "the-tide-pools-echo",
+         "The tide pool teaches that processes interact in real time, not in compartments. Tending The Garden teaches the same truth applied to the trinity.",
+         "Process Model philosophy meets the integration of the three pillars."),
     ],
 }
 
