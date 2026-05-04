@@ -217,7 +217,15 @@ Every new playbook requires ALL of these steps. Do not skip any.
 - [ ] Cover: `min-height:60vh` (NOT 100vh), cover badge, title, tagline, author — NO hero CTA button, NO cover-price span
 - [ ] Include: 4 chapter cards, insight quote, concept box, selling points grid
 - [ ] Bottom CTA section: dual pricing ($2.50 single / $10/mo archive) — NO "READ THE PLAYBOOK" button
-- [ ] Floating CTA: `<a href="read/the-slug" class="fab-cta">` with eye SVG icon, fixed bottom-right, gold pill (see `.fab-cta` CSS in existing landing pages)
+- [ ] **Floating CTA (CRITICAL — paywall depends on this exact pattern):**
+  ```html
+  <a href="read/the-slug?buy=1" class="fab-cta" data-slug="the-slug">
+    <svg viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+    Get The Playbook
+  </a>
+  <script>(function(){var p="";try{var s=location.pathname.split("/");if(s.length>2)p="/"+s[1];}catch(e){}var a=document.querySelector(".fab-cta");if(a)a.href=p+"/read/"+a.getAttribute("data-slug")+"?buy=1";})()</script>
+  ```
+  All three pieces are mandatory: the `?buy=1` query param, the `data-slug` attribute, AND the script. Why: the landing page is itself served as the paywall at `/playbooks/read/{slug}`. Without the script, a relative `read/{slug}` href resolves to `/playbooks/read/read/{slug}` which 404s. Without `?buy=1`, clicking the FAB just re-serves the same landing page (infinite loop instead of opening the actual purchase gate). The script absolutizes the href using the URL_PREFIX (`/playbooks`) parsed from `location.pathname`, so the link works whether viewed from the catalog or from the paywall view of the same slug.
 - [ ] Footer with same scripture as the reader page
 - [ ] Or run `python scripts/update_landing_pages.py` after creation to auto-apply the standard structure
 
