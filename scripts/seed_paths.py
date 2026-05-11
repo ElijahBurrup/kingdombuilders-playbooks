@@ -186,6 +186,20 @@ PATHS = [
         ],
     },
     {
+        "slug": "the-attending",
+        "title": "The Attending",
+        "description": "Two playbooks on perseverance. The tactical practice of staying at the post when the noonday demon attacks, paired with the theology of received identity that makes the practice sustainable for decades. Desert fathers meet evangelical doctrine meet the work in front of you tomorrow morning.",
+        "theme_tag": "discipline",
+        "emoji": "\U0001F43E",
+        "color": "#4A5D3E",
+        "steps": [
+            ("attend",
+             None),
+            ("done-before-you-started",
+             "The practice works for 60 days. Then it fails. Part 2 explains why and what comes underneath: the identity inversion that lets attending flow from being rather than striving. Read it after two weeks of daily practice."),
+        ],
+    },
+    {
         "slug": "eden-pattern",
         "title": "The Eden Pattern",
         "description": "Five playbooks. A pregame manual for AI super abundance. The trinity that holds a human life together in any era: Source, Soil, Fruit. The frame and diagnostic, then each pillar deeply rebuilt, then the integration that turns the architecture into a tended garden. Useful now. Critical in five years.",

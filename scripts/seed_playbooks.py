@@ -86,6 +86,12 @@ SERIES_DEFS = [
         "description": "A 5-part series. A pregame manual for the AI super abundance world. The trinity that holds a human life together in any era: Source, Soil, Fruit. The 7 imbalance modes diagnose which pillar to rebuild first. Tending The Garden teaches how to live with all three pillars in operation at once.",
         "display_order": 6,
     },
+    {
+        "name": "The Attending",
+        "slug": "the-attending",
+        "description": "A 2-part series on perseverance. The tactical practice of staying at the post when the noonday demon attacks (Part 1: Attend) and the theology of received identity that makes the practice sustainable for decades (Part 2: Done Before You Started). The desert fathers meet evangelical theology meet the work in front of you tomorrow morning.",
+        "display_order": 7,
+    },
 ]
 
 # ---------------------------------------------------------------------------
@@ -142,6 +148,8 @@ PLAYBOOKS_DATA = [
     {"slug": "the-soil", "title": "Eden Pattern: The Soil", "route": "/thesoil", "category": "resilience", "series": "eden-pattern", "series_order": 3, "landing_file": "the-soil.html", "asset_file": "The_Soil.html", "cover_emoji": "\U0001f33e"},
     {"slug": "the-fruit", "title": "Eden Pattern: The Fruit", "route": "/thefruit", "category": "productivity", "series": "eden-pattern", "series_order": 4, "landing_file": "the-fruit.html", "asset_file": "The_Fruit.html", "cover_emoji": "\U0001f350"},
     {"slug": "tending-the-garden", "title": "Eden Pattern: Tending The Garden", "route": "/tendingthegarden", "category": "faith", "series": "eden-pattern", "series_order": 5, "landing_file": "tending-the-garden.html", "asset_file": "Tending_The_Garden.html", "cover_emoji": "\U0001f33f"},
+    {"slug": "attend", "title": "The Attending: Attend", "route": "/attend", "category": "productivity", "series": "the-attending", "series_order": 1, "landing_file": "attend.html", "asset_file": "Attend.html", "cover_emoji": "\U0001f43e"},
+    {"slug": "done-before-you-started", "title": "The Attending: Done Before You Started", "route": "/donebeforeyoustarted", "category": "faith", "series": "the-attending", "series_order": 2, "landing_file": "done-before-you-started.html", "asset_file": "Done_Before_You_Started.html", "cover_emoji": "\U0001f56f"},
 ]
 
 

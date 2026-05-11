@@ -277,6 +277,15 @@ TAGS = {
         ("faith", 1.0), ("discipline", 1.0), ("systems", 0.9), ("identity", 0.8),
         ("growth", 0.8), ("self_awareness", 0.7), ("future", 0.6), ("resilience", 0.6),
     ],
+    # --- The Attending series ---
+    "attend": [
+        ("discipline", 1.0), ("focus", 1.0), ("faith", 0.9), ("resilience", 0.8),
+        ("self_awareness", 0.8), ("growth", 0.7), ("mastery", 0.7), ("systems", 0.6),
+    ],
+    "done-before-you-started": [
+        ("faith", 1.0), ("identity", 1.0), ("discipline", 0.8), ("self_awareness", 0.9),
+        ("growth", 0.8), ("vulnerability", 0.6), ("mastery", 0.5), ("focus", 0.5),
+    ],
 }
 
 
@@ -997,6 +1006,29 @@ CONNECTIONS = {
         ("surprise", "the-tide-pools-echo",
          "The tide pool teaches that processes interact in real time, not in compartments. Tending The Garden teaches the same truth applied to the trinity.",
          "Process Model philosophy meets the integration of the three pillars."),
+    ],
+    # --- The Attending series ---
+    "attend": [
+        ("deeper", "done-before-you-started",
+         "The practice works for 60 days. Then it fails. Part 2 explains why and what comes underneath.",
+         "Part 1 to Part 2 of The Attending. Practice without the theological foundation eventually depletes."),
+        ("bridge", "the-source",
+         "The cell of attending parallels the well of received identity. Both teach that the work flows from a Source outside yourself.",
+         "The discipline of staying meets the discipline of receiving identity."),
+        ("surprise", "the-bonsai-method",
+         "The bonsai's shape comes from a hand that refuses to leave the tree. So does yours.",
+         "External shaping discipline meets internal attending discipline."),
+    ],
+    "done-before-you-started": [
+        ("deeper", "the-source",
+         "Identity received as the engine of perseverance has a 90 day rebuild protocol. Begin it.",
+         "The theological insight of received identity meets the practical protocol of switching Sources."),
+        ("bridge", "attend",
+         "The reception lives best inside the cell of attending. The practice and the theology together complete the architecture.",
+         "Reverse pointer: Part 2 to Part 1 of The Attending."),
+        ("surprise", "lay-it-down-pride",
+         "The becoming-self is pride's deepest costume. The Father's running ends both at once.",
+         "Identity inversion meets the lay-it-down disciplines."),
     ],
 }
 

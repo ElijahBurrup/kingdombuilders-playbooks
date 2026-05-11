@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Attending: Done Before You Started | Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --night:#0A0612;--shadow:#1A1426;--rose-deep:#3A1828;
+ --rose:#6E2840;--rose-pale:#C88090;
+ --gold:#D4A843;--gold-glow:#E8C96A;--gold-pale:#F5E0A8;--gold-soft:rgba(212,168,67,0.08);
+ --candle:#E8C078;--candle-glow:#F5D898;
+ --ivory:#F8F4E8;--ivory-warm:#EFE8D2;
+ --cream:#FAF6EC;--cream-warm:#F0E8D4;--cream-deep:#DCD2BC;
+ --text:#1A1426;--text-light:#4A3D58;--text-muted:#7A6A85;
+ --white:#FFFFFF;--radius:16px;
+ --shadow-soft:0 2px 16px rgba(10,6,18,0.08);
+ --shadow-mid:0 4px 28px rgba(10,6,18,0.14);
+ --before-bg:#EFE0DC;--before-border:#6E2840;--before-text:#3A1828;
+ --after-bg:#F5EED8;--after-border:#A88030;--after-text:#1A1426
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--cream);line-height:1.82;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
+.page{max-width:720px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--rose-deep);font-weight:700}
+.prose em{color:var(--rose);font-style:italic}
+.prose h2{font-size:1.4rem;color:var(--rose-deep);margin:40px 0 16px;letter-spacing:-0.01em}
+
+dfn.def{font-style:normal;border-bottom:1.5px dotted var(--gold);cursor:help;position:relative}
+dfn.def:hover::after{content:attr(data-def);position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:var(--shadow);color:var(--cream);padding:8px 14px;border-radius:8px;font-size:0.78rem;font-family:'Nunito',sans-serif;white-space:normal;width:290px;text-align:center;z-index:100;box-shadow:0 4px 16px rgba(10,6,18,0.3);line-height:1.5;pointer-events:none}
+
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;
+ background:linear-gradient(175deg,#040208 0%,var(--night) 25%,var(--shadow) 55%,var(--rose-deep) 90%,var(--shadow) 100%);
+ position:relative;overflow:hidden}
+.candle{position:absolute;width:4px;height:24px;background:linear-gradient(to top,rgba(245,216,152,0.1),rgba(232,192,120,0.6) 30%,rgba(245,224,168,0.8) 60%,rgba(245,224,168,0.3) 100%);border-radius:2px;pointer-events:none;animation:flame-flicker 3s ease-in-out infinite}
+.candle:nth-child(1){top:18%;left:18%;animation-delay:0s}
+.candle:nth-child(2){top:18%;left:25%;animation-delay:-0.5s;height:20px}
+.candle:nth-child(3){top:18%;left:32%;animation-delay:-1s;height:26px}
+.candle:nth-child(4){top:18%;left:68%;animation-delay:-1.5s;height:22px}
+.candle:nth-child(5){top:18%;left:75%;animation-delay:-2s;height:24px}
+.candle:nth-child(6){top:18%;left:82%;animation-delay:-0.8s;height:20px}
+@keyframes flame-flicker{0%,100%{opacity:0.8;transform:scaleY(1)}50%{opacity:1;transform:scaleY(1.1)}}
+.candle-glow{position:absolute;width:60px;height:60px;border-radius:50%;background:radial-gradient(circle,rgba(245,216,152,0.25) 0%,rgba(232,192,120,0.08) 50%,transparent 80%);filter:blur(10px);pointer-events:none}
+.candle-glow:nth-child(7){top:14%;left:23%}
+.candle-glow:nth-child(8){top:14%;left:73%}
+.dawn{position:absolute;bottom:0;left:0;right:0;height:35%;background:linear-gradient(to top,rgba(110,40,64,0.2),rgba(200,128,144,0.05) 60%,transparent);pointer-events:none}
+.dust-spec{position:absolute;width:1.5px;height:1.5px;background:rgba(245,224,168,0.4);border-radius:50%;animation:dust-rise linear infinite;pointer-events:none}
+.dust-spec:nth-child(9){left:22%;animation-duration:24s;animation-delay:0s}
+.dust-spec:nth-child(10){left:45%;animation-duration:28s;animation-delay:-8s}
+.dust-spec:nth-child(11){left:65%;animation-duration:26s;animation-delay:-14s}
+.dust-spec:nth-child(12){left:85%;animation-duration:30s;animation-delay:-20s}
+@keyframes dust-rise{0%{bottom:-10px;opacity:0}10%{opacity:0.6}90%{opacity:0.3}100%{bottom:110%;opacity:0;transform:translateX(20px)}}
+.ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.025;mix-blend-mode:overlay;pointer-events:none}
+.cover-content{position:relative;z-index:2;padding:48px 24px}
+.cover-badge{display:inline-block;padding:6px 22px;border:1px solid rgba(212,168,67,0.3);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.67rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--gold-glow);margin-bottom:16px}
+.cover-series{display:inline-block;padding:4px 16px;border:1px solid rgba(212,168,67,0.2);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.58rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:36px}
+.cover h1{font-family:'Nunito',sans-serif;font-size:clamp(2rem,5.2vw,3.4rem);font-weight:900;color:var(--white);line-height:1.1;margin-bottom:4px}
+.cover h1 strong{font-weight:900;color:var(--gold-glow);display:block;font-size:clamp(2.4rem,6.4vw,4.2rem)}
+.cover-tagline{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.65);margin-top:24px;line-height:1.75;max-width:580px;margin-left:auto;margin-right:auto}
+.cover-tagline em{color:var(--gold-pale);font-style:normal;font-weight:600}
+.cover-sub{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.32);margin-top:14px}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.58rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-top:48px}
+
+.series-progress{text-align:center;padding:24px 24px 12px;background:transparent}
+.series-dots{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px}
+.series-dot{width:12px;height:12px;border-radius:50%;border:2px solid rgba(212,168,67,0.3);background:transparent}
+.series-dot.active{background:var(--gold);border-color:var(--gold);box-shadow:0 0 8px rgba(212,168,67,0.4)}
+.series-dot.done{background:rgba(212,168,67,0.4);border-color:rgba(212,168,67,0.5)}
+.series-dot-label{font-family:'Poppins',sans-serif;font-size:0.55rem;color:rgba(255,255,255,0.42);letter-spacing:3px;text-transform:uppercase}
+
+.ch-head{background:linear-gradient(170deg,var(--shadow),var(--rose-deep));padding:72px 24px 52px;position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23E8C078' stroke-width='0.4' opacity='0.08'%3E%3Ccircle cx='40' cy='40' r='12'/%3E%3Ccircle cx='40' cy='40' r='22'/%3E%3Cpath d='M40 28 L40 52 M28 40 L52 40' stroke-width='0.6'/%3E%3C/g%3E%3C/svg%3E")}
+.ch-badge{display:inline-block;padding:4px 16px;background:rgba(212,168,67,0.12);border:1px solid rgba(212,168,67,0.3);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:20px;position:relative;z-index:2}
+.ch-num{font-family:'Nunito',sans-serif;font-size:5.5rem;font-weight:900;line-height:0.9;color:rgba(212,168,67,0.18);margin-bottom:-10px;position:relative;z-index:2}
+.ch-title{font-family:'Nunito',sans-serif;font-size:2.1rem;font-weight:900;color:var(--white);line-height:1.15;letter-spacing:-0.02em;margin-bottom:10px;position:relative;z-index:2}
+.ch-sub{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.55);line-height:1.6;position:relative;z-index:2}
+
+.ribbon{text-align:center;padding:22px 24px;background:linear-gradient(135deg,rgba(212,168,67,0.05),rgba(110,40,64,0.07));border-top:1.5px solid rgba(212,168,67,0.15);border-bottom:1.5px solid rgba(212,168,67,0.15)}
+.ribbon p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:var(--text-light);max-width:540px;margin:0 auto}
+.ribbon .ref{font-weight:600;color:var(--rose);font-style:normal}
+
+.char-grid{display:grid;gap:24px;margin:40px 0}
+@media(min-width:640px){.char-grid{grid-template-columns:1fr 1fr 1fr}}
+.char-card{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft);transition:all 0.3s ease}
+.char-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-mid)}
+.char-head{background:linear-gradient(135deg,var(--gold-soft),rgba(110,40,64,0.05));padding:18px 20px;border-bottom:1px solid var(--cream-deep);display:flex;align-items:center;gap:14px}
+.char-emoji{font-size:2rem;line-height:1;display:flex;align-items:center;justify-content:center}
+.char-name{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;color:var(--rose-deep);line-height:1.25}
+.char-title{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-top:2px}
+.char-body{padding:20px}
+.char-body p{font-size:0.92rem;color:var(--text-light);line-height:1.75;margin:0}
+
+.scene{background:linear-gradient(135deg,var(--cream-warm),var(--cream));border:1px solid var(--cream-deep);border-radius:var(--radius);padding:28px;margin:32px 0;box-shadow:var(--shadow-soft)}
+.scene-label{font-family:'Nunito',sans-serif;font-size:0.68rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--rose);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.scene h4{font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:800;color:var(--rose-deep);margin-bottom:14px;line-height:1.3}
+.scene p{font-size:0.95rem;color:var(--text-light);line-height:1.78;margin-bottom:14px}
+.scene p:last-child{margin-bottom:0}
+
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:36px 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft)}
+@media(max-width:600px){.ba-grid{grid-template-columns:1fr}}
+.ba-col{padding:28px 24px}
+.ba-col.before{background:var(--before-bg);border-right:2px solid var(--cream-deep)}
+.ba-col.after{background:var(--after-bg)}
+@media(max-width:600px){.ba-col.before{border-right:none;border-bottom:2px solid var(--cream-deep)}}
+.ba-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px}
+.ba-col.before .ba-label{color:var(--before-border)}
+.ba-col.after .ba-label{color:var(--after-border)}
+.ba-col h4{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;margin-bottom:10px;line-height:1.3}
+.ba-col.before h4{color:var(--before-text)}
+.ba-col.after h4{color:var(--after-text)}
+.ba-col p{font-size:0.88rem;line-height:1.7;margin-bottom:8px}
+.ba-col.before p{color:#3A1828}
+.ba-col.after p{color:#1A1426}
+.ba-col ul{list-style:none;padding:0;margin:0}
+.ba-col ul li{font-size:0.88rem;line-height:1.7;padding:4px 0 4px 18px;position:relative}
+.ba-col.before ul li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:8px;border-radius:50%;background:var(--before-border);opacity:0.55}
+.ba-col.after ul li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:8px;border-radius:50%;background:var(--after-border);opacity:0.55}
+
+.data-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin:32px 0}
+.data-box{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:24px 16px;text-align:center;box-shadow:var(--shadow-soft)}
+.data-num{font-family:'Nunito',sans-serif;font-size:1.8rem;font-weight:900;color:var(--rose);line-height:1;margin-bottom:6px}
+.data-label{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+
+.data-hero{text-align:center;padding:48px 24px;margin:40px 0;background:linear-gradient(135deg,var(--shadow),var(--rose-deep));border-radius:var(--radius);position:relative;overflow:hidden}
+.data-hero::before{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(212,168,67,0.1) 0%,transparent 70%);border-radius:50%}
+.data-hero .dh-num{font-family:'Nunito',sans-serif;font-size:3.4rem;font-weight:900;color:var(--gold-glow);line-height:1;margin-bottom:10px;position:relative}
+.data-hero .dh-label{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.5);position:relative}
+.data-hero .dh-sub{font-family:'Lora',serif;font-size:0.92rem;font-style:italic;color:rgba(255,255,255,0.6);margin-top:12px;max-width:440px;margin-left:auto;margin-right:auto;position:relative}
+
+.glow-box{background:linear-gradient(135deg,var(--shadow),var(--rose-deep));border:2px solid rgba(212,168,67,0.22);border-radius:var(--radius);padding:32px;margin:36px 0;position:relative;overflow:hidden;box-shadow:0 4px 24px rgba(10,6,18,0.2)}
+.glow-box::before{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(212,168,67,0.1) 0%,transparent 70%);border-radius:50%}
+.glow-box h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--gold-glow);margin-bottom:14px;position:relative}
+.glow-box p{font-size:0.95rem;color:rgba(255,255,255,0.85);line-height:1.78;position:relative;margin-bottom:12px}
+.glow-box p:last-child{margin-bottom:0}
+.glow-box strong{color:var(--gold-pale)}
+.glow-box em{color:var(--rose-pale);font-style:italic}
+
+.grand-quote{text-align:center;padding:48px 24px;margin:40px 0;position:relative}
+.grand-quote::before{content:'\201C';font-family:'Lora',serif;font-size:8rem;color:rgba(212,168,67,0.15);position:absolute;top:-20px;left:50%;transform:translateX(-50%);line-height:1}
+.grand-quote blockquote{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:var(--rose-deep);line-height:1.7;max-width:540px;margin:0 auto;position:relative}
+.grand-quote cite{display:block;margin-top:16px;font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--rose);font-style:normal}
+
+.root-ck{margin:40px auto;max-width:720px;padding:36px 32px;background:linear-gradient(135deg,rgba(212,168,67,0.05),rgba(110,40,64,0.06));border-radius:var(--radius);border:2px solid rgba(212,168,67,0.18)}
+.root-ck .rc-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.root-ck h4{font-size:1.05rem;color:var(--rose-deep);margin-bottom:20px}
+.r-item{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
+.r-item:last-child{margin-bottom:0}
+.r-dot{flex-shrink:0;width:8px;height:8px;border-radius:50%;background:var(--gold);margin-top:7px;box-shadow:0 0 6px rgba(212,168,67,0.3)}
+.r-text{font-size:0.92rem;color:var(--text-light);line-height:1.7}
+
+.viz{margin:32px 0;border-radius:var(--radius);border:2px solid var(--gold);overflow:hidden;box-shadow:0 0 20px rgba(212,168,67,0.1)}
+.viz-inner{padding:0}
+.viz-top{display:flex;align-items:center;gap:16px;padding:20px 28px;background:linear-gradient(135deg,rgba(212,168,67,0.1),rgba(212,168,67,0.04))}
+.viz-icon{flex-shrink:0;width:40px;height:40px;border-radius:50%;background:var(--gold);color:var(--white);display:flex;align-items:center;justify-content:center}
+.viz-icon svg{width:20px;height:20px}
+.viz-meta .viz-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.viz-meta h4{font-size:1rem;color:var(--rose-deep);margin:0}
+.viz-body{padding:24px 28px;background:var(--white)}
+.viz-body p{font-size:0.92rem;color:var(--text-light);line-height:1.78;margin-bottom:12px}
+.viz-body strong{color:var(--rose-deep);font-weight:700}
+.viz-body em{color:var(--rose);font-style:italic;font-weight:500}
+.viz-body p:last-child{margin-bottom:0}
+.viz-trigger{padding:16px 28px;background:linear-gradient(135deg,rgba(212,168,67,0.07),rgba(212,168,67,0.02));border-top:1px solid rgba(212,168,67,0.15);font-size:0.88rem;color:var(--rose-deep);font-style:italic}
+
+.think{background:linear-gradient(135deg,rgba(212,168,67,0.07),rgba(110,40,64,0.04));border:2px solid rgba(212,168,67,0.18);border-radius:var(--radius);padding:28px;margin:36px 0}
+.think-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.think p{font-size:0.95rem;color:var(--text-light);line-height:1.78;margin-bottom:12px}
+.think p:last-child{margin-bottom:0}
+.think-line{border:none;border-bottom:1.5px dashed rgba(212,168,67,0.3);margin:8px 0}
+
+/* Iam-Card, the central revelation */
+.iam-card{background:linear-gradient(135deg,var(--shadow),var(--rose-deep));border-radius:var(--radius);padding:48px 32px;margin:40px 0;text-align:center;position:relative;overflow:hidden;border:3px solid rgba(245,224,168,0.25)}
+.iam-card::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;background:radial-gradient(circle,rgba(245,216,152,0.15) 0%,rgba(212,168,67,0.05) 40%,transparent 75%);border-radius:50%}
+.iam-card .iam-label{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:14px;position:relative}
+.iam-card h3{font-family:'Nunito',sans-serif;font-size:clamp(2rem,5vw,3rem);font-weight:900;color:var(--gold-glow);letter-spacing:-0.02em;position:relative;margin-bottom:14px}
+.iam-card p{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.85);line-height:1.7;max-width:520px;margin:0 auto;position:relative}
+
+/* Reception protocol */
+.protocol{margin:36px 0}
+.protocol-head{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--rose);margin-bottom:16px;text-align:center}
+.protocol-grid{display:grid;gap:14px}
+@media(min-width:640px){.protocol-grid{grid-template-columns:1fr 1fr 1fr}}
+.protocol-card{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:22px 20px;box-shadow:var(--shadow-soft);position:relative;overflow:hidden}
+.protocol-card::before{content:'';position:absolute;top:0;left:0;height:3px;width:60%;background:linear-gradient(90deg,var(--gold),transparent)}
+.protocol-num{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.protocol-title{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:var(--rose-deep);margin-bottom:8px}
+.protocol-card p{font-size:0.85rem;color:var(--text-light);line-height:1.65;margin:0}
+
+.final-test{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:36px;margin:40px 0;box-shadow:var(--shadow-soft)}
+.final-test h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--rose-deep);margin-bottom:6px}
+.final-test .test-sub{font-size:0.85rem;color:var(--text-muted);margin-bottom:24px;font-style:italic}
+.test-q{padding:14px 0;border-bottom:1px solid var(--cream-deep)}
+.test-q:last-child{border-bottom:none}
+.test-num{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.test-q p{font-size:0.92rem;color:var(--text);line-height:1.65}
+
+.prompt-card{background:linear-gradient(135deg,var(--shadow),var(--rose-deep));border-radius:var(--radius);padding:36px;margin:40px 0;box-shadow:0 4px 24px rgba(10,6,18,0.2)}
+.prompt-card h3{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;color:var(--gold-glow);margin-bottom:16px}
+.prompt-card p{font-size:0.88rem;color:rgba(255,255,255,0.75);line-height:1.65;margin-bottom:10px}
+.prompt-card code{background:rgba(255,255,255,0.08);padding:2px 8px;border-radius:4px;font-size:0.82rem;color:var(--gold-pale)}
+
+.series-conclusion{background:linear-gradient(135deg,var(--rose-deep),var(--shadow));border-radius:var(--radius);padding:42px 32px;margin:40px 0;box-shadow:0 4px 24px rgba(10,6,18,0.2);text-align:center;position:relative;overflow:hidden}
+.series-conclusion::before{content:'';position:absolute;top:-30%;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(245,224,168,0.15) 0%,transparent 70%);border-radius:50%}
+.series-conclusion .sc-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:12px;position:relative}
+.series-conclusion h3{font-family:'Nunito',sans-serif;font-size:1.6rem;font-weight:900;color:var(--white);margin-bottom:14px;position:relative}
+.series-conclusion p{font-family:'Lora',serif;font-size:0.95rem;color:rgba(255,255,255,0.8);line-height:1.7;position:relative;max-width:540px;margin:0 auto}
+
+.finale{background:linear-gradient(170deg,var(--night),var(--shadow));padding:80px 24px;text-align:center;position:relative;overflow:hidden}
+.finale::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(212,168,67,0.06) 0%,transparent 70%);border-radius:50%}
+.finale h2{font-family:'Nunito',sans-serif;font-size:clamp(1.6rem,4.4vw,2.4rem);font-weight:300;color:rgba(255,255,255,0.78);line-height:1.3;position:relative;margin-bottom:8px}
+.finale h2 strong{font-weight:900;color:var(--gold-glow);display:block}
+
+.footer{text-align:center;padding:48px 24px;background:var(--night);color:rgba(255,255,255,0.3);font-family:'Poppins',sans-serif;font-size:0.6rem;letter-spacing:2px;text-transform:uppercase}
+.footer a{color:var(--gold);text-decoration:none;opacity:0.65}
+.footer a:hover{opacity:1}
+
+@media(max-width:640px){
+  .page{padding:0 20px}
+  .root-ck{margin-left:20px;margin-right:20px;padding:28px 20px}
+  .char-grid,.protocol-grid{grid-template-columns:1fr}
+  .data-hero .dh-num{font-size:2.6rem}
+  .ch-title{font-size:1.7rem}
+  .ch-num{font-size:4rem}
+  .iam-card h3{font-size:2rem}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+</style>
+</head>
+<body>
+
+<section class="cover">
+<div class="candle"></div><div class="candle"></div><div class="candle"></div><div class="candle"></div><div class="candle"></div><div class="candle"></div>
+<div class="candle-glow"></div><div class="candle-glow"></div>
+<div class="dust-spec"></div><div class="dust-spec"></div><div class="dust-spec"></div><div class="dust-spec"></div>
+<div class="dawn"></div>
+<div class="ghost-noise"></div>
+<div class="cover-content">
+<div class="cover-badge">Kingdom Builders AI</div><br>
+<div class="cover-series">The Attending &middot; Part 2 of 2</div>
+<h1>Done Before<br>You <strong>Started</strong></h1>
+<p class="cover-tagline">Why attention alone eventually fails, and what comes underneath. The identity inversion that makes perseverance sustainable for years instead of weeks. <em>You are not becoming someone by your work. You are already someone, and the work is what flows from it.</em></p>
+<p class="cover-sub">The Theology Underneath The Practice</p>
+<div class="series-progress">
+  <div class="series-dots">
+    <span class="series-dot done" title="Attend"></span>
+    <span class="series-dot active" title="Done Before You Started"></span>
+  </div>
+  <div class="series-dot-label">Part 2 of 2</div>
+</div>
+<p class="cover-author">KingdomBuilders AI</p>
+</div>
+</section>
+
+<div class="ribbon">
+<p>"And God said unto Moses, I AM THAT I AM."<br><span class="ref">Exodus 3:14</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Pregame</div>
+<div class="ch-num">00</div>
+<div class="ch-title">The Becoming Lie</div>
+<div class="ch-sub">What you will know when you finish this playbook.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>You finished <em>Attend</em>. You ran the practice. The waves got smaller. The Untils got longer. The eight substitutes lost some of their grip. Then, somewhere around day 60, something shifted that you might not have words for yet. The cell got heavier in a new way. The substitutes acquired a new form. The discipline still worked mechanically but it felt emptier, like a practice that had been mastered but was missing something underneath. <strong>This playbook is what is underneath.</strong></p>
+
+<p>If you finish this book, you will know the deepest mechanism of resistance, the one no productivity framework will tell you about. You will know which single sentence has been running silently in your mind for most of your adult life and producing almost all of your work resistance. You will know how to uproot that sentence and plant a different one. You will know the four Christian doctrines that, when received experientially rather than intellectually, change the architecture of how you work. And you will hold a daily reception protocol that lets attending flow from being rather than striving, which is the only configuration that survives years.</p>
+
+<div class="glow-box">
+<h3>Three Bold Claims</h3>
+<p>Every productivity framework you have ever read secretly assumes one thing: that you are <em>becoming</em> someone by your work. The work is the bridge between current-you and real-you. <strong>This assumption is the engine of all sustained resistance.</strong> It does not matter how good the practice is. As long as the underlying frame is "do the work to become someone," the becoming-self will defend itself against being born and your work will eventually fail.</p>
+<p>The inversion is this: <strong>you are not becoming someone. You already are someone. The work is what flows from who you already are, not what produces who you will be.</strong> Identity precedes action. Being precedes doing. The work is downstream of who you have already been given to be, and the engine of perseverance is the daily reception of that given self.</p>
+<p>This is also the deepest single insight of evangelical theology. Justification is received, not earned. Sanctification flows from justification, not toward it. <em>It is finished</em> was said before the resurrection. The Christian tradition has been holding this answer for two thousand years. Modern productivity culture has forgotten it. This playbook recovers it.</p>
+</div>
+
+<p>Read this book slowly. Read it more than once. It is shorter than <em>Attend</em> by design. The chapters are denser. The work is not to absorb information; it is to receive a different relationship to your own work. Most of the change will happen in chapter 6, but the chapter will not land without chapters 1 through 5.</p>
+
+</div>
+
+<div class="page">
+<div class="char-grid">
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji"><svg viewBox="0 0 48 48" width="42" height="42"><path d="M24 8 L24 40" stroke="#3A1828" stroke-width="2" stroke-linecap="round"/><circle cx="24" cy="14" r="5" fill="#6E2840"/><path d="M20 22 L28 22" stroke="#6E2840" stroke-width="3" stroke-linecap="round"/><path d="M22 26 L26 30 M26 26 L22 30" stroke="#3A1828" stroke-width="1" opacity="0.6"/><line x1="14" y1="40" x2="34" y2="40" stroke="#3A1828" stroke-width="2"/><circle cx="14" cy="6" r="2" fill="#A88030" opacity="0.5"><animate attributeName="cy" values="6;4;6" dur="3s" repeatCount="indefinite"/></circle><circle cx="34" cy="4" r="2" fill="#A88030" opacity="0.5"><animate attributeName="cy" values="4;2;4" dur="4s" repeatCount="indefinite"/></circle></svg></div>
+<div><div class="char-name">The Becoming Man</div><div class="char-title">Identity In The Future</div></div>
+</div>
+<div class="char-body"><p>Lives entirely in the next version of himself. The novel he will write. The fitness he will achieve. The faithfulness he will eventually demonstrate. The work in front of him is always the bridge to the future-self, never the expression of a present-self. He cannot rest because resting threatens the becoming. He is busy and exhausted and never arrives.</p></div>
+</div>
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji"><svg viewBox="0 0 48 48" width="42" height="42"><circle cx="24" cy="24" r="14" fill="none" stroke="#D4A843" stroke-width="1.5"/><circle cx="24" cy="24" r="8" fill="rgba(245,224,168,0.4)"/><path d="M24 16 L24 32 M16 24 L32 24" stroke="#D4A843" stroke-width="0.8" opacity="0.5"/><circle cx="24" cy="24" r="3" fill="#E8C078"><animate attributeName="opacity" values="0.6;1;0.6" dur="3s" repeatCount="indefinite"/></circle></svg></div>
+<div><div class="char-name">The Beloved</div><div class="char-title">Identity Received</div></div>
+</div>
+<div class="char-body"><p>Has heard the name spoken over him by the One who made him. Does not need to become someone because he has already been named. Works because the work is what beloved sons do, not because the work makes him beloved. Rests easily because the work is downstream of who he already is. Perseveres for decades because the engine is reception, not striving.</p></div>
+</div>
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji"><svg viewBox="0 0 48 48" width="42" height="42"><path d="M16 22 Q24 14 32 22 L32 38 L16 38 Z" fill="#6E2840"/><circle cx="24" cy="22" r="3" fill="#3A1828"/><path d="M24 8 Q22 12 24 14 Q26 12 24 8" fill="#D4A843" opacity="0.6"/><path d="M12 40 L36 40" stroke="#3A1828" stroke-width="1.5"/><circle cx="24" cy="32" r="1.5" fill="#F5E0A8"><animate attributeName="r" values="1.5;2.5;1.5" dur="3.5s" repeatCount="indefinite"/></circle></svg></div>
+<div><div class="char-name">The Father</div><div class="char-title">Who Waits At The Door</div></div>
+</div>
+<div class="char-body"><p>Stands at the door of the house, watching the road. The son is far off. The Father runs. Does not wait for the son to finish his speech. Does not wait for the son to prove himself. Throws the robe over the rags and calls for the feast. The Father in Luke 15 is the picture of how identity is received: given before earned, given before deserved, given as the entire foundation of the son's coming home.</p></div>
+</div>
+</div>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter One</div>
+<div class="ch-num">01</div>
+<div class="ch-title">The Trap Of Becoming</div>
+<div class="ch-sub">The single sentence that has been running silently in your mind.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>There is a sentence you have not said aloud but you have been hearing for most of your adult life. It plays under almost every act of work, every ambition, every effort. It is the sentence:</p>
+
+<div class="grand-quote">
+<blockquote>I am becoming.</blockquote>
+<cite>The Becoming Lie</cite>
+</div>
+
+<p>You are becoming a writer. You are becoming a leader. You are becoming faithful. You are becoming fit. You are becoming successful. You are becoming whole. Notice the temporal location. <strong>The real you is in the future.</strong> The current you is a draft. The work in front of you is the bridge across the gap. Each act of effort is supposed to inch you closer to the real you who waits, glowing, on the other side.</p>
+
+<p>This sentence is not innocent. It is the deep architecture of resistance. <em>Every act of work threatens the becoming-self.</em> If you actually do the work and produce a mediocre result, the becoming-self might never arrive. If you actually do the work and succeed, the becoming-self stops being aspirational and becomes ordinary. Both outcomes are unbearable. The becoming-self protects itself by NOT doing the work, because as long as the work remains undone, the future-self remains possible. <strong>Resistance is the immune response of an identity that does not yet exist refusing to be born.</strong></p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Man Who Could Not Finish</h4>
+<p>A man has been "writing his book" for eleven years. He talks about it at parties. He researches it. He outlines it. He has 14 different drafts of the first chapter on his hard drive.</p>
+<p>What he does not know is that the book is the only thing keeping his becoming-self alive. <em>As long as the book is unfinished, he is becoming an author.</em> The day he finishes the book, he becomes a man who wrote a book, which is something far less glorious than a becoming-author. The mediocre real book replaces the gleaming imagined book. The mediocre real author replaces the glorious imagined author. He cannot allow this. So he writes drafts and never finishes.</p>
+<p>This is not laziness. It is the becoming-self protecting itself from being born and discovering it is ordinary. <strong>Until the becoming-self dies, the book will never finish.</strong></p>
+</div>
+
+<p>You can run this pattern across almost any domain. The man who is "becoming a runner" but never enters a race. The Christian who is "growing in prayer" but never sits down to pray. The entrepreneur who is "building a business" but never ships. The mother who is "going to be present with her kids" but is always on her phone. <em>The becoming is what is being protected. The work would end the becoming.</em></p>
+
+<p>This is also why willpower-based productivity always fails over time. Willpower is the becoming-self pushing against its own immune response. It is the man trying to force his own birth while simultaneously being the womb refusing to let go. The longer it goes, the more depleted he becomes. Eventually he gives up, calls himself lazy, and finds a new project to be becoming at. <strong>The wheel turns.</strong></p>
+
+<div class="ba-grid">
+<div class="ba-col before">
+<div class="ba-label">The Becoming Frame</div>
+<h4>"I Am Becoming"</h4>
+<ul>
+<li>Identity is in the future</li>
+<li>The work is the bridge to real-me</li>
+<li>Every act of effort risks killing the dream</li>
+<li>Resistance protects the becoming-self</li>
+<li>Willpower required, eventually depletes</li>
+<li>Many projects, few completions</li>
+</ul>
+</div>
+<div class="ba-col after">
+<div class="ba-label">The Inversion (Coming)</div>
+<h4>"I Already Am"</h4>
+<ul>
+<li>Identity is in the present, received from God</li>
+<li>The work flows from who you already are</li>
+<li>Each act expresses identity rather than constructing it</li>
+<li>No becoming-self to defend</li>
+<li>Reception required, sustains for years</li>
+<li>Fewer projects, deep completions</li>
+</ul>
+</div>
+</div>
+
+<div class="think">
+<div class="think-label">Stop and Hear The Sentence</div>
+<p>Say it out loud right now. "I am becoming a [your thing]." Notice what your body does. Notice the slight forward lean, the slight strain, the unfinished feeling.</p>
+<hr class="think-line">
+<p>Now say it the other way. "I am a [your thing]. This is what I do." Notice what your body does this time. Notice the settling. Notice the resistance that arises against the second sentence, that resistance is the becoming-self, fighting to stay alive.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Trap Of Becoming.</strong> The unconscious sentence "I am becoming" places identity in the future. Every act of work threatens the imagined future-self. Resistance is the immune response of an identity refusing to be born. Willpower fails because willpower is the becoming-self pushing against its own immune response.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"Not that I have already attained, either were already perfect: but I follow after, if that I may apprehend that for which also I am apprehended of Christ Jesus."<br><span class="ref">Philippians 3:12</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Two</div>
+<div class="ch-num">02</div>
+<div class="ch-title">The Hidden Self You Are Protecting</div>
+<div class="ch-sub">What the resistance is actually guarding, with surgical precision.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Take the diagnosis one layer deeper. The becoming-self is real, but it is also a defense. The deeper question is: <em>what is the becoming-self protecting?</em> What would be lost if the imagined-self died and only the actual-self remained?</p>
+
+<p>The honest answer is uncomfortable. The becoming-self is protecting <strong>the only self most modern people have.</strong> Without the story of who you are becoming, you do not know who you are. The story is what gives you the experience of having a self at all. Take it away and there is only a body, a job, some relationships, and a present moment that contains an unimpressive task. The fantasy-self is your refuge from the experience of having no fixed self.</p>
+
+<p>This is why the resistance is so violent. You are not just protecting a project. You are protecting your sense of being a person. The work threatens to replace the imagined real-you with the mediocre actual-you, and most modern people cannot bear that replacement because the actual-you feels like nothing.</p>
+
+<div class="glow-box">
+<h3>The Modern Self Problem</h3>
+<p>Pre-modern people did not have this problem in the same form. <em>Their identity was given to them by community, family, vocation, tradition, and church.</em> A medieval blacksmith did not have to construct an identity. He was the blacksmith. His father was a blacksmith. His son would be a blacksmith. His parish knew him. His God had given him a craft. The identity question was largely answered before he was born.</p>
+<p>Modern people inherited an unprecedented freedom: <strong>you must construct your own identity.</strong> No tradition will give it to you. No vocation will define you. No community will name you. This freedom is real and in some ways glorious. It is also exhausting beyond what any previous generation faced. The becoming-lie is what the modern mind invented to survive the freedom: a future-self always being constructed, never finished, so the work of identity never has to be admitted to be impossible alone.</p>
+<p><em>You cannot construct a self.</em> You can construct a project. You can construct a career. You can construct a brand. You cannot construct what you are. The construction project is what is failing you, and the failure is showing up as work resistance.</p>
+</div>
+
+<p>This means the resistance you feel toward your work is not really about the work. It is about the fact that the work threatens to reveal that you cannot construct a self by working hard enough. Each completed project that does not produce the imagined-self is one more piece of evidence that the construction is failing. Resistance protects you from collecting that evidence.</p>
+
+<p>The way out cannot be a better construction project. The way out has to be a different SOURCE of identity. <strong>Identity that is given rather than built. Identity that is received rather than constructed. Identity that arrives from outside the self rather than being assembled inside it.</strong> This is what the next chapter is about.</p>
+
+<div class="data-row">
+<div class="data-box"><div class="data-num">~1700s</div><div class="data-label">When given-identity began to collapse for ordinary people</div></div>
+<div class="data-box"><div class="data-num">~300 yrs</div><div class="data-label">Of constructing-the-self as the dominant Western project</div></div>
+<div class="data-box"><div class="data-num">Now</div><div class="data-label">When the construction is visibly breaking</div></div>
+</div>
+
+<div class="think">
+<div class="think-label">Stop and Locate The Hiding Place</div>
+<p>If you stopped working tomorrow, who would you be? Not what would you do. Who would you be? Most modern men cannot answer this. They have been hiding inside their work because the work has been pretending to be the self. If the work stopped, the self would be visible.</p>
+<hr class="think-line">
+<p>This question is the X-ray. It shows you exactly what your becoming-self has been protecting and why the resistance to your work has been so fierce.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Trap Of Becoming.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Hidden Self.</strong> The becoming-lie protects the modern problem of having no given self. You cannot construct identity. You can only receive it. The work has been pretending to be the self, and the resistance protects you from finding out it is not. The way out is not a better construction project. The way out is a different source.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"For ye are dead, and your life is hid with Christ in God."<br><span class="ref">Colossians 3:3</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Three</div>
+<div class="ch-num">03</div>
+<div class="ch-title">I AM</div>
+<div class="ch-sub">The name God spoke to Moses, and what it means for your work.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Moses, at the burning bush, asks God for a name. He is being sent to lead the Hebrews out of Egypt and he needs to tell them who has sent him. The answer he receives is one of the strangest sentences in scripture.</p>
+
+<div class="iam-card">
+<div class="iam-label">Exodus 3:14</div>
+<h3>I AM THAT I AM</h3>
+<p>The Hebrew is <em>ehyeh asher ehyeh</em>. God's own self-naming. Pure present-tense being. No becoming. No history. No future tense. Just <strong>I AM.</strong></p>
+</div>
+
+<p>This is not a philosophical flourish. <em>This is the foundational name of God in scripture.</em> Every other name (Lord, Father, Almighty, Provider) is built on top of this one. God's most fundamental self-disclosure is <dfn class="def" data-def="The pure present-tense being of God. Not becoming, not having become, not about to become. The eternal I AM. Theologians call this God's aseity, his self-existence. Practically, it means God's being is not dependent on becoming, not on history, not on future arrival. He simply IS.">pure present-tense being</dfn>. Not "I am becoming." Not "I will be." Not "I have been." Just I AM.</p>
+
+<p>And then, throughout scripture, the same present-tense pattern is applied to humans who are in covenant with this God. <strong>You ARE the salt of the earth. You ARE the light of the world. You ARE my beloved. You ARE a royal priesthood. You ARE seated with Christ in the heavenly places.</strong> Each phrase is present-tense. Not "you will become salt if you work hard enough." Not "you are becoming light through diligent practice." <em>You ARE.</em></p>
+
+<p>The Western Christian tradition has known this for two thousand years and has, in modern times, almost entirely forgotten it. <strong>The doctrine is called justification by faith.</strong> It says: God declares you righteous at the moment of faith, before any work, before any sanctification, before any becoming. You are not earning a verdict. You are receiving one that has already been issued. The verdict precedes the life. The life flows from the verdict.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Baptism Before The Ministry</h4>
+<p>Jesus comes to the Jordan to be baptized. He has not yet performed a single miracle. He has not yet preached a sermon. He has not yet called a disciple. He has not yet healed anyone. By any productivity metric, he has done nothing.</p>
+<p>And the voice from heaven says: <em>"This is my beloved Son, in whom I am well pleased."</em> Present tense. Beloved. Pleased. BEFORE THE WORK BEGAN.</p>
+<p>The entire ministry of Jesus, every miracle, every sermon, every cross-bearing step, flowed from an identity that had been spoken over him before any of it. <strong>He did not earn the belovedness by his ministry. The ministry was what flowed from the belovedness.</strong></p>
+<p>If this is true of Christ, who is the pattern, then it is true of his people. The work flows from the identity. The identity does not flow from the work.</p>
+</div>
+
+<p>This is the inversion you have been needing. Not "do the work to become someone." Rather: <strong>receive who you already are, and the work will flow from it.</strong> Justification before sanctification. Belovedness before ministry. Identity before action. <em>I AM</em> before <em>I do</em>.</p>
+
+<p>This is also why the practice in Part 1 will eventually fail without this chapter. Pure attending without received identity is the cat hunting without being a cat. Eventually exhausting. The cat hunts effortlessly because the cat is a cat. The Christian works effortlessly when he is acting from the identity that has been given, not when he is trying to construct one.</p>
+
+<div class="grand-quote">
+<blockquote>I AM is the name of God and the foundation of the human who knows God. The work of the day flows from the I AM, not toward it. The resistance ends when the I AM is received as the foundation of action rather than its goal.</blockquote>
+<cite>The Inversion</cite>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Trap Of Becoming.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Hidden Self.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>I AM.</strong> God's foundational name is pure present-tense being. Justification precedes sanctification. Identity is given, then the life flows. Jesus was named beloved before his ministry began. The work of the day flows from the I AM, not toward it.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"This is my beloved Son, in whom I am well pleased."<br><span class="ref">Matthew 3:17</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Four</div>
+<div class="ch-num">04</div>
+<div class="ch-title">Coram Deo</div>
+<div class="ch-sub">Working in the present face of God.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>If you receive the inversion of chapter three intellectually, you will believe it for about twelve hours. Then you will go back to becoming. The reason is that the becoming-frame is supported by the entire architecture of modern life. The market is becoming. The career is becoming. Social media is becoming. Every screen tells you to become. You will need a daily counter-architecture, and the Reformed tradition gave it a name in the sixteenth century.</p>
+
+<p>The name is <dfn class="def" data-def="Latin for 'before the face of God.' A Reformed theological concept describing the act of living every moment, every choice, every breath as conducted in the active presence of God. Not God's distant observation but God's immediate face. Used by Calvin, Luther, and the Puritans. Practically: it collapses the temporal future of becoming into the present face of being-seen.">Coram Deo</dfn>. Latin for "before the face of God." It is not a phrase you use; it is a posture you live. The premise is that there is no moment of your life in which you are not standing before the active, immediate face of God. There is no behind-closed-doors. There is no offstage. There is no merely private. <em>Every act, every thought, every choice happens in His face.</em></p>
+
+<p>This sounds heavy at first. Modern Christians often hear "God is watching" as a threat. *Coram Deo is the opposite.* The face of God is not a surveillance camera. It is the face of the One who has already named you beloved. The face is not appraising your performance. The face is regarding you with the love it had for Christ at the Jordan, before the ministry, before the work, before the proving. <strong>You are working in front of a face that is already pleased.</strong></p>
+
+<div class="ba-grid">
+<div class="ba-col before">
+<div class="ba-label">Working For The Face</div>
+<h4>Performance Frame</h4>
+<ul>
+<li>God watches to judge the output</li>
+<li>The face will be pleased IF you succeed</li>
+<li>Anxiety about whether the work is good enough</li>
+<li>Resistance because failure means rejection</li>
+<li>Constant pressure to construct a worthy self</li>
+</ul>
+</div>
+<div class="ba-col after">
+<div class="ba-label">Working Coram Deo</div>
+<h4>Reception Frame</h4>
+<ul>
+<li>God watches with already-given love</li>
+<li>The face is pleased BEFORE the work begins</li>
+<li>Freedom because the verdict precedes the act</li>
+<li>Resistance evaporates because there is nothing at stake for the self</li>
+<li>Constant reception of the self already given</li>
+</ul>
+</div>
+</div>
+
+<p>When you work coram Deo, several things change. <strong>First, the audience collapses.</strong> You no longer have an internal jury of past mentors, future critics, social media followers, or imagined judges. There is one face. The face is already pleased. The internal jury goes quiet because the only judge that matters has already issued the verdict.</p>
+
+<p><strong>Second, the temporality of identity collapses.</strong> The becoming-self lives in the future where the face might one day be pleased. Coram Deo lives in the present where the face is pleased now. There is no more becoming. There is only the present act, in His face, with the verdict already in.</p>
+
+<p><strong>Third, the work becomes worship.</strong> Not theatrically. Quietly. Each act, even the most mundane email, becomes an offering in the face of God. <em>This is what Brother Lawrence discovered in the Carmelite kitchen when he wrote "I do nothing else but abide in His presence."</em> The dishes were prayer. The cooking was prayer. Every task became coram Deo. He reported that the practice changed his entire relationship to work within a few years.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Carpenter Who Saw The Face</h4>
+<p>A carpenter has been miserable for years. He is good at his work but he hates Monday mornings. The thought of clients, deadlines, mistakes, complaints, all of it feels heavy.</p>
+<p>His pastor gives him a single instruction: <em>"For one week, work as if Christ were standing in your shop watching you with delight, the way the Father watched Jesus at the Jordan. Not appraising the cabinets. Watching the man building them, already pleased."</em></p>
+<p>By Wednesday, something has shifted. The carpenter is humming. By Friday, he tells his wife he had forgotten what it was like to not work for approval. He had been working for clients who might or might not be pleased. *He had not been working coram Deo.* He had been working coram clients, coram critics, coram his own becoming-self. The Face had been there the whole time. He had not been looking at it.</p>
+</div>
+
+<p>This is the third chapter's inversion made daily. *I AM* is the doctrine. Coram Deo is how you live in the doctrine every hour. Working before the face of God is the architecture that protects you from sliding back into becoming.</p>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Trap Of Becoming.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Hidden Self.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>I AM.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Coram Deo.</strong> Working before the face of God, which is already pleased. The internal jury collapses. The temporality of identity collapses into the present. The work becomes worship without theatrics. The face has been there the whole time; you were not looking at it.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"Thou hast set our iniquities before thee, our secret sins in the light of thy countenance."<br><span class="ref">Psalm 90:8</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Five</div>
+<div class="ch-num">05</div>
+<div class="ch-title">It Is Finished</div>
+<div class="ch-sub">The theology of working from completion, not toward it.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>On the cross, before the resurrection, before any apparent vindication, Jesus says one word. <em>Tetelestai.</em> Translated in English Bibles as <strong>"It is finished."</strong> But the Greek is richer. <em>Tetelestai</em> is in the perfect tense, which in Greek means an action completed in the past whose effects continue indefinitely. It does not mean "it just ended." It means "it has been completed, and the completion stands, and will stand forever."</p>
+
+<p>Receipts in the ancient world were stamped <em>tetelestai</em> when a debt was paid in full. The word carries the legal force of a closed transaction. <strong>The thing is done. The bill is paid. The work is finished. There is nothing more to add.</strong></p>
+
+<p>And the staggering thing is that he says it BEFORE the resurrection. <em>The finishing precedes the proof of the finishing.</em> The work was complete on the cross. The resurrection was the public demonstration of what the cross had already accomplished. Saturday, the disciples scattered and despaired. The work was already finished. They did not know it. The finishing did not require their belief in it to be true.</p>
+
+<div class="iam-card">
+<div class="iam-label">John 19:30</div>
+<h3>Tetelestai</h3>
+<p><em>It is finished. Completed in the past. Standing forever. Paid in full.</em></p>
+</div>
+
+<p>The application to your work is theological dynamite if you let it land. <strong>The decisive work of your life is already finished.</strong> The work that determines whether God is for you or against you. The work that determines whether you are accepted or rejected. The work that decides your eternal standing. That work is finished. You are not constructing it. You are receiving its completion.</p>
+
+<p>This means every act of work you do today is on the OTHER side of the decisive work. You are not working to earn a verdict. You are working from a verdict that has already been issued in your favor. <em>You are working from completion, not toward it.</em></p>
+
+<div class="glow-box">
+<h3>The Two Kinds Of Work</h3>
+<p>This distinction is the entire game. <strong>There is work-toward-completion and work-from-completion.</strong> They produce the same external output. They feel completely different. They sustain completely differently across years.</p>
+<p>Work-toward-completion is the becoming-self constructing itself. Every act of work is on the front side of the verdict. The verdict depends on the work being good enough. Anxiety is structural. Resistance is structural. Eventually exhausting.</p>
+<p>Work-from-completion is the beloved acting from the verdict already given. Every act of work is on the back side of the verdict. The verdict does not depend on the work; the work flows from the verdict. <em>Joy is structural. Rest is structural. Sustainable for decades because there is no construction project being defended.</em></p>
+</div>
+
+<p>This is also what the writer of Hebrews means in chapter 4 when he says "there remains therefore a rest for the people of God... whoever has entered God's rest has also rested from his works, as God did from his." The rest is not the absence of work. The rest is the work being done from a place where the decisive work is already finished. The Christian who has entered this rest still works hard. He just works differently. He has stopped building the self. <strong>The self has been built. He is just expressing it.</strong></p>
+
+<div class="think">
+<div class="think-label">Stop and Test The Frame</div>
+<p>Pick the work you most resist. Now ask: am I working toward completion or from completion? Am I trying to construct something that will make me acceptable, or am I expressing something that is already true about me?</p>
+<hr class="think-line">
+<p>Most readers find they have been working toward completion in almost every area of life. The resistance is the predictable result. The fix is not to try harder; it is to receive the verdict that has already been issued.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Trap Of Becoming.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Hidden Self.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>I AM.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Coram Deo.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>It Is Finished.</strong> Tetelestai. The decisive work of life is already finished, paid in full, before any present act of work. You work from completion, not toward it. Work-toward produces structural anxiety. Work-from produces structural rest. Same output. Different engine. The rest of Hebrews 4 is the place from which Christian work flows.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"There remaineth therefore a rest to the people of God. For he that is entered into his rest, he also hath ceased from his own works."<br><span class="ref">Hebrews 4:9-10</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Six</div>
+<div class="ch-num">06</div>
+<div class="ch-title">The Beloved</div>
+<div class="ch-sub">The experiential heart of the book.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>This is the chapter the rest of the book has been building toward. Slow down. Read it twice. The chapters before this have given you doctrine. This one asks you to receive something.</p>
+
+<p>There is a single word that scripture uses for the deepest given identity of those in Christ. <em>The word is "Beloved."</em> It is the word the Father speaks over Jesus at his baptism and at his transfiguration. It is the word Paul uses repeatedly for the saints: <em>"to all that be in Rome, beloved of God"</em> (Romans 1:7). It is the word John uses to address the church: <em>"Beloved, now are we the sons of God"</em> (1 John 3:2). It is the present-tense, foundational, given identity of every person who belongs to Christ.</p>
+
+<p>Henri Nouwen, the Dutch priest and writer, gave the rest of his life to one task: helping modern people receive this word as their primary identity. He wrote: <em>"Self-rejection is the greatest enemy of the spiritual life because it contradicts the sacred voice that calls us 'the Beloved.' Being the Beloved constitutes the core truth of our existence."</em> Nouwen had been a successful Yale professor when he discovered, late in his career, that he had never received this word personally. He had taught it. He had not received it. The rest of his life was about helping others not make the same mistake.</p>
+
+<div class="iam-card">
+<div class="iam-label">The Word</div>
+<h3>Beloved</h3>
+<p>The Father's name for the Son. The Father's name for you. <em>Already given. Already true. Already the foundation of every act of work.</em></p>
+</div>
+
+<p>Here is what most modern Christians experience. They know the doctrine. They have heard sermons about it. They can quote the verses. But the word "Beloved" lives in their head as information, not in their chest as identity. They have not received it as their primary name. So when the workday begins, the becoming-self takes over and the work becomes performance again.</p>
+
+<p><strong>The transition from believing it to receiving it is the central project of the Christian life.</strong> It does not happen in a single moment for most people. It happens through years of daily reception, in prayer, in scripture, in covenant relationships, in moments of suffering where every other identity falls away and only the Beloved remains. The reception is the work of decades.</p>
+
+<p>But it begins with one practice. <em>Sit quietly. Allow yourself to be addressed by the One who made you. Hear Him say your name. Hear Him call you Beloved.</em> Most modern men will resist this exercise furiously. The becoming-self does not want to be replaced. It will tell you this is sentimental. It will tell you it sounds Catholic, or charismatic, or new-age, or feminine, or beneath you. It will offer you anything to avoid sitting still long enough to actually hear the word.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Scene</div>
+<h4>The Father Who Ran</h4>
+<p>The son comes home from the far country. He has rehearsed his speech for days. He has prepared his confession. He has decided he will ask to be treated as a servant. He is no longer worthy to be called a son.</p>
+<p>But the father sees him while he is still a long way off, and the father runs. The father does not wait for the speech. The father does not wait for the confession. The father does not negotiate the terms of return. <strong>The father throws the robe over the rags and calls for the feast before the son has finished his prepared sentence.</strong></p>
+<p>This is the most important parable Jesus told about identity. The son's becoming-self had prepared a transactional reentry. The father's already-given love made the transaction impossible. <em>The son had been the beloved son all along.</em> The far country had not changed it. The mud and the pigs had not changed it. The shame had not changed it. The father's running confirmed what had been true the entire time.</p>
+<p>You are the son. The father is running.</p>
+</div>
+
+<p>Here is what changes when you receive belovedness as your primary identity. The work changes. Not the external work, the relationship to it. The work becomes the natural expression of being a beloved son in the Father's house. Not earning anything. Not constructing anything. Just doing what beloved sons do. <strong>Resistance evaporates because the becoming-self has been laid down.</strong> The son does not need to become beloved by his labor. He IS beloved. The labor is downstream of the belovedness, not the vehicle for it.</p>
+
+<p>This is the deepest answer to the question that started this entire series. <em>Why do you resist work? Because work has been pretending to be the project of constructing a self that does not yet exist. Now the self exists, given by the Father, named Beloved. The work returns to its proper place: the expression of who you already are.</em></p>
+
+<div class="grand-quote">
+<blockquote>You are beloved. This is not a feeling. It is a given fact. The work of your life is to receive what is already true, and then to act from it. The Father has already run. The robe is already on. The feast is already prepared. Work as someone who knows this.</blockquote>
+<cite>The Reception</cite>
+</div>
+
+<div class="think">
+<div class="think-label">Stop and Receive</div>
+<p>Sit for sixty seconds. Do not pray for anything. Do not plan. Do not perform. Sit quietly and let the word "Beloved" be spoken over you. Allow yourself to imagine the Father's face, the face from chapter four, the face that is already pleased, saying your name and the word Beloved.</p>
+<hr class="think-line">
+<p>If resistance arises, that is the becoming-self protesting its own death. Stay through it. Sixty seconds. Then return to your day. The reception is the entire work of this playbook, and it begins right now.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Trap Of Becoming.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Hidden Self.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>I AM.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Coram Deo.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>It Is Finished.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Beloved.</strong> The foundational given identity of those in Christ. Not earned. Already true. The transition from believing it to receiving it is the central project of the Christian life. When belovedness is received as primary identity, resistance evaporates because the becoming-self has been laid down. The Father has already run.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"Behold, what manner of love the Father hath bestowed upon us, that we should be called the sons of God."<br><span class="ref">1 John 3:1</span></p>
+</div>
+
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Seven</div>
+<div class="ch-num">07</div>
+<div class="ch-title">The Reception Protocol</div>
+<div class="ch-sub">The daily practice that lets attending flow from being.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Doctrine without practice does not change a life. The reception of belovedness has to be installed daily, in concrete form, until the becoming-self has been laid down so many times it stops trying to get up. This is the protocol. It pairs with the daily watch from <em>Attend</em>; together they form the complete practice.</p>
+
+<div class="protocol">
+<div class="protocol-head">The Morning Reception</div>
+<div class="protocol-grid">
+<div class="protocol-card">
+<div class="protocol-num">Before the day begins</div>
+<div class="protocol-title">Sit. Breathe. Receive.</div>
+<p>Five minutes minimum. Before the phone. Before the work. Sit in a chair, breathe slowly, and let the Father address you. Hear Him speak your name and the word Beloved. Receive it. Do not pray for anything yet; first, be addressed.</p>
+</div>
+<div class="protocol-card">
+<div class="protocol-num">Scripture as voice</div>
+<div class="protocol-title">Read As If Spoken</div>
+<p>One short passage that names your identity in Christ. Read it as if God is speaking it now to you, not as historical literature. Romans 8:1, 1 John 3:1, Ephesians 2:10, Galatians 2:20. One passage per day, repeated for the week.</p>
+</div>
+<div class="protocol-card">
+<div class="protocol-num">One sentence</div>
+<div class="protocol-title">Name The Day's Work</div>
+<p>Now, having been addressed, name the day's work in one sentence. Not the project. The first act. <em>"From this beloved son, what flows next is the writing of the proposal."</em> The grammar matters. The work flows from the identity, not toward it.</p>
+</div>
+</div>
+</div>
+
+<div class="protocol">
+<div class="protocol-head">The Noonday Remembering</div>
+<div class="protocol-grid">
+<div class="protocol-card">
+<div class="protocol-num">When resistance arrives</div>
+<div class="protocol-title">Speak The Truth</div>
+<p>The becoming-self will try to reassert. When the urge to substitute arrives, do not argue with it. Speak the truth aloud: <em>"I am the Father's beloved. The verdict is already in. This work is the expression of who I already am, not the construction of who I might be."</em> The verbal claim breaks the spell.</p>
+</div>
+<div class="protocol-card">
+<div class="protocol-num">Coram Deo check</div>
+<div class="protocol-title">See The Face</div>
+<p>Whose face are you working for right now? An imagined client? A future critic? Your father? Your wife? Yourself? Return your attention to the face of the One who is already pleased. The other faces collapse when this one is consciously present.</p>
+</div>
+<div class="protocol-card">
+<div class="protocol-num">From the verdict</div>
+<div class="protocol-title">Continue The Work</div>
+<p>Now resume the work, but from the verdict. Not toward acceptance. From acceptance. The same external task, performed in a different posture. The work will feel materially different. Most readers can detect the change within the first hour.</p>
+</div>
+</div>
+</div>
+
+<div class="protocol">
+<div class="protocol-head">The Evening Rest</div>
+<div class="protocol-grid">
+<div class="protocol-card">
+<div class="protocol-num">Lay the day down</div>
+<div class="protocol-title">Hand It Over</div>
+<p>End the day by handing the work back. <em>"I have done what flows from belovedness today. The work is yours. The outcomes are yours. I am beloved still."</em> The day's quality, the day's wins, the day's failures, all of it goes to the One who is already pleased.</p>
+</div>
+<div class="protocol-card">
+<div class="protocol-num">Refuse the audit</div>
+<div class="protocol-title">No Performance Review</div>
+<p>The becoming-self will try to run an evening performance review. "You should have done more. You should have done better." Refuse it. The verdict is not yours to issue. The Father has already issued it. Replay-judgment is just construction in disguise.</p>
+</div>
+<div class="protocol-card">
+<div class="protocol-num">Sleep as a son</div>
+<div class="protocol-title">Rest In The Father's House</div>
+<p>Sleep is the bodily picture of trust. You lay down conscious control and the world continues without you. Lay down as the beloved son sleeping in the Father's house. The Father is awake. The work tomorrow flows from the same identity. Goodnight.</p>
+</div>
+</div>
+</div>
+
+<div class="data-hero">
+<div class="dh-num">60 days</div>
+<div class="dh-label">Until the reception begins to feel like default</div>
+<div class="dh-sub">Most readers find that after about two months of daily reception, the becoming-self has been laid down enough times that it stops fighting at the same volume. The work begins to flow from belovedness without effort. This is the goal of the entire two-part series.</div>
+</div>
+
+<div class="grand-quote">
+<blockquote>The day begins with reception, not with effort. The work flows from belovedness, not toward acceptance. The evening hands it back. The morning receives again. This is the rhythm of a life that perseveres for decades because it is no longer constructing a self.</blockquote>
+<cite>The Reception Protocol</cite>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Trap Of Becoming.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Hidden Self.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>I AM.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Coram Deo.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>It Is Finished.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Beloved.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Reception Protocol.</strong> Morning reception, noonday remembering, evening rest. The day begins with being addressed by the Father, the work flows from the verdict already given, and the evening hands the day back. Sixty days of this practice begins to lay the becoming-self down permanently.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"For we are his workmanship, created in Christ Jesus unto good works, which God hath before ordained that we should walk in them."<br><span class="ref">Ephesians 2:10</span></p>
+</div>
+
+<div class="page section prose">
+
+<p>You now hold both halves of <em>The Attending</em>. The practice from Part 1: the cell, the eight substitutes, the cat, the locksmith, the tide, the reservoir, the daily watch. The theology from Part 2: the trap of becoming, the hidden self, I AM, coram Deo, it is finished, the Beloved, the reception protocol. <strong>Together they form a complete operating system for perseverance.</strong></p>
+
+<p>Part 1 alone will work for about 60 days. Part 2 alone will move you intellectually but not change your behavior. Both together, run daily, change the architecture of how you work. The cell becomes the place of reception. The work becomes the expression of belovedness. The eight substitutes lose their grip not because you have refused them well, but because there is no longer a becoming-self for them to seduce. <em>The Beloved has nowhere else he wants to be than the post the Father has given him.</em></p>
+
+<p>This is the deepest mechanism of perseverance modern productivity culture does not know. You have it now. Not because you are smarter than other readers, but because you stayed in the cell long enough to receive what was already true. The Father has been running the whole time. The robe is already on. <strong>Now go and do what beloved sons do.</strong></p>
+
+</div>
+
+<div class="page">
+<div class="series-conclusion">
+<div class="sc-label">The Attending Complete</div>
+<h3>Two Books. One Architecture. The Beloved At Work.</h3>
+<p>The practice and the theology together. Attending and being. The cell and the Father's face. The daily watch and the morning reception. <em>You have what you need. Now stay at the post and let the work flow.</em></p>
+</div>
+</div>
+
+<div class="page section">
+<div class="final-test">
+<h3>Can You Answer These Without Looking Back?</h3>
+<p class="test-sub">Seven questions on the theology that turns Part 1 into a life.</p>
+<div class="test-q"><div class="test-num">Question 1</div><p>What single sentence has been running silently in your mind, and why is it the engine of resistance?</p></div>
+<div class="test-q"><div class="test-num">Question 2</div><p>What is the becoming-self actually protecting, and why did pre-modern people not have this problem in the same form?</p></div>
+<div class="test-q"><div class="test-num">Question 3</div><p>What does Exodus 3:14 reveal about God's foundational name, and how does it apply to your identity?</p></div>
+<div class="test-q"><div class="test-num">Question 4</div><p>What is coram Deo, and what three changes does it produce when you work from this posture?</p></div>
+<div class="test-q"><div class="test-num">Question 5</div><p>What does tetelestai mean, and what is the difference between work-toward-completion and work-from-completion?</p></div>
+<div class="test-q"><div class="test-num">Question 6</div><p>What is the foundational given identity of those in Christ, and why is the transition from believing it to receiving it the central project of the Christian life?</p></div>
+<div class="test-q"><div class="test-num">Question 7</div><p>Walk through the morning reception, the noonday remembering, and the evening rest.</p></div>
+</div>
+</div>
+
+<div class="page section">
+<div class="prompt-card">
+<h3>Continue The Conversation</h3>
+<p>Copy these prompts into any AI and let the reception deepen:</p>
+<p><code>"Help me identify where the becoming-lie is most active in my life right now. Ask diagnostic questions to surface the future-self I have been constructing."</code></p>
+<p><code>"Walk me through a 5 minute morning reception practice. Give me three scripture passages that name my identity in Christ and explain how to receive each one as personally addressed to me."</code></p>
+<p><code>"When I work, whose face am I working for? Help me notice the imagined audiences and replace them with coram Deo."</code></p>
+<p><code>"What would change in my work this week if I genuinely believed and felt the word Beloved as my primary identity?"</code></p>
+</div>
+</div>
+
+<div class="ribbon">
+<p>"To the praise of the glory of his grace, wherein he hath made us accepted in the beloved."<br><span class="ref">Ephesians 1:6</span></p>
+</div>
+
+<div class="series-progress" style="padding:32px 24px;background:var(--cream-warm);border-top:1px solid rgba(10,6,18,0.06)">
+  <div style="font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:14px">The Attending</div>
+  <div class="series-dots">
+    <span class="series-dot done" title="Attend"></span>
+    <span class="series-dot active" title="Done Before You Started"></span>
+  </div>
+  <div class="series-dot-label" style="color:var(--text-muted)">Part 2 of 2 &middot; Done Before You Started</div>
+</div>
+
+<section class="finale">
+<h2>The Father has already run.<br><strong>Receive. Then work.</strong></h2>
+</section>
+
+<footer class="footer">
+<p>Done Before You Started &middot; The Attending (Part 2 of 2) &middot; KingdomBuilders AI<br><a href="./">View All Playbooks</a></p>
+</footer>
+</body>
+</html>
