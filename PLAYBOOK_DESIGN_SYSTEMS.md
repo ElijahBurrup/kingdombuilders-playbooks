@@ -79,11 +79,12 @@ usage pattern.
 
 ## II. PEDAGOGICAL SYSTEMS
 
-### 7. The Bold Claim
+### 7. The Pregame Promise
 **What it is:** A paragraph in the Chapter 00 / Pregame section (before Chapter 1) that makes a direct, concrete promise to the reader about what they will gain.
 **How it works:** Uses second-person address: "If you finish this story/playbook, you will..." followed by 2-4 specific, tangible outcomes. Must be seamlessly integrated into the pregame flow. Sets stakes and creates commitment before the reader invests time.
 **Format:** Prose `<p>` with `<strong>` for emphasis on key outcomes
 **Gold Standard (Squirrel Economy):** "If you finish this story, you will understand more about how money works than most adults ever learn. You will see **why banks exist, what interest rates actually do, how crashes happen, and why your grandmother was right about saving.**"
+**CRITICAL:** **DO NOT label this section "Bold Claim" or "Three Bold Claims" or any similar self-announcing header.** That language feels spoon-fed. The claims should land as strong assertions in the prose without a sign telling the reader "these are the bold claims." If using a glow-box for visual emphasis, give it a title that names what the section is actually about (the topic, the truth, the central insight), not a meta-label about the section's importance.
 **Used in:** Every playbook (MANDATORY)
 
 ### 7b. The Stage Setter
@@ -511,7 +512,7 @@ usage pattern.
 
 | # | Element | Why It's Mandatory |
 |---|---------|-------------------|
-| 1 | **Bold Claim** | Stakes — "If you finish this, you will..." gives the reader a reason to commit |
+| 1 | **Pregame Promise** | Stakes — "If you finish this, you will..." gives the reader a reason to commit. Do NOT label the section "Bold Claim" — that feels spoon-fed. |
 | 1b | **Stage Setter** | Cover tagline — contrast pairs that frame the journey in one breath |
 | 2 | **Root System** | Spaced repetition — this is what makes playbooks teach, not just inform |
 | 3 | **Final Test** | Accountability — proves whether the reader absorbed it or just read it |
@@ -549,7 +550,7 @@ usage pattern.
 | Visualization Box | ~28/36 | **MANDATORY** |
 | Root System | ~25/36 | **MANDATORY** |
 | Scripture Ribbon | ~20/36 | **MANDATORY** |
-| Bold Claim | 44/44 | **MANDATORY** |
+| Pregame Promise | 44/44 | **MANDATORY** (do not label "Bold Claim" in new playbooks) |
 | Stage Setter | 44/44 | **MANDATORY** |
 | Knowledge Layer | 1/44 | **MANDATORY** (retrofit in progress) |
 | Dark Panel | ~15/36 | Frequent |
