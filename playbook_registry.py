@@ -79,6 +79,7 @@ SLUG_TO_FILE: dict[str, str] = {
     "tending-the-garden": "Tending_The_Garden.html",
     "attend": "Attend.html",
     "done-before-you-started": "Done_Before_You_Started.html",
+    "given": "Given.html",
 }
 
 

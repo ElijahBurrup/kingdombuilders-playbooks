@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manna: Given | Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --night:#0E0F1A;--dawn:#1F2440;--sky:#3D4670;
+ --sky-light:#5A648A;--rose-dawn:#C88090;--rose-pale:#E2B4BC;
+ --honey:#E8B870;--honey-glow:#F5D898;
+ --gold:#D4A843;--gold-glow:#E8C96A;--gold-pale:#F5E0A8;--gold-soft:rgba(212,168,67,0.08);
+ --cream-bright:#F8F2DC;--cream:#F5EFE0;--cream-warm:#ECE5CC;--cream-deep:#DAD0B0;
+ --dew:#B0BFAC;--moss:#7B8C5B;
+ --text:#1A1A26;--text-light:#4A4E5E;--text-muted:#7A7E8E;
+ --white:#FFFFFF;--radius:16px;
+ --shadow-soft:0 2px 16px rgba(14,15,26,0.08);
+ --shadow-mid:0 4px 28px rgba(14,15,26,0.14);
+ --before-bg:#F2E3D8;--before-border:#A86A30;--before-text:#5A3018;
+ --after-bg:#EFE9D2;--after-border:#8A6B20;--after-text:#1A1A26
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--cream);line-height:1.82;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
+.page{max-width:720px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--dawn);font-weight:700}
+.prose em{color:var(--rose-dawn);font-style:italic}
+.prose h2{font-size:1.4rem;color:var(--dawn);margin:40px 0 16px;letter-spacing:-0.01em}
+
+dfn.def{font-style:normal;border-bottom:1.5px dotted var(--gold);cursor:help;position:relative}
+dfn.def:hover::after{content:attr(data-def);position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:var(--dawn);color:var(--cream);padding:8px 14px;border-radius:8px;font-size:0.78rem;font-family:'Nunito',sans-serif;white-space:normal;width:280px;text-align:center;z-index:100;box-shadow:0 4px 16px rgba(14,15,26,0.3);line-height:1.5;pointer-events:none}
+
+/* ===== COVER ===== */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;
+ background:linear-gradient(175deg,#06070E 0%,var(--night) 22%,var(--dawn) 52%,var(--sky) 80%,var(--rose-dawn) 100%);
+ position:relative;overflow:hidden}
+.manna-flake{position:absolute;width:5px;height:5px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(248,242,220,0.95),rgba(245,224,168,0.6));pointer-events:none;animation:manna-fall linear infinite;opacity:0;filter:blur(0.5px)}
+.manna-flake:nth-child(1){left:6%;animation-duration:14s;animation-delay:0s}
+.manna-flake:nth-child(2){left:14%;animation-duration:16s;animation-delay:-3s;width:4px;height:4px}
+.manna-flake:nth-child(3){left:22%;animation-duration:18s;animation-delay:-7s}
+.manna-flake:nth-child(4){left:30%;animation-duration:15s;animation-delay:-11s;width:6px;height:6px}
+.manna-flake:nth-child(5){left:38%;animation-duration:17s;animation-delay:-2s}
+.manna-flake:nth-child(6){left:46%;animation-duration:19s;animation-delay:-8s;width:4px;height:4px}
+.manna-flake:nth-child(7){left:54%;animation-duration:14s;animation-delay:-13s}
+.manna-flake:nth-child(8){left:62%;animation-duration:16s;animation-delay:-5s;width:5px;height:5px}
+.manna-flake:nth-child(9){left:70%;animation-duration:20s;animation-delay:-9s;width:3px;height:3px}
+.manna-flake:nth-child(10){left:78%;animation-duration:15s;animation-delay:-14s}
+.manna-flake:nth-child(11){left:86%;animation-duration:17s;animation-delay:-4s;width:6px;height:6px}
+.manna-flake:nth-child(12){left:94%;animation-duration:19s;animation-delay:-10s}
+@keyframes manna-fall{0%{top:-20px;opacity:0;transform:translateX(0) rotate(0deg)}10%{opacity:0.9}50%{opacity:0.7;transform:translateX(15px) rotate(180deg)}90%{opacity:0.4}100%{top:110%;opacity:0;transform:translateX(-10px) rotate(360deg)}}
+.dawn-glow{position:absolute;bottom:0;left:0;right:0;height:55%;background:linear-gradient(to top,rgba(200,128,144,0.25),rgba(232,184,112,0.08) 50%,transparent);filter:blur(20px);pointer-events:none}
+.ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.025;mix-blend-mode:overlay;pointer-events:none}
+.cover-content{position:relative;z-index:2;padding:48px 24px}
+.cover-badge{display:inline-block;padding:6px 22px;border:1px solid rgba(245,224,168,0.35);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.67rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:16px}
+.cover-series{display:inline-block;padding:4px 16px;border:1px solid rgba(245,224,168,0.25);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.58rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:36px}
+.cover h1{font-family:'Nunito',sans-serif;font-size:clamp(4rem,11vw,7.5rem);font-weight:900;color:var(--gold-glow);line-height:1;letter-spacing:-0.04em;margin-bottom:8px;text-shadow:0 4px 30px rgba(245,224,168,0.15)}
+.cover-tagline{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.72);margin-top:28px;line-height:1.75;max-width:580px;margin-left:auto;margin-right:auto}
+.cover-tagline em{color:var(--gold-pale);font-style:normal;font-weight:600}
+.cover-sub{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.38);margin-top:14px}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.58rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-top:48px}
+
+/* ===== SERIES PROGRESS ===== */
+.series-progress{text-align:center;padding:24px 24px 12px;background:transparent}
+.series-dots{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px}
+.series-dot{width:12px;height:12px;border-radius:50%;border:2px solid rgba(245,224,168,0.35);background:transparent}
+.series-dot.active{background:var(--gold);border-color:var(--gold);box-shadow:0 0 8px rgba(212,168,67,0.5)}
+.series-dot.done{background:rgba(245,224,168,0.4);border-color:rgba(245,224,168,0.5)}
+.series-dot-label{font-family:'Poppins',sans-serif;font-size:0.55rem;color:rgba(255,255,255,0.48);letter-spacing:3px;text-transform:uppercase}
+
+/* ===== CHAPTER HEADS ===== */
+.ch-head{background:linear-gradient(170deg,var(--dawn),var(--sky));padding:72px 24px 52px;position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23F5E0A8' fill-opacity='0.06'%3E%3Ccircle cx='20' cy='20' r='1.5'/%3E%3Ccircle cx='50' cy='15' r='1'/%3E%3Ccircle cx='70' cy='30' r='1.5'/%3E%3Ccircle cx='25' cy='55' r='1'/%3E%3Ccircle cx='60' cy='60' r='1.5'/%3E%3Ccircle cx='15' cy='75' r='1'/%3E%3Ccircle cx='75' cy='70' r='1'/%3E%3C/g%3E%3C/svg%3E")}
+.ch-badge{display:inline-block;padding:4px 16px;background:rgba(245,224,168,0.12);border:1px solid rgba(245,224,168,0.3);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:20px;position:relative;z-index:2}
+.ch-num{font-family:'Nunito',sans-serif;font-size:5.5rem;font-weight:900;line-height:0.9;color:rgba(245,224,168,0.2);margin-bottom:-10px;position:relative;z-index:2}
+.ch-title{font-family:'Nunito',sans-serif;font-size:2.1rem;font-weight:900;color:var(--white);line-height:1.15;letter-spacing:-0.02em;margin-bottom:10px;position:relative;z-index:2}
+.ch-sub{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.62);line-height:1.6;position:relative;z-index:2}
+
+/* ===== RIBBON ===== */
+.ribbon{text-align:center;padding:22px 24px;background:linear-gradient(135deg,rgba(232,184,112,0.06),rgba(200,128,144,0.05));border-top:1.5px solid rgba(212,168,67,0.18);border-bottom:1.5px solid rgba(212,168,67,0.18)}
+.ribbon p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:var(--text-light);max-width:540px;margin:0 auto}
+.ribbon .ref{font-weight:600;color:var(--rose-dawn);font-style:normal}
+
+/* ===== CHARACTERS ===== */
+.char-grid{display:grid;gap:24px;margin:40px 0}
+@media(min-width:640px){.char-grid{grid-template-columns:1fr 1fr 1fr}}
+.char-card{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft);transition:all 0.3s ease}
+.char-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-mid)}
+.char-head{background:linear-gradient(135deg,var(--gold-soft),rgba(200,128,144,0.05));padding:18px 20px;border-bottom:1px solid var(--cream-deep);display:flex;align-items:center;gap:14px}
+.char-emoji{font-size:2rem;line-height:1;display:flex;align-items:center;justify-content:center}
+.char-name{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;color:var(--dawn);line-height:1.25}
+.char-title{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-top:2px}
+.char-body{padding:20px}
+.char-body p{font-size:0.92rem;color:var(--text-light);line-height:1.75;margin:0}
+
+/* ===== SCENE ===== */
+.scene{background:linear-gradient(135deg,var(--cream-warm),var(--cream));border:1px solid var(--cream-deep);border-radius:var(--radius);padding:28px;margin:32px 0;box-shadow:var(--shadow-soft)}
+.scene-label{font-family:'Nunito',sans-serif;font-size:0.68rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--rose-dawn);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.scene h4{font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:800;color:var(--dawn);margin-bottom:14px;line-height:1.3}
+.scene p{font-size:0.95rem;color:var(--text-light);line-height:1.78;margin-bottom:14px}
+.scene p:last-child{margin-bottom:0}
+
+/* ===== BEFORE / AFTER ===== */
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:36px 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft)}
+@media(max-width:600px){.ba-grid{grid-template-columns:1fr}}
+.ba-col{padding:28px 24px}
+.ba-col.before{background:var(--before-bg);border-right:2px solid var(--cream-deep)}
+.ba-col.after{background:var(--after-bg)}
+@media(max-width:600px){.ba-col.before{border-right:none;border-bottom:2px solid var(--cream-deep)}}
+.ba-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px}
+.ba-col.before .ba-label{color:var(--before-border)}
+.ba-col.after .ba-label{color:var(--after-border)}
+.ba-col h4{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;margin-bottom:10px;line-height:1.3}
+.ba-col.before h4{color:var(--before-text)}
+.ba-col.after h4{color:var(--after-text)}
+.ba-col p{font-size:0.88rem;line-height:1.7;margin-bottom:8px}
+.ba-col.before p{color:#5A3018}
+.ba-col.after p{color:#1A1A26}
+.ba-col ul{list-style:none;padding:0;margin:0}
+.ba-col ul li{font-size:0.88rem;line-height:1.7;padding:4px 0 4px 18px;position:relative}
+.ba-col.before ul li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:8px;border-radius:50%;background:var(--before-border);opacity:0.55}
+.ba-col.after ul li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:8px;border-radius:50%;background:var(--after-border);opacity:0.55}
+
+/* ===== DATA ===== */
+.data-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin:32px 0}
+.data-box{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:24px 16px;text-align:center;box-shadow:var(--shadow-soft)}
+.data-num{font-family:'Nunito',sans-serif;font-size:1.8rem;font-weight:900;color:var(--rose-dawn);line-height:1;margin-bottom:6px}
+.data-label{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+
+.data-hero{text-align:center;padding:48px 24px;margin:40px 0;background:linear-gradient(135deg,var(--dawn),var(--sky));border-radius:var(--radius);position:relative;overflow:hidden}
+.data-hero::before{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(245,224,168,0.12) 0%,transparent 70%);border-radius:50%}
+.data-hero .dh-num{font-family:'Nunito',sans-serif;font-size:3.4rem;font-weight:900;color:var(--gold-glow);line-height:1;margin-bottom:10px;position:relative}
+.data-hero .dh-label{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.55);position:relative}
+.data-hero .dh-sub{font-family:'Lora',serif;font-size:0.92rem;font-style:italic;color:rgba(255,255,255,0.65);margin-top:12px;max-width:440px;margin-left:auto;margin-right:auto;position:relative}
+
+/* ===== GLOW BOX ===== */
+.glow-box{background:linear-gradient(135deg,var(--dawn),var(--sky));border:2px solid rgba(245,224,168,0.25);border-radius:var(--radius);padding:32px;margin:36px 0;position:relative;overflow:hidden;box-shadow:0 4px 24px rgba(14,15,26,0.2)}
+.glow-box::before{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(245,224,168,0.12) 0%,transparent 70%);border-radius:50%}
+.glow-box h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--gold-glow);margin-bottom:14px;position:relative}
+.glow-box p{font-size:0.95rem;color:rgba(255,255,255,0.88);line-height:1.78;position:relative;margin-bottom:12px}
+.glow-box p:last-child{margin-bottom:0}
+.glow-box strong{color:var(--gold-pale)}
+.glow-box em{color:var(--rose-pale);font-style:italic}
+
+/* ===== INSIGHT CARD (the heart, the central revelation) ===== */
+.insight-card{background:linear-gradient(135deg,var(--dawn),var(--sky));border-radius:var(--radius);padding:56px 32px;margin:40px 0;text-align:center;position:relative;overflow:hidden;border:3px solid rgba(245,224,168,0.3)}
+.insight-card::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;background:radial-gradient(circle,rgba(245,224,168,0.18) 0%,rgba(232,184,112,0.06) 40%,transparent 75%);border-radius:50%}
+.insight-card .ins-label{font-family:'Nunito',sans-serif;font-size:0.58rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:14px;position:relative}
+.insight-card h3{font-family:'Nunito',sans-serif;font-size:clamp(1.8rem,4.6vw,2.8rem);font-weight:900;color:var(--gold-glow);letter-spacing:-0.02em;position:relative;line-height:1.15}
+
+/* ===== GRAND QUOTE ===== */
+.grand-quote{text-align:center;padding:48px 24px;margin:40px 0;position:relative}
+.grand-quote::before{content:'\201C';font-family:'Lora',serif;font-size:8rem;color:rgba(212,168,67,0.16);position:absolute;top:-20px;left:50%;transform:translateX(-50%);line-height:1}
+.grand-quote blockquote{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:var(--dawn);line-height:1.7;max-width:540px;margin:0 auto;position:relative}
+.grand-quote cite{display:block;margin-top:16px;font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--rose-dawn);font-style:normal}
+
+/* ===== ROOT CHECK ===== */
+.root-ck{margin:40px auto;max-width:720px;padding:36px 32px;background:linear-gradient(135deg,rgba(232,184,112,0.05),rgba(200,128,144,0.06));border-radius:var(--radius);border:2px solid rgba(212,168,67,0.18)}
+.root-ck .rc-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--rose-dawn);margin-bottom:12px}
+.root-ck h4{font-size:1.05rem;color:var(--dawn);margin-bottom:20px}
+.r-item{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
+.r-item:last-child{margin-bottom:0}
+.r-dot{flex-shrink:0;width:8px;height:8px;border-radius:50%;background:var(--gold);margin-top:7px;box-shadow:0 0 6px rgba(212,168,67,0.3)}
+.r-text{font-size:0.92rem;color:var(--text-light);line-height:1.7}
+
+/* ===== VIZ ===== */
+.viz{margin:32px 0;border-radius:var(--radius);border:2px solid var(--gold);overflow:hidden;box-shadow:0 0 20px rgba(212,168,67,0.1)}
+.viz-inner{padding:0}
+.viz-top{display:flex;align-items:center;gap:16px;padding:20px 28px;background:linear-gradient(135deg,rgba(245,224,168,0.12),rgba(245,224,168,0.04))}
+.viz-icon{flex-shrink:0;width:40px;height:40px;border-radius:50%;background:var(--gold);color:var(--white);display:flex;align-items:center;justify-content:center}
+.viz-icon svg{width:20px;height:20px}
+.viz-meta .viz-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.viz-meta h4{font-size:1rem;color:var(--dawn);margin:0}
+.viz-body{padding:24px 28px;background:var(--white)}
+.viz-body p{font-size:0.92rem;color:var(--text-light);line-height:1.78;margin-bottom:12px}
+.viz-body strong{color:var(--dawn);font-weight:700}
+.viz-body em{color:var(--rose-dawn);font-style:italic;font-weight:500}
+.viz-body p:last-child{margin-bottom:0}
+.viz-trigger{padding:16px 28px;background:linear-gradient(135deg,rgba(245,224,168,0.08),rgba(245,224,168,0.02));border-top:1px solid rgba(212,168,67,0.15);font-size:0.88rem;color:var(--dawn);font-style:italic}
+
+/* ===== THINK ===== */
+.think{background:linear-gradient(135deg,rgba(232,184,112,0.07),rgba(200,128,144,0.05));border:2px solid rgba(212,168,67,0.2);border-radius:var(--radius);padding:28px;margin:36px 0}
+.think-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--rose-dawn);margin-bottom:14px}
+.think p{font-size:0.95rem;color:var(--text-light);line-height:1.78;margin-bottom:12px}
+.think p:last-child{margin-bottom:0}
+.think-line{border:none;border-bottom:1.5px dashed rgba(212,168,67,0.3);margin:8px 0}
+
+/* ===== FINAL TEST ===== */
+.final-test{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:36px;margin:40px 0;box-shadow:var(--shadow-soft)}
+.final-test h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--dawn);margin-bottom:6px}
+.final-test .test-sub{font-size:0.85rem;color:var(--text-muted);margin-bottom:24px;font-style:italic}
+.test-q{padding:14px 0;border-bottom:1px solid var(--cream-deep)}
+.test-q:last-child{border-bottom:none}
+.test-num{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--rose-dawn);margin-bottom:4px}
+.test-q p{font-size:0.92rem;color:var(--text);line-height:1.65}
+
+/* ===== PROMPT ===== */
+.prompt-card{background:linear-gradient(135deg,var(--dawn),var(--sky));border-radius:var(--radius);padding:36px;margin:40px 0;box-shadow:0 4px 24px rgba(14,15,26,0.2)}
+.prompt-card h3{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;color:var(--gold-glow);margin-bottom:16px}
+.prompt-card p{font-size:0.88rem;color:rgba(255,255,255,0.78);line-height:1.65;margin-bottom:10px}
+.prompt-card code{background:rgba(255,255,255,0.08);padding:2px 8px;border-radius:4px;font-size:0.82rem;color:var(--gold-pale)}
+
+/* ===== NEXT CARD ===== */
+.next-card{background:linear-gradient(135deg,var(--sky),var(--dawn));border-radius:var(--radius);padding:36px 32px;margin:40px 0;box-shadow:0 4px 24px rgba(14,15,26,0.2);text-align:center;position:relative;overflow:hidden}
+.next-card::before{content:'';position:absolute;top:-30%;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(245,224,168,0.15) 0%,transparent 70%);border-radius:50%}
+.next-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:12px;position:relative}
+.next-title{font-family:'Nunito',sans-serif;font-size:1.6rem;font-weight:900;color:var(--white);margin-bottom:10px;position:relative}
+.next-tag{font-family:'Lora',serif;font-size:0.92rem;font-style:italic;color:rgba(255,255,255,0.78);margin-bottom:14px;position:relative}
+
+/* ===== FINALE ===== */
+.finale{background:linear-gradient(170deg,var(--night),var(--dawn));padding:80px 24px;text-align:center;position:relative;overflow:hidden}
+.finale::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(245,224,168,0.08) 0%,transparent 70%);border-radius:50%}
+.finale h2{font-family:'Nunito',sans-serif;font-size:clamp(1.6rem,4.4vw,2.4rem);font-weight:300;color:rgba(255,255,255,0.78);line-height:1.3;position:relative;margin-bottom:8px}
+.finale h2 strong{font-weight:900;color:var(--gold-glow);display:block}
+
+/* ===== FOOTER ===== */
+.footer{text-align:center;padding:48px 24px;background:var(--night);color:rgba(255,255,255,0.3);font-family:'Poppins',sans-serif;font-size:0.6rem;letter-spacing:2px;text-transform:uppercase}
+.footer a{color:var(--gold);text-decoration:none;opacity:0.65}
+.footer a:hover{opacity:1}
+
+@media(max-width:640px){
+  .page{padding:0 20px}
+  .root-ck{margin-left:20px;margin-right:20px;padding:28px 20px}
+  .char-grid{grid-template-columns:1fr}
+  .data-hero .dh-num{font-size:2.6rem}
+  .ch-title{font-size:1.7rem}
+  .ch-num{font-size:4rem}
+  .insight-card h3{font-size:1.7rem}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+</style>
+</head>
+<body>
+
+<!-- ===== COVER ===== -->
+<section class="cover">
+<div class="manna-flake"></div><div class="manna-flake"></div><div class="manna-flake"></div><div class="manna-flake"></div>
+<div class="manna-flake"></div><div class="manna-flake"></div><div class="manna-flake"></div><div class="manna-flake"></div>
+<div class="manna-flake"></div><div class="manna-flake"></div><div class="manna-flake"></div><div class="manna-flake"></div>
+<div class="dawn-glow"></div>
+<div class="ghost-noise"></div>
+<div class="cover-content">
+<div class="cover-badge">Kingdom Builders AI</div><br>
+<div class="cover-series">Manna &middot; Part 1 of 2</div>
+<h1>Given</h1>
+<p class="cover-tagline">There is a condition almost everyone you know is in, and almost no one is naming it. They have more than their grandparents had, and they are exhausted in a way their grandparents would not recognize. <em>They are not depressed. They are not lazy. They have lost the ability to receive what is being given.</em></p>
+<p class="cover-sub">The Crisis No One Names And The Way Back</p>
+<div class="series-progress">
+  <div class="series-dots">
+    <span class="series-dot active" title="Given"></span>
+    <span class="series-dot" title="Returning"></span>
+  </div>
+  <div class="series-dot-label">Part 1 of 2</div>
+</div>
+<p class="cover-author">KingdomBuilders AI</p>
+</div>
+</section>
+
+<div class="ribbon">
+<p>"This is the bread which the Lord hath given you to eat."<br><span class="ref">Exodus 16:15</span></p>
+</div>
+
+<!-- ===== PREGAME ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Pregame</div>
+<div class="ch-num">00</div>
+<div class="ch-title">The Condition You Are In</div>
+<div class="ch-sub">What you will know when you finish this playbook.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>There is a problem so widespread that it has become invisible. It is not depression, exactly. Not burnout. Not midlife crisis. It is the silent ache of a generation that has more than any prior generation and feels given to less. They have the careers their grandparents would have envied. They have the spouses they chose, the children they wanted, the homes they paid for, the freedoms most of human history did not have. <strong>And they do not feel given to. They feel demanded of.</strong> Almost no one is naming this. They cannot say what is wrong. They are tired in a way that does not fit their circumstances.</p>
+
+<p>You are in this condition. Almost everyone you know is in this condition. The condition has a name, and once you can name it, the way out becomes visible. This playbook gives you the name and shows you the way.</p>
+
+<div class="glow-box">
+<h3>The Architecture Of What Follows</h3>
+<p>The condition is the systematic loss of the capacity to receive what is given. Every domain of modern life, your work, your marriage, your body, your time, your beauty, your country, your children, your faith, was originally given to be received as gift. <strong>You have converted them, almost without noticing, into demands.</strong> The conversion happened in your perception, not in the things themselves. The objects are the same. <em>The seeing decayed.</em></p>
+<p>Five perceptual frames will be installed in the chapters that follow. Each one is a hammer. Together they break the spell. You will leave with the ability to see again what is being given, and the body's response to that seeing is joy, the way a child's response to a wrapped gift is joy. <strong>The crisis ends when the seeing returns.</strong></p>
+<p>This playbook is Part 1 of a series called <em>Manna</em>. The series is named for the bread Israel received in the wilderness. Manna could not be hoarded. It bred worms by the next morning if anyone tried to save it overnight. It had to be received daily, fresh, as gift. <em>Manna is the architecture of every received life:</em> daily, fresh, never saved, never owned, only received and consumed and received again tomorrow. The crisis of reception is the crisis of a civilization that has forgotten how to receive its daily bread.</p>
+</div>
+
+<p>If you finish this playbook, you will know the name of the condition almost everyone is living in. You will see why your job feels demanding when it began as a dream. You will see why your marriage feels heavy when you chose your spouse. You will see why your body feels like a project when it was given to you. You will see why your time feels stolen when it was given freely. <strong>And you will hold five perceptual frames that re-see your world as the gift it has always been.</strong> The objects of your life are not what is wrong with you. The seeing is. The seeing can return. This playbook is how.</p>
+
+</div>
+
+<!-- ===== CHARACTERS ===== -->
+<div class="page">
+<div class="char-grid">
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji"><svg viewBox="0 0 48 48" width="42" height="42"><path d="M16 28 Q24 22 32 28 L32 36 L16 36 Z" fill="#3D4670"/><circle cx="24" cy="20" r="6" fill="#E8B870"/><path d="M14 36 Q24 32 34 36" stroke="#D4A843" stroke-width="1.5" fill="none"/><circle cx="20" cy="10" r="1.5" fill="#F5E0A8"><animate attributeName="cy" values="10;6;10" dur="3s" repeatCount="indefinite"/></circle><circle cx="28" cy="8" r="1.5" fill="#F5E0A8"><animate attributeName="cy" values="8;4;8" dur="4s" repeatCount="indefinite"/></circle></svg></div>
+<div><div class="char-name">The Receiver</div><div class="char-title">Sees What Is Given</div></div>
+</div>
+<div class="char-body"><p>Wakes into a day they did not earn. Drinks coffee they did not grow. Lives in a body they did not assemble. Speaks a language someone else handed them. Loves a spouse they cannot fully account for. The Receiver does not produce a life. They receive one, and the seeing produces joy because joy is the body's response to noticing what is being given.</p></div>
+</div>
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji"><svg viewBox="0 0 48 48" width="42" height="42"><rect x="14" y="14" width="20" height="20" fill="none" stroke="#A86A30" stroke-width="2"/><path d="M14 14 L24 24 L34 14" stroke="#A86A30" stroke-width="1.5" fill="none"/><path d="M14 34 L24 24 L34 34" stroke="#A86A30" stroke-width="1.5" fill="none"/><circle cx="24" cy="24" r="2" fill="#A86A30"/></svg></div>
+<div><div class="char-name">The Earner</div><div class="char-title">Cannot Accept Gifts</div></div>
+</div>
+<div class="char-body"><p>Believes everything must be earned, paid for, deserved. Treats compliments as debt. Treats grace as suspicious. Treats kindness as transaction. The Earner has built an entire life around closing the gap where gratitude lives. They are competent and exhausted. They do not understand why people who receive freely seem lighter than they are.</p></div>
+</div>
+<div class="char-card">
+<div class="char-head">
+<div class="char-emoji"><svg viewBox="0 0 48 48" width="42" height="42"><circle cx="24" cy="24" r="14" fill="none" stroke="#7A7E8E" stroke-width="2"/><circle cx="24" cy="24" r="8" fill="none" stroke="#7A7E8E" stroke-width="1" opacity="0.6"/><circle cx="24" cy="24" r="3" fill="#7A7E8E" opacity="0.5"/><line x1="10" y1="10" x2="38" y2="38" stroke="#7A7E8E" stroke-width="1" opacity="0.3"/><line x1="38" y1="10" x2="10" y2="38" stroke="#7A7E8E" stroke-width="1" opacity="0.3"/></svg></div>
+<div><div class="char-name">The Familiar</div><div class="char-title">Has Stopped Seeing</div></div>
+</div>
+<div class="char-body"><p>Once celebrated everything they now resent. The job that was a dream. The spouse who was a wonder. The body that was a gift. The home that was a sanctuary. Nothing has changed in the objects. The seeing has decayed. The Familiar does not know this and so cannot understand why their life of accumulated success feels like accumulated weight. This is most modern adults. This was you yesterday morning.</p></div>
+</div>
+</div>
+</div>
+
+<!-- ===== CHAPTER 1 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter One</div>
+<div class="ch-num">01</div>
+<div class="ch-title">The Crisis No One Names</div>
+<div class="ch-sub">A condition shared by almost everyone, and almost never spoken aloud.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Look around at the adults you know who have what they wanted. The career they chose. The marriage they chose. The neighborhood they chose. The kids they wanted. The body they have spent years maintaining. Notice the texture of how they hold their lives. <strong>Most of them are not joyful.</strong> They are competent. They are responsible. They are getting through it. The life they have is the life they wanted, and they are vaguely aggrieved by it.</p>
+
+<p>This is not depression. They have therapists, and the therapists do not cure it. It is not burnout. They have taken vacations, and the vacations do not heal it. It is not midlife crisis. It happens at thirty and at sixty and at seventy. It does not respond to optimization. They have tried every productivity hack, every wellness protocol, every spiritual program. *None of them touch the actual problem.* They cannot say what is wrong, so they call it stress, or they call it the weight of responsibility, or they call it modern life, or they call it nothing and just keep moving.</p>
+
+<p>The condition has a name. It is the systematic loss of the capacity to receive. The objects of their lives are gifts. The seeing of those gifts has decayed. <strong>You cannot fix a perceptual problem with a behavioral solution.</strong> That is why every fix has failed for them. The fix has to operate at the level of seeing, not doing.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> The Recognition</div>
+<h4>The Man Who Could Not Name It</h4>
+<p>A man in his early forties sits across from his pastor. By every external measure he has won. He has the job he wanted at twenty. The wife he chose at twenty four. The two kids he hoped for. The house in the neighborhood. The body that still mostly works. The faith he was raised in.</p>
+<p>He says, "I do not know what is wrong with me. I have everything I asked for. I dread Mondays. I am irritated with my wife. I find my kids exhausting. I am suspicious of my friends. My job has become a grind. I have prayed about this. I have read the books. I have done the therapy. <em>Nothing touches it.</em>"</p>
+<p>The pastor listens. Then he says one sentence that nothing else in this man's life has said. "You have stopped being able to receive what God is giving you."</p>
+<p>The man cries. <strong>He cries because the sentence is true and he has not heard it before.</strong> Not because the pastor told him a new fact, but because the pastor named what he has been experiencing without language for years. The relief of being named is the first half of the cure.</p>
+</div>
+
+<p>The condition is structural, not personal. It is what modernity does to perception. Pre-modern people relied on receiving, from God, from tradition, from family, from community, from the seasons, from the land. They were embedded in givenness. Modern people are trained from childhood to produce, choose, achieve, build, optimize. *Reception is not a skill modern culture teaches.* The capacity atrophies through disuse.</p>
+
+<p>The cost is gigantic. It explains why retirees collapse despite leisure. Why parents are exhausted by raising children they wanted. Why marriages die in plenty. Why depression rises with prosperity. Why beauty has become invisible to people surrounded by it. Why ordinary food no longer satisfies. Why faith feels like duty. <strong>Each of these has been written about as its own problem. The actual underlying problem is the same in every case.</strong> The condition no one names. The crisis of reception.</p>
+
+<div class="data-hero">
+<div class="dh-num">~70%</div>
+<div class="dh-label">of adults in saturated economies report low or no daily gratitude</div>
+<div class="dh-sub">In societies with the most material abundance in human history. Surrounded by gifts they cannot see. This is what the loss of reception looks like measured.</div>
+</div>
+
+<div class="think">
+<div class="think-label">Stop and Find Yourself</div>
+<p>Pick the area of your life where the gap between what you wanted and what you have is the smallest. The job you chose. The spouse you chose. The home you saved for. The body you maintained. Now ask honestly: do you experience that thing as gift, or as demand?</p>
+<hr class="think-line">
+<p>For most readers, the area where the gift-shape should be most obvious is the area where the demand-shape is most heavy. That is the diagnostic. The condition is most visible exactly where it should not be possible. Welcome to the playbook.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Crisis No One Names.</strong> A generation has more than any prior generation and feels given to less. The condition is the systematic loss of the capacity to receive. It is not depression, not burnout, not midlife crisis. It is structural to modernity. It cannot be fixed at the level of behavior because it lives at the level of seeing. The first half of the cure is being able to name what is wrong.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"Every good gift and every perfect gift is from above, coming down from the Father of lights, with whom is no variableness, neither shadow of turning."<br><span class="ref">James 1:17</span></p>
+</div>
+
+<!-- ===== CHAPTER 2 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Two</div>
+<div class="ch-num">02</div>
+<div class="ch-title">Demand Is Decayed Reception</div>
+<div class="ch-sub">The first frame. The mechanism by which gifts become burdens.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Here is the deepest single insight of this entire playbook. <strong>Every demand you feel in your life today was a gift before you stopped seeing it as one.</strong></p>
+
+<p>Walk through any room of your life with this sentence and watch what happens. The job that demands your hours was, at some point, a gift you wanted. You celebrated when you got it. You called family. You posted about it. The marriage that demands your patience was, at some point, a gift you wept at the altar to receive. The body that demands maintenance was given to you, by no labor of your own, complete with the capacity to walk and breathe and see and taste. The friends that demand reciprocity were gifts you collected over a lifetime. The home that demands upkeep was a place you saved for years to inhabit. The country whose problems demand your attention was inherited by you from people who fought to leave it to you.</p>
+
+<p><em>None of these started as demand. All of them were gifts.</em> The conversion from gift to demand did not happen in the objects. The objects are the same. The conversion happened in your perception. *Demand is the shape gift takes when it has been left in perception unattended for too long.*</p>
+
+<div class="insight-card">
+<div class="ins-label">The Frame</div>
+<h3>Demand is decayed reception.</h3>
+</div>
+
+<p>This is the structural law that organizes the rest of the playbook. Once you can see it, you cannot unsee it. You will walk into a room and notice that the room used to be a gift you wanted. You will look at your child and remember that the child was a gift you prayed for. You will sit down to the work and recall that the work was a gift you celebrated. <strong>The seeing returns and the demand-shape collapses.</strong> Not because the demands disappeared. Because the demands were never the truth about the objects. The demands were the truth about your perception.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> The Trajectory</div>
+<h4>How A Gift Becomes A Demand</h4>
+<p>The first day you start the job, the job is a gift. The badge with your name on it is wondrous. The desk is a gift. The conference room is a gift. The Slack channels are gifts. You took a photo of your business card.</p>
+<p>By month three, the wondrous becomes the standard. The desk is just the desk. The badge is just the badge. The Slack channels are just inputs to be managed.</p>
+<p>By year three, the standard becomes the routine. You walk past your desk without noticing it. You receive a message without joy. You attend a meeting without curiosity. The wondrous has been replaced by the maintenance of the wondrous.</p>
+<p>By year seven, the routine becomes the demand. The desk demands your hours. The badge demands your identity. The Slack channels demand your attention. You feel owed by a job that used to be a gift you celebrated.</p>
+<p><strong>The job did not change. Your seeing did.</strong> Reception decayed across seven years until what remained was demand. This trajectory operates in every domain. It is operating in your life right now in several places at once. You have not noticed because the decay is gradual, and gradual decay is exactly what consciousness fails to track.</p>
+</div>
+
+<p>The frame has a second layer that is even more useful. <strong>Decay is reversible.</strong> Perception is plastic. The same job, marriage, body, home, country that has decayed into demand can re-emerge as gift through deliberate seeing. *This is not optimism. This is mechanics.* The object never stopped being a gift. Your perception of it stopped including the gift-quality. When perception is restored, the gift-quality reappears because it never left.</p>
+
+<p>You will need this mechanism in every domain of your life that has decayed. The playbook is asking you to re-see what you have. Not to acquire new objects. Not to optimize the objects you have. <em>To see again what is in front of you as the gift it has always been.</em></p>
+
+<div class="ba-grid">
+<div class="ba-col before">
+<div class="ba-label">The Decayed Seeing</div>
+<h4>Demand</h4>
+<ul>
+<li>The job that owes you success</li>
+<li>The spouse who is supposed to make you happy</li>
+<li>The body that better not give out</li>
+<li>The home that needs constant attention</li>
+<li>The friends who should reciprocate more</li>
+<li>The day that has to be productive</li>
+</ul>
+</div>
+<div class="ba-col after">
+<div class="ba-label">The Restored Seeing</div>
+<h4>Gift</h4>
+<ul>
+<li>The job you once celebrated getting</li>
+<li>The person you waited to find</li>
+<li>The body that has carried you faithfully for decades</li>
+<li>The home you prayed to be able to afford</li>
+<li>The friends you spent years collecting</li>
+<li>The day you did not earn and were given anyway</li>
+</ul>
+</div>
+</div>
+
+<div class="think">
+<div class="think-label">Stop and Trace One</div>
+<p>Pick one specific demand in your life right now. The one that feels heaviest this week. Trace it backwards. Find the moment it was first given to you as gift. Remember how you felt that day. Remember what you said. Remember who you called.</p>
+<hr class="think-line">
+<p>That demand was that gift. Nothing in between has been a real change. The decay was perceptual. The restoration is also perceptual. You can begin it right now by holding both seeings at once.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Crisis No One Names.</strong> A generation with more than any prior generation, given to less. Not depression. The systematic loss of the capacity to receive.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Demand Is Decayed Reception.</strong> Every demand you feel was a gift before you stopped seeing it. The conversion happened in your perception, not in the objects. Decay is gradual. Restoration is perceptual. The objects never stopped being gifts. The seeing did.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"What hast thou that thou didst not receive?"<br><span class="ref">1 Corinthians 4:7</span></p>
+</div>
+
+<!-- ===== CHAPTER 3 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Three</div>
+<div class="ch-num">03</div>
+<div class="ch-title">You Cannot Optimize A Gift</div>
+<div class="ch-sub">The mechanism. The act of optimization is the act of killing the receptive quality.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Modern people have been trained to optimize everything. The body, the marriage, the workday, the sleep, the diet, the workout, the parenting, the friendship, the morning, the evening. *Every domain of life has been turned into a metric to improve.* The promise is that optimization makes things better. The evidence is that optimization makes things deader. The marriage that has been optimized is a better arrangement and a worse marriage. The body that has been optimized is more efficient and less inhabited. The friendship that has been optimized is more useful and less alive.</p>
+
+<p>What is happening here? The optimization frame requires that you treat the object as a means to an end. *To optimize anything you must first stop seeing it as an end in itself.* You must convert it into a means. The marriage becomes a means to your happiness, which is the end. The body becomes a means to performance, which is the end. The friendship becomes a means to networking, which is the end. The very framing of optimization performs the conversion. Once converted, the thing has lost the only quality that made it worth optimizing in the first place.</p>
+
+<div class="insight-card">
+<div class="ins-label">The Frame</div>
+<h3>You cannot optimize a gift.</h3>
+</div>
+
+<p>The deeper claim: <strong>the receptive quality of any object exists only as long as it is held as an end in itself.</strong> The flower in your hands is a gift only as long as you are not trying to use it for something. The moment you turn it into raw material, even raw material for a noble end, it stops being a flower in your hands and becomes a resource you are processing. *Optimization is the systematic conversion of ends into means.* Every domain humans have run through this conversion has lost the precise thing they were trying to enhance.</p>
+
+<p>This is why the most optimized generation in human history is the least content. *They have been told that improving everything will produce satisfaction.* The opposite is true. The act of improving converts the thing being improved into something different from what was originally received. They are improving lives they have already converted into projects and wondering why the projects do not feel like lives.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> The Optimized Marriage</div>
+<h4>What Improvement Does</h4>
+<p>A couple in year ten of their marriage decides to "really invest in their relationship." They read the books. They schedule date nights. They run weekly check-ins. They take communication workshops. They optimize their sleep schedules to overlap better. They optimize their conflict styles. They optimize their love languages.</p>
+<p>By year thirteen, their marriage is materially better by every metric. They communicate better. They fight less. Their date nights are well-executed. <em>They also no longer love each other in the way they used to.</em> They cannot name what is wrong. They have done everything the books said. The marriage feels like an arrangement now. Functional. Optimized. Dead.</p>
+<p>They did not lose love through neglect. <strong>They lost love through conversion.</strong> The act of treating the marriage as a thing to improve required them to first treat it as a project. Projects are not loved. Projects are managed. Once they had managed the marriage well enough, they discovered they could no longer find the marriage they had wanted to optimize. It had become its own optimization.</p>
+</div>
+
+<p>The implication is uncomfortable. <strong>You cannot fix a domain of your life that has decayed by working harder at improving it.</strong> The work of improvement is the same work that decayed it. The escape is sideways. Stop treating the marriage as a project to improve. Start receiving the person across the table as the gift you celebrated getting. The same evening, the same conversation, the same dinner, performed from the receiving posture rather than the optimizing posture, produces a different marriage. *The objects do not change. The frame changes.*</p>
+
+<p>This applies everywhere. You cannot optimize a body and end up with a received body. You cannot optimize a friendship and end up with a real friendship. You cannot optimize prayer and end up with prayer. You cannot optimize a day and end up with a lived day. <em>The very act of optimization closes the door it is trying to open.</em></p>
+
+<div class="grand-quote">
+<blockquote>The most optimized generation in human history is the least content. The optimization is the cause, not the cure. You cannot improve your way back to what was given. You can only set down the improving and receive what was always there.</blockquote>
+<cite>The Frame That Frees</cite>
+</div>
+
+<div class="think">
+<div class="think-label">Stop and Find Your Conversion</div>
+<p>Identify one domain where you have been optimizing for years and the domain has gotten "better" without becoming more alive. Your body. Your marriage. Your prayer life. Your friendships. Your career.</p>
+<hr class="think-line">
+<p>That is the domain to set down the optimization in. Not the domain to optimize harder. The optimization itself is what killed it. Stop optimizing, and the gift can begin to be received again.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Crisis No One Names.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Demand Is Decayed Reception.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>You Cannot Optimize A Gift.</strong> The act of optimization converts an end into a means. Once converted, the thing loses the receptive quality you were trying to enhance. The most optimized generation in human history is the least content. The cure is not better optimization. The cure is to stop optimizing and let the gift be a gift again.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"Consider the lilies of the field, how they grow; they toil not, neither do they spin."<br><span class="ref">Matthew 6:28</span></p>
+</div>
+
+<!-- ===== CHAPTER 4 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Four</div>
+<div class="ch-num">04</div>
+<div class="ch-title">What You Can Name As Deserved You Cannot Receive As Gift</div>
+<div class="ch-sub">The root. Entitlement is the systematic closing of the gap where gratitude lives.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Reception requires a gap. The gap between what you expected and what was given. If you expected nothing and were given a sandwich, the sandwich is a gift. If you expected a sandwich and were given a sandwich, the sandwich is the bare minimum. Same sandwich. Different gap. *The gap is where gratitude lives.* Without the gap, the same object becomes inert.</p>
+
+<p>Modern entitlement is the systematic closing of that gap. You did not expect a job in your twenties; you got one and called your family. Now you expect a promotion every two years and resent the slow ones. You did not expect a spouse; you found one and wept with joy. Now you expect a certain quality of relational experience and audit your spouse against the standard. You did not expect to live past fifty; you have lived to forty seven and resent your body for aging. <em>The objects did not change.</em> Your expectations rose to meet them, and then surpassed them, and now there is no gap. *The same gifts have become the bare minimum your life is supposed to deliver, and your gratitude has nowhere to live.*</p>
+
+<div class="insight-card">
+<div class="ins-label">The Frame</div>
+<h3>What you can name as deserved you cannot receive as gift.</h3>
+</div>
+
+<p>This is the third frame, and it goes deeper than the first two because it names the cause of the decay. *Reception decays through the closing of the gap.* The gap closes through the accumulation of expectations. Expectations accumulate because modern life trains you to believe you deserve the things you have. The training is invisible. It happens through marketing, through comparison, through professional cultures, through political rhetoric, through the very language of self-esteem and self-respect. <strong>By the time most modern adults are forty, they have a comprehensive list of things they believe they are owed.</strong> The list is so thorough that almost nothing in their actual lives can register as gift, because almost everything fits inside something they were already expecting.</p>
+
+<p>This is not a moral failure. It is a perceptual one. *Modern people are not bad people. They are people whose gap has been closed by a culture that has been quietly telling them what to expect for their entire lives.* The way out is not to feel guilty. The way out is to widen the gap again. The way to widen the gap is to remember what was actually given, in proportion to what was actually deserved.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> The Widening</div>
+<h4>The Calculation No One Runs</h4>
+<p>Take ten minutes and try this. Walk through one week of your life. Write down what you did to deserve being alive that week. Not what you did at work. Not what you produced. What you did to deserve the oxygen, the morning light, the friends who called, the body that walked you around, the language you speak, the country you live in, the time you were given.</p>
+<p>You will struggle to write much. <em>The honest answer is almost nothing.</em> You did not earn most of what arrived in your week. You inherited it. You received it. You did not pay for it in any meaningful sense.</p>
+<p>Now look at your dissatisfaction across that same week. What were you irritated about? Disappointed by? Resentful toward? You will find a list of small grievances against things that were given to you for free. The gap between what you deserved (almost nothing) and what you got (essentially everything that matters) was enormous. *The grievances were operating inside a closed gap that doesn't exist when you actually run the numbers.*</p>
+<p>This is the perceptual surgery the playbook is asking for. Not "be more grateful." That is too thin to do anything. <strong>Run the calculation. Find what you actually deserved. Discover the gap is wider than you have been treating it.</strong> Gratitude returns automatically when the gap is restored, because gratitude is the body's response to noticing the gap.</p>
+</div>
+
+<p>This frame also explains why modern entitlement is so resistant to argument. *You cannot talk someone out of entitlement.* Entitlement is not a belief; it is a perceptual configuration. The person who feels owed cannot be reasoned into feeling given to. They can only be perceptually retrained, and the retraining only happens through running the actual calculation honestly enough that the gap reopens. <strong>You cannot deserve your way back to receiving.</strong> You can only set down the believing-you-deserve, and the receiving becomes possible again.</p>
+
+<div class="data-hero">
+<div class="dh-num">~0</div>
+<div class="dh-label">of what you have today did you earn at the most foundational level</div>
+<div class="dh-sub">You did not earn your body, your language, your country, your parents, your era, your DNA, your beginnings. Everything else is downstream of these. The gap is infinite if you run the calculation honestly. Gratitude becomes inexhaustible at the same time.</div>
+</div>
+
+<div class="think">
+<div class="think-label">Stop and Run The Numbers</div>
+<p>What in your life right now do you genuinely believe you deserved? Be specific. The promotion. The marriage. The body. The home. The friends. The intelligence. The health.</p>
+<hr class="think-line">
+<p>Now subtract from each of those the parts you did not earn. The DNA that made the intelligence possible. The country that allowed the career. The parents that gave you the upbringing. The era that made the work possible. What you are left with is the actual sliver of "earned." It is much smaller than your sense of entitlement suggests. The gap reopens the moment you tell yourself the truth.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Crisis No One Names.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Demand Is Decayed Reception.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>You Cannot Optimize A Gift.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>What You Can Name As Deserved You Cannot Receive As Gift.</strong> Reception requires a gap between expectation and given. Entitlement closes the gap. Modern life trains you to expect what was given. The result is that the same gifts that would have produced joy in your grandparents produce inertia in you. The fix is not feeling guilty. The fix is running the calculation honestly and re-discovering the gap.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"For who maketh thee to differ from another? and what hast thou that thou didst not receive? now if thou didst receive it, why dost thou glory, as if thou hadst not received it?"<br><span class="ref">1 Corinthians 4:7</span></p>
+</div>
+
+<!-- ===== CHAPTER 5 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Five</div>
+<div class="ch-num">05</div>
+<div class="ch-title">Resentment Is Reception Going Backwards</div>
+<div class="ch-sub">The deepest cost. What happens to relationships when the gift-sight is lost.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Here is what almost no one knows about resentment. Every resentment you carry was, at some point, a gift you received. Every single one. The friend who hurt you was a friend who was given to you before they hurt you. The parent who failed you was a parent who was given to you, complete with a childhood, before they failed you. The marriage that disappointed you was a person who was given to you, in a wedding you celebrated, before the disappointment accumulated. The body that has betrayed you in middle age was a body that was given to you, fully functional, for decades, before the betrayal began. *Resentment never starts as resentment.* It starts as gift, and it travels backwards.</p>
+
+<p>The trajectory is consistent. <em>Gift becomes routine. Routine becomes obligation. Obligation becomes debt. Debt becomes grievance.</em> The same object moves through all five stages across years or decades, and almost no one notices the trajectory while it is happening. By the time the object has reached grievance, you cannot remember it was ever gift. The grievance feels like the truth and the gift feels like a lie you told yourself when you were young and naive.</p>
+
+<div class="insight-card">
+<div class="ins-label">The Frame</div>
+<h3>Resentment is reception going backwards.</h3>
+</div>
+
+<p>This frame reorganizes everything about forgiveness. Forgiveness has been taught for decades as the suppression of legitimate grievance, the willingness to overlook real wrongs, the spiritual effort to extend grace you do not feel. *No wonder forgiveness fails for so many people.* The teaching is asking you to do something that contradicts your perception. You see grievance. You are told to feel gift. The teaching cannot bridge the gap, so most people fake forgiveness or refuse it entirely.</p>
+
+<p>The reception frame says something different. <strong>Forgiveness is not the suppression of grievance. Forgiveness is the act of finding your way back along the trajectory, from grievance to debt to obligation to routine to gift, until you can see again the person you were originally given.</strong> The person did not become a grievance. They started as gift. Your perception traveled the trajectory in reverse. *Forgiveness is reception restored.* It is the seeing returning to the seeing it once had.</p>
+
+<p>This explains why some people seem to forgive easily and others cannot at all. The easy forgivers are not nobler. They are perceptually plastic. They can travel the trajectory backwards when something happens. The chronic resenters are not worse people. They have lost the ability to perceive backwards. The gift-sight has decayed past the point of restoration without help.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> The Walk Back</div>
+<h4>The Father Who Was A Gift</h4>
+<p>A man in his fifties has not spoken to his father in a decade. The grievance is real and earned. His father was emotionally unavailable, critical, often absent, sometimes harsh. The man has worked through it in therapy for years. The therapy has not produced forgiveness.</p>
+<p>One day, his pastor asks him a question he has never been asked. "Before he was the man who failed you, who was he?"</p>
+<p>The man pauses. He starts to talk about his father as a young man. His father got married at twenty two. Had a son at twenty four. Worked two jobs to feed the family. The man remembers, for the first time in years, that his father was not always the figure of grievance. *His father was first a young man who was given to him as a father.* The young man did not know how to be a father. He failed at it. But before the failure he was a gift given to a baby who needed a father.</p>
+<p>The man cries. The cry is not the cry of grief. It is the cry of reception restored. The same father is in the same grave. <strong>The seeing changed.</strong> The man does not minimize the harm. He still sees the failures. But he can also now see the man who was given to him before the failures, and the seeing produces forgiveness that ten years of suppressing grievance could not produce. *Reception was restored. Forgiveness was the byproduct.*</p>
+</div>
+
+<p>This applies to every resentment you currently carry. Each one is a gift that became a routine that became an obligation that became a debt that became a grievance. *The path back is the same path in reverse.* It is not easy. It is not sentimental. It is the work of a perception that has decided to try to see again the gift that the trajectory has buried. Sometimes the work succeeds and the resentment dissolves. Sometimes the work is harder than this playbook can provide and you need a friend, a pastor, a therapist who understands the path. <strong>But you now know there is a path.</strong> Resentment is not a permanent state. It is a stage in a trajectory. The trajectory runs both directions.</p>
+
+<div class="think">
+<div class="think-label">Stop and Find One Trajectory</div>
+<p>Pick one person or thing you currently resent. Trace the trajectory backwards. Grievance, debt, obligation, routine, gift. At what stage are you?</p>
+<hr class="think-line">
+<p>Now ask: who was this person, or this thing, before they became a grievance? Not minimizing the grievance. Not pretending the harm did not happen. Just remembering what was there before. The remembering is the first step backwards along the trajectory.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Crisis No One Names.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Demand Is Decayed Reception.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>You Cannot Optimize A Gift.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>What You Can Name As Deserved You Cannot Receive As Gift.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Resentment Is Reception Going Backwards.</strong> Every resentment was once a gift. Gift becomes routine becomes obligation becomes debt becomes grievance. Forgiveness is the act of traveling the trajectory in reverse until the gift can be seen again. The harm is not minimized. The seeing is restored.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"And be ye kind one to another, tenderhearted, forgiving one another, even as God for Christ's sake hath forgiven you."<br><span class="ref">Ephesians 4:32</span></p>
+</div>
+
+<!-- ===== CHAPTER 6 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Six</div>
+<div class="ch-num">06</div>
+<div class="ch-title">You Will Spend Your Life Either Receiving Or Being Owed</div>
+<div class="ch-sub">The two postures. There is no neutral. Most modern people have defaulted to the wrong one.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>Take a moment and watch yourself across an ordinary day. Notice the posture you are taking, hour by hour. <em>You will find that you are almost always in one of two postures and almost never in any other.</em> Either you are receiving, noticing, accepting, grateful, present to what is being given to you in this moment, or you are being owed, quietly tabulating what you have not been given, what people have failed to provide, what circumstances have not delivered, what God has not answered.</p>
+
+<p>Most modern adults are perpetually owed. They are owed by their job (which owes them money, status, respect, growth). They are owed by their spouse (who owes them attention, affection, sex, support). They are owed by their children (who owe them obedience, achievement, eventually care in old age). They are owed by their parents (who owed them a childhood that they may or may not have delivered). They are owed by God (who owes them blessing, protection, answered prayer). They are owed by their country (which owes them safety, opportunity, fair laws). They are owed by their body (which owes them performance, energy, youth, no betrayal). *They walk through their lives keeping unconscious ledgers in which everyone they encounter has a tab open with them.*</p>
+
+<div class="insight-card">
+<div class="ins-label">The Frame</div>
+<h3>You will spend your life either receiving or being owed.</h3>
+</div>
+
+<p>The owed-stance is not a personality flaw. It is the trained posture of modernity. It has been installed in you by a culture that has been telling you for forty years what you have a right to expect. *You did not choose this posture.* But you can now see it, and seeing it is the first half of replacing it. <strong>The owed-stance is the most exhausting posture a human can adopt because it converts every relationship into a transaction that has not yet been completed in your favor.</strong> No wonder modern adults are tired. They are running endless mental ledgers, and the ledgers always show them at a loss.</p>
+
+<p>The receiving-stance is the inverse. *The receiver is owed nothing.* The receiver believes nothing was guaranteed and so everything that arrives arrives as gift. The receiver does not enter a meeting with a list of what the meeting should provide. The receiver enters the meeting open to what the meeting will be. The receiver does not interrogate the spouse with a list of where the spouse has fallen short. The receiver looks at the spouse and is grateful that this person is in their life at all. <em>The receiver is not naive.</em> The receiver knows the meeting may go badly, the spouse may disappoint, the day may bring grief. The receiver simply does not start with a ledger.</p>
+
+<div class="ba-grid">
+<div class="ba-col before">
+<div class="ba-label">The Owed Stance</div>
+<h4>The Closed Hand</h4>
+<ul>
+<li>Enter every situation with a list of what should happen</li>
+<li>Audit every relationship against an unspoken contract</li>
+<li>Resent what was not delivered</li>
+<li>Treat every gift as the bare minimum</li>
+<li>Walk through life keeping ledgers no one else can see</li>
+<li>Exhausted by transactions that never resolve in your favor</li>
+</ul>
+</div>
+<div class="ba-col after">
+<div class="ba-label">The Receiving Stance</div>
+<h4>The Open Hand</h4>
+<ul>
+<li>Enter every situation open to what will arrive</li>
+<li>Encounter every relationship as the gift of this person</li>
+<li>Notice what was given, not what was missing</li>
+<li>Treat every gift as larger than what was required</li>
+<li>Walk through life without ledgers</li>
+<li>Sustained by an endless supply of arrivals that owed you nothing</li>
+</ul>
+</div>
+</div>
+
+<p>There is no neutral position. *Either you are running a ledger or you are receiving.* This is not optional. It is structural to how human perception works. The brain organizes incoming experience either as transaction or as gift, and the organization happens before your conscious mind gets involved. <strong>The posture you wake up with is the posture that has been trained into you by every previous morning.</strong> The retraining is the work of years, but the first step is recognition. Notice the next time you are owed by someone. Notice that you have entered the ledger-stance. The noticing is the start of the exit.</p>
+
+<p>This is also why the receiving stance is the most subversive thing a modern person can practice. *It quietly contradicts the central organizing assumption of late-modern life.* Modernity tells you that you have rights, you have expectations, you are owed things by life. The receiver lives as if none of this is true, and discovers, paradoxically, that the life they are owed nothing in is the life that ends up giving them the most. The closed hand cannot receive what is being placed in it. *The open hand can.*</p>
+
+<div class="grand-quote">
+<blockquote>The most exhausting posture a modern person can adopt is the one most of them have. They are owed by everyone and everything. The endless ledger is the source of their fatigue. The work is not to balance the ledger. The work is to close it.</blockquote>
+<cite>The Two Postures</cite>
+</div>
+
+<div class="think">
+<div class="think-label">Stop and Locate Your Posture</div>
+<p>Look at the last hour of your life. Notice the posture you have been holding. Were you receiving what arrived, or were you tabulating what was missing? Be honest. Most modern adults have been in the owed-stance almost every hour of every day for years.</p>
+<hr class="think-line">
+<p>The recognition is the entry to the inverse. You cannot fight your way to the receiving stance. You can only set down the ledger. The setting down is a daily practice, hourly sometimes. It gets easier across months as the body learns that the absence of the ledger does not lead to loss but to a different kind of life.</p>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Crisis No One Names.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Demand Is Decayed Reception.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>You Cannot Optimize A Gift.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>What You Can Name As Deserved You Cannot Receive As Gift.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Resentment Is Reception Going Backwards.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>You Will Spend Your Life Either Receiving Or Being Owed.</strong> Two postures. No neutral. Modern life trains you into the owed-stance. The receiving-stance is the most subversive thing a modern person can practice. The work is not to balance the ledger but to close it.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"Freely ye have received, freely give."<br><span class="ref">Matthew 10:8</span></p>
+</div>
+
+<!-- ===== CHAPTER 7 ===== -->
+<div class="ch-head">
+<div class="page">
+<div class="ch-badge">Chapter Seven</div>
+<div class="ch-num">07</div>
+<div class="ch-title">The Path Back</div>
+<div class="ch-sub">Joy is the body's response to noticing what is being given.</div>
+</div>
+</div>
+
+<div class="page section prose">
+
+<p>The five frames are installed. The condition is named. Demand is decayed reception. Optimization kills gifts. Entitlement closes the gap. Resentment is the trajectory in reverse. The owed stance is the trained posture. *Now what?* This last chapter is not a protocol. It is a description of what naturally happens to a person who holds these five frames long enough that the seeing actually returns.</p>
+
+<p>Here is what happens. <strong>The body starts to detect gifts it has been blind to for years.</strong> The first cup of coffee in the morning becomes noticeable again. The face of your spouse in the kitchen becomes a person you cannot quite believe you live with. The walk from the car to the office becomes a small stretch of given weather. The exchanged glance with a stranger becomes a small connection. The taste of bread becomes complicated. The sound of your child's voice becomes piercing. <em>You did not arrange any of this.</em> You did not make the coffee taste this way. You did not produce your spouse. You did not generate the bread or the weather or the child. They were given. The seeing had simply been off, and now the seeing has come back on, and the body's response to the seeing is what you used to call joy and had not felt at this depth in years.</p>
+
+<div class="insight-card">
+<div class="ins-label">The Restoration</div>
+<h3>Joy is the body's response to noticing what is being given.</h3>
+</div>
+
+<p>Joy is not a personality trait. Joy is not a temperament you either have or do not. *Joy is a perceptual phenomenon.* It is what the body produces when it notices a gift. The reason modern adults experience so little joy is not that the gifts have decreased; the supply of gifts has increased in late modernity to a degree the medieval peasant would have called miraculous. The reason for the joy famine is that the noticing has collapsed. <strong>Restore the noticing and joy returns automatically.</strong> The body has not lost the capacity. The body has lost the conditions under which the capacity activates. The five frames restore the conditions.</p>
+
+<p>This means joy is not chased. Joy is not pursued. Joy is not earned. Every effort to produce joy through accumulation, optimization, or experience-collection has failed for the same reason: joy is downstream of seeing, not downstream of having. *The person with very little who can still see has more joy than the person with everything who has stopped seeing.* This is the testimony of the contemplative traditions across every culture and every century. It is the testimony of the Hebrew slaves in the wilderness who collected manna with joy and the Roman senators who had everything and went mad. The amount you have is not the variable. The seeing is.</p>
+
+<div class="scene">
+<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> The Return</div>
+<h4>The Wife Across The Table</h4>
+<p>A man has been married for fifteen years. He loves his wife in the way one loves a settled fact. She is there. He is there. They have made a life. He has not really seen her in a long time.</p>
+<p>One evening he sits across from her at dinner. He is tired from the day. He looks up and sees her face. He sees the lines around her eyes that came from years of laughing with him. He sees the way her hands move when she talks. He sees that she is, in this moment, in this kitchen, eating dinner with him. <strong>He sees that she did not have to be here.</strong> She was given to him. She was given to him on a Saturday in October fifteen years ago in front of two hundred people, and she has been here every night since. He had stopped seeing this entirely. He saw the wife. He had not seen the gift.</p>
+<p>He almost cannot breathe. The gift-sight has returned, and what is in front of him is so enormous he does not know how he has been walking past it. <em>She does not know what is happening on his side of the table.</em> She is talking about her day. He listens to her, completely, and the listening is itself an act of reception. The dinner becomes one of the dinners he will remember on his deathbed. *The dinner did not change. The seeing did.*</p>
+<p>This is the path back. Not engineered. Not optimized. Not earned. The five frames installed. The owed ledger set down. The gift-sight returning. Joy as the body's automatic response.</p>
+</div>
+
+<p>You should expect this to happen unevenly. The seeing returns in flashes at first. A specific cup of coffee one morning. A specific evening with your child. A specific moment in church. <strong>These flashes are not the destination. They are evidence.</strong> They prove the capacity is intact. The work is to hold the frames steadily enough that the flashes lengthen, deepen, become the baseline. *Over months and years, your default perception shifts.* The owed-stance loosens. The gift-sight returns to many domains at once. Joy stops being something you feel occasionally and becomes the background atmosphere of an ordinary day.</p>
+
+<p>This is the condition the contemplative traditions called *receptivity to grace*. It is the condition Israel was being trained for during forty years of manna in the wilderness. It is the condition the psalmist meant when he said the day is the Lord's and we rejoice in it. It is the condition almost no one in late modernity is in, and which is available to anyone who can see what is in front of them as gift. <em>The path back is a path of recovered sight.</em></p>
+
+<div class="data-hero">
+<div class="dh-num">∞</div>
+<div class="dh-label">gifts are in your day right now waiting to be received</div>
+<div class="dh-sub">The supply has not decreased. The seeing has. The five frames are how the seeing returns. Joy is what comes next.</div>
+</div>
+
+</div>
+
+<div class="root-ck">
+  <div class="rc-label">Root System</div>
+  <h4>Water What Was Planted</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Crisis No One Names.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Demand Is Decayed Reception.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>You Cannot Optimize A Gift.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>What You Can Name As Deserved You Cannot Receive As Gift.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Resentment Is Reception Going Backwards.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>You Will Spend Your Life Either Receiving Or Being Owed.</strong></div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Path Back.</strong> Joy is the body's response to noticing what is being given. Joy is not chased; it is detected. The five frames restore the conditions under which the body's capacity for joy activates. The seeing returns in flashes at first, then deepens. The path back is a path of recovered sight.</div></div>
+</div>
+
+<div class="ribbon">
+<p>"This is the day which the Lord hath made; we will rejoice and be glad in it."<br><span class="ref">Psalm 118:24</span></p>
+</div>
+
+<!-- ===== CLOSING ===== -->
+<div class="page section prose">
+
+<p>You now hold the architecture of received life. Five perceptual frames that diagnose and reverse the central crisis of late modernity. The condition has been named. The mechanism has been exposed. The trajectory has been mapped in both directions. The two postures have been identified. The return of joy has been described as a natural consequence, not a forced outcome.</p>
+
+<p>The next playbook, Part 2 of Manna, is called <em>Returning</em>. It walks through seven specific domains where reception was lost and shows what restoration looks like in each: your body, your work, your marriage, your time, your beauty, your child, your place. Each domain has its own micro-breakthrough. Each chapter sharpens the central frames against a specific terrain. <strong>If <em>Given</em> taught you to see, <em>Returning</em> teaches you where to look first.</strong></p>
+
+<p>For now, sit with the frames. Let them work. Notice the next time a demand reveals itself as a gift in disguise. Notice the next time you reach to optimize something and recognize the act as the conversion it is. Notice the next time you tabulate what you are owed. *The noticing is the entire practice.* The body retrains itself across months. The joy returns of its own accord. You will not have to chase it. <strong>You will only have to keep seeing.</strong></p>
+
+</div>
+
+<!-- ===== NEXT IN SERIES ===== -->
+<div class="page">
+<div class="next-card">
+<div class="next-label">Next In The Series</div>
+<div class="next-title">Returning</div>
+<div class="next-tag">Part 2 of Manna. A tour through seven domains where reception was lost. The body, the work, the marriage, the time, the beauty, the child, the place. Each with its own micro-breakthrough. The frames from <em>Given</em> applied to where you actually live.</div>
+</div>
+</div>
+
+<!-- ===== FINAL TEST ===== -->
+<div class="page section">
+<div class="final-test">
+<h3>Can You Answer These Without Looking Back?</h3>
+<p class="test-sub">Seven questions, one for each core frame. If you can answer all seven, the architecture has installed.</p>
+<div class="test-q"><div class="test-num">Question 1</div><p>What is the condition no one names, and why is it not depression, burnout, or midlife crisis?</p></div>
+<div class="test-q"><div class="test-num">Question 2</div><p>Walk through the structural law: demand is decayed reception. Apply it to one specific domain of your life.</p></div>
+<div class="test-q"><div class="test-num">Question 3</div><p>Why does the act of optimization kill the receptive quality of whatever it touches?</p></div>
+<div class="test-q"><div class="test-num">Question 4</div><p>Where does gratitude live, and what does entitlement do to it?</p></div>
+<div class="test-q"><div class="test-num">Question 5</div><p>Trace the trajectory of resentment in reverse. Name the five stages.</p></div>
+<div class="test-q"><div class="test-num">Question 6</div><p>What are the two postures, and which one are you in right now?</p></div>
+<div class="test-q"><div class="test-num">Question 7</div><p>Why is joy not chased but detected? What restores the detection?</p></div>
+</div>
+</div>
+
+<!-- ===== PROMPT ===== -->
+<div class="page section">
+<div class="prompt-card">
+<h3>Continue The Conversation</h3>
+<p>Copy these prompts into any AI and let the seeing deepen:</p>
+<p><code>"Help me identify which domains of my life have decayed from gift to demand. Ask me diagnostic questions across work, marriage, body, time, friendships, faith, place."</code></p>
+<p><code>"Run the entitlement calculation with me. Walk through what I genuinely earned versus what I inherited or received. Help me see the gap where gratitude lives."</code></p>
+<p><code>"Pick one resentment I am carrying and help me trace it backwards through the five stages until I can see the original gift again."</code></p>
+<p><code>"I am stuck in the owed stance toward [specific person or situation]. Help me practice setting down the ledger for one hour."</code></p>
+</div>
+</div>
+
+<div class="ribbon">
+<p>"And let us not be weary in well doing: for in due season we shall reap, if we faint not."<br><span class="ref">Galatians 6:9</span></p>
+</div>
+
+<div class="series-progress" style="padding:32px 24px;background:var(--cream-warm);border-top:1px solid rgba(14,15,26,0.06)">
+  <div style="font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--rose-dawn);margin-bottom:14px">Manna</div>
+  <div class="series-dots">
+    <span class="series-dot active" title="Given"></span>
+    <span class="series-dot" title="Returning"></span>
+  </div>
+  <div class="series-dot-label" style="color:var(--text-muted)">Part 1 of 2 &middot; Given</div>
+</div>
+
+<section class="finale">
+<h2>You are not what is wrong with you.<br><strong>The seeing is.</strong></h2>
+</section>
+
+<footer class="footer">
+<p>Given &middot; Manna (Part 1 of 2) &middot; KingdomBuilders AI<br><a href="./">View All Playbooks</a></p>
+</footer>
+</body>
+</html>

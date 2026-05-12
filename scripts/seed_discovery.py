@@ -286,6 +286,11 @@ TAGS = {
         ("faith", 1.0), ("identity", 1.0), ("discipline", 0.8), ("self_awareness", 0.9),
         ("growth", 0.8), ("vulnerability", 0.6), ("mastery", 0.5), ("focus", 0.5),
     ],
+    # --- Manna series ---
+    "given": [
+        ("faith", 1.0), ("self_awareness", 1.0), ("growth", 0.9), ("identity", 0.8),
+        ("relationships", 0.7), ("vulnerability", 0.6), ("resilience", 0.5),
+    ],
 }
 
 
@@ -1026,9 +1031,20 @@ CONNECTIONS = {
         ("bridge", "attend",
          "The reception lives best inside the cell of attending. The practice and the theology together complete the architecture.",
          "Reverse pointer: Part 2 to Part 1 of The Attending."),
-        ("surprise", "lay-it-down-pride",
-         "The becoming-self is pride's deepest costume. The Father's running ends both at once.",
-         "Identity inversion meets the lay-it-down disciplines."),
+        ("surprise", "given",
+         "The deeper reception that lives underneath all the others. Demand is decayed reception.",
+         "Done Before You Started's reception theology meets the full crisis of reception."),
+    ],
+    "given": [
+        ("deeper", "done-before-you-started",
+         "Received identity is the prior condition for received life. The Beloved is the one who can receive everything else as gift.",
+         "Given's frames pair beautifully with the identity inversion of DBYS."),
+        ("bridge", "the-source",
+         "The Source pillar of the Eden Pattern teaches received identity. Given extends the reception frame to every domain.",
+         "The two reception frameworks reinforce each other across series."),
+        ("surprise", "the-bonsai-method",
+         "Both teach that the seeing of what is in front of you is the work. The bonsai master and the Receiver share a posture.",
+         "Slow contemplative attention meets the architecture of received life."),
     ],
 }
 

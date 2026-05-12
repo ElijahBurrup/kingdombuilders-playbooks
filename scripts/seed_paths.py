@@ -186,6 +186,18 @@ PATHS = [
         ],
     },
     {
+        "slug": "manna",
+        "title": "Manna",
+        "description": "Two playbooks on the central spiritual crisis of late modernity: the systematic loss of the capacity to receive what is given. Part 1 (Given) installs the architecture; Part 2 (Returning) tours seven domains where reception was lost. The bread Israel received daily in the wilderness as the structural metaphor for received life.",
+        "theme_tag": "faith",
+        "emoji": "\U0001F33E",
+        "color": "#1F2440",
+        "steps": [
+            ("given",
+             None),
+        ],
+    },
+    {
         "slug": "the-attending",
         "title": "The Attending",
         "description": "Two playbooks on perseverance. The tactical practice of staying at the post when the noonday demon attacks, paired with the theology of received identity that makes the practice sustainable for decades. Desert fathers meet evangelical doctrine meet the work in front of you tomorrow morning.",

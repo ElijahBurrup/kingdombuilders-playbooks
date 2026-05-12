@@ -92,6 +92,12 @@ SERIES_DEFS = [
         "description": "A 2-part series on perseverance. The tactical practice of staying at the post when the noonday demon attacks (Part 1: Attend) and the theology of received identity that makes the practice sustainable for decades (Part 2: Done Before You Started). The desert fathers meet evangelical theology meet the work in front of you tomorrow morning.",
         "display_order": 7,
     },
+    {
+        "name": "Manna",
+        "slug": "manna",
+        "description": "A 2-part series on the central spiritual crisis of late modernity: the systematic loss of the capacity to receive what is given. Part 1 (Given) names the condition and installs five perceptual frames. Part 2 (Returning) tours the seven domains where reception was lost and shows the way back.",
+        "display_order": 8,
+    },
 ]
 
 # ---------------------------------------------------------------------------
@@ -150,6 +156,7 @@ PLAYBOOKS_DATA = [
     {"slug": "tending-the-garden", "title": "Eden Pattern: Tending The Garden", "route": "/tendingthegarden", "category": "faith", "series": "eden-pattern", "series_order": 5, "landing_file": "tending-the-garden.html", "asset_file": "Tending_The_Garden.html", "cover_emoji": "\U0001f33f"},
     {"slug": "attend", "title": "The Attending: Attend", "route": "/attend", "category": "productivity", "series": "the-attending", "series_order": 1, "landing_file": "attend.html", "asset_file": "Attend.html", "cover_emoji": "\U0001f43e"},
     {"slug": "done-before-you-started", "title": "The Attending: Done Before You Started", "route": "/donebeforeyoustarted", "category": "faith", "series": "the-attending", "series_order": 2, "landing_file": "done-before-you-started.html", "asset_file": "Done_Before_You_Started.html", "cover_emoji": "\U0001f56f"},
+    {"slug": "given", "title": "Manna: Given", "route": "/given", "category": "faith", "series": "manna", "series_order": 1, "landing_file": "given.html", "asset_file": "Given.html", "cover_emoji": "\U0001f33e"},
 ]
 
 
