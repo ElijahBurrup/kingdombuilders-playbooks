@@ -44,6 +44,8 @@ CATEGORIES = [
     {"name": "Resilience", "slug": "resilience", "color_bg": "rgba(139,69,19,0.08)", "color_text": "#8B4513", "display_order": 12},
     {"name": "History", "slug": "history", "color_bg": "rgba(128,0,0,0.08)", "color_text": "#800000", "display_order": 13},
     {"name": "Philosophy", "slug": "philosophy", "color_bg": "rgba(85,107,47,0.08)", "color_text": "#556B2F", "display_order": 14},
+    {"name": "Parenting", "slug": "parenting", "color_bg": "rgba(255,99,132,0.08)", "color_text": "#FF6384", "display_order": 15},
+    {"name": "Health", "slug": "health", "color_bg": "rgba(50,205,50,0.08)", "color_text": "#32CD32", "display_order": 16},
 ]
 
 # ---------------------------------------------------------------------------
