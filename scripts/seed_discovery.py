@@ -291,6 +291,10 @@ TAGS = {
         ("faith", 1.0), ("self_awareness", 1.0), ("growth", 0.9), ("identity", 0.8),
         ("relationships", 0.7), ("vulnerability", 0.6), ("resilience", 0.5),
     ],
+    "returning": [
+        ("faith", 1.0), ("self_awareness", 1.0), ("relationships", 0.9), ("growth", 0.9),
+        ("identity", 0.7), ("focus", 0.6), ("resilience", 0.5),
+    ],
 }
 
 
@@ -1039,12 +1043,23 @@ CONNECTIONS = {
         ("deeper", "done-before-you-started",
          "Received identity is the prior condition for received life. The Beloved is the one who can receive everything else as gift.",
          "Given's frames pair beautifully with the identity inversion of DBYS."),
-        ("bridge", "the-source",
-         "The Source pillar of the Eden Pattern teaches received identity. Given extends the reception frame to every domain.",
-         "The two reception frameworks reinforce each other across series."),
+        ("bridge", "returning",
+         "You have the frames. Now you need the doors. Returning walks you through the seven domains where reception was lost.",
+         "Part 1 to Part 2 of Manna. Architecture to application."),
         ("surprise", "the-bonsai-method",
          "Both teach that the seeing of what is in front of you is the work. The bonsai master and the Receiver share a posture.",
          "Slow contemplative attention meets the architecture of received life."),
+    ],
+    "returning": [
+        ("deeper", "given",
+         "The architecture under the seven doors. The five frames that diagnose why reception was lost in the first place.",
+         "Reverse pointer: Part 2 back to Part 1 of Manna."),
+        ("bridge", "attend",
+         "The reception of time and work has a practice. The Attending teaches the cell. Returning teaches what to receive inside it.",
+         "Reception's architecture meets reception's daily discipline."),
+        ("surprise", "the-source",
+         "The seventh return (Place) and the first pillar of Eden Pattern (Source) meet in the recognition that you were placed where you are by something other than your choosing.",
+         "Place as assignment matches Source as identity received."),
     ],
 }
 

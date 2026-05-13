@@ -80,6 +80,7 @@ SLUG_TO_FILE: dict[str, str] = {
     "attend": "Attend.html",
     "done-before-you-started": "Done_Before_You_Started.html",
     "given": "Given.html",
+    "returning": "Returning.html",
 }
 
 

@@ -157,6 +157,7 @@ PLAYBOOKS_DATA = [
     {"slug": "attend", "title": "The Attending: Attend", "route": "/attend", "category": "productivity", "series": "the-attending", "series_order": 1, "landing_file": "attend.html", "asset_file": "Attend.html", "cover_emoji": "\U0001f43e"},
     {"slug": "done-before-you-started", "title": "The Attending: Done Before You Started", "route": "/donebeforeyoustarted", "category": "faith", "series": "the-attending", "series_order": 2, "landing_file": "done-before-you-started.html", "asset_file": "Done_Before_You_Started.html", "cover_emoji": "\U0001f56f"},
     {"slug": "given", "title": "Manna: Given", "route": "/given", "category": "faith", "series": "manna", "series_order": 1, "landing_file": "given.html", "asset_file": "Given.html", "cover_emoji": "\U0001f33e"},
+    {"slug": "returning", "title": "Manna: Returning", "route": "/returning", "category": "faith", "series": "manna", "series_order": 2, "landing_file": "returning.html", "asset_file": "Returning.html", "cover_emoji": "\U0001f6aa"},
 ]
 
 

@@ -194,6 +194,8 @@ PATHS = [
         "color": "#1F2440",
         "steps": [
             ("given",
+             "The crisis is named and the five frames are installed. You can see, in principle, that everything was given. Now you need the doors. Returning shows you the seven rooms of your own house where the seeing collapsed and walks you back to the gift in each."),
+            ("returning",
              None),
         ],
     },
