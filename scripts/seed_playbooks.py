@@ -98,6 +98,18 @@ SERIES_DEFS = [
         "description": "A 2-part series on the central spiritual crisis of late modernity: the systematic loss of the capacity to receive what is given. Part 1 (Given) names the condition and installs five perceptual frames. Part 2 (Returning) tours the seven domains where reception was lost and shows the way back.",
         "display_order": 8,
     },
+    {
+        "name": "Dad Talks",
+        "slug": "dad-talks",
+        "description": "Father-son and father-daughter conversations on the hard things. Each playbook is a narrative-format dialogue where Dad addresses a specific issue his kid is facing: dopamine, identity, attention, conflict, friendship, invisible work, courage. The structural innovation is the conversation as the playbook.",
+        "display_order": 9,
+    },
+    {
+        "name": "The AI Economy",
+        "slug": "ai-economy",
+        "description": "A 2-part (and growing) series on the economic shape of the AI age. Part 1 (The Lifted Ceiling) marshals 600 years of evidence that technology lifts ceilings rather than destroying floors. Part 2 (The New Earning) maps 16 income categories that compound as AI compounds and introduces the thermodynamics test for work that survives.",
+        "display_order": 10,
+    },
 ]
 
 # ---------------------------------------------------------------------------
@@ -158,6 +170,40 @@ PLAYBOOKS_DATA = [
     {"slug": "done-before-you-started", "title": "The Attending: Done Before You Started", "route": "/donebeforeyoustarted", "category": "faith", "series": "the-attending", "series_order": 2, "landing_file": "done-before-you-started.html", "asset_file": "Done_Before_You_Started.html", "cover_emoji": "\U0001f56f"},
     {"slug": "given", "title": "Manna: Given", "route": "/given", "category": "faith", "series": "manna", "series_order": 1, "landing_file": "given.html", "asset_file": "Given.html", "cover_emoji": "\U0001f33e"},
     {"slug": "returning", "title": "Manna: Returning", "route": "/returning", "category": "faith", "series": "manna", "series_order": 2, "landing_file": "returning.html", "asset_file": "Returning.html", "cover_emoji": "\U0001f6aa"},
+
+    # === Previously orphaned (in registry but not in PLAYBOOKS_DATA) — added 2026-05-13 ===
+    # Dad Talks series (6)
+    {"slug": "dad-talks-the-dopamine-drought", "title": "Dad Talks: The Dopamine Drought", "route": "/dadtalksthedopaminedrought", "category": "parenting", "series": "dad-talks", "series_order": 1, "landing_file": "dad-talks-the-dopamine-drought.html", "asset_file": "Dad_Talks_The_Dopamine_Drought.html", "cover_emoji": "\U0001f9e0", "pricing_type": "free", "price_cents": 0},
+    {"slug": "dad-talks-the-mirror-test", "title": "Dad Talks: The Mirror Test", "route": "/dadtalksthemirrortest", "category": "parenting", "series": "dad-talks", "series_order": 2, "landing_file": "dad-talks-the-mirror-test.html", "asset_file": "Dad_Talks_The_Mirror_Test.html", "cover_emoji": "\U0001fa9e"},
+    {"slug": "dad-talks-the-flinch", "title": "Dad Talks: The Flinch", "route": "/dadtalkstheflinch", "category": "parenting", "series": "dad-talks", "series_order": 3, "landing_file": "dad-talks-the-flinch.html", "asset_file": "Dad_Talks_The_Flinch.html", "cover_emoji": "\U0001f6e1️"},
+    {"slug": "dad-talks-the-invisible-contract", "title": "Dad Talks: The Invisible Contract", "route": "/dadtalkstheinvisiblecontract", "category": "parenting", "series": "dad-talks", "series_order": 4, "landing_file": "dad-talks-the-invisible-contract.html", "asset_file": "Dad_Talks_The_Invisible_Contract.html", "cover_emoji": "\U0001f4dc"},
+    {"slug": "dad-talks-the-scoreboard-lie", "title": "Dad Talks: The Scoreboard Lie", "route": "/dadtalksthescoreboardlie", "category": "parenting", "series": "dad-talks", "series_order": 5, "landing_file": "dad-talks-the-scoreboard-lie.html", "asset_file": "Dad_Talks_The_Scoreboard_Lie.html", "cover_emoji": "\U0001f3c0"},
+    {"slug": "dad-talks-the-first-punch", "title": "Dad Talks: The First Punch", "route": "/dadtalksthefirstpunch", "category": "parenting", "series": "dad-talks", "series_order": 6, "landing_file": "dad-talks-the-first-punch.html", "asset_file": "Dad_Talks_The_First_Punch.html", "cover_emoji": "\U0001f44a"},
+
+    # Lay It Down series (remaining 4: Sloth, Greed, Gluttony, Lust)
+    {"slug": "lay-it-down-sloth", "title": "Lay It Down: Sloth", "route": "/layitdownsloth", "category": "faith", "series": "lay-it-down", "series_order": 4, "landing_file": "lay-it-down-sloth.html", "asset_file": "Lay_It_Down_Sloth.html", "cover_emoji": "\U0001f6cc"},
+    {"slug": "lay-it-down-greed", "title": "Lay It Down: Greed", "route": "/layitdowngreed", "category": "faith", "series": "lay-it-down", "series_order": 5, "landing_file": "lay-it-down-greed.html", "asset_file": "Lay_It_Down_Greed.html", "cover_emoji": "\U0001f4b0"},
+    {"slug": "lay-it-down-gluttony", "title": "Lay It Down: Gluttony", "route": "/layitdowngluttony", "category": "faith", "series": "lay-it-down", "series_order": 6, "landing_file": "lay-it-down-gluttony.html", "asset_file": "Lay_It_Down_Gluttony.html", "cover_emoji": "\U0001f374"},
+    {"slug": "lay-it-down-lust", "title": "Lay It Down: Lust", "route": "/layitdownlust", "category": "faith", "series": "lay-it-down", "series_order": 7, "landing_file": "lay-it-down-lust.html", "asset_file": "Lay_It_Down_Lust.html", "cover_emoji": "❤️‍\U0001f525"},
+
+    # AI Economy series (2)
+    {"slug": "the-lifted-ceiling", "title": "The Lifted Ceiling", "route": "/theliftedceiling", "category": "economics", "series": "ai-economy", "series_order": 1, "landing_file": "the-lifted-ceiling.html", "asset_file": "The_Lifted_Ceiling.html", "cover_emoji": "\U0001f4c8", "pricing_type": "free", "price_cents": 0},
+    {"slug": "the-new-earning", "title": "The New Earning", "route": "/thenewearning", "category": "finance", "series": "ai-economy", "series_order": 2, "landing_file": "the-new-earning.html", "asset_file": "The_New_Earning.html", "cover_emoji": "\U0001f4b8"},
+
+    # How AI Works (Raven was orphaned, fitting as Part 5: agents/reasoning)
+    {"slug": "the-ravens-trial", "title": "The Raven's Trial", "route": "/theravenstrial", "category": "technology", "series": "how-ai-works", "series_order": 5, "landing_file": "the-ravens-trial.html", "asset_file": "The_Ravens_Trial.html", "cover_emoji": "\U0001f426‍⬛"},
+
+    # Standalone playbooks (no series)
+    {"slug": "the-arrival", "title": "The Arrival", "route": "/thearrival", "category": "mindset", "landing_file": "the-arrival.html", "asset_file": "The_Arrival.html", "cover_emoji": "\U0001f680"},
+    {"slug": "the-body-lie", "title": "The Body Lie", "route": "/thebodylie", "category": "identity", "landing_file": "the-body-lie.html", "asset_file": "The_Body_Lie.html", "cover_emoji": "\U0001fa9e"},
+    {"slug": "the-bonsai-method", "title": "The Bonsai Method", "route": "/thebonsaimethod", "category": "finance", "landing_file": "the-bonsai-method.html", "asset_file": "The_Bonsai_Method.html", "cover_emoji": "\U0001f33f"},
+    {"slug": "the-fibonacci-trim", "title": "The Fibonacci Trim", "route": "/thefibonaccitrim", "category": "finance", "landing_file": "the-fibonacci-trim.html", "asset_file": "The_Fibonacci_Trim.html", "cover_emoji": "\U0001f33b"},
+    {"slug": "the-kintsugi-bowl", "title": "The Kintsugi Protocol", "route": "/thekintsugibow", "category": "faith", "landing_file": "the-kintsugi-bowl.html", "asset_file": "The_Kintsugi_Bowl_The_Wandering_Eye.html", "cover_emoji": "\U0001f3fa"},
+    {"slug": "the-mycelium-network", "title": "The Mycelium Network", "route": "/themyceliumnetwork", "category": "economics", "landing_file": "the-mycelium-network.html", "asset_file": "The_Mycelium_Network.html", "cover_emoji": "\U0001f344"},
+    {"slug": "the-roche-limit", "title": "The Roche Limit", "route": "/therochelimit", "category": "relationships", "landing_file": "the-roche-limit.html", "asset_file": "The_Roche_Limit.html", "cover_emoji": "\U0001fa90"},
+    {"slug": "the-termite-cathedral", "title": "The Termite Cathedral", "route": "/thetermitecathedral", "category": "technology", "landing_file": "the-termite-cathedral.html", "asset_file": "The_Termite_Cathedral.html", "cover_emoji": "\U0001f3db️"},
+    {"slug": "the-three-tables", "title": "The Three Tables", "route": "/thethreetables", "category": "faith", "landing_file": "the-three-tables.html", "asset_file": "The_Three_Tables.html", "cover_emoji": "\U0001f37d️"},
+    {"slug": "the-unfinished-song", "title": "The Unfinished Song", "route": "/theunfinishedsong", "category": "health", "landing_file": "the-unfinished-song.html", "asset_file": "The_Unfinished_Song.html", "cover_emoji": "\U0001f3b5"},
 ]
 
 
