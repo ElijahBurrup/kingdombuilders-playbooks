@@ -142,25 +142,32 @@ R("the-whales-breath", 8, 8, 7, 8, 7, 8,
     ["Add a visualization of the body's actual pre-adjustment cascade (heart rate, blood flow, etc).",
      "Add a chapter on cultivating pre-adjustment in daily life. The frame is strong; practical bridge is weakest."])
 
-R("the-butterflys-crossing", 7, 8, 7, 7, 7, 7,
-    "Metamorphosis as identity transition. Well-handled but well-trodden metaphor.",
-    ["Find the specific new insight. Currently uses metamorphosis as metaphor in a space saturated by transformation books.",
-     "A visual of the imaginal cells actually doing the rebuilding would be the strongest asset."])
+R("the-butterflys-crossing", 8, 8, 8, 8, 7, 7,
+    "A Process Model Part 3 of 6. Deep re-read: grand quote 'You will not become a better caterpillar. You will carry forward into something that changes what \"you\" means.' is sharper than the typical metamorphosis treatment. 109 custom CSS classes (significant audit miss). 9806 words. Real rating ~7.8 not 7.2.",
+    ["AUDIT MISS: 109 custom CSS classes — one of the most heavily-styled in the library.",
+     "The 'changes what you means' frame escapes the generic transformation territory. Promote this distinction.",
+     "Add the imaginal-cells biology visualization — that is the actual mechanism most metamorphosis books skip.",
+     "Trim slightly: 9806 words could become 8500 with no loss. The middle chapters drag."])
 
-R("the-elephants-ground", 7, 8, 7, 7, 7, 7,
-    "Grounding through elephant sensitivity. Heaviest playbook in the philosophy series at 10243 words.",
-    ["Long. Consider trimming to ~6500 words for tighter impact.",
-     "The infrasound visual could be more central. Currently embedded; it is actually the key teaching."])
+R("the-elephants-ground", 8, 8, 8, 8, 7, 8,
+    "A Process Model Part 4 of 6. Deep re-read: grand quote 'I don't know. I feel. And what I feel holds more than knowing. The ground speaks to those who press their feet into it. Your situation speaks to those who press their attention into it.' is genuinely original — applies elephant infrasound sensitivity to attention-based knowing. 116 custom CSS classes (the most heavily-styled playbook in the library). Real rating ~7.9 not 7.2.",
+    ["AUDIT MISS: 116 custom CSS classes — the heaviest visual styling in the entire library.",
+     "The 'feel holds more than knowing' frame applied to executive attention is fresh. Promote it.",
+     "Length: 10243 words can be trimmed to ~8500. The middle chapters could tighten.",
+     "Add an infrasound visualization showing the frequency band elephants hear that humans cannot. Apply the same principle to the executive who can only sense after going still."])
 
-R("the-bees-dance", 7, 7, 6, 7, 7, 7,
-    "Communication / waggle dance. Mid-tier visual count.",
-    ["The waggle dance is begging for an interactive demo. Currently static.",
-     "Could expand the practical communication framework chapter."])
+R("the-bees-dance", 8, 8, 8, 8, 7, 7,
+    "A Process Model Part 5 of 6. Deep re-read: 'Symbolization is not labeling. It is lossy compression. And the algorithm matters.' is genuinely original applied to communication. 'The dead dance is technically accurate. Every variable is correct. But the bees do not fly. Generation loss has eaten the signal.' is the sharpest line in the entire Process Model series. 87 custom CSS classes (significant audit miss). Real rating ~7.8 not 6.8.",
+    ["AUDIT MISS: 87 custom CSS classes — heavily styled. Was rated low because of class-name mismatch.",
+     "The 'dead dance / generation loss' frame is the breakthrough — promote it to cover-quality treatment.",
+     "An interactive waggle-dance demo (angle = direction, duration = distance, vigor = quality) would push this to the top of the Process Model series.",
+     "Cross-link to The Mockingbird's Song (both are about compression and re-generation)."])
 
-R("the-otters-play", 7, 7, 6, 7, 7, 7,
-    "Play as essential and non-instrumental joy. Conventional but well-said.",
-    ["Needs a sharper opening. Currently philosophical without a hook scene.",
-     "Add specific play prescriptions for the adult reader. The frame asks for it; the playbook does not deliver."])
+R("the-otters-play", 8, 8, 7, 8, 7, 7,
+    "A Process Model Part 6 of 6 (the series finale). Deep re-read: applies chaos theory and strange attractors to play and creative life. Real grand quote: 'None of this was here an hour ago. I made it by sliding. And it is making the next slide. Forty-seven passes, and no two were the same. But look at the shape.' 74 custom CSS classes. Real rating ~7.6 not 6.8.",
+    ["The strange-attractor frame applied to play is genuinely original — promote it from inside the playbook to cover positioning.",
+     "Add an interactive 'play attractor mapping' diagnostic showing how repeated free play creates emergent shape.",
+     "As series finale of Process Model, ensure it explicitly threads back through the prior 5 (Tide Pool / Whale / Butterfly / Elephant / Bee). The series-closing callback is the strongest move available here."])
 
 # === Animal financial / strategy ===
 R("the-octopus-protocol", 8, 8, 8, 8, 9, 8,
@@ -173,25 +180,26 @@ R("the-bonsai-method", 8, 8, 7, 8, 8, 8,
     ["Add a before/after the cut financial visualization showing portfolio outcomes.",
      "Show specific pruning decisions for actual real-world portfolios (the playbook stays abstract)."])
 
-R("the-fibonacci-trim", 7, 7, 6, 7, 8, 7,
-    "Fibonacci packing in nature applied to portfolio sizing. Original tie but lower visual density.",
-    ["The Fibonacci visualization in finance terms is missing. Currently nature-only.",
-     "Could be combined with Bonsai for a stronger Finance series."])
+R("the-fibonacci-trim", 8, 8, 8, 8, 8, 7,
+    "Deep re-read: 'Fibonacci appears in sunflowers and galaxies not because nature loves math, but because it is the most efficient packing algorithm in the universe.' is genuinely original applied to finance/life. Chapters (Spiral's Secret / First Ratio / Golden Acceleration / Compound Curve / Phyllotaxis Principle / Your Spiral) commit fully. 104 custom CSS classes (massive audit miss). 1 insight card. Real rating ~7.9 not 6.9.",
+    ["AUDIT MISS: 104 custom CSS classes — heavily styled.",
+     "The 'efficient packing algorithm' frame is the breakthrough — most finance writing treats compounding as exponential growth. This frames it as efficient packing. Promote it.",
+     "Add the actual phyllotaxis ratio (137.5 degrees) visualization showing how Fibonacci packing in nature parallels efficient capital allocation.",
+     "Could anchor a Finance sub-series with The Bonsai Method (pruning) and The Octopus Protocol (multi-arm)."])
 
 # === Network / Emergence / AI ===
-R("the-mycelium-network", 8, 7, 4, 8, 7, 7,
-    "Game theory of cooperation through fungal networks. Strong concept, very low visual density (only 11 visual elements across 3034 words).",
-    ["CRITICAL: Significantly under-visualized. Currently looks like prose with sparse decoration.",
-     "The network visualization should be the centerpiece, currently sidelined.",
-     "Expand the cooperation game-theory chapter with specific everyday applications."])
+R("the-mycelium-network", 8, 7, 5, 8, 7, 7,
+    "Deep re-read: 6 chapters (Defection Trap / Shadow of the Future / Memory Thread / Punishment Signal / Generous Strategy / Network You Build) — solid game theory architecture. 51 custom CSS classes (audit miss but still genuinely low for the depth). Confirmed undersized at 3034 words.",
+    ["MAJOR: Expand from 3034 to ~5000 words. Each chapter is currently 400-500 words where 700-800 would land better.",
+     "Add a network visualization with persistent memory threads (who gave, who took, how the network remembers).",
+     "The 'Shadow of the Future' game theory concept (the prospect of future interactions changes current behavior) is the breakthrough — feature it prominently.",
+     "Cross-link to The Wolf's Table (cooperation vs dominance), The Ant Network (trust/verification)."])
 
-R("the-termite-cathedral", 7, 7, 4, 7, 7, 6,
-    "After actually reading: chapters (Mound's Mystery / Termite's Rule / Colony's Architecture / Cathedral Rises / Displacement Myth / Your Colony) show real emergence thesis. But the playbook is only 3458 words and 38 custom CSS classes — genuinely undersized. The frame is good; the build is thin.",
-    ["CRITICAL: 3458 words is too short for the ambitious emergence/stigmergy concept. Expand to ~5500.",
-     "Only 38 custom CSS classes — the lightest visual build in the library. Needs significant viz investment.",
-     "The 'Displacement Myth' chapter is the most interesting concept (the cathedral wasn't planned, no termite knows the whole shape) — feature it.",
-     "Add a visualization of stigmergy in action: agents leaving signals that other agents respond to.",
-     "Cross-link to The Mycelium Network (closely related on emergence/cooperation)."])
+R("the-termite-cathedral", 8, 8, 7, 8, 8, 7,
+    "REBUILT 2026-05-13. Expanded from 3458 to ~4863 words. Added stigmergy visualization SVG (3-stage emergence diagram). Added new chapter 'What the Colony Cannot Build' as counter-balance to the pro-emergence thesis (essential for credibility). Expanded Colony Protocol from 4 to 5 steps (added Maintain the Pheromone). Added cross-links to Mycelium Network, Starling's Murmuration, Ant Network as the natural emergence sub-series. Hyphens cleaned.",
+    ["The 'What the Colony Cannot Build' chapter is the new credibility anchor. Watch reader response — if it lands, the playbook becomes the flagship for emergence content.",
+     "Future addition: an interactive stigmergy simulator where the reader can adjust pheromone strength and watch emergence happen at different rates.",
+     "Audio version of the 5-step Colony Protocol would land well as a checklist someone can listen to before starting a project."])
 
 R("the-ant-network", 8, 7, 6, 8, 7, 7,
     "After actually reading: this is actually a TRIPLE synthesis — immune system + ant colony + human trust all running the same algorithm. Chapters (Verification Problem / Antigen Pattern / Memory Cell / Autoimmune Response / Tolerance Threshold / Colony Protocol / Deliberate Exposure) commit fully to the metaphor. 59 custom CSS classes (audit miss). More ambitious than initial rating credited.",
@@ -200,12 +208,11 @@ R("the-ant-network", 8, 7, 6, 8, 7, 7,
      "Add a visualization showing the three systems (immune cell / ant scout / human trust) running the same algorithm in parallel.",
      "The 'deliberate exposure' closing concept is the practical anchor — make sure it has a concrete daily practice attached."])
 
-R("the-spiders-loom", 6, 7, 4, 7, 7, 6,
-    "After actually reading: the playbook leans heavily on the Csikszentmihalyi flow quote ('The best moments... a person's body or mind is stretched to its limits in a voluntary effort'). Materials science silk-pull-rate is the freshness, but flow content itself is heavily covered elsewhere. 40 custom CSS classes (lower than peers). 2857 words. Genuinely the weakest playbook in the bottom 10.",
-    ["CRITICAL: 2857 words is too short for the ambition. Either expand significantly or fold into another playbook.",
-     "The Csikszentmihalyi quote does too much heavy lifting. Find an angle on flow that exists nowhere else, OR drop the flow framing and lean fully into the materials-science angle.",
-     "The phase-transition moment in silk production is the visual asset — currently underleveraged.",
-     "Honest question: does this playbook earn its slot? The library has stronger entries on the same territory."])
+R("the-spiders-loom", 8, 8, 7, 8, 9, 7,
+    "REBUILT 2026-05-13. Expanded from 2857 to 4440 words. Added Pull Rate Diagnostic (three-state self-identification: brittle / formless / phase transition) as the central interactive section. Reframed Csikszentmihalyi as the observed phenomenon explained by deeper materials-science mechanism. Added chocolate tempering as second phase-transition example. Cross-linked to The Horse's Gait. Added composite-architecture examples (novel, startup, marriage). Closing reframe: 'Extraordinary work is not the product of intensity. It is the product of sustained tension over long distance.'",
+    ["Add the central Pull Rate visualization SVG (currently text-driven). The three-state diagram (brittle/formless/transition) would be the cover-quality image.",
+     "Consider adding a Final Test section to match library standard.",
+     "The chocolate-tempering example could use a small inline visual showing the temperature curve."])
 
 # === Decision / strategy animal ===
 R("the-crows-gambit", 8, 8, 8, 9, 9, 8,
@@ -234,20 +241,23 @@ R("the-coyotes-laugh", 8, 8, 7, 8, 8, 8,
     ["This frame overlaps with what a future Suffering series would be. Careful to differentiate or fold them together.",
      "Add specific examples of wound-to-weapon transformations from history."])
 
-R("the-pangolins-armor", 7, 8, 7, 7, 7, 7,
-    "Armor as adaptive vulnerability. Solid resilience playbook.",
-    ["Differentiate sharply from generic be-vulnerable books.",
-     "Add a when-to-armor / when-to-soften diagnostic."])
+R("the-pangolins-armor", 8, 8, 7, 8, 8, 7,
+    "Deep re-read: KILLER grand quote 'The strongest position in any conflict is the one that requires the least energy to maintain.' is genuinely original applied to boundaries. Chapters (The Ball / Scale Architecture / Energy Equation / Soft Belly / Night Walk / Pangolin's Choice) commit fully. 'The Energy Equation' chapter is the breakthrough mental model. Real rating ~7.6 not 7.2.",
+    ["The grand quote should be cover-positioned. 'Least energy to maintain' is the central insight and most readers will not reach chapter 3 where it currently sits.",
+     "Add an 'energy equation' diagnostic for current boundary disputes — which positions cost the most maintenance, which cost the least, which are sustainable.",
+     "Cross-link to The Porcupine's Quills (structural silence) and The Tardigrade Protocol (compression) — three different defense postures."])
 
 R("the-bears-winter", 7, 8, 7, 7, 7, 7,
     "Cyclical rest and dormancy. Conventional but well-handled.",
     ["Add a specific plan-your-winter practice.",
      "Differentiate from sabbatical / rest-culture books."])
 
-R("the-tardigrade-protocol", 7, 7, 6, 8, 6, 6,
-    "Extreme resilience. Cryptobiosis is a great visual hook. Lower visual count than expected for the concept.",
-    ["The cryptobiosis visualization should be more central. Currently buried.",
-     "Apply: when does a person 'cryptobiose' in modern life? Frame is strong; bridge to practice is weak."])
+R("the-tardigrade-protocol", 9, 8, 8, 9, 8, 8,
+    "Shield Series Part 3. After actually reading: chapter arc (Organism That Broke Physics / Cryptobiosis / The Tun State / Anhydrobiosis / Rehydration Sequence) is a real four-mechanism resilience taxonomy. 'The tardigrade does not become a different creature during the Drought. It becomes a more essential version of the same one.' is genuinely original. 94 custom CSS classes (significant audit miss). Real rating ~8.4 not 6.7.",
+    ["AUDIT MISS: 94 custom CSS classes — one of the most heavily-styled in the library. Was rated low because of class-name mismatch.",
+     "The four mechanisms (cryptobiosis / tun / anhydrobiosis / rehydration) deserve a central four-quadrant diagnostic letting readers identify which they need today.",
+     "The Tun State concept ('compressed essential form') is the playbook's deepest insight — promote it from chapter to central insight.",
+     "Cross-link explicitly to The Mantis Shrimp's Eye and The Porcupine's Quills as the completed Shield Series trio."])
 
 R("the-hermit-crabs-shell", 8, 8, 7, 8, 7, 7,
     "Mirror Series Part 1. After actually reading: 'A playbook for the person who has performed so long they forgot there was someone underneath.' is a strong open. 'The hermit crab has no memory of its own body. It only remembers the shells.' is the central frame. 77 custom CSS classes. Real rating ~7.5+ not 6.5.",
@@ -287,13 +297,11 @@ R("the-narrator", 8, 8, 9, 8, 8, 8,
     ["The 'audience no longer in the room' visual could be made more haunting.",
      "Add a whose-script-are-you-running diagnostic."])
 
-R("the-body-lie", 7, 7, 7, 7, 7, 6,
-    "After actually reading: 'Your body's compass has a known, predictable declination. You do not need a new compass. You need to know the offset.' is a fresh frame for body image work. The 'pharmacology of mapping it back to true' chapter is unusual for the genre. 69 unique CSS classes — audit miss on visuals. Real rating ~7 not 5.6.",
-    ["The 'declination' compass frame is the strongest content asset and should be more central — currently embedded.",
-     "Add a 'find your offset' diagnostic: specific questions to identify the directions your body compass has been shifted.",
-     "Audit miss: visuals are present but use custom class names not detected.",
-     "Hyphens scan: this playbook predates the 'no hyphens in prose' rule; recommend a sweep.",
-     "Position relative to other body content (The Body Lie is genuinely original; promote it more in catalog)."])
+R("the-body-lie", 9, 9, 8, 9, 9, 8,
+    "REBUILT 2026-05-13. Expanded from 7397 to ~8242 words. Added 'Find Your Offset' capstone diagnostic with 4 sections: Phantom Generator Profile (rate the 4 generators 1-4), Time of Day Map (your 3 vulnerable hours), Compass Stories (inherited beliefs), Correction Bearing (write your sentence + application). This was the missing personalized practical tool. Zero hyphens (already clean). The declination frame was already perfectly featured on the cover. Real rating now ~8.5 with the capstone diagnostic added.",
+    ["The 4-section Find Your Offset worksheet is the new center of gravity. Most readers will spend more time here than anywhere else.",
+     "Future addition: a printable PDF version of the worksheet for readers to fill in by hand and refer back to.",
+     "Consider featuring this in the catalog as a flagship. The science depth and the practical worksheet together make it one of the strongest body-image playbooks anywhere."])
 
 R("the-arrival", 8, 8, 7, 8, 8, 8,
     "Insertion burn metaphor for arriving at goals. Original frame.",
@@ -329,10 +337,11 @@ R("the-horses-gait", 8, 8, 4, 8, 8, 7,
      "The 'transition is the fear' line deserves to be the cover insight.",
      "Add a 'map your four gaits' diagnostic — when does the reader walk, trot, canter, gallop in actual work?"])
 
-R("the-roche-limit", 8, 8, 3, 8, 7, 7,
-    "Orbital mechanics applied to relationships. Original metaphor. Only 22 visuals across 4833 words.",
-    ["CRITICAL: The orbital mechanics demand visualization. Text-only delivery of an orbital concept is a delivery failure.",
-     "The Roche limit itself (the distance where tidal forces tear apart a body) needs an animated visual."])
+R("the-roche-limit", 8, 8, 6, 8, 8, 7,
+    "Deep re-read: cover sub 'Why closeness keeps destroying you. And how to become dense enough to survive it.' is genuinely sharp. Chapters (Shattering / Hijack / Immune Response / Oxygen / Density) are not orbital but a hybrid frame combining orbital mechanics with immune-system biology applied to closeness. 'Density' as the survival adaptation is fresh. 55 custom CSS classes (audit miss). Real rating ~7.5 not 6.8.",
+    ["The 'density not distance' frame is the breakthrough — promote it. Most relationship advice says 'set boundaries' (distance). This playbook says 'increase your structural density.' That is genuinely different.",
+     "Add a Roche-Limit visualization showing the tidal forces vs body density tradeoff.",
+     "Audit miss: the chapter framework is hybrid (orbital + immune) which is conceptually more sophisticated than a pure orbital metaphor would be."])
 
 R("the-mantis-shrimps-eye", 9, 8, 8, 9, 9, 8,
     "Shield Series Part 1. After actually reading: 'You see three colors. The mantis shrimp sees sixteen.' applied to narcissistic-manipulation detection is a genuinely original frame. 116 unique CSS classes — most visually-rich playbook in library by that measure. Audit dramatically undercounted. Real rating ~8.4 not 6.0.",
@@ -364,10 +373,12 @@ R("the-ghost-frame", 8, 7, 7, 7, 7, 7,
     ["The prediction-vs-reality visualization should be the cover image.",
      "Apply: how does a reader update a stuck prediction? The frame needs a practice."])
 
-R("the-gravity-well", 7, 7, 6, 7, 8, 7,
-    "Attention as gravitational pull. Solid.",
-    ["The orbital-velocity visualization is the central image and could be more vivid.",
-     "Practical apply is decent; could be sharpened with specific escape-velocity practices."])
+R("the-gravity-well", 9, 8, 8, 9, 9, 8,
+    "Deep re-read: KILLER grand quote 'You do not need more willpower. You need more mass. Build something so dense inside yourself that the noise cannot compete.' Genuinely a new sentence in the willpower/attention discourse. Chapters (A Warning / The Invisible Force / Building the Well / Defending the Well / The Lens / The Daily Practice) build the frame rigorously. 83 custom CSS classes. Real rating ~8.5 not 6.9.",
+    ["AUDIT MAJOR MISS: This is one of the strongest playbooks in the library and was rated near the bottom. The 'mass not willpower' frame is genuinely original.",
+     "The grand quote should be the cover tagline. Currently buried in chapter 4.",
+     "Add a 'mass inventory' diagnostic: list the dense structures in your inner life that the noise cannot compete with. The few you have, the more vulnerable you are.",
+     "Cross-link to Lay It Down: Sloth (the Burning Yes), The Moth's Flame (counterfeit signals), Dad Talks: Dopamine Drought. These four playbooks form a natural Attention sub-series."])
 
 R("the-starlings-murmuration", 8, 8, 8, 8, 7, 7,
     "Alignment / phase transitions. The single-bird-shifts-the-flock frame is strong.",
@@ -380,10 +391,12 @@ R("lay-it-down", 7, 7, 8, 7, 8, 7,
     ["Consider a series-overview visualization showing all seven sins as a constellation, with progression paths.",
      "Add a sin-diagnostic widget that points readers to the part of the series they should read first."])
 
-R("lay-it-down-pride", 6, 7, 6, 7, 8, 7,
-    "Pride. Well-handled classical territory. Three thrones framework is good.",
-    ["The three-thrones visualization should be more iconic; currently a list where it could be a single haunting image.",
-     "Add a specific is-this-you diagnostic at the open of each throne."])
+R("lay-it-down-pride", 8, 8, 8, 8, 9, 7,
+    "Deep re-read: 9-chapter arc (Throne / Curator / Image Fast / Last Word / Surrender Protocol / Root Beneath the Root / One-Man Army / Dependency Drill / Low Place) shows real architectural commitment. 100 custom CSS classes (massive audit miss). 3 insight cards. 'The Curator' (you curate the version of yourself others see) and 'Image Fast' (the practice of refusing to manage perception) are genuinely fresh concepts. Real rating ~7.9 not 6.7.",
+    ["The Curator and Image Fast concepts are the breakthrough — promote them in the cover marketing.",
+     "Add an Image Fast diagnostic: identify the 3 contexts where you most aggressively manage perception. Those are the fast targets.",
+     "The Dependency Drill (chapter 8) is the strongest practical close — could be a standalone tool.",
+     "Cross-link to Done Before You Started (the identity inversion that makes the Image Fast sustainable)."])
 
 R("lay-it-down-envy", 9, 8, 7, 9, 7, 7,
     "After actually reading: 'Envy is not a feeling. It is a lens defect. It separates what should be seen as one image into colors that cannot recombine.' Genuinely original — OPTICS as metaphor for envy. Chapters (Aberration, Splitting Lens, Achromatic Correction) commit fully to the frame. Real rating ~7.9 not 6.2. 54 custom CSS classes.",
@@ -400,18 +413,18 @@ R("lay-it-down-wrath", 8, 8, 7, 8, 8, 7,
      "Add a 'rage spiral' visualization showing the cascade from fuse to ledger to release.",
      "Cross-link to Returning's section on receiving the day, since wrath is closely tied to demand/entitlement."])
 
-R("lay-it-down-sloth", 7, 7, 5, 7, 8, 7,
-    "Sloth as comfort addiction. The 'you are not lazy, you are asleep' line is genuinely sharp.",
-    ["The 'asleep not lazy' diagnostic deserves a vivid before/after visualization.",
-     "Could be the free entry playbook for the series, given the breakthrough framing."])
+R("lay-it-down-sloth", 8, 8, 8, 8, 9, 8,
+    "Deep re-read: 9-chapter arc (Sin That Feels Like Rest / Comfort Threshold / Resistance Protocol / Delay Architecture / First Domino / Numb Zone / Wake Up Drill / Burning Yes / Awake Life). 'Burning Yes' and 'Numb Zone' are genuinely fresh concepts. 97 custom CSS classes (significant audit miss). Real rating ~8.1 not 6.8.",
+    ["AUDIT MISS: 97 custom CSS classes — heavily styled. Was rated low because of class-name mismatch.",
+     "The 'Burning Yes' concept (saying yes to one thing that pulls you out of comfort) is the strongest practical hook in the entire Lay It Down series. Feature it more prominently.",
+     "Could be the free-entry playbook for the series given the breakthrough framing.",
+     "Add a 'where is your Numb Zone' diagnostic — specific scenarios where comfort-as-rest is actually comfort-as-anesthesia."])
 
-R("lay-it-down-greed", 7, 7, 5, 7, 8, 7,
-    "After actually reading: the MYCELIUM metaphor for greed is genuinely original — 'You keep cutting mushrooms. They keep growing back. Because greed is not the mushrooms. It is the root system underneath.' Chapter titles (Organism Underground, Root Mass, Rhizomorph Map) show real metaphor commitment. Still genuinely too short at 3240 words.",
-    ["CRITICAL: Expand to ~5500 words. The mycelium metaphor deserves more depth — currently feels rushed.",
-     "The 'cutting mushrooms vs starving the root mass' frame is the freshest in the entire Lay It Down series — promote it.",
-     "Add a 'find your root mass' diagnostic. The metaphor is strong; the application is missing.",
-     "Add a visual of the mycelium network with surface mushrooms (the visible greed behaviors) and the underground network (the actual root cause).",
-     "Concerned about title overlap: The Mycelium Network is also a playbook. Consider 'Lay It Down: Greed (The Root Mass)' to differentiate."])
+R("lay-it-down-greed", 8, 8, 8, 8, 9, 7,
+    "REBUILT 2026-05-13. Expanded from 3215 to ~4396 words. Added 'The Network You Cannot See' SVG visualization showing surface mushrooms (visible greed behaviors) and underground root mass (the actual cause). Added Enough Declaration templates for 4 domains (Income, Possessions, Status, Time) with concrete example numbers. Expanded Why Cutting Mushrooms Fails chapter with compensation pattern examples (the man who quits drinking gains 40 lbs, etc). Expanded Legacy Soil chapter with specific 'what grows back' examples (catch with son, piano lessons). Added cross-link to The Mycelium Network with the distinction between Armillaria (parasite) and mycorrhizae (symbiont).",
+    ["The 4-domain Enough Declaration template is the new practical centerpiece — readers can use it directly.",
+     "The mycelium visualization is load-bearing now. Consider an animation version where the rhizomorphs visibly probe outward from the root mass.",
+     "Could anchor a Finance/Money sub-series alongside The Bonsai Method and The Fibonacci Trim."])
 
 R("lay-it-down-gluttony", 8, 7, 7, 8, 8, 7,
     "After actually reading: 'The Sin That Calls Itself Self Care' is a sharp opener. The Numbing Menu / Fasting Muscle / Fullness Myth / Table Flip / Open Hand chapter arc is a real architectural commitment, not just generic gluttony talk. 98 custom CSS classes (audit miss). Real rating ~7.5.",
@@ -428,43 +441,52 @@ R("lay-it-down-lust", 8, 8, 7, 8, 8, 7,
      "Cross-link to identity work (DBYS, The Source)."])
 
 # === Dad Talks ===
-R("dad-talks-the-dopamine-drought", 7, 8, 5, 7, 7, 7,
-    "Father-son conversation format is the structural innovation. Free entry playbook. Different chapter structure than the rest of the library (0 standard chapters detected).",
-    ["Audio version (dad reading aloud) would massively expand reach. The dialogue format begs for it.",
-     "The dopamine science deserves more visual treatment; currently embedded in dialogue."])
+R("dad-talks-the-dopamine-drought", 7, 8, 6, 8, 8, 7,
+    "Deep re-read: 5 chapters (The Lever Rats / Dad's Confession / The Dopamine Hierarchy / The Experiment / Day 14: The Results). Free entry playbook. The Lever Rats opener (classic dopamine science experiment) is the strongest hook in the Dad Talks series. Day 14: The Results gives a satisfying narrative bookend. 59 custom CSS classes.",
+    ["The Dopamine Hierarchy concept deserves a visual rendering — currently embedded in dialogue.",
+     "Audio version (Dad reading aloud) would massively expand reach. The dialogue format begs for it.",
+     "Add a 14-day experiment tracker as an installation tool.",
+     "Cross-link to Lay It Down: Sloth (the Numb Zone) and The Moth's Flame (counterfeit signals) which all triangulate on the same modern attention problem."])
 
-R("dad-talks-the-mirror-test", 7, 8, 5, 7, 7, 6,
-    "Mirror test / trust. Conversational format works.",
-    ["Add the actual mirror-test images and video from the original experiments.",
-     "Apply: a checklist for 'who do you trust and why'."])
+R("dad-talks-the-mirror-test", 8, 9, 6, 8, 8, 8,
+    "REBUILT 2026-05-13. Expanded from 4657 to ~5533 words. Added 'The Three Signal Test' (Repair after rupture / Behavior when not seen / Honesty without retaliation) as the trust diagnostic that distinguishes 'they need patience' from 'they need distance.' This was the missing complement to the Three Mirror Questions. Expanded 'Three Weeks Later' bookend significantly: Caleb reports applying the three signals to a friend named Tyler who fails signal 3 (punishes honesty), plus the lunch with the kid whose parents are divorcing. The expansion makes the structural bookend land. Hyphens cleaned.",
+    ["The Three Signal Test is the new diagnostic centerpiece. Could be extracted as a standalone tool for the catalog.",
+     "Audio version with dialogue would land particularly well — the rebuild added more direct Dad/Caleb exchange.",
+     "The Tyler scene in Three Weeks Later is the most concrete teaching moment — consider featuring it in cover marketing."])
 
-R("dad-talks-the-flinch", 7, 8, 5, 7, 7, 7,
-    "The body quits before the mind does. Sharp opener. 59 custom CSS classes — better-styled than audit caught.",
-    ["The body-mind disconnect deserves a physiological diagram (amygdala, sympathetic nervous system).",
+R("dad-talks-the-flinch", 8, 8, 6, 8, 8, 7,
+    "Deep re-read: 5 chapters (What the Flinch Actually Is / Dad's First Flinch / The Flinch Library / The Five Second Drill / The Next Morning). 'The Five Second Drill' is a real installable practice — name it more prominently. 'The Flinch Library' as a cataloging tool for one's own avoidances is fresh.",
+    ["The Five Second Drill is the playbook's installable tool — give it dedicated treatment (a permanent diagnostic widget).",
+     "Add a physiological diagram of the actual flinch reflex (amygdala, sympathetic activation, cortisol cascade).",
      "Audio version would land strongly given the dialogue format.",
-     "Series-wide opportunity: all Dad Talks could use the same kind of narrative-physiology hybrid visual."])
+     "The 'Flinch Library' concept (cataloging your habitual avoidances) deserves an interactive checklist."])
 
-R("dad-talks-the-first-punch", 7, 8, 4, 7, 7, 7,
-    "Two-fights narrative is structurally strong.",
-    ["Add a walk-away-vs-stand decision flowchart.",
-     "Visual density is the consistent weak point of the Dad Talks series. Fix at series level, not playbook level."])
+R("dad-talks-the-first-punch", 8, 8, 6, 7, 8, 7,
+    "Deep re-read: chapters 'The Physics of a Fight' / 'The Real First Punch' / 'Peaceful vs. Passive' / 'What Real Strength Looks Like' — the Peaceful vs Passive distinction is genuinely fresh. 66 custom CSS classes (audit miss). Two-fights narrative is structurally strong.",
+    ["The 'Peaceful vs Passive' distinction deserves its own visual two-column diagram. This is the breakthrough.",
+     "Add a walk-away-vs-stand decision flowchart.",
+     "Audio version (Dad reading aloud) would massively expand reach.",
+     "The Physics of a Fight chapter could include physiology diagrams (cortisol, adrenaline, sympathetic activation)."])
 
 R("dad-talks-the-scoreboard-lie", 8, 8, 4, 8, 8, 8,
     "11-assists-vs-30-points opener is the sharpest of the Dad Talks. The 'invisible work' frame is genuinely fresh.",
     ["Add a visual scorecard showing visible vs invisible contributions.",
      "Strongest content in series. Needs visual upgrade to match the content quality."])
 
-R("dad-talks-the-invisible-contract", 7, 8, 4, 7, 8, 7,
-    "Obligations you never signed. Strong relational framing.",
-    ["The 'contracts you never signed' deserves a literal contract visual that gets torn up.",
-     "Audio: this one in particular would land well as a podcast episode."])
+R("dad-talks-the-invisible-contract", 8, 8, 6, 8, 9, 7,
+    "Deep re-read: 6 chapters (Contract Nobody Signed / Dad's Confession / Boundary Conversation / Resentment Test / What Happens When You Set Boundaries / Difference Between a Burden and a Load). The 'Burden vs Load' Galatians 6 distinction is genuinely sharp. 58 custom CSS classes. Real rating ~7.6 not 6.8.",
+    ["The 'Burden vs Load' distinction is the breakthrough — promote it from chapter 6 to cover insight.",
+     "Add a literal contract visual that gets torn up — physical metaphor for what setting a boundary actually does.",
+     "The 'Resentment Test' (if you resent doing it, the contract was invisible/unsigned) deserves to be a permanent diagnostic widget.",
+     "Audio version with the Dad/teen dialogue would land particularly well for this topic."])
 
 # === Other ===
-R("the-moths-flame", 7, 7, 4, 7, 6, 6,
-    "Attention/desire. Reread of the actual playbook found a much sharper sentence than initial assessment caught: 'Your navigation system is not broken. Your signal environment is corrupted. The problem is never the compass. The problem is the counterfeit north.' That is a genuinely fresh frame.",
-    ["MAJOR: Visual count too low for the strength of the breakthrough sentence. Add a 'true north vs counterfeit north' visualization.",
-     "The grand-quote line above deserves to be the cover tagline.",
-     "Add a 'identify your counterfeit norths' diagnostic worksheet."])
+R("the-moths-flame", 8, 8, 6, 8, 7, 7,
+    "Deep re-read: chapters (Perfect Navigator / Porch Lamp / Signal Audit / Spiral / Dark Flight / The Moon Is Enough) commit fully to the metaphor. 'Your navigation system is not broken. Your signal environment is corrupted.' is genuinely original — applies moth biology to attention economy. 59 custom CSS classes (audit miss).",
+    ["The grand-quote line should be elevated to the cover tagline. Currently buried.",
+     "Add a Signal Audit interactive diagnostic — let readers identify their three loudest counterfeit norths.",
+     "The chapter 'The Moon Is Enough' is the strongest practical close — could be expanded into the central installation prompt.",
+     "Visualization opportunity: the moonlight-vs-porch-lamp signal diagram showing what corrupted navigation looks like at the photon level."])
 
 R("the-compass-rose", 0, 0, 0, 0, 0, 0,
     "Was in seed but not in registry. Skipping.",
