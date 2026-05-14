@@ -1564,8 +1564,11 @@ async def auth_register(
         ref_code = request.cookies.get("ref")
         if ref_code:
             await process_referral_cookie(user.id, ref_code, db)
+            print(f"Referral attributed: user={user.id} ref_code={ref_code}")
+        await db.commit()
     except Exception as e:
         print(f"Referral processing failed (non-critical): {e}")
+        await db.rollback()
 
     response = HTMLResponse(content="", status_code=200)
     set_session_cookie(response, str(user.id))
@@ -1716,8 +1719,11 @@ async def auth_google(
             ref_code = request.cookies.get("ref")
             if ref_code:
                 await process_referral_cookie(user.id, ref_code, db)
+                print(f"Referral attributed (oauth): user={user.id} ref_code={ref_code}")
+        await db.commit()
     except Exception as e:
         print(f"Referral processing failed (non-critical): {e}")
+        await db.rollback()
 
     response = HTMLResponse(content="", status_code=200)
     set_session_cookie(response, str(user.id))
