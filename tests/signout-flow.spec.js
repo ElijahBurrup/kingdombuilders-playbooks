@@ -23,10 +23,14 @@ test.describe("Sign Out flow on production", () => {
     ]);
     console.log("AFTER SIGN IN URL:", page.url());
 
-    // 2. Confirm we're signed in: Sign Out button should appear on the homepage
+    // 2. Confirm we're signed in: Sign Out should appear (drawer on narrow viewports)
     await page.goto(PROD + "/");
+    const isNarrow = (page.viewportSize()?.width || 9999) <= 780;
+    if (isNarrow) await page.locator(".nav-hamburger").click();
     const signOutBtn = page
-      .locator("button.nav-button", { hasText: "Sign Out" })
+      .locator(isNarrow ? ".nav-drawer button" : "button.nav-button", {
+        hasText: "Sign Out",
+      })
       .first();
     await expect(signOutBtn).toBeVisible({ timeout: 8000 });
     console.log("SIGN OUT BUTTON VISIBLE — confirmed logged in");
@@ -63,14 +67,16 @@ test.describe("Sign Out flow on production", () => {
     const status = await statusResp.json();
     console.log("AUTH STATUS AFTER LOGOUT:", JSON.stringify(status));
 
-    // 5. The Sign In button (anchor) should be back, no Sign Out button
+    // 5. The Sign In anchor should be back, no Sign Out button anywhere
     await page.goto(PROD + "/");
-    const signInLink = page.locator("a.nav-button", { hasText: "Sign In" }).first();
-    const signOutStill = page.locator("button.nav-button", { hasText: "Sign Out" });
+    if (isNarrow) await page.locator(".nav-hamburger").click();
+    const signInLink = page
+      .locator(isNarrow ? ".nav-drawer a" : "a.nav-button", { hasText: "Sign In" })
+      .first();
+    const signOutStill = page.locator("button", { hasText: "Sign Out" });
     console.log("SIGN IN VISIBLE:", await signInLink.isVisible());
     console.log("SIGN OUT STILL PRESENT:", await signOutStill.count());
 
-    // Hard assertions
     expect(status.signed_in).toBe(false);
     await expect(signInLink).toBeVisible({ timeout: 5000 });
     await expect(signOutStill).toHaveCount(0);
