@@ -202,7 +202,8 @@ Every new playbook requires ALL of these steps. Do not skip any.
 - [ ] Include: cover with animated particles, 4 chapter headers, scenes, viz boxes, think boxes, grand quotes, before/after pairs, breathe gates, final test (10 click-to-reveal questions), footer with scripture
 - [ ] Include all standard JS: progress bar, chapter pill, scroll reveal (IntersectionObserver), final test click handlers
 - [ ] Unique color palette per playbook (CSS custom properties)
-- [ ] **Run readability test**: `node tests/readability-check.js assets/The_Title.html` — fix ALL failures before proceeding
+- [ ] **Run readability test (static, fast)**: `node tests/readability-check.js assets/The_Title.html` — fix ALL failures before proceeding
+- [ ] **Run contrast audit (Playwright, authoritative)**: `PLAYBOOK_FILTER=The_Title npx playwright test tests/contrast-audit.spec.js --project=chrome-desktop` then `node tests/contrast-audit-summarize.js`. This walks the real DOM cascade and catches every text node below WCAG AA contrast. Required after any content edit or CSS change that affects this playbook.
 
 #### Formatting Rules (Mandatory)
 1. **Consistent margins**: ALL visual blocks (`.memory`, `.scene`, `.viz`, `.wisdom`, `.reflect`, `.dad-voice`, `.root-ck`, `.compare-table`, `.prompt`, `.final-test`) must use `margin: 40px 0`. No exceptions.
@@ -293,6 +294,11 @@ This powers three features: constellation map (`/constellation`), end-of-playboo
 - [ ] **The Compass** auto-routes new playbooks to their tagged pathway via NEAREST_PATHWAY — no Compass code changes needed unless a new Pathway is being added.
 
 ### Step 10: Commit & Push
+- [ ] **Re-run contrast pipeline before commit when changes touch any existing playbook**:
+  - `node tests/readability-check.js` (whole library, ~5s)
+  - `npx playwright test tests/contrast-audit.spec.js --project=chrome-desktop --reporter=dot` (~3 min for full library)
+  - `node tests/contrast-audit-summarize.js` (prints offender list, writes summary JSON)
+  - Fix any new failures before committing. The audit is required if your change touched any CSS rule that affects color/background/gradient, OR any HTML inside a dark container.
 - [ ] `git add` all changed files: assets/*.html, assets/pull-quotes/*.png, assets/pdf/*.pdf, assets/pdf-bookcut/*.pdf, static/*.html, static/index.html, api/routers/legacy.py, all seed scripts, CLAUDE.md
 - [ ] Commit with descriptive message
 - [ ] `git push origin master`

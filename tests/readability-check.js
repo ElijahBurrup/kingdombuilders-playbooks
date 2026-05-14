@@ -226,6 +226,79 @@ function checkFile(filePath) {
     }
   }
 
+  // ── Check 6: Dark inline text directly inside a dark container ──
+  // Catches the "ehyeh asher ehyeh in chapter banner" pattern. Conservative:
+  // only flags TRUE inline tags (em, dfn, i, code, strong) that appear inside
+  // a dark container in the HTML and would inherit a global dark-color rule.
+  //
+  // This is a fast smoke test. The Playwright DOM contrast audit
+  // (tests/contrast-audit.spec.js) is the authoritative check — it walks the
+  // real cascade. This static check exists to catch the most common bug fast.
+  const DARK_CONTAINERS = [
+    'ch-head', 'cover', 'finale', 'dark-panel', 'insight', 'memory-inner',
+    'gq', 'dad-voice', 'grand-quote'
+  ];
+  const INLINE_TAGS = ['em', 'strong', 'dfn', 'i', 'code'];
+
+  // Find global rules that set color on inline tags (no descendant combinator).
+  const ruleRe = /([^{}@]+)\{([^{}]+)\}/g;
+  let rm;
+  const darkInlineRules = [];
+  while ((rm = ruleRe.exec(allCss)) !== null) {
+    const selector = rm[1].trim();
+    if (!selector || selector.startsWith('@') || /print\b/.test(selector)) continue;
+    const decls = rm[2];
+    const colorMatch = decls.match(/(?:^|;)\s*color\s*:\s*([^;]+)/);
+    if (!colorMatch) continue;
+
+    const parts = selector.split(',').map(s => s.trim());
+    // Each part must be a single bare tag from INLINE_TAGS (no class, no descendant).
+    const globalInlineTagSel = parts.every(p =>
+      INLINE_TAGS.includes(p) || /^[a-z]+$/i.test(p) && INLINE_TAGS.includes(p)
+    );
+    if (!globalInlineTagSel) continue;
+
+    const fg = parseColor(resolveVar(colorMatch[1].trim(), cssVars));
+    if (!fg) continue;
+    const lum = relativeLuminance(fg);
+    if (lum >= 0.20) continue;
+
+    const tags = parts.filter(p => INLINE_TAGS.includes(p));
+    darkInlineRules.push({ selector, tags, color: colorMatch[1].trim(), luminance: lum });
+  }
+
+  // For each dark container in the HTML, find inline-tag descendants without
+  // an inline style color override. Use a tight 1500-char scope and only the
+  // FIRST instance per container/tag pair to keep noise low.
+  if (darkInlineRules.length > 0) {
+    for (const container of DARK_CONTAINERS) {
+      const containerRe = new RegExp(
+        '<[^>]*class="[^"]*\\b' + container + '\\b[^"]*"[^>]*>',
+        'g'
+      );
+      let cmatch;
+      const reportedInContainer = new Set();
+      while ((cmatch = containerRe.exec(html)) !== null) {
+        const scope = html.slice(cmatch.index, cmatch.index + 1500);
+        for (const r of darkInlineRules) {
+          for (const tag of r.tags) {
+            const key = container + '|' + tag;
+            if (reportedInContainer.has(key)) continue;
+            const re = new RegExp('<' + tag + '\\b([^>]*)>([^<]{3,})', 'i');
+            const im = scope.match(re);
+            if (!im) continue;
+            if (/style="[^"]*color\s*:/i.test(im[1] || '')) continue;
+            const preview = (im[2] || '').slice(0, 60).replace(/\s+/g, ' ');
+            errors.push(
+              `Dark inline text inside .${container}: <${tag}> "${preview}..." — global rule "${r.selector}" sets ${r.color} (luminance ${r.luminance.toFixed(2)}) which fades into the dark background. Scope the rule to a light parent or add a dark-container override.`
+            );
+            reportedInContainer.add(key);
+          }
+        }
+      }
+    }
+  }
+
   return { fileName, errors, warnings };
 }
 
