@@ -276,17 +276,159 @@ Seven returns.</p>
 <em>Returning</em> shows you the seven places where it lives in your house.</p>
 </div>
 
-<div class="domain-map">
-<div class="domain-map-label">The Seven Domains</div>
-<div class="domain-grid">
-<div class="domain-tile"><div class="domain-tile-label">Work</div></div>
-<div class="domain-tile"><div class="domain-tile-label">Body</div></div>
-<div class="domain-tile"><div class="domain-tile-label">Marriage</div></div>
-<div class="domain-tile"><div class="domain-tile-label">Time</div></div>
-<div class="domain-tile"><div class="domain-tile-label">Beauty</div></div>
-<div class="domain-tile"><div class="domain-tile-label">Children</div></div>
-<div class="domain-tile"><div class="domain-tile-label">Place</div></div>
+<div class="diagnostic-widget" id="domain-tracker">
+<style>
+#domain-tracker{margin:40px 0;border-radius:18px;overflow:hidden;border:2px solid rgba(212,168,67,0.3);background:linear-gradient(135deg,#FDFAF3,#F5EFE0);box-shadow:0 8px 28px rgba(14,15,26,0.12)}
+#domain-tracker .dt-head{background:linear-gradient(135deg,#1F2440,#3D4670);padding:24px 30px;text-align:center;color:#fff}
+#domain-tracker .dt-kicker{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:#E8C96A;margin-bottom:8px}
+#domain-tracker .dt-head h3{font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:800;color:#fff;margin:0 0 6px;letter-spacing:-0.01em}
+#domain-tracker .dt-head p{font-family:'Lora',serif;font-style:italic;font-size:0.9rem;color:rgba(255,255,255,0.7);margin:0 auto;max-width:500px}
+#domain-tracker .dt-body{padding:28px}
+#domain-tracker .dt-progress{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+#domain-tracker .dt-progress-bar{flex:1;height:8px;background:rgba(31,36,64,0.08);border-radius:4px;overflow:hidden}
+#domain-tracker .dt-progress-fill{height:100%;background:linear-gradient(90deg,#D4A843,#E8C96A);width:0%;transition:width 0.4s ease;border-radius:4px}
+#domain-tracker .dt-progress-text{font-family:'Nunito',sans-serif;font-weight:800;color:#1F2440;font-size:0.78rem;white-space:nowrap}
+#domain-tracker .dt-domains{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:18px}
+#domain-tracker .dt-domain{background:#fff;border:2px solid #ECE5CC;border-radius:12px;padding:14px;cursor:pointer;transition:all 0.2s;text-align:left}
+#domain-tracker .dt-domain:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(31,36,64,0.08);border-color:#D4A843}
+#domain-tracker .dt-domain.demand{background:linear-gradient(135deg,rgba(200,128,144,0.12),rgba(226,180,188,0.06));border-color:#C88090}
+#domain-tracker .dt-domain.opening{background:linear-gradient(135deg,rgba(232,184,112,0.14),rgba(245,224,168,0.06));border-color:#E8B870}
+#domain-tracker .dt-domain.received{background:linear-gradient(135deg,rgba(212,168,67,0.18),rgba(232,201,106,0.1));border-color:#D4A843}
+#domain-tracker .dt-domain-name{font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:800;color:#1F2440;margin-bottom:4px}
+#domain-tracker .dt-domain-insight{font-family:'Lora',serif;font-style:italic;font-size:0.72rem;color:#7A7E8E;line-height:1.4;margin-bottom:10px}
+#domain-tracker .dt-state-btns{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+#domain-tracker .dt-state-btn{padding:6px 4px;background:#fff;border:1.5px solid rgba(31,36,64,0.1);border-radius:6px;font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;color:#7A7E8E;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all 0.15s;line-height:1.3}
+#domain-tracker .dt-state-btn:hover{border-color:#D4A843;color:#1F2440}
+#domain-tracker .dt-state-btn.active.demand{background:#C88090;color:#fff;border-color:#C88090}
+#domain-tracker .dt-state-btn.active.opening{background:#E8B870;color:#fff;border-color:#E8B870}
+#domain-tracker .dt-state-btn.active.received{background:#D4A843;color:#fff;border-color:#D4A843}
+#domain-tracker .dt-rec{padding:20px;background:linear-gradient(135deg,#1F2440,#3D4670);color:#fff;border-radius:12px}
+#domain-tracker .dt-rec-kicker{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:#E8C96A;margin-bottom:8px}
+#domain-tracker .dt-rec-title{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:10px}
+#domain-tracker .dt-rec-text{font-family:'Lora',serif;color:rgba(255,255,255,0.85);line-height:1.6;font-size:0.92rem;margin:0}
+#domain-tracker .dt-rec-text strong{color:#E8C96A;font-weight:700}
+</style>
+
+<div class="dt-head">
+  <div class="dt-kicker">Interactive Tracker</div>
+  <h3>Where The Seeing Has Returned</h3>
+  <p>For each of the seven domains, mark the state. Demand. Opening. Received. The widget identifies which door to walk through next.</p>
 </div>
+<div class="dt-body">
+  <div class="dt-progress">
+    <div class="dt-progress-text">Domains received:</div>
+    <div class="dt-progress-bar"><div class="dt-progress-fill" id="dt-fill"></div></div>
+    <div class="dt-progress-text"><span id="dt-count">0</span> / 7</div>
+  </div>
+
+  <div class="dt-domains" id="dt-grid"></div>
+
+  <div class="dt-rec" id="dt-rec">
+    <div class="dt-rec-kicker">Begin where it resists</div>
+    <div class="dt-rec-title" id="dt-rec-title">Mark each domain to see your next door.</div>
+    <div class="dt-rec-text" id="dt-rec-text">The chapter that resists you the most is the door that will open the most. Mark the states honestly to see which domain to walk through next.</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const domains = [
+    { key: 'work', name: 'Work', insight: 'Trusted to you, not earned.', link: '/playbooks/read/returning#work',
+      receive: 'You see the job as a loan you were trusted with. The steward posture is alive.' },
+    { key: 'body', name: 'Body', insight: 'Your roommate, not your project.', link: '/playbooks/read/returning#body',
+      receive: 'You greet the body in the morning rather than managing it. The meeting has begun.' },
+    { key: 'marriage', name: 'Marriage', insight: 'A stranger you keep meeting.', link: '/playbooks/read/returning#marriage',
+      receive: 'You see your spouse without certainty. Familiarity has been replaced by recognition.' },
+    { key: 'time', name: 'Time', insight: 'Arrives in installments.', link: '/playbooks/read/returning#time',
+      receive: 'You receive the day rather than auditing it. The day is manna again.' },
+    { key: 'beauty', name: 'Beauty', insight: 'Increases by stopping.', link: '/playbooks/read/returning#beauty',
+      receive: 'You see the light on the wall. The pursuit has stopped. The seeing has returned.' },
+    { key: 'children', name: 'Children', insight: 'Not yours. You are theirs.', link: '/playbooks/read/returning#children',
+      receive: 'You see yourself as the gift sent to your child. The inversion has landed.' },
+    { key: 'place', name: 'Place', insight: 'You were placed here.', link: '/playbooks/read/returning#place',
+      receive: 'You see the yard as assignment, not backdrop. You stop looking for the door out.' }
+  ];
+
+  const widget = document.getElementById('domain-tracker');
+  const grid = widget.querySelector('#dt-grid');
+  const states = {};
+
+  domains.forEach(function(d){
+    states[d.key] = null;
+    const div = document.createElement('div');
+    div.className = 'dt-domain';
+    div.setAttribute('data-key', d.key);
+    div.innerHTML =
+      '<div class="dt-domain-name">' + d.name + '</div>' +
+      '<div class="dt-domain-insight">' + d.insight + '</div>' +
+      '<div class="dt-state-btns">' +
+        '<button class="dt-state-btn" data-key="' + d.key + '" data-state="demand">Demand</button>' +
+        '<button class="dt-state-btn" data-key="' + d.key + '" data-state="opening">Opening</button>' +
+        '<button class="dt-state-btn" data-key="' + d.key + '" data-state="received">Received</button>' +
+      '</div>';
+    grid.appendChild(div);
+  });
+
+  function update(){
+    let received = 0;
+    let demands = [];
+    let openings = [];
+    domains.forEach(function(d){
+      const tile = grid.querySelector('[data-key="' + d.key + '"]');
+      tile.classList.remove('demand','opening','received');
+      if(states[d.key]){
+        tile.classList.add(states[d.key]);
+        if(states[d.key] === 'received') received++;
+        else if(states[d.key] === 'demand') demands.push(d);
+        else if(states[d.key] === 'opening') openings.push(d);
+      }
+    });
+    const pct = Math.round((received/7)*100);
+    widget.querySelector('#dt-fill').style.width = pct + '%';
+    widget.querySelector('#dt-count').textContent = received;
+
+    const totalSet = received + demands.length + openings.length;
+    if(totalSet < 7){
+      widget.querySelector('#dt-rec-title').textContent = 'Mark the remaining ' + (7-totalSet) + ' domain' + (7-totalSet===1?'':'s') + ' to see your next door.';
+      widget.querySelector('#dt-rec-text').textContent = 'Demand: this domain feels heavy, costly, unwanted. Opening: you have started seeing it differently, but the reception is not stable. Received: you regularly see this domain as gift.';
+      return;
+    }
+
+    if(received === 7){
+      widget.querySelector('#dt-rec-title').textContent = 'All seven received.';
+      widget.querySelector('#dt-rec-text').innerHTML = '<strong>This is the rare full state.</strong> Hold it. The gift sight returns in flashes for most people; the seven simultaneously is the architecture working at full strength. Protect the conditions that produced it.';
+      return;
+    }
+
+    let next;
+    if(demands.length > 0){
+      next = demands[0];
+      widget.querySelector('#dt-rec-title').textContent = 'Start with: ' + next.name;
+      widget.querySelector('#dt-rec-text').innerHTML = '<strong>The chapter that resists you the most is the door that will open the most.</strong> You marked ' + next.name + ' as demand. That is where the playbook will produce the largest change. The micro breakthrough for this domain: <em>' + next.insight + '</em>';
+    } else if(openings.length > 0){
+      next = openings[0];
+      widget.querySelector('#dt-rec-title').textContent = 'Stabilize: ' + next.name;
+      widget.querySelector('#dt-rec-text').innerHTML = '<strong>' + next.name + ' is opening but not yet received.</strong> The seeing has begun in flashes. The work is to hold the frame steady enough that the flashes lengthen and become the baseline. Re read the chapter on ' + next.name + ' and let the frame settle.';
+    }
+  }
+
+  grid.addEventListener('click', function(e){
+    const btn = e.target.closest('.dt-state-btn');
+    if(!btn) return;
+    const key = btn.getAttribute('data-key');
+    const state = btn.getAttribute('data-state');
+    states[key] = state;
+    const tile = btn.closest('.dt-domain');
+    tile.querySelectorAll('.dt-state-btn').forEach(function(b){
+      b.classList.remove('active','demand','opening','received');
+      if(b === btn){ b.classList.add('active', state); }
+    });
+    update();
+  });
+
+  update();
+})();
+</script>
 </div>
 
 <p>You may read these in order. You may read the one whose name made you flinch. <em>The chapter that resists you the most is the door that will open the most.</em> Begin there.</p>
