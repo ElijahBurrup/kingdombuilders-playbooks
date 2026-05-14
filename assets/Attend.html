@@ -441,6 +441,137 @@ dfn.def:hover::after{content:attr(data-def);position:absolute;bottom:120%;left:5
 <cite>The Wanderer's Diagnostic</cite>
 </div>
 
+<div class="diagnostic-widget" id="sub-detector">
+<style>
+#sub-detector{margin:48px 0;border-radius:18px;overflow:hidden;border:2px solid rgba(180,140,80,0.25);background:#fff;box-shadow:0 8px 28px rgba(40,30,20,0.1)}
+#sub-detector .sd-head{background:linear-gradient(135deg,#1A1408,#3A2A12);padding:26px 30px;text-align:center;color:#fff}
+#sub-detector .sd-kicker{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:#D4B888;margin-bottom:8px}
+#sub-detector .sd-head h3{font-family:'Nunito',sans-serif;font-size:1.45rem;font-weight:800;color:#fff;margin:0 0 6px;letter-spacing:-0.01em}
+#sub-detector .sd-head p{font-family:'Lora',serif;font-style:italic;font-size:0.9rem;color:rgba(255,255,255,0.7);margin:0 auto;max-width:480px}
+#sub-detector .sd-body{padding:30px}
+#sub-detector .sd-instructions{font-family:'Lora',serif;font-style:italic;color:#5A4830;font-size:0.95rem;margin-bottom:20px;line-height:1.55;text-align:center}
+#sub-detector .sd-instructions strong{color:#3A2A12;font-style:normal;font-weight:700}
+#sub-detector .sd-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:24px}
+@media(max-width:580px){#sub-detector .sd-grid{grid-template-columns:1fr}}
+#sub-detector .sd-sub{padding:14px 16px;background:#FAF6EE;border:1.5px solid rgba(180,140,80,0.18);border-radius:10px;cursor:pointer;transition:all 0.18s;position:relative}
+#sub-detector .sd-sub:hover{border-color:#B48C50;background:rgba(212,184,136,0.08);transform:translateY(-1px)}
+#sub-detector .sd-sub.selected{background:linear-gradient(135deg,rgba(180,140,80,0.15),rgba(212,184,136,0.1));border-color:#B48C50}
+#sub-detector .sd-sub.selected::after{content:'';position:absolute;top:10px;right:10px;width:18px;height:18px;background:#B48C50;border-radius:50%;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3E%3Cpath d='M6 11.5L2.5 8l1-1L6 9.5l5.5-5.5 1 1z'/%3E%3C/svg%3E");background-size:14px;background-position:center;background-repeat:no-repeat}
+#sub-detector .sd-sub-num{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:#B48C50;margin-bottom:4px}
+#sub-detector .sd-sub-name{font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:800;color:#1A1408;margin-bottom:4px}
+#sub-detector .sd-sub-quote{font-family:'Lora',serif;font-style:italic;font-size:0.78rem;color:#5A4830;line-height:1.4}
+#sub-detector .sd-count{font-family:'Nunito',sans-serif;text-align:center;font-size:0.75rem;font-weight:700;color:#5A4830;margin-bottom:18px;letter-spacing:1.5px}
+#sub-detector .sd-count strong{color:#B48C50;font-size:1.1rem;font-weight:900}
+#sub-detector .sd-result{display:none;padding:24px;background:linear-gradient(135deg,#1A1408,#3A2A12);color:#fff;border-radius:12px;margin-bottom:14px}
+#sub-detector .sd-result.show{display:block}
+#sub-detector .sd-result-kicker{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:#D4B888;margin-bottom:10px}
+#sub-detector .sd-result-list{display:grid;gap:10px;margin-bottom:14px}
+#sub-detector .sd-result-item{padding:12px 14px;background:rgba(255,255,255,0.06);border-left:3px solid #D4B888;border-radius:0 8px 8px 0}
+#sub-detector .sd-result-item-name{font-family:'Nunito',sans-serif;font-size:0.92rem;font-weight:800;color:#fff;margin-bottom:3px}
+#sub-detector .sd-result-item-quote{font-family:'Lora',serif;font-style:italic;font-size:0.82rem;color:rgba(255,255,255,0.7)}
+#sub-detector .sd-result-action{font-family:'Lora',serif;color:rgba(255,255,255,0.85);font-size:0.9rem;line-height:1.55;padding-top:14px;border-top:1px solid rgba(212,184,136,0.2)}
+#sub-detector .sd-clear{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;color:#5A4830;background:transparent;border:1.5px solid rgba(180,140,80,0.2);padding:9px 22px;border-radius:50px;cursor:pointer;letter-spacing:1px;transition:all 0.2s;display:block;margin:0 auto}
+#sub-detector .sd-clear:hover{background:rgba(180,140,80,0.08);color:#1A1408}
+</style>
+
+<div class="sd-head">
+  <div class="sd-kicker">Interactive Detector</div>
+  <h3>The Substitute Detector</h3>
+  <p>Click the three that you reach for most. Once named, each one loses 40 percent of its power.</p>
+</div>
+<div class="sd-body">
+  <div class="sd-instructions">Of the eight substitutes, three are yours. <strong>Read each one. Click the three that you recognize as your patterns.</strong> Primary, secondary, tertiary.</div>
+
+  <div class="sd-grid" id="sd-grid">
+    <div class="sd-sub" data-id="1"><div class="sd-sub-num">Substitute One</div><div class="sd-sub-name">The Better Idea</div><div class="sd-sub-quote">"What if I worked on the OTHER project instead?"</div></div>
+    <div class="sd-sub" data-id="2"><div class="sd-sub-num">Substitute Two</div><div class="sd-sub-name">The Charitable Excuse</div><div class="sd-sub-quote">"I should check on my friend. They might need me."</div></div>
+    <div class="sd-sub" data-id="3"><div class="sd-sub-num">Substitute Three</div><div class="sd-sub-name">The Earned Rest</div><div class="sd-sub-quote">"I have been working hard. I deserve a break."</div></div>
+    <div class="sd-sub" data-id="4"><div class="sd-sub-num">Substitute Four</div><div class="sd-sub-name">The Preparation Trap</div><div class="sd-sub-quote">"Let me get organized first."</div></div>
+    <div class="sd-sub" data-id="5"><div class="sd-sub-num">Substitute Five</div><div class="sd-sub-name">The Body Excuse</div><div class="sd-sub-quote">"I am tired. I need to eat. I need to walk."</div></div>
+    <div class="sd-sub" data-id="6"><div class="sd-sub-num">Substitute Six</div><div class="sd-sub-name">The Future Restart</div><div class="sd-sub-quote">"I'll really commit on Monday."</div></div>
+    <div class="sd-sub" data-id="7"><div class="sd-sub-num">Substitute Seven</div><div class="sd-sub-name">The Scroll</div><div class="sd-sub-quote">"Just one minute on the phone."</div></div>
+    <div class="sd-sub" data-id="8"><div class="sd-sub-num">Substitute Eight</div><div class="sd-sub-name">The Verdict</div><div class="sd-sub-quote">"This will never work. I am not the kind of person who finishes things."</div></div>
+  </div>
+
+  <div class="sd-count" id="sd-count">SELECT <strong>0</strong> OF 3</div>
+
+  <div class="sd-result" id="sd-result">
+    <div class="sd-result-kicker">Your three substitutes named</div>
+    <div class="sd-result-list" id="sd-result-list"></div>
+    <div class="sd-result-action" id="sd-result-action">Once a substitute is named, it loses about 40 percent of its power. The remaining 60 percent is defeated by the practice in the rest of this playbook. Tomorrow morning, before the work begins, read these three out loud. When one arrives during the work, name it out loud the moment you recognize it. The naming is half the cure.</div>
+  </div>
+
+  <button class="sd-clear" id="sd-clear">Clear selection</button>
+</div>
+
+<script>
+(function(){
+  const subData = {
+    '1': { name: 'The Better Idea', quote: '"What if I worked on the OTHER project instead?"' },
+    '2': { name: 'The Charitable Excuse', quote: '"I should check on my friend. They might need me."' },
+    '3': { name: 'The Earned Rest', quote: '"I have been working hard. I deserve a break."' },
+    '4': { name: 'The Preparation Trap', quote: '"Let me get organized first."' },
+    '5': { name: 'The Body Excuse', quote: '"I am tired. I need to eat. I need to walk."' },
+    '6': { name: 'The Future Restart', quote: '"I\'ll really commit on Monday."' },
+    '7': { name: 'The Scroll', quote: '"Just one minute on the phone."' },
+    '8': { name: 'The Verdict', quote: '"This will never work."' }
+  };
+
+  const widget = document.getElementById('sub-detector');
+  const grid = widget.querySelector('#sd-grid');
+  const countEl = widget.querySelector('#sd-count');
+  const resultPanel = widget.querySelector('#sd-result');
+  const resultList = widget.querySelector('#sd-result-list');
+  const clearBtn = widget.querySelector('#sd-clear');
+
+  let selected = [];
+
+  function renderResult(){
+    countEl.innerHTML = 'SELECT <strong>' + selected.length + '</strong> OF 3';
+    if(selected.length >= 3){
+      resultPanel.classList.add('show');
+      resultList.innerHTML = '';
+      const labels = ['Primary', 'Secondary', 'Tertiary'];
+      selected.forEach(function(id, i){
+        const s = subData[id];
+        const item = document.createElement('div');
+        item.className = 'sd-result-item';
+        item.innerHTML = '<div class="sd-result-item-name">' + labels[i] + ': ' + s.name + '</div>' +
+                         '<div class="sd-result-item-quote">' + s.quote + '</div>';
+        resultList.appendChild(item);
+      });
+    } else {
+      resultPanel.classList.remove('show');
+    }
+  }
+
+  grid.addEventListener('click', function(e){
+    const card = e.target.closest('.sd-sub');
+    if(!card) return;
+    const id = card.getAttribute('data-id');
+    const idx = selected.indexOf(id);
+    if(idx >= 0){
+      selected.splice(idx, 1);
+      card.classList.remove('selected');
+    } else {
+      if(selected.length >= 3) return; // cap at 3
+      selected.push(id);
+      card.classList.add('selected');
+    }
+    renderResult();
+  });
+
+  clearBtn.addEventListener('click', function(){
+    selected = [];
+    widget.querySelectorAll('.sd-sub').forEach(function(c){ c.classList.remove('selected'); });
+    renderResult();
+  });
+
+  renderResult();
+})();
+</script>
+</div>
+
 <div class="think">
 <div class="think-label">Stop and Name Your Three</div>
 <p>Of the eight, three are yours specifically. Most readers have a primary substitute (the one they reach for first), a secondary (the one they reach for when the first one is unavailable), and a tertiary (the one they fall back on when stressed).</p>
