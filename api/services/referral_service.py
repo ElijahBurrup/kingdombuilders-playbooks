@@ -680,11 +680,18 @@ async def get_referral_tree(user_id: UUID, db: AsyncSession) -> dict:
         .where(and_(L3.referrer_id == user_id, L3.level == 3))
         .order_by(L3.created_at.desc())
     )
+    # NOTE on naming: from the viewer's POV, the leftmost person in the
+    # chain is their OWN direct invitee. For an L3 person X, that direct
+    # invitee is X's L2 ancestor (=L2Anc.referrer_id, captured in ul2c).
+    # The middle person is X's L1 ancestor (=L1AncForL3.referrer_id,
+    # captured in ul1c). The naming in the join aliases follows the L3
+    # person's chain (X's L1, X's L2), which is the inverse of the viewer's
+    # chain — so we deliberately remap here.
     level_3_detail = [
         {
-            "l1_name": _name(ul1c),
-            "l2_name": _name(ul2c),
-            "l3_name": _name(ul3),
+            "l1_name": _name(ul2c),   # viewer's direct invitee = leftmost
+            "l2_name": _name(ul1c),   # the middle person in the chain
+            "l3_name": _name(ul3),    # the L3 person at the rightmost
             "signup_date": l3_row.created_at.isoformat() if l3_row.created_at else None,
         }
         for l3_row, ul3, ul2c, ul1c in l3_result.all()
