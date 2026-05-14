@@ -1774,12 +1774,16 @@ async def referral_redirect(
     import re
     prefix = settings.URL_PREFIX or ""
 
-    # Validate ?next= — must be a path under our prefix (or root)
+    # Validate ?next= — must be a path under our prefix (or root). With no
+    # ?next= we land the visitor on /auth (sign in / sign up). The ref
+    # cookie set here is consumed on signup so the new user is permanently
+    # attributed to the inviter. Already-signed-in users get bounced from
+    # /auth to the homepage automatically (and won't be re-attributed).
     next_raw = request.query_params.get("next", "")
     if next_raw and re.match(r"^/[A-Za-z0-9_\-/.?=&%]*$", next_raw) and "//" not in next_raw:
         redirect_url = next_raw
     else:
-        redirect_url = f"{prefix}/funnel"
+        redirect_url = f"{prefix}/auth"
 
     clean_code = code.strip().upper()
     if re.match(r"^[A-Z0-9]{6}$", clean_code):
