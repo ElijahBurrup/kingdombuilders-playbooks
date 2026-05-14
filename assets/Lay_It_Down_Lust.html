@@ -764,9 +764,11 @@ dfn.def:hover::after,dfn.def:focus::after{opacity:1}
       {q: 'Spending an ordinary, undramatic afternoon with this person is pleasant rather than disappointing.', d: 0},
       {q: 'You can imagine this connection feeling the same to you ten years from now.', d: 0}
     ];
+    const SLUG = 'lay-it-down-lust';
+    const WIDGET = 'intimacy-vs-intensity';
     const root = document.getElementById('ivi-questions');
     if(!root) return;
-    const state = {};
+    const state = {answers:{}, who:''};
     QS.forEach((it, i) => {
       const row = document.createElement('div');
       row.style.cssText = 'padding:12px 14px;background:#FFFDF8;border:1px solid rgba(232,134,10,0.15);border-radius:8px;margin-bottom:8px;';
@@ -777,43 +779,69 @@ dfn.def:hover::after,dfn.def:focus::after{opacity:1}
         </div>`;
       root.appendChild(row);
     });
+    function paintGroup(group, v){
+      Array.from(group.children).forEach(b => {
+        if(parseInt(b.dataset.v) === v){ b.style.background = '#E8860A'; b.style.color = '#fff'; b.style.borderColor = '#E8860A'; }
+        else { b.style.background = '#FFF9F0'; b.style.color = 'var(--steel)'; b.style.borderColor = 'rgba(232,134,10,0.3)'; }
+      });
+    }
+    function renderResult(){
+      if(Object.keys(state.answers).length < QS.length) return;
+      let intensity = 0, intimacy = 0;
+      Object.entries(state.answers).forEach(([i, v]) => {
+        if(QS[i].d === 1) intensity += v;
+        else intimacy += v;
+      });
+      const who = (state.who || 'this connection').trim();
+      const result = document.getElementById('ivi-result');
+      const label = document.getElementById('ivi-label');
+      const summary = document.getElementById('ivi-summary');
+      result.style.display = 'block';
+      if(intensity > intimacy + 2){
+        label.textContent = 'Verdict. Intensity dominant.';
+        label.style.color = '#E8860A';
+        summary.innerHTML = `${who} is running on dopamine, not oxytocin. The charge you feel is the fixer bath developing a latent image that was never meant to be permanent. Intensity score ${intensity}. Intimacy score ${intimacy}. The work is not to extinguish the spark. It is to put down the developer and either build the depth this connection is missing, or recognize that the connection cannot bear depth and let it pass.`;
+      } else if(intimacy > intensity + 2){
+        label.textContent = 'Verdict. Intimacy dominant.';
+        label.style.color = '#E8C96A';
+        summary.innerHTML = `${who} is built on oxytocin foundations. Intimacy score ${intimacy}. Intensity score ${intensity}. Protect this. The intensity in this connection is not the load bearing element. The depth is. Spend less attention on the spark and more on the practices that maintain depth across decades.`;
+      } else {
+        label.textContent = 'Verdict. Mixed signal.';
+        label.style.color = '#F5C44B';
+        summary.innerHTML = `${who} is running on roughly equal portions of intensity and intimacy. Intensity ${intensity}. Intimacy ${intimacy}. This is the most dangerous configuration because the intensity disguises whether real depth is there. The next thirty days will tell. If the intensity fades and the intimacy remains, you have something. If both fade together, the depth was never there.`;
+      }
+    }
+    function save(){ if(window.kbWidget) kbWidget.save(SLUG, WIDGET, state); }
+    const whoInput = document.getElementById('ivi-who');
+    whoInput.addEventListener('input', () => { state.who = whoInput.value; save(); });
     root.addEventListener('click', e => {
       const btn = e.target.closest('button[data-v]');
       if(!btn) return;
       const group = btn.parentElement;
       const i = parseInt(group.dataset.i);
       const v = parseInt(btn.dataset.v);
-      state[i] = v;
-      Array.from(group.children).forEach(b => {
-        if(parseInt(b.dataset.v) === v){ b.style.background = '#E8860A'; b.style.color = '#fff'; b.style.borderColor = '#E8860A'; }
-        else { b.style.background = '#FFF9F0'; b.style.color = 'var(--steel)'; b.style.borderColor = 'rgba(232,134,10,0.3)'; }
-      });
-      if(Object.keys(state).length >= QS.length){
-        let intensity = 0, intimacy = 0;
-        Object.entries(state).forEach(([i, v]) => {
-          if(QS[i].d === 1) intensity += v;
-          else intimacy += v;
-        });
-        const who = (document.getElementById('ivi-who').value || 'this connection').trim();
-        const result = document.getElementById('ivi-result');
-        const label = document.getElementById('ivi-label');
-        const summary = document.getElementById('ivi-summary');
-        result.style.display = 'block';
-        if(intensity > intimacy + 2){
-          label.textContent = 'Verdict. Intensity dominant.';
-          label.style.color = '#E8860A';
-          summary.innerHTML = `${who} is running on dopamine, not oxytocin. The charge you feel is the fixer bath developing a latent image that was never meant to be permanent. Intensity score ${intensity}. Intimacy score ${intimacy}. The work is not to extinguish the spark. It is to put down the developer and either build the depth this connection is missing, or recognize that the connection cannot bear depth and let it pass.`;
-        } else if(intimacy > intensity + 2){
-          label.textContent = 'Verdict. Intimacy dominant.';
-          label.style.color = '#E8C96A';
-          summary.innerHTML = `${who} is built on oxytocin foundations. Intimacy score ${intimacy}. Intensity score ${intensity}. Protect this. The intensity in this connection is not the load bearing element. The depth is. Spend less attention on the spark and more on the practices that maintain depth across decades.`;
-        } else {
-          label.textContent = 'Verdict. Mixed signal.';
-          label.style.color = '#F5C44B';
-          summary.innerHTML = `${who} is running on roughly equal portions of intensity and intimacy. Intensity ${intensity}. Intimacy ${intimacy}. This is the most dangerous configuration because the intensity disguises whether real depth is there. The next thirty days will tell. If the intensity fades and the intimacy remains, you have something. If both fade together, the depth was never there.`;
-        }
-      }
+      state.answers[i] = v;
+      paintGroup(group, v);
+      renderResult();
+      save();
     });
+    function restore(data){
+      if(!data) return;
+      state.who = data.who || '';
+      state.answers = data.answers || {};
+      if(state.who) whoInput.value = state.who;
+      Object.entries(state.answers).forEach(([i,v]) => {
+        const group = root.querySelector('[data-i="'+i+'"]');
+        if(group) paintGroup(group, v);
+      });
+      renderResult();
+    }
+    if(window.kbWidget){
+      kbWidget.onReady(async () => {
+        const r = await kbWidget.load(SLUG, WIDGET);
+        if(r && r.data) restore(r.data);
+      });
+    }
   })();
   </script>
 

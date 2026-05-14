@@ -365,9 +365,14 @@ def _slug_to_title(slug: str) -> str:
     return slug.replace("-", " ").title()
 
 
-def _inject_back_button_and_tracking(html: str, slug: str) -> str:
+def _inject_back_button_and_tracking(html: str, slug: str, signed_in: bool = False) -> str:
     """Inject fixed back button and exit tracking script before </body>."""
     prefix = settings.URL_PREFIX or ""
+    signed_in_js = "true" if signed_in else "false"
+    widget_bootstrap = f"""
+<script>window.KB_USER = {{signed_in: {signed_in_js}, slug: '{slug}'}};</script>
+<script src="{prefix}/static/kb-widget.js" defer></script>
+"""
     back_button = f"""
 <style>
 .pb-back{{position:fixed;top:16px;left:16px;z-index:9999;display:flex;align-items:center;gap:6px;
@@ -1328,7 +1333,7 @@ def _inject_back_button_and_tracking(html: str, slug: str) -> str:
 }})();
 </script>
 """
-    return html.replace("</body>", share_block + back_button + chain_panel + email_slidein + rating_popup + tts_controls + print_css + pdf_trigger + tracking_script + ga_snippet + "</body>")
+    return html.replace("</body>", share_block + back_button + chain_panel + email_slidein + rating_popup + tts_controls + print_css + pdf_trigger + widget_bootstrap + tracking_script + ga_snippet + "</body>")
 
 
 @router.get("/read/{slug}", include_in_schema=False)
@@ -1345,12 +1350,15 @@ async def read_playbook(request: Request, slug: str, db: AsyncSession = Depends(
             status_code=404,
         )
 
+    # Resolve current user once so we can bootstrap kb-widget regardless of
+    # whether the playbook is free or paid.
+    user_id = get_session_user_id(request)
+
     # Purchase gate: check if playbook is free or session is unlocked
     if slug not in FREE_SLUGS:
         admin_unlocked = request.cookies.get("admin_unlocked") == "1"
 
         # Check if logged-in user has DB access (subscription or purchase)
-        user_id = get_session_user_id(request)
         db_access = False
         if user_id:
             db_access = await _user_has_access(user_id, slug, db)
@@ -1389,7 +1397,7 @@ async def read_playbook(request: Request, slug: str, db: AsyncSession = Depends(
         )
 
     html = file_path.read_text(encoding="utf-8")
-    html = _inject_back_button_and_tracking(html, slug)
+    html = _inject_back_button_and_tracking(html, slug, signed_in=bool(user_id))
     return HTMLResponse(html)
 
 

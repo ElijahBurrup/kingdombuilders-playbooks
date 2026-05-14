@@ -817,7 +817,9 @@ footer p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;margin-bot
 
 <script>
 (function(){
-  const KEY = 'ant_network_diary_v1';
+  const SLUG = 'the-ant-network';
+  const WIDGET = 'immune-diary';
+  const LS_FALLBACK = 'ant_network_diary_v1';
   const idEl = document.getElementById('adi-id');
   const r1El = document.getElementById('adi-r1');
   const r2El = document.getElementById('adi-r2');
@@ -826,23 +828,43 @@ footer p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;margin-bot
   const loadBtn = document.getElementById('adi-load');
   const out = document.getElementById('adi-output');
   if(!saveBtn) return;
-  function read(){
-    try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(e){ return []; }
+  function migrateLegacy(){
+    // One-shot migration of old localStorage key into kbWidget history.
+    try {
+      const raw = localStorage.getItem(LS_FALLBACK);
+      if(!raw) return [];
+      const list = JSON.parse(raw);
+      if(window.kbWidget && Array.isArray(list)){
+        list.forEach(entry => kbWidget.save(SLUG, WIDGET, entry, {history:true}));
+        localStorage.removeItem(LS_FALLBACK);
+      }
+      return list || [];
+    } catch(e){ return []; }
   }
-  saveBtn.addEventListener('click', () => {
+  function entryToData(e){ return {id: e.id, r1: e.r1, r2: e.r2, r3: e.r3, t: e.t || Date.now()}; }
+  async function getEntries(){
+    if(!window.kbWidget) return migrateLegacy();
+    migrateLegacy();
+    const r = await kbWidget.load(SLUG, WIDGET, {history:true, limit:200});
+    const entries = (r && r.entries) || [];
+    return entries.map(e => e.data);
+  }
+  saveBtn.addEventListener('click', async () => {
     const id = idEl.value.trim();
     if(!id){ idEl.focus(); return; }
-    const entry = {id, r1: r1El.value.trim(), r2: r2El.value.trim(), r3: r3El.value.trim(), t: Date.now()};
+    const entry = entryToData({id, r1: r1El.value.trim(), r2: r2El.value.trim(), r3: r3El.value.trim(), t: Date.now()});
     if(!entry.r1 && !entry.r2 && !entry.r3) return;
-    const list = read();
-    list.push(entry);
-    try { localStorage.setItem(KEY, JSON.stringify(list)); } catch(e){}
+    if(window.kbWidget){
+      await kbWidget.save(SLUG, WIDGET, entry, {history:true});
+    }
     r1El.value = ''; r2El.value = ''; r3El.value = '';
+    const list = await getEntries();
     out.style.display = 'block';
-    out.innerHTML = `<strong style="color:#E8C96A;">Saved.</strong> The diary now holds ${list.length} reading${list.length===1?'':'s'}. Run the same panel again next week with a different person, or the same person under different conditions.`;
+    const persisted = (window.kbWidget && kbWidget.isSignedIn()) ? ' (saved to your account)' : ' (saved in this browser)';
+    out.innerHTML = `<strong style="color:#E8C96A;">Saved${persisted}.</strong> The diary now holds ${list.length} reading${list.length===1?'':'s'}. Run the same panel again next week with a different person, or the same person under different conditions.`;
   });
-  loadBtn.addEventListener('click', () => {
-    const list = read();
+  loadBtn.addEventListener('click', async () => {
+    const list = await getEntries();
     if(!list.length){
       out.style.display = 'block';
       out.innerHTML = '<em>No readings yet. Save your first one above.</em>';
@@ -852,7 +874,7 @@ footer p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;margin-bot
     list.forEach(e => { (byPerson[e.id] = byPerson[e.id] || []).push(e); });
     let html = `<strong style="color:#E8C96A;">${list.length} reading${list.length===1?'':'s'} across ${Object.keys(byPerson).length} ${Object.keys(byPerson).length===1?'person':'people'}.</strong><br><br>`;
     Object.entries(byPerson).forEach(([id, entries]) => {
-      html += `<div style="margin-bottom:14px;"><div style="color:#D4A843;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.78rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">${id} · ${entries.length} reading${entries.length===1?'':'s'}</div>`;
+      html += `<div style="margin-bottom:14px;"><div style="color:#D4A843;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.78rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">${id} &middot; ${entries.length} reading${entries.length===1?'':'s'}</div>`;
       entries.slice(-2).forEach(e => {
         const date = new Date(e.t).toLocaleDateString();
         const snippet = (e.r1 || e.r2 || e.r3 || '').slice(0, 140);

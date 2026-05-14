@@ -561,9 +561,11 @@ footer p{font-family:'Lora',serif;font-size:0.97rem;font-style:italic;margin-bot
     {key:'fantasy', q:'You have caught yourself wishing your phone would die or your schedule would force you to be unavailable.'},
     {key:'avoidance', q:'You delay responding to them on purpose, then feel guilty, then resent the guilt.'}
   ];
+  const SLUG = 'dad-talks-the-invisible-contract';
+  const WIDGET = 'resentment-test';
   const root = document.getElementById('rt-signals');
   if(!root) return;
-  const state = {};
+  const state = {who:'', answers:{}};
   SIGNALS.forEach((s, i) => {
     const row = document.createElement('div');
     row.style.cssText = 'padding:12px 14px;background:rgba(255,255,255,0.03);border:1px solid rgba(232,106,80,0.18);border-radius:8px;margin-bottom:8px;';
@@ -574,43 +576,69 @@ footer p{font-family:'Lora',serif;font-size:0.97rem;font-style:italic;margin-bot
       </div>`;
     root.appendChild(row);
   });
+  function paintGroup(group, v){
+    Array.from(group.children).forEach(b => {
+      if(parseInt(b.dataset.v) === v){ b.style.background = '#C84A30'; b.style.color = '#fff'; b.style.borderColor = '#C84A30'; }
+      else { b.style.background = 'rgba(255,255,255,0.04)'; b.style.color = 'rgba(255,255,255,0.7)'; b.style.borderColor = 'rgba(232,106,80,0.3)'; }
+    });
+  }
+  function renderResult(){
+    if(Object.keys(state.answers).length < SIGNALS.length) return;
+    const score = Object.values(state.answers).reduce((a,b) => a+b, 0);
+    const who = (state.who || 'this relationship').trim();
+    const result = document.getElementById('rt-result');
+    const label = document.getElementById('rt-label');
+    const summary = document.getElementById('rt-summary');
+    result.style.display = 'block';
+    if(score >= 8){
+      label.textContent = 'Invisible contract. Active.';
+      label.style.color = '#FF6B4B';
+      summary.innerHTML = `Score ${score} of 12 with ${who}. Your resentment alarm is firing on all four signals. Every interaction is rendering you a receipt for emotional labor you did not consent to. The next conversation does not need to be a confrontation. It needs to be a redrawing. Decide in advance what you are available for and tell them clearly. The point is not to end the relationship. It is to end the unspoken version of it.`;
+    } else if(score >= 5){
+      label.textContent = 'Invisible contract. Forming.';
+      label.style.color = '#E8860A';
+      summary.innerHTML = `Score ${score} of 12 with ${who}. The pattern is starting to crystallize. You have not been crushed yet, but the receipt is being written. This is the easiest moment to renegotiate, before the resentment has compounded into something that requires a full break. Have one specific conversation this week. Say "I want to keep being there for you, and I have noticed I have been saying yes to things I do not have capacity for."`;
+    } else if(score >= 2){
+      label.textContent = 'Healthy mutual carry.';
+      label.style.color = '#E8C96A';
+      summary.innerHTML = `Score ${score} of 12 with ${who}. The signals are low. You may have moments of fatigue but the underlying contract is mutual and voluntary. This is what a good friendship looks like. Notice what is true here so you can recognize the contrast when a different relationship starts triggering the higher scores.`;
+    } else {
+      label.textContent = 'No invisible contract detected.';
+      label.style.color = '#8AE5B5';
+      summary.innerHTML = `Score ${score} of 12 with ${who}. The resentment alarm is silent. This relationship is genuinely two way, or you have already done the work of redrawing it. Keep the practice. Run the same test next month and watch for drift.`;
+    }
+  }
+  function save(){ if(window.kbWidget) kbWidget.save(SLUG, WIDGET, state); }
+  const whoInput = document.getElementById('rt-who');
+  whoInput.addEventListener('input', () => { state.who = whoInput.value; save(); });
   root.addEventListener('click', e => {
     const btn = e.target.closest('button[data-v]');
     if(!btn) return;
     const group = btn.parentElement;
     const k = group.dataset.k;
     const v = parseInt(btn.dataset.v);
-    state[k] = v;
-    Array.from(group.children).forEach(b => {
-      if(parseInt(b.dataset.v) === v){ b.style.background = '#C84A30'; b.style.color = '#fff'; b.style.borderColor = '#C84A30'; }
-      else { b.style.background = 'rgba(255,255,255,0.04)'; b.style.color = 'rgba(255,255,255,0.7)'; b.style.borderColor = 'rgba(232,106,80,0.3)'; }
-    });
-    if(Object.keys(state).length >= SIGNALS.length){
-      const score = Object.values(state).reduce((a,b) => a+b, 0);
-      const who = (document.getElementById('rt-who').value || 'this relationship').trim();
-      const result = document.getElementById('rt-result');
-      const label = document.getElementById('rt-label');
-      const summary = document.getElementById('rt-summary');
-      result.style.display = 'block';
-      if(score >= 8){
-        label.textContent = 'Invisible contract. Active.';
-        label.style.color = '#FF6B4B';
-        summary.innerHTML = `Score ${score} of 12 with ${who}. Your resentment alarm is firing on all four signals. Every interaction is rendering you a receipt for emotional labor you did not consent to. The next conversation does not need to be a confrontation. It needs to be a redrawing. Decide in advance what you are available for and tell them clearly. The point is not to end the relationship. It is to end the unspoken version of it.`;
-      } else if(score >= 5){
-        label.textContent = 'Invisible contract. Forming.';
-        label.style.color = '#E8860A';
-        summary.innerHTML = `Score ${score} of 12 with ${who}. The pattern is starting to crystallize. You have not been crushed yet, but the receipt is being written. This is the easiest moment to renegotiate, before the resentment has compounded into something that requires a full break. Have one specific conversation this week. Say "I want to keep being there for you, and I have noticed I have been saying yes to things I do not have capacity for."`;
-      } else if(score >= 2){
-        label.textContent = 'Healthy mutual carry.';
-        label.style.color = '#E8C96A';
-        summary.innerHTML = `Score ${score} of 12 with ${who}. The signals are low. You may have moments of fatigue but the underlying contract is mutual and voluntary. This is what a good friendship looks like. Notice what is true here so you can recognize the contrast when a different relationship starts triggering the higher scores.`;
-      } else {
-        label.textContent = 'No invisible contract detected.';
-        label.style.color = '#8AE5B5';
-        summary.innerHTML = `Score ${score} of 12 with ${who}. The resentment alarm is silent. This relationship is genuinely two way, or you have already done the work of redrawing it. Keep the practice. Run the same test next month and watch for drift.`;
-      }
-    }
+    state.answers[k] = v;
+    paintGroup(group, v);
+    renderResult();
+    save();
   });
+  function restore(data){
+    if(!data) return;
+    state.who = data.who || '';
+    state.answers = data.answers || {};
+    if(state.who) whoInput.value = state.who;
+    Object.entries(state.answers).forEach(([k,v]) => {
+      const group = root.querySelector('[data-k="'+k+'"]');
+      if(group) paintGroup(group, v);
+    });
+    renderResult();
+  }
+  if(window.kbWidget){
+    kbWidget.onReady(async () => {
+      const r = await kbWidget.load(SLUG, WIDGET);
+      if(r && r.data) restore(r.data);
+    });
+  }
 })();
 </script>
 

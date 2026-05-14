@@ -6,6 +6,7 @@ from api.models.discovery import PlaybookTag, PlaybookConnection, JourneyStamp, 
 from api.models.email import Subscriber, EmailLog, EmailCampaign, PromoCode
 from api.models.referral import ReferralCode, Referral, Commission, Payout, ReferrerProfile
 from api.models.feedback import TopicSuggestion, PlaybookFeedback
+from api.models.widget import WidgetResponse
 
 __all__ = [
     "User",
@@ -39,4 +40,5 @@ __all__ = [
     "ReferrerProfile",
     "TopicSuggestion",
     "PlaybookFeedback",
+    "WidgetResponse",
 ]

@@ -616,6 +616,8 @@ dfn.def:hover::after{opacity:1;pointer-events:auto}
 
   <script>
   (function(){
+    const SLUG = 'lay-it-down-pride';
+    const WIDGET = 'image-fast-targeting';
     const CONTEXTS = [
       {key:'social', label:'Social media posts and stories'},
       {key:'work', label:'Work meetings and Slack'},
@@ -642,6 +644,33 @@ dfn.def:hover::after{opacity:1;pointer-events:auto}
         </div>`;
       root.appendChild(row);
     });
+    function paintGroup(group, v){
+      Array.from(group.children).forEach(b => {
+        const bv = parseInt(b.dataset.v);
+        if(bv <= v){ b.style.background = '#E8860A'; b.style.color = '#fff'; b.style.borderColor = '#E8860A'; }
+        else { b.style.background = '#FFF9F0'; b.style.color = 'var(--steel)'; b.style.borderColor = 'rgba(232,134,10,0.3)'; }
+      });
+    }
+    function renderResult(){
+      const ranked = Object.entries(state).filter(([k,v]) => v > 0).sort((a,b) => b[1] - a[1]);
+      if(ranked.length >= 3){
+        const top3 = ranked.slice(0,3).map(([k]) => CONTEXTS.find(c => c.key === k).label.toLowerCase());
+        document.getElementById('ift-result').style.display = 'block';
+        document.getElementById('ift-summary').innerHTML = `Your three fast targets, in order of urgency, are <strong style="color:#E8C96A;font-style:normal;">${top3[0]}</strong>, <strong style="color:#E8C96A;font-style:normal;">${top3[1]}</strong>, and <strong style="color:#E8C96A;font-style:normal;">${top3[2]}</strong>. Begin the seven day protocol on the highest scoring context first. The reflex strongest there is the throne most worth dethroning.`;
+      }
+    }
+    function save(){
+      if(window.kbWidget) kbWidget.save(SLUG, WIDGET, state);
+    }
+    function restore(data){
+      if(!data) return;
+      Object.keys(data).forEach(k => { state[k] = data[k]; });
+      document.querySelectorAll('#ift-bands [data-c]').forEach(group => {
+        const v = state[group.dataset.c] || 0;
+        if(v) paintGroup(group, v);
+      });
+      renderResult();
+    }
     root.addEventListener('click', e => {
       const btn = e.target.closest('button[data-v]');
       if(!btn) return;
@@ -649,18 +678,16 @@ dfn.def:hover::after{opacity:1;pointer-events:auto}
       const key = group.dataset.c;
       const v = parseInt(btn.dataset.v);
       state[key] = v;
-      Array.from(group.children).forEach(b => {
-        const bv = parseInt(b.dataset.v);
-        if(bv <= v){ b.style.background = '#E8860A'; b.style.color = '#fff'; b.style.borderColor = '#E8860A'; }
-        else { b.style.background = '#FFF9F0'; b.style.color = 'var(--steel)'; b.style.borderColor = 'rgba(232,134,10,0.3)'; }
-      });
-      const ranked = Object.entries(state).filter(([k,v]) => v > 0).sort((a,b) => b[1] - a[1]);
-      if(ranked.length >= 3){
-        const top3 = ranked.slice(0,3).map(([k]) => CONTEXTS.find(c => c.key === k).label.toLowerCase());
-        document.getElementById('ift-result').style.display = 'block';
-        document.getElementById('ift-summary').innerHTML = `Your three fast targets, in order of urgency, are <strong style="color:#E8C96A;font-style:normal;">${top3[0]}</strong>, <strong style="color:#E8C96A;font-style:normal;">${top3[1]}</strong>, and <strong style="color:#E8C96A;font-style:normal;">${top3[2]}</strong>. Begin the seven day protocol on the highest scoring context first. The reflex strongest there is the throne most worth dethroning.`;
-      }
+      paintGroup(group, v);
+      renderResult();
+      save();
     });
+    if(window.kbWidget){
+      kbWidget.onReady(async () => {
+        const r = await kbWidget.load(SLUG, WIDGET);
+        if(r && r.data) restore(r.data);
+      });
+    }
   })();
   </script>
 
