@@ -3,81 +3,61 @@ const { test, expect } = require("@playwright/test");
 
 const PROD = "https://kingdombuilders.ai/playbooks";
 
-test.describe("Sign In button diagnostic", () => {
-  test("Pathways homepage: Sign In button exists, has correct href, is clickable", async ({ page }) => {
-    const consoleErrors = [];
-    page.on("console", (msg) => {
-      if (msg.type() === "error") consoleErrors.push(msg.text());
-    });
-    page.on("pageerror", (err) => consoleErrors.push("pageerror: " + err.message));
+test.describe("Sign In reachability — desktop topnav + mobile drawer", () => {
+  test("Pathways homepage: Sign In is reachable", async ({ page, isMobile }) => {
+    await page.goto(PROD + "/");
 
-    const response = await page.goto(PROD + "/");
-    console.log("HOMEPAGE STATUS:", response?.status());
+    if (isMobile) {
+      // Mobile: hamburger → drawer → Sign In
+      const hamburger = page.locator(".nav-hamburger");
+      await expect(hamburger).toBeVisible();
+      await hamburger.click();
 
-    const btn = page.locator(".nav-button", { hasText: "Sign In" });
-    await expect(btn).toBeVisible();
+      const drawerSignIn = page.locator(".nav-drawer a.drawer-cta", {
+        hasText: "Sign In",
+      });
+      await expect(drawerSignIn).toBeVisible();
 
-    const href = await btn.getAttribute("href");
-    console.log("SIGN IN HREF:", href);
+      const href = await drawerSignIn.getAttribute("href");
+      expect(href).toBe("/playbooks/auth");
 
-    // Check what element is at the click position
-    const box = await btn.boundingBox();
-    if (box) {
-      const cx = box.x + box.width / 2;
-      const cy = box.y + box.height / 2;
-      const elAtPoint = await page.evaluate(
-        ({ x, y }) => {
-          const el = document.elementFromPoint(x, y);
-          if (!el) return "no element";
-          return {
-            tag: el.tagName,
-            class: el.className,
-            id: el.id,
-            text: el.textContent?.slice(0, 50),
-          };
-        },
-        { x: cx, y: cy }
-      );
-      console.log("ELEMENT AT BUTTON CENTER:", JSON.stringify(elAtPoint));
-    }
+      await Promise.all([page.waitForURL(/\/playbooks\/auth/), drawerSignIn.click()]);
+      expect(page.url()).toContain("/playbooks/auth");
+    } else {
+      // Desktop: topnav Sign In button
+      const btn = page.locator(".nav-button", { hasText: "Sign In" });
+      await expect(btn).toBeVisible();
 
-    // Try clicking and see where we land
-    const navPromise = page
-      .waitForNavigation({ timeout: 5000 })
-      .catch((e) => `no nav: ${e.message}`);
-    await btn.click({ force: false });
-    const navResult = await navPromise;
-
-    console.log("NAV RESULT:", typeof navResult === "string" ? navResult : navResult?.url());
-    console.log("CURRENT URL:", page.url());
-    console.log("CONSOLE ERRORS:", consoleErrors);
-  });
-
-  test("Archive page: Sign In button check", async ({ page }) => {
-    const response = await page.goto(PROD + "/archive");
-    console.log("ARCHIVE STATUS:", response?.status());
-
-    const btn = page.locator(".nav-button", { hasText: "Sign In" });
-    const visible = await btn.isVisible();
-    console.log("ARCHIVE SIGN IN VISIBLE:", visible);
-
-    if (visible) {
       const href = await btn.getAttribute("href");
-      console.log("ARCHIVE SIGN IN HREF:", href);
+      expect(href).toBe("/playbooks/auth");
+
+      await Promise.all([page.waitForURL(/\/playbooks\/auth/), btn.click()]);
+      expect(page.url()).toContain("/playbooks/auth");
     }
   });
 
-  test("Direct /auth route should serve auth page", async ({ page }) => {
-    const response = await page.goto(PROD + "/auth");
-    console.log("AUTH ROUTE STATUS:", response?.status());
-    console.log("AUTH FINAL URL:", page.url());
+  test("Archive page: Sign In is reachable", async ({ page, isMobile }) => {
+    await page.goto(PROD + "/archive");
 
-    // Look for sign-in form elements
-    const hasEmail = await page.locator('input[type="email"]').count();
-    const hasPassword = await page.locator('input[type="password"]').count();
-    const title = await page.title();
-    console.log("AUTH TITLE:", title);
-    console.log("AUTH HAS EMAIL INPUT:", hasEmail > 0);
-    console.log("AUTH HAS PASSWORD INPUT:", hasPassword > 0);
+    if (isMobile) {
+      const hamburger = page.locator(".nav-hamburger");
+      await expect(hamburger).toBeVisible();
+      await hamburger.click();
+      const link = page.locator(".nav-drawer a", { hasText: "Sign In" });
+      await expect(link).toBeVisible();
+      expect(await link.getAttribute("href")).toBe("/playbooks/auth");
+    } else {
+      const btn = page.locator(".nav-button", { hasText: "Sign In" });
+      await expect(btn).toBeVisible();
+      expect(await btn.getAttribute("href")).toBe("/playbooks/auth");
+    }
+  });
+
+  test("Direct /auth route serves the sign-in form", async ({ page }) => {
+    const response = await page.goto(PROD + "/auth");
+    expect(response?.status()).toBe(200);
+    // The page has both a sign-in and a register panel — scope to the visible one
+    await expect(page.locator('input[type="email"]').first()).toBeVisible();
+    await expect(page.locator('input[type="password"]').first()).toBeVisible();
   });
 });
