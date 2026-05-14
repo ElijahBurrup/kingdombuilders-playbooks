@@ -1179,7 +1179,7 @@ def _inject_back_button_and_tracking(html: str, slug: str) -> str:
     # Build the share widget — top floating button + bottom inline panel.
     # Title and tagline come straight from the playbook HTML so each share
     # message is specific. Falls back to the slug if extraction fails.
-    import html as _html, json as _json
+    import re, json as _json
     title_match = re.search(r'<h1[^>]*>(.*?)</h1>', html, flags=re.DOTALL | re.IGNORECASE)
     title_raw = (
         re.sub(r'<[^>]+>', '', title_match.group(1)).strip()
