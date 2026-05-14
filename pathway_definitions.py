@@ -72,18 +72,16 @@ PATHWAYS = [
         "name": "The AI Age",
         "tagline": "Operate The Future, Don't Fear It",
         "audience": "If you are equal parts curious about AI and afraid of it",
-        "promise": "Stop fearing the machines. Start operating them. Eight playbooks on the actual economy and mechanics arriving now.",
+        "promise": "Stop fearing the machines. Start operating them. Six playbooks that frame the new economy, then leave you to find the pillars you need.",
         "accent": "teal",
-        "estimated_minutes": 270,
+        "estimated_minutes": 210,
         "playbook_sequence": [
+            "before-the-garden-returns",
             "the-lifted-ceiling",
             "the-new-earning",
             "conductors-playbook",
             "the-mockingbirds-song",
-            "the-cuttlefishs-canvas",
-            "the-centipedes-march",
-            "the-ravens-trial",
-            "the-lyrebirds-echo",
+            "tending-the-garden",
         ],
         "scripture": '"And God said, Let us make man in our image, after our likeness: and let them have dominion." Genesis 1:26',
     },
@@ -287,9 +285,9 @@ NEAREST_PATHWAY = {
 
     # === Archive-only (nearest pathway by theme) ===
     # Work Reset adjacent
-    "before-the-garden-returns": "work-reset",  # Eden Pattern foundation
+    "before-the-garden-returns": "ai-age",       # Eden Pattern framing for AI Age
     "the-soil": "work-reset",                    # Eden Pattern stability
-    "tending-the-garden": "work-reset",          # Eden Pattern orchestration
+    "tending-the-garden": "ai-age",              # Eden Pattern closing for AI Age
     "the-horses-gait": "work-reset",             # burnout / resonant frequency
     "the-gravity-well": "work-reset",            # attention as gravity
     "the-arrival": "work-reset",                 # insertion burn at goal-arrival
