@@ -697,6 +697,121 @@ dfn.def:hover::after,dfn.def:focus::after{opacity:1;pointer-events:auto}
     <p class="q-start">Where are you spending cruise phase fuel that should be saved for the insertion burn?</p>
     <div class="think-line"></div>
   </div>
+
+  <!-- ===== FUEL BUDGET INTERACTIVE ===== -->
+  <div style="margin:40px 0;padding:32px 24px;background:linear-gradient(170deg,#1a0a2e,#2a1248);border-radius:16px;border:2px solid rgba(212,168,67,0.3);">
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="font-family:'Poppins',sans-serif;font-size:0.5rem;letter-spacing:5px;text-transform:uppercase;color:#D4A843;font-weight:700;margin-bottom:6px;">Interactive</div>
+      <h3 style="font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:#fff;margin-bottom:6px;">The Fuel Budget</h3>
+      <p style="font-family:'Lora',Georgia,serif;font-size:0.88rem;font-style:italic;color:rgba(255,255,255,0.55);max-width:540px;margin:0 auto;line-height:1.55;">Pick a coming arrival. Allocate one hundred units of fuel across the three mission phases. The widget tells you whether you are leaving enough delta v for the burn.</p>
+    </div>
+
+    <div id="fb-root" style="font-family:'Poppins',sans-serif;">
+      <label style="display:block;font-size:0.55rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#D4A843;margin-bottom:6px;">The arrival you are budgeting for</label>
+      <select id="fb-target" style="width:100%;padding:11px 13px;font-size:0.92rem;border:1.5px solid rgba(212,168,67,0.3);border-radius:8px;font-family:'Poppins',sans-serif;background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.92);cursor:pointer;margin-bottom:18px;">
+        <option value="">Choose an arrival...</option>
+        <option value="job">A new job or promotion</option>
+        <option value="marriage">A marriage</option>
+        <option value="baby">A first child</option>
+        <option value="launch">A business or product launch</option>
+        <option value="move">A move to a new city</option>
+        <option value="degree">Completing a degree or certification</option>
+        <option value="income">Hitting a financial milestone</option>
+        <option value="retire">Retirement</option>
+      </select>
+
+      <div id="fb-sliders" style="display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:14px;">
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:0.72rem;color:#A89AC8;font-weight:600;letter-spacing:2px;text-transform:uppercase;">Cruise phase. The journey.</span><span id="fb-cruise-v" style="font-size:0.85rem;color:#fff;font-weight:700;">40</span></div>
+          <input id="fb-cruise" type="range" min="0" max="100" value="40" style="width:100%;accent-color:#A89AC8;" />
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:0.72rem;color:#D4A843;font-weight:600;letter-spacing:2px;text-transform:uppercase;">Insertion burn. First 90 days.</span><span id="fb-burn-v" style="font-size:0.85rem;color:#fff;font-weight:700;">40</span></div>
+          <input id="fb-burn" type="range" min="0" max="100" value="40" style="width:100%;accent-color:#D4A843;" />
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:0.72rem;color:#8AE5B5;font-weight:600;letter-spacing:2px;text-transform:uppercase;">Orbit maintenance. The years after.</span><span id="fb-orbit-v" style="font-size:0.85rem;color:#fff;font-weight:700;">20</span></div>
+          <input id="fb-orbit" type="range" min="0" max="100" value="20" style="width:100%;accent-color:#8AE5B5;" />
+        </div>
+      </div>
+
+      <div id="fb-bar" style="display:flex;height:32px;border-radius:6px;overflow:hidden;border:1.5px solid rgba(212,168,67,0.2);background:rgba(255,255,255,0.04);"></div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:0.7rem;color:rgba(255,255,255,0.55);"><span>Cruise <span id="fb-cruise-pct">40</span>%</span><span>Burn <span id="fb-burn-pct">40</span>%</span><span>Orbit <span id="fb-orbit-pct">20</span>%</span></div>
+
+      <div id="fb-result" style="display:none;margin-top:22px;padding:20px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(212,168,67,0.2);">
+        <div id="fb-label" style="font-family:'Poppins',sans-serif;font-size:0.5rem;letter-spacing:5px;text-transform:uppercase;font-weight:700;margin-bottom:10px;"></div>
+        <div id="fb-summary" style="font-family:'Lora',Georgia,serif;color:rgba(255,255,255,0.85);font-size:0.95rem;line-height:1.7;font-style:italic;"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    const cruise = document.getElementById('fb-cruise');
+    const burn = document.getElementById('fb-burn');
+    const orbit = document.getElementById('fb-orbit');
+    const target = document.getElementById('fb-target');
+    if(!cruise) return;
+    const TARGETS = {
+      job: 'a new job or promotion',
+      marriage: 'a marriage',
+      baby: 'a first child',
+      launch: 'a business launch',
+      move: 'a move to a new city',
+      degree: 'a degree or certification',
+      income: 'a financial milestone',
+      retire: 'retirement'
+    };
+    function render(){
+      const c = parseInt(cruise.value);
+      const b = parseInt(burn.value);
+      const o = parseInt(orbit.value);
+      const total = c + b + o;
+      // Normalize visually
+      const cp = total ? Math.round(c/total*100) : 0;
+      const bp = total ? Math.round(b/total*100) : 0;
+      const op = total - cp - bp >= 0 ? 100 - cp - bp : 0;
+      document.getElementById('fb-cruise-v').textContent = c;
+      document.getElementById('fb-burn-v').textContent = b;
+      document.getElementById('fb-orbit-v').textContent = o;
+      document.getElementById('fb-cruise-pct').textContent = cp;
+      document.getElementById('fb-burn-pct').textContent = bp;
+      document.getElementById('fb-orbit-pct').textContent = op;
+      document.getElementById('fb-bar').innerHTML = `
+        <div style="width:${cp}%;background:linear-gradient(90deg,#A89AC8,#7A6AB8);"></div>
+        <div style="width:${bp}%;background:linear-gradient(90deg,#D4A843,#E8C96A);"></div>
+        <div style="width:${op}%;background:linear-gradient(90deg,#8AE5B5,#5AC895);"></div>`;
+      if(!target.value){ document.getElementById('fb-result').style.display = 'none'; return; }
+      const arrival = TARGETS[target.value];
+      const result = document.getElementById('fb-result');
+      const label = document.getElementById('fb-label');
+      const summary = document.getElementById('fb-summary');
+      result.style.display = 'block';
+      if(bp < 30){
+        label.textContent = 'Verdict. Burn under fueled. High crash risk.';
+        label.style.color = '#FF9A50';
+        summary.innerHTML = `For ${arrival}, you have reserved only ${bp}% of your fuel for the insertion burn. The data from orbital mechanics is unforgiving: the burn requires more fuel than the cruise. Your current allocation will arrive at the destination on fumes. Pull fuel from cruise and orbit into the burn. The first 90 days of an arrival do not negotiate.`;
+      } else if(bp >= 45 && bp <= 60){
+        label.textContent = 'Verdict. Burn well budgeted.';
+        label.style.color = '#8AE5B5';
+        summary.innerHTML = `For ${arrival}, ${bp}% reserved for the insertion burn is a healthy allocation. You are honoring the physics: the arrival costs more than the journey. Hold this budget. Resist the urge to over invest in cruise activities in the final weeks before the burn fires.`;
+      } else if(bp > 60){
+        label.textContent = 'Verdict. Burn over weighted.';
+        label.style.color = '#E8C96A';
+        summary.innerHTML = `${bp}% for the burn is unusual and probably indicates you are under counting cruise or orbit. Most failure modes for ${arrival} are under fueled burns. A few are under fueled orbit phases, where the person nails the first 90 days and then runs dry at month 8. Re-check your orbit allocation.`;
+      } else {
+        label.textContent = 'Verdict. Marginal. Recheck.';
+        label.style.color = '#E8C96A';
+        summary.innerHTML = `${bp}% for the burn is on the low end of viable. Most ${arrival} arrivals would benefit from a slightly higher burn allocation. Consider shifting 5 to 10 points from cruise into burn.`;
+      }
+    }
+    cruise.addEventListener('input', render);
+    burn.addEventListener('input', render);
+    orbit.addEventListener('input', render);
+    target.addEventListener('change', render);
+    render();
+  })();
+  </script>
 </div>
 
 <div class="page">

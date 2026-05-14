@@ -425,6 +425,96 @@ dfn.def:hover::after{content:attr(data-def);position:absolute;bottom:120%;left:5
 
 </div>
 
+<!-- ===== PRUNING AUDIT WIDGET ===== -->
+<div class="page section">
+<div style="margin:40px 0;padding:32px 24px;background:linear-gradient(170deg,#2a1f12,#1a1408);border-radius:16px;border:2px solid rgba(212,168,67,0.3);">
+  <div style="text-align:center;margin-bottom:24px;">
+    <div style="font-family:'Nunito',sans-serif;font-size:0.5rem;letter-spacing:5px;text-transform:uppercase;color:#D4A843;font-weight:800;margin-bottom:6px;">Interactive Audit</div>
+    <h3 style="font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:800;color:#fff;margin-bottom:6px;">The Pruning Audit</h3>
+    <p style="font-family:'Lora',Georgia,serif;font-size:0.88rem;font-style:italic;color:rgba(255,255,255,0.55);max-width:520px;margin:0 auto;line-height:1.55;">List the productive branches of your current life. Six fields are enough. For each, mark whether it is bearing fruit worth keeping or whether the vine is exhausting itself feeding it.</p>
+  </div>
+
+  <div id="pa-root" style="font-family:'Nunito',sans-serif;">
+    <div id="pa-rows"></div>
+    <button id="pa-add" style="margin-top:10px;padding:10px 16px;background:transparent;color:#D4A843;border:1.5px solid rgba(212,168,67,0.4);border-radius:8px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;">+ Add Branch</button>
+
+    <div id="pa-result" style="display:none;margin-top:24px;padding:22px;border-radius:10px;background:rgba(212,168,67,0.06);border:1px solid rgba(212,168,67,0.2);">
+      <div style="font-family:'Nunito',sans-serif;font-size:0.5rem;letter-spacing:5px;text-transform:uppercase;color:#D4A843;font-weight:800;margin-bottom:14px;">The Vinedresser's Reading</div>
+      <div id="pa-keep" style="margin-bottom:18px;"></div>
+      <div id="pa-prune" style="margin-bottom:14px;"></div>
+      <div id="pa-summary" style="font-family:'Lora',Georgia,serif;color:rgba(255,255,255,0.85);font-size:0.93rem;line-height:1.7;font-style:italic;"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+(function(){
+  const wrap = document.getElementById('pa-rows');
+  const addBtn = document.getElementById('pa-add');
+  if(!wrap) return;
+  let count = 0;
+  function row(){
+    if(count >= 8) return;
+    count++;
+    const div = document.createElement('div');
+    div.style.cssText = 'display:grid;grid-template-columns:1fr 220px;gap:10px;margin-bottom:8px;align-items:center;';
+    div.innerHTML = `
+      <input type="text" class="pa-name" placeholder="Branch ${count} (e.g. side project, board seat, recurring social commitment)" style="padding:10px 12px;font-size:0.88rem;border:1.5px solid rgba(212,168,67,0.3);border-radius:8px;font-family:'Lora',Georgia,serif;background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.9);" />
+      <select class="pa-state" style="padding:10px 8px;font-size:0.82rem;border:1.5px solid rgba(212,168,67,0.3);border-radius:8px;font-family:'Nunito',sans-serif;background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.9);cursor:pointer;">
+        <option value="">State of the branch...</option>
+        <option value="fruit">Bearing real fruit</option>
+        <option value="leaf">Producing leaves, no fruit</option>
+        <option value="drain">Draining the vine, no fruit</option>
+        <option value="dead">Dead wood</option>
+      </select>`;
+    wrap.appendChild(div);
+    div.querySelectorAll('input,select').forEach(el => el.addEventListener('input', update));
+    div.querySelectorAll('input,select').forEach(el => el.addEventListener('change', update));
+  }
+  function update(){
+    const rows = Array.from(wrap.children).map(r => ({
+      name: r.querySelector('.pa-name').value.trim(),
+      state: r.querySelector('.pa-state').value
+    })).filter(r => r.name && r.state);
+    const result = document.getElementById('pa-result');
+    if(rows.length < 3){ result.style.display = 'none'; return; }
+    const keep = rows.filter(r => r.state === 'fruit');
+    const prune = rows.filter(r => r.state === 'drain' || r.state === 'dead');
+    const leaves = rows.filter(r => r.state === 'leaf');
+    const colors = {fruit: '#8AE5B5', leaf: '#E8C96A', drain: '#FF9A50', dead: '#A55840'};
+    const labels = {fruit: 'Fruit', leaf: 'Leaves only', drain: 'Draining', dead: 'Dead wood'};
+    let html = '';
+    if(keep.length){
+      html += `<div style="margin-bottom:14px;"><div style="font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:800;color:#8AE5B5;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Branches to keep (${keep.length})</div>` + keep.map(r => `<div style="padding:8px 12px;background:rgba(138,229,181,0.08);border-left:2px solid #8AE5B5;margin-bottom:4px;border-radius:4px;color:rgba(255,255,255,0.85);font-size:0.88rem;">${r.name}</div>`).join('') + '</div>';
+    }
+    document.getElementById('pa-keep').innerHTML = html;
+
+    let html2 = '';
+    if(leaves.length){
+      html2 += `<div style="margin-bottom:14px;"><div style="font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:800;color:#E8C96A;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Watch list. ${leaves.length} producing leaves only</div>` + leaves.map(r => `<div style="padding:8px 12px;background:rgba(232,201,106,0.08);border-left:2px solid #E8C96A;margin-bottom:4px;border-radius:4px;color:rgba(255,255,255,0.85);font-size:0.88rem;">${r.name}</div>`).join('') + '</div>';
+    }
+    if(prune.length){
+      html2 += `<div style="margin-bottom:14px;"><div style="font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:800;color:#FF9A50;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Pruning candidates (${prune.length})</div>` + prune.map(r => `<div style="padding:8px 12px;background:rgba(255,154,80,0.08);border-left:2px solid ${colors[r.state]};margin-bottom:4px;border-radius:4px;color:rgba(255,255,255,0.85);font-size:0.88rem;display:flex;justify-content:space-between;gap:10px;"><span>${r.name}</span><span style="color:${colors[r.state]};font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;">${labels[r.state]}</span></div>`).join('') + '</div>';
+    }
+    document.getElementById('pa-prune').innerHTML = html2;
+
+    let verdict = '';
+    if(prune.length === 0 && leaves.length === 0){
+      verdict = 'All branches are producing fruit. This is either a remarkably honed life or the audit was too generous. Run it again next week with a colder eye.';
+    } else if(prune.length >= 3){
+      verdict = `${prune.length} branches are actively draining the vine. This is the most common configuration in modern life and the hardest to act on, because each individual branch feels small. Pick the single deadest one this week and cut it. The vine will breathe.`;
+    } else {
+      verdict = `${prune.length} pruning candidate${prune.length===1?'':'s'} and ${leaves.length} branch${leaves.length===1?'':'es'} producing leaves without fruit. The vinedresser's first cut is almost always on the dead wood. Then watch the leaves. If they do not turn to fruit in 60 days, they are next.`;
+    }
+    document.getElementById('pa-summary').innerHTML = verdict;
+    result.style.display = 'block';
+  }
+  addBtn.addEventListener('click', row);
+  row(); row(); row();
+})();
+</script>
+
 <div class="root-ck">
   <div class="rc-label">Root System</div>
   <h4>Water What Was Planted</h4>
