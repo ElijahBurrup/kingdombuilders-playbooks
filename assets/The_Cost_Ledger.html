@@ -782,9 +782,11 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
       {key:'identity', label:'Identity column of NOT acting', desc:'What sentence about yourself is this avoidance reinforcing?', mult:2, dir:'no-act'},
       {key:'opportunity', label:'Opportunity column of NOT acting', desc:'What is sitting on the other side of action that you cannot see from here?', mult:2, dir:'no-act'}
     ];
+    const SLUG = 'the-cost-ledger';
+    const WIDGET = 'full-ledger-calculator';
     const root = document.getElementById('flc-columns');
     if(!root) return;
-    const state = {};
+    const state = {decision:'', ratings:{}};
     COLS.forEach((c, i) => {
       const row = document.createElement('div');
       row.style.cssText = 'padding:14px 16px;background:var(--white);border:1px solid rgba(46,122,114,0.15);border-radius:8px;';
@@ -798,46 +800,72 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
         </div>`;
       root.appendChild(row);
     });
+    function paintGroup(group, v){
+      Array.from(group.querySelectorAll('button')).forEach(b => {
+        const bv = parseInt(b.dataset.v);
+        if(bv <= v){ b.style.background = 'var(--teal)'; b.style.color = '#fff'; b.style.borderColor = 'var(--teal)'; }
+        else { b.style.background = 'var(--cream-warm)'; b.style.color = 'var(--text)'; b.style.borderColor = 'rgba(46,122,114,0.3)'; }
+      });
+    }
+    function renderResult(){
+      if(Object.keys(state.ratings).length < COLS.length) return;
+      const actCost = state.ratings.visible || 0;
+      const noActCost = (state.ratings.interest || 0) + (state.ratings.identity || 0) + (state.ratings.opportunity || 0);
+      const decision = (state.decision || 'this decision').trim();
+      const result = document.getElementById('flc-result');
+      const label = document.getElementById('flc-label');
+      const balance = document.getElementById('flc-balance');
+      result.style.display = 'block';
+      const diff = noActCost - actCost;
+      if(diff >= 8){
+        label.textContent = 'Verdict. Avoidance is catastrophically expensive.';
+        label.style.color = '#E8A84A';
+        balance.innerHTML = `Visible cost of acting on "${decision}": <strong style="color:#FFF;font-style:normal;">${actCost} of 5</strong>. Total compounding cost of not acting: <strong style="color:#FFA890;font-style:normal;">${noActCost} of 15</strong>. The math is not close. Your corrupted ledger has been selling you inaction as free for too long. Act this week. The receipt has been printing the entire time you have been pretending it was not.`;
+      } else if(diff >= 3){
+        label.textContent = 'Verdict. Avoidance is more expensive.';
+        label.style.color = '#E8C96A';
+        balance.innerHTML = `Acting on "${decision}" costs ${actCost} of 5 in visible discomfort. Not acting carries ${noActCost} of 15 across three compounding columns. The accurate accounting favors acting, but the urgency is not extreme. Within thirty days is the right window.`;
+      } else if(diff >= -2){
+        label.textContent = 'Verdict. Roughly balanced. Read again.';
+        label.style.color = '#7ABDB6';
+        balance.innerHTML = `On "${decision}", the visible cost of acting (${actCost} of 5) and the compounding cost of not acting (${noActCost} of 15) are close. This is the most suspicious result, because the corrupted ledger most often produces apparent balance when it is silently winning. Re-read the three hidden columns with someone who knows you well. Often you have under counted one column. The audit only works on honest numbers.`;
+      } else {
+        label.textContent = 'Verdict. Not acting is genuinely cheaper.';
+        label.style.color = '#80C8BE';
+        balance.innerHTML = `Acting on "${decision}" costs ${actCost} of 5. Not acting only costs ${noActCost} of 15. This is the rare audit where the deferral is actually the right call. Hold the decision. Re-run the audit in 30 days. If the interest column has grown, the calculation has changed.`;
+      }
+    }
+    function save(){ if(window.kbWidget) kbWidget.save(SLUG, WIDGET, state); }
+    const decisionInput = document.getElementById('flc-decision');
+    decisionInput.addEventListener('input', () => { state.decision = decisionInput.value; save(); });
     root.addEventListener('click', e => {
       const btn = e.target.closest('button[data-v]');
       if(!btn) return;
       const group = btn.parentElement;
       const k = group.dataset.k;
       const v = parseInt(btn.dataset.v);
-      state[k] = v;
-      Array.from(group.querySelectorAll('button')).forEach(b => {
-        const bv = parseInt(b.dataset.v);
-        if(bv <= v){ b.style.background = 'var(--teal)'; b.style.color = '#fff'; b.style.borderColor = 'var(--teal)'; }
-        else { b.style.background = 'var(--cream-warm)'; b.style.color = 'var(--text)'; b.style.borderColor = 'rgba(46,122,114,0.3)'; }
-      });
-      if(Object.keys(state).length >= COLS.length){
-        const actCost = state.visible || 0;
-        const noActCost = (state.interest || 0) + (state.identity || 0) + (state.opportunity || 0);
-        const decision = (document.getElementById('flc-decision').value || 'this decision').trim();
-        const result = document.getElementById('flc-result');
-        const label = document.getElementById('flc-label');
-        const balance = document.getElementById('flc-balance');
-        result.style.display = 'block';
-        const diff = noActCost - actCost;
-        if(diff >= 8){
-          label.textContent = 'Verdict. Avoidance is catastrophically expensive.';
-          label.style.color = '#E8A84A';
-          balance.innerHTML = `Visible cost of acting on "${decision}": <strong style="color:#FFF;font-style:normal;">${actCost} of 5</strong>. Total compounding cost of not acting: <strong style="color:#FFA890;font-style:normal;">${noActCost} of 15</strong>. The math is not close. Your corrupted ledger has been selling you inaction as free for too long. Act this week. The receipt has been printing the entire time you have been pretending it was not.`;
-        } else if(diff >= 3){
-          label.textContent = 'Verdict. Avoidance is more expensive.';
-          label.style.color = '#E8C96A';
-          balance.innerHTML = `Acting on "${decision}" costs ${actCost} of 5 in visible discomfort. Not acting carries ${noActCost} of 15 across three compounding columns. The accurate accounting favors acting, but the urgency is not extreme. Within thirty days is the right window.`;
-        } else if(diff >= -2){
-          label.textContent = 'Verdict. Roughly balanced. Read again.';
-          label.style.color = '#7ABDB6';
-          balance.innerHTML = `On "${decision}", the visible cost of acting (${actCost} of 5) and the compounding cost of not acting (${noActCost} of 15) are close. This is the most suspicious result, because the corrupted ledger most often produces apparent balance when it is silently winning. Re-read the three hidden columns with someone who knows you well. Often you have under counted one column. The audit only works on honest numbers.`;
-        } else {
-          label.textContent = 'Verdict. Not acting is genuinely cheaper.';
-          label.style.color = '#80C8BE';
-          balance.innerHTML = `Acting on "${decision}" costs ${actCost} of 5. Not acting only costs ${noActCost} of 15. This is the rare audit where the deferral is actually the right call. Hold the decision. Re-run the audit in 30 days. If the interest column has grown, the calculation has changed.`;
-        }
-      }
+      state.ratings[k] = v;
+      paintGroup(group, v);
+      renderResult();
+      save();
     });
+    function restore(data){
+      if(!data) return;
+      state.decision = data.decision || '';
+      state.ratings = data.ratings || {};
+      if(state.decision) decisionInput.value = state.decision;
+      Object.entries(state.ratings).forEach(([k,v]) => {
+        const group = root.querySelector('[data-k="'+k+'"]');
+        if(group) paintGroup(group, v);
+      });
+      renderResult();
+    }
+    if(window.kbWidget){
+      kbWidget.onReady(async () => {
+        const r = await kbWidget.load(SLUG, WIDGET);
+        if(r && r.data) restore(r.data);
+      });
+    }
   })();
   </script>
 

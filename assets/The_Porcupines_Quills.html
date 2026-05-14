@@ -1021,6 +1021,8 @@ h1,h2,h3,h4{font-family:'Poppins',sans-serif;line-height:1.2}
         {key:'consequence', label:'A pre decided consequence that executes itself'},
         {key:'plead', label:'Pleading with them to understand'}
       ];
+      const SLUG = 'the-porcupines-quills';
+      const WIDGET = 'quill-inventory';
       const root = document.getElementById('qi-items');
       if(!root) return;
       const state = {};
@@ -1035,6 +1037,30 @@ h1,h2,h3,h4{font-family:'Poppins',sans-serif;line-height:1.2}
           </div>`;
         root.appendChild(row);
       });
+      function paintGroup(group, v){
+        Array.from(group.children).forEach(b => {
+          if(b.dataset.v === v){
+            if(v === 'quill'){ b.style.background = '#C0A882'; b.style.color = '#1a1408'; b.style.borderColor = '#C0A882'; }
+            else { b.style.background = '#A55840'; b.style.color = '#fff'; b.style.borderColor = '#A55840'; }
+          } else { b.style.background = 'rgba(255,255,255,0.04)'; b.style.color = 'rgba(255,255,255,0.7)'; b.style.borderColor = 'rgba(192,168,130,0.3)'; }
+        });
+      }
+      function renderResult(){
+        if(Object.keys(state).length < POSTURES.length) return;
+        const quills = Object.values(state).filter(v => v === 'quill').length;
+        const flails = Object.values(state).filter(v => v === 'flail').length;
+        const result = document.getElementById('qi-result');
+        const summary = document.getElementById('qi-summary');
+        result.style.display = 'block';
+        if(flails >= 4){
+          summary.innerHTML = `${flails} of ${POSTURES.length} of your current defenses are frantic flailing. The system is running on adrenaline, not architecture. This is exhausting, and it teaches the other person that pressure produces a reaction in you. Replace flails with quills. Decide consequences in advance. Stop explaining. Let your behavior speak. The porcupine never argues with the leopard.`;
+        } else if(flails >= 2){
+          summary.innerHTML = `${quills} quills, ${flails} flails. A mixed posture. The quills are doing their job. The flails are leaking energy in the exact places the system is supposed to conserve it. Pick the single most common flail and design a structural replacement this week.`;
+        } else {
+          summary.innerHTML = `${quills} of ${POSTURES.length} postures are structural quills. Your defense is already running on architecture rather than emotion. Keep the practice. Watch for new flails appearing as new pressures arise. The system needs maintenance, not overhaul.`;
+        }
+      }
+      function save(){ if(window.kbWidget) kbWidget.save(SLUG, WIDGET, state); }
       root.addEventListener('click', e => {
         const btn = e.target.closest('button[data-v]');
         if(!btn) return;
@@ -1042,27 +1068,25 @@ h1,h2,h3,h4{font-family:'Poppins',sans-serif;line-height:1.2}
         const k = group.dataset.k;
         const v = btn.dataset.v;
         state[k] = v;
-        Array.from(group.children).forEach(b => {
-          if(b.dataset.v === v){
-            if(v === 'quill'){ b.style.background = '#C0A882'; b.style.color = '#1a1408'; b.style.borderColor = '#C0A882'; }
-            else { b.style.background = '#A55840'; b.style.color = '#fff'; b.style.borderColor = '#A55840'; }
-          } else { b.style.background = 'rgba(255,255,255,0.04)'; b.style.color = 'rgba(255,255,255,0.7)'; b.style.borderColor = 'rgba(192,168,130,0.3)'; }
-        });
-        if(Object.keys(state).length >= POSTURES.length){
-          const quills = Object.values(state).filter(v => v === 'quill').length;
-          const flails = Object.values(state).filter(v => v === 'flail').length;
-          const result = document.getElementById('qi-result');
-          const summary = document.getElementById('qi-summary');
-          result.style.display = 'block';
-          if(flails >= 4){
-            summary.innerHTML = `${flails} of ${POSTURES.length} of your current defenses are frantic flailing. The system is running on adrenaline, not architecture. This is exhausting, and it teaches the other person that pressure produces a reaction in you. Replace flails with quills. Decide consequences in advance. Stop explaining. Let your behavior speak. The porcupine never argues with the leopard.`;
-          } else if(flails >= 2){
-            summary.innerHTML = `${quills} quills, ${flails} flails. A mixed posture. The quills are doing their job. The flails are leaking energy in the exact places the system is supposed to conserve it. Pick the single most common flail and design a structural replacement this week.`;
-          } else {
-            summary.innerHTML = `${quills} of ${POSTURES.length} postures are structural quills. Your defense is already running on architecture rather than emotion. Keep the practice. Watch for new flails appearing as new pressures arise. The system needs maintenance, not overhaul.`;
-          }
-        }
+        paintGroup(group, v);
+        renderResult();
+        save();
       });
+      function restore(data){
+        if(!data) return;
+        Object.assign(state, data);
+        Object.entries(state).forEach(([k,v]) => {
+          const group = root.querySelector('[data-k="'+k+'"]');
+          if(group) paintGroup(group, v);
+        });
+        renderResult();
+      }
+      if(window.kbWidget){
+        kbWidget.onReady(async () => {
+          const r = await kbWidget.load(SLUG, WIDGET);
+          if(r && r.data) restore(r.data);
+        });
+      }
     })();
     </script>
 

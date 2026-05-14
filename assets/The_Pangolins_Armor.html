@@ -1115,12 +1115,14 @@ dfn.def:hover::after,dfn.def:focus::after{content:attr(data-def);position:absolu
 
 <script>
 (function(){
+  const SLUG = 'the-pangolins-armor';
+  const WIDGET = 'energy-equation';
   const wrap = document.getElementById('ee-rows');
   const addBtn = document.getElementById('ee-add');
   if(!wrap) return;
   let count = 0;
-  function makeRow(){
-    if(count >= 6) return;
+  function makeRow(initialName, initialCost){
+    if(count >= 6) return null;
     count++;
     const div = document.createElement('div');
     div.style.cssText = 'display:grid;grid-template-columns:1fr 110px;gap:10px;margin-bottom:8px;align-items:center;';
@@ -1134,11 +1136,22 @@ dfn.def:hover::after,dfn.def:focus::after{content:attr(data-def);position:absolu
         <option value="4">Bleeding</option>
       </select>`;
     wrap.appendChild(div);
+    if(initialName){ div.querySelector('.ee-name').value = initialName; }
+    if(initialCost){ div.querySelector('.ee-cost').value = String(initialCost); }
     const inputs = div.querySelectorAll('input,select');
     inputs.forEach(el => el.addEventListener('input', update));
     inputs.forEach(el => el.addEventListener('change', update));
+    return div;
   }
+  function currentRows(){
+    return Array.from(wrap.children).map(r => ({
+      name: r.querySelector('.ee-name').value.trim(),
+      cost: parseInt(r.querySelector('.ee-cost').value) || 0
+    }));
+  }
+  function save(){ if(window.kbWidget) kbWidget.save(SLUG, WIDGET, {rows: currentRows()}); }
   function update(){
+    save();
     const rows = Array.from(wrap.children).map(r => {
       const name = r.querySelector('.ee-name').value.trim();
       const cost = parseInt(r.querySelector('.ee-cost').value) || 0;
@@ -1171,8 +1184,21 @@ dfn.def:hover::after,dfn.def:focus::after{content:attr(data-def);position:absolu
     sorted.innerHTML += verdict;
     result.style.display = 'block';
   }
-  addBtn.addEventListener('click', makeRow);
-  makeRow(); makeRow(); makeRow();
+  addBtn.addEventListener('click', () => makeRow());
+  function restore(data){
+    if(!data || !Array.isArray(data.rows)) return;
+    data.rows.forEach(r => makeRow(r.name, r.cost));
+    update();
+  }
+  if(window.kbWidget){
+    kbWidget.onReady(async () => {
+      const r = await kbWidget.load(SLUG, WIDGET);
+      if(r && r.data && r.data.rows && r.data.rows.length){ restore(r.data); }
+      else { makeRow(); makeRow(); makeRow(); }
+    });
+  } else {
+    makeRow(); makeRow(); makeRow();
+  }
 })();
 </script>
 

@@ -817,6 +817,8 @@ dfn.def:hover::after{content:attr(data-def);position:absolute;bottom:120%;left:5
 
 <script>
 (function(){
+  const SLUG = 'the-source';
+  const WIDGET = 'what-remains';
   const root = document.getElementById('wr-root');
   if(!root) return;
   const state = {career: 1, body: 1, applause: 1, money: 1, role: 1, competence: 1};
@@ -829,14 +831,10 @@ dfn.def:hover::after{content:attr(data-def);position:absolute;bottom:120%;left:5
     1: 'Five gone. One material remaining. If your sense of who you are still has anything in it, that something was never built from the five that were removed. That something is the received identity. The first pillar.',
     0: 'All six removed. The constructed identity has been fully stripped. What remains in you at this exact moment, the awareness, the wanting, the capacity to receive, the dignity, the breath, is the residue. This is who you actually are. Everything that was removed was scaffolding. The well of the Source is dug in this residue, not in any of the materials.'
   };
-  root.addEventListener('click', e => {
-    const item = e.target.closest('.wr-item');
-    if(!item) return;
-    const k = item.dataset.k;
-    state[k] = state[k] ? 0 : 1;
+  function paintItem(item, on){
     const toggle = item.querySelector('.wr-toggle');
     const dot = toggle.firstElementChild;
-    if(state[k]){
+    if(on){
       toggle.style.background = '#7ABDB6';
       dot.style.right = '2px';
       dot.style.left = 'auto';
@@ -847,9 +845,36 @@ dfn.def:hover::after{content:attr(data-def);position:absolute;bottom:120%;left:5
       dot.style.right = 'auto';
       item.style.opacity = '0.45';
     }
+  }
+  function renderText(){
     const remaining = Object.values(state).reduce((a,b) => a+b, 0);
     document.getElementById('wr-text').innerHTML = messages[remaining];
+  }
+  function save(){ if(window.kbWidget) kbWidget.save(SLUG, WIDGET, state); }
+  root.addEventListener('click', e => {
+    const item = e.target.closest('.wr-item');
+    if(!item) return;
+    const k = item.dataset.k;
+    state[k] = state[k] ? 0 : 1;
+    paintItem(item, state[k]);
+    renderText();
+    save();
   });
+  function restore(data){
+    if(!data) return;
+    Object.assign(state, data);
+    root.querySelectorAll('.wr-item').forEach(item => {
+      const k = item.dataset.k;
+      paintItem(item, state[k]);
+    });
+    renderText();
+  }
+  if(window.kbWidget){
+    kbWidget.onReady(async () => {
+      const r = await kbWidget.load(SLUG, WIDGET);
+      if(r && r.data) restore(r.data);
+    });
+  }
 })();
 </script>
 </div>

@@ -611,30 +611,61 @@ dfn.def:hover::after,dfn.def:focus::after{content:attr(data-def);position:absolu
       </div>`;
     root.appendChild(wrap);
   });
+  const SLUG = 'lay-it-down-envy';
+  const WIDGET = 'aberration-mapper';
   root.addEventListener('click', e => {
     const btn = e.target.closest('button[data-i]');
     if(!btn) return;
     const panel = btn.nextElementSibling;
     panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
   });
-  function update() {
+  function currentState(){
+    const ab = {}, co = {};
+    BANDS.forEach((b,i) => {
+      const a = document.querySelector('textarea[data-i="'+i+'"][data-k="ab"]');
+      const c = document.querySelector('textarea[data-i="'+i+'"][data-k="co"]');
+      if(a) ab[i] = a.value;
+      if(c) co[i] = c.value;
+    });
+    return {name: document.getElementById('amap-name').value, ab, co};
+  }
+  function save(){ if(window.kbWidget) kbWidget.save(SLUG, WIDGET, currentState()); }
+  function update(){
     const name = (document.getElementById('amap-name').value || 'this person').trim();
     const filled = [];
     BANDS.forEach((b,i) => {
-      const co = document.querySelector(`textarea[data-i="${i}"][data-k="co"]`);
+      const co = document.querySelector('textarea[data-i="'+i+'"][data-k="co"]');
       if(co && co.value.trim().length > 8) filled.push(b.label.toLowerCase());
     });
     const result = document.getElementById('amap-result');
     const summary = document.getElementById('amap-summary');
-    if(filled.length >= 2) {
+    if(filled.length >= 2){
       result.style.display = 'block';
       summary.innerHTML = `When you look at ${name}, you have been seeing isolated bands of ${filled.slice(0,3).join(', ')}${filled.length>3?' and more':''}. The corrected image you have now sketched shows the off camera spectrum that the aberrated lens hid. The same correction is operating, simultaneously, on your image of yourself.`;
     } else {
       result.style.display = 'none';
     }
   }
-  root.addEventListener('input', update);
-  document.getElementById('amap-name').addEventListener('input', update);
+  function onInput(){ update(); save(); }
+  root.addEventListener('input', onInput);
+  document.getElementById('amap-name').addEventListener('input', onInput);
+  function restore(data){
+    if(!data) return;
+    if(data.name) document.getElementById('amap-name').value = data.name;
+    BANDS.forEach((b,i) => {
+      const a = document.querySelector('textarea[data-i="'+i+'"][data-k="ab"]');
+      const c = document.querySelector('textarea[data-i="'+i+'"][data-k="co"]');
+      if(a && data.ab && data.ab[i]) a.value = data.ab[i];
+      if(c && data.co && data.co[i]) c.value = data.co[i];
+    });
+    update();
+  }
+  if(window.kbWidget){
+    kbWidget.onReady(async () => {
+      const r = await kbWidget.load(SLUG, WIDGET);
+      if(r && r.data) restore(r.data);
+    });
+  }
 })();
 </script>
 

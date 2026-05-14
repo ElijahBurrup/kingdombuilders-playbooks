@@ -1078,29 +1078,57 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
   (function(){
     const root = document.getElementById('ns-root');
     if(!root) return;
-    let contact = '';
+    const SLUG = 'the-narrator';
+    const WIDGET = 'whose-script';
+    const state = {line:'', source:'', age:'', contact:''};
+    function save(){ if(window.kbWidget) kbWidget.save(SLUG, WIDGET, state); }
+    function paintContact(v){
+      const group = root.querySelector('[data-k="contact"]');
+      if(!group) return;
+      Array.from(group.children).forEach(b => {
+        if(b.dataset.v === v){ b.style.background = 'var(--crimson)'; b.style.color = '#fff'; b.style.borderColor = 'var(--crimson)'; }
+        else { b.style.background = 'rgba(255,255,255,0.04)'; b.style.color = 'rgba(255,255,255,0.8)'; b.style.borderColor = 'rgba(196,53,78,0.3)'; }
+      });
+    }
     root.addEventListener('click', e => {
       const btn = e.target.closest('button[data-v]');
       if(!btn) return;
       const group = btn.parentElement;
       if(group.dataset.k !== 'contact') return;
-      contact = btn.dataset.v;
-      Array.from(group.children).forEach(b => {
-        if(b.dataset.v === contact){ b.style.background = 'var(--crimson)'; b.style.color = '#fff'; b.style.borderColor = 'var(--crimson)'; }
-        else { b.style.background = 'rgba(255,255,255,0.04)'; b.style.color = 'rgba(255,255,255,0.8)'; b.style.borderColor = 'rgba(196,53,78,0.3)'; }
-      });
+      state.contact = btn.dataset.v;
+      paintContact(state.contact);
+      save();
     });
-    document.getElementById('ns-run').addEventListener('click', () => {
-      const line = document.getElementById('ns-line').value.trim();
-      const source = document.getElementById('ns-source').value;
-      const age = document.getElementById('ns-age').value;
-      if(!line || !source || !age || !contact) return;
+    const lineInput = document.getElementById('ns-line');
+    const sourceSelect = document.getElementById('ns-source');
+    const ageSelect = document.getElementById('ns-age');
+    lineInput.addEventListener('input', () => { state.line = lineInput.value; save(); });
+    sourceSelect.addEventListener('change', () => { state.source = sourceSelect.value; save(); });
+    ageSelect.addEventListener('change', () => { state.age = ageSelect.value; save(); });
+    function renderResult(){
+      if(!state.line || !state.source || !state.age || !state.contact) return;
       const SOURCES = {parent: 'a parent', sibling: 'a sibling', teacher: 'a teacher or coach', peer: 'a childhood peer', boss: 'a former boss', partner: 'a former partner', self: 'yourself after a failure', culture: 'a family or cultural pattern with no single author'};
       const AGES = {early: 'before age 10, when the brain accepts authoritative voices without filter', teen: 'between 11 and 18, when identity formation is most susceptible', young: 'between 19 and 25, during your young adult identity consolidation', adult: 'as an adult, which means you have less excuse to keep performing it'};
       const CONTACT_NOTE = {yes: 'The source is still in your daily life. This means the Audience seat is occupied and active. Authoring this line will be felt by them. Expect resistance. Author anyway.', distant: 'The source is no longer in your daily life. The Audience seat is empty, and yet you are still performing to it. This is the strangest case of all. There is no actual person listening anymore. Only the empty chair.', ghost: 'The source is deceased. The chair is permanently empty. The voice you hear is now entirely your own internalized rendition. You are the Narrator now, performing a line written by someone who can no longer revise it. Only you can.'};
       document.getElementById('ns-result').style.display = 'block';
-      document.getElementById('ns-summary').innerHTML = `Your Script line: <strong style="color:#fff;font-style:normal;">"${line}"</strong>. It was first absorbed from <strong style="color:#fff;font-style:normal;">${SOURCES[source]}</strong>, ${AGES[age]}. ${CONTACT_NOTE[contact]} The Author's move this week is to write the corrected line by hand and read it aloud once each morning. The Narrator will resist. The Narrator always resists. The pen is yours regardless.`;
-    });
+      document.getElementById('ns-summary').innerHTML = `Your Script line: <strong style="color:#fff;font-style:normal;">"${state.line}"</strong>. It was first absorbed from <strong style="color:#fff;font-style:normal;">${SOURCES[state.source]}</strong>, ${AGES[state.age]}. ${CONTACT_NOTE[state.contact]} The Author's move this week is to write the corrected line by hand and read it aloud once each morning. The Narrator will resist. The Narrator always resists. The pen is yours regardless.`;
+    }
+    document.getElementById('ns-run').addEventListener('click', renderResult);
+    function restore(data){
+      if(!data) return;
+      Object.assign(state, data);
+      if(state.line) lineInput.value = state.line;
+      if(state.source) sourceSelect.value = state.source;
+      if(state.age) ageSelect.value = state.age;
+      if(state.contact) paintContact(state.contact);
+      if(state.line && state.source && state.age && state.contact) renderResult();
+    }
+    if(window.kbWidget){
+      kbWidget.onReady(async () => {
+        const r = await kbWidget.load(SLUG, WIDGET);
+        if(r && r.data) restore(r.data);
+      });
+    }
   })();
   </script>
 

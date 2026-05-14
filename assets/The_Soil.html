@@ -450,11 +450,13 @@ dfn.def:hover::after{content:attr(data-def);position:absolute;bottom:120%;left:5
 
 <script>
 (function(){
+  const SLUG = 'the-soil';
+  const WIDGET = 'pruning-audit';
   const wrap = document.getElementById('pa-rows');
   const addBtn = document.getElementById('pa-add');
   if(!wrap) return;
   let count = 0;
-  function row(){
+  function row(initialName, initialState){
     if(count >= 8) return;
     count++;
     const div = document.createElement('div');
@@ -469,10 +471,20 @@ dfn.def:hover::after{content:attr(data-def);position:absolute;bottom:120%;left:5
         <option value="dead">Dead wood</option>
       </select>`;
     wrap.appendChild(div);
+    if(initialName){ div.querySelector('.pa-name').value = initialName; }
+    if(initialState){ div.querySelector('.pa-state').value = initialState; }
     div.querySelectorAll('input,select').forEach(el => el.addEventListener('input', update));
     div.querySelectorAll('input,select').forEach(el => el.addEventListener('change', update));
   }
+  function currentRows(){
+    return Array.from(wrap.children).map(r => ({
+      name: r.querySelector('.pa-name').value.trim(),
+      state: r.querySelector('.pa-state').value
+    }));
+  }
+  function save(){ if(window.kbWidget) kbWidget.save(SLUG, WIDGET, {rows: currentRows()}); }
   function update(){
+    save();
     const rows = Array.from(wrap.children).map(r => ({
       name: r.querySelector('.pa-name').value.trim(),
       state: r.querySelector('.pa-state').value
@@ -510,8 +522,21 @@ dfn.def:hover::after{content:attr(data-def);position:absolute;bottom:120%;left:5
     document.getElementById('pa-summary').innerHTML = verdict;
     result.style.display = 'block';
   }
-  addBtn.addEventListener('click', row);
-  row(); row(); row();
+  addBtn.addEventListener('click', () => row());
+  function restore(data){
+    if(!data || !Array.isArray(data.rows)) return false;
+    data.rows.forEach(r => row(r.name, r.state));
+    update();
+    return true;
+  }
+  if(window.kbWidget){
+    kbWidget.onReady(async () => {
+      const r = await kbWidget.load(SLUG, WIDGET);
+      if(!(r && r.data && restore(r.data))){ row(); row(); row(); }
+    });
+  } else {
+    row(); row(); row();
+  }
 })();
 </script>
 

@@ -805,11 +805,37 @@ dfn.def:hover::after,dfn.def:focus::after{opacity:1;pointer-events:auto}
         summary.innerHTML = `${bp}% for the burn is on the low end of viable. Most ${arrival} arrivals would benefit from a slightly higher burn allocation. Consider shifting 5 to 10 points from cruise into burn.`;
       }
     }
-    cruise.addEventListener('input', render);
-    burn.addEventListener('input', render);
-    orbit.addEventListener('input', render);
-    target.addEventListener('change', render);
-    render();
+    const SLUG = 'the-arrival';
+    const WIDGET = 'fuel-budget';
+    function save(){
+      if(window.kbWidget) kbWidget.save(SLUG, WIDGET, {
+        cruise: parseInt(cruise.value),
+        burn: parseInt(burn.value),
+        orbit: parseInt(orbit.value),
+        target: target.value
+      });
+    }
+    function onChange(){ render(); save(); }
+    cruise.addEventListener('input', onChange);
+    burn.addEventListener('input', onChange);
+    orbit.addEventListener('input', onChange);
+    target.addEventListener('change', onChange);
+    function restore(data){
+      if(!data) return;
+      if(typeof data.cruise === 'number') cruise.value = data.cruise;
+      if(typeof data.burn === 'number') burn.value = data.burn;
+      if(typeof data.orbit === 'number') orbit.value = data.orbit;
+      if(data.target) target.value = data.target;
+      render();
+    }
+    if(window.kbWidget){
+      kbWidget.onReady(async () => {
+        const r = await kbWidget.load(SLUG, WIDGET);
+        if(r && r.data) restore(r.data); else render();
+      });
+    } else {
+      render();
+    }
   })();
   </script>
 </div>
