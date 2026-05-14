@@ -475,36 +475,42 @@ function closeNavDrawer(){
 </script>
 
 
-<script data-auth-aware="v1">
+<script data-auth-aware="v2">
 (async function(){
+  async function doLogout(ev){
+    if(ev) ev.preventDefault();
+    try{
+      await fetch('/playbooks/auth/logout', {
+        method:'POST',
+        credentials:'same-origin',
+        headers:{'Accept':'application/json','X-Requested-With':'fetch'},
+      });
+    }catch(e){}
+    window.location.href = '/playbooks/';
+  }
+
+  function makeLogoutBtn(cls, label, block){
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = label;
+    b.className = cls;
+    b.style.cssText = 'border:none;cursor:pointer;font:inherit;letter-spacing:inherit;text-transform:inherit'
+      + (block ? ';display:block;width:100%' : '');
+    b.addEventListener('click', doLogout);
+    return b;
+  }
+
   try{
     const r = await fetch('/playbooks/auth/status', {credentials:'same-origin'});
     if(!r.ok) return;
     const data = await r.json();
     if(!data || !data.signed_in) return;
 
-    function makeLogoutForm(cls, label){
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = '/playbooks/auth/logout';
-      form.style.cssText = 'display:inline;margin:0;padding:0';
-      const btn = document.createElement('button');
-      btn.type = 'submit';
-      btn.textContent = label;
-      btn.className = cls;
-      btn.style.cssText = 'border:none;cursor:pointer;font:inherit;letter-spacing:inherit;text-transform:inherit';
-      form.appendChild(btn);
-      return form;
-    }
-
     document.querySelectorAll('a.nav-button[href$="/auth"]').forEach(a => {
-      a.replaceWith(makeLogoutForm(a.className, 'Sign Out'));
+      a.replaceWith(makeLogoutBtn(a.className, 'Sign Out', false));
     });
     document.querySelectorAll('.nav-drawer a[href$="/auth"]').forEach(a => {
-      const f = makeLogoutForm(a.className, 'Sign Out');
-      f.style.display = 'block';
-      f.firstChild.style.width = '100%';
-      a.replaceWith(f);
+      a.replaceWith(makeLogoutBtn(a.className, 'Sign Out', true));
     });
   }catch(e){}
 })();

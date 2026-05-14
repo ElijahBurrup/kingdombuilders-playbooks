@@ -68,21 +68,16 @@ test.describe("Sign In reachability — desktop topnav + mobile drawer", () => {
     );
     await page.goto(PROD + "/");
 
-    // The auth-awareness JS should swap the Sign In button → Sign Out form
+    // The auth-awareness JS should swap the Sign In anchor → Sign Out button
     if (!isNarrow(page)) {
-      const signIn = page.locator(".nav-button", { hasText: "Sign In" });
+      const signIn = page.locator("a.nav-button", { hasText: "Sign In" });
       await expect(signIn).toHaveCount(0);
-      const signOut = page.locator("form[action$='/auth/logout'] button", {
-        hasText: "Sign Out",
-      });
+      const signOut = page.locator("button.nav-button", { hasText: "Sign Out" });
       await expect(signOut.first()).toBeVisible();
     } else {
       // Mobile drawer should likewise show Sign Out
       await page.locator(".nav-hamburger").click();
-      const signOut = page.locator(
-        ".nav-drawer form[action$='/auth/logout'] button",
-        { hasText: "Sign Out" }
-      );
+      const signOut = page.locator(".nav-drawer button", { hasText: "Sign Out" });
       await expect(signOut).toBeVisible();
     }
   });

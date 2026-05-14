@@ -26,7 +26,7 @@ test.describe("Sign Out flow on production", () => {
     // 2. Confirm we're signed in: Sign Out button should appear on the homepage
     await page.goto(PROD + "/");
     const signOutBtn = page
-      .locator("form[action$='/auth/logout'] button", { hasText: "Sign Out" })
+      .locator("button.nav-button", { hasText: "Sign Out" })
       .first();
     await expect(signOutBtn).toBeVisible({ timeout: 8000 });
     console.log("SIGN OUT BUTTON VISIBLE — confirmed logged in");
@@ -41,7 +41,10 @@ test.describe("Sign Out flow on production", () => {
       (r) => r.url().includes("/auth/logout"),
       { timeout: 8000 }
     );
-    await signOutBtn.click();
+    await Promise.all([
+      page.waitForURL((u) => !u.toString().includes("/auth/logout"), { timeout: 10000 }),
+      signOutBtn.click(),
+    ]);
     const resp = await respPromise;
     console.log("LOGOUT RESPONSE STATUS:", resp.status());
     console.log("LOGOUT RESPONSE URL:", resp.url());
@@ -60,13 +63,10 @@ test.describe("Sign Out flow on production", () => {
     const status = await statusResp.json();
     console.log("AUTH STATUS AFTER LOGOUT:", JSON.stringify(status));
 
-    // 5. The Sign In button (anchor) should be back, no Sign Out form
+    // 5. The Sign In button (anchor) should be back, no Sign Out button
     await page.goto(PROD + "/");
     const signInLink = page.locator("a.nav-button", { hasText: "Sign In" }).first();
-    const signOutStill = page.locator(
-      "form[action$='/auth/logout'] button",
-      { hasText: "Sign Out" }
-    );
+    const signOutStill = page.locator("button.nav-button", { hasText: "Sign Out" });
     console.log("SIGN IN VISIBLE:", await signInLink.isVisible());
     console.log("SIGN OUT STILL PRESENT:", await signOutStill.count());
 
