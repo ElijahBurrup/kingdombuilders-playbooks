@@ -1940,9 +1940,10 @@ async def forgot_password_submit(
         db.add(vtoken)
         await db.commit()
 
-        # Send reset email via Resend
+        # Send reset email via Resend. BASE_URL already carries the subpath
+        # — don't re-append URL_PREFIX or the link doubles to /playbooks/playbooks/.
         base = settings.BASE_URL.rstrip("/")
-        reset_url = f"{base}{prefix}/auth/reset-password?token={raw_token}"
+        reset_url = f"{base}/auth/reset-password?token={raw_token}"
 
         try:
             resend.api_key = settings.RESEND_API_KEY

@@ -926,9 +926,11 @@ async def create_referral_claim(
     at_idx = email.index("@")
     masked = email[:2] + "***" + email[at_idx:]
 
+    # BASE_URL on prod already includes the /playbooks subpath, so do NOT
+    # re-append URL_PREFIX or the link doubles to /playbooks/playbooks/...
+    # (the same root cause as the earlier referral_link bug).
     base = settings.BASE_URL.rstrip("/")
-    prefix = settings.URL_PREFIX
-    confirm_url = f"{base}{prefix}/referrals/confirm-claim?token={token}"
+    confirm_url = f"{base}/referrals/confirm-claim?token={token}"
 
     send_referral_claim_request_email(
         referrer_email=referrer.email,

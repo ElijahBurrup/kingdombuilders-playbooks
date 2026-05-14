@@ -237,7 +237,129 @@ async def get_attribution_status(
 
 
 # ============================================================================
-# POST /referrals/claim — submit a referral claim
+# GET /referrals/lookup-code — preview the referrer for a code (no state change)
+# ============================================================================
+@router.get("/lookup-code")
+async def lookup_referral_code(
+    code: str,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> dict:
+    """Return display name + email of the user that owns *code*.
+
+    Used by the post-signup "were you referred?" flow so the claimant can
+    eyeball-confirm the person before attribution. Rate-limited to the same
+    bucket as /claim to prevent code enumeration.
+    """
+    uid = str(current_user.id)
+    now = time.monotonic()
+    _claim_attempts[uid] = [t for t in _claim_attempts[uid] if now - t < _CLAIM_RATE_WINDOW]
+    if len(_claim_attempts[uid]) >= _CLAIM_RATE_LIMIT:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Too many lookups. Please wait a few minutes.",
+        )
+    _claim_attempts[uid].append(now)
+
+    clean = code.strip().upper()
+    if not re.match(r"^[A-Z0-9]{6}$", clean):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid referral code format.",
+        )
+
+    from api.models.referral import ReferralCode
+    res = await db.execute(
+        select(ReferralCode, User)
+        .join(User, User.id == ReferralCode.user_id)
+        .where(ReferralCode.code == clean)
+    )
+    row = res.first()
+    if not row:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Referral code not found.",
+        )
+    _, owner = row
+
+    if owner.id == current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="You cannot attribute yourself to your own code.",
+        )
+
+    return {
+        "code": clean,
+        "display_name": owner.display_name or owner.email.split("@", 1)[0],
+        "email": owner.email,
+    }
+
+
+# ============================================================================
+# POST /referrals/attribute — immediate self-confirm attribution
+# ============================================================================
+@router.post("/attribute")
+async def attribute_referral(
+    body: dict,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> dict:
+    """Immediately link the current user under the owner of *referral_code*.
+
+    The claimant has just visually confirmed the referrer's name/email in
+    the dashboard — no email round-trip is required. Same guards as the
+    old /claim flow (rate-limit, format, no existing attribution, no
+    self-referral, code must exist).
+    """
+    uid = str(current_user.id)
+    now = time.monotonic()
+    _claim_attempts[uid] = [t for t in _claim_attempts[uid] if now - t < _CLAIM_RATE_WINDOW]
+    if len(_claim_attempts[uid]) >= _CLAIM_RATE_LIMIT:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Too many attempts. Please try again later.",
+        )
+    _claim_attempts[uid].append(now)
+
+    code = body.get("referral_code", "").strip().upper()
+    if not re.match(r"^[A-Z0-9]{6}$", code):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid referral code format.",
+        )
+
+    if await has_referral_attribution(current_user.id, db):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="You already have a referral attribution.",
+        )
+
+    # Verify code exists and isn't a self-referral
+    from api.models.referral import ReferralCode
+    cres = await db.execute(
+        select(ReferralCode).where(ReferralCode.code == code)
+    )
+    code_row = cres.scalar_one_or_none()
+    if code_row is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Referral code not found.",
+        )
+    if code_row.user_id == current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="You cannot claim your own referral code.",
+        )
+
+    from api.services.referral_service import process_referral_cookie
+    await process_referral_cookie(current_user.id, code, db)
+    await db.commit()
+
+    return {"status": "attributed", "message": "Got it — you're now linked under that referrer."}
+
+
+# ============================================================================
+# POST /referrals/claim — submit a referral claim (LEGACY, email-confirm flow)
 # ============================================================================
 @router.post("/claim")
 async def submit_referral_claim(

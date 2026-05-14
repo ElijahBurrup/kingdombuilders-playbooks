@@ -707,6 +707,42 @@ body {
 .ref-claim-msg.error { color: #E74C3C; display: block; }
 .ref-claim-msg.pending { color: var(--gold); display: block; }
 
+/* Two-step claim confirm card */
+.ref-claim-confirm { margin-top: 16px; }
+.ref-claim-confirm-prompt {
+  font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600;
+  color: rgba(255,255,255,0.75); margin-bottom: 10px; letter-spacing: 0.3px;
+}
+.ref-claim-confirm-card {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(212,168,67,0.32);
+  border-radius: 12px; padding: 16px 18px; margin-bottom: 14px;
+}
+.ref-claim-confirm-name {
+  font-family: 'Nunito', sans-serif; font-size: 17px; font-weight: 800;
+  color: var(--gold-light, #E8C96A); margin-bottom: 4px;
+}
+.ref-claim-confirm-email {
+  font-family: 'Poppins', sans-serif; font-size: 13px;
+  color: rgba(255,255,255,0.7); word-break: break-all;
+}
+.ref-claim-confirm-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.ref-claim-yes, .ref-claim-no {
+  flex: 1; min-width: 140px; padding: 11px 18px; border: none; cursor: pointer;
+  font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 700;
+  letter-spacing: 0.4px; border-radius: 8px; transition: all 0.2s;
+}
+.ref-claim-yes {
+  background: linear-gradient(135deg, var(--gold, #D4A843), #E8C96A);
+  color: #1F2440;
+}
+.ref-claim-yes:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(212,168,67,0.4); }
+.ref-claim-yes:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+.ref-claim-no {
+  background: transparent; color: rgba(255,255,255,0.7);
+  border: 1px solid rgba(255,255,255,0.18);
+}
+.ref-claim-no:hover { background: rgba(255,255,255,0.05); color: #fff; }
+
 /* --- Empty State --- */
 .ref-empty {
   text-align: center;
@@ -782,14 +818,28 @@ body {
   <h1 class="ref-header-title">Refer & Earn</h1>
 </div>
 
-<!-- Claim Banner (shown if user has no referral attribution) -->
+<!-- Claim Banner (shown only when the user has NO referral attribution) -->
 <div class="ref-claim-banner" id="claimBanner">
   <div class="ref-claim-title">Were you referred by someone?</div>
   <div class="ref-claim-desc">If someone told you about Kingdom Builders, enter their referral code below so they get credit.</div>
-  <div class="ref-claim-form">
+  <div class="ref-claim-form" id="claimEntryForm">
     <input type="text" class="ref-claim-input" id="claimCodeInput" placeholder="Enter referral code" maxlength="6">
-    <button class="ref-claim-submit" id="claimSubmitBtn" onclick="submitClaim()">Submit</button>
+    <button class="ref-claim-submit" id="claimSubmitBtn" onclick="submitClaim()">Look up</button>
   </div>
+
+  <!-- Step 2: confirm-this-person card (hidden by default) -->
+  <div class="ref-claim-confirm" id="claimConfirm" style="display:none">
+    <div class="ref-claim-confirm-prompt">Is this who referred you?</div>
+    <div class="ref-claim-confirm-card">
+      <div class="ref-claim-confirm-name" id="claimConfirmName"></div>
+      <div class="ref-claim-confirm-email" id="claimConfirmEmail"></div>
+    </div>
+    <div class="ref-claim-confirm-actions">
+      <button class="ref-claim-no" type="button" onclick="cancelClaim()">No, that's not them</button>
+      <button class="ref-claim-yes" type="button" onclick="confirmAttribute()">Yes, link them to me</button>
+    </div>
+  </div>
+
   <div class="ref-claim-msg" id="claimMsg"></div>
 </div>
 
@@ -1021,45 +1071,88 @@ body {
     }
   }).catch(function() {});
 
-  // --- Submit Claim ---
+  // --- Two-step claim: look up the code → show name+email → user confirms ---
+  var _pendingCode = null;
+
   window.submitClaim = function() {
-    var code = document.getElementById('claimCodeInput').value.trim();
+    var code = document.getElementById('claimCodeInput').value.trim().toUpperCase();
     var btn = document.getElementById('claimSubmitBtn');
     var msg = document.getElementById('claimMsg');
 
     if (!code) {
       msg.className = 'ref-claim-msg error';
+      msg.style.display = '';
       msg.textContent = 'Please enter a referral code.';
       return;
     }
 
     btn.disabled = true;
-    btn.textContent = 'Submitting...';
-    msg.className = 'ref-claim-msg';
+    btn.textContent = 'Looking up...';
     msg.style.display = 'none';
 
-    fetch(PREFIX + '/api/v1/referrals/claim', {
-      method: 'POST',
+    fetch(PREFIX + '/api/v1/referrals/lookup-code?code=' + encodeURIComponent(code), {
+      method: 'GET',
       headers: HEADERS,
-      body: JSON.stringify({ referral_code: code })
     }).then(function(r) {
       return r.json().then(function(data) {
-        if (!r.ok) throw new Error(data.detail || 'Failed to submit claim');
+        if (!r.ok) throw new Error(data.detail || 'Code not found');
+        return data;
+      });
+    }).then(function(data) {
+      _pendingCode = data.code;
+      document.getElementById('claimConfirmName').textContent = data.display_name || 'Unnamed';
+      document.getElementById('claimConfirmEmail').textContent = data.email || '';
+      document.getElementById('claimEntryForm').style.display = 'none';
+      document.getElementById('claimConfirm').style.display = '';
+      btn.disabled = false;
+      btn.textContent = 'Look up';
+    }).catch(function(err) {
+      msg.className = 'ref-claim-msg error';
+      msg.style.display = '';
+      msg.textContent = err.message;
+      btn.disabled = false;
+      btn.textContent = 'Look up';
+    });
+  };
+
+  window.cancelClaim = function() {
+    _pendingCode = null;
+    document.getElementById('claimConfirm').style.display = 'none';
+    document.getElementById('claimEntryForm').style.display = '';
+    document.getElementById('claimCodeInput').value = '';
+    document.getElementById('claimMsg').style.display = 'none';
+  };
+
+  window.confirmAttribute = function() {
+    if (!_pendingCode) return;
+    var msg = document.getElementById('claimMsg');
+    var yesBtn = document.querySelector('.ref-claim-yes');
+    if (yesBtn) { yesBtn.disabled = true; yesBtn.textContent = 'Linking...'; }
+
+    fetch(PREFIX + '/api/v1/referrals/attribute', {
+      method: 'POST',
+      headers: HEADERS,
+      body: JSON.stringify({ referral_code: _pendingCode })
+    }).then(function(r) {
+      return r.json().then(function(data) {
+        if (!r.ok) throw new Error(data.detail || 'Could not attribute referrer');
         return data;
       });
     }).then(function(data) {
       msg.className = 'ref-claim-msg success';
-      msg.textContent = data.message || 'Claim submitted! Check back soon.';
-      // Hide claim form after success, show pending
+      msg.style.display = '';
+      msg.textContent = data.message || 'Linked.';
+      // Hide the whole banner once linked — feature is now unavailable
       setTimeout(function() {
         document.getElementById('claimBanner').classList.remove('visible');
-        document.getElementById('claimPendingBanner').classList.add('visible');
-      }, 2000);
+        // Refresh the tree tab so the new attribution shows up
+        if (typeof loadTree === 'function') loadTree();
+      }, 1500);
     }).catch(function(err) {
       msg.className = 'ref-claim-msg error';
+      msg.style.display = '';
       msg.textContent = err.message;
-      btn.disabled = false;
-      btn.textContent = 'Submit';
+      if (yesBtn) { yesBtn.disabled = false; yesBtn.textContent = "Yes, link them to me"; }
     });
   };
 
