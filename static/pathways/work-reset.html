@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Work Reset | Pathways | Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#0E0F1A; --dawn:#1F2440; --sky:#3D4670;
+  --gold:#D4A843; --gold-glow:#E8C96A; --gold-pale:#F5E0A8;
+  --rose:#C88090; --rose-pale:#E2B4BC;
+  --cream:#FDFAF3; --cream-warm:#F5EFE0; --cream-deep:#ECE5CC;
+  --text:#1A1A26; --text-light:#4A4E5E; --text-muted:#7A7E8E;
+  --white:#FFFFFF;
+  --shadow-soft:0 2px 12px rgba(14,15,26,0.06);
+  --shadow-mid:0 8px 32px rgba(14,15,26,0.14);
+  --shadow-strong:0 16px 60px rgba(14,15,26,0.22);
+  /* Pathway accent — varies per page */
+  --accent:#D4A843;
+  --accent-deep:#8A6B20;
+  --accent-pale:#F5E0A8;
+  --accent-soft:rgba(212,168,67,0.10);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Lora',Georgia,serif;
+  color:var(--text);
+  background:var(--cream);
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  font-size:17px;
+}
+
+/* ===== TOP NAV ===== */
+.topnav{
+  position:absolute;top:0;left:0;right:0;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:24px 36px;z-index:10;
+}
+.topnav a{
+  font-family:'Poppins',sans-serif;
+  font-size:0.7rem;
+  font-weight:600;
+  letter-spacing:2.5px;
+  text-transform:uppercase;
+  color:rgba(245,224,168,0.7);
+  text-decoration:none;
+  padding:8px 16px;
+  border:1px solid rgba(245,224,168,0.25);
+  border-radius:50px;
+  transition:all 0.3s;
+}
+.topnav a:hover{background:rgba(245,224,168,0.08);color:var(--gold-glow)}
+
+/* ===== HERO ===== */
+.hero{
+  background:linear-gradient(170deg,#1A2030 0%,var(--dawn) 30%,#3D4670 65%,var(--accent-deep) 100%);
+  padding:120px 24px 110px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.hero::before{
+  content:'';
+  position:absolute;
+  top:35%;left:50%;
+  transform:translate(-50%,-50%);
+  width:900px;height:900px;
+  background:radial-gradient(circle,rgba(245,224,168,0.10) 0%,rgba(232,184,112,0.04) 40%,transparent 75%);
+  border-radius:50%;
+}
+.hero-content{position:relative;z-index:2;max-width:780px;margin:0 auto}
+.hero-breadcrumb{
+  font-family:'Poppins',sans-serif;
+  font-size:0.6rem;
+  font-weight:700;
+  letter-spacing:4px;
+  text-transform:uppercase;
+  color:rgba(245,224,168,0.5);
+  margin-bottom:16px;
+}
+.hero-breadcrumb a{color:rgba(245,224,168,0.7);text-decoration:none}
+.hero-breadcrumb a:hover{color:var(--gold-glow)}
+.hero h1{
+  font-family:'Nunito',sans-serif;
+  font-size:clamp(2.8rem,7vw,4.6rem);
+  font-weight:900;
+  color:var(--gold-glow);
+  line-height:1.04;
+  letter-spacing:-0.03em;
+  margin-bottom:6px;
+  text-shadow:0 4px 30px rgba(245,224,168,0.15);
+}
+.hero-tagline{
+  font-family:'Nunito',sans-serif;
+  font-size:1.15rem;
+  font-weight:700;
+  letter-spacing:0.3px;
+  color:var(--accent-pale);
+  margin-bottom:24px;
+}
+.hero-audience{
+  font-family:'Lora',serif;
+  font-size:1.05rem;
+  font-style:italic;
+  color:rgba(255,255,255,0.62);
+  max-width:560px;
+  margin:0 auto 16px;
+  line-height:1.6;
+}
+.hero-audience em{color:var(--gold-pale);font-style:normal;font-weight:600}
+.hero-promise{
+  display:inline-block;
+  padding:14px 28px;
+  background:rgba(245,224,168,0.08);
+  border:1px solid rgba(245,224,168,0.22);
+  border-radius:14px;
+  font-family:'Lora',serif;
+  font-size:0.95rem;
+  font-style:italic;
+  color:var(--gold-pale);
+  margin-top:18px;
+  max-width:580px;
+}
+.hero-stats{
+  display:flex;
+  justify-content:center;
+  gap:36px;
+  margin-top:36px;
+  font-family:'Poppins',sans-serif;
+  font-size:0.7rem;
+  font-weight:600;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:rgba(245,224,168,0.55);
+}
+.hero-stats strong{
+  display:block;
+  font-size:1.45rem;
+  color:var(--gold-glow);
+  font-weight:800;
+  margin-bottom:2px;
+  letter-spacing:-0.02em;
+}
+
+/* ===== PROGRESS BAR (sticky just below hero) ===== */
+.progress-wrap{
+  max-width:520px;
+  margin:-48px auto 0;
+  padding:0 24px;
+  position:relative;
+  z-index:5;
+}
+.progress-card{
+  background:var(--white);
+  border-radius:18px;
+  padding:24px 32px;
+  box-shadow:var(--shadow-mid);
+  border:1px solid var(--cream-deep);
+  display:flex;
+  align-items:center;
+  gap:24px;
+}
+.progress-label{
+  font-family:'Poppins',sans-serif;
+  font-size:0.6rem;
+  font-weight:800;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--accent-deep);
+  flex-shrink:0;
+}
+.progress-bar{
+  flex:1;
+  height:10px;
+  background:var(--cream-warm);
+  border-radius:5px;
+  overflow:hidden;
+}
+.progress-fill{
+  height:100%;
+  width:14%;
+  background:linear-gradient(90deg,var(--accent),var(--gold-glow));
+  border-radius:5px;
+}
+.progress-counter{
+  font-family:'Poppins',sans-serif;
+  font-size:0.82rem;
+  font-weight:700;
+  color:var(--dawn);
+  flex-shrink:0;
+}
+.progress-counter strong{color:var(--accent-deep)}
+
+/* ===== PATH SECTION ===== */
+.path-wrap{max-width:1240px;margin:64px auto 0;padding:0 24px}
+.path-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
+  gap:22px;
+}
+.path-intro{text-align:center;margin-bottom:40px}
+.path-intro-kicker{
+  font-family:'Poppins',sans-serif;
+  font-size:0.6rem;
+  font-weight:700;
+  letter-spacing:5px;
+  text-transform:uppercase;
+  color:var(--rose);
+  margin-bottom:8px;
+}
+.path-intro h2{
+  font-family:'Nunito',sans-serif;
+  font-size:1.85rem;
+  font-weight:800;
+  color:var(--dawn);
+  letter-spacing:-0.02em;
+  line-height:1.15;
+}
+.path-intro p{
+  font-family:'Lora',serif;
+  font-size:1rem;
+  font-style:italic;
+  color:var(--text-light);
+  max-width:560px;
+  margin:10px auto 0;
+  line-height:1.55;
+}
+
+/* ===== STEP CARD (mirrors homepage Pathway card style) ===== */
+.step{
+  background:var(--white);
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:var(--shadow-mid);
+  border:1px solid var(--cream-deep);
+  margin-bottom:28px;
+  text-decoration:none;
+  color:inherit;
+  display:block;
+  transition:all 0.4s cubic-bezier(.2,.7,.3,1);
+  position:relative;
+}
+.step:hover{
+  transform:translateY(-4px);
+  box-shadow:var(--shadow-strong);
+  border-color:rgba(212,168,67,0.35);
+}
+.step-banner{
+  padding:22px 26px 20px;
+  background:linear-gradient(160deg,var(--banner-from,#1A2030) 0%,var(--banner-mid,#3D4670) 60%,var(--banner-to,#5A4820) 100%);
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  position:relative;
+  overflow:hidden;
+}
+.step-banner::before{
+  content:'';
+  position:absolute;
+  top:-40%;right:-12%;
+  width:280px;height:280px;
+  background:radial-gradient(circle,rgba(245,224,168,0.16) 0%,transparent 65%);
+  border-radius:50%;
+  pointer-events:none;
+}
+.step-banner-left{position:relative;z-index:2;flex:1}
+.step-num{
+  font-family:'Poppins',sans-serif;
+  font-size:0.58rem;
+  font-weight:800;
+  letter-spacing:3.5px;
+  text-transform:uppercase;
+  color:var(--accent-pale);
+  margin-bottom:6px;
+  opacity:0.85;
+}
+.step-name{
+  font-family:'Nunito',sans-serif;
+  font-size:1.35rem;
+  font-weight:900;
+  color:var(--white);
+  letter-spacing:-0.015em;
+  line-height:1.18;
+  margin-bottom:4px;
+}
+.step-sub{
+  font-family:'Lora',serif;
+  font-size:0.86rem;
+  font-style:italic;
+  color:var(--gold-pale);
+  line-height:1.45;
+  max-width:480px;
+  opacity:0.85;
+}
+.step-banner-icon{
+  position:relative;
+  z-index:2;
+  flex-shrink:0;
+  width:44px;height:44px;
+  margin-left:16px;
+  opacity:0.8;
+}
+.step-banner-icon svg{width:100%;height:100%}
+
+/* Status indicator on banner */
+.step-status-pill{
+  position:absolute;
+  top:14px;right:20px;
+  font-family:'Poppins',sans-serif;
+  font-size:0.48rem;
+  font-weight:800;
+  letter-spacing:2.3px;
+  text-transform:uppercase;
+  padding:4px 10px;
+  border-radius:30px;
+  z-index:3;
+}
+.step-status-pill.completed{
+  background:rgba(45,138,78,0.20);
+  color:#A8E5BD;
+  border:1px solid rgba(168,229,189,0.4);
+}
+.step-status-pill.current{
+  background:var(--gold);
+  color:var(--dawn);
+  box-shadow:0 2px 12px rgba(245,224,168,0.3);
+}
+.step-status-pill.locked{
+  background:rgba(255,255,255,0.08);
+  color:rgba(245,224,168,0.5);
+  border:1px solid rgba(245,224,168,0.18);
+}
+
+/* Step body — compact */
+.step-body{padding:20px 26px 20px;position:relative;background:var(--white)}
+
+.step-quote{
+  font-family:'Lora',serif;
+  font-size:1.02rem;
+  font-style:italic;
+  font-weight:600;
+  color:var(--dawn);
+  line-height:1.45;
+  margin-bottom:14px;
+  padding-left:14px;
+  border-left:3px solid var(--accent);
+}
+.step-quote strong{color:var(--accent-deep);font-weight:700}
+
+.step-includes{
+  font-family:'Lora',serif;
+  font-size:0.92rem;
+  color:var(--text-light);
+  line-height:1.55;
+  margin-bottom:16px;
+}
+.step-includes strong{
+  color:var(--accent-deep);
+  font-weight:800;
+  font-family:'Poppins',sans-serif;
+  font-size:0.62rem;
+  letter-spacing:2.5px;
+  text-transform:uppercase;
+  display:inline-block;
+  margin-right:6px;
+}
+.step-includes em{color:var(--dawn);font-style:normal;font-weight:600}
+
+.step-footer{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding-top:14px;
+  border-top:1px solid var(--cream-deep);
+}
+.step-meta{
+  font-family:'Poppins',sans-serif;
+  font-size:0.72rem;
+  font-weight:600;
+  color:var(--text-muted);
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+.step-meta .dot{width:3px;height:3px;border-radius:50%;background:var(--text-muted);opacity:0.5}
+.step-meta .free{color:#2D8A4E;font-weight:700}
+.step-action{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:8px 18px;
+  border-radius:50px;
+  font-family:'Poppins',sans-serif;
+  font-size:0.76rem;
+  font-weight:700;
+  letter-spacing:0.3px;
+  transition:all 0.25s;
+}
+.step.completed .step-action{
+  background:transparent;
+  color:#2D8A4E;
+  border:1.5px solid rgba(45,138,78,0.35);
+}
+.step.completed .step-action:hover{background:rgba(45,138,78,0.08)}
+.step.current .step-action{
+  background:var(--accent);
+  color:var(--dawn);
+  border:1.5px solid var(--accent);
+  box-shadow:0 4px 18px rgba(212,168,67,0.35);
+}
+.step.current .step-action:hover{background:var(--gold-glow);transform:translateX(2px)}
+.step.locked .step-action{
+  background:transparent;
+  color:var(--text-muted);
+  border:1.5px solid var(--cream-deep);
+}
+.step:hover.locked .step-action{border-color:var(--accent);color:var(--accent-deep)}
+
+/* Per-step banner — each step uses its actual playbook's cover gradient
+   so opening the playbook does not visually jar. */
+.step.s1 .step-banner,
+.step.s2 .step-banner{
+  /* Manna (Given, Returning): night→dawn→sky→rose-dawn */
+  background:linear-gradient(160deg,#06070E 0%,#0E0F1A 25%,#1F2440 55%,#3D4670 82%,#C88090 100%);
+}
+.step.s3 .step-banner{
+  /* Eden Pattern: The Source — deep water blue */
+  background:linear-gradient(160deg,#040810 0%,#0A1220 25%,#14213A 55%,#1F3055 80%,#2D4A78 100%);
+}
+.step.s4 .step-banner{
+  /* Eden Pattern: The Fruit — earth/rust */
+  background:linear-gradient(160deg,#080403 0%,#0F0807 22%,#1F1410 50%,#6E2E18 85%,#B86A38 100%);
+}
+.step.s5 .step-banner{
+  /* The Attending: Attend — forest pine→moss */
+  background:linear-gradient(160deg,#040804 0%,#0A1410 22%,#1A2820 50%,#2A3D2E 80%,#6E815A 100%);
+}
+.step.s6 .step-banner{
+  /* Done Before You Started — shadow→rose-deep */
+  background:linear-gradient(160deg,#040208 0%,#0A0612 22%,#1A1426 50%,#3A1828 82%,#6E2840 100%);
+}
+.step.s7 .step-banner{
+  /* The Spider's Loom — midnight blue→silver */
+  background:linear-gradient(160deg,#020408 0%,#060A14 22%,#0A1020 50%,#0E1828 80%,#384868 100%);
+}
+
+/* No chevron rails in grid layout */
+.step-rail{display:none}
+.step{margin-bottom:0}
+
+/* ===== CTA SECTION ===== */
+.cta-section{
+  max-width:520px;
+  margin:64px auto 0;
+  padding:0 24px;
+  text-align:center;
+}
+.cta-card{
+  background:linear-gradient(135deg,var(--dawn),var(--sky));
+  border-radius:20px;
+  padding:48px 36px;
+  box-shadow:var(--shadow-mid);
+  color:var(--white);
+  position:relative;
+  overflow:hidden;
+}
+.cta-card::before{
+  content:'';
+  position:absolute;
+  top:-30%;left:50%;
+  transform:translateX(-50%);
+  width:500px;height:500px;
+  background:radial-gradient(circle,rgba(245,224,168,0.12) 0%,transparent 65%);
+  border-radius:50%;
+}
+.cta-content{position:relative;z-index:2}
+.cta-kicker{
+  font-family:'Poppins',sans-serif;
+  font-size:0.6rem;
+  font-weight:800;
+  letter-spacing:5px;
+  text-transform:uppercase;
+  color:var(--gold-pale);
+  margin-bottom:12px;
+}
+.cta-card h3{
+  font-family:'Nunito',sans-serif;
+  font-size:1.7rem;
+  font-weight:800;
+  color:var(--gold-glow);
+  margin-bottom:10px;
+  letter-spacing:-0.015em;
+}
+.cta-card p{
+  font-family:'Lora',serif;
+  font-size:1rem;
+  font-style:italic;
+  color:rgba(255,255,255,0.75);
+  max-width:540px;
+  margin:0 auto 26px;
+  line-height:1.6;
+}
+.cta-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:16px 36px;
+  background:var(--gold);
+  color:var(--dawn);
+  border-radius:50px;
+  font-family:'Poppins',sans-serif;
+  font-size:0.88rem;
+  font-weight:700;
+  letter-spacing:0.3px;
+  text-decoration:none;
+  transition:all 0.3s;
+}
+.cta-btn:hover{background:var(--gold-glow);transform:translateY(-2px);box-shadow:0 8px 32px rgba(212,168,67,0.45)}
+
+/* ===== RELATED ===== */
+.related{max-width:760px;margin:64px auto 0;padding:0 24px;text-align:center}
+.related h4{
+  font-family:'Poppins',sans-serif;
+  font-size:0.65rem;
+  font-weight:800;
+  letter-spacing:4px;
+  text-transform:uppercase;
+  color:var(--text-muted);
+  margin-bottom:18px;
+}
+.related-paths{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.related-link{
+  padding:10px 22px;
+  background:var(--white);
+  border:1.5px solid var(--cream-deep);
+  border-radius:50px;
+  font-family:'Poppins',sans-serif;
+  font-size:0.78rem;
+  font-weight:600;
+  color:var(--dawn);
+  text-decoration:none;
+  transition:all 0.25s;
+}
+.related-link:hover{border-color:var(--accent);color:var(--accent-deep);background:var(--accent-soft)}
+
+/* ===== FOOTER ===== */
+footer{
+  background:var(--night);
+  color:rgba(255,255,255,0.4);
+  padding:56px 24px 40px;
+  text-align:center;
+  margin-top:96px;
+}
+footer p{
+  font-family:'Lora',serif;
+  font-size:0.85rem;
+  font-style:italic;
+  color:rgba(245,224,168,0.4);
+  margin-bottom:14px;
+  max-width:540px;
+  margin-left:auto;margin-right:auto;
+}
+footer .brand-mark{
+  font-family:'Poppins',sans-serif;
+  font-size:0.55rem;
+  letter-spacing:5px;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.18);
+}
+
+@media(max-width:680px){
+  .topnav{padding:18px 20px}
+  .hero{padding:90px 20px 90px}
+  .hero-stats{gap:24px;font-size:0.62rem}
+  .progress-wrap{padding:0 16px;margin-top:-36px}
+  .progress-card{padding:20px 22px;flex-wrap:wrap;gap:14px}
+  .path-wrap{padding:0 16px}
+  .step-banner{padding:20px 22px;flex-direction:column;align-items:flex-start;gap:14px}
+  .step-banner-icon{margin-left:0;width:48px;height:48px}
+  .step-body{padding:24px 22px}
+  .step-footer{flex-direction:column;gap:14px;align-items:stretch}
+  .step-action{justify-content:center}
+  .cta-section,.related{padding:0 16px}
+  .cta-card{padding:36px 24px}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="/playbooks/pathways">← All Pathways</a>
+  <a href="/playbooks/archive">Browse Archive</a>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-breadcrumb"><a href="/playbooks/pathways">Pathways</a> &nbsp;&middot;&nbsp; Pathway 01</div>
+    <h1>The Work Reset</h1>
+    <div class="hero-tagline">Make Monday Lighter</div>
+    <p class="hero-audience">If you got the job you wanted and you dread Monday morning. If the work that was once a chance has become a chore. <em>If the seeing has decayed even though the work has not.</em></p>
+    <div class="hero-promise"><strong>The promise:</strong> Make work feel given again, not demanded.</div>
+    <div class="hero-stats">
+      <div><strong>7</strong>Playbooks</div>
+      <div><strong>3.5h</strong>Total Read</div>
+      <div><strong>2</strong>Free Entries</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROGRESS BAR ===== -->
+<div class="progress-wrap">
+  <div class="progress-card">
+    <div class="progress-label">Your Progress</div>
+    <div class="progress-bar"><div class="progress-fill"></div></div>
+    <div class="progress-counter"><strong>1</strong> of 7</div>
+  </div>
+</div>
+
+<!-- ===== STEPS ===== -->
+<div class="path-wrap">
+
+  <div class="path-intro">
+    <div class="path-intro-kicker">The Seven Steps</div>
+    <h2>Read them in order. Skip what you have already walked through.</h2>
+    <p>Each step is a self-contained playbook. The pathway is the recommended order, not a lock. If a step's synopsis tells you it is not where you need to be right now, skip it and come back.</p>
+  </div>
+
+  <div class="path-grid">
+
+  <!-- ===== STEP 1: GIVEN ===== -->
+  <a href="/playbooks/read/given" class="step completed s1">
+    <div class="step-banner">
+      <div class="step-status-pill completed">✓ Completed</div>
+      <div class="step-banner-left">
+        <div class="step-num">Step 01 &middot; Manna · Part 1 of 2</div>
+        <div class="step-name">Manna: Given</div>
+        <div class="step-sub">The crisis no one names and the way back.</div>
+      </div>
+      <div class="step-banner-icon">
+        <svg viewBox="0 0 64 64" fill="none">
+          <circle cx="32" cy="32" r="22" stroke="#F5E0A8" stroke-width="1.5" opacity="0.5"/>
+          <path d="M22 30 Q32 22 42 30 Q42 40 32 42 Q22 40 22 30" fill="#F5E0A8" opacity="0.6"/>
+          <circle cx="24" cy="20" r="2" fill="#F5E0A8"/>
+          <circle cx="38" cy="18" r="1.5" fill="#F5E0A8" opacity="0.7"/>
+          <circle cx="32" cy="14" r="1.5" fill="#F5E0A8" opacity="0.5"/>
+        </svg>
+      </div>
+    </div>
+    <div class="step-body">
+      <p class="step-quote">"Demand is decayed reception. Every demand you feel today was a gift before you stopped seeing it."</p>
+      <p class="step-includes"><strong>Includes:</strong> Five perceptual frames · The reverse-engineering of forgiveness · Three character archetypes.</p>
+      <div class="step-footer">
+        <div class="step-meta"><span>~30 min</span><span class="dot"></span><span class="free">Free</span><span class="dot"></span><span>7 chapters</span></div>
+        <div class="step-action">Re-read →</div>
+      </div>
+    </div>
+  </a>
+
+  <!-- ===== STEP 2: RETURNING ===== -->
+  <a href="/playbooks/read/returning" class="step current s2">
+    <div class="step-banner">
+      <div class="step-status-pill current">Start Now</div>
+      <div class="step-banner-left">
+        <div class="step-num">Step 02 &middot; Manna · Part 2 of 2</div>
+        <div class="step-name">Manna: Returning</div>
+        <div class="step-sub">Seven domains. Seven returns. Where the seeing comes back on.</div>
+      </div>
+      <div class="step-banner-icon">
+        <svg viewBox="0 0 64 64" fill="none">
+          <path d="M14 32 H50" stroke="#F5E0A8" stroke-width="2" stroke-linecap="round"/>
+          <path d="M20 24 L14 32 L20 40" stroke="#F5E0A8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="50" cy="32" r="6" stroke="#F5E0A8" stroke-width="1.5" opacity="0.6"/>
+          <circle cx="46" cy="20" r="2" fill="#F5E0A8" opacity="0.7"/>
+          <circle cx="46" cy="44" r="2" fill="#F5E0A8" opacity="0.7"/>
+          <circle cx="36" cy="14" r="1.5" fill="#F5E0A8" opacity="0.5"/>
+          <circle cx="36" cy="50" r="1.5" fill="#F5E0A8" opacity="0.5"/>
+        </svg>
+      </div>
+    </div>
+    <div class="step-body">
+      <p class="step-quote">"You did not earn your work; you were trusted with it. The owner is tired. The steward is alive."</p>
+      <p class="step-includes"><strong>Includes:</strong> Seven domain chapters (work, body, marriage, time, beauty, children, place) · One breakthrough sentence per room.</p>
+      <div class="step-footer">
+        <div class="step-meta"><span>~30 min</span><span class="dot"></span><span>$2.50</span><span class="dot"></span><span>7 chapters + pregame</span></div>
+        <div class="step-action">Open Step 02 →</div>
+      </div>
+    </div>
+  </a>
+
+  <!-- ===== STEP 3: SOURCE ===== -->
+  <a href="/playbooks/read/the-source" class="step locked s3">
+    <div class="step-banner">
+      <div class="step-status-pill locked">Up Next</div>
+      <div class="step-banner-left">
+        <div class="step-num">Step 03 &middot; Eden Pattern · Part 2 of 5</div>
+        <div class="step-name">The Source</div>
+        <div class="step-sub">Identity received, not constructed. The first pillar of the trinity.</div>
+      </div>
+      <div class="step-banner-icon">
+        <svg viewBox="0 0 64 64" fill="none">
+          <path d="M32 14 L32 48 M18 28 L32 14 L46 28" stroke="#F5E0A8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="32" cy="48" r="4" fill="#F5E0A8" opacity="0.85"/>
+          <circle cx="32" cy="14" r="3" fill="#F5E0A8"/>
+        </svg>
+      </div>
+    </div>
+    <div class="step-body">
+      <p class="step-quote">"The only identity that survives the removal of every external marker is the one you did not build."</p>
+      <p class="step-includes"><strong>Includes:</strong> The received-vs-constructed identity framework · The "what remains when X is removed" practice · First pillar of the Eden Pattern.</p>
+      <div class="step-footer">
+        <div class="step-meta"><span>~30 min</span><span class="dot"></span><span>$2.50</span><span class="dot"></span><span>8 chapters</span></div>
+        <div class="step-action">Preview Step 03 →</div>
+      </div>
+    </div>
+  </a>
+
+  <!-- ===== STEP 4: FRUIT ===== -->
+  <a href="/playbooks/read/the-fruit" class="step locked s4">
+    <div class="step-banner">
+      <div class="step-status-pill locked">Locked</div>
+      <div class="step-banner-left">
+        <div class="step-num">Step 04 &middot; Eden Pattern · Part 4 of 5</div>
+        <div class="step-name">The Fruit</div>
+        <div class="step-sub">Production from discretion, not necessity. The five forms of human-only fruit.</div>
+      </div>
+      <div class="step-banner-icon">
+        <svg viewBox="0 0 64 64" fill="none">
+          <circle cx="32" cy="36" r="14" stroke="#F5E0A8" stroke-width="1.5" opacity="0.6"/>
+          <path d="M32 22 Q26 12 32 8 Q38 12 32 22" fill="#F5E0A8" opacity="0.7"/>
+          <line x1="32" y1="22" x2="32" y2="26" stroke="#F5E0A8" stroke-width="1.5"/>
+        </svg>
+      </div>
+    </div>
+    <div class="step-body">
+      <p class="step-quote">"The fruit that lasts is what you would still produce if no one was paying you to produce it."</p>
+      <p class="step-includes"><strong>Includes:</strong> The five forms of human-only fruit · The pressure-vs-discretion diagnostic · Third pillar of the Eden Pattern.</p>
+      <div class="step-footer">
+        <div class="step-meta"><span>~25 min</span><span class="dot"></span><span>$2.50</span><span class="dot"></span><span>8 chapters</span></div>
+        <div class="step-action">Preview Step 04 →</div>
+      </div>
+    </div>
+  </a>
+
+  <!-- ===== STEP 5: ATTEND ===== -->
+  <a href="/playbooks/read/attend" class="step locked s5">
+    <div class="step-banner">
+      <div class="step-status-pill locked">Locked</div>
+      <div class="step-banner-left">
+        <div class="step-num">Step 05 &middot; The Attending · Part 1 of 2</div>
+        <div class="step-name">Attend</div>
+        <div class="step-sub">The practice when motivation breaks. Seventeen centuries of staying at the post.</div>
+      </div>
+      <div class="step-banner-icon">
+        <svg viewBox="0 0 64 64" fill="none">
+          <rect x="14" y="14" width="36" height="36" rx="4" stroke="#F5E0A8" stroke-width="1.5" opacity="0.6"/>
+          <circle cx="32" cy="32" r="3" fill="#F5E0A8"/>
+          <path d="M32 24 L32 32 L40 36" stroke="#F5E0A8" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+    <div class="step-body">
+      <p class="step-quote">"Refuse the substitute. Stay one more minute. The wave passes faster than you think."</p>
+      <p class="step-includes"><strong>Includes:</strong> The desert tradition on acedia · The cell practice · The eight substitutes named.</p>
+      <div class="step-footer">
+        <div class="step-meta"><span>~35 min</span><span class="dot"></span><span>$2.50</span><span class="dot"></span><span>9 chapters</span></div>
+        <div class="step-action">Preview Step 05 →</div>
+      </div>
+    </div>
+  </a>
+
+  <!-- ===== STEP 6: DONE BEFORE YOU STARTED ===== -->
+  <a href="/playbooks/read/done-before-you-started" class="step locked s6">
+    <div class="step-banner">
+      <div class="step-status-pill locked">Locked</div>
+      <div class="step-banner-left">
+        <div class="step-num">Step 06 &middot; The Attending · Part 2 of 2</div>
+        <div class="step-name">Done Before You Started</div>
+        <div class="step-sub">Why attention alone fails, and what comes underneath. The identity inversion.</div>
+      </div>
+      <div class="step-banner-icon">
+        <svg viewBox="0 0 64 64" fill="none">
+          <circle cx="32" cy="32" r="20" stroke="#F5E0A8" stroke-width="1.5" opacity="0.5"/>
+          <path d="M22 32 L30 40 L44 24" stroke="#F5E0A8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+    <div class="step-body">
+      <p class="step-quote">"You are not becoming someone by your work. You already are."</p>
+      <p class="step-includes"><strong>Includes:</strong> The becoming-vs-already inversion · Why your perseverance has been depleting you · Rhythm for 10-year arcs.</p>
+      <div class="step-footer">
+        <div class="step-meta"><span>~30 min</span><span class="dot"></span><span>$2.50</span><span class="dot"></span><span>8 chapters</span></div>
+        <div class="step-action">Preview Step 06 →</div>
+      </div>
+    </div>
+  </a>
+
+  <!-- ===== STEP 7: SPIDER'S LOOM ===== -->
+  <a href="/playbooks/read/the-spiders-loom" class="step locked s7">
+    <div class="step-banner">
+      <div class="step-status-pill locked">Finale</div>
+      <div class="step-banner-left">
+        <div class="step-num">Step 07 &middot; Pathway Finale</div>
+        <div class="step-name">The Spider's Loom</div>
+        <div class="step-sub">The physics of sustained great work. Pull rate determines phase transition.</div>
+      </div>
+      <div class="step-banner-icon">
+        <svg viewBox="0 0 64 64" fill="none">
+          <line x1="32" y1="8" x2="32" y2="56" stroke="#F5E0A8" stroke-width="1" opacity="0.5"/>
+          <line x1="8" y1="32" x2="56" y2="32" stroke="#F5E0A8" stroke-width="1" opacity="0.5"/>
+          <line x1="15" y1="15" x2="49" y2="49" stroke="#F5E0A8" stroke-width="1" opacity="0.4"/>
+          <line x1="49" y1="15" x2="15" y2="49" stroke="#F5E0A8" stroke-width="1" opacity="0.4"/>
+          <polygon points="32,20 44,32 32,44 20,32" stroke="#F5E0A8" stroke-width="1.5" fill="none" opacity="0.7"/>
+          <circle cx="32" cy="32" r="3" fill="#F5E0A8"/>
+        </svg>
+      </div>
+    </div>
+    <div class="step-body">
+      <p class="step-quote">"Extraordinary work is not produced by intensity. It is produced by sustained tension over long distance."</p>
+      <p class="step-includes"><strong>Includes:</strong> The Pull Rate Diagnostic · The 40/60 composite ratio · Phase transition physics applied to your work.</p>
+      <div class="step-footer">
+        <div class="step-meta"><span>~25 min</span><span class="dot"></span><span>$2.50</span><span class="dot"></span><span>6 chapters</span></div>
+        <div class="step-action">Preview Step 07 →</div>
+      </div>
+    </div>
+  </a>
+
+  </div><!-- /.path-grid -->
+
+</div>
+
+<!-- ===== CTA ===== -->
+<div class="cta-section">
+  <div class="cta-card">
+    <div class="cta-content">
+      <div class="cta-kicker">Continue Where You Left Off</div>
+      <h3>Manna: Returning</h3>
+      <p>You named the disease in Given. Now walk the seven domains where reception was lost and find where it lives in your house.</p>
+      <a href="/playbooks/read/returning" class="cta-btn">
+        Open Step 02
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ===== RELATED PATHWAYS ===== -->
+<div class="related">
+  <h4>If This Resonates, Try These Too</h4>
+  <div class="related-paths">
+    <a href="/playbooks/pathways/identity-walk" class="related-link">The Identity Walk →</a>
+    <a href="/playbooks/pathways/strategist-toolkit" class="related-link">The Strategist's Toolkit →</a>
+    <a href="/playbooks/pathways/ai-age" class="related-link">The AI Age →</a>
+  </div>
+</div>
+
+<footer>
+  <p>"Moreover it is required in stewards, that a man be found faithful." 1 Corinthians 4:2</p>
+  <div class="brand-mark">Kingdom Builders AI &middot; Pathway 01 of 08</div>
+</footer>
+
+</body>
+</html>

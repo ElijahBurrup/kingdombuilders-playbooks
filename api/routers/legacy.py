@@ -299,11 +299,27 @@ def _redirect_with_cookie(url: str, response: HTMLResponse = None) -> HTMLRespon
 
 
 # ============================================================================
-# Catalog (index)
+# Catalog (index = Pathways homepage)
 # ============================================================================
 @router.get("/", include_in_schema=False)
 async def catalog():
+    """Homepage now serves the Pathways landing page."""
     return FileResponse(STATIC_DIR / "index.html")
+
+
+@router.get("/archive", include_in_schema=False)
+async def archive():
+    """Archive = the full grid view of all 74 playbooks with table filters."""
+    return FileResponse(STATIC_DIR / "archive.html")
+
+
+@router.get("/pathways/{slug}", include_in_schema=False)
+async def pathway_detail(slug: str):
+    """Pathway detail page — one of 8 curated pathways."""
+    file_path = STATIC_DIR / "pathways" / f"{slug}.html"
+    if not file_path.is_file():
+        raise HTTPException(status_code=404, detail=f"Pathway not found: {slug}")
+    return FileResponse(file_path)
 
 
 @router.get("/health", include_in_schema=False)

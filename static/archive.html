@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Archive | Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#0E0F1A; --dawn:#1F2440; --sky:#3D4670;
+  --gold:#D4A843; --gold-glow:#E8C96A; --gold-pale:#F5E0A8;
+  --rose:#C88090;
+  --cream:#FDFAF3; --cream-warm:#F5EFE0; --cream-deep:#ECE5CC;
+  --text:#1A1A26; --text-light:#4A4E5E; --text-muted:#7A7E8E;
+  --white:#FFFFFF;
+  --shadow-soft:0 2px 12px rgba(14,15,26,0.06);
+  --shadow-mid:0 8px 32px rgba(14,15,26,0.14);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--cream);line-height:1.55;-webkit-font-smoothing:antialiased;font-size:16px}
+
+/* ===== TOPNAV ===== */
+.topnav{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;padding:18px 36px;z-index:50;gap:32px}
+.topnav .brand{font-family:'Poppins',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:rgba(245,224,168,0.85);text-decoration:none;flex-shrink:0}
+.topnav-primary{display:flex;gap:8px;flex:1}
+.topnav-primary a{font-family:'Poppins',sans-serif;font-size:0.72rem;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:rgba(245,224,168,0.55);text-decoration:none;padding:8px 14px;border-radius:30px;transition:all 0.2s}
+.topnav-primary a:hover{color:var(--gold-glow);background:rgba(245,224,168,0.06)}
+.topnav-primary a.active{color:var(--gold-glow);background:rgba(245,224,168,0.10)}
+.topnav-utility{display:flex;gap:10px;align-items:center;flex-shrink:0}
+.topnav-utility .nav-link{font-family:'Poppins',sans-serif;font-size:0.7rem;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:rgba(245,224,168,0.6);text-decoration:none;padding:8px 14px;transition:all 0.2s}
+.topnav-utility .nav-link:hover{color:var(--gold-glow)}
+.topnav-utility .nav-button{font-family:'Poppins',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--dawn);background:linear-gradient(135deg,var(--gold),var(--gold-glow));text-decoration:none;padding:9px 20px;border-radius:50px;transition:all 0.25s;box-shadow:0 2px 12px rgba(212,168,67,0.32)}
+.topnav-utility .nav-button:hover{transform:translateY(-1px);box-shadow:0 4px 18px rgba(212,168,67,0.45)}
+
+/* ===== HERO ===== */
+.hero{background:linear-gradient(170deg,#06070E 0%,var(--night) 30%,var(--dawn) 70%,var(--sky) 100%);padding:96px 24px 64px;text-align:center}
+.hero h1{font-family:'Nunito',sans-serif;font-size:clamp(2.4rem,5.5vw,3.6rem);font-weight:900;color:var(--gold-glow);letter-spacing:-0.025em;margin-bottom:10px}
+.hero p{font-family:'Lora',serif;font-size:1.02rem;font-style:italic;color:rgba(255,255,255,0.65);max-width:600px;margin:0 auto;line-height:1.6}
+.hero p em{color:var(--gold-pale);font-style:normal;font-weight:600}
+
+/* ===== CONTROLS ===== */
+.controls-wrap{max-width:1400px;margin:-28px auto 0;padding:0 24px;position:relative;z-index:5}
+.controls{background:var(--white);border-radius:14px;padding:14px 18px;box-shadow:var(--shadow-mid);border:1px solid var(--cream-deep);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.controls-search{flex:1;min-width:220px;display:flex;align-items:center;gap:8px;padding:8px 14px;background:var(--cream);border-radius:50px;border:1px solid transparent}
+.controls-search:focus-within{border-color:var(--gold)}
+.controls-search input{flex:1;border:none;background:transparent;outline:none;font-family:'Lora',serif;font-size:0.92rem;color:var(--text)}
+.controls-search svg{width:16px;height:16px;color:var(--text-muted);flex-shrink:0}
+.controls-count{font-family:'Poppins',sans-serif;font-size:0.7rem;font-weight:600;color:var(--text-muted);letter-spacing:0.5px}
+.controls-count strong{color:var(--dawn);font-weight:800}
+.clear-filters{font-family:'Poppins',sans-serif;font-size:0.66rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--rose);background:transparent;border:none;cursor:pointer;padding:6px 10px;transition:color 0.2s}
+.clear-filters:hover{color:var(--text)}
+.clear-filters:disabled{opacity:0.35;cursor:not-allowed}
+.view-toggle{display:flex;gap:4px;background:var(--cream);border-radius:10px;padding:3px}
+.view-toggle button{display:flex;align-items:center;gap:6px;padding:7px 14px;background:transparent;border:none;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);cursor:pointer;transition:all 0.2s}
+.view-toggle button.active{background:var(--dawn);color:var(--white);box-shadow:0 1px 6px rgba(14,15,26,0.18)}
+.view-toggle svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2}
+
+/* ===== TABLE (GRID VIEW) — premium look ===== */
+.table-wrap{max-width:1400px;margin:20px auto 0;padding:0 24px 60px}
+.table-wrap.hidden{display:none}
+.pb-table{
+  width:100%;
+  border-collapse:collapse;
+  background:var(--white);
+  border-radius:16px;
+  box-shadow:0 4px 20px rgba(14,15,26,0.10), 0 1px 3px rgba(14,15,26,0.06);
+  border:2px solid var(--dawn);
+  overflow:hidden;
+}
+/* Round inner corners */
+.pb-table thead tr:first-child th:first-child{border-top-left-radius:14px}
+.pb-table thead tr:first-child th:last-child{border-top-right-radius:14px}
+.pb-table tbody tr:last-child td:first-child{border-bottom-left-radius:14px}
+.pb-table tbody tr:last-child td:last-child{border-bottom-right-radius:14px}
+
+/* === Header: dark navy with gold text === */
+.pb-table thead tr{
+  background:linear-gradient(180deg,var(--dawn) 0%,#171B30 100%);
+}
+.pb-table th{
+  position:relative;
+  padding:16px 18px;
+  text-align:left;
+  font-family:'Poppins',sans-serif;
+  font-size:0.62rem;
+  font-weight:800;
+  letter-spacing:2.5px;
+  text-transform:uppercase;
+  color:var(--gold-pale);
+  border-right:1px solid rgba(245,224,168,0.15);
+  border-bottom:3px solid var(--gold);
+  white-space:nowrap;
+}
+.pb-table th:last-child{border-right:none}
+.pb-table th .th-head{
+  display:flex;align-items:center;gap:8px;
+  cursor:pointer;transition:color 0.2s;user-select:none;
+}
+.pb-table th .th-head:hover{color:var(--gold-glow)}
+.pb-table th .sort-arrow{
+  font-size:0.6rem;
+  opacity:0.4;
+  color:var(--gold-pale);
+  transition:opacity 0.2s,color 0.2s;
+}
+.pb-table th.sorted .sort-arrow{opacity:1;color:var(--gold-glow)}
+.pb-table th .filter-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:24px;height:24px;border-radius:6px;
+  background:rgba(245,224,168,0.08);
+  border:1px solid rgba(245,224,168,0.18);
+  cursor:pointer;
+  color:var(--gold-pale);
+  transition:all 0.15s;
+  margin-left:auto;
+}
+.pb-table th .filter-btn:hover{background:rgba(245,224,168,0.18);border-color:var(--gold)}
+.pb-table th .filter-btn.active{
+  background:var(--gold);
+  color:var(--dawn);
+  border-color:var(--gold);
+  box-shadow:0 0 12px rgba(212,168,67,0.4);
+}
+.pb-table th .filter-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2}
+.pb-table th .filter-count{
+  position:absolute;top:8px;right:10px;
+  min-width:16px;height:16px;border-radius:8px;
+  background:var(--rose);color:var(--white);
+  font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:800;
+  display:flex;align-items:center;justify-content:center;padding:0 5px;
+  pointer-events:none;
+  box-shadow:0 1px 4px rgba(0,0,0,0.25);
+}
+
+/* === Body rows === */
+.pb-table tbody tr{
+  transition:all 0.18s ease;
+  cursor:pointer;
+  position:relative;
+}
+.pb-table tbody tr:nth-child(even){background:rgba(245,239,224,0.40)}
+.pb-table tbody tr:hover{
+  background:linear-gradient(90deg,rgba(212,168,67,0.10),rgba(212,168,67,0.04));
+  box-shadow:inset 4px 0 0 var(--gold);
+}
+.pb-table tbody tr.hidden{display:none}
+
+.pb-table td{
+  padding:14px 18px;
+  border-right:1px solid var(--cream-deep);
+  border-bottom:1px solid var(--cream-deep);
+  font-family:'Lora',serif;font-size:0.9rem;
+  color:var(--text);
+  vertical-align:middle;
+}
+.pb-table td:last-child{border-right:none}
+.pb-table tbody tr:last-child td{border-bottom:none}
+
+.pb-table td.cell-title{
+  font-weight:700;
+  min-width:280px;
+  font-size:0.96rem;
+  letter-spacing:-0.005em;
+}
+.pb-table td.cell-title em{
+  display:block;font-size:0.79rem;font-style:italic;font-weight:400;
+  color:var(--text-muted);margin-top:3px;letter-spacing:0;
+}
+.pb-table td a{color:inherit;text-decoration:none;transition:opacity 0.15s}
+.pb-table td a:hover{opacity:0.75}
+
+/* === Title color by pathway (the magic) === */
+.pb-table tr[data-pathway="work-reset"] .cell-title a{color:#8A6B20}
+.pb-table tr[data-pathway="identity-walk"] .cell-title a{color:#5B2FA0}
+.pb-table tr[data-pathway="ai-age"] .cell-title a{color:#006666}
+.pb-table tr[data-pathway="money-architecture"] .cell-title a{color:#1E5D34}
+.pb-table tr[data-pathway="resilience-stack"] .cell-title a{color:#7A4A18}
+.pb-table tr[data-pathway="inner-battle"] .cell-title a{color:#7A2842}
+.pb-table tr[data-pathway="family-foundation"] .cell-title a{color:#A04830}
+.pb-table tr[data-pathway="strategist-toolkit"] .cell-title a{color:#2A4866}
+
+/* Left border accent stripe per row matching its pathway */
+.pb-table tbody tr{box-shadow:inset 4px 0 0 transparent;transition:box-shadow 0.18s,background 0.18s}
+.pb-table tbody tr[data-pathway="work-reset"]{box-shadow:inset 4px 0 0 rgba(212,168,67,0.6)}
+.pb-table tbody tr[data-pathway="identity-walk"]{box-shadow:inset 4px 0 0 rgba(123,79,191,0.55)}
+.pb-table tbody tr[data-pathway="ai-age"]{box-shadow:inset 4px 0 0 rgba(0,168,168,0.55)}
+.pb-table tbody tr[data-pathway="money-architecture"]{box-shadow:inset 4px 0 0 rgba(45,138,78,0.55)}
+.pb-table tbody tr[data-pathway="resilience-stack"]{box-shadow:inset 4px 0 0 rgba(201,122,44,0.65)}
+.pb-table tbody tr[data-pathway="inner-battle"]{box-shadow:inset 4px 0 0 rgba(161,60,90,0.55)}
+.pb-table tbody tr[data-pathway="family-foundation"]{box-shadow:inset 4px 0 0 rgba(224,122,95,0.65)}
+.pb-table tbody tr[data-pathway="strategist-toolkit"]{box-shadow:inset 4px 0 0 rgba(74,107,138,0.55)}
+.pb-table tbody tr[data-pathway="work-reset"]:hover{box-shadow:inset 4px 0 0 #D4A843;background:rgba(212,168,67,0.10)}
+.pb-table tbody tr[data-pathway="identity-walk"]:hover{box-shadow:inset 4px 0 0 #7B4FBF;background:rgba(123,79,191,0.08)}
+.pb-table tbody tr[data-pathway="ai-age"]:hover{box-shadow:inset 4px 0 0 #00A8A8;background:rgba(0,168,168,0.08)}
+.pb-table tbody tr[data-pathway="money-architecture"]:hover{box-shadow:inset 4px 0 0 #2D8A4E;background:rgba(45,138,78,0.08)}
+.pb-table tbody tr[data-pathway="resilience-stack"]:hover{box-shadow:inset 4px 0 0 #C97A2C;background:rgba(201,122,44,0.10)}
+.pb-table tbody tr[data-pathway="inner-battle"]:hover{box-shadow:inset 4px 0 0 #A13C5A;background:rgba(161,60,90,0.08)}
+.pb-table tbody tr[data-pathway="family-foundation"]:hover{box-shadow:inset 4px 0 0 #E07A5F;background:rgba(224,122,95,0.10)}
+.pb-table tbody tr[data-pathway="strategist-toolkit"]:hover{box-shadow:inset 4px 0 0 #4A6B8A;background:rgba(74,107,138,0.08)}
+
+/* ===== PATHWAY CHIPS ===== */
+.pa-chip{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:30px;font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;white-space:nowrap}
+.pa-chip::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--c)}
+.pa-chip.work-reset{--c:#D4A843;background:rgba(212,168,67,0.10);color:#8A6B20}
+.pa-chip.identity-walk{--c:#7B4FBF;background:rgba(123,79,191,0.10);color:#5B2FA0}
+.pa-chip.ai-age{--c:#00A8A8;background:rgba(0,168,168,0.10);color:#006666}
+.pa-chip.money-architecture{--c:#2D8A4E;background:rgba(45,138,78,0.10);color:#1E5D34}
+.pa-chip.resilience-stack{--c:#C97A2C;background:rgba(201,122,44,0.12);color:#7A4A18}
+.pa-chip.inner-battle{--c:#A13C5A;background:rgba(161,60,90,0.10);color:#7A2842}
+.pa-chip.family-foundation{--c:#E07A5F;background:rgba(224,122,95,0.12);color:#A04830}
+.pa-chip.strategist-toolkit{--c:#4A6B8A;background:rgba(74,107,138,0.10);color:#2A4866}
+.cat-chip{display:inline-block;padding:3px 9px;border-radius:30px;font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:var(--text-light);background:var(--cream-deep)}
+.price-cell{font-family:'Poppins',sans-serif;font-weight:700;font-size:0.85rem}
+.price-cell.free{color:#2D8A4E}
+.status-chip{display:inline-block;padding:3px 10px;border-radius:30px;font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap}
+.status-not-started{background:rgba(122,126,142,0.10);color:var(--text-muted)}
+.status-in-progress{background:rgba(245,158,11,0.12);color:#B85A05}
+.status-completed{background:rgba(34,197,94,0.10);color:#1E7E34}
+
+/* ===== EXCEL-STYLE FILTER DROPDOWN ===== */
+.filter-dropdown{position:absolute;min-width:260px;background:var(--white);border:1px solid var(--cream-deep);border-radius:10px;box-shadow:0 12px 40px rgba(14,15,26,0.2);padding:12px;z-index:100;display:none;cursor:default}
+.filter-dropdown.open{display:block}
+.filter-dropdown .filter-search{width:100%;padding:7px 10px;border:1px solid var(--cream-deep);border-radius:6px;font-family:'Lora',serif;font-size:0.82rem;color:var(--text);outline:none;margin-bottom:8px}
+.filter-dropdown .filter-search:focus{border-color:var(--gold)}
+.filter-dropdown .filter-toggles{display:flex;gap:6px;margin-bottom:8px}
+.filter-dropdown .filter-toggles button{flex:1;padding:5px 10px;border-radius:5px;border:1px solid var(--cream-deep);background:transparent;color:var(--text-light);cursor:pointer;font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all 0.15s}
+.filter-dropdown .filter-toggles button:hover{border-color:var(--dawn);color:var(--dawn)}
+.filter-dropdown .filter-options{max-height:240px;overflow-y:auto;border:1px solid var(--cream-deep);border-radius:6px;padding:4px 0;background:var(--cream);margin-bottom:10px}
+.filter-dropdown label{display:flex;align-items:center;gap:8px;padding:6px 12px;cursor:pointer;font-family:'Lora',serif;font-size:0.86rem;color:var(--text);transition:background 0.1s}
+.filter-dropdown label:hover{background:var(--white)}
+.filter-dropdown label input[type="checkbox"]{width:14px;height:14px;cursor:pointer;accent-color:var(--gold)}
+.filter-dropdown label .opt-count{margin-left:auto;font-family:'Poppins',sans-serif;font-size:0.66rem;color:var(--text-muted);font-weight:600}
+.filter-dropdown .filter-actions{display:flex;gap:8px;justify-content:flex-end}
+.filter-dropdown .filter-actions button{padding:7px 14px;border-radius:6px;font-family:'Poppins',sans-serif;font-size:0.66rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.15s}
+.filter-dropdown .btn-cancel{background:transparent;border:1px solid var(--cream-deep);color:var(--text-light)}
+.filter-dropdown .btn-cancel:hover{border-color:var(--dawn);color:var(--dawn)}
+.filter-dropdown .btn-apply{background:var(--dawn);border:1px solid var(--dawn);color:var(--gold-glow)}
+.filter-dropdown .btn-apply:hover{background:var(--night)}
+
+/* ===== CARD VIEW (alternate) ===== */
+.card-grid{display:none;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;max-width:1400px;margin:20px auto 0;padding:0 24px 60px}
+.card-grid.active{display:grid}
+.mini-card{background:var(--white);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-soft);border:1px solid var(--cream-deep);text-decoration:none;color:inherit;transition:all 0.3s;display:flex;flex-direction:column}
+.mini-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-mid)}
+.mini-card .mc-cover{padding:18px 20px;background:linear-gradient(160deg,var(--c1,#0E0F1A),var(--c2,#3D4670));min-height:96px;display:flex;flex-direction:column;justify-content:flex-end}
+.mini-card .mc-title{font-family:'Nunito',sans-serif;font-weight:800;color:var(--white);font-size:1rem;line-height:1.2}
+.mini-card .mc-body{padding:14px 20px 18px;flex:1;display:flex;flex-direction:column}
+.mini-card .mc-body .pa-chip{margin-bottom:8px}
+.mini-card .mc-desc{font-size:0.82rem;color:var(--text-light);line-height:1.5;flex:1;margin-bottom:10px}
+.mini-card .mc-footer{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid var(--cream-deep)}
+.mini-card .mc-cat{font-family:'Poppins',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--text-muted)}
+.mini-card .mc-price{font-family:'Poppins',sans-serif;font-size:0.78rem;font-weight:700;color:var(--dawn)}
+.mini-card .mc-price.free{color:#2D8A4E}
+
+footer{background:var(--night);color:rgba(255,255,255,0.4);padding:48px 24px 36px;text-align:center}
+footer p{font-family:'Lora',serif;font-size:0.85rem;font-style:italic;color:rgba(245,224,168,0.4)}
+
+@media(max-width:780px){
+  .topnav{padding:14px 18px;gap:16px}
+  .topnav-primary,.topnav-utility .nav-link{display:none}
+  .controls{padding:12px;gap:8px}
+  .pb-table{font-size:0.78rem}
+  .pb-table th,.pb-table td{padding:8px 10px}
+  .table-wrap{padding:0 12px 40px}
+  .filter-dropdown{position:fixed;top:80px;left:12px;right:12px;min-width:0}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="/playbooks/" class="brand">Kingdom Builders AI</a>
+  <div class="topnav-primary">
+    <a href="/playbooks/">Pathways</a>
+    <a href="/playbooks/archive" class="active">Archive</a>
+  </div>
+  <div class="topnav-utility">
+    <a href="/playbooks/referrals" class="nav-link">Refer</a>
+    <a href="/playbooks/auth" class="nav-button">Sign In</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <h1>The Full Archive</h1>
+  <p>Every playbook in the library. Sort, filter, find what you need. <em>If you'd rather walk a guided journey, the eight Pathways are one click away.</em></p>
+</section>
+
+<div class="controls-wrap">
+  <div class="controls">
+    <div class="controls-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="search-input" placeholder="Search by title or topic...">
+    </div>
+    <div class="controls-count">Showing <strong id="row-count">74</strong> of <strong>74</strong></div>
+    <button class="clear-filters" id="clear-filters" disabled>Clear all filters</button>
+    <div class="view-toggle">
+      <button class="active" data-view="table"><svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>Grid</button>
+      <button data-view="card"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Cards</button>
+    </div>
+  </div>
+</div>
+
+<div class="table-wrap" id="table-wrap">
+  <table class="pb-table" id="pb-table">
+    <thead><tr>
+      <th data-col="title"><div class="th-head">Title <span class="sort-arrow">▲</span></div></th>
+      <th data-col="pathway" class="filterable"><div class="th-head">Pathway <span class="sort-arrow">▲</span><button class="filter-btn" aria-label="Filter pathway"><svg viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button></div></th>
+      <th data-col="series" class="filterable"><div class="th-head">Series <span class="sort-arrow">▲</span><button class="filter-btn" aria-label="Filter series"><svg viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button></div></th>
+      <th data-col="category" class="filterable"><div class="th-head">Category <span class="sort-arrow">▲</span><button class="filter-btn" aria-label="Filter category"><svg viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button></div></th>
+      <th data-col="length"><div class="th-head">Length <span class="sort-arrow">▲</span></div></th>
+      <th data-col="price" class="filterable"><div class="th-head">Price <span class="sort-arrow">▲</span><button class="filter-btn" aria-label="Filter price"><svg viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button></div></th>
+      <th data-col="status" class="filterable"><div class="th-head">Status <span class="sort-arrow">▲</span><button class="filter-btn" aria-label="Filter status"><svg viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button></div></th>
+    </tr></thead>
+    <tbody id="table-body">
+      <tr data-pathway="work-reset" data-series="The Attending" data-category="Systems" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/attend">The Attending: Attend<em>How to stay with the work when you want to leave.</em></a></td><td><span class="pa-chip work-reset">Work Reset · 5</span></td><td>The Attending</td><td><span class="cat-chip">Systems</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="work-reset" data-series="Eden Pattern" data-category="Faith" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/before-the-garden-returns">Eden Pattern: Before The Garden Returns<em>Eden was the first post scarcity world. AI is building the second. Most of us are not ready for either.</em></a></td><td><span class="pa-chip work-reset">Work Reset · Rel</span></td><td>Eden Pattern</td><td><span class="cat-chip">Faith</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="ai-age" data-series="AI Economy" data-category="Systems" data-price="free" data-status="not-started"><td class="cell-title"><a href="read/conductors-playbook">The Conductor's Playbook<em>Stop generating. Start conducting.</em></a></td><td><span class="pa-chip ai-age">AI Age · 3</span></td><td>AI Economy</td><td><span class="cat-chip">Systems</span></td><td>30 min</td><td class="price-cell free">Free</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="family-foundation" data-series="Dad Talks" data-category="Parenting" data-price="free" data-status="not-started"><td class="cell-title"><a href="read/dad-talks-the-dopamine-drought">Dad Talks: The Dopamine Drought<em>Why nothing feels good anymore.</em></a></td><td><span class="pa-chip family-foundation">Family · 1</span></td><td>Dad Talks</td><td><span class="cat-chip">Parenting</span></td><td>30 min</td><td class="price-cell free">Free</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="family-foundation" data-series="Dad Talks" data-category="Parenting" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/dad-talks-the-first-punch">Dad Talks: The First Punch<em>What nobody teaches you about fighting.</em></a></td><td><span class="pa-chip family-foundation">Family · 6</span></td><td>Dad Talks</td><td><span class="cat-chip">Parenting</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="family-foundation" data-series="Dad Talks" data-category="Parenting" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/dad-talks-the-flinch">Dad Talks: The Flinch<em>Why your body quits before you do.</em></a></td><td><span class="pa-chip family-foundation">Family · 3</span></td><td>Dad Talks</td><td><span class="cat-chip">Parenting</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="family-foundation" data-series="Dad Talks" data-category="Parenting" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/dad-talks-the-invisible-contract">Dad Talks: The Invisible Contract<em>The rules nobody told you about.</em></a></td><td><span class="pa-chip family-foundation">Family · 4</span></td><td>Dad Talks</td><td><span class="cat-chip">Parenting</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="family-foundation" data-series="Dad Talks" data-category="Parenting" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/dad-talks-the-mirror-test">Dad Talks: The Mirror Test<em>When everyone seems fake.</em></a></td><td><span class="pa-chip family-foundation">Family · 2</span></td><td>Dad Talks</td><td><span class="cat-chip">Parenting</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="family-foundation" data-series="Dad Talks" data-category="Parenting" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/dad-talks-the-scoreboard-lie">Dad Talks: The Scoreboard Lie<em>Why you are winning at the wrong game.</em></a></td><td><span class="pa-chip family-foundation">Family · 5</span></td><td>Dad Talks</td><td><span class="cat-chip">Parenting</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="work-reset" data-series="The Attending" data-category="Faith" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/done-before-you-started">The Attending: Done Before You Started<em>Why the practice fails without the identity underneath.</em></a></td><td><span class="pa-chip work-reset">Work Reset · 6</span></td><td>The Attending</td><td><span class="cat-chip">Faith</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="work-reset" data-series="Manna" data-category="Faith" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/given">Manna: Given<em>The crisis no one names and the way back.</em></a></td><td><span class="pa-chip work-reset">Work Reset · 1</span></td><td>Manna</td><td><span class="cat-chip">Faith</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="inner-battle" data-series="Lay It Down" data-category="Spiritual" data-price="free" data-status="not-started"><td class="cell-title"><a href="read/lay-it-down">Lay It Down<em>I am calling you deeper.</em></a></td><td><span class="pa-chip inner-battle">Inner Battle · 1</span></td><td>Lay It Down</td><td><span class="cat-chip">Spiritual</span></td><td>30 min</td><td class="price-cell free">Free</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="inner-battle" data-series="Lay It Down" data-category="Spiritual" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/lay-it-down-envy">Envy<em>The sin that scrolls.</em></a></td><td><span class="pa-chip inner-battle">Inner Battle · 3</span></td><td>Lay It Down</td><td><span class="cat-chip">Spiritual</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="inner-battle" data-series="Lay It Down" data-category="Spiritual" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/lay-it-down-gluttony">Gluttony<em>You are not hungry. You are hollow.</em></a></td><td><span class="pa-chip inner-battle">Inner Battle · 7</span></td><td>Lay It Down</td><td><span class="cat-chip">Spiritual</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="inner-battle" data-series="Lay It Down" data-category="Spiritual" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/lay-it-down-greed">Greed<em>The sin that never says enough.</em></a></td><td><span class="pa-chip inner-battle">Inner Battle · 6</span></td><td>Lay It Down</td><td><span class="cat-chip">Spiritual</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="inner-battle" data-series="Lay It Down" data-category="Spiritual" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/lay-it-down-lust">Lust<em>It was never about desire.</em></a></td><td><span class="pa-chip inner-battle">Inner Battle · 8</span></td><td>Lay It Down</td><td><span class="cat-chip">Spiritual</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="inner-battle" data-series="Lay It Down" data-category="Spiritual" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/lay-it-down-pride">Pride<em>The sin that looks like your personality.</em></a></td><td><span class="pa-chip inner-battle">Inner Battle · 2</span></td><td>Lay It Down</td><td><span class="cat-chip">Spiritual</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="inner-battle" data-series="Lay It Down" data-category="Spiritual" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/lay-it-down-sloth">Sloth<em>The sin that feels like rest.</em></a></td><td><span class="pa-chip inner-battle">Inner Battle · 5</span></td><td>Lay It Down</td><td><span class="cat-chip">Spiritual</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="inner-battle" data-series="Lay It Down" data-category="Spiritual" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/lay-it-down-wrath">Wrath<em>The fire you mistook for strength.</em></a></td><td><span class="pa-chip inner-battle">Inner Battle · 4</span></td><td>Lay It Down</td><td><span class="cat-chip">Spiritual</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="work-reset" data-series="Manna" data-category="Faith" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/returning">Manna: Returning<em>Seven domains. Seven returns. Where the seeing comes back on.</em></a></td><td><span class="pa-chip work-reset">Work Reset · 2</span></td><td>Manna</td><td><span class="cat-chip">Faith</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="work-reset" data-series="Eden Pattern" data-category="Faith" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/tending-the-garden">Eden Pattern: Tending The Garden<em>The pillars are built. Now learn to live with all three running at once.</em></a></td><td><span class="pa-chip work-reset">Work Reset · Rel</span></td><td>Eden Pattern</td><td><span class="cat-chip">Faith</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="strategist-toolkit" data-series="—" data-category="Systems" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-ant-network">The Ant Network<em>How blockchain really works.</em></a></td><td><span class="pa-chip strategist-toolkit">Strategist · Rel</span></td><td>—</td><td><span class="cat-chip">Systems</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="work-reset" data-series="—" data-category="Mental" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-arrival">The Arrival<em>You have arrived nowhere.</em></a></td><td><span class="pa-chip work-reset">Work Reset · Rel</span></td><td>—</td><td><span class="cat-chip">Mental</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="resilience-stack" data-series="—" data-category="Resilience" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-bears-winter">The Bear's Winter<em>The strongest animal disappears for five months.</em></a></td><td><span class="pa-chip resilience-stack">Resilience · 7</span></td><td>—</td><td><span class="cat-chip">Resilience</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="family-foundation" data-series="A Process Model" data-category="Mental" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-bees-dance">The Bee's Dance<em>A Process Model &middot; Part 5 of 6</em></a></td><td><span class="pa-chip family-foundation">Family · Rel</span></td><td>A Process Model</td><td><span class="cat-chip">Mental</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="identity-walk" data-series="—" data-category="Mental" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-body-lie">The Body Lie<em>The wrong voice has been running your life.</em></a></td><td><span class="pa-chip identity-walk">Identity Walk · 5</span></td><td>—</td><td><span class="cat-chip">Mental</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="money-architecture" data-series="—" data-category="Money" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-bonsai-method">The Bonsai Method<em>A bonsai is not a small tree. It's a shaped masterpiece.</em></a></td><td><span class="pa-chip money-architecture">Money · 6</span></td><td>—</td><td><span class="cat-chip">Money</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="resilience-stack" data-series="A Process Model" data-category="Mental" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-butterflys-crossing">The Butterfly's Crossing<em>A Process Model &middot; Part 3 of 6</em></a></td><td><span class="pa-chip resilience-stack">Resilience · Rel</span></td><td>A Process Model</td><td><span class="cat-chip">Mental</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="ai-age" data-series="How AI Works" data-category="Systems" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-centipedes-march">The Centipede's March<em>One image is a canvas. A hundred in sequence is a march.</em></a></td><td><span class="pa-chip ai-age">AI Age · 6</span></td><td>How AI Works</td><td><span class="cat-chip">Systems</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="strategist-toolkit" data-series="—" data-category="Strategy" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-chameleons-code">The Chameleon's Code<em>How to speak every room's hidden language.</em></a></td><td><span class="pa-chip strategist-toolkit">Strategist · 7</span></td><td>—</td><td><span class="cat-chip">Strategy</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="money-architecture" data-series="—" data-category="Mental" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-cost-ledger">The Cost Ledger<em>The lie every human believes.</em></a></td><td><span class="pa-chip money-architecture">Money · 2</span></td><td>—</td><td><span class="cat-chip">Mental</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="resilience-stack" data-series="—" data-category="Resilience" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-coyotes-laugh">The Coyote's Laugh<em>A century of eradication made him unstoppable.</em></a></td><td><span class="pa-chip resilience-stack">Resilience · 4</span></td><td>—</td><td><span class="cat-chip">Resilience</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="strategist-toolkit" data-series="—" data-category="Strategy" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-crows-gambit">The Crow's Gambit<em>How game theory actually works.</em></a></td><td><span class="pa-chip strategist-toolkit">Strategist · 2</span></td><td>—</td><td><span class="cat-chip">Strategy</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="ai-age" data-series="How AI Works" data-category="Systems" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-cuttlefishs-canvas">The Cuttlefish's Canvas<em>She paints in colors she has never seen.</em></a></td><td><span class="pa-chip ai-age">AI Age · 5</span></td><td>How AI Works</td><td><span class="cat-chip">Systems</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="strategist-toolkit" data-series="—" data-category="Leadership" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-eagles-lens">The Eagle's Lens<em>Decide 10x faster using first principles.</em></a></td><td><span class="pa-chip strategist-toolkit">Strategist · 1</span></td><td>—</td><td><span class="cat-chip">Leadership</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="resilience-stack" data-series="A Process Model" data-category="Mental" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-elephants-ground">The Elephant's Ground<em>A Process Model &middot; Part 4 of 6</em></a></td><td><span class="pa-chip resilience-stack">Resilience · Rel</span></td><td>A Process Model</td><td><span class="cat-chip">Mental</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="money-architecture" data-series="—" data-category="Money" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-fibonacci-trim">The Fibonacci Trim<em>The most efficient pattern in the universe. Now in your bank account.</em></a></td><td><span class="pa-chip money-architecture">Money · 7</span></td><td>—</td><td><span class="cat-chip">Money</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="strategist-toolkit" data-series="—" data-category="Strategy" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-fireflys-signal">The Firefly's Signal<em>Why the brightest light learned to go dark.</em></a></td><td><span class="pa-chip strategist-toolkit">Strategist · 3</span></td><td>—</td><td><span class="cat-chip">Strategy</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="strategist-toolkit" data-series="—" data-category="Strategy" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-foxs-trail">The Fox's Trail<em>Why the cleverest animal never runs the same path twice.</em></a></td><td><span class="pa-chip strategist-toolkit">Strategist · 4</span></td><td>—</td><td><span class="cat-chip">Strategy</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="work-reset" data-series="Eden Pattern" data-category="Systems" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-fruit">Eden Pattern: The Fruit<em>What you would still produce if no one was paying you to produce it.</em></a></td><td><span class="pa-chip work-reset">Work Reset · 4</span></td><td>Eden Pattern</td><td><span class="cat-chip">Systems</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="resilience-stack" data-series="—" data-category="Resilience" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-geckos-grip">The Gecko's Grip<em>How the smallest climber masters the impossible wall.</em></a></td><td><span class="pa-chip resilience-stack">Resilience · 6</span></td><td>—</td><td><span class="cat-chip">Resilience</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="strategist-toolkit" data-series="—" data-category="Mental" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-ghost-frame">The Ghost Frame<em>The invisible architecture of perception.</em></a></td><td><span class="pa-chip strategist-toolkit">Strategist · Rel</span></td><td>—</td><td><span class="cat-chip">Mental</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="work-reset" data-series="—" data-category="Systems" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-gravity-well">The Gravity Well<em>Why your attention goes where it goes.</em></a></td><td><span class="pa-chip work-reset">Work Reset · Rel</span></td><td>—</td><td><span class="cat-chip">Systems</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="identity-walk" data-series="Mirror Series" data-category="Identity" data-price="free" data-status="not-started"><td class="cell-title"><a href="read/the-hermit-crabs-shell">The Hermit Crab's Shell<em>See what you have been wearing.</em></a></td><td><span class="pa-chip identity-walk">Identity Walk · 1</span></td><td>Mirror Series</td><td><span class="cat-chip">Identity</span></td><td>30 min</td><td class="price-cell free">Free</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="work-reset" data-series="—" data-category="Systems" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-horses-gait">The Horse's Gait<em>Four speeds. One secret: knowing which to use when.</em></a></td><td><span class="pa-chip work-reset">Work Reset · Rel</span></td><td>—</td><td><span class="cat-chip">Systems</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="identity-walk" data-series="—" data-category="Faith" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-kintsugi-bowl">The Kintsugi Protocol<em>How to do everything unto God. And actually mean it.</em></a></td><td><span class="pa-chip identity-walk">Identity Walk · Rel</span></td><td>—</td><td><span class="cat-chip">Faith</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="ai-age" data-series="AI Economy" data-category="Systems" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-lifted-ceiling">The Lifted Ceiling<em>600 years of receipts. The pattern never breaks.</em></a></td><td><span class="pa-chip ai-age">AI Age · 1</span></td><td>AI Economy</td><td><span class="cat-chip">Systems</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="ai-age" data-series="How AI Works" data-category="Systems" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-lyrebirds-echo">The Lyrebird's Echo<em>Every song in the forest lives inside one bird.</em></a></td><td><span class="pa-chip ai-age">AI Age · 8</span></td><td>How AI Works</td><td><span class="cat-chip">Systems</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="resilience-stack" data-series="Shield Series" data-category="Resilience" data-price="free" data-status="not-started"><td class="cell-title"><a href="read/the-mantis-shrimps-eye">The Mantis Shrimp's Eye<em>See the colors they hid from you.</em></a></td><td><span class="pa-chip resilience-stack">Resilience · 1</span></td><td>Shield Series</td><td><span class="cat-chip">Resilience</span></td><td>30 min</td><td class="price-cell free">Free</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="ai-age" data-series="How AI Works" data-category="Systems" data-price="free" data-status="not-started"><td class="cell-title"><a href="read/the-mockingbirds-song">The Mockingbird's Song<em>She never wrote a single song. She wrote all of them.</em></a></td><td><span class="pa-chip ai-age">AI Age · 4</span></td><td>How AI Works</td><td><span class="cat-chip">Systems</span></td><td>30 min</td><td class="price-cell free">Free</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="identity-walk" data-series="—" data-category="Mental" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-moths-flame">The Moth's Flame<em>He flew a thousand miles by moonlight, then burned himself on a porch lamp.</em></a></td><td><span class="pa-chip identity-walk">Identity Walk · Rel</span></td><td>—</td><td><span class="cat-chip">Mental</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="money-architecture" data-series="—" data-category="Money" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-mycelium-network">The Mycelium Network<em>The biggest network wins. Always.</em></a></td><td><span class="pa-chip money-architecture">Money · Rel</span></td><td>—</td><td><span class="cat-chip">Money</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="identity-walk" data-series="—" data-category="Mental" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-narrator">The Narrator<em>You are performing a character someone else wrote.</em></a></td><td><span class="pa-chip identity-walk">Identity Walk · 4</span></td><td>—</td><td><span class="cat-chip">Mental</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="ai-age" data-series="AI Economy" data-category="Money" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-new-earning">The New Earning<em>The ceiling is gone. Now what do you do for a living?</em></a></td><td><span class="pa-chip ai-age">AI Age · 2</span></td><td>AI Economy</td><td><span class="cat-chip">Money</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="money-architecture" data-series="—" data-category="Money" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-octopus-protocol">The Octopus Protocol<em>One brain. Many arms. Relentless leverage.</em></a></td><td><span class="pa-chip money-architecture">Money · 5</span></td><td>—</td><td><span class="cat-chip">Money</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="identity-walk" data-series="A Process Model" data-category="Mental" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-otters-play">The Otter's Play<em>A Process Model &middot; Part 6 of 6</em></a></td><td><span class="pa-chip identity-walk">Identity Walk · Rel</span></td><td>A Process Model</td><td><span class="cat-chip">Mental</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="resilience-stack" data-series="—" data-category="Resilience" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-pangolins-armor">The Pangolin's Armor<em>No claws. No speed. Just the decision to become untouchable.</em></a></td><td><span class="pa-chip resilience-stack">Resilience · 5</span></td><td>—</td><td><span class="cat-chip">Resilience</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="resilience-stack" data-series="Shield Series" data-category="Resilience" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-porcupines-quills">The Porcupine's Quills<em>30,000 reasons not to be touched.</em></a></td><td><span class="pa-chip resilience-stack">Resilience · 2</span></td><td>Shield Series</td><td><span class="cat-chip">Resilience</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="ai-age" data-series="How AI Works" data-category="Systems" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-ravens-trial">The Raven's Trial<em>Eight steps. No instructions. She solved it by watching once.</em></a></td><td><span class="pa-chip ai-age">AI Age · 7</span></td><td>How AI Works</td><td><span class="cat-chip">Systems</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="family-foundation" data-series="—" data-category="Health" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-roche-limit">The Roche Limit<em>Why closeness keeps destroying you. And how to become dense enough to survive it.</em></a></td><td><span class="pa-chip family-foundation">Family · 8</span></td><td>—</td><td><span class="cat-chip">Health</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="identity-walk" data-series="Mirror Series" data-category="Mindset" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-scorpions-molt">The Scorpion's Molt<em>Become soft enough to grow.</em></a></td><td><span class="pa-chip identity-walk">Identity Walk · 2</span></td><td>Mirror Series</td><td><span class="cat-chip">Mindset</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="work-reset" data-series="Eden Pattern" data-category="Resilience" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-soil">Eden Pattern: The Soil<em>Stability through pruning, not equilibrium. How to suffer on purpose before you have to.</em></a></td><td><span class="pa-chip work-reset">Work Reset · Rel</span></td><td>Eden Pattern</td><td><span class="cat-chip">Resilience</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="identity-walk" data-series="Eden Pattern" data-category="Faith" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-source">Eden Pattern: The Source<em>Identity received, not constructed. The only one that survives when the work is automated away.</em></a></td><td><span class="pa-chip identity-walk">Identity Walk · 6</span></td><td>Eden Pattern</td><td><span class="cat-chip">Faith</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="work-reset" data-series="—" data-category="Strategy" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-spiders-loom">The Spider's Loom<em>Why the smartest predator never chases.</em></a></td><td><span class="pa-chip work-reset">Work Reset · 7</span></td><td>—</td><td><span class="cat-chip">Strategy</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="money-architecture" data-series="—" data-category="Money" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-squirrel-economy">The Squirrel Economy<em>How squirrels saved the forest.</em></a></td><td><span class="pa-chip money-architecture">Money · 1</span></td><td>—</td><td><span class="cat-chip">Money</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="strategist-toolkit" data-series="—" data-category="Leadership" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-starlings-murmuration">The Starling's Murmuration<em>How small alignments create unstoppable momentum.</em></a></td><td><span class="pa-chip strategist-toolkit">Strategist · 5</span></td><td>—</td><td><span class="cat-chip">Leadership</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="resilience-stack" data-series="Shield Series" data-category="Resilience" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-tardigrade-protocol">The Tardigrade Protocol<em>Survive what should have destroyed you.</em></a></td><td><span class="pa-chip resilience-stack">Resilience · 3</span></td><td>Shield Series</td><td><span class="cat-chip">Resilience</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="ai-age" data-series="—" data-category="Systems" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-termite-cathedral">The Termite Cathedral<em>No architect. No blueprint. The cathedral rises anyway.</em></a></td><td><span class="pa-chip ai-age">AI Age · Rel</span></td><td>—</td><td><span class="cat-chip">Systems</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="family-foundation" data-series="—" data-category="Faith" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-three-tables">The Three Tables<em>Every bite seats you somewhere.</em></a></td><td><span class="pa-chip family-foundation">Family · 7</span></td><td>—</td><td><span class="cat-chip">Faith</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="identity-walk" data-series="A Process Model" data-category="Mental" data-price="free" data-status="not-started"><td class="cell-title"><a href="read/the-tide-pools-echo">The Tide Pool's Echo<em>A Process Model &middot; Part 1 of 6</em></a></td><td><span class="pa-chip identity-walk">Identity Walk · Rel</span></td><td>A Process Model</td><td><span class="cat-chip">Mental</span></td><td>30 min</td><td class="price-cell free">Free</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="work-reset" data-series="—" data-category="Health" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-unfinished-song">The Unfinished Song<em>The rests are not failures. They are written into the song.</em></a></td><td><span class="pa-chip work-reset">Work Reset · Rel</span></td><td>—</td><td><span class="cat-chip">Health</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="identity-walk" data-series="Mirror Series" data-category="Resilience" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-vampire-squids-light">The Vampire Squid's Light<em>Generate your own light.</em></a></td><td><span class="pa-chip identity-walk">Identity Walk · 3</span></td><td>Mirror Series</td><td><span class="cat-chip">Resilience</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="resilience-stack" data-series="A Process Model" data-category="Mental" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-whales-breath">The Whale's Breath<em>A Process Model &middot; Part 2 of 6</em></a></td><td><span class="pa-chip resilience-stack">Resilience · Rel</span></td><td>A Process Model</td><td><span class="cat-chip">Mental</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+      <tr data-pathway="strategist-toolkit" data-series="—" data-category="Connection" data-price="paid" data-status="not-started"><td class="cell-title"><a href="read/the-wolfs-table">The Wolf's Table<em>Why the strongest never eat alone.</em></a></td><td><span class="pa-chip strategist-toolkit">Strategist · 6</span></td><td>—</td><td><span class="cat-chip">Connection</span></td><td>30 min</td><td class="price-cell ">$2.50</td><td><span class="status-chip status-not-started">Not Started</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="card-grid" id="card-grid">
+  <a class="mini-card" href="/playbooks/read/given" style="--c1:#06070E;--c2:#7A6020">
+    <div class="mc-cover"><div class="mc-title">Manna: Given</div></div>
+    <div class="mc-body"><span class="pa-chip work-reset">Work Reset · 1</span><p class="mc-desc">The crisis no one names and the way back.</p><div class="mc-footer"><span class="mc-cat">Faith</span><span class="mc-price free">Free</span></div></div>
+  </a>
+  <a class="mini-card" href="/playbooks/read/the-lifted-ceiling" style="--c1:#040810;--c2:#1F7A7A">
+    <div class="mc-cover"><div class="mc-title">The Lifted Ceiling</div></div>
+    <div class="mc-body"><span class="pa-chip ai-age">AI Age · 1</span><p class="mc-desc">600 years of evidence on technology and work.</p><div class="mc-footer"><span class="mc-cat">Economics</span><span class="mc-price free">Free</span></div></div>
+  </a>
+  <a class="mini-card" href="/playbooks/read/the-mockingbirds-song" style="--c1:#040810;--c2:#1F7A7A">
+    <div class="mc-cover"><div class="mc-title">The Mockingbird's Song</div></div>
+    <div class="mc-body"><span class="pa-chip ai-age">AI Age · 4</span><p class="mc-desc">How LLMs actually work.</p><div class="mc-footer"><span class="mc-cat">Technology</span><span class="mc-price free">Free</span></div></div>
+  </a>
+  <a class="mini-card" href="/playbooks/read/the-hermit-crabs-shell" style="--c1:#0A0612;--c2:#5B2FA0">
+    <div class="mc-cover"><div class="mc-title">The Hermit Crab's Shell</div></div>
+    <div class="mc-body"><span class="pa-chip identity-walk">Identity Walk · 1</span><p class="mc-desc">For the person who has performed so long they forgot.</p><div class="mc-footer"><span class="mc-cat">Identity</span><span class="mc-price free">Free</span></div></div>
+  </a>
+</div>
+
+<footer>
+  <p>"For who maketh thee to differ from another? and what hast thou that thou didst not receive?" 1 Corinthians 4:7</p>
+</footer>
+
+<!-- Excel-style filter dropdown (single instance, repositioned per column) -->
+<div class="filter-dropdown" id="filter-dropdown">
+  <input type="text" class="filter-search" placeholder="Search options...">
+  <div class="filter-toggles">
+    <button id="filter-select-all">Select All</button>
+    <button id="filter-clear">Clear</button>
+  </div>
+  <div class="filter-options" id="filter-options"></div>
+  <div class="filter-actions">
+    <button class="btn-cancel" id="filter-cancel">Cancel</button>
+    <button class="btn-apply" id="filter-apply">Apply</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const tbody = document.getElementById('table-body');
+  const allRows = Array.from(tbody.querySelectorAll('tr'));
+  const dropdown = document.getElementById('filter-dropdown');
+  const optionsEl = document.getElementById('filter-options');
+  const filterSearch = dropdown.querySelector('.filter-search');
+  const rowCount = document.getElementById('row-count');
+  const clearAllBtn = document.getElementById('clear-filters');
+  const searchInput = document.getElementById('search-input');
+
+  const activeFilters = {};
+  let currentCol = null;
+  let searchQuery = '';
+
+  function getUniqueValues(col){
+    const m = new Map();
+    allRows.forEach(r => {
+      const v = r.dataset[col] || '—';
+      m.set(v, (m.get(v) || 0) + 1);
+    });
+    return Array.from(m.entries()).sort((a,b) => a[0].localeCompare(b[0]));
+  }
+
+  const PRETTY = {
+    'work-reset':'Work Reset','identity-walk':'Identity Walk','ai-age':'AI Age',
+    'money-architecture':'Money Architecture','resilience-stack':'Resilience Stack',
+    'inner-battle':'Inner Battle','family-foundation':'Family Foundation','strategist-toolkit':"Strategist's Toolkit",
+    'free':'Free','paid':'Paid',
+    'not-started':'Not Started','in-progress':'In Progress','completed':'Completed'
+  };
+  const pretty = v => PRETTY[v] || v || '—';
+
+  function openDropdown(col, headerEl){
+    currentCol = col;
+    const rect = headerEl.getBoundingClientRect();
+    dropdown.style.top = (rect.bottom + window.scrollY) + 'px';
+    dropdown.style.left = (rect.left + window.scrollX) + 'px';
+    optionsEl.innerHTML = '';
+    const selected = activeFilters[col] || new Set();
+    getUniqueValues(col).forEach(([val, cnt]) => {
+      const checked = !activeFilters[col] || selected.has(val);
+      const label = document.createElement('label');
+      label.innerHTML = '<input type="checkbox" data-val="' + val + '"' + (checked ? ' checked' : '') + '> ' + pretty(val) + ' <span class="opt-count">' + cnt + '</span>';
+      optionsEl.appendChild(label);
+    });
+    dropdown.classList.add('open');
+    filterSearch.value = '';
+    setTimeout(() => filterSearch.focus(), 50);
+  }
+
+  function closeDropdown(){
+    dropdown.classList.remove('open');
+    currentCol = null;
+  }
+
+  document.querySelectorAll('th.filterable .filter-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const th = btn.closest('th');
+      const col = th.dataset.col;
+      if(currentCol === col){ closeDropdown(); return; }
+      openDropdown(col, th);
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    if(dropdown.contains(e.target)) return;
+    if(e.target.closest('.filter-btn')) return;
+    closeDropdown();
+  });
+
+  filterSearch.addEventListener('input', (e) => {
+    const q = e.target.value.toLowerCase();
+    optionsEl.querySelectorAll('label').forEach(l => {
+      l.style.display = l.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+  });
+
+  document.getElementById('filter-select-all').addEventListener('click', () => {
+    optionsEl.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = true);
+  });
+  document.getElementById('filter-clear').addEventListener('click', () => {
+    optionsEl.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+  });
+
+  document.getElementById('filter-apply').addEventListener('click', () => {
+    const checked = Array.from(optionsEl.querySelectorAll('input[type="checkbox"]:checked')).map(c => c.dataset.val);
+    const total = optionsEl.querySelectorAll('input[type="checkbox"]').length;
+    if(checked.length === 0 || checked.length === total){
+      delete activeFilters[currentCol];
+    } else {
+      activeFilters[currentCol] = new Set(checked);
+    }
+    closeDropdown();
+    refresh();
+  });
+  document.getElementById('filter-cancel').addEventListener('click', closeDropdown);
+
+  searchInput.addEventListener('input', (e) => {
+    searchQuery = e.target.value.toLowerCase();
+    refresh();
+  });
+
+  clearAllBtn.addEventListener('click', () => {
+    for(const k in activeFilters) delete activeFilters[k];
+    searchInput.value = '';
+    searchQuery = '';
+    refresh();
+  });
+
+  function refresh(){
+    let visible = 0;
+    allRows.forEach(r => {
+      let show = true;
+      for(const col in activeFilters){
+        const v = r.dataset[col] || '—';
+        if(!activeFilters[col].has(v)){ show = false; break; }
+      }
+      if(show && searchQuery && !r.textContent.toLowerCase().includes(searchQuery)) show = false;
+      r.classList.toggle('hidden', !show);
+      if(show) visible++;
+    });
+    rowCount.textContent = visible;
+    document.querySelectorAll('th.filterable').forEach(th => {
+      const col = th.dataset.col;
+      const btn = th.querySelector('.filter-btn');
+      const has = !!activeFilters[col];
+      btn.classList.toggle('active', has);
+      const oldBadge = th.querySelector('.filter-count');
+      if(oldBadge) oldBadge.remove();
+      if(has){
+        const b = document.createElement('span');
+        b.className = 'filter-count';
+        b.textContent = activeFilters[col].size;
+        th.appendChild(b);
+      }
+    });
+    clearAllBtn.disabled = !(Object.keys(activeFilters).length || searchQuery);
+  }
+
+  // Sort
+  document.querySelectorAll('th .th-head').forEach(head => {
+    head.addEventListener('click', (e) => {
+      if(e.target.closest('.filter-btn')) return;
+      const th = head.closest('th');
+      const col = th.dataset.col;
+      const dir = th.classList.contains('sorted-asc') ? 'desc' : 'asc';
+      document.querySelectorAll('th').forEach(t => t.classList.remove('sorted','sorted-asc','sorted-desc'));
+      th.classList.add('sorted','sorted-' + dir);
+      const colIdx = Array.from(th.parentNode.children).indexOf(th);
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      rows.sort((a,b) => {
+        const av = (a.dataset[col] || a.cells[colIdx].textContent).toLowerCase();
+        const bv = (b.dataset[col] || b.cells[colIdx].textContent).toLowerCase();
+        if(av < bv) return dir === 'asc' ? -1 : 1;
+        if(av > bv) return dir === 'asc' ? 1 : -1;
+        return 0;
+      });
+      rows.forEach(r => tbody.appendChild(r));
+    });
+  });
+
+  // View toggle
+  document.querySelectorAll('.view-toggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const view = btn.dataset.view;
+      document.querySelectorAll('.view-toggle button').forEach(b => b.classList.toggle('active', b.dataset.view === view));
+      document.getElementById('table-wrap').classList.toggle('hidden', view !== 'table');
+      document.getElementById('card-grid').classList.toggle('active', view === 'card');
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
