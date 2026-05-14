@@ -1072,18 +1072,192 @@ body{background:#fff}
 
 <p>Set aside twenty minutes. Sit somewhere quiet. Have something to write with. The exercise has four sections. Work through them in order without skipping. The compass cannot be calibrated to a territory you have not surveyed.</p>
 
-<div class="diagnostic" style="margin-top:32px">
-  <div class="diagnostic-head"><h4>Section One. Your Phantom Generator Profile</h4></div>
-  <div class="diagnostic-body" style="grid-template-columns:1fr;background:var(--white)">
-    <div style="padding:24px 28px">
-      <p style="font-size:0.95rem;line-height:1.7;margin-bottom:14px"><strong>The four generators of phantom appetite are not equally active in everyone.</strong> One of them is your dominant. Read each description and rate how often it drives your eating: rarely (1), sometimes (2), frequently (3), constantly (4).</p>
-      <p style="font-size:0.92rem;line-height:1.7;margin-bottom:8px"><strong>Emotional Regulation:</strong> You eat when stressed, lonely, bored, anxious, or sad. The "hunger" arrives with an emotional state attached. Food temporarily quiets the emotion. _____</p>
-      <p style="font-size:0.92rem;line-height:1.7;margin-bottom:8px"><strong>Circadian Habit:</strong> You eat at specific times regardless of physical need. Noon means lunch. 7 PM means dinner. Skip the meal and you feel something, but it fades within 20 minutes. _____</p>
-      <p style="font-size:0.92rem;line-height:1.7;margin-bottom:8px"><strong>Hedonic Memory:</strong> Specific triggers (smells, sights, logos, ads, weather) produce specific cravings. You want <em>that</em> thing, not food generally. The pull is at the location of memory, not the location of need. _____</p>
-      <p style="font-size:0.92rem;line-height:1.7;margin-bottom:14px"><strong>Blood Sugar Artifact:</strong> Within 1 to 2 hours of eating ultra processed food, you feel "hungry" again. The crash drives the next snack. Whole food does not produce this pattern in your body. _____</p>
-      <p style="font-size:0.92rem;line-height:1.7;color:var(--text-light);font-style:italic">Total your scores. The highest score is your dominant phantom generator. <strong style="font-style:normal;color:var(--earth)">That is your largest declination.</strong> Most people have one dominant and one secondary. A few have all four equally active, which indicates a system that needs the full recalibration timeline before the chart will stabilize.</p>
+<div class="diagnostic-widget" id="phantom-gen-quiz" style="margin-top:32px">
+<style>
+#phantom-gen-quiz{border-radius:14px;overflow:hidden;border:2px solid rgba(196,75,43,0.2);background:#fff;box-shadow:0 4px 18px rgba(0,0,0,0.06)}
+#phantom-gen-quiz .pg-head{padding:16px 24px;background:linear-gradient(135deg,var(--coal,#1A1610),var(--coal-warm,#2A2218));text-align:center;color:#fff}
+#phantom-gen-quiz .pg-head h4{font-family:'DM Sans',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--ember,#C44B2B);margin:0 0 4px}
+#phantom-gen-quiz .pg-head p{font-family:'Source Serif 4',serif;font-style:italic;font-size:0.88rem;color:rgba(255,255,255,0.7);margin:0}
+#phantom-gen-quiz .pg-body{padding:28px}
+#phantom-gen-quiz .pg-progress{margin-bottom:22px}
+#phantom-gen-quiz .pg-progress-text{display:flex;justify-content:space-between;font-family:'DM Sans',sans-serif;font-size:0.62rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--coal,#1A1610);margin-bottom:6px}
+#phantom-gen-quiz .pg-progress-bar{height:5px;background:rgba(196,75,43,0.08);border-radius:3px;overflow:hidden}
+#phantom-gen-quiz .pg-progress-fill{height:100%;background:linear-gradient(90deg,var(--ember,#C44B2B),var(--coal-warm,#2A2218));width:0%;transition:width 0.35s ease}
+#phantom-gen-quiz .pg-generator{font-family:'DM Sans',sans-serif;font-size:0.58rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--ember,#C44B2B);margin-bottom:8px}
+#phantom-gen-quiz .pg-name{font-family:'DM Sans',sans-serif;font-size:1.5rem;font-weight:700;color:var(--coal,#1A1610);margin-bottom:8px;line-height:1.2}
+#phantom-gen-quiz .pg-desc{font-family:'Source Serif 4',serif;color:var(--text-light,#3A2418);line-height:1.6;font-size:0.95rem;margin-bottom:22px}
+#phantom-gen-quiz .pg-question{font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:600;color:var(--coal,#1A1610);margin-bottom:14px;letter-spacing:0.5px}
+#phantom-gen-quiz .pg-options{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media(max-width:520px){#phantom-gen-quiz .pg-options{grid-template-columns:1fr 1fr}}
+#phantom-gen-quiz .pg-opt{padding:14px 8px;background:#F8F4EE;border:1.5px solid rgba(196,75,43,0.15);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:700;color:var(--coal,#1A1610);text-align:center;cursor:pointer;transition:all 0.18s;line-height:1.3}
+#phantom-gen-quiz .pg-opt:hover{border-color:var(--ember,#C44B2B);background:rgba(196,75,43,0.06);transform:translateY(-1px)}
+#phantom-gen-quiz .pg-opt-num{display:block;font-family:'DM Sans',sans-serif;font-size:1.4rem;font-weight:800;color:var(--ember,#C44B2B);line-height:1;margin-bottom:4px}
+#phantom-gen-quiz .pg-opt-label{font-size:0.66rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted,#6A5838)}
+#phantom-gen-quiz .pg-result{display:none}
+#phantom-gen-quiz .pg-result.show{display:block}
+#phantom-gen-quiz .pg-result-kicker{font-family:'DM Sans',sans-serif;font-size:0.58rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--ember,#C44B2B);text-align:center;margin-bottom:8px}
+#phantom-gen-quiz .pg-result-name{font-family:'DM Sans',sans-serif;font-size:2rem;font-weight:800;color:var(--coal,#1A1610);text-align:center;line-height:1.1;margin-bottom:10px}
+#phantom-gen-quiz .pg-result-sub{font-family:'Source Serif 4',serif;font-style:italic;color:var(--text-light,#3A2418);font-size:0.95rem;text-align:center;max-width:480px;margin:0 auto 24px;line-height:1.5}
+#phantom-gen-quiz .pg-bars{display:grid;gap:10px;margin-bottom:24px}
+#phantom-gen-quiz .pg-bar-row{display:grid;grid-template-columns:140px 1fr 30px;gap:12px;align-items:center}
+@media(max-width:520px){#phantom-gen-quiz .pg-bar-row{grid-template-columns:100px 1fr 24px}}
+#phantom-gen-quiz .pg-bar-label{font-family:'DM Sans',sans-serif;font-size:0.7rem;font-weight:700;color:var(--coal,#1A1610);text-align:right}
+#phantom-gen-quiz .pg-bar-row.dominant .pg-bar-label{color:var(--ember,#C44B2B);font-weight:800}
+#phantom-gen-quiz .pg-bar-track{height:14px;background:rgba(196,75,43,0.08);border-radius:7px;overflow:hidden;position:relative}
+#phantom-gen-quiz .pg-bar-fill{height:100%;background:linear-gradient(90deg,rgba(196,75,43,0.4),rgba(196,75,43,0.7));border-radius:7px;transition:width 0.6s ease;width:0%}
+#phantom-gen-quiz .pg-bar-row.dominant .pg-bar-fill{background:linear-gradient(90deg,var(--ember,#C44B2B),#E66B4B)}
+#phantom-gen-quiz .pg-bar-val{font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:800;color:var(--coal,#1A1610);text-align:center}
+#phantom-gen-quiz .pg-recommendation{padding:20px;background:linear-gradient(135deg,var(--coal,#1A1610),var(--coal-warm,#2A2218));color:#fff;border-radius:10px;margin-bottom:16px}
+#phantom-gen-quiz .pg-recommendation h5{font-family:'DM Sans',sans-serif;color:var(--ember,#C44B2B);font-size:0.88rem;margin-bottom:8px;font-weight:700;letter-spacing:0.5px}
+#phantom-gen-quiz .pg-recommendation p{font-family:'Source Serif 4',serif;color:rgba(255,255,255,0.82);line-height:1.6;font-size:0.9rem;margin:0}
+#phantom-gen-quiz .pg-retake{font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:700;color:var(--text-muted,#6A5838);background:transparent;border:1.5px solid rgba(196,75,43,0.2);padding:10px 22px;border-radius:50px;cursor:pointer;letter-spacing:1px;transition:all 0.2s;display:block;margin:0 auto}
+#phantom-gen-quiz .pg-retake:hover{background:rgba(196,75,43,0.06);color:var(--coal,#1A1610)}
+</style>
+
+<div class="pg-head">
+  <h4>Phantom Generator Profile</h4>
+  <p>Section One of the Find Your Offset diagnostic. Four questions. Two minutes.</p>
+</div>
+<div class="pg-body">
+  <div class="pg-progress">
+    <div class="pg-progress-text">
+      <span id="pg-counter">Generator 1 of 4</span>
+      <span>Find your largest declination</span>
+    </div>
+    <div class="pg-progress-bar"><div class="pg-progress-fill" id="pg-fill"></div></div>
+  </div>
+  <div id="pg-question-panel">
+    <div class="pg-generator" id="pg-gen-label">Generator One</div>
+    <div class="pg-name" id="pg-gen-name">Emotional Regulation</div>
+    <div class="pg-desc" id="pg-gen-desc">You eat when stressed, lonely, bored, anxious, or sad. The "hunger" arrives with an emotional state attached. Food temporarily quiets the emotion.</div>
+    <div class="pg-question">How often does this drive your eating?</div>
+    <div class="pg-options">
+      <button class="pg-opt" data-score="1"><span class="pg-opt-num">1</span><span class="pg-opt-label">Rarely</span></button>
+      <button class="pg-opt" data-score="2"><span class="pg-opt-num">2</span><span class="pg-opt-label">Sometimes</span></button>
+      <button class="pg-opt" data-score="3"><span class="pg-opt-num">3</span><span class="pg-opt-label">Frequently</span></button>
+      <button class="pg-opt" data-score="4"><span class="pg-opt-num">4</span><span class="pg-opt-label">Constantly</span></button>
     </div>
   </div>
+  <div class="pg-result" id="pg-result">
+    <div class="pg-result-kicker">Your dominant phantom generator</div>
+    <div class="pg-result-name" id="pg-result-name">Emotional Regulation</div>
+    <div class="pg-result-sub" id="pg-result-sub">This is your largest declination. The compass is being pulled hardest by this generator.</div>
+    <div class="pg-bars" id="pg-bars"></div>
+    <div class="pg-recommendation" id="pg-recommendation">
+      <h5>The Correction</h5>
+      <p id="pg-rec-text"></p>
+    </div>
+    <button class="pg-retake" id="pg-retake">Retake the diagnostic</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const generators = [
+    { key: 'emotional', name: 'Emotional Regulation',
+      desc: 'You eat when stressed, lonely, bored, anxious, or sad. The "hunger" arrives with an emotional state attached. Food temporarily quiets the emotion.',
+      sub: 'Your nervous system has learned to use food as an anxiolytic. The hunger you feel is your nervous system asking for sedation, not your stomach asking for fuel.',
+      rec: 'Before eating, name the emotion first. Out loud if you can. Wait three minutes. The emotion will rise to consciousness and the false hunger will fade with it. Most of the time, the eating was unnecessary because the actual need was naming.' },
+    { key: 'circadian', name: 'Circadian Habit',
+      desc: 'You eat at specific times regardless of physical need. Noon means lunch. 7 PM means dinner. Skip the meal and you feel something, but it fades within 20 minutes.',
+      sub: 'Your hypothalamus has trained itself to expect calories at fixed clock times. The "hunger" is a calendar reminder, not a metabolic signal.',
+      rec: 'Run a 24-hour windowed eating experiment one day this week. Delay each meal by 90 minutes. If the hunger fades within 20 minutes, it was the clock. The actual hunger will reassert itself later, real and uncomplicated.' },
+    { key: 'hedonic', name: 'Hedonic Memory',
+      desc: 'Specific triggers (smells, sights, logos, ads, weather) produce specific cravings. You want that thing, not food generally. The pull is at the location of memory, not the location of need.',
+      sub: 'Your dopamine system is replaying the highlight reel of yesterday\'s reward. The pull is at the location of memory, not the location of need.',
+      rec: 'Identify your top three trigger contexts. The drive home past the bakery. The 10 PM scroll. The Sunday afternoon. Engineer one of them out of the routine for two weeks. Without the trigger, the memory fades. The craving does not return on its own.' },
+    { key: 'blood-sugar', name: 'Blood Sugar Artifact',
+      desc: 'Within 1 to 2 hours of eating ultra processed food, you feel "hungry" again. The crash drives the next snack. Whole food does not produce this pattern in your body.',
+      sub: 'Your insulin and leptin systems are oscillating wildly because the salt water keeps spiking and crashing them. The hunger is real but the cause is not food deficiency, it is the previous meal.',
+      rec: 'For seven days, replace one ultra processed item with one whole food alternative. The crash will disappear within hours. The "hunger" that follows engineered food is the artifact this single change eliminates.' }
+  ];
+
+  const widget = document.getElementById('phantom-gen-quiz');
+  const counter = widget.querySelector('#pg-counter');
+  const fill = widget.querySelector('#pg-fill');
+  const genLabel = widget.querySelector('#pg-gen-label');
+  const genName = widget.querySelector('#pg-gen-name');
+  const genDesc = widget.querySelector('#pg-gen-desc');
+  const questionPanel = widget.querySelector('#pg-question-panel');
+  const resultPanel = widget.querySelector('#pg-result');
+  const optionsContainer = widget.querySelector('.pg-options');
+  const retakeBtn = widget.querySelector('#pg-retake');
+
+  let current = 0;
+  let scores = {};
+  generators.forEach(g => scores[g.key] = 0);
+
+  function render(){
+    const g = generators[current];
+    counter.textContent = 'Generator ' + (current+1) + ' of ' + generators.length;
+    fill.style.width = ((current/generators.length)*100) + '%';
+    genLabel.textContent = 'Generator ' + ['One','Two','Three','Four'][current];
+    genName.textContent = g.name;
+    genDesc.textContent = g.desc;
+  }
+
+  function handleAnswer(score){
+    const g = generators[current];
+    scores[g.key] = score;
+    current++;
+    if(current >= generators.length){
+      showResult();
+    } else {
+      render();
+    }
+  }
+
+  function showResult(){
+    fill.style.width = '100%';
+    counter.textContent = 'Profile complete';
+    questionPanel.style.display = 'none';
+    resultPanel.classList.add('show');
+
+    // find dominant
+    let dom = generators[0];
+    for(const g of generators){
+      if(scores[g.key] > scores[dom.key]) dom = g;
+    }
+
+    widget.querySelector('#pg-result-name').textContent = dom.name;
+    widget.querySelector('#pg-result-sub').textContent = dom.sub;
+    widget.querySelector('#pg-rec-text').textContent = dom.rec;
+
+    // bars
+    const barsContainer = widget.querySelector('#pg-bars');
+    barsContainer.innerHTML = '';
+    generators.forEach(function(g){
+      const row = document.createElement('div');
+      row.className = 'pg-bar-row' + (g.key === dom.key ? ' dominant' : '');
+      const pct = (scores[g.key]/4)*100;
+      row.innerHTML = '<div class="pg-bar-label">'+g.name+'</div>' +
+                      '<div class="pg-bar-track"><div class="pg-bar-fill" style="width:0%"></div></div>' +
+                      '<div class="pg-bar-val">'+scores[g.key]+'</div>';
+      barsContainer.appendChild(row);
+      // animate fill
+      setTimeout(function(){
+        row.querySelector('.pg-bar-fill').style.width = pct + '%';
+      }, 100);
+    });
+  }
+
+  optionsContainer.addEventListener('click', function(e){
+    const btn = e.target.closest('.pg-opt');
+    if(!btn) return;
+    handleAnswer(parseInt(btn.getAttribute('data-score'),10));
+  });
+
+  retakeBtn.addEventListener('click', function(){
+    current = 0;
+    generators.forEach(g => scores[g.key] = 0);
+    resultPanel.classList.remove('show');
+    questionPanel.style.display = 'block';
+    render();
+  });
+
+  render();
+})();
+</script>
 </div>
 
 <div class="diagnostic" style="margin-top:24px">
