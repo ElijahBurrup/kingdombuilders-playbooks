@@ -400,6 +400,63 @@ body {
 .ref-tree-inactive-tally {
   color: rgba(255,255,255,0.35); font-weight: 600;
 }
+
+/* Single-scroll section heading (replaces tab labels) */
+.ref-section {
+  max-width: 900px;
+  margin: 36px auto 0;
+  padding: 0;
+}
+.ref-section-heading {
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px; font-weight: 800; letter-spacing: 3.5px;
+  text-transform: uppercase;
+  color: var(--gold-light, #E8C96A);
+  padding-bottom: 10px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid rgba(212,168,67,0.18);
+}
+
+/* Collapsible level (L1/L2/L3) */
+.ref-tree-level-collapsible {
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+  padding: 6px 8px;
+  margin: 0 -8px 12px -8px;
+  border-radius: 8px;
+}
+.ref-tree-level-collapsible:hover {
+  background: rgba(255,255,255,0.04);
+}
+.ref-tree-level-collapsible:focus-visible {
+  outline: 2px solid var(--gold-light, #E8C96A);
+  outline-offset: 2px;
+}
+.ref-tree-chevron {
+  display: inline-block;
+  width: 14px;
+  margin-right: 8px;
+  color: var(--gold-light, #E8C96A);
+  transition: transform 0.2s;
+  font-size: 12px;
+  line-height: 1;
+}
+.ref-tree-level.collapsed .ref-tree-chevron {
+  transform: rotate(-90deg);
+}
+.ref-tree-level-body {
+  overflow: hidden;
+  transition: max-height 0.25s ease, opacity 0.2s, margin 0.2s;
+  max-height: 2000px;
+  opacity: 1;
+}
+.ref-tree-level.collapsed .ref-tree-level-body {
+  max-height: 0;
+  opacity: 0;
+  margin: 0;
+  pointer-events: none;
+}
 .ref-tree-item {
   display: flex;
   align-items: center;
@@ -1030,14 +1087,9 @@ body {
 </div>
 
 <!-- Tabs -->
-<div class="ref-tabs">
-  <div class="ref-tab active" data-tab="earnings" onclick="switchTab('earnings')">Earnings</div>
-  <div class="ref-tab" data-tab="tree" onclick="switchTab('tree')">Referral Tree</div>
-  <div class="ref-tab" data-tab="payouts" onclick="switchTab('payouts')">Payouts</div>
-</div>
-
-<!-- Earnings Panel -->
-<div class="ref-panel active" id="panel-earnings">
+<!-- Single-scroll content — Earnings, Referral Tree, Payouts in one stream -->
+<div class="ref-section" id="panel-earnings">
+  <div class="ref-section-heading">Earnings</div>
   <div class="ref-loading" id="earningsLoading">
     <div class="ref-spinner"></div>
     <div>Loading earnings...</div>
@@ -1058,8 +1110,8 @@ body {
   </div>
 </div>
 
-<!-- Referral Tree Panel -->
-<div class="ref-panel" id="panel-tree">
+<div class="ref-section" id="panel-tree">
+  <div class="ref-section-heading">Referral Tree</div>
   <div class="ref-loading" id="treeLoading">
     <div class="ref-spinner"></div>
     <div>Loading referral tree...</div>
@@ -1067,8 +1119,8 @@ body {
   <div id="treeContent" style="display:none;"></div>
 </div>
 
-<!-- Payouts Panel -->
-<div class="ref-panel" id="panel-payouts">
+<div class="ref-section" id="panel-payouts">
+  <div class="ref-section-heading">Payouts</div>
   <div class="ref-loading" id="payoutsLoading">
     <div class="ref-spinner"></div>
     <div>Loading payouts...</div>
@@ -1089,6 +1141,7 @@ body {
 
   let referralCode = '';
   let referralLink = '';
+  // Single-scroll layout — each section loads once on page load.
   let tabDataLoaded = { earnings: false, tree: false, payouts: false };
 
   // --- API Helpers ---
@@ -1248,26 +1301,19 @@ body {
       document.getElementById('taxBanner').classList.add('visible');
     }
 
-    // Load earnings tab immediately
-    loadEarnings();
+    // Eager-load all three sections (single-scroll layout — no tabs)
+    loadAllSections();
   }).catch(function(err) {
     console.error('Failed to load referral data:', err);
     document.getElementById('refLinkUrl').textContent = 'Unable to load referral link';
   });
 
-  // --- Tab Switching ---
-  window.switchTab = function(tab) {
-    document.querySelectorAll('.ref-tab').forEach(function(el) {
-      el.classList.toggle('active', el.getAttribute('data-tab') === tab);
-    });
-    document.querySelectorAll('.ref-panel').forEach(function(el) {
-      el.classList.toggle('active', el.id === 'panel-' + tab);
-    });
-
-    if (tab === 'earnings' && !tabDataLoaded.earnings) loadEarnings();
-    if (tab === 'tree' && !tabDataLoaded.tree) loadTree();
-    if (tab === 'payouts' && !tabDataLoaded.payouts) loadPayouts();
-  };
+  // Single-scroll layout: eager-load all three sections on page entry.
+  function loadAllSections() {
+    if (!tabDataLoaded.earnings) loadEarnings();
+    if (!tabDataLoaded.tree) loadTree();
+    if (!tabDataLoaded.payouts) loadPayouts();
+  }
 
   // --- Copy Link ---
   window.copyRefLink = function() {
@@ -1358,6 +1404,9 @@ body {
   // (the totals are already active-only).
   var _treeData = null;
   var _activeOnly = false;
+  // Persisted collapsed state per level so toggling Active-only or
+  // re-rendering does not snap sections back open.
+  var _collapsedLevels = { l1: false, l2: false, l3: false };
 
   function loadTree() {
     apiFetch('/api/v1/referrals/tree').then(function(data) {
@@ -1426,10 +1475,17 @@ body {
     function renderLevel(opts) {
       var section = document.createElement('div');
       section.className = 'ref-tree-level';
+      if (_collapsedLevels[opts.key]) section.classList.add('collapsed');
+
       var header = document.createElement('div');
-      header.className = 'ref-tree-level-header';
+      header.className = 'ref-tree-level-header ref-tree-level-collapsible';
+      header.setAttribute('role', 'button');
+      header.setAttribute('tabindex', '0');
+      header.setAttribute('aria-expanded', _collapsedLevels[opts.key] ? 'false' : 'true');
       header.innerHTML =
-        '<div class="ref-tree-level-title">' + opts.title +
+        '<div class="ref-tree-level-title">' +
+          '<span class="ref-tree-chevron" aria-hidden="true">&#9662;</span>' +
+          opts.title +
           '<span class="ref-tree-level-count">' +
             opts.activeCount + ' active &times; $1.50' +
             (opts.totalCount > opts.activeCount
@@ -1438,19 +1494,32 @@ body {
           '</span>' +
         '</div>' +
         '<div class="ref-tree-level-commission">' + levelTotal(opts.activeCount) + '</div>';
+
+      function toggle() {
+        _collapsedLevels[opts.key] = !_collapsedLevels[opts.key];
+        section.classList.toggle('collapsed', _collapsedLevels[opts.key]);
+        header.setAttribute('aria-expanded', _collapsedLevels[opts.key] ? 'false' : 'true');
+      }
+      header.addEventListener('click', toggle);
+      header.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+      });
       section.appendChild(header);
 
+      var body = document.createElement('div');
+      body.className = 'ref-tree-level-body';
       var shown = opts.rows;
       if (shown.length === 0) {
         var empty = document.createElement('div');
         empty.className = 'ref-empty';
         empty.innerHTML = '<div class="ref-empty-icon">' + opts.emptyIcon + '</div>' + opts.emptyMsg;
-        section.appendChild(empty);
+        body.appendChild(empty);
       } else {
         shown.forEach(function(row) {
-          section.appendChild(opts.rowBuilder(row));
+          body.appendChild(opts.rowBuilder(row));
         });
       }
+      section.appendChild(body);
       content.appendChild(section);
     }
 
@@ -1458,6 +1527,7 @@ body {
     var level1 = data.level_1 || [];
     var l1Active = data.level_1_active_count || 0;
     renderLevel({
+      key: 'l1',
       title: 'Level 1 &mdash; Direct Referrals',
       totalCount: level1.length,
       activeCount: l1Active,
@@ -1485,6 +1555,7 @@ body {
     var l2Active = l2sum.active_count || 0;
     var l2Total = l2sum.count || l2detail.length;
     renderLevel({
+      key: 'l2',
       title: 'Level 2 &mdash; Your referrals’ referrals',
       totalCount: l2Total,
       activeCount: l2Active,
@@ -1509,6 +1580,7 @@ body {
     var l3Active = l3sum.active_count || 0;
     var l3Total = l3sum.count || l3detail.length;
     renderLevel({
+      key: 'l3',
       title: 'Level 3 &mdash; Third-degree network',
       totalCount: l3Total,
       activeCount: l3Active,
