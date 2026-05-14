@@ -63,7 +63,7 @@ test.describe("Sign In reachability — desktop topnav + mobile drawer", () => {
       route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify({ signed_in: true, is_admin: false }),
+        body: JSON.stringify({ signed_in: true, is_admin: false, is_subscriber: false }),
       })
     );
     await page.goto(PROD + "/");
@@ -79,6 +79,32 @@ test.describe("Sign In reachability — desktop topnav + mobile drawer", () => {
       await page.locator(".nav-hamburger").click();
       const signOut = page.locator(".nav-drawer button", { hasText: "Sign Out" });
       await expect(signOut).toBeVisible();
+    }
+  });
+
+  test("Subscriber sees Manage Subscription in topnav and drawer", async ({ page }) => {
+    await page.route("**/playbooks/auth/status", (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ signed_in: true, is_admin: false, is_subscriber: true }),
+      })
+    );
+    await page.goto(PROD + "/");
+
+    if (!isNarrow(page)) {
+      const manage = page.locator(
+        ".topnav-utility form[action$='/manage-subscription'] button",
+        { hasText: "Manage Subscription" }
+      );
+      await expect(manage).toBeVisible();
+    } else {
+      await page.locator(".nav-hamburger").click();
+      const manage = page.locator(
+        ".nav-drawer form[action$='/manage-subscription'] button",
+        { hasText: "Manage Subscription" }
+      );
+      await expect(manage).toBeVisible();
     }
   });
 

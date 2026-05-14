@@ -707,7 +707,7 @@ function closeNavDrawer(){
 </script>
 
 
-<script data-auth-aware="v2">
+<script data-auth-aware="v3">
 (async function(){
   async function doLogout(ev){
     if(ev) ev.preventDefault();
@@ -732,16 +732,55 @@ function closeNavDrawer(){
     return b;
   }
 
+  // Manage Subscription -> Stripe Billing Portal via existing POST endpoint.
+  // Stripe owns the cancel/refund/prorate logic so we cannot mis-handle it.
+  function makeManageForm(isDrawer){
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/playbooks/manage-subscription';
+    form.style.cssText = 'margin:0;padding:0;' + (isDrawer ? 'display:block' : 'display:inline');
+    const btn = document.createElement('button');
+    btn.type = 'submit';
+    btn.textContent = 'Manage Subscription';
+    if(isDrawer){
+      btn.className = 'drawer-cta';
+      btn.style.cssText = 'border:none;cursor:pointer;font:inherit;width:100%;display:block;padding:14px 18px;'
+        + 'font-family:Poppins,sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:1.5px;'
+        + 'text-transform:uppercase;text-align:center;color:rgba(245,224,168,0.85);'
+        + 'background:rgba(245,224,168,0.06);border-radius:10px;margin-bottom:6px';
+    } else {
+      btn.className = 'nav-link';
+      btn.style.cssText = 'border:none;cursor:pointer;background:transparent;font:inherit;letter-spacing:inherit;text-transform:inherit';
+    }
+    form.appendChild(btn);
+    return form;
+  }
+
   try{
     const r = await fetch('/playbooks/auth/status', {credentials:'same-origin'});
     if(!r.ok) return;
     const data = await r.json();
     if(!data || !data.signed_in) return;
 
+    // Topnav: Manage Subscription chip (subscribers only), then swap Sign In -> Sign Out
+    if(data.is_subscriber){
+      document.querySelectorAll('.topnav-utility').forEach(box => {
+        if(box.querySelector('form[action$="/manage-subscription"]')) return;
+        const signIn = box.querySelector('a.nav-button, button.nav-button');
+        const form = makeManageForm(false);
+        if(signIn) box.insertBefore(form, signIn); else box.appendChild(form);
+      });
+    }
+
     document.querySelectorAll('a.nav-button[href$="/auth"]').forEach(a => {
       a.replaceWith(makeLogoutBtn(a.className, 'Sign Out', false));
     });
+
+    // Mobile drawer: insert Manage Subscription above Sign Out
     document.querySelectorAll('.nav-drawer a[href$="/auth"]').forEach(a => {
+      if(data.is_subscriber){
+        a.parentNode.insertBefore(makeManageForm(true), a);
+      }
       a.replaceWith(makeLogoutBtn(a.className, 'Sign Out', true));
     });
   }catch(e){}

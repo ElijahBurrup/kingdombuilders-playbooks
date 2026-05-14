@@ -1302,12 +1302,29 @@ async def auth_status(request: Request, db: AsyncSession = Depends(get_db)):
     """Lightweight check: is the user signed in via session cookie?"""
     user_id = get_session_user_id(request)
     if not user_id:
-        return JSONResponse({"signed_in": False, "is_admin": False})
+        return JSONResponse({
+            "signed_in": False, "is_admin": False, "is_subscriber": False,
+        })
     result = await db.execute(select(User).where(User.id == user_id))
     user = result.scalar_one_or_none()
+    is_admin = user is not None and user.role == "admin"
+
+    # Subscriber if a non-cancelled subscription has period_end in the future
+    is_subscriber = False
+    if user is not None:
+        sub_result = await db.execute(
+            select(Subscription).where(
+                Subscription.user_id == user.id,
+                Subscription.status == "active",
+                Subscription.current_period_end > datetime.now(timezone.utc),
+            )
+        )
+        is_subscriber = sub_result.scalar_one_or_none() is not None
+
     return JSONResponse({
         "signed_in": user is not None,
-        "is_admin": user is not None and user.role == "admin",
+        "is_admin": is_admin,
+        "is_subscriber": is_subscriber,
     })
 
 
@@ -1872,6 +1889,12 @@ async def _user_has_access(user_id: str, slug: str, db: AsyncSession) -> bool:
     import uuid as _uuid
     uid = _uuid.UUID(user_id)
 
+    # Admin bypass
+    user_result = await db.execute(select(User).where(User.id == uid))
+    user = user_result.scalar_one_or_none()
+    if user and user.role == "admin":
+        return True
+
     # Check active subscription
     result = await db.execute(
         select(Subscription).where(
@@ -2155,9 +2178,20 @@ async def stripe_webhook(request: Request, db: AsyncSession = Depends(get_db)):
         elif event_type == "customer.subscription.deleted":
             await _handle_subscription_deleted(obj, db)
         elif event_type == "invoice.paid":
-            # Subscription renewal — process referral commissions
+            # Subscription renewal — refresh period_end (some Stripe accounts
+            # do not always fire customer.subscription.updated on renewal) and
+            # then process referral commissions.
             sub_id = obj.get("subscription")
             if sub_id:
+                try:
+                    stripe.api_key = settings.STRIPE_SECRET_KEY
+                    fresh = stripe.Subscription.retrieve(
+                        sub_id, expand=["items.data"]
+                    )
+                    await _handle_subscription_updated(dict(fresh), db)
+                except Exception as e:
+                    print(f"Invoice renewal period refresh failed: {e}")
+
                 try:
                     result = await db.execute(
                         select(Subscription).where(
@@ -2331,6 +2365,13 @@ async def _handle_subscription_updated(subscription: dict, db: AsyncSession) -> 
     stripe_customer_id = subscription.get("customer", "")
     period_start = subscription.get("current_period_start")
     period_end = subscription.get("current_period_end")
+    # Modern Stripe API moved current_period_* off the subscription onto each
+    # subscription item — fall through to the first item if absent on top.
+    if period_start is None or period_end is None:
+        items = subscription.get("items", {}).get("data", [])
+        if items:
+            period_start = period_start or items[0].get("current_period_start")
+            period_end = period_end or items[0].get("current_period_end")
 
     # Map Stripe status
     if stripe_status in ("active", "trialing"):
