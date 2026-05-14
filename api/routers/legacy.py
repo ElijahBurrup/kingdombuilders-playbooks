@@ -1176,7 +1176,159 @@ def _inject_back_button_and_tracking(html: str, slug: str) -> str:
 </script>
 """
 
-    return html.replace("</body>", back_button + chain_panel + email_slidein + rating_popup + tts_controls + print_css + pdf_trigger + tracking_script + ga_snippet + "</body>")
+    # Build the share widget — top floating button + bottom inline panel.
+    # Title and tagline come straight from the playbook HTML so each share
+    # message is specific. Falls back to the slug if extraction fails.
+    import html as _html, json as _json
+    title_match = re.search(r'<h1[^>]*>(.*?)</h1>', html, flags=re.DOTALL | re.IGNORECASE)
+    title_raw = (
+        re.sub(r'<[^>]+>', '', title_match.group(1)).strip()
+        if title_match else slug.replace('-', ' ').title()
+    )
+    tagline_match = re.search(
+        r'<p class="cover-tagline"[^>]*>(.*?)</p>', html, flags=re.DOTALL | re.IGNORECASE,
+    )
+    tagline_raw = (
+        re.sub(r'<[^>]+>', '', tagline_match.group(1)).strip()
+        if tagline_match else ""
+    )
+    # Strip whitespace runs and limit length
+    title_clean = re.sub(r'\s+', ' ', title_raw)[:120]
+    tagline_clean = re.sub(r'\s+', ' ', tagline_raw)[:240]
+    share_payload = {
+        "slug": slug,
+        "title": title_clean,
+        "tagline": tagline_clean,
+    }
+    # In a <script type="application/json"> block, the only sequence that can
+    # break out is </script>. Neutralize it without corrupting the JSON.
+    share_data_json = _json.dumps(share_payload).replace("</", "<\\/")
+    share_block = f"""
+<style>
+.pb-share-top{{position:fixed;top:16px;right:16px;z-index:9999;display:flex;align-items:center;gap:6px;
+  padding:8px 16px 8px 12px;background:rgba(10,6,20,0.75);backdrop-filter:blur(8px);
+  border:1px solid rgba(245,224,168,0.25);border-radius:50px;
+  font-family:'Poppins',Helvetica,sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;color:#E8C96A;cursor:pointer;transition:all 0.25s;box-shadow:0 2px 12px rgba(0,0,0,0.3)}}
+.pb-share-top:hover{{background:linear-gradient(135deg,#D4A843,#E8C96A);color:#1F2440;border-color:#E8C96A}}
+.pb-share-top svg{{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}}
+.pb-share-bottom{{max-width:760px;margin:48px auto 0;padding:0 24px;font-family:'Poppins',Helvetica,sans-serif}}
+.pb-share-bottom-card{{padding:28px 26px;border-radius:18px;background:linear-gradient(135deg,rgba(212,168,67,0.10),rgba(232,201,106,0.06));
+  border:1px solid rgba(212,168,67,0.25);color:rgba(255,255,255,0.85);text-align:center}}
+.pb-share-bottom-kicker{{font-size:0.55rem;font-weight:800;letter-spacing:4.5px;color:#E8C96A;text-transform:uppercase;margin-bottom:8px}}
+.pb-share-bottom-title{{font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:800;color:#fff;line-height:1.2;margin-bottom:10px}}
+.pb-share-bottom-sub{{font-family:'Lora',serif;font-style:italic;font-size:0.95rem;color:rgba(255,255,255,0.7);margin-bottom:20px;line-height:1.55}}
+.pb-share-bottom-btn{{display:inline-flex;align-items:center;gap:10px;padding:14px 30px;
+  background:linear-gradient(135deg,#D4A843,#E8C96A);color:#1F2440;border:none;cursor:pointer;
+  border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.85rem;font-weight:800;letter-spacing:1.5px;
+  text-transform:uppercase;transition:all 0.25s;box-shadow:0 4px 20px rgba(212,168,67,0.4)}}
+.pb-share-bottom-btn:hover{{transform:translateY(-2px);box-shadow:0 8px 30px rgba(212,168,67,0.6)}}
+.pb-share-bottom-btn svg{{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}}
+.pb-share-toast{{position:fixed;left:50%;bottom:32px;transform:translateX(-50%) translateY(80px);
+  background:#1F2440;color:#E8C96A;border:1px solid rgba(212,168,67,0.4);
+  padding:14px 22px;border-radius:14px;font-family:'Poppins',sans-serif;font-size:0.78rem;font-weight:700;
+  letter-spacing:1px;z-index:10000;opacity:0;transition:all 0.35s;box-shadow:0 8px 32px rgba(0,0,0,0.4);pointer-events:none}}
+.pb-share-toast.show{{opacity:1;transform:translateX(-50%) translateY(0)}}
+@media print{{.pb-share-top,.pb-share-bottom,.pb-share-toast{{display:none}}}}
+@media (max-width:600px){{.pb-share-top{{padding:7px 12px 7px 10px;font-size:0.62rem}}}}
+</style>
+
+<button class="pb-share-top" type="button" onclick="pbShare(event)">
+  <svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+  Share
+</button>
+
+<div class="pb-share-bottom" id="pbShareBottom">
+  <div class="pb-share-bottom-card">
+    <div class="pb-share-bottom-kicker">Pay it forward</div>
+    <div class="pb-share-bottom-title">Know someone who needs this?</div>
+    <div class="pb-share-bottom-sub" id="pbShareSubText">Share this playbook with one person who's been on your mind. We'll handle the rest.</div>
+    <button class="pb-share-bottom-btn" type="button" onclick="pbShare(event)">
+      <svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+      Share this playbook
+    </button>
+  </div>
+</div>
+
+<div class="pb-share-toast" id="pbShareToast">Link copied to clipboard</div>
+
+<script id="pb-share-data" type="application/json">{share_data_json}</script>
+<script>
+(function(){{
+  var SHARE = JSON.parse(document.getElementById('pb-share-data').textContent);
+  var BASE = location.origin + '/playbooks';
+  var refCode = null;
+  var refReady = false;
+
+  fetch(BASE + '/auth/status', {{credentials:'same-origin'}})
+    .then(function(r){{ return r.ok ? r.json() : null; }})
+    .then(function(d){{
+      if(d && d.referral_code) refCode = d.referral_code;
+      refReady = true;
+      // Tailor the sub-text for subscribers vs anonymous
+      var sub = document.getElementById('pbShareSubText');
+      if(d && d.signed_in && refCode){{
+        sub.textContent = 'Sharing earns you $1.50/mo for every friend who subscribes — and on three levels of their network. Your link includes your code.';
+      }} else if(!d || !d.signed_in){{
+        sub.textContent = 'Share with one person who needs this. Sign in first to earn $1.50/mo for every friend who subscribes through your link.';
+      }}
+    }})
+    .catch(function(){{ refReady = true; }});
+
+  function buildShareUrl(){{
+    var playbookPath = '/playbooks/read/' + SHARE.slug;
+    if(refCode){{
+      return location.origin + '/playbooks/r/' + refCode + '?next=' + encodeURIComponent(playbookPath);
+    }}
+    return location.origin + playbookPath;
+  }}
+
+  function buildShareText(){{
+    var hook = SHARE.tagline || 'A short interactive playbook on the things that matter.';
+    return SHARE.title + ' — ' + hook;
+  }}
+
+  function showToast(msg){{
+    var t = document.getElementById('pbShareToast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(window._pbToastTimer);
+    window._pbToastTimer = setTimeout(function(){{ t.classList.remove('show'); }}, 2400);
+  }}
+
+  window.pbShare = async function(ev){{
+    if(ev) ev.preventDefault();
+    if(!refReady){{
+      // Brief delay so refCode arrives if request is in flight
+      await new Promise(function(res){{ setTimeout(res, 300); }});
+    }}
+    var url = buildShareUrl();
+    var text = buildShareText();
+    var fullText = text + '\\n\\n' + url;
+
+    if(navigator.share){{
+      try {{
+        await navigator.share({{title: SHARE.title, text: text, url: url}});
+        return;
+      }} catch(e) {{
+        // User cancelled — fall through to copy fallback only if not AbortError
+        if(e && e.name === 'AbortError') return;
+      }}
+    }}
+
+    // Fallback: copy full message to clipboard
+    try {{
+      await navigator.clipboard.writeText(fullText);
+      showToast('Copied! Paste it anywhere.');
+    }} catch(e) {{
+      // Last resort: prompt the user
+      window.prompt('Copy this and share:', fullText);
+    }}
+  }};
+}})();
+</script>
+"""
+    return html.replace("</body>", share_block + back_button + chain_panel + email_slidein + rating_popup + tts_controls + print_css + pdf_trigger + tracking_script + ga_snippet + "</body>")
 
 
 @router.get("/read/{slug}", include_in_schema=False)
@@ -1311,6 +1463,7 @@ async def auth_status(request: Request, db: AsyncSession = Depends(get_db)):
 
     # Subscriber if a non-cancelled subscription has period_end in the future
     is_subscriber = False
+    referral_code = None
     if user is not None:
         sub_result = await db.execute(
             select(Subscription).where(
@@ -1321,10 +1474,20 @@ async def auth_status(request: Request, db: AsyncSession = Depends(get_db)):
         )
         is_subscriber = sub_result.scalar_one_or_none() is not None
 
+        # Every signed-in user gets a referral code on demand
+        try:
+            from api.services.referral_service import ensure_referral_code
+            rc = await ensure_referral_code(user.id, db)
+            await db.commit()
+            referral_code = rc.code
+        except Exception as e:
+            print(f"auth_status referral code lookup failed: {e}")
+
     return JSONResponse({
         "signed_in": user is not None,
         "is_admin": is_admin,
         "is_subscriber": is_subscriber,
+        "referral_code": referral_code,
     })
 
 
@@ -1582,17 +1745,28 @@ async def auth_logout(request: Request):
 # Referral link and dashboard
 # ============================================================================
 @router.get("/r/{code}", include_in_schema=False)
-async def referral_redirect(code: str, db: AsyncSession = Depends(get_db)):
-    """Set referral cookie and redirect to funnel.
+async def referral_redirect(
+    code: str,
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+):
+    """Set referral cookie and redirect to ?next= (or /funnel by default).
 
     Only sets the cookie if the referral code actually exists in the DB,
     preventing poisoning with bogus codes that block legitimate attribution.
+    The next param is restricted to same-origin relative paths to prevent
+    open redirects.
     """
     import re
     prefix = settings.URL_PREFIX or ""
-    redirect_url = f"{prefix}/funnel"
 
-    # Validate format and existence before setting cookie
+    # Validate ?next= — must be a path under our prefix (or root)
+    next_raw = request.query_params.get("next", "")
+    if next_raw and re.match(r"^/[A-Za-z0-9_\-/.?=&%]*$", next_raw) and "//" not in next_raw:
+        redirect_url = next_raw
+    else:
+        redirect_url = f"{prefix}/funnel"
+
     clean_code = code.strip().upper()
     if re.match(r"^[A-Z0-9]{6}$", clean_code):
         from api.models.referral import ReferralCode
