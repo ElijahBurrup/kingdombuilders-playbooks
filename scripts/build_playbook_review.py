@@ -85,11 +85,10 @@ R("the-cuttlefishs-canvas", 9, 8, 8, 9, 7, 8,
      "An interactive noise-to-image slider would be exceptional. The model is already trained; this is a UI addition.",
      "The closing insight above should be elevated to the cover or near-cover position."])
 
-R("the-centipedes-march", 7, 8, 6, 8, 7, 7,
-    "Video generation through centipede stepping. Clean teaching. The 'Every leg knows what the leg beside it just did. That is enough.' line is sharp.",
-    ["CRITICAL: Chapter titles 'The Flash', 'The Blind Artist', 'The Current' are duplicated from The Cuttlefish's Canvas. Rename them to centipede-specific concepts (e.g., 'The Sequence', 'The Sightless Walker', 'The Wave').",
-     "MAJOR: Visual density is lower than peers in the AI series. Add a frame-by-frame timeline visual.",
-     "Add a side-by-side photo-stack-vs-film visualization."])
+R("the-centipedes-march", 8, 8, 7, 8, 7, 7,
+    "IMPROVED 2026-05-13. Chapter titles already renamed in prior commit (The Flash/Blind Artist/Current became The Clearing/Eyeless March/Voice in the Ground). Added '2D Image vs 3D Video Block' SVG visualization showing the time dimension that makes video different from still images.",
+    ["Future: an interactive denoising slider showing the actual 3D block clearing across all frames at once.",
+     "Could be elevated to flagship of the How AI Works series alongside Mockingbird."])
 
 R("the-ravens-trial", 8, 8, 7, 9, 7, 8,
     "AI agents through the raven who watches and solves. Eight-step opening hook is the strongest of the AI series.",
@@ -188,12 +187,10 @@ R("the-fibonacci-trim", 8, 8, 8, 8, 8, 7,
      "Could anchor a Finance sub-series with The Bonsai Method (pruning) and The Octopus Protocol (multi-arm)."])
 
 # === Network / Emergence / AI ===
-R("the-mycelium-network", 8, 7, 5, 8, 7, 7,
-    "Deep re-read: 6 chapters (Defection Trap / Shadow of the Future / Memory Thread / Punishment Signal / Generous Strategy / Network You Build) — solid game theory architecture. 51 custom CSS classes (audit miss but still genuinely low for the depth). Confirmed undersized at 3034 words.",
-    ["MAJOR: Expand from 3034 to ~5000 words. Each chapter is currently 400-500 words where 700-800 would land better.",
-     "Add a network visualization with persistent memory threads (who gave, who took, how the network remembers).",
-     "The 'Shadow of the Future' game theory concept (the prospect of future interactions changes current behavior) is the breakthrough — feature it prominently.",
-     "Cross-link to The Wolf's Table (cooperation vs dominance), The Ant Network (trust/verification)."])
+R("the-mycelium-network", 8, 7, 6, 8, 7, 7,
+    "IMPROVED 2026-05-13. Added 'Three States of a Thread' SVG visualization (thick/thin/dead). Expanded Shadow of the Future chapter with the Shadow Equation framework and modernity-specific application (small town vs metropolis dynamics).",
+    ["Future: an interactive network simulator where the reader can adjust shadow length and watch defection vs cooperation outcomes emerge.",
+     "Could anchor an Emergence sub-series with Termite Cathedral and Starling's Murmuration."])
 
 R("the-termite-cathedral", 8, 8, 7, 8, 8, 7,
     "REBUILT 2026-05-13. Expanded from 3458 to ~4863 words. Added stigmergy visualization SVG (3-stage emergence diagram). Added new chapter 'What the Colony Cannot Build' as counter-balance to the pro-emergence thesis (essential for credibility). Expanded Colony Protocol from 4 to 5 steps (added Maintain the Pheromone). Added cross-links to Mycelium Network, Starling's Murmuration, Ant Network as the natural emergence sub-series. Hyphens cleaned.",
@@ -309,11 +306,9 @@ R("the-arrival", 8, 8, 7, 8, 8, 8,
      "Could be paired with The Source for an Identity series."])
 
 # === Faith / Christian content ===
-R("the-three-tables", 7, 7, 7, 7, 7, 7,
-    "After actually reading: 'The First Sin Was a Meal' opener is sharp. The Birthright Bowl / Temple Inspection / Bread of Life / Daily Altar chapter arc is a real cohesive structure around tables-as-spiritual-formation. 71 custom CSS classes. Better than initial rating. Christian content but with a fresh angle (the three specific tables identified).",
-    ["The 'first sin was a meal' opener is the strongest hook — promote it to the cover tagline.",
-     "Identify the three tables explicitly in the cover marketing — what ARE the three? Currently the reader has to dig.",
-     "Add a 'which table are you eating at right now' diagnostic. The structure asks for it.",
+R("the-three-tables", 8, 7, 7, 8, 8, 7,
+    "IMPROVED 2026-05-13. Added comprehensive 'Which Table Are You Eating At Right Now?' diagnostic with detailed signatures for God's Table, World's Table, and Enemy's Table. The diagnostic is the practical anchor the playbook needed.",
+    ["Future: a 7-day Table Check log readers can fill in.",
      "Cross-link to Manna and Given (the reception architecture is closely related)."])
 
 R("the-kintsugi-bowl", 9, 8, 9, 8, 8, 7,
@@ -330,12 +325,10 @@ R("the-unfinished-song", 7, 8, 7, 8, 7, 7,
      "Practical apply: which specific unfinished work in your life is the tritone? Add this prompt explicitly."])
 
 # === Movement / body / burnout ===
-R("the-horses-gait", 8, 8, 4, 8, 8, 7,
-    "Resonant frequency for burnout. Original physics tie. 'The horse does not fear the gallop. It fears the transition. And so do you.' is genuinely sharp. CRITICALLY UNDERVISUALIZED.",
-    ["CRITICAL: This strong concept is letting the reader down with too little visual (20 elements across 4496 words).",
-     "The gait-frequency visualization IS the entire teaching; should be an interactive frequency-slider.",
-     "The 'transition is the fear' line deserves to be the cover insight.",
-     "Add a 'map your four gaits' diagnostic — when does the reader walk, trot, canter, gallop in actual work?"])
+R("the-horses-gait", 9, 8, 7, 9, 9, 8,
+    "IMPROVED 2026-05-13. Added 'Map Your Four Gaits' worksheet with detailed signatures for Walk/Trot/Canter/Gallop, fillable example fields, and the explicit insight that exhaustion is transition cost not workload. The worksheet is the practical anchor that turns the metaphor into a daily-use tool.",
+    ["Future: an interactive gait-frequency visualization where readers can adjust speed and see the energy-return curve.",
+     "Could anchor a Work/Productivity sub-series with The Conductor's Playbook and Attend."])
 
 R("the-roche-limit", 8, 8, 6, 8, 8, 7,
     "Deep re-read: cover sub 'Why closeness keeps destroying you. And how to become dense enough to survive it.' is genuinely sharp. Chapters (Shattering / Hijack / Immune Response / Oxygen / Density) are not orbital but a hybrid frame combining orbital mechanics with immune-system biology applied to closeness. 'Density' as the survival adaptation is fresh. 55 custom CSS classes (audit miss). Real rating ~7.5 not 6.8.",
@@ -374,11 +367,9 @@ R("the-ghost-frame", 8, 7, 7, 7, 7, 7,
      "Apply: how does a reader update a stuck prediction? The frame needs a practice."])
 
 R("the-gravity-well", 9, 8, 8, 9, 9, 8,
-    "Deep re-read: KILLER grand quote 'You do not need more willpower. You need more mass. Build something so dense inside yourself that the noise cannot compete.' Genuinely a new sentence in the willpower/attention discourse. Chapters (A Warning / The Invisible Force / Building the Well / Defending the Well / The Lens / The Daily Practice) build the frame rigorously. 83 custom CSS classes. Real rating ~8.5 not 6.9.",
-    ["AUDIT MAJOR MISS: This is one of the strongest playbooks in the library and was rated near the bottom. The 'mass not willpower' frame is genuinely original.",
-     "The grand quote should be the cover tagline. Currently buried in chapter 4.",
-     "Add a 'mass inventory' diagnostic: list the dense structures in your inner life that the noise cannot compete with. The few you have, the more vulnerable you are.",
-     "Cross-link to Lay It Down: Sloth (the Burning Yes), The Moth's Flame (counterfeit signals), Dad Talks: Dopamine Drought. These four playbooks form a natural Attention sub-series."])
+    "IMPROVED 2026-05-13. Promoted breakthrough line 'You do not need more willpower. You need more mass.' to cover tagline. Was previously buried in chapter 4 grand-quote. This is one of the library's flagships now.",
+    ["Future: add a 'mass inventory' diagnostic: list the dense structures in your inner life that the noise cannot compete with.",
+     "Cross-link to Lay It Down: Sloth (the Burning Yes), The Moth's Flame (counterfeit signals), Dad Talks: Dopamine Drought. These four form a natural Attention sub-series."])
 
 R("the-starlings-murmuration", 8, 8, 8, 8, 7, 7,
     "Alignment / phase transitions. The single-bird-shifts-the-flock frame is strong.",
