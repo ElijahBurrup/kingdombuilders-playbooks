@@ -3,11 +3,15 @@ const { test, expect } = require("@playwright/test");
 
 const PROD = "https://kingdombuilders.ai/playbooks";
 
+// CSS breakpoint: @media(max-width:780px) — under that, hamburger replaces topnav buttons
+const isNarrow = (page) =>
+  page.viewportSize()?.width !== undefined && page.viewportSize().width <= 780;
+
 test.describe("Sign In reachability — desktop topnav + mobile drawer", () => {
-  test("Pathways homepage: Sign In is reachable", async ({ page, isMobile }) => {
+  test("Pathways homepage: Sign In is reachable", async ({ page }) => {
     await page.goto(PROD + "/");
 
-    if (isMobile) {
+    if (isNarrow(page)) {
       // Mobile: hamburger → drawer → Sign In
       const hamburger = page.locator(".nav-hamburger");
       await expect(hamburger).toBeVisible();
@@ -36,10 +40,10 @@ test.describe("Sign In reachability — desktop topnav + mobile drawer", () => {
     }
   });
 
-  test("Archive page: Sign In is reachable", async ({ page, isMobile }) => {
+  test("Archive page: Sign In is reachable", async ({ page }) => {
     await page.goto(PROD + "/archive");
 
-    if (isMobile) {
+    if (isNarrow(page)) {
       const hamburger = page.locator(".nav-hamburger");
       await expect(hamburger).toBeVisible();
       await hamburger.click();
