@@ -97,21 +97,29 @@ def extract_playbook_meta(slug: str) -> dict:
     if len(tagline) > 200:
         tagline = tagline[:197] + "..."
 
-    # Try to find a quotable line: a blockquote, otherwise a styled emphasized line
+    # Find a quotable line: blockquote first, then a wide range of callout
+    # class names used across the corpus.
     quote = ""
     bq_m = re.search(r'<blockquote[^>]*>(.*?)</blockquote>', html, flags=re.DOTALL | re.IGNORECASE)
     if bq_m:
         quote = _strip(bq_m.group(1))
     if not quote:
-        # Many playbooks use a class like "pull-quote" / "callout" / "breakthrough"
-        for cls in ("pull-quote", "breakthrough", "callout-quote", "key-line", "anchor-quote"):
+        for cls in (
+            "pull-quote", "breakthrough", "callout-quote", "key-line",
+            "anchor-quote", "insight", "principle", "takeaway",
+            "key-insight", "core-truth", "thesis", "north-star",
+            "anchor", "callout", "highlight-quote", "quote-line",
+        ):
             m = re.search(
-                rf'<(?:p|div|aside)[^>]*class="[^"]*{cls}[^"]*"[^>]*>(.*?)</(?:p|div|aside)>',
+                rf'<(?:p|div|aside|section)[^>]*class="[^"]*\b{cls}\b[^"]*"[^>]*>(.*?)</(?:p|div|aside|section)>',
                 html, flags=re.DOTALL | re.IGNORECASE,
             )
             if m:
-                quote = _strip(m.group(1))
-                break
+                txt = _strip(m.group(1))
+                # Skip empty matches and matches dominated by ALL CAPS heading text
+                if txt and len(txt) > 20:
+                    quote = txt
+                    break
     # Strip any wrapping quote characters (smart or straight) so the template
     # can apply its own quote glyphs without producing "" stutters.
     quote = quote.strip().strip('"').strip('“”').strip()
@@ -124,15 +132,70 @@ def extract_playbook_meta(slug: str) -> dict:
     if quote and tagline and (_norm(quote) == _norm(tagline) or _norm(quote) in _norm(tagline) or _norm(tagline) in _norm(quote)):
         quote = ""
 
-    # Per-playbook gradient: use the FIRST linear-gradient found in the
-    # asset (almost always the cover/body background). Skip overlays
-    # (those use rgba() or refer to CSS vars).
+    # Per-playbook gradient: walk all gradients with proper paren balancing
+    # (so var(--x) doesn't truncate the match), expand any CSS variable
+    # references using the playbook's own :root declarations, then pick the
+    # first one that is predominantly DARK (so we never paint a banner with
+    # a near-white interior callout gradient that hides the title text).
+    css_vars: dict[str, str] = {}
+    for root_block in re.finditer(r':root\s*\{([^}]+)\}', html, flags=re.DOTALL):
+        for vm in re.finditer(
+            r'--([\w-]+)\s*:\s*(#[0-9a-fA-F]{3,8}|rgb[a]?\([^)]+\))',
+            root_block.group(1),
+        ):
+            css_vars[vm.group(1)] = vm.group(2)
+
+    def _balanced_linear_gradients(s: str) -> list[str]:
+        out: list[str] = []
+        needle = 'linear-gradient('
+        i = 0
+        while True:
+            idx = s.find(needle, i)
+            if idx < 0:
+                break
+            depth = 1
+            j = idx + len(needle)
+            while j < len(s) and depth > 0:
+                ch = s[j]
+                if ch == '(':
+                    depth += 1
+                elif ch == ')':
+                    depth -= 1
+                j += 1
+            if depth == 0:
+                out.append(s[idx:j])
+            i = j if depth == 0 else idx + len(needle)
+        return out
+
+    def _expand_vars(g: str) -> str:
+        # var(--name) or var(--name, fallback)
+        return re.sub(
+            r'var\(\s*--([\w-]+)(?:\s*,\s*[^)]*)?\s*\)',
+            lambda m: css_vars.get(m.group(1), '#000000'),
+            g,
+        )
+
+    def _avg_luma(g: str) -> float:
+        # Average channel brightness of all hex stops, 0..255. Lower = darker.
+        hexes = re.findall(r'#([0-9a-fA-F]{6})', g)
+        if not hexes:
+            # Fall back to rgb()
+            for r, gv, b in re.findall(r'rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)', g):
+                hexes.append(f'{int(r):02x}{int(gv):02x}{int(b):02x}')
+        if not hexes:
+            return 255.0
+        total = 0
+        for h in hexes:
+            r = int(h[0:2], 16); gv = int(h[2:4], 16); b = int(h[4:6], 16)
+            total += (r + gv + b) / 3.0
+        return total / len(hexes)
+
     gradient = ""
-    for g in re.findall(r'linear-gradient\([^)]+\)', html):
-        if 'var(' in g or 'rgba' in g:
-            continue
-        gradient = g
-        break
+    for raw in _balanced_linear_gradients(html):
+        expanded = _expand_vars(raw)
+        if _avg_luma(expanded) < 110:  # threshold tuned for "dark cover" feel
+            gradient = expanded
+            break
 
     # First few chapter h2 titles for the Includes data line.
     chapter_titles = []
