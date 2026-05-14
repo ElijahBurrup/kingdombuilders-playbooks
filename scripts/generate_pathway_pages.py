@@ -109,6 +109,8 @@ def extract_playbook_meta(slug: str) -> dict:
             "anchor-quote", "insight", "principle", "takeaway",
             "key-insight", "core-truth", "thesis", "north-star",
             "anchor", "callout", "highlight-quote", "quote-line",
+            "wisdom", "char-quote", "truth", "axiom", "epigraph",
+            "verse", "hook", "core", "pillar", "essence", "maxim",
         ):
             m = re.search(
                 rf'<(?:p|div|aside|section)[^>]*class="[^"]*\b{cls}\b[^"]*"[^>]*>(.*?)</(?:p|div|aside|section)>',
@@ -116,10 +118,52 @@ def extract_playbook_meta(slug: str) -> dict:
             )
             if m:
                 txt = _strip(m.group(1))
-                # Skip empty matches and matches dominated by ALL CAPS heading text
                 if txt and len(txt) > 20:
                     quote = txt
                     break
+
+    def _norm(s: str) -> str:
+        return re.sub(r'[^a-z0-9]+', '', s.lower())
+
+    def _is_redundant(candidate: str) -> bool:
+        if not candidate:
+            return True
+        if tagline and (
+            _norm(candidate) == _norm(tagline)
+            or _norm(candidate) in _norm(tagline)
+            or _norm(tagline) in _norm(candidate)
+        ):
+            return True
+        return False
+
+    # Last-ditch fallback: italic <em> inside body content. Iterate until
+    # we find one that isn't redundant with the tagline.
+    if not quote:
+        body_split = html.split('</section>', 1)
+        body_html = body_split[1] if len(body_split) > 1 else html
+        em_candidates = re.findall(
+            r'<em[^>]*>(.*?)</em>',
+            body_html, flags=re.DOTALL | re.IGNORECASE,
+        )
+        for raw in em_candidates:
+            txt = _strip(raw)
+            if 40 <= len(txt) <= 240 and not _is_redundant(txt):
+                quote = txt
+                break
+
+    # Still nothing — grab the first short body <p> that isn't a tagline echo.
+    if not quote:
+        body_split = html.split('</section>', 1)
+        body_html = body_split[1] if len(body_split) > 1 else html
+        p_candidates = re.findall(
+            r'<p(?:\s+[^>]*)?>(.*?)</p>',
+            body_html, flags=re.DOTALL | re.IGNORECASE,
+        )
+        for raw in p_candidates:
+            txt = _strip(raw)
+            if 50 <= len(txt) <= 220 and not txt.endswith('?') and not _is_redundant(txt):
+                quote = txt
+                break
     # Strip any wrapping quote characters (smart or straight) so the template
     # can apply its own quote glyphs without producing "" stutters.
     quote = quote.strip().strip('"').strip('“”').strip()
@@ -190,9 +234,22 @@ def extract_playbook_meta(slug: str) -> dict:
             total += (r + gv + b) / 3.0
         return total / len(hexes)
 
+    def _has_low_alpha(g: str) -> bool:
+        # rgba(r,g,b,a) where a < 0.5 means it's a translucent overlay,
+        # not a cover background.
+        for a in re.findall(r'rgba?\([^)]*?,\s*([0-9.]+)\s*\)', g):
+            try:
+                if float(a) < 0.5:
+                    return True
+            except ValueError:
+                continue
+        return False
+
     gradient = ""
     for raw in _balanced_linear_gradients(html):
         expanded = _expand_vars(raw)
+        if _has_low_alpha(expanded):
+            continue
         if _avg_luma(expanded) < 110:  # threshold tuned for "dark cover" feel
             gradient = expanded
             break
