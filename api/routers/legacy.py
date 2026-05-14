@@ -1547,8 +1547,15 @@ async def auth_google(
 
 
 @router.post("/auth/logout", include_in_schema=False)
-async def auth_logout():
-    response = JSONResponse({"detail": "Logged out"})
+async def auth_logout(request: Request):
+    prefix = settings.URL_PREFIX or ""
+    # XHR/fetch callers (Accept: application/json) get JSON.
+    # Form submits (the topnav Sign Out button) get a 303 to the homepage.
+    accept = request.headers.get("accept", "")
+    if "application/json" in accept and "text/html" not in accept:
+        response = JSONResponse({"detail": "Logged out"})
+    else:
+        response = RedirectResponse(url=f"{prefix}/", status_code=303)
     clear_session_cookie(response)
     response.delete_cookie("admin_unlocked")
     return response
