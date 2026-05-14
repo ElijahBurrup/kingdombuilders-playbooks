@@ -467,11 +467,146 @@ dfn.def:hover::after{content:attr(data-def);position:absolute;bottom:120%;left:5
 <cite>The Tender's Second Lesson</cite>
 </div>
 
-<div class="think">
-<div class="think-label">Stop and Map Yours</div>
-<p>Walk through the six interactions one at a time. Score yourself honestly from 1 to 5 on each. Source to Soil. Soil to Fruit. Fruit to Source. Source to Fruit. Soil to Source. Fruit to Soil.</p>
-<hr class="think-line">
-<p>The lowest scoring interaction is your most undervalued source of compounding. Most readers find one or two interactions are alive and four or five are essentially dormant. The dormant ones are where the protocol in this playbook will produce the largest change.</p>
+<div class="diagnostic-widget" id="six-int">
+<style>
+#six-int{margin:48px 0;border-radius:18px;overflow:hidden;border:2px solid rgba(60,90,50,0.22);background:#fff;box-shadow:0 8px 28px rgba(20,40,20,0.1)}
+#six-int .si-head{background:linear-gradient(135deg,#0E2418,#1E4030);padding:26px 30px;text-align:center;color:#fff}
+#six-int .si-kicker{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:#A8D898;margin-bottom:8px}
+#six-int .si-head h3{font-family:'Nunito',sans-serif;font-size:1.5rem;font-weight:800;color:#fff;margin:0 0 6px;letter-spacing:-0.01em}
+#six-int .si-head p{font-family:'Lora',serif;font-style:italic;font-size:0.92rem;color:rgba(255,255,255,0.7);margin:0 auto;max-width:500px}
+#six-int .si-body{padding:30px}
+#six-int .si-instructions{font-family:'Lora',serif;color:#1E3018;font-size:0.93rem;line-height:1.55;margin-bottom:18px}
+#six-int .si-interactions{display:grid;gap:12px;margin-bottom:20px}
+#six-int .si-interaction{padding:18px;border-radius:12px;background:#F4F8F0;border:1.5px solid rgba(60,90,50,0.12);transition:all 0.2s}
+#six-int .si-interaction.scored{background:linear-gradient(135deg,rgba(60,140,80,0.06),rgba(168,216,152,0.06));border-color:#7A9050}
+#six-int .si-arrow{display:flex;align-items:center;gap:8px;font-family:'Nunito',sans-serif;font-size:0.78rem;font-weight:800;letter-spacing:1.5px;color:#1E4030;margin-bottom:6px;text-transform:uppercase}
+#six-int .si-pillar{padding:4px 12px;background:linear-gradient(135deg,#1E4030,#3A6048);color:#A8D898;border-radius:50px;font-size:0.7rem}
+#six-int .si-arrow-icon{color:#7A9050;font-size:1.1rem}
+#six-int .si-int-name{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:#0E2418;margin-bottom:5px}
+#six-int .si-int-desc{font-family:'Lora',serif;font-style:italic;font-size:0.86rem;color:#3A5040;line-height:1.5;margin-bottom:12px}
+#six-int .si-scale{display:grid;grid-template-columns:auto repeat(5,1fr);gap:6px;align-items:center}
+#six-int .si-scale-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#5A7048}
+#six-int .si-scale-btn{padding:10px 6px;background:#fff;border:1.5px solid rgba(60,90,50,0.15);border-radius:8px;font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:800;color:#1E4030;cursor:pointer;transition:all 0.15s}
+#six-int .si-scale-btn:hover{border-color:#5A8048;background:rgba(168,216,152,0.1)}
+#six-int .si-scale-btn.active{background:linear-gradient(135deg,#5A8048,#7A9050);color:#fff;border-color:#5A8048}
+#six-int .si-result{padding:22px;background:linear-gradient(135deg,#0E2418,#1E4030);color:#fff;border-radius:12px;display:none}
+#six-int .si-result.show{display:block}
+#six-int .si-result-kicker{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:#A8D898;margin-bottom:8px;text-align:center}
+#six-int .si-result-name{font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:800;color:#fff;text-align:center;line-height:1.2;margin-bottom:10px}
+#six-int .si-result-arrow{text-align:center;font-family:'Nunito',sans-serif;font-size:0.78rem;font-weight:700;color:#A8D898;letter-spacing:1.5px;margin-bottom:14px}
+#six-int .si-result-sub{font-family:'Lora',serif;font-style:italic;color:rgba(255,255,255,0.85);font-size:0.92rem;line-height:1.55;margin-bottom:14px;max-width:520px;margin-left:auto;margin-right:auto;text-align:center}
+#six-int .si-result-action{font-family:'Lora',serif;color:rgba(255,255,255,0.85);font-size:0.9rem;line-height:1.6;padding-top:14px;border-top:1px solid rgba(168,216,152,0.2)}
+#six-int .si-result-action strong{color:#A8D898;font-weight:700}
+</style>
+
+<div class="si-head">
+  <div class="si-kicker">Interactive Diagnostic</div>
+  <h3>Map the Six Interactions</h3>
+  <p>Score yourself honestly on each interaction. The lowest score is your most undervalued source of compounding.</p>
+</div>
+<div class="si-body">
+  <div class="si-instructions">Three pillars produce six interactions. Each one is asymmetric: <em>Source feeding Soil</em> is not the same as <em>Soil feeding Source</em>. Score how alive each direction is for you right now, 1 (dormant) to 5 (running at full strength).</div>
+
+  <div class="si-interactions" id="si-grid"></div>
+
+  <div class="si-result" id="si-result">
+    <div class="si-result-kicker">Your most undervalued interaction</div>
+    <div class="si-result-name" id="si-result-name">Source feeding Soil</div>
+    <div class="si-result-arrow" id="si-result-arrow">SOURCE &rarr; SOIL</div>
+    <div class="si-result-sub" id="si-result-sub"></div>
+    <div class="si-result-action" id="si-result-action"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const interactions = [
+    { from: 'Source', to: 'Soil', name: 'Source feeding Soil',
+      desc: 'When your received identity reaches down into the work of growth: the prayer that produces humility, the scripture that interprets the pain, the covenant that explains why you keep showing up.',
+      sub: 'Without this, your hard times become bitterness instead of formation. The Soil gets the disturbance but not the meaning.',
+      action: 'This week: name the next hard thing you are walking through. Bring it explicitly into your prayer or your time with Scripture. The Source needs to be inside the Soil, not adjacent to it.' },
+    { from: 'Soil', to: 'Fruit', name: 'Soil feeding Fruit',
+      desc: 'When the formation in you produces output that could not have come from a less seasoned person: the patience that lets the team breathe, the depth that makes the writing land, the steadiness that holds the room.',
+      sub: 'Without this, your output is technically correct but flat. Skilled but not deep. People sense the difference even if they cannot name it.',
+      action: 'This week: identify one piece of output where the depth comes from what you have been through. Lean into that work. Most people hide the seasoning. The compounding requires you to let it show.' },
+    { from: 'Fruit', to: 'Source', name: 'Fruit feeding Source',
+      desc: 'When your output becomes evidence in the prayer rather than competition with it: the report card that returns you to gratitude, the visible result that reminds you whose name was on the work.',
+      sub: 'Without this, success becomes the new identity, and the Source quietly atrophies. The work that should have witnessed grace becomes a replacement for it.',
+      action: 'This week: when something works, before you do anything else, name what you did not control about the outcome. Half of every win is delivered, not earned. Speak that out loud.' },
+    { from: 'Source', to: 'Fruit', name: 'Source feeding Fruit',
+      desc: 'When the received identity drives the work directly: you produce because you were called to, not because you have something to prove. The output flows from being beloved, not from earning belovedness.',
+      sub: 'Without this, all work becomes proof. Every project carries the weight of identity confirmation. Burnout is inevitable.',
+      action: 'This week: pick one project. Ask out loud whether you would still do it if no one was watching, paying you, or scoring you. If yes, it is Source-fed Fruit. If no, the Source has been substituted by something else; identify what.' },
+    { from: 'Soil', to: 'Source', name: 'Soil feeding Source',
+      desc: 'When the hardship you walked through becomes the well your identity drinks from: the breakdown that taught you who you actually were, the failure that revealed what was load-bearing in you.',
+      sub: 'Without this, identity stays theoretical. You know who you are in concept. You have not been tested enough for that knowledge to be load-bearing.',
+      action: 'This week: identify the last real disturbance that shaped you. Sit with what it taught you about who you actually are when the easy markers are stripped. That is Source you built through Soil. Do not lose it.' },
+    { from: 'Fruit', to: 'Soil', name: 'Fruit feeding Soil',
+      desc: 'When the output of your life forces you to grow in ways you would have avoided: the project that demanded more than you had, the responsibility that exposed the gap, the failure that pruned what needed pruning.',
+      sub: 'Without this, you stop being shaped by what you do. The work stops counting as formation. You are producing but not being formed.',
+      action: 'This week: ask of one current project, "what is this requiring me to become?" Most people execute without noticing the formation the work is asking for. Notice it. Let the Fruit do its job on the Soil.' }
+  ];
+
+  const widget = document.getElementById('six-int');
+  const grid = widget.querySelector('#si-grid');
+  const resultEl = widget.querySelector('#si-result');
+  const scores = {};
+
+  interactions.forEach(function(int, i){
+    scores[i] = null;
+    const div = document.createElement('div');
+    div.className = 'si-interaction';
+    div.setAttribute('data-i', i);
+    let buttons = '<div class="si-scale-label">Score</div>';
+    for(let s=1; s<=5; s++){
+      buttons += '<button class="si-scale-btn" data-i="' + i + '" data-score="' + s + '">' + s + '</button>';
+    }
+    div.innerHTML =
+      '<div class="si-arrow">' +
+        '<span class="si-pillar">' + int.from + '</span>' +
+        '<span class="si-arrow-icon">&rarr;</span>' +
+        '<span class="si-pillar">' + int.to + '</span>' +
+      '</div>' +
+      '<div class="si-int-name">' + int.name + '</div>' +
+      '<div class="si-int-desc">' + int.desc + '</div>' +
+      '<div class="si-scale">' + buttons + '</div>';
+    grid.appendChild(div);
+  });
+
+  function updateResult(){
+    const scored = Object.values(scores).filter(function(v){ return v !== null; });
+    if(scored.length < interactions.length){
+      resultEl.classList.remove('show');
+      return;
+    }
+    let minIdx = 0;
+    let minScore = scores[0];
+    for(let i=1; i<interactions.length; i++){
+      if(scores[i] < minScore){ minScore = scores[i]; minIdx = i; }
+    }
+    const int = interactions[minIdx];
+    widget.querySelector('#si-result-name').textContent = int.name;
+    widget.querySelector('#si-result-arrow').innerHTML = int.from.toUpperCase() + ' &rarr; ' + int.to.toUpperCase() + ' &middot; SCORED ' + minScore + '/5';
+    widget.querySelector('#si-result-sub').textContent = int.sub;
+    widget.querySelector('#si-result-action').innerHTML = '<strong>What to do this week:</strong> ' + int.action;
+    resultEl.classList.add('show');
+  }
+
+  grid.addEventListener('click', function(e){
+    const btn = e.target.closest('.si-scale-btn');
+    if(!btn) return;
+    const i = parseInt(btn.getAttribute('data-i'), 10);
+    const s = parseInt(btn.getAttribute('data-score'), 10);
+    scores[i] = s;
+    const intDiv = btn.closest('.si-interaction');
+    intDiv.classList.add('scored');
+    intDiv.querySelectorAll('.si-scale-btn').forEach(function(b){
+      b.classList.toggle('active', b === btn);
+    });
+    updateResult();
+  });
+})();
+</script>
 </div>
 
 </div>
