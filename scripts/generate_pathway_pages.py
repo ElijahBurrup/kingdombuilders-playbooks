@@ -1,5 +1,11 @@
-"""Generate stub pathway detail pages for all pathways except Work Reset
-(which has the full custom template). Each gets a clean list page.
+"""Generate rich pathway detail pages matching the work-reset template.
+
+For each step card, pull live data from disk:
+- Title from playbook_registry → asset HTML's <h1>
+- Tagline from the playbook's <p class="cover-tagline">
+- Series + position from series_definitions
+- Chapter count from the playbook's <h2> elements
+- Free/paid status from FREE_SLUGS
 """
 import re
 import sys
@@ -8,52 +14,163 @@ import os
 sys.path.insert(0, '.')
 from pathway_definitions import PATHWAYS
 from playbook_registry import SLUG_TO_FILE
+from series_definitions import (
+    SERIES_DISPLAY_NAME,
+    get_series_position,
+)
 
-# Extract playbook titles from the archive backup catalog
-with open('static/archive-original.html.bak', encoding='utf-8') as f:
-    cat = f.read()
-pb_titles = {}
-for m in re.finditer(
-    r'<a href="read/([\w-]+)"[\s\S]*?class="card-title">([^<]+)</div>', cat
-):
-    pb_titles[m.group(1)] = m.group(2).strip()
+ASSETS_DIR = "assets"
+
+# Mirror api/routers/legacy.py FREE_SLUGS
+FREE_SLUGS = {
+    "conductors-playbook",
+    "lay-it-down",
+    "the-mockingbirds-song",
+    "the-lifted-ceiling",
+    "the-tide-pools-echo",
+    "dad-talks-the-dopamine-drought",
+    "the-mantis-shrimps-eye",
+    "the-hermit-crabs-shell",
+}
 
 ACCENTS = {
-    'work-reset':       ('#1A2030', '#3D4670', '#7A6020', '#D4A843', '#8A6B20', '#F5E0A8'),
-    'identity-walk':    ('#0A0612', '#1A0E2E', '#5B2FA0', '#7B4FBF', '#5B2FA0', '#D8C8F0'),
-    'ai-age':           ('#040810', '#0A1E2E', '#1F7A7A', '#00A8A8', '#006666', '#B8E8E8'),
+    'work-reset':         ('#1A2030', '#3D4670', '#7A6020', '#D4A843', '#8A6B20', '#F5E0A8'),
+    'identity-walk':      ('#0A0612', '#1A0E2E', '#5B2FA0', '#7B4FBF', '#5B2FA0', '#D8C8F0'),
+    'ai-age':             ('#040810', '#0A1E2E', '#1F7A7A', '#00A8A8', '#006666', '#B8E8E8'),
     'money-architecture': ('#040A06', '#0A1E14', '#2D8A4E', '#3DAE6E', '#1E5D34', '#C8F0D0'),
-    'resilience-stack': ('#0A0604', '#1E1408', '#A06530', '#C97A2C', '#7A4A18', '#F0D8B8'),
-    'inner-battle':     ('#0A0408', '#1E0A14', '#7A2842', '#A13C5A', '#7A2842', '#F0C8D0'),
-    'family-foundation': ('#0A0604', '#1E0E08', '#C25840', '#E07A5F', '#A04830', '#F0D0C8'),
+    'resilience-stack':   ('#0A0604', '#1E1408', '#A06530', '#C97A2C', '#7A4A18', '#F0D8B8'),
+    'inner-battle':       ('#0A0408', '#1E0A14', '#7A2842', '#A13C5A', '#7A2842', '#F0C8D0'),
+    'family-foundation':  ('#0A0604', '#1E0E08', '#C25840', '#E07A5F', '#A04830', '#F0D0C8'),
     'strategist-toolkit': ('#040810', '#0A1422', '#4A6B8A', '#6E8FA8', '#2A4866', '#C8D8E8'),
-    'process-model':    ('#040A04', '#0E1A0E', '#1E3A1E', '#5A7A4E', '#3A5530', '#D0E5C8'),
+    'process-model':      ('#040A04', '#0E1A0E', '#1E3A1E', '#5A7A4E', '#3A5530', '#D0E5C8'),
 }
 
 COUNT_WORDS = {3: 'Three', 4: 'Four', 5: 'Five', 6: 'Six', 7: 'Seven', 8: 'Eight'}
 
-STEP_TEMPLATE = '''    <a href="/playbooks/read/{slug}" class="step">
+
+def _read_asset(slug: str) -> str:
+    fname = SLUG_TO_FILE.get(slug)
+    if not fname:
+        return ""
+    path = os.path.join(ASSETS_DIR, fname)
+    if not os.path.isfile(path):
+        return ""
+    with open(path, encoding='utf-8') as f:
+        return f.read()
+
+
+def _strip(html_fragment: str) -> str:
+    # Insert a space at every tag boundary so adjacent block children
+    # (e.g. <h1>Lay It Down<strong>I Am Calling You Deeper</strong></h1>)
+    # don't collapse into one word when tags are removed.
+    s = re.sub(r'<[^>]+>', ' ', html_fragment)
+    return re.sub(r'\s+', ' ', s).strip()
+
+
+def extract_playbook_meta(slug: str) -> dict:
+    """Pull title, tagline, quote, chapter count from the asset HTML."""
+    html = _read_asset(slug)
+    if not html:
+        return {
+            "title": slug.replace('-', ' ').title(),
+            "tagline": "",
+            "quote": "",
+            "chapters": 0,
+        }
+
+    title_m = re.search(r'<h1[^>]*>(.*?)</h1>', html, flags=re.DOTALL | re.IGNORECASE)
+    title = _strip(title_m.group(1)) if title_m else slug.replace('-', ' ').title()
+
+    # Tagline lives under several class names depending on when the
+    # playbook was authored. Try the common variants in priority order.
+    tagline = ""
+    for cls in ("cover-tagline", "cover-sub", "cover-subtitle", "cover-description"):
+        m = re.search(
+            rf'<(?:p|div)[^>]*class="[^"]*\b{cls}\b[^"]*"[^>]*>(.*?)</(?:p|div)>',
+            html, flags=re.DOTALL | re.IGNORECASE,
+        )
+        if m:
+            tagline = _strip(m.group(1))
+            if tagline:
+                break
+    if len(tagline) > 200:
+        tagline = tagline[:197] + "..."
+
+    # Try to find a quotable line: a blockquote, otherwise a styled emphasized line
+    quote = ""
+    bq_m = re.search(r'<blockquote[^>]*>(.*?)</blockquote>', html, flags=re.DOTALL | re.IGNORECASE)
+    if bq_m:
+        quote = _strip(bq_m.group(1))
+    if not quote:
+        # Many playbooks use a class like "pull-quote" / "callout" / "breakthrough"
+        for cls in ("pull-quote", "breakthrough", "callout-quote", "key-line", "anchor-quote"):
+            m = re.search(
+                rf'<(?:p|div|aside)[^>]*class="[^"]*{cls}[^"]*"[^>]*>(.*?)</(?:p|div|aside)>',
+                html, flags=re.DOTALL | re.IGNORECASE,
+            )
+            if m:
+                quote = _strip(m.group(1))
+                break
+    # Strip any wrapping quote characters (smart or straight) so the template
+    # can apply its own quote glyphs without producing "" stutters.
+    quote = quote.strip().strip('"').strip('“”').strip()
+    if quote and len(quote) > 240:
+        quote = quote[:237] + "..."
+
+    # Don't show the quote if it is just the tagline restated.
+    def _norm(s: str) -> str:
+        return re.sub(r'[^a-z0-9]+', '', s.lower())
+    if quote and tagline and (_norm(quote) == _norm(tagline) or _norm(quote) in _norm(tagline) or _norm(tagline) in _norm(quote)):
+        quote = ""
+
+    return {
+        "title": title,
+        "tagline": tagline,
+        "quote": quote,
+    }
+
+
+def step_card(slug: str, step_num: int, accent: dict) -> str:
+    meta = extract_playbook_meta(slug)
+    series_info = get_series_position(slug)
+    if series_info:
+        series_slug, pos, total = series_info
+        series_name = SERIES_DISPLAY_NAME.get(series_slug, series_slug)
+        step_num_label = f"Step {step_num:02d} &middot; {series_name} &middot; Part {pos} of {total}"
+    else:
+        step_num_label = f"Step {step_num:02d}"
+
+    is_free = slug in FREE_SLUGS
+    price_label = '<span class="free">Free</span>' if is_free else '<span>$2.50</span>'
+
+    tagline_block = (
+        f'<div class="step-sub">{meta["tagline"]}</div>' if meta["tagline"] else ""
+    )
+    quote_block = (
+        f'<p class="step-quote">&ldquo;{meta["quote"]}&rdquo;</p>' if meta["quote"] else ""
+    )
+
+    return f"""    <a href="/playbooks/read/{slug}" class="step">
       <div class="step-banner">
         <div class="step-banner-left">
-          <div class="step-num">Step {step_num:02d}</div>
-          <div class="step-name">{title}</div>
+          <div class="step-num">{step_num_label}</div>
+          <div class="step-name">{meta["title"]}</div>
+          {tagline_block}
         </div>
       </div>
       <div class="step-body">
-        <p class="step-quote">Step {step_num} of the {pathway_name} pathway.</p>
-        <span class="step-action">Open Step {step_num:02d} &rarr;</span>
+        {quote_block}
+        <div class="step-footer">
+          <div class="step-meta"><span>~30 min</span><span class="dot"></span>{price_label}</div>
+          <div class="step-action">Open Step {step_num:02d} &rarr;</div>
+        </div>
       </div>
-    </a>'''
+    </a>"""
 
 
-def build_page(p):
+def build_page(p: dict) -> str:
     acc1, acc2, acc3, acc4, acc5, acc6 = ACCENTS[p['slug']]
-    steps = []
-    for i, slug in enumerate(p['playbook_sequence'], 1):
-        title = pb_titles.get(slug, slug.replace('-', ' ').title())
-        steps.append(STEP_TEMPLATE.format(
-            slug=slug, step_num=i, title=title, pathway_name=p['name']
-        ))
+    steps = [step_card(slug, i, {'a': acc1}) for i, slug in enumerate(p['playbook_sequence'], 1)]
     count_word = COUNT_WORDS.get(len(p['playbook_sequence']), 'Several')
     scripture = p.get('scripture', '').replace('"', '')
 
@@ -98,25 +215,28 @@ body{{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--cream)
 .path-intro-kicker{{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--accent-deep);margin-bottom:8px}}
 .path-intro h2{{font-family:'Nunito',sans-serif;font-size:1.85rem;font-weight:800;color:var(--dawn);letter-spacing:-0.02em;line-height:1.15}}
 .path-intro p{{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:var(--text-light);max-width:560px;margin:10px auto 0}}
-.path-grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:22px}}
+.path-grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:24px}}
 
-.step{{background:var(--white);border-radius:20px;overflow:hidden;box-shadow:var(--shadow-mid);border:1px solid var(--cream-deep);text-decoration:none;color:inherit;display:block;transition:all 0.4s}}
+.step{{background:var(--white);border-radius:20px;overflow:hidden;box-shadow:var(--shadow-mid);border:1px solid var(--cream-deep);text-decoration:none;color:inherit;display:flex;flex-direction:column;transition:all 0.4s}}
 .step:hover{{transform:translateY(-4px);box-shadow:0 16px 60px rgba(14,15,26,0.18);border-color:rgba(212,168,67,0.35)}}
-.step-banner{{padding:22px 26px 20px;background:linear-gradient(160deg,{acc1} 0%,{acc2} 50%,{acc3} 100%);display:flex;justify-content:space-between;align-items:flex-start;position:relative;overflow:hidden}}
+.step-banner{{padding:24px 26px 22px;background:linear-gradient(160deg,{acc1} 0%,{acc2} 50%,{acc3} 100%);position:relative;overflow:hidden}}
 .step-banner::before{{content:'';position:absolute;top:-40%;right:-12%;width:280px;height:280px;background:radial-gradient(circle,rgba(245,224,168,0.16) 0%,transparent 65%);border-radius:50%;pointer-events:none}}
-.step-banner-left{{position:relative;z-index:2;flex:1}}
-.step-num{{font-family:'Poppins',sans-serif;font-size:0.58rem;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;color:var(--accent-pale);margin-bottom:6px;opacity:0.85}}
-.step-name{{font-family:'Nunito',sans-serif;font-size:1.35rem;font-weight:900;color:var(--white);letter-spacing:-0.015em;line-height:1.18}}
-.step-body{{padding:20px 26px}}
-.step-quote{{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:var(--text-light);line-height:1.55;padding-left:14px;border-left:3px solid var(--accent);margin-bottom:14px}}
-.step-action{{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.76rem;font-weight:700;letter-spacing:0.3px;color:var(--accent-deep);border:1.5px solid var(--cream-deep)}}
+.step-banner-left{{position:relative;z-index:2}}
+.step-num{{font-family:'Poppins',sans-serif;font-size:0.58rem;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;color:var(--accent-pale);margin-bottom:8px;opacity:0.85;line-height:1.4}}
+.step-name{{font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:var(--white);letter-spacing:-0.015em;line-height:1.18;margin-bottom:8px}}
+.step-sub{{font-family:'Lora',serif;font-style:italic;font-size:0.95rem;color:rgba(255,255,255,0.78);line-height:1.45}}
+.step-body{{padding:22px 26px 20px;display:flex;flex-direction:column;flex:1}}
+.step-quote{{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:var(--text-light);line-height:1.55;padding-left:14px;border-left:3px solid var(--accent);margin-bottom:18px;flex:1}}
+.step-footer{{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:auto}}
+.step-meta{{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-family:'Poppins',sans-serif;font-size:0.7rem;font-weight:600;color:var(--text-muted);letter-spacing:0.3px}}
+.step-meta .dot{{width:3px;height:3px;border-radius:50%;background:var(--text-muted);opacity:0.5}}
+.step-meta .free{{color:#1E7E34;font-weight:700}}
+.step-action{{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.76rem;font-weight:700;letter-spacing:0.3px;color:var(--accent-deep);border:1.5px solid var(--cream-deep);white-space:nowrap}}
 .step:hover .step-action{{border-color:var(--accent);background:var(--accent-soft)}}
-.coming-soon-note{{max-width:760px;margin:48px auto 0;padding:20px 28px;background:rgba(212,168,67,0.06);border:1px dashed rgba(212,168,67,0.3);border-radius:14px;text-align:center;font-family:'Lora',serif;font-style:italic;color:var(--text-light);font-size:0.95rem}}
-.coming-soon-note strong{{color:var(--accent-deep);font-style:normal;font-weight:700}}
 footer{{background:var(--night);color:rgba(255,255,255,0.4);padding:48px 24px 36px;text-align:center;margin-top:80px}}
 footer p{{font-family:'Lora',serif;font-size:0.85rem;font-style:italic;color:rgba(245,224,168,0.4);margin-bottom:14px;max-width:540px;margin-left:auto;margin-right:auto}}
 footer .brand-mark{{font-family:'Poppins',sans-serif;font-size:0.55rem;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.18)}}
-@media(max-width:680px){{.topnav{{padding:14px 18px;gap:16px}}.topnav-primary,.topnav-utility .nav-link{{display:none}}.hero{{padding:90px 20px 80px}}.path-wrap{{padding:0 16px 56px}}}}
+@media(max-width:680px){{.topnav{{padding:14px 18px;gap:16px}}.topnav-primary,.topnav-utility .nav-link{{display:none}}.hero{{padding:90px 20px 80px}}.path-wrap{{padding:0 16px 56px}}.step-footer{{flex-direction:column;align-items:flex-start}}}}
 </style>
 </head>
 <body>
@@ -153,15 +273,11 @@ footer .brand-mark{{font-family:'Poppins',sans-serif;font-size:0.55rem;letter-sp
   <div class="path-grid">
 {chr(10).join(steps)}
   </div>
-
-  <div class="coming-soon-note">
-    <strong>Step-by-step descriptions coming soon.</strong> For now, open any step to read the playbook directly. Detailed breakthrough quotes and contents lists are being added pathway by pathway.
-  </div>
 </div>
 
 <footer>
   <p>{scripture}</p>
-  <div class="brand-mark">Kingdom Builders AI &middot; Pathway {p['order']:02d} of 08</div>
+  <div class="brand-mark">Kingdom Builders AI &middot; Pathway {p['order']:02d} of 09</div>
 </footer>
 
 </body>
@@ -169,12 +285,12 @@ footer .brand-mark{{font-family:'Poppins',sans-serif;font-size:0.55rem;letter-sp
 """
 
 
-for p in PATHWAYS:
-    if p['slug'] == 'work-reset':
-        continue
-    out_path = f"static/pathways/{p['slug']}.html"
-    with open(out_path, 'w', encoding='utf-8') as f:
-        f.write(build_page(p))
-    print(f"Wrote {out_path}")
-
-print(f"\nAll {len(PATHWAYS)} pathways live.")
+if __name__ == "__main__":
+    for p in PATHWAYS:
+        if p['slug'] == 'work-reset':
+            continue
+        out_path = f"static/pathways/{p['slug']}.html"
+        with open(out_path, 'w', encoding='utf-8') as f:
+            f.write(build_page(p))
+        print(f"Wrote {out_path}")
+    print(f"\nAll {len(PATHWAYS)} pathways regenerated.")
