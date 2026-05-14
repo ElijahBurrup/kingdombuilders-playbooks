@@ -650,20 +650,201 @@ dfn.def:hover::after,dfn.def:focus::after{content:attr(data-def);position:absolu
     <p><strong>Week 4: Protect resonance.</strong> The patterns from Week 3 will reveal your natural frequency. Now defend it. Block the gait times. Negotiate meeting schedules. Say no to interruptions that force unnecessary transitions. Measure output per gait and compare to the baseline from Week 1.</p>
   </div>
 
-  <div class="viz-box">
-    <div class="viz-label">Map Your Four Gaits</div>
-    <h3>Translate the horse's biology into your work</h3>
-    <p>The horse moves through four standard gaits. Each one has a frequency, a use case, and a cost of operating at the wrong speed. Your work has the same four. Identify yours and write a specific example for each.</p>
-    <p><strong>WALK.</strong> The slow, sustainable, energy-efficient mode. The horse can walk for hours without fatigue. In your work, the walk is administrative attention: email triage, meeting prep, simple decisions, light coordination. The walk is not glamorous. It is what keeps the system functional. <em>Most people try to gallop through it and burn out. Most people try to trot through it and create switching cost.</em></p>
-    <p style="margin-left:18px;color:var(--text-light)"><strong>Your walk work:</strong> _____________________________________</p>
-    <p><strong>TROT.</strong> The diagonal, two beat working gait. The horse can trot all day on the right terrain. In your work, the trot is steady production: writing the third draft, processing a known workflow, executing on a clear plan, doing the actual job description of your job. The trot is where most of your week should live. <em>You cannot live in the canter and you cannot live in the walk. The trot is the sustainable middle.</em></p>
-    <p style="margin-left:18px;color:var(--text-light)"><strong>Your trot work:</strong> _____________________________________</p>
-    <p><strong>CANTER.</strong> The three beat, faster, more engaged gait. The horse can canter for stretches but not all day. In your work, the canter is high engagement effort: solving the hard problem, the difficult conversation, the creative breakthrough session, the negotiation. <em>Two or three hours of canter per day, properly recovered from, is more output than ten hours of forced trot.</em></p>
-    <p style="margin-left:18px;color:var(--text-light)"><strong>Your canter work:</strong> _____________________________________</p>
-    <p><strong>GALLOP.</strong> The four beat sprint. The horse gallops for minutes, not hours. In your work, the gallop is the emergency surge: launch day, the deadline night, the crisis. The gallop has its place. The gallop is also unsustainable. <em>If your week contains more than one or two gallop sessions, you are not in a gallop. You are in panic dressed as performance.</em></p>
-    <p style="margin-left:18px;color:var(--text-light)"><strong>Your gallop work:</strong> _____________________________________</p>
-    <p style="margin-top:14px;color:var(--mahogany);font-weight:600">The fear is never the gait. The fear is always the transition. Once you know which gait each task belongs to, you stop trying to walk through canter work and gallop through walk work. The exhaustion that you have been blaming on the workload was almost entirely transition cost.</p>
+  <div class="diagnostic-widget" id="four-gaits-quiz">
+<style>
+#four-gaits-quiz{margin:44px 0;border-radius:18px;overflow:hidden;border:2px solid rgba(74,42,28,0.2);background:#fff;box-shadow:0 6px 28px rgba(20,12,8,0.1)}
+#four-gaits-quiz .fg-head{background:linear-gradient(135deg,var(--mahogany,#4A2A1C),var(--chestnut,#7A4A2A));padding:28px 32px;text-align:center;color:#fff}
+#four-gaits-quiz .fg-kicker{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--chestnut-pale,#E0A878);margin-bottom:8px}
+#four-gaits-quiz .fg-head h3{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#fff;margin:0 0 6px;letter-spacing:-0.01em}
+#four-gaits-quiz .fg-head p{font-family:'Lora',serif;font-style:italic;font-size:0.92rem;color:rgba(255,255,255,0.7);margin:0 auto;max-width:480px}
+#four-gaits-quiz .fg-body{padding:32px}
+#four-gaits-quiz .fg-progress{margin-bottom:22px}
+#four-gaits-quiz .fg-progress-text{font-family:'Poppins',sans-serif;font-size:0.62rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--mahogany,#4A2A1C);margin-bottom:6px}
+#four-gaits-quiz .fg-progress-bar{height:5px;background:rgba(74,42,28,0.08);border-radius:3px;overflow:hidden}
+#four-gaits-quiz .fg-progress-fill{height:100%;background:linear-gradient(90deg,var(--chestnut,#7A4A2A),var(--chestnut-pale,#E0A878));width:0%;transition:width 0.35s ease}
+#four-gaits-quiz .fg-question{font-family:'Lora',serif;font-size:1.15rem;color:var(--mahogany,#4A2A1C);line-height:1.45;margin-bottom:22px;font-weight:600}
+#four-gaits-quiz .fg-options{display:grid;gap:10px}
+#four-gaits-quiz .fg-opt{display:flex;align-items:flex-start;gap:12px;padding:14px 18px;background:#FAF7F2;border:1.5px solid rgba(74,42,28,0.12);border-radius:10px;font-family:'Lora',serif;font-size:0.92rem;color:var(--mahogany,#4A2A1C);text-align:left;cursor:pointer;transition:all 0.18s;width:100%;line-height:1.45}
+#four-gaits-quiz .fg-opt:hover{border-color:var(--chestnut,#7A4A2A);background:rgba(122,74,42,0.04);transform:translateX(2px)}
+#four-gaits-quiz .fg-opt-icon{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:rgba(122,74,42,0.12);color:var(--chestnut,#7A4A2A);font-family:'Poppins',sans-serif;font-weight:800;font-size:0.7rem;letter-spacing:1px;text-align:center;line-height:34px;text-transform:uppercase}
+#four-gaits-quiz .fg-opt:hover .fg-opt-icon{background:var(--chestnut,#7A4A2A);color:#fff}
+#four-gaits-quiz .fg-result{display:none}
+#four-gaits-quiz .fg-result.show{display:block}
+#four-gaits-quiz .fg-result-head{text-align:center;padding-bottom:22px;border-bottom:1.5px solid rgba(74,42,28,0.12);margin-bottom:24px}
+#four-gaits-quiz .fg-result-kicker{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--chestnut,#7A4A2A);margin-bottom:8px}
+#four-gaits-quiz .fg-result-title{font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:700;color:var(--mahogany,#4A2A1C);line-height:1.2;margin-bottom:10px}
+#four-gaits-quiz .fg-result-sub{font-family:'Lora',serif;font-style:italic;color:var(--text-light,#3A2418);font-size:0.95rem;max-width:520px;margin:0 auto;line-height:1.55}
+#four-gaits-quiz .fg-distribution{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:24px}
+@media(max-width:520px){#four-gaits-quiz .fg-distribution{grid-template-columns:1fr 1fr}}
+#four-gaits-quiz .fg-dist{padding:16px 10px;border-radius:10px;text-align:center;background:#FAF7F2;border:1.5px solid rgba(74,42,28,0.1)}
+#four-gaits-quiz .fg-dist.target{background:linear-gradient(135deg,rgba(122,74,42,0.08),rgba(224,168,120,0.08));border-color:var(--chestnut,#7A4A2A)}
+#four-gaits-quiz .fg-dist-name{font-family:'Poppins',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--chestnut,#7A4A2A);margin-bottom:6px}
+#four-gaits-quiz .fg-dist-actual{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:800;color:var(--mahogany,#4A2A1C);line-height:1}
+#four-gaits-quiz .fg-dist-target{font-family:'Lora',serif;font-style:italic;font-size:0.72rem;color:var(--text-muted,#7A6050);margin-top:4px}
+#four-gaits-quiz .fg-diagnosis{padding:22px;background:linear-gradient(135deg,var(--mahogany,#4A2A1C),var(--chestnut,#7A4A2A));color:#fff;border-radius:12px;margin-bottom:18px}
+#four-gaits-quiz .fg-diagnosis h5{font-family:'Poppins',sans-serif;color:var(--chestnut-pale,#E0A878);font-size:0.92rem;margin-bottom:10px;font-weight:700;letter-spacing:0.5px}
+#four-gaits-quiz .fg-diagnosis p{font-family:'Lora',serif;color:rgba(255,255,255,0.85);line-height:1.6;font-size:0.92rem;margin:0 0 10px}
+#four-gaits-quiz .fg-diagnosis p:last-child{margin-bottom:0}
+#four-gaits-quiz .fg-retake{font-family:'Poppins',sans-serif;font-size:0.72rem;font-weight:700;color:var(--text-muted,#7A6050);background:transparent;border:1.5px solid rgba(74,42,28,0.18);padding:10px 22px;border-radius:50px;cursor:pointer;letter-spacing:1px;transition:all 0.2s;display:block;margin:0 auto}
+#four-gaits-quiz .fg-retake:hover{background:rgba(74,42,28,0.06);color:var(--mahogany,#4A2A1C)}
+</style>
+
+<div class="fg-head">
+  <div class="fg-kicker">Interactive Diagnostic</div>
+  <h3>Map Your Four Gaits</h3>
+  <p>Walk. Trot. Canter. Gallop. Eight quick questions identify whether your current week is in healthy distribution or transitions are what is costing you.</p>
+</div>
+<div class="fg-body">
+  <div class="fg-progress">
+    <div class="fg-progress-text" id="fg-counter">Question 1 of 8</div>
+    <div class="fg-progress-bar"><div class="fg-progress-fill" id="fg-fill"></div></div>
   </div>
+  <div id="fg-question-panel">
+    <div class="fg-question" id="fg-text">Pick the description that best matches the work you spent most of your last 3 days on.</div>
+    <div class="fg-options" id="fg-options"></div>
+  </div>
+  <div class="fg-result" id="fg-result">
+    <div class="fg-result-head">
+      <div class="fg-result-kicker">Your gait distribution</div>
+      <div class="fg-result-title" id="fg-result-title">Mostly Trot, Some Canter</div>
+      <div class="fg-result-sub" id="fg-result-sub">Your distribution is healthy. The middle is doing the work, the canter is engaging the hard problems, and the gallop is reserved.</div>
+    </div>
+    <div class="fg-distribution" id="fg-distribution"></div>
+    <div class="fg-diagnosis" id="fg-diagnosis">
+      <h5>What to change this week</h5>
+      <p id="fg-diag-text"></p>
+    </div>
+    <button class="fg-retake" id="fg-retake">Retake the diagnostic</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const allOptions = [
+    { gait: 'walk', label: 'Walk: email triage, simple decisions, light coordination, admin maintenance' },
+    { gait: 'trot', label: 'Trot: steady production, executing a clear plan, processing known workflow' },
+    { gait: 'canter', label: 'Canter: hard problem solving, difficult conversation, creative breakthrough, high engagement' },
+    { gait: 'gallop', label: 'Gallop: emergency surge, deadline night, launch day, crisis response' }
+  ];
+  const prompts = [
+    'Pick the description that best matches the work you spent most of your last 3 days on.',
+    'Now pick what dominated yesterday specifically.',
+    'What was your work in the first half of today?',
+    'What was your work in the most recent 2 hour stretch?',
+    'When you look at your calendar this week, which gait fills the most slots?',
+    'Your most exhausting hour this week, what gait was it?',
+    'Your most energizing hour this week, what gait was it?',
+    'Looking forward to next week, which gait do you suspect will dominate?'
+  ];
+
+  const widget = document.getElementById('four-gaits-quiz');
+  const counter = widget.querySelector('#fg-counter');
+  const fill = widget.querySelector('#fg-fill');
+  const questionText = widget.querySelector('#fg-text');
+  const optionsContainer = widget.querySelector('#fg-options');
+  const questionPanel = widget.querySelector('#fg-question-panel');
+  const resultPanel = widget.querySelector('#fg-result');
+  const retakeBtn = widget.querySelector('#fg-retake');
+
+  let current = 0;
+  let counts = { walk: 0, trot: 0, canter: 0, gallop: 0 };
+
+  function renderOptions(){
+    optionsContainer.innerHTML = '';
+    allOptions.forEach(function(opt){
+      const btn = document.createElement('button');
+      btn.className = 'fg-opt';
+      btn.setAttribute('data-gait', opt.gait);
+      btn.innerHTML = '<span class="fg-opt-icon">' + opt.gait.charAt(0).toUpperCase() + '</span><span>' + opt.label + '</span>';
+      optionsContainer.appendChild(btn);
+    });
+  }
+  function render(){
+    counter.textContent = 'Question ' + (current+1) + ' of ' + prompts.length;
+    fill.style.width = ((current/prompts.length)*100) + '%';
+    questionText.textContent = prompts[current];
+    renderOptions();
+  }
+  function handleAnswer(gait){
+    counts[gait]++;
+    current++;
+    if(current >= prompts.length) showResult();
+    else render();
+  }
+  function showResult(){
+    fill.style.width = '100%';
+    counter.textContent = 'Distribution mapped';
+    questionPanel.style.display = 'none';
+    resultPanel.classList.add('show');
+    const targets = { walk: 25, trot: 50, canter: 20, gallop: 5 };
+    const total = prompts.length;
+    const actual = {
+      walk: Math.round((counts.walk/total)*100),
+      trot: Math.round((counts.trot/total)*100),
+      canter: Math.round((counts.canter/total)*100),
+      gallop: Math.round((counts.gallop/total)*100)
+    };
+    const distContainer = widget.querySelector('#fg-distribution');
+    distContainer.innerHTML = '';
+    ['walk','trot','canter','gallop'].forEach(function(g){
+      const div = document.createElement('div');
+      div.className = 'fg-dist';
+      const tgtName = g.charAt(0).toUpperCase() + g.slice(1);
+      div.innerHTML = '<div class="fg-dist-name">'+tgtName+'</div>' +
+                      '<div class="fg-dist-actual">'+actual[g]+'%</div>' +
+                      '<div class="fg-dist-target">Target ~'+targets[g]+'%</div>';
+      distContainer.appendChild(div);
+    });
+    let dom = 'trot', domCount = counts.trot;
+    ['walk','canter','gallop'].forEach(function(g){
+      if(counts[g] > domCount){ dom = g; domCount = counts[g]; }
+    });
+    let title='', sub='', diag='';
+    if(dom === 'gallop' || actual.gallop > 25){
+      title = 'Gallop Saturated';
+      sub = 'You are running on emergency reserves. The gallop has a place. Not as your default. The fact that this is your dominant gait is the diagnostic. You are not in a gallop. You are in panic dressed as performance.';
+      diag = 'This week: cancel one thing that does not have a real deadline. The fastest path to recovery is removing one false urgency. The gallop ends not when you slow down but when you stop responding to alarms that were never actually alarms.';
+    } else if(dom === 'canter' || actual.canter > 35){
+      title = 'Canter Saturated';
+      sub = 'You are engaging hard problems most of the week. Impressive in the short run, unsustainable in the long. The canter compounds when it is followed by recovery. Continuous canter becomes the same exhaustion that the gallop produces, just slower.';
+      diag = 'This week: protect one block of pure trot work. The canter pays off because it is rare. If you do not give the system trot time, the canter stops being canter and becomes a grind.';
+    } else if(dom === 'walk' || actual.walk > 45){
+      title = 'Walk Saturated';
+      sub = 'Most of your week is going to administrative attention. That is fine if the season requires it. But if the work that matters is not getting touched, the walk is filling the time the trot and canter need.';
+      diag = 'This week: identify two blocks where you can deliberately enter the trot or canter gait. Most walk saturation comes from filling the day with available tasks instead of choosing the next important one.';
+    } else if(actual.trot > 60){
+      title = 'Trot Dominant';
+      sub = 'Healthy. Most of your week is steady production. The middle gait is the sustainable one. If you are also producing canter work occasionally, the system is well tuned.';
+      diag = 'This week: keep the trot, but block one specific canter session. The trot alone produces output without growth. The canter is where capability extends. Without it, the trot eventually plateaus.';
+    } else {
+      title = 'Distributed Across Gaits';
+      sub = 'Your week is a mix of all four. This is either healthy distribution or chaotic switching. The diagnostic is transitions: if the gaits felt like deliberate shifts, the mix is healthy. If they felt like interruptions, you are paying transition cost.';
+      diag = 'This week: notice when you transition between gaits. If the transitions are external (someone interrupted you), batch your work to reduce them. If the transitions are internal (you are restless), the issue is upstream of gait choice.';
+    }
+    widget.querySelector('#fg-result-title').textContent = title;
+    widget.querySelector('#fg-result-sub').textContent = sub;
+    widget.querySelector('#fg-diag-text').textContent = diag;
+    const allCards = widget.querySelectorAll('.fg-dist');
+    const gaitOrder = ['walk','trot','canter','gallop'];
+    const domIdx = gaitOrder.indexOf(dom);
+    if(domIdx >= 0 && allCards[domIdx]) allCards[domIdx].classList.add('target');
+  }
+  optionsContainer.addEventListener('click', function(e){
+    const btn = e.target.closest('.fg-opt');
+    if(!btn) return;
+    handleAnswer(btn.getAttribute('data-gait'));
+  });
+  retakeBtn.addEventListener('click', function(){
+    current = 0;
+    counts = { walk: 0, trot: 0, canter: 0, gallop: 0 };
+    resultPanel.classList.remove('show');
+    questionPanel.style.display = 'block';
+    render();
+  });
+  render();
+})();
+</script>
+</div>
 
   <p>The Icelandic horse has five gaits, not four. The fifth is called the <dfn class="def" data-def="A lateral ambling gait unique to certain horse breeds, especially the Icelandic horse. The horse moves both legs on the same side nearly simultaneously, creating a smooth, fast movement with no moment of suspension. Riders report it feels like gliding.">tolt</dfn>, a smooth ambling gait that feels like gliding. It is not faster than the canter. It is not more powerful than the gallop. But for certain terrains, over rough Icelandic lava fields and through shallow river crossings, it is the most efficient gait available. No other breed can do it because no other breed evolved for that specific terrain.</p>
 
