@@ -83,7 +83,7 @@ const PLAYBOOKS = [
   { title: "The Lifted Ceiling", slug: "the-lifted-ceiling", tag: "Finance", free: true },
   { title: "The New Earning", slug: "the-new-earning", tag: "Finance" },
   { title: "The Three Tables", slug: "the-three-tables", tag: "Faith" },
-  { title: "The Kintsugi Bowl", catalogTitle: "The Kintsugi Protocol", slug: "the-kintsugi-bowl", tag: "Faith" },
+  { title: "The Kintsugi Protocol", catalogTitle: "The Kintsugi Protocol", slug: "the-kintsugi-bowl", tag: "Faith" },
   { title: "The Unfinished Song", slug: "the-unfinished-song", tag: "Health" },
   { title: "The Roche Limit", slug: "the-roche-limit", tag: "Health" },
   { title: "Given", catalogTitle: "Manna: Given", slug: "given", tag: "Faith" },
