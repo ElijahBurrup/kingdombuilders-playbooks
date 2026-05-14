@@ -19,7 +19,7 @@ PATH_SHORT = {
 SERIES_NAMES = {
     'how-ai-works': 'How AI Works', 'ai-economy': 'AI Economy',
     'a-process-model': 'A Process Model', 'eden-pattern': 'Eden Pattern',
-    'the-attending': 'The Attending', 'manna': 'Manna',
+    'the-attending': 'Stay Series', 'manna': 'Manna',
     'lay-it-down': 'Lay It Down', 'dad-talks': 'Dad Talks',
     'the-shield-series': 'Shield Series', 'the-mirror-series': 'Mirror Series',
 }

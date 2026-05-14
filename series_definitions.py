@@ -87,7 +87,7 @@ def get_series_position(slug: str) -> tuple[str, int, int] | None:
 
 
 SERIES_DISPLAY_NAME: dict[str, str] = {
-    "the-attending": "The Attending",
+    "the-attending": "Stay Series",
     "manna": "Manna",
     "eden-pattern": "Eden Pattern",
     "lay-it-down": "Lay It Down",
@@ -106,7 +106,7 @@ SERIES_DISPLAY_NAME: dict[str, str] = {
 # is). Stating both halves makes the structural relationship readable
 # without opening either playbook.
 SERIES_DESCRIPTION: dict[str, str] = {
-    "the-attending": "The practice of staying with the work when you want to leave.",
+    "the-attending": "How to stay with the work when you want to leave, and the identity underneath that makes staying possible.",
     "manna": "The faith pattern that converts heavy work back into given work.",
     "eden-pattern": "The post scarcity blueprint hidden in the first garden.",
     "lay-it-down": "The seven deadly sins decoded as modern behavior patterns.",

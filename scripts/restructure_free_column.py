@@ -23,7 +23,7 @@ html = re.sub(
 #    - drop the <td class="cell-free">...</td>
 #    - inject a <span class="cat-chip free">Free</span> at the start of cell-cats
 row_pat = re.compile(
-    r'<tr data-pathway="([^"]*)" data-series="([^"]*)" data-category="([^"]*)" data-free="(yes|no)" data-status="([^"]*)">'
+    r'<tr data-pathway="([^"]*)" data-series="([^"]*)"(?:\s+data-series-order="[^"]*")? data-category="([^"]*)" data-free="(yes|no)" data-status="([^"]*)">'
     r'(?P<body>.*?)'
     r'</tr>',
     re.DOTALL,
