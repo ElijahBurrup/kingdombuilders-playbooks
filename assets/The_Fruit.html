@@ -531,6 +531,237 @@ dfn.def:hover::after{content:attr(data-def);position:absolute;bottom:120%;left:5
 <div class="dh-sub">For most readers. The audit will tell you yours. The number is information, not condemnation. The information is what the protocol uses to point at the next move.</div>
 </div>
 
+<div class="diagnostic-widget" id="fruit-audit">
+<style>
+#fruit-audit{margin:48px 0;border-radius:18px;overflow:hidden;border:2px solid rgba(120,80,40,0.22);background:#fff;box-shadow:0 8px 28px rgba(40,28,18,0.1)}
+#fruit-audit .fa-head{background:linear-gradient(135deg,#1A1208,#3A2A18);padding:26px 30px;text-align:center;color:#fff}
+#fruit-audit .fa-kicker{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:#D4A058;margin-bottom:8px}
+#fruit-audit .fa-head h3{font-family:'Nunito',sans-serif;font-size:1.5rem;font-weight:800;color:#fff;margin:0 0 6px;letter-spacing:-0.01em}
+#fruit-audit .fa-head p{font-family:'Lora',serif;font-style:italic;font-size:0.92rem;color:rgba(255,255,255,0.7);margin:0 auto;max-width:500px}
+#fruit-audit .fa-body{padding:30px}
+#fruit-audit .fa-instructions{font-family:'Lora',serif;color:#3A2418;font-size:0.93rem;line-height:1.55;margin-bottom:18px}
+#fruit-audit .fa-instructions strong{color:#1A1208;font-weight:700}
+#fruit-audit .fa-add-row{display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:18px}
+#fruit-audit .fa-add{padding:11px 14px;border:1.5px solid rgba(120,80,40,0.2);border-radius:8px;font-family:'Lora',serif;font-size:0.92rem;color:#1A1208;background:#FAF6EE;transition:all 0.2s}
+#fruit-audit .fa-add:focus{outline:none;border-color:#8B5A30;background:#fff}
+#fruit-audit .fa-add-btn{padding:11px 22px;background:linear-gradient(135deg,#3A2A18,#5A3A22);color:#D4A058;border:none;border-radius:8px;font-family:'Nunito',sans-serif;font-size:0.78rem;font-weight:800;letter-spacing:1.5px;cursor:pointer;transition:all 0.2s;white-space:nowrap}
+#fruit-audit .fa-add-btn:hover{background:linear-gradient(135deg,#5A3A22,#7A4A2A)}
+#fruit-audit .fa-items{display:grid;gap:8px;margin-bottom:18px}
+#fruit-audit .fa-item{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;padding:10px 12px;background:#FAF6EE;border:1.5px solid rgba(120,80,40,0.12);border-radius:8px;transition:all 0.18s}
+@media(max-width:580px){#fruit-audit .fa-item{grid-template-columns:1fr;gap:6px}}
+#fruit-audit .fa-item.scored-fruit{background:linear-gradient(135deg,rgba(60,140,80,0.06),rgba(212,160,88,0.06));border-color:#7A9050}
+#fruit-audit .fa-item.scored-response{background:linear-gradient(135deg,rgba(200,80,60,0.04),rgba(180,140,80,0.04));border-color:#C08068}
+#fruit-audit .fa-item-text{font-family:'Lora',serif;font-size:0.9rem;color:#1A1208;padding:4px 0}
+#fruit-audit .fa-form-select{padding:8px 10px;border:1.5px solid rgba(120,80,40,0.15);border-radius:6px;font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;color:#3A2418;background:#fff;cursor:pointer}
+#fruit-audit .fa-item.scored-fruit .fa-form-select{background:rgba(212,160,88,0.08);border-color:#7A9050}
+#fruit-audit .fa-pressure-btns{display:flex;gap:4px}
+#fruit-audit .fa-pressure-btn{padding:7px 10px;border:1.5px solid rgba(120,80,40,0.15);background:#fff;border-radius:6px;font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:800;color:#3A2418;cursor:pointer;letter-spacing:0.5px;transition:all 0.15s}
+#fruit-audit .fa-pressure-btn:hover{border-color:#8B5A30}
+#fruit-audit .fa-pressure-btn.active.yes{background:#7A9050;color:#fff;border-color:#7A9050}
+#fruit-audit .fa-pressure-btn.active.no{background:#C08068;color:#fff;border-color:#C08068}
+#fruit-audit .fa-remove{padding:6px 10px;background:transparent;border:none;color:#8B5A30;font-size:1.3rem;cursor:pointer;line-height:1;opacity:0.5;transition:opacity 0.15s}
+#fruit-audit .fa-remove:hover{opacity:1}
+#fruit-audit .fa-empty{padding:24px;text-align:center;color:#7A6038;font-family:'Lora',serif;font-style:italic;font-size:0.9rem;background:rgba(212,160,88,0.04);border-radius:8px;border:1.5px dashed rgba(120,80,40,0.18)}
+#fruit-audit .fa-summary{padding:22px;background:linear-gradient(135deg,#1A1208,#3A2A18);color:#fff;border-radius:12px;margin-top:6px}
+#fruit-audit .fa-summary-row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:14px}
+@media(max-width:520px){#fruit-audit .fa-summary-row{grid-template-columns:1fr}}
+#fruit-audit .fa-stat{padding:14px;background:rgba(255,255,255,0.06);border-radius:8px}
+#fruit-audit .fa-stat-label{font-family:'Nunito',sans-serif;font-size:0.58rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#D4A058;margin-bottom:4px}
+#fruit-audit .fa-stat-value{font-family:'Nunito',sans-serif;font-size:1.6rem;font-weight:800;color:#fff;line-height:1}
+#fruit-audit .fa-stat-sub{font-family:'Lora',serif;font-style:italic;font-size:0.72rem;color:rgba(255,255,255,0.6);margin-top:3px}
+#fruit-audit .fa-forms{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:14px}
+@media(max-width:580px){#fruit-audit .fa-forms{grid-template-columns:repeat(2,1fr)}}
+#fruit-audit .fa-form-cell{padding:10px 8px;background:rgba(255,255,255,0.06);border-radius:8px;text-align:center}
+#fruit-audit .fa-form-cell.starved{background:rgba(200,80,60,0.18);border:1.5px solid rgba(200,80,60,0.5)}
+#fruit-audit .fa-form-name{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:1.5px;color:#D4A058;text-transform:uppercase;margin-bottom:4px}
+#fruit-audit .fa-form-count{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;color:#fff;line-height:1}
+#fruit-audit .fa-verdict{font-family:'Lora',serif;font-style:italic;color:rgba(255,255,255,0.85);font-size:0.92rem;line-height:1.55;padding-top:12px;border-top:1px solid rgba(212,160,88,0.2)}
+#fruit-audit .fa-verdict strong{color:#D4A058;font-style:normal;font-weight:700}
+</style>
+
+<div class="fa-head">
+  <div class="fa-kicker">Interactive Audit</div>
+  <h3>The Fruit Audit</h3>
+  <p>List your output from the last twelve months. Run each through two filters. Find out what was fruit and what was costume.</p>
+</div>
+<div class="fa-body">
+  <div class="fa-instructions"><strong>Step 1.</strong> Add 10 to 20 items of output from the past year. Work projects. Side projects. Deliverables. Things you built. <strong>Step 2.</strong> For each: pick which of the five forms it most fits, then mark whether it would have happened without external pressure.</div>
+
+  <div class="fa-add-row">
+    <input type="text" class="fa-add" id="fa-add" placeholder="e.g., shipped Q3 product launch, wrote 12 blog posts, mentored two engineers...">
+    <button class="fa-add-btn" id="fa-add-btn">+ Add item</button>
+  </div>
+
+  <div class="fa-items" id="fa-items"></div>
+  <div class="fa-empty" id="fa-empty">No items yet. Add your first one above. Start with what you can remember; the audit will surface more as you write.</div>
+
+  <div class="fa-summary" id="fa-summary" style="display:none">
+    <div class="fa-summary-row">
+      <div class="fa-stat">
+        <div class="fa-stat-label">Items audited</div>
+        <div class="fa-stat-value" id="fa-total">0</div>
+      </div>
+      <div class="fa-stat">
+        <div class="fa-stat-label">Fruit ratio</div>
+        <div class="fa-stat-value" id="fa-ratio">0%</div>
+        <div class="fa-stat-sub">Discretionary fruit vs response output</div>
+      </div>
+    </div>
+    <div class="fa-forms" id="fa-forms"></div>
+    <div class="fa-verdict" id="fa-verdict">Score your items to see your audit verdict.</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const forms = [
+    { key: 'relational', name: 'Relational' },
+    { key: 'creative', name: 'Creative' },
+    { key: 'servant', name: 'Servant' },
+    { key: 'stewardship', name: 'Stewardship' },
+    { key: 'generative', name: 'Generative' }
+  ];
+
+  const widget = document.getElementById('fruit-audit');
+  const addInput = widget.querySelector('#fa-add');
+  const addBtn = widget.querySelector('#fa-add-btn');
+  const itemsContainer = widget.querySelector('#fa-items');
+  const emptyEl = widget.querySelector('#fa-empty');
+  const summaryEl = widget.querySelector('#fa-summary');
+
+  let items = [];
+  let nextId = 1;
+
+  function renderItems(){
+    itemsContainer.innerHTML = '';
+    if(items.length === 0){
+      emptyEl.style.display = 'block';
+      summaryEl.style.display = 'none';
+      return;
+    }
+    emptyEl.style.display = 'none';
+
+    items.forEach(function(item){
+      const div = document.createElement('div');
+      div.className = 'fa-item';
+      if(item.form && item.pressure !== null){
+        div.classList.add(item.pressure === 'no' ? 'scored-fruit' : 'scored-response');
+      }
+      let formOptions = '<option value="">— form —</option>';
+      forms.forEach(function(f){
+        formOptions += '<option value="' + f.key + '"' + (item.form === f.key ? ' selected' : '') + '>' + f.name + '</option>';
+      });
+      div.innerHTML =
+        '<div class="fa-item-text">' + escapeHtml(item.text) + '</div>' +
+        '<select class="fa-form-select" data-id="' + item.id + '">' + formOptions + '</select>' +
+        '<div class="fa-pressure-btns">' +
+          '<button class="fa-pressure-btn no' + (item.pressure === 'no' ? ' active' : '') + '" data-id="' + item.id + '" data-pressure="no" title="Would I have produced this without pressure?">Fruit</button>' +
+          '<button class="fa-pressure-btn yes' + (item.pressure === 'yes' ? ' active' : '') + '" data-id="' + item.id + '" data-pressure="yes" title="Only happened because of external pressure">Response</button>' +
+        '</div>' +
+        '<button class="fa-remove" data-id="' + item.id + '" title="Remove">&times;</button>';
+      itemsContainer.appendChild(div);
+    });
+
+    summaryEl.style.display = 'block';
+    renderSummary();
+  }
+
+  function renderSummary(){
+    const scored = items.filter(function(i){ return i.form && i.pressure !== null; });
+    const fruit = scored.filter(function(i){ return i.pressure === 'no'; });
+    const response = scored.filter(function(i){ return i.pressure === 'yes'; });
+    const total = scored.length;
+    const ratio = total > 0 ? Math.round((fruit.length / total) * 100) : 0;
+
+    widget.querySelector('#fa-total').textContent = scored.length + ' / ' + items.length;
+    widget.querySelector('#fa-ratio').textContent = ratio + '%';
+
+    // Form distribution among fruit items
+    const formContainer = widget.querySelector('#fa-forms');
+    formContainer.innerHTML = '';
+    forms.forEach(function(f){
+      const count = fruit.filter(function(i){ return i.form === f.key; }).length;
+      const cell = document.createElement('div');
+      cell.className = 'fa-form-cell' + (count === 0 && scored.length >= 5 ? ' starved' : '');
+      cell.innerHTML = '<div class="fa-form-name">' + f.name + '</div>' +
+                       '<div class="fa-form-count">' + count + '</div>';
+      formContainer.appendChild(cell);
+    });
+
+    let verdict;
+    if(scored.length < items.length){
+      verdict = 'Finish scoring the remaining ' + (items.length - scored.length) + ' item' + (items.length - scored.length === 1 ? '' : 's') + ' to see your audit verdict.';
+    } else if(scored.length === 0){
+      verdict = 'Score your items to see your audit verdict.';
+    } else {
+      const formsHit = forms.filter(function(f){ return fruit.some(function(i){ return i.form === f.key; }); }).length;
+      const formsStarved = 5 - formsHit;
+      if(ratio < 20){
+        verdict = 'Most of your year was response, not fruit. This is not a failure. <strong>It is information.</strong> The audit just told you that almost everything you produced was driven by external pressure rather than discretion. The next move is to identify what would survive a sabbatical. That work is the actual fruit. Start there.';
+      } else if(ratio < 40){
+        verdict = 'About a fifth to a third of your year was fruit. <strong>This is closer to typical than you might think.</strong> Most adults run between 15 and 25 percent fruit ratio. The number is information, not condemnation. Look at the form distribution and find the starved branches.';
+      } else if(ratio < 60){
+        verdict = 'A significant portion of your year was discretionary fruit. <strong>This is unusual.</strong> Most readers will land below 30 percent. If your scoring is honest and the number is over 40, you are operating closer to the Eden Pattern than most.';
+      } else {
+        verdict = 'Most of your year was discretionary fruit. <strong>Run the test of the sabbatical to verify the scoring is honest.</strong> If you removed all external pressure tomorrow, would the output continue at this level? If yes, the audit is accurate and you are operating in a rare zone. If not, some items scored as fruit were actually response wearing a disguise.';
+      }
+      if(formsStarved >= 3){
+        verdict += ' <strong>' + formsStarved + ' of the five branches received zero fruit.</strong> Identify the one starved branch that most needs you and water it deliberately this quarter.';
+      } else if(formsStarved >= 1){
+        verdict += ' <strong>' + formsStarved + ' branch' + (formsStarved === 1 ? '' : 'es') + ' received no fruit this year.</strong> Notice which.';
+      }
+    }
+    widget.querySelector('#fa-verdict').innerHTML = verdict;
+  }
+
+  function escapeHtml(s){
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+  }
+
+  function addItem(text){
+    text = text.trim();
+    if(!text) return;
+    items.push({ id: nextId++, text: text, form: null, pressure: null });
+    addInput.value = '';
+    renderItems();
+  }
+
+  addBtn.addEventListener('click', function(){ addItem(addInput.value); });
+  addInput.addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){ e.preventDefault(); addItem(addInput.value); }
+  });
+
+  itemsContainer.addEventListener('click', function(e){
+    const removeBtn = e.target.closest('.fa-remove');
+    if(removeBtn){
+      const id = parseInt(removeBtn.getAttribute('data-id'), 10);
+      items = items.filter(function(i){ return i.id !== id; });
+      renderItems();
+      return;
+    }
+    const pBtn = e.target.closest('.fa-pressure-btn');
+    if(pBtn){
+      const id = parseInt(pBtn.getAttribute('data-id'), 10);
+      const pressure = pBtn.getAttribute('data-pressure');
+      const item = items.find(function(i){ return i.id === id; });
+      if(item){ item.pressure = pressure; renderItems(); }
+      return;
+    }
+  });
+
+  itemsContainer.addEventListener('change', function(e){
+    const select = e.target.closest('.fa-form-select');
+    if(!select) return;
+    const id = parseInt(select.getAttribute('data-id'), 10);
+    const item = items.find(function(i){ return i.id === id; });
+    if(item){ item.form = select.value || null; renderItems(); }
+  });
+
+  renderItems();
+})();
+</script>
+</div>
+
 <div class="think">
 <div class="think-label">Stop and Run The Audit</div>
 <p>Take thirty minutes today. Open a blank document. Walk through your last twelve months. Run each item of output through both filters. Count the response. Count the discretionary. Notice which of the five forms got fed and which did not.</p>
