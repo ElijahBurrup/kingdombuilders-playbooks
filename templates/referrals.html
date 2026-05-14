@@ -336,6 +336,35 @@ body {
   color: rgba(212,168,67,0.55);
   font-size: 13px;
 }
+
+/* Active-only toggle bar above the levels */
+.ref-tree-toggle-bar {
+  display: flex; flex-direction: column; gap: 4px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px;
+}
+.ref-tree-toggle {
+  display: inline-flex; align-items: center; gap: 10px;
+  cursor: pointer; user-select: none;
+}
+.ref-tree-toggle input[type="checkbox"] {
+  width: 16px; height: 16px; accent-color: var(--gold);
+  cursor: pointer;
+}
+.ref-tree-toggle-label {
+  font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600;
+  color: rgba(255,255,255,0.88);
+}
+.ref-tree-toggle-hint {
+  font-family: 'Lora', serif; font-style: italic; font-size: 12px;
+  color: rgba(255,255,255,0.45); margin-left: 26px;
+}
+.ref-tree-inactive-tally {
+  color: rgba(255,255,255,0.35); font-weight: 600;
+}
 .ref-tree-item {
   display: flex;
   align-items: center;
@@ -1289,132 +1318,177 @@ body {
   }
 
   // --- Load Tree ---
-  // Per-level total = count * $1.50/mo per active sub. Per-row dollar
-  // values are intentionally hidden — only the rolled-up level total shows.
+  // Per-level total = ACTIVE count * $1.50/mo. Inactive rows do not pay.
+  // Toggle "Active only" hides inactive rows without recomputing the totals
+  // (the totals are already active-only).
+  var _treeData = null;
+  var _activeOnly = false;
+
   function loadTree() {
     apiFetch('/api/v1/referrals/tree').then(function(data) {
+      _treeData = data;
       tabDataLoaded.tree = true;
       document.getElementById('treeLoading').style.display = 'none';
-      var content = document.getElementById('treeContent');
-      content.style.display = 'block';
-      content.innerHTML = '';
-
-      var COMMISSION_PER_SUB_CENTS = 150; // $1.50/mo per level per active sub
-
-      function levelTotal(count) {
-        return formatCurrency(count * COMMISSION_PER_SUB_CENTS) + '/mo';
-      }
-
-      function escape(s) {
-        return String(s || '').replace(/[&<>"']/g, function(c) {
-          return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
-        });
-      }
-
-      function chainHtml(names) {
-        // names = ['Alice Smith', 'Bob Jones', 'Carol Lee']
-        var parts = [];
-        for (var i = 0; i < names.length; i++) {
-          parts.push('<span class="chain-name">' + escape(names[i]) + '</span>');
-        }
-        return parts.join('<span class="chain-arrow">&rarr;</span>');
-      }
-
-      // ===== Level 1 — Direct =====
-      var level1 = data.level_1 || [];
-      var l1Section = document.createElement('div');
-      l1Section.className = 'ref-tree-level';
-
-      var l1Header = document.createElement('div');
-      l1Header.className = 'ref-tree-level-header';
-      l1Header.innerHTML =
-        '<div class="ref-tree-level-title">Level 1 &mdash; Direct Referrals' +
-          '<span class="ref-tree-level-count">' + level1.length + ' &times; $1.50</span>' +
-        '</div>' +
-        '<div class="ref-tree-level-commission">' + levelTotal(level1.length) + '</div>';
-      l1Section.appendChild(l1Header);
-
-      if (level1.length === 0) {
-        var emptyL1 = document.createElement('div');
-        emptyL1.className = 'ref-empty';
-        emptyL1.innerHTML = '<div class="ref-empty-icon">&#128101;</div>No direct referrals yet. Share your link to get started!';
-        l1Section.appendChild(emptyL1);
-      } else {
-        level1.forEach(function(ref) {
-          var item = document.createElement('div');
-          item.className = 'ref-tree-item';
-          item.innerHTML =
-            '<div class="ref-tree-avatar">' + getInitials(ref.display_name) + '</div>' +
-            '<div class="ref-tree-info">' +
-              '<div class="ref-tree-name">' + escape(ref.display_name || 'Anonymous') + '</div>' +
-            '</div>' +
-            '<span class="' + badgeClass(ref.status) + '">' + escape(ref.status || 'unknown') + '</span>';
-          l1Section.appendChild(item);
-        });
-      }
-      content.appendChild(l1Section);
-
-      // ===== Level 2 — chains: L1 -> L2 =====
-      var l2detail = data.level_2_detail || [];
-      var l2count = (data.level_2_summary && data.level_2_summary.count) || l2detail.length;
-      var l2Section = document.createElement('div');
-      l2Section.className = 'ref-tree-level';
-      l2Section.innerHTML =
-        '<div class="ref-tree-level-header">' +
-          '<div class="ref-tree-level-title">Level 2 &mdash; Your referrals’ referrals' +
-            '<span class="ref-tree-level-count">' + l2count + ' &times; $1.50</span>' +
-          '</div>' +
-          '<div class="ref-tree-level-commission">' + levelTotal(l2count) + '</div>' +
-        '</div>';
-      if (l2detail.length === 0) {
-        var emptyL2 = document.createElement('div');
-        emptyL2.className = 'ref-empty';
-        emptyL2.innerHTML = '<div class="ref-empty-icon">&#128279;</div>None yet. Your level-2 row appears when one of your direct referrals brings someone in.';
-        l2Section.appendChild(emptyL2);
-      } else {
-        l2detail.forEach(function(row) {
-          var item = document.createElement('div');
-          item.className = 'ref-tree-item ref-tree-chain';
-          item.innerHTML = '<div class="ref-tree-info">' +
-            chainHtml([row.l1_name, row.l2_name]) +
-            '</div>';
-          l2Section.appendChild(item);
-        });
-      }
-      content.appendChild(l2Section);
-
-      // ===== Level 3 — chains: L1 -> L2 -> L3 =====
-      var l3detail = data.level_3_detail || [];
-      var l3count = (data.level_3_summary && data.level_3_summary.count) || l3detail.length;
-      var l3Section = document.createElement('div');
-      l3Section.className = 'ref-tree-level';
-      l3Section.innerHTML =
-        '<div class="ref-tree-level-header">' +
-          '<div class="ref-tree-level-title">Level 3 &mdash; Third-degree network' +
-            '<span class="ref-tree-level-count">' + l3count + ' &times; $1.50</span>' +
-          '</div>' +
-          '<div class="ref-tree-level-commission">' + levelTotal(l3count) + '</div>' +
-        '</div>';
-      if (l3detail.length === 0) {
-        var emptyL3 = document.createElement('div');
-        emptyL3.className = 'ref-empty';
-        emptyL3.innerHTML = '<div class="ref-empty-icon">&#127760;</div>None yet. Level 3 rows appear when the network three rings out grows.';
-        l3Section.appendChild(emptyL3);
-      } else {
-        l3detail.forEach(function(row) {
-          var item = document.createElement('div');
-          item.className = 'ref-tree-item ref-tree-chain';
-          item.innerHTML = '<div class="ref-tree-info">' +
-            chainHtml([row.l1_name, row.l2_name, row.l3_name]) +
-            '</div>';
-          l3Section.appendChild(item);
-        });
-      }
-      content.appendChild(l3Section);
-
+      renderTree();
     }).catch(function(err) {
       console.error('Failed to load tree:', err);
       document.getElementById('treeLoading').innerHTML = '<div class="ref-empty">Unable to load referral tree</div>';
+    });
+  }
+
+  window._toggleActiveOnly = function() {
+    _activeOnly = !_activeOnly;
+    renderTree();
+  };
+
+  function renderTree() {
+    var data = _treeData || {};
+    var content = document.getElementById('treeContent');
+    content.style.display = 'block';
+    content.innerHTML = '';
+
+    var COMMISSION_PER_SUB_CENTS = 150; // $1.50/mo per level per active sub
+
+    function levelTotal(activeCount) {
+      return formatCurrency(activeCount * COMMISSION_PER_SUB_CENTS) + '/mo';
+    }
+
+    function escape(s) {
+      return String(s || '').replace(/[&<>"']/g, function(c) {
+        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+      });
+    }
+
+    function chainHtml(names) {
+      var parts = [];
+      for (var i = 0; i < names.length; i++) {
+        parts.push('<span class="chain-name">' + escape(names[i]) + '</span>');
+      }
+      return parts.join('<span class="chain-arrow">&rarr;</span>');
+    }
+
+    function statusBadge(status) {
+      var s = (status || 'inactive').toLowerCase();
+      return '<span class="' + badgeClass(s) + '">' + escape(s) + '</span>';
+    }
+
+    function visibleRows(rows) {
+      return _activeOnly ? rows.filter(function(r){ return r.status === 'active'; }) : rows;
+    }
+
+    // ===== Toggle: Active only =====
+    var toggleBar = document.createElement('div');
+    toggleBar.className = 'ref-tree-toggle-bar';
+    toggleBar.innerHTML =
+      '<label class="ref-tree-toggle">' +
+        '<input type="checkbox" id="treeActiveOnly" ' + (_activeOnly ? 'checked' : '') + ' onchange="_toggleActiveOnly()">' +
+        '<span class="ref-tree-toggle-label">Show only active paying accounts</span>' +
+      '</label>' +
+      '<div class="ref-tree-toggle-hint">Totals reflect active accounts only. Each active referral pays $1.50/mo at every level.</div>';
+    content.appendChild(toggleBar);
+
+    function renderLevel(opts) {
+      var section = document.createElement('div');
+      section.className = 'ref-tree-level';
+      var header = document.createElement('div');
+      header.className = 'ref-tree-level-header';
+      header.innerHTML =
+        '<div class="ref-tree-level-title">' + opts.title +
+          '<span class="ref-tree-level-count">' +
+            opts.activeCount + ' active &times; $1.50' +
+            (opts.totalCount > opts.activeCount
+              ? ' &middot; <span class="ref-tree-inactive-tally">' + (opts.totalCount - opts.activeCount) + ' inactive</span>'
+              : '') +
+          '</span>' +
+        '</div>' +
+        '<div class="ref-tree-level-commission">' + levelTotal(opts.activeCount) + '</div>';
+      section.appendChild(header);
+
+      var shown = opts.rows;
+      if (shown.length === 0) {
+        var empty = document.createElement('div');
+        empty.className = 'ref-empty';
+        empty.innerHTML = '<div class="ref-empty-icon">' + opts.emptyIcon + '</div>' + opts.emptyMsg;
+        section.appendChild(empty);
+      } else {
+        shown.forEach(function(row) {
+          section.appendChild(opts.rowBuilder(row));
+        });
+      }
+      content.appendChild(section);
+    }
+
+    // ===== Level 1 — Direct =====
+    var level1 = data.level_1 || [];
+    var l1Active = data.level_1_active_count || 0;
+    renderLevel({
+      title: 'Level 1 &mdash; Direct Referrals',
+      totalCount: level1.length,
+      activeCount: l1Active,
+      rows: visibleRows(level1),
+      emptyIcon: '&#128101;',
+      emptyMsg: _activeOnly && level1.length > 0
+        ? 'No active direct referrals yet — your direct invitees need an active subscription to pay you.'
+        : 'No direct referrals yet. Share your link to get started!',
+      rowBuilder: function(ref) {
+        var item = document.createElement('div');
+        item.className = 'ref-tree-item';
+        item.innerHTML =
+          '<div class="ref-tree-avatar">' + getInitials(ref.display_name) + '</div>' +
+          '<div class="ref-tree-info">' +
+            '<div class="ref-tree-name">' + escape(ref.display_name || 'Anonymous') + '</div>' +
+          '</div>' +
+          statusBadge(ref.status);
+        return item;
+      },
+    });
+
+    // ===== Level 2 — chains: L1 -> L2 =====
+    var l2detail = data.level_2_detail || [];
+    var l2sum = data.level_2_summary || {};
+    var l2Active = l2sum.active_count || 0;
+    var l2Total = l2sum.count || l2detail.length;
+    renderLevel({
+      title: 'Level 2 &mdash; Your referrals’ referrals',
+      totalCount: l2Total,
+      activeCount: l2Active,
+      rows: visibleRows(l2detail),
+      emptyIcon: '&#128279;',
+      emptyMsg: _activeOnly && l2detail.length > 0
+        ? 'No active L2 yet — your second-degree network has signed up but none have active subscriptions.'
+        : 'None yet. Your level-2 row appears when one of your direct referrals brings someone in.',
+      rowBuilder: function(row) {
+        var item = document.createElement('div');
+        item.className = 'ref-tree-item ref-tree-chain';
+        item.innerHTML = '<div class="ref-tree-info">' +
+          chainHtml([row.l1_name, row.l2_name]) +
+          '</div>' + statusBadge(row.status);
+        return item;
+      },
+    });
+
+    // ===== Level 3 — chains: L1 -> L2 -> L3 =====
+    var l3detail = data.level_3_detail || [];
+    var l3sum = data.level_3_summary || {};
+    var l3Active = l3sum.active_count || 0;
+    var l3Total = l3sum.count || l3detail.length;
+    renderLevel({
+      title: 'Level 3 &mdash; Third-degree network',
+      totalCount: l3Total,
+      activeCount: l3Active,
+      rows: visibleRows(l3detail),
+      emptyIcon: '&#127760;',
+      emptyMsg: _activeOnly && l3detail.length > 0
+        ? 'No active L3 yet — the third-degree network exists but none have active subscriptions.'
+        : 'None yet. Level 3 rows appear as the network three rings out grows.',
+      rowBuilder: function(row) {
+        var item = document.createElement('div');
+        item.className = 'ref-tree-item ref-tree-chain';
+        item.innerHTML = '<div class="ref-tree-info">' +
+          chainHtml([row.l1_name, row.l2_name, row.l3_name]) +
+          '</div>' + statusBadge(row.status);
+        return item;
+      },
     });
   }
 

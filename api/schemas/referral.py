@@ -24,6 +24,7 @@ class ReferralTreeLevel1(BaseModel):
 class ReferralTreeSummary(BaseModel):
     count: int
     total_commission_cents: int
+    active_count: int = 0
 
 
 class ReferralTreeChainL2(BaseModel):
@@ -31,6 +32,7 @@ class ReferralTreeChainL2(BaseModel):
     l1_name: str
     l2_name: str
     signup_date: str | None
+    status: str = "inactive"  # 'active' if the L2 person has an active subscription
 
 
 class ReferralTreeChainL3(BaseModel):
@@ -39,11 +41,13 @@ class ReferralTreeChainL3(BaseModel):
     l2_name: str
     l3_name: str
     signup_date: str | None
+    status: str = "inactive"  # 'active' if the L3 person has an active subscription
 
 
 class ReferralTreeResponse(BaseModel):
     level_1: list[ReferralTreeLevel1]
     level_1_commission_cents: int
+    level_1_active_count: int = 0
     level_2_summary: ReferralTreeSummary
     level_2_detail: list[ReferralTreeChainL2] = []
     level_3_summary: ReferralTreeSummary

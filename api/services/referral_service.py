@@ -621,6 +621,21 @@ async def get_referral_tree(user_id: UUID, db: AsyncSession) -> dict:
         # Fallback: username portion of email so the row isn't blank
         return u.email.split("@", 1)[0] if u.email else "Anonymous"
 
+    async def _active_set(referred_ids: list[UUID]) -> set[str]:
+        """Return the set of user ids (as str) with an active subscription."""
+        if not referred_ids:
+            return set()
+        sub_res = await db.execute(
+            select(Subscription.user_id).where(
+                and_(
+                    Subscription.user_id.in_(referred_ids),
+                    Subscription.status == "active",
+                    Subscription.current_period_end > datetime.now(timezone.utc),
+                )
+            )
+        )
+        return {str(row[0]) for row in sub_res.all()}
+
     # Level 2 — per-row chain: who YOU brought in (L1) → who they brought in (L2)
     from sqlalchemy.orm import aliased
     L2 = aliased(Referral, name="l2")
@@ -639,15 +654,19 @@ async def get_referral_tree(user_id: UUID, db: AsyncSession) -> dict:
         .where(and_(L2.referrer_id == user_id, L2.level == 2))
         .order_by(L2.created_at.desc())
     )
+    l2_rows = l2_result.all()
+    l2_active_ids = await _active_set([l2_row.referred_id for l2_row, _, _ in l2_rows])
     level_2_detail = [
         {
             "l1_name": _name(ul1),
             "l2_name": _name(ul2),
             "signup_date": l2_row.created_at.isoformat() if l2_row.created_at else None,
+            "status": "active" if str(l2_row.referred_id) in l2_active_ids else "inactive",
         }
-        for l2_row, ul2, ul1 in l2_result.all()
+        for l2_row, ul2, ul1 in l2_rows
     ]
     l2_count = len(level_2_detail)
+    l2_active_count = sum(1 for r in level_2_detail if r["status"] == "active")
 
     l2_earnings_result = await db.execute(
         select(func.coalesce(func.sum(Commission.amount_cents), 0)).where(
@@ -689,16 +708,20 @@ async def get_referral_tree(user_id: UUID, db: AsyncSession) -> dict:
     # captured in ul1c). The naming in the join aliases follows the L3
     # person's chain (X's L1, X's L2), which is the inverse of the viewer's
     # chain — so we deliberately remap here.
+    l3_rows = l3_result.all()
+    l3_active_ids = await _active_set([l3_row.referred_id for l3_row, _, _, _ in l3_rows])
     level_3_detail = [
         {
             "l1_name": _name(ul2c),   # viewer's direct invitee = leftmost
             "l2_name": _name(ul1c),   # the middle person in the chain
             "l3_name": _name(ul3),    # the L3 person at the rightmost
             "signup_date": l3_row.created_at.isoformat() if l3_row.created_at else None,
+            "status": "active" if str(l3_row.referred_id) in l3_active_ids else "inactive",
         }
-        for l3_row, ul3, ul2c, ul1c in l3_result.all()
+        for l3_row, ul3, ul2c, ul1c in l3_rows
     ]
     l3_count = len(level_3_detail)
+    l3_active_count = sum(1 for r in level_3_detail if r["status"] == "active")
 
     l3_earnings_result = await db.execute(
         select(func.coalesce(func.sum(Commission.amount_cents), 0)).where(
@@ -713,17 +736,21 @@ async def get_referral_tree(user_id: UUID, db: AsyncSession) -> dict:
 
     # Sum L1 commissions for the header
     l1_total_commission = sum(r["monthly_commission_cents"] for r in level_1_detail)
+    l1_active_count = sum(1 for r in level_1_detail if r["status"] == "active")
 
     return {
         "level_1": level_1_detail,
         "level_1_commission_cents": l1_total_commission,
+        "level_1_active_count": l1_active_count,
         "level_2_summary": {
             "count": l2_count,
+            "active_count": l2_active_count,
             "total_commission_cents": l2_earnings,
         },
         "level_2_detail": level_2_detail,
         "level_3_summary": {
             "count": l3_count,
+            "active_count": l3_active_count,
             "total_commission_cents": l3_earnings,
         },
         "level_3_detail": level_3_detail,
