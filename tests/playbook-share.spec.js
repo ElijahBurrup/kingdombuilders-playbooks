@@ -56,7 +56,11 @@ test.describe("In-playbook share button", () => {
     // Give the auth/status fetch a moment to land
     await page.waitForTimeout(500);
 
-    await page.locator("button.pb-share-top").click();
+    // Use the bottom button: the top floating chip can be obscured by the
+    // playbook's cover hero on initial load. The share handler is shared.
+    const btn = page.locator("button.pb-share-bottom-btn");
+    await btn.scrollIntoViewIfNeeded();
+    await btn.click();
 
     const calls = await page.evaluate(() => window.__pbShareCalls);
     expect(calls).toHaveLength(1);
