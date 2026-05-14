@@ -347,12 +347,47 @@ body {
   border-radius: 10px;
 }
 .ref-tree-toggle {
-  display: inline-flex; align-items: center; gap: 10px;
+  display: inline-flex; align-items: center; gap: 12px;
   cursor: pointer; user-select: none;
 }
+/* Visually-hidden native checkbox — keeps keyboard/AT support */
 .ref-tree-toggle input[type="checkbox"] {
-  width: 16px; height: 16px; accent-color: var(--gold);
-  cursor: pointer;
+  position: absolute; opacity: 0;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0;
+  clip: rect(0 0 0 0); overflow: hidden;
+}
+/* Toggle track */
+.ref-tree-switch {
+  position: relative; display: inline-block;
+  width: 38px; height: 22px;
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 999px;
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+  flex-shrink: 0;
+}
+.ref-tree-switch-thumb {
+  position: absolute; top: 2px; left: 2px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: rgba(245,224,168,0.55);
+  transition: transform 0.22s cubic-bezier(.4,.0,.2,1), background 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+/* On state — gold gradient track + bright gold thumb */
+.ref-tree-toggle input[type="checkbox"]:checked + .ref-tree-switch {
+  background: linear-gradient(135deg, var(--gold, #D4A843), var(--gold-light, #E8C96A));
+  border-color: var(--gold, #D4A843);
+  box-shadow: 0 0 12px rgba(212,168,67,0.35);
+}
+.ref-tree-toggle input[type="checkbox"]:checked + .ref-tree-switch .ref-tree-switch-thumb {
+  transform: translateX(16px);
+  background: #1F2440;
+}
+/* Focus outline on the track for keyboard users */
+.ref-tree-toggle input[type="checkbox"]:focus-visible + .ref-tree-switch {
+  outline: 2px solid var(--gold-light, #E8C96A);
+  outline-offset: 2px;
 }
 .ref-tree-toggle-label {
   font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600;
@@ -360,7 +395,7 @@ body {
 }
 .ref-tree-toggle-hint {
   font-family: 'Lora', serif; font-style: italic; font-size: 12px;
-  color: rgba(255,255,255,0.45); margin-left: 26px;
+  color: rgba(255,255,255,0.45); margin-left: 50px;
 }
 .ref-tree-inactive-tally {
   color: rgba(255,255,255,0.35); font-weight: 600;
@@ -1382,6 +1417,7 @@ body {
     toggleBar.innerHTML =
       '<label class="ref-tree-toggle">' +
         '<input type="checkbox" id="treeActiveOnly" ' + (_activeOnly ? 'checked' : '') + ' onchange="_toggleActiveOnly()">' +
+        '<span class="ref-tree-switch" aria-hidden="true"><span class="ref-tree-switch-thumb"></span></span>' +
         '<span class="ref-tree-toggle-label">Show only active paying accounts</span>' +
       '</label>' +
       '<div class="ref-tree-toggle-hint">Totals reflect active accounts only. Each active referral pays $1.50/mo at every level.</div>';
