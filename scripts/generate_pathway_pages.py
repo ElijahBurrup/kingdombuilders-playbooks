@@ -27,6 +27,7 @@ ACCENTS = {
     'inner-battle':     ('#0A0408', '#1E0A14', '#7A2842', '#A13C5A', '#7A2842', '#F0C8D0'),
     'family-foundation': ('#0A0604', '#1E0E08', '#C25840', '#E07A5F', '#A04830', '#F0D0C8'),
     'strategist-toolkit': ('#040810', '#0A1422', '#4A6B8A', '#6E8FA8', '#2A4866', '#C8D8E8'),
+    'process-model':    ('#040A04', '#0E1A0E', '#1E3A1E', '#5A7A4E', '#3A5530', '#D0E5C8'),
 }
 
 COUNT_WORDS = {3: 'Three', 4: 'Four', 5: 'Five', 6: 'Six', 7: 'Seven', 8: 'Eight'}
