@@ -341,24 +341,227 @@ footer .brand{font-family:'Nunito',sans-serif;font-size:0.5rem;font-style:normal
     <p>Most people misread this. They assume the right pull rate is fast. It is not. Fast is brittle. They assume the right pull rate is slow. It is not. Slow is formless. <strong>The right pull rate is the one that produces the phase transition, and it is almost always slower than your worst week and faster than your best vacation.</strong></p>
     <p>The spider does not pull at her maximum speed. She pulls at the speed that triggers alignment. The novelist does not write the most words per hour. She writes at the rate that allows sentences to crystallize. The carpenter does not swing the hammer the fastest. He swings at the rate that drives the nail without splitting the wood. <em>The optimum is not the maximum.</em> The optimum is the band where transformation occurs.</p>
 
-    <div class="viz-box">
-      <div class="viz-label">The Pull Rate Diagnostic</div>
-      <h3>Which state is your current work in?</h3>
-      <p>Read each set of three statements. The set that describes your current main work is the state you are in right now. The diagnosis is not about you. It is about the conditions you are operating inside.</p>
-      <p><strong>Brittle output (you are pulling too fast):</strong></p>
-      <p>&middot; You are producing a lot this week but the work does not hold up under scrutiny.<br>
-      &middot; You are finishing things but you are not proud of any of them.<br>
-      &middot; The work shipped, but it cracked the moment someone applied real pressure to it.</p>
-      <p><strong>Formless output (you are pulling too slowly):</strong></p>
-      <p>&middot; You have been thinking about this for months and have nothing concrete.<br>
-      &middot; You have notes everywhere but no piece is finished.<br>
-      &middot; The work has no spine. It drifts in every direction.</p>
-      <p><strong>Phase transition (you are inside the band):</strong></p>
-      <p>&middot; You are tired but the work is recognizably yours.<br>
-      &middot; Each piece sits with you for days but does not collapse.<br>
-      &middot; You can show this to a critic and it holds.</p>
-      <p>The state you are in is the state your conditions are producing. <strong>Change the conditions, not the effort.</strong> If you are brittle, slow down and add slack. If you are formless, narrow the scope and add a deadline. If you are inside the band, study what made it possible. Those are your phase transition parameters.</p>
+    <div class="diagnostic-widget" id="pull-rate-quiz">
+<style>
+#pull-rate-quiz{margin:48px 0;border-radius:18px;overflow:hidden;border:2px solid var(--dew,#68A8E0);box-shadow:0 8px 32px rgba(10,14,26,0.15);background:var(--silk,#F0F4FF)}
+#pull-rate-quiz .pr-head{background:linear-gradient(135deg,var(--midnight-dark,#04060E),var(--midnight,#0A0E1A));padding:28px 32px;text-align:center;color:#fff}
+#pull-rate-quiz .pr-kicker{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--dew,#68A8E0);margin-bottom:8px}
+#pull-rate-quiz .pr-head h3{font-family:'Nunito',sans-serif;font-size:1.5rem;font-weight:800;color:#fff;margin:0 0 6px;letter-spacing:-0.01em}
+#pull-rate-quiz .pr-head p{font-family:'Lora',serif;font-style:italic;font-size:0.92rem;color:rgba(255,255,255,0.7);margin:0 auto;max-width:480px}
+#pull-rate-quiz .pr-body{padding:32px}
+#pull-rate-quiz .pr-progress{display:flex;align-items:center;gap:10px;margin-bottom:24px}
+#pull-rate-quiz .pr-progress-bar{flex:1;height:6px;background:rgba(10,14,26,0.08);border-radius:3px;overflow:hidden}
+#pull-rate-quiz .pr-progress-fill{height:100%;background:linear-gradient(90deg,var(--dew,#68A8E0),var(--dew-glow,#88C0F0));width:0%;transition:width 0.35s ease}
+#pull-rate-quiz .pr-progress-count{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:2px;color:#7A7E8E;text-transform:uppercase;white-space:nowrap}
+#pull-rate-quiz .pr-question{font-family:'Lora',serif;font-size:1.18rem;color:var(--midnight,#0A0E1A);line-height:1.45;margin-bottom:22px;font-weight:600}
+#pull-rate-quiz .pr-options{display:grid;gap:10px}
+#pull-rate-quiz .pr-opt{display:block;padding:14px 18px;background:#fff;border:1.5px solid #D0D8E8;border-radius:10px;font-family:'Nunito',sans-serif;font-size:0.92rem;font-weight:600;color:var(--midnight,#0A0E1A);text-align:left;cursor:pointer;transition:all 0.2s;width:100%}
+#pull-rate-quiz .pr-opt:hover{border-color:var(--dew,#68A8E0);background:rgba(104,168,224,0.06);transform:translateX(2px)}
+#pull-rate-quiz .pr-opt-dot{display:inline-block;width:22px;height:22px;border-radius:50%;background:rgba(104,168,224,0.18);color:var(--dew,#68A8E0);font-weight:800;font-size:0.72rem;text-align:center;line-height:22px;margin-right:12px;vertical-align:middle}
+#pull-rate-quiz .pr-result{display:none}
+#pull-rate-quiz .pr-result.show{display:block}
+#pull-rate-quiz .pr-result-head{text-align:center;padding-bottom:22px;border-bottom:1.5px solid #D0D8E8;margin-bottom:24px}
+#pull-rate-quiz .pr-result-kicker{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--dew,#68A8E0);margin-bottom:8px}
+#pull-rate-quiz .pr-result-state{font-family:'Nunito',sans-serif;font-size:2.2rem;font-weight:900;color:var(--midnight,#0A0E1A);line-height:1.1;margin-bottom:8px}
+#pull-rate-quiz .pr-result-sub{font-family:'Lora',serif;font-style:italic;color:#2A3448;font-size:0.95rem;max-width:480px;margin:0 auto}
+#pull-rate-quiz .pr-states{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px}
+@media(max-width:520px){#pull-rate-quiz .pr-states{grid-template-columns:1fr}}
+#pull-rate-quiz .pr-state{padding:18px;border-radius:10px;text-align:center;border:1.5px solid #D0D8E8;background:#fff;opacity:0.5;transition:all 0.3s}
+#pull-rate-quiz .pr-state.you-are{opacity:1;border-color:var(--dew,#68A8E0);background:linear-gradient(135deg,rgba(104,168,224,0.1),rgba(136,192,240,0.05))}
+#pull-rate-quiz .pr-state-label{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:#586878;margin-bottom:6px}
+#pull-rate-quiz .pr-state.you-are .pr-state-label{color:var(--dew,#68A8E0)}
+#pull-rate-quiz .pr-state-value{font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:var(--midnight,#0A0E1A);line-height:1;margin-bottom:6px}
+#pull-rate-quiz .pr-state-desc{font-family:'Lora',serif;font-style:italic;font-size:0.78rem;color:#586878;line-height:1.4}
+#pull-rate-quiz .pr-recommendation{padding:22px;background:linear-gradient(135deg,var(--midnight,#0A0E1A),var(--midnight-light,#1E2840));color:#fff;border-radius:12px;margin-bottom:18px}
+#pull-rate-quiz .pr-recommendation h4{font-family:'Nunito',sans-serif;color:var(--dew-glow,#88C0F0);font-size:1rem;margin-bottom:10px;font-weight:800}
+#pull-rate-quiz .pr-recommendation p{font-family:'Lora',serif;color:rgba(255,255,255,0.82);line-height:1.6;font-size:0.92rem;margin-bottom:10px}
+#pull-rate-quiz .pr-recommendation p:last-child{margin-bottom:0}
+#pull-rate-quiz .pr-retake{font-family:'Nunito',sans-serif;font-size:0.78rem;font-weight:700;color:#586878;background:transparent;border:1.5px solid #D0D8E8;padding:10px 22px;border-radius:50px;cursor:pointer;letter-spacing:1px;transition:all 0.2s}
+#pull-rate-quiz .pr-retake:hover{background:#D0D8E8;color:var(--midnight,#0A0E1A)}
+#pull-rate-quiz .pr-result-actions{text-align:center}
+</style>
+
+<div class="pr-head">
+  <div class="pr-kicker">Interactive Diagnostic</div>
+  <h3>The Pull Rate Diagnostic</h3>
+  <p>Six questions. Two minutes. Identifies whether your current work is in the brittle, formless, or phase-transition band.</p>
+</div>
+<div class="pr-body">
+  <div class="pr-progress">
+    <div class="pr-progress-count" id="pr-counter">Question 1 of 6</div>
+    <div class="pr-progress-bar"><div class="pr-progress-fill" id="pr-fill"></div></div>
+  </div>
+  <div id="pr-question">
+    <div class="pr-question" id="pr-text">My recent output has held up well under real pressure and feedback.</div>
+    <div class="pr-options" id="pr-options">
+      <button class="pr-opt" data-score="b"><span class="pr-opt-dot">1</span>The work shipped, but it cracked under any real challenge</button>
+      <button class="pr-opt" data-score="f"><span class="pr-opt-dot">2</span>Nothing has shipped yet to find out</button>
+      <button class="pr-opt" data-score="t"><span class="pr-opt-dot">3</span>The work held; I am proud of what was shipped</button>
     </div>
+  </div>
+  <div class="pr-result" id="pr-result">
+    <div class="pr-result-head">
+      <div class="pr-result-kicker">Your current state</div>
+      <div class="pr-result-state" id="pr-result-state">Phase Transition</div>
+      <div class="pr-result-sub" id="pr-result-sub">You are inside the band where the molecules align. The conditions producing this output are what you must protect.</div>
+    </div>
+    <div class="pr-states">
+      <div class="pr-state" id="pr-state-b">
+        <div class="pr-state-label">Brittle</div>
+        <div class="pr-state-value" id="pr-state-b-value">0</div>
+        <div class="pr-state-desc">Pulling too fast</div>
+      </div>
+      <div class="pr-state" id="pr-state-f">
+        <div class="pr-state-label">Formless</div>
+        <div class="pr-state-value" id="pr-state-f-value">0</div>
+        <div class="pr-state-desc">Pulling too slowly</div>
+      </div>
+      <div class="pr-state" id="pr-state-t">
+        <div class="pr-state-label">Transition</div>
+        <div class="pr-state-value" id="pr-state-t-value">0</div>
+        <div class="pr-state-desc">Inside the band</div>
+      </div>
+    </div>
+    <div class="pr-recommendation" id="pr-recommendation">
+      <h4 id="pr-rec-title">What to change this week</h4>
+      <p id="pr-rec-text"></p>
+    </div>
+    <div class="pr-result-actions">
+      <button class="pr-retake" id="pr-retake">Retake the diagnostic</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const questions = [
+    { text: 'My recent output has held up well under real pressure and feedback.',
+      options: [
+        { score: 'b', label: 'The work shipped, but it cracked under any real challenge' },
+        { score: 'f', label: 'Nothing has shipped yet to find out' },
+        { score: 't', label: 'The work held; I am proud of what was shipped' }
+      ] },
+    { text: 'When I look at the volume vs quality of my last month:',
+      options: [
+        { score: 'b', label: 'High volume; quality is uneven' },
+        { score: 'f', label: 'Low volume; nothing finished' },
+        { score: 't', label: 'Steady volume; quality is consistent' }
+      ] },
+    { text: 'The pace I have been working at this past month feels:',
+      options: [
+        { score: 'b', label: 'Frantic; I am racing the clock constantly' },
+        { score: 'f', label: 'Drifting; I keep losing the thread' },
+        { score: 't', label: 'Demanding but sustainable; tired but not depleted' }
+      ] },
+    { text: 'Looking at my recent work, the issue is most often:',
+      options: [
+        { score: 'b', label: 'Sloppiness, errors, or things missed' },
+        { score: 'f', label: 'Lack of completion; many drafts, few finishes' },
+        { score: 't', label: 'Neither; the work is landing' }
+      ] },
+    { text: 'How I would describe my current creative state:',
+      options: [
+        { score: 'b', label: 'Pushing through; the spark is gone' },
+        { score: 'f', label: 'Diffuse; I have ideas but no structure' },
+        { score: 't', label: 'Engaged; structure and flow are both present' }
+      ] },
+    { text: 'If a critical reviewer saw my recent work, they would most likely say:',
+      options: [
+        { score: 'b', label: '"You are racing; slow down"' },
+        { score: 'f', label: '"You have not committed to a direction"' },
+        { score: 't', label: '"This is recognizably yours and it holds"' }
+      ] }
+  ];
+
+  const widget = document.getElementById('pull-rate-quiz');
+  const counter = widget.querySelector('#pr-counter');
+  const fill = widget.querySelector('#pr-fill');
+  const questionText = widget.querySelector('#pr-text');
+  const optionsContainer = widget.querySelector('#pr-options');
+  const questionPanel = widget.querySelector('#pr-question');
+  const resultPanel = widget.querySelector('#pr-result');
+  const retakeBtn = widget.querySelector('#pr-retake');
+
+  let current = 0;
+  let scores = { b: 0, f: 0, t: 0 };
+
+  function renderOptions(){
+    const q = questions[current];
+    optionsContainer.innerHTML = '';
+    q.options.forEach(function(opt, i){
+      const btn = document.createElement('button');
+      btn.className = 'pr-opt';
+      btn.setAttribute('data-score', opt.score);
+      btn.innerHTML = '<span class="pr-opt-dot">' + (i+1) + '</span>' + opt.label;
+      optionsContainer.appendChild(btn);
+    });
+  }
+
+  function render(){
+    const q = questions[current];
+    counter.textContent = 'Question ' + (current+1) + ' of ' + questions.length;
+    fill.style.width = ((current/questions.length)*100) + '%';
+    questionText.textContent = q.text;
+    renderOptions();
+  }
+
+  function handleAnswer(score){
+    scores[score]++;
+    current++;
+    if(current >= questions.length){
+      showResult();
+    } else {
+      render();
+    }
+  }
+
+  function showResult(){
+    fill.style.width = '100%';
+    counter.textContent = 'Diagnostic complete';
+    questionPanel.style.display = 'none';
+    resultPanel.classList.add('show');
+
+    widget.querySelector('#pr-state-b-value').textContent = scores.b;
+    widget.querySelector('#pr-state-f-value').textContent = scores.f;
+    widget.querySelector('#pr-state-t-value').textContent = scores.t;
+
+    // find dominant
+    const states = {
+      b: { name: 'Brittle Output', sub: 'You are pulling too fast. The molecules cannot align in time. The work ships but cracks under load.', rec: 'Slow the pull rate. Add 20 percent more time to each piece. Introduce one amorphous element (let one part stay flexible).' },
+      f: { name: 'Formless Output', sub: 'You are pulling too slowly. The molecules relax back to disorder. Plenty of starts, no spine.', rec: 'Speed the pull rate. Add one constraint, one deadline, one accountability point. The molecules need tension to align.' },
+      t: { name: 'Phase Transition', sub: 'You are inside the band. The conditions producing this output are what you must protect, not change.', rec: 'Study what made this possible. Temperature, challenge level, environment, pace. These are your phase transition parameters. Protect them.' }
+    };
+    let dom = 'b';
+    if(scores.f > scores[dom]) dom = 'f';
+    if(scores.t > scores[dom]) dom = 't';
+
+    const result = states[dom];
+    widget.querySelector('#pr-result-state').textContent = result.name;
+    widget.querySelector('#pr-result-sub').textContent = result.sub;
+    widget.querySelector('#pr-rec-text').textContent = result.rec;
+
+    widget.querySelectorAll('.pr-state').forEach(function(el){ el.classList.remove('you-are'); });
+    widget.querySelector('#pr-state-'+dom).classList.add('you-are');
+  }
+
+  optionsContainer.addEventListener('click', function(e){
+    const btn = e.target.closest('.pr-opt');
+    if(!btn) return;
+    handleAnswer(btn.getAttribute('data-score'));
+  });
+
+  retakeBtn.addEventListener('click', function(){
+    current = 0;
+    scores = { b: 0, f: 0, t: 0 };
+    resultPanel.classList.remove('show');
+    questionPanel.style.display = 'block';
+    render();
+  });
+
+  render();
+})();
+</script>
+</div>
   </div>
 </section>
 </div>

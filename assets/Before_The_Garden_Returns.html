@@ -459,6 +459,217 @@ dfn.def:hover::after{content:attr(data-def);position:absolute;bottom:120%;left:5
 </div>
 </div>
 
+<div class="diagnostic-widget" id="three-pillars-quiz">
+<style>
+#three-pillars-quiz{margin:48px 0;padding:0;border-radius:18px;overflow:hidden;border:2px solid rgba(212,168,67,0.3);box-shadow:0 8px 32px rgba(14,15,26,0.15);background:linear-gradient(135deg,#FDFAF3,#F5EFE0)}
+#three-pillars-quiz .quiz-head{background:linear-gradient(135deg,var(--dawn,#1F2440),var(--sky,#3D4670));padding:28px 32px;text-align:center;color:#fff}
+#three-pillars-quiz .quiz-kicker{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:#E8C96A;margin-bottom:8px}
+#three-pillars-quiz .quiz-head h3{font-family:'Nunito',sans-serif;font-size:1.5rem;font-weight:800;color:#fff;margin:0 0 6px;letter-spacing:-0.01em}
+#three-pillars-quiz .quiz-head p{font-family:'Lora',serif;font-style:italic;font-size:0.92rem;color:rgba(255,255,255,0.7);margin:0;max-width:480px;margin-left:auto;margin-right:auto}
+#three-pillars-quiz .quiz-body{padding:32px}
+#three-pillars-quiz .quiz-progress{display:flex;align-items:center;gap:10px;margin-bottom:24px}
+#three-pillars-quiz .quiz-progress-bar{flex:1;height:6px;background:rgba(31,36,64,0.1);border-radius:3px;overflow:hidden}
+#three-pillars-quiz .quiz-progress-fill{height:100%;background:linear-gradient(90deg,#D4A843,#E8C96A);width:0%;transition:width 0.35s ease}
+#three-pillars-quiz .quiz-progress-count{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:2px;color:#7A7E8E;text-transform:uppercase;white-space:nowrap}
+#three-pillars-quiz .quiz-pillar-label{display:inline-block;font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:#C88090;margin-bottom:10px}
+#three-pillars-quiz .quiz-question{font-family:'Lora',serif;font-size:1.18rem;color:#1F2440;line-height:1.45;margin-bottom:22px;font-weight:600}
+#three-pillars-quiz .quiz-options{display:grid;gap:10px}
+#three-pillars-quiz .quiz-opt{display:block;padding:14px 18px;background:#fff;border:1.5px solid #ECE5CC;border-radius:10px;font-family:'Nunito',sans-serif;font-size:0.92rem;font-weight:600;color:#1F2440;text-align:left;cursor:pointer;transition:all 0.2s;width:100%}
+#three-pillars-quiz .quiz-opt:hover{border-color:#D4A843;background:rgba(212,168,67,0.06);transform:translateX(2px)}
+#three-pillars-quiz .quiz-opt-letter{display:inline-block;width:24px;height:24px;border-radius:50%;background:rgba(212,168,67,0.15);color:#D4A843;font-weight:800;font-size:0.78rem;text-align:center;line-height:24px;margin-right:12px;vertical-align:middle}
+#three-pillars-quiz .quiz-result{display:none}
+#three-pillars-quiz .quiz-result.show{display:block}
+#three-pillars-quiz .quiz-result-head{text-align:center;padding-bottom:22px;border-bottom:1.5px solid #ECE5CC;margin-bottom:24px}
+#three-pillars-quiz .quiz-result-kicker{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:#C88090;margin-bottom:8px}
+#three-pillars-quiz .quiz-result-pillar{font-family:'Nunito',sans-serif;font-size:2.2rem;font-weight:900;color:#1F2440;line-height:1.1;margin-bottom:8px}
+#three-pillars-quiz .quiz-result-sub{font-family:'Lora',serif;font-style:italic;color:#4A4E5E;font-size:0.95rem}
+#three-pillars-quiz .quiz-scores{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px}
+@media(max-width:520px){#three-pillars-quiz .quiz-scores{grid-template-columns:1fr}}
+#three-pillars-quiz .quiz-score{padding:18px;border-radius:10px;text-align:center;border:1.5px solid #ECE5CC;background:#fff}
+#three-pillars-quiz .quiz-score.weakest{background:linear-gradient(135deg,rgba(200,128,144,0.1),rgba(212,168,67,0.1));border-color:#C88090}
+#three-pillars-quiz .quiz-score-label{font-family:'Nunito',sans-serif;font-size:0.58rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:#7A7E8E;margin-bottom:6px}
+#three-pillars-quiz .quiz-score.weakest .quiz-score-label{color:#C88090}
+#three-pillars-quiz .quiz-score-value{font-family:'Nunito',sans-serif;font-size:2rem;font-weight:900;color:#1F2440;line-height:1}
+#three-pillars-quiz .quiz-score-bar{height:6px;background:rgba(31,36,64,0.08);border-radius:3px;margin-top:8px;overflow:hidden}
+#three-pillars-quiz .quiz-score-bar-fill{height:100%;background:linear-gradient(90deg,#D4A843,#E8C96A);transition:width 0.6s ease}
+#three-pillars-quiz .quiz-score.weakest .quiz-score-bar-fill{background:linear-gradient(90deg,#C88090,#E2B4BC)}
+#three-pillars-quiz .quiz-recommendation{padding:22px;background:linear-gradient(135deg,#1F2440,#3D4670);color:#fff;border-radius:12px;margin-bottom:18px}
+#three-pillars-quiz .quiz-recommendation h4{font-family:'Nunito',sans-serif;color:#E8C96A;font-size:1rem;margin-bottom:10px;font-weight:800}
+#three-pillars-quiz .quiz-recommendation p{font-family:'Lora',serif;color:rgba(255,255,255,0.82);line-height:1.6;font-size:0.92rem;margin-bottom:12px}
+#three-pillars-quiz .quiz-recommendation p:last-child{margin-bottom:0}
+#three-pillars-quiz .quiz-recommendation a{display:inline-block;margin-top:8px;padding:10px 22px;background:#E8C96A;color:#1F2440;border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:800;letter-spacing:1px;text-decoration:none;transition:all 0.2s}
+#three-pillars-quiz .quiz-recommendation a:hover{background:#fff;transform:translateY(-1px)}
+#three-pillars-quiz .quiz-retake{font-family:'Nunito',sans-serif;font-size:0.78rem;font-weight:700;color:#7A7E8E;background:transparent;border:1.5px solid #ECE5CC;padding:10px 22px;border-radius:50px;cursor:pointer;letter-spacing:1px;transition:all 0.2s}
+#three-pillars-quiz .quiz-retake:hover{background:#ECE5CC;color:#1F2440}
+#three-pillars-quiz .quiz-result-actions{text-align:center}
+</style>
+
+<div class="quiz-head">
+  <div class="quiz-kicker">Interactive Diagnostic</div>
+  <h3>Which Pillar Is Most Vulnerable?</h3>
+  <p>Nine questions. Three minutes. Identifies which of your three pillars is currently load-bearing and which is the weakest link in your structure.</p>
+</div>
+<div class="quiz-body">
+  <div class="quiz-progress">
+    <div class="quiz-progress-count" id="tp-counter">Question 1 of 9</div>
+    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="tp-fill"></div></div>
+  </div>
+  <div id="tp-question">
+    <div class="quiz-pillar-label" id="tp-pillar">Pillar One &middot; The Source</div>
+    <div class="quiz-question" id="tp-text">If your job, title, and external achievements were stripped away tonight, I would still know clearly who I am.</div>
+    <div class="quiz-options" id="tp-options">
+      <button class="quiz-opt" data-score="1"><span class="quiz-opt-letter">1</span>Strongly disagree</button>
+      <button class="quiz-opt" data-score="2"><span class="quiz-opt-letter">2</span>Disagree</button>
+      <button class="quiz-opt" data-score="3"><span class="quiz-opt-letter">3</span>Agree</button>
+      <button class="quiz-opt" data-score="4"><span class="quiz-opt-letter">4</span>Strongly agree</button>
+    </div>
+  </div>
+  <div class="quiz-result" id="tp-result">
+    <div class="quiz-result-head">
+      <div class="quiz-result-kicker">Your weakest pillar</div>
+      <div class="quiz-result-pillar" id="tp-result-pillar">The Source</div>
+      <div class="quiz-result-sub" id="tp-result-sub">The pillar that will fail you first when conditions change.</div>
+    </div>
+    <div class="quiz-scores">
+      <div class="quiz-score" id="tp-score-source">
+        <div class="quiz-score-label">The Source</div>
+        <div class="quiz-score-value"><span id="tp-source-num">0</span>/12</div>
+        <div class="quiz-score-bar"><div class="quiz-score-bar-fill" id="tp-source-bar" style="width:0%"></div></div>
+      </div>
+      <div class="quiz-score" id="tp-score-soil">
+        <div class="quiz-score-label">The Soil</div>
+        <div class="quiz-score-value"><span id="tp-soil-num">0</span>/12</div>
+        <div class="quiz-score-bar"><div class="quiz-score-bar-fill" id="tp-soil-bar" style="width:0%"></div></div>
+      </div>
+      <div class="quiz-score" id="tp-score-fruit">
+        <div class="quiz-score-label">The Fruit</div>
+        <div class="quiz-score-value"><span id="tp-fruit-num">0</span>/12</div>
+        <div class="quiz-score-bar"><div class="quiz-score-bar-fill" id="tp-fruit-bar" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="quiz-recommendation" id="tp-recommendation">
+      <h4 id="tp-rec-title">Start with The Source</h4>
+      <p id="tp-rec-text">Your weakest pillar is the next book in the series to read.</p>
+      <a id="tp-rec-link" href="/playbooks/read/the-source">Read The Source &rarr;</a>
+    </div>
+    <div class="quiz-result-actions">
+      <button class="quiz-retake" id="tp-retake">Retake the diagnostic</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const questions = [
+    { pillar: 'source', label: 'Pillar One &middot; The Source',
+      text: 'If your job, title, and external achievements were stripped away tonight, I would still know clearly who I am.' },
+    { pillar: 'soil', label: 'Pillar Two &middot; The Soil',
+      text: 'I have voluntarily put myself through difficulty in the last year, not because I had to, but because I knew I needed to grow.' },
+    { pillar: 'fruit', label: 'Pillar Three &middot; The Fruit',
+      text: 'If money were no longer required, I would still produce the work I am producing now.' },
+    { pillar: 'source', label: 'Pillar One &middot; The Source',
+      text: 'When achievement disappears, applause stops, or my role changes, my sense of self stays stable.' },
+    { pillar: 'soil', label: 'Pillar Two &middot; The Soil',
+      text: 'I can absorb a real disappointment (a failure, a betrayal, a loss) without losing my center for weeks.' },
+    { pillar: 'fruit', label: 'Pillar Three &middot; The Fruit',
+      text: 'I know what I would still make if no one was watching, paying me, or expecting it.' },
+    { pillar: 'source', label: 'Pillar One &middot; The Source',
+      text: 'My identity is rooted in something outside of what I have built, achieved, or accumulated.' },
+    { pillar: 'soil', label: 'Pillar Two &middot; The Soil',
+      text: 'Comfort is something I deliberately refuse on a regular basis to keep the muscle from atrophying.' },
+    { pillar: 'fruit', label: 'Pillar Three &middot; The Fruit',
+      text: 'The output of my life this past year would be recognizable as fruit (relational, creative, servant, stewardship, generative) and not just response.' }
+  ];
+
+  const widget = document.getElementById('three-pillars-quiz');
+  const counter = widget.querySelector('#tp-counter');
+  const fill = widget.querySelector('#tp-fill');
+  const pillarLabel = widget.querySelector('#tp-pillar');
+  const questionText = widget.querySelector('#tp-text');
+  const optionsContainer = widget.querySelector('#tp-options');
+  const questionPanel = widget.querySelector('#tp-question');
+  const resultPanel = widget.querySelector('#tp-result');
+  const retakeBtn = widget.querySelector('#tp-retake');
+
+  let current = 0;
+  let scores = { source: 0, soil: 0, fruit: 0 };
+
+  function render(){
+    const q = questions[current];
+    counter.textContent = 'Question ' + (current+1) + ' of ' + questions.length;
+    fill.style.width = ((current/questions.length)*100) + '%';
+    pillarLabel.innerHTML = q.label;
+    questionText.textContent = q.text;
+  }
+
+  function handleAnswer(score){
+    const q = questions[current];
+    scores[q.pillar] += score;
+    current++;
+    if(current >= questions.length){
+      showResult();
+    } else {
+      render();
+    }
+  }
+
+  function showResult(){
+    fill.style.width = '100%';
+    counter.textContent = 'Diagnostic complete';
+    questionPanel.style.display = 'none';
+    resultPanel.classList.add('show');
+
+    const pillars = [
+      {key:'source', name:'The Source', sub:'Your identity is being constructed from materials that can disappear. When conditions change, this pillar fails first.', link:'/playbooks/read/the-source', linkText:'Read The Source'},
+      {key:'soil',   name:'The Soil',   sub:'Your stability has not been forged through deliberate hardship. The next storm will reveal what the comfort has hidden.', link:'/playbooks/read/the-soil', linkText:'Read The Soil'},
+      {key:'fruit',  name:'The Fruit',  sub:'Most of your output is response to pressure, not discretionary fruit. When the pressure lifts, the production will lift with it.', link:'/playbooks/read/the-fruit', linkText:'Read The Fruit'}
+    ];
+
+    // find weakest (lowest score)
+    let weakest = pillars[0];
+    for(const p of pillars){
+      if(scores[p.key] < scores[weakest.key]) weakest = p;
+    }
+
+    widget.querySelector('#tp-result-pillar').textContent = weakest.name;
+    widget.querySelector('#tp-result-sub').textContent = weakest.sub;
+    widget.querySelector('#tp-rec-title').textContent = 'Start with ' + weakest.name;
+    widget.querySelector('#tp-rec-text').textContent = 'Your three pillars need not be developed equally first. Address the weakest one. ' + weakest.sub;
+    const linkEl = widget.querySelector('#tp-rec-link');
+    linkEl.href = weakest.link;
+    linkEl.innerHTML = weakest.linkText + ' &rarr;';
+
+    // populate score bars
+    for(const p of pillars){
+      const numEl = widget.querySelector('#tp-'+p.key+'-num');
+      const barEl = widget.querySelector('#tp-'+p.key+'-bar');
+      const scoreEl = widget.querySelector('#tp-score-'+p.key);
+      numEl.textContent = scores[p.key];
+      const pct = (scores[p.key]/12)*100;
+      setTimeout(function(){ barEl.style.width = pct + '%'; }, 100);
+      scoreEl.classList.toggle('weakest', p.key === weakest.key);
+    }
+  }
+
+  optionsContainer.addEventListener('click', function(e){
+    const btn = e.target.closest('.quiz-opt');
+    if(!btn) return;
+    handleAnswer(parseInt(btn.getAttribute('data-score'),10));
+  });
+
+  retakeBtn.addEventListener('click', function(){
+    current = 0;
+    scores = { source: 0, soil: 0, fruit: 0 };
+    resultPanel.classList.remove('show');
+    questionPanel.style.display = 'block';
+    render();
+  });
+
+  render();
+})();
+</script>
+</div>
+
 <h2>Why Trinitarian, Not Modular</h2>
 
 <p>Frameworks that look like this trinity exist in every wisdom tradition. Be / Do / Have. Body / Mind / Spirit. Logos / Pathos / Praxis. The pattern repeats because it is real. But many of those frameworks treat the three as <em>options</em> you can specialize in. You pick which one matters most to you and over invest there. The result, every time, is a person who is good at one thing and slowly broken in the others.</p>
