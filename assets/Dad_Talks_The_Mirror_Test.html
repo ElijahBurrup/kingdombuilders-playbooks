@@ -642,6 +642,228 @@ dfn.def:hover::before,dfn.def:focus::before{opacity:1}
   <p>"Then the person is not safe for you, and you can step back without guilt. Cleaning your mirror did not make them safe. It just helped you see the truth clearly. The truth is: not everyone is your friend. Some people are walking past you because they are stressed. Some are walking past you because they do not actually like you. Both are real. The mirror lets you tell the difference."</p>
 </section>
 
+<div class="diagnostic-widget" id="signal-test">
+<style>
+#signal-test{margin:36px 0;border-radius:16px;overflow:hidden;border:2px solid rgba(120,80,180,0.2);background:#fff;box-shadow:0 6px 24px rgba(20,15,30,0.1)}
+#signal-test .st-head{background:linear-gradient(135deg,#1F1A35,#3A2D5A);padding:24px 28px;text-align:center;color:#fff}
+#signal-test .st-kicker{font-family:'Inter',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:#C8A8E0;margin-bottom:6px}
+#signal-test .st-head h4{font-family:'Inter',sans-serif;font-size:1.4rem;font-weight:700;color:#fff;margin:0 0 6px;letter-spacing:-0.01em}
+#signal-test .st-head p{font-family:'Lora',serif;font-style:italic;font-size:0.9rem;color:rgba(255,255,255,0.7);margin:0 auto;max-width:460px}
+#signal-test .st-body{padding:28px}
+#signal-test .st-person-label{font-family:'Inter',sans-serif;font-size:0.62rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#5A3878;margin-bottom:6px;display:block}
+#signal-test .st-person{width:100%;padding:12px 16px;border:1.5px solid rgba(120,80,180,0.18);border-radius:10px;font-family:'Lora',serif;font-size:0.95rem;color:#1F1A35;background:#FAF8FD;margin-bottom:22px;transition:all 0.2s;font-style:italic}
+#signal-test .st-person:focus{outline:none;border-color:#7850B4;background:#fff}
+#signal-test .st-progress-text{font-family:'Inter',sans-serif;font-size:0.62rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#5A3878;margin-bottom:6px}
+#signal-test .st-progress-bar{height:5px;background:rgba(120,80,180,0.08);border-radius:3px;overflow:hidden;margin-bottom:22px}
+#signal-test .st-progress-fill{height:100%;background:linear-gradient(90deg,#7850B4,#C8A8E0);width:0%;transition:width 0.35s ease}
+#signal-test .st-signal-label{font-family:'Inter',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#7850B4;margin-bottom:8px}
+#signal-test .st-signal-name{font-family:'Inter',sans-serif;font-size:1.25rem;font-weight:700;color:#1F1A35;line-height:1.25;margin-bottom:10px}
+#signal-test .st-signal-desc{font-family:'Lora',serif;color:#3A2D5A;line-height:1.6;font-size:0.92rem;margin-bottom:18px}
+#signal-test .st-options{display:grid;gap:8px}
+#signal-test .st-opt{display:flex;align-items:flex-start;gap:10px;padding:13px 16px;background:#FAF8FD;border:1.5px solid rgba(120,80,180,0.12);border-radius:10px;font-family:'Lora',serif;font-size:0.9rem;color:#1F1A35;text-align:left;cursor:pointer;transition:all 0.18s;line-height:1.5}
+#signal-test .st-opt:hover{border-color:#7850B4;background:rgba(120,80,180,0.04);transform:translateX(2px)}
+#signal-test .st-opt-mark{flex-shrink:0;width:24px;height:24px;border-radius:50%;background:rgba(120,80,180,0.12);color:#7850B4;font-family:'Inter',sans-serif;font-weight:800;font-size:0.78rem;text-align:center;line-height:24px}
+#signal-test .st-result{display:none}
+#signal-test .st-result.show{display:block}
+#signal-test .st-result-head{text-align:center;padding-bottom:20px;border-bottom:1.5px solid rgba(120,80,180,0.12);margin-bottom:22px}
+#signal-test .st-result-kicker{font-family:'Inter',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#7850B4;margin-bottom:8px}
+#signal-test .st-result-verdict{font-family:'Inter',sans-serif;font-size:1.8rem;font-weight:700;color:#1F1A35;line-height:1.15;margin-bottom:10px}
+#signal-test .st-result-name{font-family:'Lora',serif;font-style:italic;font-size:1rem;color:#7850B4;margin-bottom:8px}
+#signal-test .st-result-sub{font-family:'Lora',serif;color:#3A2D5A;font-size:0.92rem;max-width:500px;margin:0 auto;line-height:1.55}
+#signal-test .st-signals-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
+@media(max-width:520px){#signal-test .st-signals-grid{grid-template-columns:1fr}}
+#signal-test .st-signal-box{padding:14px;border-radius:10px;text-align:center;background:#FAF8FD;border:1.5px solid rgba(120,80,180,0.1)}
+#signal-test .st-signal-box.pass{background:linear-gradient(135deg,rgba(120,180,120,0.12),rgba(160,220,160,0.06));border-color:#5AB050}
+#signal-test .st-signal-box.fail{background:linear-gradient(135deg,rgba(200,80,80,0.1),rgba(220,120,120,0.05));border-color:#C85050}
+#signal-test .st-signal-box.unclear{background:linear-gradient(135deg,rgba(220,170,80,0.1),rgba(240,200,120,0.05));border-color:#D0A040}
+#signal-test .st-sb-num{font-family:'Inter',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#7850B4;margin-bottom:4px}
+#signal-test .st-sb-verdict{font-family:'Inter',sans-serif;font-size:0.92rem;font-weight:700;color:#1F1A35;margin-bottom:2px}
+#signal-test .st-sb-name{font-family:'Lora',serif;font-style:italic;font-size:0.72rem;color:#5A3878}
+#signal-test .st-action{padding:20px;background:linear-gradient(135deg,#1F1A35,#3A2D5A);color:#fff;border-radius:12px;margin-bottom:14px}
+#signal-test .st-action h5{font-family:'Inter',sans-serif;color:#C8A8E0;font-size:0.85rem;margin-bottom:8px;font-weight:700;letter-spacing:0.5px}
+#signal-test .st-action p{font-family:'Lora',serif;color:rgba(255,255,255,0.85);line-height:1.55;font-size:0.9rem;margin:0}
+#signal-test .st-retake{font-family:'Inter',sans-serif;font-size:0.72rem;font-weight:700;color:#5A3878;background:transparent;border:1.5px solid rgba(120,80,180,0.18);padding:10px 22px;border-radius:50px;cursor:pointer;letter-spacing:1px;transition:all 0.2s;display:block;margin:0 auto}
+#signal-test .st-retake:hover{background:rgba(120,80,180,0.06);color:#1F1A35}
+</style>
+
+<div class="st-head">
+  <div class="st-kicker">Interactive Diagnostic</div>
+  <h4>The Three Signal Test</h4>
+  <p>Pick one specific person. Three questions. Two minutes. Tells you whether they need patience, distance, or are already worth your full trust.</p>
+</div>
+<div class="st-body">
+  <label class="st-person-label">Who are you testing?</label>
+  <input type="text" class="st-person" id="st-person" placeholder="A friend, partner, coworker, family member you are uncertain about" value="">
+
+  <div class="st-progress-text" id="st-counter">Signal 1 of 3</div>
+  <div class="st-progress-bar"><div class="st-progress-fill" id="st-fill"></div></div>
+
+  <div id="st-question-panel">
+    <div class="st-signal-label" id="st-sig-label">Signal 1</div>
+    <div class="st-signal-name" id="st-sig-name">Repair after rupture</div>
+    <div class="st-signal-desc" id="st-sig-desc">Every friendship has small ruptures: misunderstandings, missed texts, hurt feelings. The signal is not whether the rupture happens. It is what happens next.</div>
+    <div class="st-options" id="st-options"></div>
+  </div>
+
+  <div class="st-result" id="st-result">
+    <div class="st-result-head">
+      <div class="st-result-kicker">Verdict on</div>
+      <div class="st-result-verdict" id="st-result-verdict">Worth full trust</div>
+      <div class="st-result-name" id="st-result-name">this person</div>
+      <div class="st-result-sub" id="st-result-sub">All three signals are present. This is the rare full-trust relationship.</div>
+    </div>
+    <div class="st-signals-grid" id="st-signals-grid"></div>
+    <div class="st-action" id="st-action">
+      <h5>What to do this week</h5>
+      <p id="st-action-text"></p>
+    </div>
+    <button class="st-retake" id="st-retake">Test another person</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const signals = [
+    { key: 's1', name: 'Repair after rupture',
+      desc: 'Every friendship has small ruptures: misunderstandings, missed texts, hurt feelings. The signal is not whether the rupture happens. It is what happens next.',
+      options: [
+        { score: 'pass', label: 'When something goes wrong, they come back and address it, even imperfectly.' },
+        { score: 'unclear', label: 'Sometimes they repair, sometimes they pretend it did not happen.' },
+        { score: 'fail', label: 'They never name what happened. Things just get folded into a pattern.' }
+      ] },
+    { key: 's2', name: 'Behavior matches when they cannot see you',
+      desc: 'Watch what they say about people who are not in the room. The behavior people show when they think no one is watching is the behavior you can predict for the long run.',
+      options: [
+        { score: 'pass', label: 'They speak about absent people the way they speak to their face. Consistent.' },
+        { score: 'unclear', label: 'They are mostly consistent but I have seen some inconsistency.' },
+        { score: 'fail', label: 'They praise people to their face and dissect them when they leave.' }
+      ] },
+    { key: 's3', name: 'They handle your honesty without retaliation',
+      desc: 'At some point you will say something honest they did not want to hear. How they respond is the diagnostic. A friendship that requires your dishonesty is not a friendship. It is a performance contract.',
+      options: [
+        { score: 'pass', label: 'They sit with hard truth, even imperfectly. They do not punish me for it.' },
+        { score: 'unclear', label: 'They take it OK sometimes, but other times they get cold or distant.' },
+        { score: 'fail', label: 'When I am honest, they retaliate. Cold, mockery, withdrawal, or escalation.' }
+      ] }
+  ];
+
+  const widget = document.getElementById('signal-test');
+  const counter = widget.querySelector('#st-counter');
+  const fill = widget.querySelector('#st-fill');
+  const sigLabel = widget.querySelector('#st-sig-label');
+  const sigName = widget.querySelector('#st-sig-name');
+  const sigDesc = widget.querySelector('#st-sig-desc');
+  const optionsContainer = widget.querySelector('#st-options');
+  const questionPanel = widget.querySelector('#st-question-panel');
+  const resultPanel = widget.querySelector('#st-result');
+  const retakeBtn = widget.querySelector('#st-retake');
+  const personInput = widget.querySelector('#st-person');
+
+  let current = 0;
+  let scores = {};
+
+  function renderOptions(){
+    const s = signals[current];
+    optionsContainer.innerHTML = '';
+    s.options.forEach(function(opt, i){
+      const btn = document.createElement('button');
+      btn.className = 'st-opt';
+      btn.setAttribute('data-score', opt.score);
+      btn.innerHTML = '<span class="st-opt-mark">'+ String.fromCharCode(65+i) +'</span>' + opt.label;
+      optionsContainer.appendChild(btn);
+    });
+  }
+  function render(){
+    const s = signals[current];
+    counter.textContent = 'Signal ' + (current+1) + ' of ' + signals.length;
+    fill.style.width = ((current/signals.length)*100) + '%';
+    sigLabel.textContent = 'Signal ' + (current+1);
+    sigName.textContent = s.name;
+    sigDesc.textContent = s.desc;
+    renderOptions();
+  }
+  function handleAnswer(score){
+    const s = signals[current];
+    scores[s.key] = score;
+    current++;
+    if(current >= signals.length) showResult();
+    else render();
+  }
+  function showResult(){
+    fill.style.width = '100%';
+    counter.textContent = 'Test complete';
+    questionPanel.style.display = 'none';
+    resultPanel.classList.add('show');
+
+    const passCount = Object.values(scores).filter(v => v === 'pass').length;
+    const failCount = Object.values(scores).filter(v => v === 'fail').length;
+    const unclearCount = Object.values(scores).filter(v => v === 'unclear').length;
+
+    let verdict, sub, action;
+    if(passCount === 3){
+      verdict = 'Worth Full Trust';
+      sub = 'All three signals are present. This is the rare full-trust relationship. The maintenance is shared. The data is consistent. The honesty is safe. Invest deliberately.';
+      action = 'Tell them what they mean to you. Specifically. Out loud. Most full-trust relationships go unnamed for years and quietly dissolve because no one signaled how valuable the trust actually was. Name it this week.';
+    } else if(passCount === 2 && failCount === 0){
+      verdict = 'Worth Patience';
+      sub = 'Two signals are strong, one is unclear. This is a relationship in development. The data is mostly good. Give it more time and watch the unclear signal mature.';
+      action = 'Do not rush a verdict. Continue investing at current levels for another season. Pay close attention to the unclear signal specifically. The next clear instance of that signal will tell you which way the relationship is moving.';
+    } else if(passCount === 1 && failCount === 0){
+      verdict = 'Watch the Pattern';
+      sub = 'One signal is strong, the others are unclear. There is potential but not enough data yet. The relationship is real but you are not seeing the full pattern.';
+      action = 'Avoid making big commitments based on this relationship until more signals clarify. Continue showing up. The unclear signals will resolve into pass or fail with more time and more data.';
+    } else if(failCount === 1 && passCount >= 1){
+      verdict = 'Real Limit';
+      sub = 'One signal failed clearly. The other signals may be fine but one specific door is closed. This person is real to you in some ways and not in others.';
+      action = 'Adjust the relationship to fit the actual data. If they fail Signal 3 (honesty retaliation), stop being fully honest with them. If they fail Signal 2 (talking behind backs), assume they will talk behind yours. Stop expecting from them what they are not capable of giving.';
+    } else if(failCount >= 2){
+      verdict = 'Needs Distance';
+      sub = 'Two or more signals failed. This is not a safe relationship for you. The mirror is clean enough now to see it. Cleaning the mirror did not make them safe. It just helped you see the truth.';
+      action = 'Step back without guilt. Reduce intimacy to the level the actual data supports. You do not need to dramatize the exit or announce it. Just stop investing as if they were a full-trust person. The relationship will find its actual level.';
+    } else {
+      verdict = 'Need More Data';
+      sub = 'Most signals are unclear. You do not yet have enough information to make a confident verdict. That is not a failure. It is the honest read.';
+      action = 'Spend another month watching without categorizing. The signals will become clearer. Resist the urge to commit to a verdict before the data warrants it. Many relationships live in the unclear zone for a while before resolving in either direction.';
+    }
+
+    widget.querySelector('#st-result-verdict').textContent = verdict;
+    const personName = (personInput.value || '').trim();
+    widget.querySelector('#st-result-name').textContent = personName ? personName : 'this person';
+    widget.querySelector('#st-result-sub').textContent = sub;
+    widget.querySelector('#st-action-text').textContent = action;
+
+    // grid
+    const grid = widget.querySelector('#st-signals-grid');
+    grid.innerHTML = '';
+    signals.forEach(function(s, i){
+      const v = scores[s.key];
+      const verdictMap = { pass: 'Pass', fail: 'Fail', unclear: 'Unclear' };
+      const div = document.createElement('div');
+      div.className = 'st-signal-box ' + v;
+      div.innerHTML = '<div class="st-sb-num">Signal ' + (i+1) + '</div>' +
+                      '<div class="st-sb-verdict">' + verdictMap[v] + '</div>' +
+                      '<div class="st-sb-name">' + s.name.split(' ').slice(0,3).join(' ') + '</div>';
+      grid.appendChild(div);
+    });
+  }
+  optionsContainer.addEventListener('click', function(e){
+    const btn = e.target.closest('.st-opt');
+    if(!btn) return;
+    handleAnswer(btn.getAttribute('data-score'));
+  });
+  retakeBtn.addEventListener('click', function(){
+    current = 0;
+    scores = {};
+    resultPanel.classList.remove('show');
+    questionPanel.style.display = 'block';
+    personInput.value = '';
+    render();
+  });
+  render();
+})();
+</script>
+</div>
+
 <div class="ribbon"><p>"As iron sharpens iron, so one person sharpens another." Proverbs 27:17</p></div>
 
 <section class="section prose">

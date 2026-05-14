@@ -926,6 +926,196 @@ dfn.def:hover::before,dfn.def:focus::before{content:'';position:absolute;bottom:
   <p><strong>The cure for tilt is not willpower. It is arithmetic.</strong> When you feel the urgency to act immediately, stop. Calculate the pot. Calculate the cost. Calculate the probability. Calculate the EV. If the number is positive, play. If the number is negative, fold. The feeling of urgency is not data. It is tilt. And tilt always costs you money.</p>
 </section>
 
+<div class="diagnostic-widget" id="ev-calc">
+<style>
+#ev-calc{margin:48px 0;border-radius:18px;overflow:hidden;border:2px solid rgba(122,52,28,0.25);background:#fff;box-shadow:0 8px 32px rgba(20,12,8,0.12)}
+#ev-calc .ec-head{background:linear-gradient(135deg,#1A0E08,#3A1E10);padding:28px 32px;text-align:center;color:#fff}
+#ev-calc .ec-kicker{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:#E0A878;margin-bottom:8px}
+#ev-calc .ec-head h3{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#fff;margin:0 0 6px;letter-spacing:-0.01em}
+#ev-calc .ec-head p{font-family:'Lora',serif;font-style:italic;font-size:0.92rem;color:rgba(255,255,255,0.7);margin:0 auto;max-width:480px}
+#ev-calc .ec-body{padding:32px}
+#ev-calc .ec-decision-label{font-family:'Poppins',sans-serif;font-size:0.62rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#5A3018;margin-bottom:6px;display:block}
+#ev-calc .ec-decision-input{width:100%;padding:12px 16px;border:1.5px solid rgba(122,52,28,0.18);border-radius:10px;font-family:'Lora',serif;font-size:0.95rem;color:#1A0E08;background:#FAF7F2;margin-bottom:22px;transition:all 0.2s;font-style:italic}
+#ev-calc .ec-decision-input:focus{outline:none;border-color:#7A341C;background:#fff}
+#ev-calc .ec-fields{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:22px}
+@media(max-width:520px){#ev-calc .ec-fields{grid-template-columns:1fr}}
+#ev-calc .ec-field{display:flex;flex-direction:column}
+#ev-calc .ec-field-label{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#5A3018;margin-bottom:6px}
+#ev-calc .ec-field-sub{font-family:'Lora',serif;font-style:italic;color:#7A6050;font-size:0.78rem;margin-bottom:6px;line-height:1.4}
+#ev-calc .ec-input-wrap{position:relative}
+#ev-calc .ec-input-prefix{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-family:'Poppins',sans-serif;font-weight:700;color:#7A341C;font-size:0.95rem}
+#ev-calc .ec-input-suffix{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-family:'Poppins',sans-serif;font-weight:700;color:#7A341C;font-size:0.95rem}
+#ev-calc .ec-input{width:100%;padding:12px 16px 12px 30px;border:1.5px solid rgba(122,52,28,0.18);border-radius:10px;font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:600;color:#1A0E08;background:#FAF7F2;transition:all 0.2s}
+#ev-calc .ec-input.no-prefix{padding-left:16px;padding-right:38px}
+#ev-calc .ec-input:focus{outline:none;border-color:#7A341C;background:#fff}
+#ev-calc .ec-slider-row{display:grid;grid-template-columns:1fr 60px;gap:14px;align-items:center}
+#ev-calc .ec-slider{width:100%;-webkit-appearance:none;appearance:none;height:6px;background:rgba(122,52,28,0.15);border-radius:3px;outline:none}
+#ev-calc .ec-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:#7A341C;cursor:pointer;border:2px solid #fff;box-shadow:0 2px 8px rgba(122,52,28,0.3)}
+#ev-calc .ec-slider::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#7A341C;cursor:pointer;border:2px solid #fff;box-shadow:0 2px 8px rgba(122,52,28,0.3)}
+#ev-calc .ec-slider-val{font-family:'Poppins',sans-serif;font-weight:800;font-size:1.05rem;color:#7A341C;text-align:right}
+#ev-calc .ec-result{padding:24px;border-radius:12px;background:linear-gradient(135deg,#1A0E08,#3A1E10);color:#fff;margin-bottom:16px;transition:all 0.4s ease}
+#ev-calc .ec-result.positive{background:linear-gradient(135deg,#1A4020,#2A6035)}
+#ev-calc .ec-result.negative{background:linear-gradient(135deg,#5A1A14,#7A2A18)}
+#ev-calc .ec-result-label{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#E0A878;margin-bottom:8px}
+#ev-calc .ec-result.positive .ec-result-label{color:#9FEDB5}
+#ev-calc .ec-result.negative .ec-result-label{color:#FFB088}
+#ev-calc .ec-result-value{font-family:'Poppins',sans-serif;font-size:2.4rem;font-weight:800;color:#fff;line-height:1;margin-bottom:10px}
+#ev-calc .ec-result-verdict{font-family:'Lora',serif;font-style:italic;font-size:1rem;color:rgba(255,255,255,0.9);line-height:1.5;margin-bottom:12px}
+#ev-calc .ec-result-explain{font-family:'Lora',serif;color:rgba(255,255,255,0.7);font-size:0.88rem;line-height:1.6}
+#ev-calc .ec-breakdown{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+@media(max-width:520px){#ev-calc .ec-breakdown{grid-template-columns:1fr}}
+#ev-calc .ec-bd{padding:14px;border-radius:10px;background:#FAF7F2;border:1.5px solid rgba(122,52,28,0.1)}
+#ev-calc .ec-bd-label{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#5A3018;margin-bottom:4px}
+#ev-calc .ec-bd-value{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:800;color:#1A0E08}
+#ev-calc .ec-bd-formula{font-family:'Lora',serif;font-style:italic;font-size:0.75rem;color:#7A6050;margin-top:4px}
+#ev-calc .ec-tilt-check{padding:18px;background:#FFF8F0;border:1.5px solid rgba(232,168,72,0.3);border-radius:10px;font-family:'Lora',serif;font-size:0.88rem;color:#5A3018;line-height:1.55}
+#ev-calc .ec-tilt-check strong{color:#7A341C;display:block;margin-bottom:6px;font-family:'Poppins',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+</style>
+
+<div class="ec-head">
+  <div class="ec-kicker">Interactive Calculator</div>
+  <h3>The Expected Value Calculator</h3>
+  <p>Plug in a decision you have been avoiding. The math will tell you whether to play or fold. The number replaces the feeling.</p>
+</div>
+<div class="ec-body">
+  <label class="ec-decision-label">The decision you are facing</label>
+  <input type="text" class="ec-decision-input" id="ec-decision" placeholder="e.g., asking for a $10K raise, leaving a job, starting a project, having a hard conversation" value="">
+
+  <div class="ec-fields">
+    <div class="ec-field">
+      <span class="ec-field-label">The Pot (total upside if it works)</span>
+      <span class="ec-field-sub">All gain. Include compounding future value, not just immediate.</span>
+      <div class="ec-input-wrap">
+        <span class="ec-input-prefix">$</span>
+        <input type="number" class="ec-input" id="ec-pot" value="50000" min="0" step="1000">
+      </div>
+    </div>
+    <div class="ec-field">
+      <span class="ec-field-label">The Cost (total downside if it fails)</span>
+      <span class="ec-field-sub">Money, time, relationships at risk, energy spent.</span>
+      <div class="ec-input-wrap">
+        <span class="ec-input-prefix">$</span>
+        <input type="number" class="ec-input" id="ec-cost" value="5000" min="0" step="500">
+      </div>
+    </div>
+  </div>
+
+  <div class="ec-field" style="margin-bottom:22px">
+    <span class="ec-field-label">Honest Probability of Success</span>
+    <span class="ec-field-sub">Be honest, not optimistic. What would a critical friend estimate?</span>
+    <div class="ec-slider-row">
+      <input type="range" class="ec-slider" id="ec-prob" min="1" max="99" value="40">
+      <div class="ec-slider-val"><span id="ec-prob-val">40</span>%</div>
+    </div>
+  </div>
+
+  <div class="ec-breakdown">
+    <div class="ec-bd">
+      <div class="ec-bd-label">Expected Gain</div>
+      <div class="ec-bd-value" id="ec-gain">$20,000</div>
+      <div class="ec-bd-formula">probability × pot</div>
+    </div>
+    <div class="ec-bd">
+      <div class="ec-bd-label">Expected Loss</div>
+      <div class="ec-bd-value" id="ec-loss">$3,000</div>
+      <div class="ec-bd-formula">(1 - probability) × cost</div>
+    </div>
+  </div>
+
+  <div class="ec-result" id="ec-result">
+    <div class="ec-result-label" id="ec-result-label">Expected Value</div>
+    <div class="ec-result-value" id="ec-result-value">+ $17,000</div>
+    <div class="ec-result-verdict" id="ec-result-verdict">Strong positive EV. The math says play. The hesitation is not caution. It is miscalculated pot odds.</div>
+    <div class="ec-result-explain" id="ec-result-explain">If you faced this decision a thousand times, you would end up $17,000 ahead on average. The single outcome will be either the full pot or the full cost, but the expected value is the number that should drive the choice.</div>
+  </div>
+
+  <div class="ec-tilt-check">
+    <strong>Tilt Check</strong>
+    If the EV is positive and you are still avoiding the decision, that gap is not courage. It is arithmetic you have not done. Lower your pot estimate (the upside is usually larger than fear lets you see). Raise your probability (you usually have better odds than the catastrophizing brain reports). Then look at the number again. The feeling of risk and the math of risk almost never agree, and the math wins over time.
+  </div>
+</div>
+
+<script>
+(function(){
+  const widget = document.getElementById('ev-calc');
+  const potInput = widget.querySelector('#ec-pot');
+  const costInput = widget.querySelector('#ec-cost');
+  const probSlider = widget.querySelector('#ec-prob');
+  const probVal = widget.querySelector('#ec-prob-val');
+  const gainEl = widget.querySelector('#ec-gain');
+  const lossEl = widget.querySelector('#ec-loss');
+  const resultEl = widget.querySelector('#ec-result');
+  const resultValueEl = widget.querySelector('#ec-result-value');
+  const resultVerdictEl = widget.querySelector('#ec-result-verdict');
+  const resultExplainEl = widget.querySelector('#ec-result-explain');
+
+  function fmt(n){
+    const sign = n < 0 ? '- $' : '+ $';
+    return sign + Math.abs(Math.round(n)).toLocaleString();
+  }
+  function fmtPos(n){
+    return '$' + Math.round(n).toLocaleString();
+  }
+
+  function recalc(){
+    const pot = parseFloat(potInput.value) || 0;
+    const cost = parseFloat(costInput.value) || 0;
+    const prob = parseFloat(probSlider.value) / 100;
+    probVal.textContent = probSlider.value;
+
+    const gain = prob * pot;
+    const loss = (1 - prob) * cost;
+    const ev = gain - loss;
+
+    gainEl.textContent = fmtPos(gain);
+    lossEl.textContent = fmtPos(loss);
+    resultValueEl.textContent = fmt(ev);
+
+    resultEl.classList.remove('positive','negative');
+    if(ev > 0){
+      resultEl.classList.add('positive');
+    } else if(ev < 0){
+      resultEl.classList.add('negative');
+    }
+
+    // Verdict logic
+    let verdict, explain;
+    const ratio = pot > 0 ? gain / Math.max(loss, 1) : 0;
+    if(ev > 0 && ratio > 5){
+      verdict = 'Strong positive EV. The math says play. The hesitation is not caution. It is miscalculated pot odds.';
+    } else if(ev > 0 && ratio > 2){
+      verdict = 'Positive EV. Worth playing. The expected gain meaningfully exceeds the expected loss.';
+    } else if(ev > 0){
+      verdict = 'Marginal positive EV. Worth playing, but the margin is thin. Look for ways to lower cost or raise the probability before committing.';
+    } else if(ev === 0){
+      verdict = 'Neutral EV. The math is indifferent. Decide on something other than expected value: the strategic value, the lesson, the experience.';
+    } else if(ratio > 0.5){
+      verdict = 'Marginal negative EV. The math says fold, but check whether implied odds (future value) tip it positive. If not, do not play.';
+    } else {
+      verdict = 'Strong negative EV. The math says fold. The urge to play is tilt, not strategy. The pot is not large enough or the probability is not high enough.';
+    }
+
+    const lifetime = ev * 1000;
+    if(ev > 0){
+      explain = 'If you faced this decision a thousand times, you would end up ' + fmtPos(lifetime) + ' ahead on average. The single outcome will be either the full pot or the full cost, but EV is the number that should drive the choice.';
+    } else if(ev < 0){
+      explain = 'If you faced this decision a thousand times, you would end up ' + fmtPos(Math.abs(lifetime)) + ' behind on average. Walking away is not cowardice. It is arithmetic.';
+    } else {
+      explain = 'The math is neutral. Other factors matter here: optionality, learning, strategic positioning. EV alone is not the answer.';
+    }
+
+    resultVerdictEl.textContent = verdict;
+    resultExplainEl.textContent = explain;
+  }
+
+  potInput.addEventListener('input', recalc);
+  costInput.addEventListener('input', recalc);
+  probSlider.addEventListener('input', recalc);
+  recalc();
+})();
+</script>
+</div>
+
 <div class="think">
   <div class="think-label"><svg class="ico"><use href="#ico-thought"/></svg> Think About This</div>
   <h4>Calculate the pot odds on a decision you have been avoiding.</h4>
