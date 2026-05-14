@@ -545,6 +545,10 @@ dfn.def:hover::after{content:attr(data-def);position:absolute;bottom:120%;left:5
     }
   }
 
+  const SLUG = 'attend';
+  const WIDGET = 'substitute-detector';
+  function save(){ if(window.kbWidget) kbWidget.save(SLUG, WIDGET, {selected}); }
+
   grid.addEventListener('click', function(e){
     const card = e.target.closest('.sd-sub');
     if(!card) return;
@@ -554,20 +558,38 @@ dfn.def:hover::after{content:attr(data-def);position:absolute;bottom:120%;left:5
       selected.splice(idx, 1);
       card.classList.remove('selected');
     } else {
-      if(selected.length >= 3) return; // cap at 3
+      if(selected.length >= 3) return;
       selected.push(id);
       card.classList.add('selected');
     }
     renderResult();
+    save();
   });
 
   clearBtn.addEventListener('click', function(){
     selected = [];
     widget.querySelectorAll('.sd-sub').forEach(function(c){ c.classList.remove('selected'); });
     renderResult();
+    if(window.kbWidget) kbWidget.clear(SLUG, WIDGET);
   });
 
-  renderResult();
+  function restore(data){
+    if(!data || !Array.isArray(data.selected)) return;
+    selected = data.selected.slice(0, 3);
+    selected.forEach(id => {
+      const card = widget.querySelector('.sd-sub[data-id="'+id+'"]');
+      if(card) card.classList.add('selected');
+    });
+    renderResult();
+  }
+  if(window.kbWidget){
+    kbWidget.onReady(async () => {
+      const r = await kbWidget.load(SLUG, WIDGET);
+      if(r && r.data) restore(r.data); else renderResult();
+    });
+  } else {
+    renderResult();
+  }
 })();
 </script>
 </div>

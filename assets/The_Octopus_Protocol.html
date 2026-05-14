@@ -1031,22 +1031,43 @@ dfn.def:hover::after{opacity:1;transform:translateX(-50%) scale(1);pointer-event
     actionEl.style.display = 'block';
   }
 
+  const SLUG = 'the-octopus-protocol';
+  const WIDGET = 'arm-mapper';
+  function save(){ if(window.kbWidget) kbWidget.save(SLUG, WIDGET, {armStates}); }
+
+  function applyArmState(armIdx, stateVal){
+    armStates[armIdx] = stateVal;
+    const armDiv = container.querySelector('.am-arm[data-arm="'+armIdx+'"]');
+    if(!armDiv) return;
+    armDiv.querySelectorAll('.am-state-btn').forEach(function(b){
+      b.classList.toggle('active', parseInt(b.getAttribute('data-state'),10) === stateVal);
+    });
+  }
+
   container.addEventListener('click', function(e){
     const btn = e.target.closest('.am-state-btn');
     if(!btn) return;
     const armDiv = btn.closest('.am-arm');
     const armIdx = parseInt(armDiv.getAttribute('data-arm'), 10);
     const stateVal = parseInt(btn.getAttribute('data-state'), 10);
-    armStates[armIdx] = stateVal;
-
-    // toggle active state in this arm only
-    armDiv.querySelectorAll('.am-state-btn').forEach(function(b){
-      b.classList.toggle('active', b === btn);
-    });
+    applyArmState(armIdx, stateVal);
     recommend();
+    save();
   });
 
-  recommend();
+  function restore(data){
+    if(!data || !Array.isArray(data.armStates)) return;
+    data.armStates.forEach((v,i) => { if(v !== null && v !== undefined) applyArmState(i, v); });
+    recommend();
+  }
+  if(window.kbWidget){
+    kbWidget.onReady(async () => {
+      const r = await kbWidget.load(SLUG, WIDGET);
+      if(r && r.data) restore(r.data); else recommend();
+    });
+  } else {
+    recommend();
+  }
 })();
 </script>
 </div>

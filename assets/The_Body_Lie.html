@@ -1241,10 +1241,15 @@ body{background:#fff}
     });
   }
 
+  const SLUG = 'the-body-lie';
+  const WIDGET = 'phantom-generator-profile';
+  function save(){ if(window.kbWidget) kbWidget.save(SLUG, WIDGET, {current, scores, complete: current >= generators.length}); }
+
   optionsContainer.addEventListener('click', function(e){
     const btn = e.target.closest('.pg-opt');
     if(!btn) return;
     handleAnswer(parseInt(btn.getAttribute('data-score'),10));
+    save();
   });
 
   retakeBtn.addEventListener('click', function(){
@@ -1253,9 +1258,25 @@ body{background:#fff}
     resultPanel.classList.remove('show');
     questionPanel.style.display = 'block';
     render();
+    if(window.kbWidget) kbWidget.clear(SLUG, WIDGET);
   });
 
-  render();
+  function restore(data){
+    if(!data) return false;
+    if(typeof data.current === 'number') current = data.current;
+    if(data.scores) Object.assign(scores, data.scores);
+    if(data.complete){ showResult(); return true; }
+    render();
+    return true;
+  }
+  if(window.kbWidget){
+    kbWidget.onReady(async () => {
+      const r = await kbWidget.load(SLUG, WIDGET);
+      if(!(r && r.data && restore(r.data))) render();
+    });
+  } else {
+    render();
+  }
 })();
 </script>
 </div>

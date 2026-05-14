@@ -718,12 +718,17 @@ dfn.def:hover::after{content:attr(data-def);position:absolute;bottom:120%;left:5
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
   }
 
+  const SLUG = 'the-fruit';
+  const WIDGET = 'fruit-audit';
+  function save(){ if(window.kbWidget) kbWidget.save(SLUG, WIDGET, {items, nextId}); }
+
   function addItem(text){
     text = text.trim();
     if(!text) return;
     items.push({ id: nextId++, text: text, form: null, pressure: null });
     addInput.value = '';
     renderItems();
+    save();
   }
 
   addBtn.addEventListener('click', function(){ addItem(addInput.value); });
@@ -737,6 +742,7 @@ dfn.def:hover::after{content:attr(data-def);position:absolute;bottom:120%;left:5
       const id = parseInt(removeBtn.getAttribute('data-id'), 10);
       items = items.filter(function(i){ return i.id !== id; });
       renderItems();
+      save();
       return;
     }
     const pBtn = e.target.closest('.fa-pressure-btn');
@@ -744,7 +750,7 @@ dfn.def:hover::after{content:attr(data-def);position:absolute;bottom:120%;left:5
       const id = parseInt(pBtn.getAttribute('data-id'), 10);
       const pressure = pBtn.getAttribute('data-pressure');
       const item = items.find(function(i){ return i.id === id; });
-      if(item){ item.pressure = pressure; renderItems(); }
+      if(item){ item.pressure = pressure; renderItems(); save(); }
       return;
     }
   });
@@ -754,10 +760,24 @@ dfn.def:hover::after{content:attr(data-def);position:absolute;bottom:120%;left:5
     if(!select) return;
     const id = parseInt(select.getAttribute('data-id'), 10);
     const item = items.find(function(i){ return i.id === id; });
-    if(item){ item.form = select.value || null; renderItems(); }
+    if(item){ item.form = select.value || null; renderItems(); save(); }
   });
 
-  renderItems();
+  function restore(data){
+    if(!data || !Array.isArray(data.items)) return false;
+    items = data.items;
+    if(typeof data.nextId === 'number') nextId = data.nextId;
+    renderItems();
+    return true;
+  }
+  if(window.kbWidget){
+    kbWidget.onReady(async () => {
+      const r = await kbWidget.load(SLUG, WIDGET);
+      if(!(r && r.data && restore(r.data))) renderItems();
+    });
+  } else {
+    renderItems();
+  }
 })();
 </script>
 </div>

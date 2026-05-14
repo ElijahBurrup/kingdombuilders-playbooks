@@ -1192,13 +1192,15 @@ The sound of your child's voice becomes piercing.</p>
 
 <script>
 (function(){
+  const SLUG = 'given';
+  const WIDGET = 'five-frames-application';
   const widget = document.getElementById('five-frames');
   const demandInput = widget.querySelector('#ff-demand');
   const frames = widget.querySelectorAll('.ff-frame');
+  const opened = new Set();
 
   function updateDemandRefs(){
     const v = demandInput.value.trim();
-    const display = v || 'this';
     for(let i=1; i<=5; i++){
       const el = widget.querySelector('#ff-demand-' + i);
       if(el){
@@ -1207,17 +1209,39 @@ The sound of your child's voice becomes piercing.</p>
       }
     }
   }
-
-  demandInput.addEventListener('input', updateDemandRefs);
+  function save(){
+    if(window.kbWidget) kbWidget.save(SLUG, WIDGET, {demand: demandInput.value, opened: Array.from(opened)});
+  }
+  function onDemand(){ updateDemandRefs(); save(); }
+  demandInput.addEventListener('input', onDemand);
 
   widget.addEventListener('click', function(e){
     const btn = e.target.closest('.ff-open-btn');
     if(!btn) return;
     const frame = btn.closest('.ff-frame');
     frame.classList.add('opened');
+    const idx = Array.from(frames).indexOf(frame);
+    if(idx >= 0){ opened.add(idx); save(); }
   });
 
-  updateDemandRefs();
+  function restore(data){
+    if(!data) return;
+    if(data.demand) demandInput.value = data.demand;
+    if(Array.isArray(data.opened)){
+      data.opened.forEach(i => {
+        if(frames[i]){ frames[i].classList.add('opened'); opened.add(i); }
+      });
+    }
+    updateDemandRefs();
+  }
+  if(window.kbWidget){
+    kbWidget.onReady(async () => {
+      const r = await kbWidget.load(SLUG, WIDGET);
+      if(r && r.data) restore(r.data); else updateDemandRefs();
+    });
+  } else {
+    updateDemandRefs();
+  }
 })();
 </script>
 </div>

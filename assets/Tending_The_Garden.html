@@ -592,19 +592,41 @@ dfn.def:hover::after{content:attr(data-def);position:absolute;bottom:120%;left:5
     resultEl.classList.add('show');
   }
 
+  const SLUG = 'tending-the-garden';
+  const WIDGET = 'six-interactions-diagnostic';
+  function save(){ if(window.kbWidget) kbWidget.save(SLUG, WIDGET, {scores}); }
+
+  function applyScore(i, s){
+    scores[i] = s;
+    const intDiv = grid.querySelector('.si-interaction[data-i="'+i+'"]');
+    if(!intDiv) return;
+    intDiv.classList.add('scored');
+    intDiv.querySelectorAll('.si-scale-btn').forEach(function(b){
+      b.classList.toggle('active', parseInt(b.getAttribute('data-score'),10) === s);
+    });
+  }
+
   grid.addEventListener('click', function(e){
     const btn = e.target.closest('.si-scale-btn');
     if(!btn) return;
     const i = parseInt(btn.getAttribute('data-i'), 10);
     const s = parseInt(btn.getAttribute('data-score'), 10);
-    scores[i] = s;
-    const intDiv = btn.closest('.si-interaction');
-    intDiv.classList.add('scored');
-    intDiv.querySelectorAll('.si-scale-btn').forEach(function(b){
-      b.classList.toggle('active', b === btn);
-    });
+    applyScore(i, s);
     updateResult();
+    save();
   });
+
+  function restore(data){
+    if(!data || !data.scores) return;
+    Object.entries(data.scores).forEach(([i,v]) => { if(v !== null && v !== undefined) applyScore(parseInt(i,10), v); });
+    updateResult();
+  }
+  if(window.kbWidget){
+    kbWidget.onReady(async () => {
+      const r = await kbWidget.load(SLUG, WIDGET);
+      if(r && r.data) restore(r.data);
+    });
+  }
 })();
 </script>
 </div>

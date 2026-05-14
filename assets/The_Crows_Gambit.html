@@ -1108,10 +1108,28 @@ dfn.def:hover::before,dfn.def:focus::before{content:'';position:absolute;bottom:
     resultExplainEl.textContent = explain;
   }
 
-  potInput.addEventListener('input', recalc);
-  costInput.addEventListener('input', recalc);
-  probSlider.addEventListener('input', recalc);
-  recalc();
+  const SLUG = 'the-crows-gambit';
+  const WIDGET = 'ev-calculator';
+  function save(){ if(window.kbWidget) kbWidget.save(SLUG, WIDGET, {pot: potInput.value, cost: costInput.value, prob: probSlider.value}); }
+  function onChange(){ recalc(); save(); }
+  potInput.addEventListener('input', onChange);
+  costInput.addEventListener('input', onChange);
+  probSlider.addEventListener('input', onChange);
+  function restore(data){
+    if(!data) return;
+    if(data.pot !== undefined) potInput.value = data.pot;
+    if(data.cost !== undefined) costInput.value = data.cost;
+    if(data.prob !== undefined) probSlider.value = data.prob;
+    recalc();
+  }
+  if(window.kbWidget){
+    kbWidget.onReady(async () => {
+      const r = await kbWidget.load(SLUG, WIDGET);
+      if(r && r.data) restore(r.data); else recalc();
+    });
+  } else {
+    recalc();
+  }
 })();
 </script>
 </div>

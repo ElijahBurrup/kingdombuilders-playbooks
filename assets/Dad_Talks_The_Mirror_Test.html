@@ -846,10 +846,15 @@ dfn.def:hover::before,dfn.def:focus::before{opacity:1}
       grid.appendChild(div);
     });
   }
+  const SLUG = 'dad-talks-the-mirror-test';
+  const WIDGET = 'three-signal-test';
+  function save(){ if(window.kbWidget) kbWidget.save(SLUG, WIDGET, {current, scores, person: personInput.value, complete: typeof signals !== 'undefined' && current >= signals.length}); }
+  personInput.addEventListener('input', save);
   optionsContainer.addEventListener('click', function(e){
     const btn = e.target.closest('.st-opt');
     if(!btn) return;
     handleAnswer(btn.getAttribute('data-score'));
+    save();
   });
   retakeBtn.addEventListener('click', function(){
     current = 0;
@@ -858,8 +863,25 @@ dfn.def:hover::before,dfn.def:focus::before{opacity:1}
     questionPanel.style.display = 'block';
     personInput.value = '';
     render();
+    if(window.kbWidget) kbWidget.clear(SLUG, WIDGET);
   });
-  render();
+  function restore(data){
+    if(!data) return false;
+    if(typeof data.current === 'number') current = data.current;
+    if(data.scores) scores = data.scores;
+    if(data.person) personInput.value = data.person;
+    if(data.complete){ showResult(); return true; }
+    render();
+    return true;
+  }
+  if(window.kbWidget){
+    kbWidget.onReady(async () => {
+      const r = await kbWidget.load(SLUG, WIDGET);
+      if(!(r && r.data && restore(r.data))) render();
+    });
+  } else {
+    render();
+  }
 })();
 </script>
 </div>

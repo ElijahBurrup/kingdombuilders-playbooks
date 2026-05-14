@@ -412,21 +412,43 @@ Seven returns.</p>
     }
   }
 
+  const SLUG = 'returning';
+  const WIDGET = 'domain-restoration-tracker';
+  function save(){ if(window.kbWidget) kbWidget.save(SLUG, WIDGET, {states}); }
+
+  function applyState(key, state){
+    states[key] = state;
+    const tile = grid.querySelector('.dt-domain[data-key="'+key+'"]');
+    if(!tile) return;
+    tile.querySelectorAll('.dt-state-btn').forEach(function(b){
+      b.classList.remove('active','demand','opening','received');
+      if(b.getAttribute('data-state') === state){ b.classList.add('active', state); }
+    });
+  }
+
   grid.addEventListener('click', function(e){
     const btn = e.target.closest('.dt-state-btn');
     if(!btn) return;
     const key = btn.getAttribute('data-key');
     const state = btn.getAttribute('data-state');
-    states[key] = state;
-    const tile = btn.closest('.dt-domain');
-    tile.querySelectorAll('.dt-state-btn').forEach(function(b){
-      b.classList.remove('active','demand','opening','received');
-      if(b === btn){ b.classList.add('active', state); }
-    });
+    applyState(key, state);
     update();
+    save();
   });
 
-  update();
+  function restore(data){
+    if(!data || !data.states) return;
+    Object.entries(data.states).forEach(([k,v]) => { if(v) applyState(k, v); });
+    update();
+  }
+  if(window.kbWidget){
+    kbWidget.onReady(async () => {
+      const r = await kbWidget.load(SLUG, WIDGET);
+      if(r && r.data) restore(r.data); else update();
+    });
+  } else {
+    update();
+  }
 })();
 </script>
 </div>

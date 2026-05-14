@@ -829,10 +829,14 @@ dfn.def:hover::after,dfn.def:focus::after{content:attr(data-def);position:absolu
     const domIdx = gaitOrder.indexOf(dom);
     if(domIdx >= 0 && allCards[domIdx]) allCards[domIdx].classList.add('target');
   }
+  const SLUG = 'the-horses-gait';
+  const WIDGET = 'four-gaits-mapper';
+  function save(){ if(window.kbWidget) kbWidget.save(SLUG, WIDGET, {current, counts, complete: typeof questions !== 'undefined' && current >= questions.length}); }
   optionsContainer.addEventListener('click', function(e){
     const btn = e.target.closest('.fg-opt');
     if(!btn) return;
     handleAnswer(btn.getAttribute('data-gait'));
+    save();
   });
   retakeBtn.addEventListener('click', function(){
     current = 0;
@@ -840,8 +844,24 @@ dfn.def:hover::after,dfn.def:focus::after{content:attr(data-def);position:absolu
     resultPanel.classList.remove('show');
     questionPanel.style.display = 'block';
     render();
+    if(window.kbWidget) kbWidget.clear(SLUG, WIDGET);
   });
-  render();
+  function restore(data){
+    if(!data) return false;
+    if(typeof data.current === 'number') current = data.current;
+    if(data.counts) counts = Object.assign({walk:0,trot:0,canter:0,gallop:0}, data.counts);
+    if(data.complete){ showResult(); return true; }
+    render();
+    return true;
+  }
+  if(window.kbWidget){
+    kbWidget.onReady(async () => {
+      const r = await kbWidget.load(SLUG, WIDGET);
+      if(!(r && r.data && restore(r.data))) render();
+    });
+  } else {
+    render();
+  }
 })();
 </script>
 </div>

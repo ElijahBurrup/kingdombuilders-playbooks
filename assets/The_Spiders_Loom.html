@@ -544,10 +544,15 @@ footer .brand{font-family:'Nunito',sans-serif;font-size:0.5rem;font-style:normal
     widget.querySelector('#pr-state-'+dom).classList.add('you-are');
   }
 
+  const SLUG = 'the-spiders-loom';
+  const WIDGET = 'pull-rate-diagnostic';
+  function save(){ if(window.kbWidget) kbWidget.save(SLUG, WIDGET, {current, scores, complete: current >= questions.length}); }
+
   optionsContainer.addEventListener('click', function(e){
     const btn = e.target.closest('.pr-opt');
     if(!btn) return;
     handleAnswer(btn.getAttribute('data-score'));
+    save();
   });
 
   retakeBtn.addEventListener('click', function(){
@@ -556,9 +561,25 @@ footer .brand{font-family:'Nunito',sans-serif;font-size:0.5rem;font-style:normal
     resultPanel.classList.remove('show');
     questionPanel.style.display = 'block';
     render();
+    if(window.kbWidget) kbWidget.clear(SLUG, WIDGET);
   });
 
-  render();
+  function restore(data){
+    if(!data) return false;
+    if(typeof data.current === 'number') current = data.current;
+    if(data.scores) scores = Object.assign({b:0,f:0,t:0}, data.scores);
+    if(data.complete){ showResult(); return true; }
+    render();
+    return true;
+  }
+  if(window.kbWidget){
+    kbWidget.onReady(async () => {
+      const r = await kbWidget.load(SLUG, WIDGET);
+      if(!(r && r.data && restore(r.data))) render();
+    });
+  } else {
+    render();
+  }
 })();
 </script>
 </div>
