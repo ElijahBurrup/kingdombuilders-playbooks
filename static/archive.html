@@ -706,5 +706,41 @@ function closeNavDrawer(){
 }
 </script>
 
+
+<script data-auth-aware="v1">
+(async function(){
+  try{
+    const r = await fetch('/playbooks/auth/status', {credentials:'same-origin'});
+    if(!r.ok) return;
+    const data = await r.json();
+    if(!data || !data.signed_in) return;
+
+    function makeLogoutForm(cls, label){
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = '/playbooks/auth/logout';
+      form.style.cssText = 'display:inline;margin:0;padding:0';
+      const btn = document.createElement('button');
+      btn.type = 'submit';
+      btn.textContent = label;
+      btn.className = cls;
+      btn.style.cssText = 'border:none;cursor:pointer;font:inherit;letter-spacing:inherit;text-transform:inherit';
+      form.appendChild(btn);
+      return form;
+    }
+
+    document.querySelectorAll('a.nav-button[href$="/auth"]').forEach(a => {
+      a.replaceWith(makeLogoutForm(a.className, 'Sign Out'));
+    });
+    document.querySelectorAll('.nav-drawer a[href$="/auth"]').forEach(a => {
+      const f = makeLogoutForm(a.className, 'Sign Out');
+      f.style.display = 'block';
+      f.firstChild.style.width = '100%';
+      a.replaceWith(f);
+    });
+  }catch(e){}
+})();
+</script>
+
 </body>
 </html>

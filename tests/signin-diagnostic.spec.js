@@ -57,6 +57,36 @@ test.describe("Sign In reachability — desktop topnav + mobile drawer", () => {
     }
   });
 
+  test("Signed-in user sees Sign Out, not Sign In, in topnav", async ({ page }) => {
+    // Stub /auth/status to simulate a logged-in session before the page loads
+    await page.route("**/playbooks/auth/status", (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ signed_in: true, is_admin: false }),
+      })
+    );
+    await page.goto(PROD + "/");
+
+    // The auth-awareness JS should swap the Sign In button → Sign Out form
+    if (!isNarrow(page)) {
+      const signIn = page.locator(".nav-button", { hasText: "Sign In" });
+      await expect(signIn).toHaveCount(0);
+      const signOut = page.locator("form[action$='/auth/logout'] button", {
+        hasText: "Sign Out",
+      });
+      await expect(signOut.first()).toBeVisible();
+    } else {
+      // Mobile drawer should likewise show Sign Out
+      await page.locator(".nav-hamburger").click();
+      const signOut = page.locator(
+        ".nav-drawer form[action$='/auth/logout'] button",
+        { hasText: "Sign Out" }
+      );
+      await expect(signOut).toBeVisible();
+    }
+  });
+
   test("Direct /auth route serves the sign-in form", async ({ page }) => {
     const response = await page.goto(PROD + "/auth");
     expect(response?.status()).toBe(200);
