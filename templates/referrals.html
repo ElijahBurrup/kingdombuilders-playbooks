@@ -307,13 +307,34 @@ body {
   font-family: 'Poppins', sans-serif;
   font-size: 15px;
   font-weight: 600;
-  color: rgba(255,255,255,0.8);
+  color: rgba(255,255,255,0.85);
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: 10px;
+}
+.ref-tree-level-count {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  padding: 3px 9px; border-radius: 50px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
 }
 .ref-tree-level-commission {
   font-family: 'Poppins', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 700;
   color: var(--gold);
+}
+.ref-tree-chain {
+  padding: 12px 16px;
+}
+.ref-tree-chain .chain-name {
+  display: inline-block;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13.5px; font-weight: 500;
+  color: rgba(255,255,255,0.9);
+}
+.ref-tree-chain .chain-arrow {
+  display: inline-block; margin: 0 10px;
+  color: rgba(212,168,67,0.55);
+  font-size: 13px;
 }
 .ref-tree-item {
   display: flex;
@@ -1175,6 +1196,8 @@ body {
   }
 
   // --- Load Tree ---
+  // Per-level total = count * $1.50/mo per active sub. Per-row dollar
+  // values are intentionally hidden — only the rolled-up level total shows.
   function loadTree() {
     apiFetch('/api/v1/referrals/tree').then(function(data) {
       tabDataLoaded.tree = true;
@@ -1183,15 +1206,39 @@ body {
       content.style.display = 'block';
       content.innerHTML = '';
 
-      // Level 1 (detailed)
+      var COMMISSION_PER_SUB_CENTS = 150; // $1.50/mo per level per active sub
+
+      function levelTotal(count) {
+        return formatCurrency(count * COMMISSION_PER_SUB_CENTS) + '/mo';
+      }
+
+      function escape(s) {
+        return String(s || '').replace(/[&<>"']/g, function(c) {
+          return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+        });
+      }
+
+      function chainHtml(names) {
+        // names = ['Alice Smith', 'Bob Jones', 'Carol Lee']
+        var parts = [];
+        for (var i = 0; i < names.length; i++) {
+          parts.push('<span class="chain-name">' + escape(names[i]) + '</span>');
+        }
+        return parts.join('<span class="chain-arrow">&rarr;</span>');
+      }
+
+      // ===== Level 1 — Direct =====
       var level1 = data.level_1 || [];
       var l1Section = document.createElement('div');
       l1Section.className = 'ref-tree-level';
 
       var l1Header = document.createElement('div');
       l1Header.className = 'ref-tree-level-header';
-      l1Header.innerHTML = '<div class="ref-tree-level-title">Level 1 &mdash; Direct Referrals</div>' +
-        '<div class="ref-tree-level-commission">' + formatCurrency(data.level_1_commission_cents || 0) + '/mo</div>';
+      l1Header.innerHTML =
+        '<div class="ref-tree-level-title">Level 1 &mdash; Direct Referrals' +
+          '<span class="ref-tree-level-count">' + level1.length + ' &times; $1.50</span>' +
+        '</div>' +
+        '<div class="ref-tree-level-commission">' + levelTotal(level1.length) + '</div>';
       l1Section.appendChild(l1Header);
 
       if (level1.length === 0) {
@@ -1206,42 +1253,70 @@ body {
           item.innerHTML =
             '<div class="ref-tree-avatar">' + getInitials(ref.display_name) + '</div>' +
             '<div class="ref-tree-info">' +
-              '<div class="ref-tree-name">' + (ref.display_name || 'Anonymous') + '</div>' +
-              '<div class="ref-tree-email">' + maskEmail(ref.email || '') + '</div>' +
+              '<div class="ref-tree-name">' + escape(ref.display_name || 'Anonymous') + '</div>' +
             '</div>' +
-            '<div class="ref-tree-commission-val">' + formatCurrency(ref.monthly_commission_cents || 0) + '</div>' +
-            '<span class="' + badgeClass(ref.status) + '">' + (ref.status || 'unknown') + '</span>';
+            '<span class="' + badgeClass(ref.status) + '">' + escape(ref.status || 'unknown') + '</span>';
           l1Section.appendChild(item);
         });
       }
       content.appendChild(l1Section);
 
-      // Level 2 (summary)
-      var l2 = data.level_2_summary || {};
+      // ===== Level 2 — chains: L1 -> L2 =====
+      var l2detail = data.level_2_detail || [];
+      var l2count = (data.level_2_summary && data.level_2_summary.count) || l2detail.length;
       var l2Section = document.createElement('div');
       l2Section.className = 'ref-tree-level';
       l2Section.innerHTML =
         '<div class="ref-tree-level-header">' +
-          '<div class="ref-tree-level-title">Level 2</div>' +
-          '<div class="ref-tree-level-commission">' + formatCurrency(l2.total_commission_cents || 0) + '/mo</div>' +
-        '</div>' +
-        '<div class="ref-tree-summary">' +
-          '<div class="ref-tree-summary-count"><strong>' + (l2.count || 0) + '</strong> referrals from your direct referrals</div>' +
+          '<div class="ref-tree-level-title">Level 2 &mdash; Your referrals’ referrals' +
+            '<span class="ref-tree-level-count">' + l2count + ' &times; $1.50</span>' +
+          '</div>' +
+          '<div class="ref-tree-level-commission">' + levelTotal(l2count) + '</div>' +
         '</div>';
+      if (l2detail.length === 0) {
+        var emptyL2 = document.createElement('div');
+        emptyL2.className = 'ref-empty';
+        emptyL2.innerHTML = '<div class="ref-empty-icon">&#128279;</div>None yet. Your level-2 row appears when one of your direct referrals brings someone in.';
+        l2Section.appendChild(emptyL2);
+      } else {
+        l2detail.forEach(function(row) {
+          var item = document.createElement('div');
+          item.className = 'ref-tree-item ref-tree-chain';
+          item.innerHTML = '<div class="ref-tree-info">' +
+            chainHtml([row.l1_name, row.l2_name]) +
+            '</div>';
+          l2Section.appendChild(item);
+        });
+      }
       content.appendChild(l2Section);
 
-      // Level 3 (summary)
-      var l3 = data.level_3_summary || {};
+      // ===== Level 3 — chains: L1 -> L2 -> L3 =====
+      var l3detail = data.level_3_detail || [];
+      var l3count = (data.level_3_summary && data.level_3_summary.count) || l3detail.length;
       var l3Section = document.createElement('div');
       l3Section.className = 'ref-tree-level';
       l3Section.innerHTML =
         '<div class="ref-tree-level-header">' +
-          '<div class="ref-tree-level-title">Level 3</div>' +
-          '<div class="ref-tree-level-commission">' + formatCurrency(l3.total_commission_cents || 0) + '/mo</div>' +
-        '</div>' +
-        '<div class="ref-tree-summary">' +
-          '<div class="ref-tree-summary-count"><strong>' + (l3.count || 0) + '</strong> third-level referrals</div>' +
+          '<div class="ref-tree-level-title">Level 3 &mdash; Third-degree network' +
+            '<span class="ref-tree-level-count">' + l3count + ' &times; $1.50</span>' +
+          '</div>' +
+          '<div class="ref-tree-level-commission">' + levelTotal(l3count) + '</div>' +
         '</div>';
+      if (l3detail.length === 0) {
+        var emptyL3 = document.createElement('div');
+        emptyL3.className = 'ref-empty';
+        emptyL3.innerHTML = '<div class="ref-empty-icon">&#127760;</div>None yet. Level 3 rows appear when the network three rings out grows.';
+        l3Section.appendChild(emptyL3);
+      } else {
+        l3detail.forEach(function(row) {
+          var item = document.createElement('div');
+          item.className = 'ref-tree-item ref-tree-chain';
+          item.innerHTML = '<div class="ref-tree-info">' +
+            chainHtml([row.l1_name, row.l2_name, row.l3_name]) +
+            '</div>';
+          l3Section.appendChild(item);
+        });
+      }
       content.appendChild(l3Section);
 
     }).catch(function(err) {

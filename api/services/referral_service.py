@@ -610,13 +610,42 @@ async def get_referral_tree(user_id: UUID, db: AsyncSession) -> dict:
             "monthly_commission_cents": total_commission_cents,
         })
 
-    # Level 2 — count and total only
-    l2_count_result = await db.execute(
-        select(func.count()).where(
-            and_(Referral.referrer_id == user_id, Referral.level == 2)
+    def _name(u: User | None) -> str:
+        """First+last only — never expose emails on the dashboard."""
+        if u is None:
+            return "Anonymous"
+        if u.display_name:
+            return u.display_name
+        # Fallback: username portion of email so the row isn't blank
+        return u.email.split("@", 1)[0] if u.email else "Anonymous"
+
+    # Level 2 — per-row chain: who YOU brought in (L1) → who they brought in (L2)
+    from sqlalchemy.orm import aliased
+    L2 = aliased(Referral, name="l2")
+    L1Anc = aliased(Referral, name="l1anc")  # the L1 row for the L2 person
+    UserL2 = aliased(User, name="ul2")
+    UserL1 = aliased(User, name="ul1")
+
+    l2_result = await db.execute(
+        select(L2, UserL2, UserL1)
+        .join(UserL2, UserL2.id == L2.referred_id)
+        .outerjoin(
+            L1Anc,
+            and_(L1Anc.referred_id == L2.referred_id, L1Anc.level == 1),
         )
+        .outerjoin(UserL1, UserL1.id == L1Anc.referrer_id)
+        .where(and_(L2.referrer_id == user_id, L2.level == 2))
+        .order_by(L2.created_at.desc())
     )
-    l2_count = l2_count_result.scalar() or 0
+    level_2_detail = [
+        {
+            "l1_name": _name(ul1),
+            "l2_name": _name(ul2),
+            "signup_date": l2_row.created_at.isoformat() if l2_row.created_at else None,
+        }
+        for l2_row, ul2, ul1 in l2_result.all()
+    ]
+    l2_count = len(level_2_detail)
 
     l2_earnings_result = await db.execute(
         select(func.coalesce(func.sum(Commission.amount_cents), 0)).where(
@@ -629,13 +658,38 @@ async def get_referral_tree(user_id: UUID, db: AsyncSession) -> dict:
     )
     l2_earnings = int(l2_earnings_result.scalar())
 
-    # Level 3 — count and total only
-    l3_count_result = await db.execute(
-        select(func.count()).where(
-            and_(Referral.referrer_id == user_id, Referral.level == 3)
+    # Level 3 — per-row chain: L1 → L2 → L3 (all three relationships)
+    L3 = aliased(Referral, name="l3")
+    L2Anc = aliased(Referral, name="l2anc")  # the L2 row of the L3 person
+    L1AncForL3 = aliased(Referral, name="l1anc3")
+    UserL3 = aliased(User, name="ul3")
+    UserL2For3 = aliased(User, name="ul2c")
+    UserL1For3 = aliased(User, name="ul1c")
+
+    l3_result = await db.execute(
+        select(L3, UserL3, UserL2For3, UserL1For3)
+        .join(UserL3, UserL3.id == L3.referred_id)
+        .outerjoin(
+            L2Anc, and_(L2Anc.referred_id == L3.referred_id, L2Anc.level == 2),
         )
+        .outerjoin(UserL2For3, UserL2For3.id == L2Anc.referrer_id)
+        .outerjoin(
+            L1AncForL3, and_(L1AncForL3.referred_id == L3.referred_id, L1AncForL3.level == 1),
+        )
+        .outerjoin(UserL1For3, UserL1For3.id == L1AncForL3.referrer_id)
+        .where(and_(L3.referrer_id == user_id, L3.level == 3))
+        .order_by(L3.created_at.desc())
     )
-    l3_count = l3_count_result.scalar() or 0
+    level_3_detail = [
+        {
+            "l1_name": _name(ul1c),
+            "l2_name": _name(ul2c),
+            "l3_name": _name(ul3),
+            "signup_date": l3_row.created_at.isoformat() if l3_row.created_at else None,
+        }
+        for l3_row, ul3, ul2c, ul1c in l3_result.all()
+    ]
+    l3_count = len(level_3_detail)
 
     l3_earnings_result = await db.execute(
         select(func.coalesce(func.sum(Commission.amount_cents), 0)).where(
@@ -658,10 +712,12 @@ async def get_referral_tree(user_id: UUID, db: AsyncSession) -> dict:
             "count": l2_count,
             "total_commission_cents": l2_earnings,
         },
+        "level_2_detail": level_2_detail,
         "level_3_summary": {
             "count": l3_count,
             "total_commission_cents": l3_earnings,
         },
+        "level_3_detail": level_3_detail,
     }
 
 

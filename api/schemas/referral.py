@@ -26,11 +26,28 @@ class ReferralTreeSummary(BaseModel):
     total_commission_cents: int
 
 
+class ReferralTreeChainL2(BaseModel):
+    """One L2 row from your POV: who you brought in (L1) → who they brought in (L2)."""
+    l1_name: str
+    l2_name: str
+    signup_date: str | None
+
+
+class ReferralTreeChainL3(BaseModel):
+    """One L3 row from your POV: L1 → L2 → L3."""
+    l1_name: str
+    l2_name: str
+    l3_name: str
+    signup_date: str | None
+
+
 class ReferralTreeResponse(BaseModel):
     level_1: list[ReferralTreeLevel1]
     level_1_commission_cents: int
     level_2_summary: ReferralTreeSummary
+    level_2_detail: list[ReferralTreeChainL2] = []
     level_3_summary: ReferralTreeSummary
+    level_3_detail: list[ReferralTreeChainL3] = []
 
 
 class EarningsMonth(BaseModel):
