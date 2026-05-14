@@ -599,6 +599,71 @@ dfn.def:hover::after{opacity:1;pointer-events:auto}
 
   <div class="gq reveal"><p>"He must increase, but I must decrease.". John 3:30 (NKJV)</p></div>
 
+  <!-- ===== IMAGE FAST TARGETING WIDGET ===== -->
+  <div class="dd reveal" style="margin:36px 0;border:2px solid rgba(232,134,10,0.3);background:linear-gradient(140deg,rgba(232,134,10,0.05),rgba(232,134,10,0.02));border-radius:14px;padding:24px;">
+    <h4 style="font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:700;color:var(--ink-mid);margin-bottom:6px;">Image Fast Targeting</h4>
+    <div class="sub" style="font-style:italic;color:var(--steel-light);margin-bottom:16px;font-size:0.9rem;">Rate each context on how aggressively you currently manage perception there. The top three become your fast targets.</div>
+
+    <div id="ift-root" style="font-family:'Poppins',sans-serif;">
+      <div id="ift-bands"></div>
+
+      <div id="ift-result" style="display:none;margin-top:22px;padding:20px;border-radius:10px;background:linear-gradient(135deg,#1A0A02,#201218);color:rgba(255,255,255,0.92);">
+        <div style="font-size:0.55rem;letter-spacing:5px;text-transform:uppercase;color:#E8860A;font-weight:700;margin-bottom:10px;">Your Three Fast Targets</div>
+        <div id="ift-summary" style="font-family:'Lora',Georgia,serif;font-size:0.98rem;line-height:1.75;font-style:italic;"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    const CONTEXTS = [
+      {key:'social', label:'Social media posts and stories'},
+      {key:'work', label:'Work meetings and Slack'},
+      {key:'family', label:'Extended family gatherings'},
+      {key:'church', label:'Church or religious community'},
+      {key:'dating', label:'Dating, romantic interests'},
+      {key:'parents', label:'Your own parents'},
+      {key:'neighbors', label:'Neighbors and casual friends'},
+      {key:'self', label:'Your inner monologue (image to yourself)'}
+    ];
+    const root = document.getElementById('ift-bands');
+    if(!root) return;
+    const state = {};
+    CONTEXTS.forEach((c, i) => {
+      state[c.key] = 0;
+      const row = document.createElement('div');
+      row.style.cssText = 'padding:12px 14px;background:#FFFDF8;border:1px solid rgba(232,134,10,0.15);border-radius:8px;margin-bottom:8px;';
+      row.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;">
+          <div style="font-size:0.88rem;color:var(--ink-mid);font-weight:500;flex:1;min-width:180px;">${c.label}</div>
+          <div data-c="${c.key}" style="display:flex;gap:6px;">
+            ${[1,2,3,4,5].map(v => `<button data-v="${v}" style="width:30px;height:30px;border:1px solid rgba(232,134,10,0.3);background:#FFF9F0;border-radius:6px;cursor:pointer;font-size:0.8rem;color:var(--steel);">${v}</button>`).join('')}
+          </div>
+        </div>`;
+      root.appendChild(row);
+    });
+    root.addEventListener('click', e => {
+      const btn = e.target.closest('button[data-v]');
+      if(!btn) return;
+      const group = btn.parentElement;
+      const key = group.dataset.c;
+      const v = parseInt(btn.dataset.v);
+      state[key] = v;
+      Array.from(group.children).forEach(b => {
+        const bv = parseInt(b.dataset.v);
+        if(bv <= v){ b.style.background = '#E8860A'; b.style.color = '#fff'; b.style.borderColor = '#E8860A'; }
+        else { b.style.background = '#FFF9F0'; b.style.color = 'var(--steel)'; b.style.borderColor = 'rgba(232,134,10,0.3)'; }
+      });
+      const ranked = Object.entries(state).filter(([k,v]) => v > 0).sort((a,b) => b[1] - a[1]);
+      if(ranked.length >= 3){
+        const top3 = ranked.slice(0,3).map(([k]) => CONTEXTS.find(c => c.key === k).label.toLowerCase());
+        document.getElementById('ift-result').style.display = 'block';
+        document.getElementById('ift-summary').innerHTML = `Your three fast targets, in order of urgency, are <strong style="color:#E8C96A;font-style:normal;">${top3[0]}</strong>, <strong style="color:#E8C96A;font-style:normal;">${top3[1]}</strong>, and <strong style="color:#E8C96A;font-style:normal;">${top3[2]}</strong>. Begin the seven day protocol on the highest scoring context first. The reflex strongest there is the throne most worth dethroning.`;
+      }
+    });
+  })();
+  </script>
+
   <div class="root-review reveal">
     <div class="root-label">Root Review. Chapters 1-2</div>
     <div class="root-layer current"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-bright">Self-Image</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Performance Tax</span><span class="root-arr">&rarr;</span><span class="root-pill rp-bright">Image Fast</span></div></div>

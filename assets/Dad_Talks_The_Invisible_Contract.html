@@ -270,7 +270,12 @@ footer p{font-family:'Lora',serif;font-size:0.97rem;font-style:italic;margin-bot
 
 <div style="margin:40px 0;padding:28px;background:var(--white);border-left:4px solid var(--ember);border-radius:var(--radius);box-shadow:var(--shadow-soft)">
   <p style="font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--ember);margin-bottom:10px">BOLD PROMISE</p>
-  <p style="font-size:1rem;color:var(--text);line-height:1.78;margin:0">If you finish this conversation, you will understand why you feel drained all the time, not because you care too much, but because you are operating under contracts you never agreed to. You will learn <strong>how to spot invisible expectations, the difference between loyalty and obligation, and how to write your own terms for every relationship in your life.</strong></p>
+  <p style="font-size:1rem;color:var(--text);line-height:1.78;margin:0">If you finish this conversation, you will understand why you feel drained all the time, not because you care too much, but because you are operating under contracts you never agreed to. You will learn <strong>how to spot invisible expectations, the difference between a burden and a load, and how to write your own terms for every relationship in your life.</strong></p>
+</div>
+
+<div style="margin:30px 0;padding:24px 28px;background:linear-gradient(135deg,rgba(232,106,80,0.08),rgba(232,106,80,0.02));border:1.5px solid rgba(232,106,80,0.2);border-radius:var(--radius);">
+  <p style="font-family:'Nunito',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--ember);margin-bottom:10px;">The Hidden Lever</p>
+  <p style="font-size:1.05rem;color:var(--text);line-height:1.7;margin:0;font-family:'Lora',Georgia,serif;font-style:italic;">There is a verse most readers know but never read closely. Galatians 6 says <em>"carry each other's burdens"</em> in verse 2 and <em>"each one should carry their own load"</em> in verse 5. Two different Greek words. <strong>Baros</strong> means a crushing weight no one can carry alone. <strong>Phortion</strong> means a soldier's pack each person owns. Your exhaustion is almost never about refusing to help with burdens. It is about quietly carrying everyone else's pack while still carrying your own. Two chapters from now we draw the distinction in full. Hold the question in mind as you read.</p>
 </div>
 
 <section class="section prose">
@@ -526,6 +531,88 @@ footer p{font-family:'Lora',serif;font-size:0.97rem;font-style:italic;margin-bot
   <p>"Resentment is the receipt for unpaid emotional labor. When you feel angry at someone for asking you for something, but you would never admit it, that is resentment. When you feel exhausted after helping someone, but you smile and say 'of course,' that is resentment. When you fantasize about your phone dying so nobody can reach you, that is resentment."</p>
   <p>"Resentment is your body's way of telling you that you are giving more than you chose to give. It is the alarm system for invisible contracts."</p>
 </section>
+
+<!-- ===== INTERACTIVE RESENTMENT TEST WIDGET ===== -->
+<div style="margin:40px 0;padding:28px 22px;background:linear-gradient(135deg,#1a0a02,#2a1208);border-radius:16px;border:2px solid rgba(232,106,80,0.3);">
+  <div style="text-align:center;margin-bottom:22px;">
+    <div style="font-family:'Nunito',sans-serif;font-size:0.5rem;letter-spacing:5px;text-transform:uppercase;color:var(--ember);font-weight:800;margin-bottom:6px;">Interactive Test</div>
+    <h3 style="font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:#fff;margin-bottom:6px;">Run the Resentment Test</h3>
+    <p style="font-family:'Lora',Georgia,serif;font-size:0.88rem;font-style:italic;color:rgba(255,255,255,0.55);max-width:480px;margin:0 auto;line-height:1.55;">Name one person whose recurring asks have been weighing on you. Then rate the four signals.</p>
+  </div>
+
+  <div id="rt-root" style="font-family:'Nunito',sans-serif;">
+    <label style="display:block;font-size:0.55rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:#FFB89A;margin-bottom:6px;">Who</label>
+    <input id="rt-who" type="text" placeholder="A name or alias" style="width:100%;padding:11px 13px;font-size:0.95rem;border:1.5px solid rgba(232,106,80,0.3);border-radius:8px;font-family:'Lora',Georgia,serif;background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.92);margin-bottom:18px;" />
+
+    <div id="rt-signals"></div>
+
+    <div id="rt-result" style="display:none;margin-top:20px;padding:18px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(232,106,80,0.25);">
+      <div id="rt-label" style="font-family:'Nunito',sans-serif;font-size:0.5rem;letter-spacing:5px;text-transform:uppercase;font-weight:800;margin-bottom:8px;"></div>
+      <div id="rt-summary" style="font-family:'Lora',Georgia,serif;font-size:0.95rem;line-height:1.7;color:rgba(255,255,255,0.85);font-style:italic;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const SIGNALS = [
+    {key:'anger', q:'When they reach out, your first internal reaction is a flash of irritation you would never show them.'},
+    {key:'fatigue', q:'After helping them, you feel drained in a way that is out of proportion to what they actually asked.'},
+    {key:'fantasy', q:'You have caught yourself wishing your phone would die or your schedule would force you to be unavailable.'},
+    {key:'avoidance', q:'You delay responding to them on purpose, then feel guilty, then resent the guilt.'}
+  ];
+  const root = document.getElementById('rt-signals');
+  if(!root) return;
+  const state = {};
+  SIGNALS.forEach((s, i) => {
+    const row = document.createElement('div');
+    row.style.cssText = 'padding:12px 14px;background:rgba(255,255,255,0.03);border:1px solid rgba(232,106,80,0.18);border-radius:8px;margin-bottom:8px;';
+    row.innerHTML = `
+      <div style="font-family:'Lora',Georgia,serif;font-size:0.88rem;color:rgba(255,255,255,0.82);line-height:1.55;margin-bottom:8px;">${s.q}</div>
+      <div data-k="${s.key}" style="display:flex;gap:6px;flex-wrap:wrap;">
+        ${[{v:0,l:'Never'},{v:1,l:'Rarely'},{v:2,l:'Often'},{v:3,l:'Always'}].map(o => `<button data-v="${o.v}" style="padding:5px 12px;border:1px solid rgba(232,106,80,0.3);background:rgba(255,255,255,0.04);border-radius:5px;cursor:pointer;font-size:0.72rem;color:rgba(255,255,255,0.7);font-family:'Nunito',sans-serif;font-weight:600;">${o.l}</button>`).join('')}
+      </div>`;
+    root.appendChild(row);
+  });
+  root.addEventListener('click', e => {
+    const btn = e.target.closest('button[data-v]');
+    if(!btn) return;
+    const group = btn.parentElement;
+    const k = group.dataset.k;
+    const v = parseInt(btn.dataset.v);
+    state[k] = v;
+    Array.from(group.children).forEach(b => {
+      if(parseInt(b.dataset.v) === v){ b.style.background = '#C84A30'; b.style.color = '#fff'; b.style.borderColor = '#C84A30'; }
+      else { b.style.background = 'rgba(255,255,255,0.04)'; b.style.color = 'rgba(255,255,255,0.7)'; b.style.borderColor = 'rgba(232,106,80,0.3)'; }
+    });
+    if(Object.keys(state).length >= SIGNALS.length){
+      const score = Object.values(state).reduce((a,b) => a+b, 0);
+      const who = (document.getElementById('rt-who').value || 'this relationship').trim();
+      const result = document.getElementById('rt-result');
+      const label = document.getElementById('rt-label');
+      const summary = document.getElementById('rt-summary');
+      result.style.display = 'block';
+      if(score >= 8){
+        label.textContent = 'Invisible contract. Active.';
+        label.style.color = '#FF6B4B';
+        summary.innerHTML = `Score ${score} of 12 with ${who}. Your resentment alarm is firing on all four signals. Every interaction is rendering you a receipt for emotional labor you did not consent to. The next conversation does not need to be a confrontation. It needs to be a redrawing. Decide in advance what you are available for and tell them clearly. The point is not to end the relationship. It is to end the unspoken version of it.`;
+      } else if(score >= 5){
+        label.textContent = 'Invisible contract. Forming.';
+        label.style.color = '#E8860A';
+        summary.innerHTML = `Score ${score} of 12 with ${who}. The pattern is starting to crystallize. You have not been crushed yet, but the receipt is being written. This is the easiest moment to renegotiate, before the resentment has compounded into something that requires a full break. Have one specific conversation this week. Say "I want to keep being there for you, and I have noticed I have been saying yes to things I do not have capacity for."`;
+      } else if(score >= 2){
+        label.textContent = 'Healthy mutual carry.';
+        label.style.color = '#E8C96A';
+        summary.innerHTML = `Score ${score} of 12 with ${who}. The signals are low. You may have moments of fatigue but the underlying contract is mutual and voluntary. This is what a good friendship looks like. Notice what is true here so you can recognize the contrast when a different relationship starts triggering the higher scores.`;
+      } else {
+        label.textContent = 'No invisible contract detected.';
+        label.style.color = '#8AE5B5';
+        summary.innerHTML = `Score ${score} of 12 with ${who}. The resentment alarm is silent. This relationship is genuinely two way, or you have already done the work of redrawing it. Keep the practice. Run the same test next month and watch for drift.`;
+      }
+    }
+  });
+})();
+</script>
 
 <div class="scene">
   <div class="scene-label">🔍 THE AUDIT</div>

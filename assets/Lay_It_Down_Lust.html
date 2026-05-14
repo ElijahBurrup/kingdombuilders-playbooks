@@ -734,6 +734,89 @@ dfn.def:hover::after,dfn.def:focus::after{opacity:1}
 
   <div class="inst reveal"><p><strong>The rewiring:</strong> The next time you feel bored in a relationship, ask: "Am I experiencing the absence of dopamine, or the absence of love?" Those are two very different things. Dopamine says leave. Oxytocin says stay and go deeper.</p></div>
 
+  <!-- ===== INTIMACY VS INTENSITY DIAGNOSTIC ===== -->
+  <div class="dd reveal" style="margin:32px 0;border:2px solid rgba(232,134,10,0.3);background:linear-gradient(140deg,rgba(232,134,10,0.05),rgba(232,134,10,0.02));border-radius:14px;padding:24px;">
+    <h4 style="font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:700;color:var(--ink-mid);margin-bottom:6px;">Intimacy or Intensity</h4>
+    <div class="sub" style="font-style:italic;color:var(--steel-light);margin-bottom:18px;font-size:0.9rem;">Run a current connection through eight questions. The pattern of your answers shows which chemical you have been chasing.</div>
+
+    <div id="ivi-root" style="font-family:'Poppins',sans-serif;">
+      <label style="display:block;font-size:0.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--fire);margin-bottom:8px;">The connection you are examining</label>
+      <input id="ivi-who" type="text" placeholder="A name, alias, or the relationship (e.g. spouse, the person on the app)" style="width:100%;padding:12px 14px;font-size:0.95rem;border:1.5px solid rgba(232,134,10,0.3);border-radius:8px;font-family:'Lora',Georgia,serif;background:#FFFDF8;margin-bottom:18px;" />
+
+      <div id="ivi-questions"></div>
+
+      <div id="ivi-result" style="display:none;margin-top:22px;padding:20px;border-radius:10px;background:linear-gradient(135deg,#1A0A02,#201218);color:rgba(255,255,255,0.92);">
+        <div id="ivi-label" style="font-size:0.55rem;letter-spacing:5px;text-transform:uppercase;font-weight:700;margin-bottom:10px;"></div>
+        <div id="ivi-summary" style="font-family:'Lora',Georgia,serif;font-size:0.98rem;line-height:1.75;font-style:italic;"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    const QS = [
+      {q: 'When you think about this person, you feel a charge in your body more than warmth.', d: 1},
+      {q: 'The image of this person in your head is more vivid than the actual conversations you have had.', d: 1},
+      {q: 'You catch yourself wanting the connection to escalate (texts, intensity, frequency) rather than to settle.', d: 1},
+      {q: 'You return to this person most when you are bored, anxious, or restless.', d: 1},
+      {q: 'You have told this person a fear or weakness in the last 30 days that you have not told anyone else.', d: 0},
+      {q: 'You have stayed in conflict with this person and finished the conflict without escape.', d: 0},
+      {q: 'Spending an ordinary, undramatic afternoon with this person is pleasant rather than disappointing.', d: 0},
+      {q: 'You can imagine this connection feeling the same to you ten years from now.', d: 0}
+    ];
+    const root = document.getElementById('ivi-questions');
+    if(!root) return;
+    const state = {};
+    QS.forEach((it, i) => {
+      const row = document.createElement('div');
+      row.style.cssText = 'padding:12px 14px;background:#FFFDF8;border:1px solid rgba(232,134,10,0.15);border-radius:8px;margin-bottom:8px;';
+      row.innerHTML = `
+        <div style="font-size:0.88rem;color:var(--ink-mid);line-height:1.55;margin-bottom:8px;font-family:'Lora',Georgia,serif;">${it.q}</div>
+        <div data-i="${i}" style="display:flex;gap:6px;flex-wrap:wrap;">
+          ${[{v:0,l:'Not at all'},{v:1,l:'Sometimes'},{v:2,l:'Often'},{v:3,l:'Always'}].map(o => `<button data-v="${o.v}" style="padding:5px 12px;border:1px solid rgba(232,134,10,0.3);background:#FFF9F0;border-radius:5px;cursor:pointer;font-size:0.72rem;color:var(--steel);font-family:'Poppins',sans-serif;">${o.l}</button>`).join('')}
+        </div>`;
+      root.appendChild(row);
+    });
+    root.addEventListener('click', e => {
+      const btn = e.target.closest('button[data-v]');
+      if(!btn) return;
+      const group = btn.parentElement;
+      const i = parseInt(group.dataset.i);
+      const v = parseInt(btn.dataset.v);
+      state[i] = v;
+      Array.from(group.children).forEach(b => {
+        if(parseInt(b.dataset.v) === v){ b.style.background = '#E8860A'; b.style.color = '#fff'; b.style.borderColor = '#E8860A'; }
+        else { b.style.background = '#FFF9F0'; b.style.color = 'var(--steel)'; b.style.borderColor = 'rgba(232,134,10,0.3)'; }
+      });
+      if(Object.keys(state).length >= QS.length){
+        let intensity = 0, intimacy = 0;
+        Object.entries(state).forEach(([i, v]) => {
+          if(QS[i].d === 1) intensity += v;
+          else intimacy += v;
+        });
+        const who = (document.getElementById('ivi-who').value || 'this connection').trim();
+        const result = document.getElementById('ivi-result');
+        const label = document.getElementById('ivi-label');
+        const summary = document.getElementById('ivi-summary');
+        result.style.display = 'block';
+        if(intensity > intimacy + 2){
+          label.textContent = 'Verdict. Intensity dominant.';
+          label.style.color = '#E8860A';
+          summary.innerHTML = `${who} is running on dopamine, not oxytocin. The charge you feel is the fixer bath developing a latent image that was never meant to be permanent. Intensity score ${intensity}. Intimacy score ${intimacy}. The work is not to extinguish the spark. It is to put down the developer and either build the depth this connection is missing, or recognize that the connection cannot bear depth and let it pass.`;
+        } else if(intimacy > intensity + 2){
+          label.textContent = 'Verdict. Intimacy dominant.';
+          label.style.color = '#E8C96A';
+          summary.innerHTML = `${who} is built on oxytocin foundations. Intimacy score ${intimacy}. Intensity score ${intensity}. Protect this. The intensity in this connection is not the load bearing element. The depth is. Spend less attention on the spark and more on the practices that maintain depth across decades.`;
+        } else {
+          label.textContent = 'Verdict. Mixed signal.';
+          label.style.color = '#F5C44B';
+          summary.innerHTML = `${who} is running on roughly equal portions of intensity and intimacy. Intensity ${intensity}. Intimacy ${intimacy}. This is the most dangerous configuration because the intensity disguises whether real depth is there. The next thirty days will tell. If the intensity fades and the intimacy remains, you have something. If both fade together, the depth was never there.`;
+        }
+      }
+    });
+  })();
+  </script>
+
   <div class="root-review reveal">
     <div class="root-label">Root Review. Chapter 5</div>
     <div class="root-layer"><span class="root-ch">1-2</span><div class="root-items"><span class="root-pill rp-ch1">Counterfeit Connection</span><span class="root-arr">&rarr;</span><span class="root-pill rp-ch1">Vulnerability Protocol</span></div></div>
