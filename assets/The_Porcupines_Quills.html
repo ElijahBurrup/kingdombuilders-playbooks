@@ -993,6 +993,79 @@ h1,h2,h3,h4{font-family:'Poppins',sans-serif;line-height:1.2}
 <!-- ===== INSTALLATION PROMPT ===== -->
 <section class="section" id="install">
   <div class="page">
+    <!-- ===== QUILL INVENTORY DIAGNOSTIC ===== -->
+    <div class="reveal" style="margin:36px 0;padding:30px 24px;background:linear-gradient(135deg,#1a1408,#2a1f12);border-radius:var(--radius);border:2px solid rgba(192,168,130,0.3);">
+      <div style="text-align:center;margin-bottom:22px;">
+        <div style="font-family:'Poppins',sans-serif;font-size:0.5rem;letter-spacing:5px;text-transform:uppercase;color:var(--quill-bright);font-weight:800;margin-bottom:6px;">Interactive Diagnostic</div>
+        <h3 style="font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:#fff;margin-bottom:6px;">The Quill Inventory</h3>
+        <p style="font-family:'Lora',Georgia,serif;font-size:0.88rem;font-style:italic;color:rgba(255,255,255,0.55);max-width:520px;margin:0 auto;line-height:1.55;">Walk through six common defensive postures. Mark each one as an armored quill (structural, automatic) or as frantic flailing (reactive, performative). The pattern tells you what to keep and what to replace.</p>
+      </div>
+
+      <div id="qi-root" style="font-family:'Poppins',sans-serif;">
+        <div id="qi-items"></div>
+
+        <div id="qi-result" style="display:none;margin-top:22px;padding:18px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(192,168,130,0.2);">
+          <div style="font-family:'Poppins',sans-serif;font-size:0.5rem;letter-spacing:5px;text-transform:uppercase;color:var(--quill-bright);font-weight:800;margin-bottom:10px;">Verdict</div>
+          <div id="qi-summary" style="font-family:'Lora',Georgia,serif;color:rgba(255,255,255,0.85);font-size:0.93rem;line-height:1.7;font-style:italic;"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+    (function(){
+      const POSTURES = [
+        {key:'silence', label:'Going silent when violated'},
+        {key:'explain', label:'Long explanations of why the boundary matters'},
+        {key:'escalate', label:'Raising your voice or matching their intensity'},
+        {key:'remove', label:'Stepping back from a conversation that has turned hostile'},
+        {key:'consequence', label:'A pre decided consequence that executes itself'},
+        {key:'plead', label:'Pleading with them to understand'}
+      ];
+      const root = document.getElementById('qi-items');
+      if(!root) return;
+      const state = {};
+      POSTURES.forEach((p, i) => {
+        const row = document.createElement('div');
+        row.style.cssText = 'padding:12px 14px;background:rgba(255,255,255,0.03);border:1px solid rgba(192,168,130,0.18);border-radius:8px;margin-bottom:8px;display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;';
+        row.innerHTML = `
+          <div style="font-family:'Lora',Georgia,serif;font-size:0.9rem;color:rgba(255,255,255,0.82);line-height:1.5;">${p.label}</div>
+          <div data-k="${p.key}" style="display:flex;gap:6px;">
+            <button data-v="quill" style="padding:6px 12px;border:1px solid rgba(192,168,130,0.3);background:rgba(255,255,255,0.04);border-radius:5px;cursor:pointer;font-size:0.7rem;color:rgba(255,255,255,0.7);font-family:'Poppins',sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase;">Quill</button>
+            <button data-v="flail" style="padding:6px 12px;border:1px solid rgba(192,168,130,0.3);background:rgba(255,255,255,0.04);border-radius:5px;cursor:pointer;font-size:0.7rem;color:rgba(255,255,255,0.7);font-family:'Poppins',sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase;">Flail</button>
+          </div>`;
+        root.appendChild(row);
+      });
+      root.addEventListener('click', e => {
+        const btn = e.target.closest('button[data-v]');
+        if(!btn) return;
+        const group = btn.parentElement;
+        const k = group.dataset.k;
+        const v = btn.dataset.v;
+        state[k] = v;
+        Array.from(group.children).forEach(b => {
+          if(b.dataset.v === v){
+            if(v === 'quill'){ b.style.background = '#C0A882'; b.style.color = '#1a1408'; b.style.borderColor = '#C0A882'; }
+            else { b.style.background = '#A55840'; b.style.color = '#fff'; b.style.borderColor = '#A55840'; }
+          } else { b.style.background = 'rgba(255,255,255,0.04)'; b.style.color = 'rgba(255,255,255,0.7)'; b.style.borderColor = 'rgba(192,168,130,0.3)'; }
+        });
+        if(Object.keys(state).length >= POSTURES.length){
+          const quills = Object.values(state).filter(v => v === 'quill').length;
+          const flails = Object.values(state).filter(v => v === 'flail').length;
+          const result = document.getElementById('qi-result');
+          const summary = document.getElementById('qi-summary');
+          result.style.display = 'block';
+          if(flails >= 4){
+            summary.innerHTML = `${flails} of ${POSTURES.length} of your current defenses are frantic flailing. The system is running on adrenaline, not architecture. This is exhausting, and it teaches the other person that pressure produces a reaction in you. Replace flails with quills. Decide consequences in advance. Stop explaining. Let your behavior speak. The porcupine never argues with the leopard.`;
+          } else if(flails >= 2){
+            summary.innerHTML = `${quills} quills, ${flails} flails. A mixed posture. The quills are doing their job. The flails are leaking energy in the exact places the system is supposed to conserve it. Pick the single most common flail and design a structural replacement this week.`;
+          } else {
+            summary.innerHTML = `${quills} of ${POSTURES.length} postures are structural quills. Your defense is already running on architecture rather than emotion. Keep the practice. Watch for new flails appearing as new pressures arise. The system needs maintenance, not overhaul.`;
+          }
+        }
+      });
+    })();
+    </script>
+
     <div class="prompt-card reveal">
       <div class="pc-label">AI Installation Prompt</div>
       <h3>Take This to Your AI Assistant</h3>

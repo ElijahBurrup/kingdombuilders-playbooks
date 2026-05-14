@@ -1094,6 +1094,88 @@ dfn.def:hover::after,dfn.def:focus::after{content:attr(data-def);position:absolu
   <span class="fill-line"></span>
 </div>
 
+<!-- ===== ENERGY EQUATION DIAGNOSTIC ===== -->
+<div style="margin:40px 0;padding:32px 24px;background:linear-gradient(170deg,#0f1a18,#142a25);border-radius:16px;border:2px solid rgba(232,160,72,0.25);">
+  <div style="text-align:center;margin-bottom:24px;">
+    <div style="font-family:'Poppins',sans-serif;font-size:0.5rem;letter-spacing:5px;text-transform:uppercase;color:#E8A848;font-weight:700;margin-bottom:6px;">Interactive</div>
+    <h3 style="font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:#fff;margin-bottom:6px;">The Energy Equation</h3>
+    <p style="font-family:'Lora',Georgia,serif;font-size:0.88rem;font-style:italic;color:rgba(255,255,255,0.55);max-width:520px;margin:0 auto;line-height:1.55;">List up to six current boundary disputes. The widget sorts them by maintenance cost so you can see which positions are sustainable and which are bleeding you.</p>
+  </div>
+
+  <div id="ee-root" style="font-family:'Poppins',sans-serif;">
+    <div id="ee-rows"></div>
+    <button id="ee-add" style="margin-top:10px;padding:10px 16px;background:transparent;color:#E8A848;border:1.5px solid rgba(232,160,72,0.4);border-radius:8px;font-family:'Poppins',sans-serif;font-weight:700;font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;">+ Add Position</button>
+
+    <div id="ee-result" style="display:none;margin-top:24px;padding:20px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(232,160,72,0.2);">
+      <div style="font-family:'Poppins',sans-serif;font-size:0.5rem;letter-spacing:5px;text-transform:uppercase;color:#E8A848;font-weight:700;margin-bottom:14px;">Sorted by Energy Cost</div>
+      <div id="ee-sorted" style="font-family:'Lora',Georgia,serif;color:rgba(255,255,255,0.85);font-size:0.92rem;line-height:1.65;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const wrap = document.getElementById('ee-rows');
+  const addBtn = document.getElementById('ee-add');
+  if(!wrap) return;
+  let count = 0;
+  function makeRow(){
+    if(count >= 6) return;
+    count++;
+    const div = document.createElement('div');
+    div.style.cssText = 'display:grid;grid-template-columns:1fr 110px;gap:10px;margin-bottom:8px;align-items:center;';
+    div.innerHTML = `
+      <input type="text" class="ee-name" placeholder="Position ${count} (e.g. arguing with my brother about politics)" style="padding:10px 12px;font-size:0.88rem;border:1.5px solid rgba(232,160,72,0.3);border-radius:8px;font-family:'Lora',Georgia,serif;background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.9);" />
+      <select class="ee-cost" style="padding:10px 8px;font-size:0.82rem;border:1.5px solid rgba(232,160,72,0.3);border-radius:8px;font-family:'Poppins',sans-serif;background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.9);cursor:pointer;">
+        <option value="">Cost...</option>
+        <option value="1">Low</option>
+        <option value="2">Medium</option>
+        <option value="3">High</option>
+        <option value="4">Bleeding</option>
+      </select>`;
+    wrap.appendChild(div);
+    const inputs = div.querySelectorAll('input,select');
+    inputs.forEach(el => el.addEventListener('input', update));
+    inputs.forEach(el => el.addEventListener('change', update));
+  }
+  function update(){
+    const rows = Array.from(wrap.children).map(r => {
+      const name = r.querySelector('.ee-name').value.trim();
+      const cost = parseInt(r.querySelector('.ee-cost').value) || 0;
+      return {name, cost};
+    }).filter(r => r.name && r.cost > 0);
+    const result = document.getElementById('ee-result');
+    const sorted = document.getElementById('ee-sorted');
+    if(rows.length < 2){
+      result.style.display = 'none';
+      return;
+    }
+    rows.sort((a,b) => b.cost - a.cost);
+    const labels = {1: 'Low (sustainable)', 2: 'Medium', 3: 'High (review)', 4: 'Bleeding (curl up or drop)'};
+    const colors = {1: '#8AE5B5', 2: '#E8C96A', 3: '#FF9A50', 4: '#FF6B4B'};
+    sorted.innerHTML = rows.map(r => `
+      <div style="padding:10px 14px;margin-bottom:6px;background:rgba(255,255,255,0.03);border-left:3px solid ${colors[r.cost]};border-radius:6px;display:flex;justify-content:space-between;align-items:center;gap:14px;">
+        <span style="flex:1;">${r.name}</span>
+        <span style="font-family:'Poppins',sans-serif;font-size:0.7rem;font-weight:700;color:${colors[r.cost]};white-space:nowrap;">${labels[r.cost]}</span>
+      </div>`).join('');
+    const bleeding = rows.filter(r => r.cost === 4).length;
+    const high = rows.filter(r => r.cost === 3).length;
+    let verdict = '';
+    if(bleeding > 0){
+      verdict = `<p style="margin-top:14px;font-style:italic;color:#FF9A50;">You have ${bleeding} bleeding position${bleeding>1?'s':''}. These are exactly the fights Scale would tell you to drop. Curl up. Let the world exhaust itself against your scales. The strongest position is the one that requires the least energy to maintain.</p>`;
+    } else if(high > 0){
+      verdict = `<p style="margin-top:14px;font-style:italic;color:#E8C96A;">No bleeding positions, but ${high} high cost one${high>1?'s':''}. Review each high cost item. Could it become a low cost position with a small structural change (a clearer no, a removed input, a one time conversation)?</p>`;
+    } else {
+      verdict = `<p style="margin-top:14px;font-style:italic;color:#8AE5B5;">Your current portfolio of positions is sustainable. The energy equation is balanced. Hold the practice.</p>`;
+    }
+    sorted.innerHTML += verdict;
+    result.style.display = 'block';
+  }
+  addBtn.addEventListener('click', makeRow);
+  makeRow(); makeRow(); makeRow();
+})();
+</script>
+
 </div></div></div>
 
 

@@ -753,6 +753,94 @@ footer .brand{font-family:'Poppins',sans-serif;font-size:0.5rem;font-style:norma
     <div class="think-line"></div>
   </div>
 
+  <!-- ===== INTERACTIVE COST CALCULATOR WIDGET ===== -->
+  <div style="margin:40px 0;padding:28px 22px;background:linear-gradient(170deg,#FDFCF8,#FAF6EC);border-radius:16px;border:2px solid rgba(46,122,114,0.2);box-shadow:var(--shadow-mid);">
+    <div style="text-align:center;margin-bottom:22px;">
+      <div style="font-family:'Poppins',sans-serif;font-size:0.5rem;letter-spacing:5px;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:6px;">Interactive Calculator</div>
+      <h3 style="font-family:'Poppins',sans-serif;font-size:1.25rem;font-weight:700;color:var(--ink);margin-bottom:6px;">The Full Ledger Calculator</h3>
+      <p style="font-family:'Lora',Georgia,serif;font-size:0.88rem;font-style:italic;color:var(--text-light);max-width:480px;margin:0 auto;line-height:1.55;">Enter the decision. Estimate each column on a one to five scale. The calculator prints your full balance sheet.</p>
+    </div>
+
+    <div id="flc-root" style="font-family:'Poppins',sans-serif;">
+      <label style="display:block;font-size:0.55rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--teal);margin-bottom:6px;">The decision you are auditing</label>
+      <input id="flc-decision" type="text" placeholder="e.g. Send the email to my mentor I have been drafting" style="width:100%;padding:11px 13px;font-size:0.95rem;border:1.5px solid rgba(46,122,114,0.25);border-radius:8px;font-family:'Lora',Georgia,serif;background:var(--white);color:var(--text);margin-bottom:18px;" />
+
+      <div id="flc-columns" style="display:grid;grid-template-columns:1fr;gap:10px;"></div>
+
+      <div id="flc-result" style="display:none;margin-top:20px;padding:18px;border-radius:10px;background:linear-gradient(135deg,var(--ink),var(--ink-dark));color:rgba(255,255,255,0.92);">
+        <div id="flc-label" style="font-family:'Poppins',sans-serif;font-size:0.5rem;letter-spacing:5px;text-transform:uppercase;font-weight:700;margin-bottom:8px;"></div>
+        <div id="flc-balance" style="font-family:'Source Serif 4',Georgia,serif;font-size:0.95rem;line-height:1.7;font-style:italic;"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    const COLS = [
+      {key:'visible', label:'Visible cost of acting', desc:'The 30 seconds of discomfort. The single up-front payment.', mult:1, dir:'act'},
+      {key:'interest', label:'Interest column of NOT acting', desc:'How long has this been deferring? What is compounding daily?', mult:2, dir:'no-act'},
+      {key:'identity', label:'Identity column of NOT acting', desc:'What sentence about yourself is this avoidance reinforcing?', mult:2, dir:'no-act'},
+      {key:'opportunity', label:'Opportunity column of NOT acting', desc:'What is sitting on the other side of action that you cannot see from here?', mult:2, dir:'no-act'}
+    ];
+    const root = document.getElementById('flc-columns');
+    if(!root) return;
+    const state = {};
+    COLS.forEach((c, i) => {
+      const row = document.createElement('div');
+      row.style.cssText = 'padding:14px 16px;background:var(--white);border:1px solid rgba(46,122,114,0.15);border-radius:8px;';
+      row.innerHTML = `
+        <div style="font-family:'Poppins',sans-serif;font-size:0.78rem;font-weight:600;color:var(--ink);margin-bottom:4px;">${c.label}</div>
+        <div style="font-family:'Lora',Georgia,serif;font-size:0.78rem;font-style:italic;color:var(--text-light);margin-bottom:10px;line-height:1.5;">${c.desc}</div>
+        <div data-k="${c.key}" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+          <span style="font-size:0.65rem;color:var(--text-muted);font-weight:600;margin-right:4px;">LOW</span>
+          ${[1,2,3,4,5].map(v => `<button data-v="${v}" style="width:32px;height:32px;border:1px solid rgba(46,122,114,0.3);background:var(--cream-warm);border-radius:6px;cursor:pointer;font-size:0.78rem;color:var(--text);font-family:'Poppins',sans-serif;font-weight:600;">${v}</button>`).join('')}
+          <span style="font-size:0.65rem;color:var(--text-muted);font-weight:600;margin-left:4px;">HIGH</span>
+        </div>`;
+      root.appendChild(row);
+    });
+    root.addEventListener('click', e => {
+      const btn = e.target.closest('button[data-v]');
+      if(!btn) return;
+      const group = btn.parentElement;
+      const k = group.dataset.k;
+      const v = parseInt(btn.dataset.v);
+      state[k] = v;
+      Array.from(group.querySelectorAll('button')).forEach(b => {
+        const bv = parseInt(b.dataset.v);
+        if(bv <= v){ b.style.background = 'var(--teal)'; b.style.color = '#fff'; b.style.borderColor = 'var(--teal)'; }
+        else { b.style.background = 'var(--cream-warm)'; b.style.color = 'var(--text)'; b.style.borderColor = 'rgba(46,122,114,0.3)'; }
+      });
+      if(Object.keys(state).length >= COLS.length){
+        const actCost = state.visible || 0;
+        const noActCost = (state.interest || 0) + (state.identity || 0) + (state.opportunity || 0);
+        const decision = (document.getElementById('flc-decision').value || 'this decision').trim();
+        const result = document.getElementById('flc-result');
+        const label = document.getElementById('flc-label');
+        const balance = document.getElementById('flc-balance');
+        result.style.display = 'block';
+        const diff = noActCost - actCost;
+        if(diff >= 8){
+          label.textContent = 'Verdict. Avoidance is catastrophically expensive.';
+          label.style.color = '#E8A84A';
+          balance.innerHTML = `Visible cost of acting on "${decision}": <strong style="color:#FFF;font-style:normal;">${actCost} of 5</strong>. Total compounding cost of not acting: <strong style="color:#FFA890;font-style:normal;">${noActCost} of 15</strong>. The math is not close. Your corrupted ledger has been selling you inaction as free for too long. Act this week. The receipt has been printing the entire time you have been pretending it was not.`;
+        } else if(diff >= 3){
+          label.textContent = 'Verdict. Avoidance is more expensive.';
+          label.style.color = '#E8C96A';
+          balance.innerHTML = `Acting on "${decision}" costs ${actCost} of 5 in visible discomfort. Not acting carries ${noActCost} of 15 across three compounding columns. The accurate accounting favors acting, but the urgency is not extreme. Within thirty days is the right window.`;
+        } else if(diff >= -2){
+          label.textContent = 'Verdict. Roughly balanced. Read again.';
+          label.style.color = '#7ABDB6';
+          balance.innerHTML = `On "${decision}", the visible cost of acting (${actCost} of 5) and the compounding cost of not acting (${noActCost} of 15) are close. This is the most suspicious result, because the corrupted ledger most often produces apparent balance when it is silently winning. Re-read the three hidden columns with someone who knows you well. Often you have under counted one column. The audit only works on honest numbers.`;
+        } else {
+          label.textContent = 'Verdict. Not acting is genuinely cheaper.';
+          label.style.color = '#80C8BE';
+          balance.innerHTML = `Acting on "${decision}" costs ${actCost} of 5. Not acting only costs ${noActCost} of 15. This is the rare audit where the deferral is actually the right call. Hold the decision. Re-run the audit in 30 days. If the interest column has grown, the calculation has changed.`;
+        }
+      }
+    });
+  })();
+  </script>
+
   <div class="insight"><p>The Audit does not require perfection. It does not even require action, at first. It only requires that you see both price tags. Because once you have seen the real numbers, <em>the corrupted ledger loses its power.</em> You may still feel the resistance. But you will no longer believe the lie that resistance is telling you: that inaction is free.</p></div>
 
   <div class="descent-ramp">
