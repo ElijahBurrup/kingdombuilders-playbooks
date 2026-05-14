@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Compass | Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#0E0F1A; --dawn:#1F2440; --sky:#3D4670;
+  --gold:#D4A843; --gold-glow:#E8C96A; --gold-pale:#F5E0A8;
+  --rose:#C88090;
+  --cream:#FDFAF3; --cream-warm:#F5EFE0; --cream-deep:#ECE5CC;
+  --text:#1A1A26; --text-light:#4A4E5E; --text-muted:#7A7E8E;
+  --white:#FFFFFF;
+  --shadow-soft:0 2px 12px rgba(14,15,26,0.06);
+  --shadow-mid:0 8px 32px rgba(14,15,26,0.14);
+  --shadow-strong:0 16px 60px rgba(14,15,26,0.22);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--cream);line-height:1.65;font-size:17px;min-height:100vh}
+
+/* TOPNAV */
+.topnav{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;padding:18px 36px;z-index:50;gap:32px}
+.topnav .brand{font-family:'Poppins',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:rgba(245,224,168,0.85);text-decoration:none;flex-shrink:0}
+.topnav-primary{display:flex;gap:8px;flex:1}
+.topnav-primary a{font-family:'Poppins',sans-serif;font-size:0.72rem;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:rgba(245,224,168,0.55);text-decoration:none;padding:8px 14px;border-radius:30px}
+.topnav-primary a:hover{color:var(--gold-glow);background:rgba(245,224,168,0.06)}
+.topnav-primary a.active{color:var(--gold-glow);background:rgba(245,224,168,0.10)}
+.topnav-utility{display:flex;gap:10px;align-items:center;flex-shrink:0}
+.topnav-utility .nav-link{font-family:'Poppins',sans-serif;font-size:0.7rem;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:rgba(245,224,168,0.6);text-decoration:none;padding:8px 14px}
+.topnav-utility .nav-button{font-family:'Poppins',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--dawn);background:linear-gradient(135deg,var(--gold),var(--gold-glow));text-decoration:none;padding:9px 20px;border-radius:50px;box-shadow:0 2px 12px rgba(212,168,67,0.32)}
+
+/* HERO */
+.compass-wrap{background:linear-gradient(170deg,#06070E 0%,var(--night) 30%,var(--dawn) 70%,var(--sky) 100%);min-height:100vh;padding:120px 24px 80px;position:relative;overflow:hidden}
+.compass-wrap::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:900px;height:900px;background:radial-gradient(circle,rgba(245,224,168,0.10) 0%,rgba(232,184,112,0.03) 40%,transparent 75%);border-radius:50%;pointer-events:none}
+.compass-inner{max-width:720px;margin:0 auto;position:relative;z-index:2}
+
+/* HEADER */
+.compass-badge{display:inline-block;padding:6px 22px;border:1px solid rgba(245,224,168,0.35);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:4.5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:24px;text-align:center}
+.compass-title{font-family:'Nunito',sans-serif;font-size:clamp(2.4rem,6vw,3.6rem);font-weight:900;color:var(--gold-glow);line-height:1.04;letter-spacing:-0.025em;text-align:center;margin-bottom:14px}
+.compass-sub{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:rgba(255,255,255,0.7);text-align:center;max-width:540px;margin:0 auto 14px;line-height:1.6}
+.compass-helper{font-family:'Poppins',sans-serif;font-size:0.62rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:rgba(245,224,168,0.5);text-align:center;margin-bottom:44px}
+
+/* PROGRESS DOTS */
+.progress-dots{display:flex;gap:10px;justify-content:center;margin-bottom:32px}
+.dot{width:36px;height:6px;border-radius:3px;background:rgba(245,224,168,0.18);transition:background 0.3s}
+.dot.active{background:var(--gold)}
+.dot.done{background:rgba(245,224,168,0.4)}
+
+/* QUESTION CARD */
+.q-card{background:var(--white);border-radius:20px;padding:36px 32px 32px;box-shadow:var(--shadow-strong);border:1px solid var(--cream-deep);display:none}
+.q-card.active{display:block}
+.q-num{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--rose);margin-bottom:8px;text-align:center}
+.q-question{font-family:'Nunito',sans-serif;font-size:1.5rem;font-weight:800;color:var(--dawn);line-height:1.25;text-align:center;margin-bottom:28px}
+
+.q-options{display:flex;flex-direction:column;gap:10px}
+.q-option{display:block;width:100%;text-align:left;background:var(--cream);border:1.5px solid var(--cream-deep);border-radius:14px;padding:18px 22px;font-family:'Lora',serif;font-size:1.02rem;color:var(--text);cursor:pointer;transition:all 0.2s;line-height:1.5}
+.q-option:hover{border-color:var(--gold);background:var(--white);transform:translateY(-1px);box-shadow:var(--shadow-soft)}
+.q-option:active{transform:translateY(0)}
+.q-option strong{color:var(--dawn);font-weight:700;font-family:'Nunito',sans-serif}
+
+/* RESULT CARD */
+.result-card{display:none;background:var(--white);border-radius:20px;overflow:hidden;box-shadow:var(--shadow-strong);border:1px solid var(--cream-deep)}
+.result-card.active{display:block}
+.result-banner{padding:40px 32px 32px;text-align:center;background:linear-gradient(160deg,var(--banner-from,#1A2030),var(--banner-mid,#3D4670),var(--banner-to,#7A6020));color:var(--white);position:relative;overflow:hidden}
+.result-banner::before{content:'';position:absolute;top:-40%;right:-15%;width:380px;height:380px;background:radial-gradient(circle,rgba(245,224,168,0.18) 0%,transparent 65%);border-radius:50%;pointer-events:none}
+.result-kicker{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:8px;position:relative}
+.result-name{font-family:'Nunito',sans-serif;font-size:2.2rem;font-weight:900;color:var(--gold-glow);letter-spacing:-0.025em;line-height:1.08;margin-bottom:8px;position:relative}
+.result-tagline{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:700;color:var(--gold-pale);letter-spacing:0.3px;position:relative}
+.result-body{padding:32px}
+.result-because{padding:18px 22px;background:var(--cream);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;font-family:'Lora',serif;font-style:italic;color:var(--text-light);font-size:0.96rem;line-height:1.6;margin-bottom:24px}
+.result-because strong{color:var(--dawn);font-style:normal;font-weight:700}
+.result-actions{display:flex;flex-direction:column;gap:10px}
+.result-cta{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;background:linear-gradient(135deg,var(--gold),var(--gold-glow));color:var(--dawn);font-family:'Poppins',sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;border-radius:50px;text-decoration:none;transition:all 0.25s;box-shadow:0 4px 18px rgba(212,168,67,0.35)}
+.result-cta:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(212,168,67,0.5)}
+.result-secondary{display:flex;justify-content:space-between;align-items:center;padding:14px 0;font-family:'Poppins',sans-serif;font-size:0.72rem;color:var(--text-muted)}
+.result-secondary a{color:var(--rose);text-decoration:none;font-weight:600}
+.result-secondary a:hover{color:var(--dawn)}
+.result-other{margin-top:24px;padding-top:24px;border-top:1px solid var(--cream-deep)}
+.result-other h4{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px;text-align:center}
+.result-other-list{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.result-other-link{padding:8px 16px;background:var(--cream);border:1px solid var(--cream-deep);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.7rem;font-weight:600;color:var(--dawn);text-decoration:none;transition:all 0.2s}
+.result-other-link:hover{border-color:var(--gold);color:var(--gold)}
+
+/* Banner colors per pathway */
+.result-banner.work-reset{--banner-from:#1A2030;--banner-mid:#3D4670;--banner-to:#7A6020}
+.result-banner.identity-walk{--banner-from:#0A0612;--banner-mid:#1A0E2E;--banner-to:#5B2FA0}
+.result-banner.ai-age{--banner-from:#040810;--banner-mid:#0A1E2E;--banner-to:#1F7A7A}
+.result-banner.money-architecture{--banner-from:#040A06;--banner-mid:#0A1E14;--banner-to:#2D8A4E}
+.result-banner.resilience-stack{--banner-from:#0A0604;--banner-mid:#1E1408;--banner-to:#A06530}
+.result-banner.inner-battle{--banner-from:#0A0408;--banner-mid:#1E0A14;--banner-to:#7A2842}
+.result-banner.family-foundation{--banner-from:#0A0604;--banner-mid:#1E0E08;--banner-to:#C25840}
+.result-banner.strategist-toolkit{--banner-from:#040810;--banner-mid:#0A1422;--banner-to:#4A6B8A}
+.result-banner.process-model{--banner-from:#040A04;--banner-mid:#0E1A0E;--banner-to:#5A7A4E}
+
+@media(max-width:640px){
+  .topnav{padding:14px 18px;gap:16px}
+  .topnav-primary,.topnav-utility .nav-link{display:none}
+  .compass-wrap{padding:100px 16px 60px}
+  .q-card,.result-body{padding:28px 22px}
+  .result-banner{padding:32px 22px 26px}
+  .result-name{font-size:1.7rem}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="/playbooks/" class="brand">Kingdom Builders AI</a>
+  <div class="topnav-primary">
+    <a href="/playbooks/" class="active">Pathways</a>
+    <a href="/playbooks/archive">Archive</a>
+  </div>
+  <div class="topnav-utility">
+    <a href="/playbooks/referrals" class="nav-link">Refer</a>
+    <a href="/playbooks/auth" class="nav-button">Sign In</a>
+  </div>
+</nav>
+
+<div class="compass-wrap">
+  <div class="compass-inner">
+
+    <div id="intro">
+      <div style="text-align:center"><span class="compass-badge">The Compass</span></div>
+      <h1 class="compass-title">Three Questions.<br>One Pathway.</h1>
+      <p class="compass-sub">If you do not know where to start, the Compass starts you. Three quick questions. The library is large; the next step is small.</p>
+    </div>
+
+    <div class="progress-dots" id="dots">
+      <div class="dot active" data-step="1"></div>
+      <div class="dot" data-step="2"></div>
+      <div class="dot" data-step="3"></div>
+    </div>
+
+    <!-- Q1 -->
+    <div class="q-card active" data-q="1">
+      <div class="q-num">Question 01 of 03</div>
+      <h2 class="q-question">Which sentence describes you best right now?</h2>
+      <div class="q-options" id="q1-options"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="q-card" data-q="2">
+      <div class="q-num">Question 02 of 03</div>
+      <h2 class="q-question">What kind of help do you actually want?</h2>
+      <div class="q-options" id="q2-options"></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="q-card" data-q="3">
+      <div class="q-num">Question 03 of 03</div>
+      <h2 class="q-question">When you take action on this, you tend to start with...</h2>
+      <div class="q-options" id="q3-options"></div>
+    </div>
+
+    <!-- Result -->
+    <div class="result-card" id="result">
+      <div class="result-banner" id="result-banner">
+        <div class="result-kicker">Your Pathway</div>
+        <div class="result-name" id="result-name"></div>
+        <div class="result-tagline" id="result-tagline"></div>
+      </div>
+      <div class="result-body">
+        <div class="result-because" id="result-because"></div>
+        <div class="result-actions">
+          <a href="#" class="result-cta" id="result-cta">
+            <span>Start the path</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+        <div class="result-secondary">
+          <span></span>
+          <a href="#" onclick="restartCompass();return false;">Take it again →</a>
+        </div>
+        <div class="result-other">
+          <h4>Or try one of these</h4>
+          <div class="result-other-list" id="result-other-list"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* =========================================================================
+ * COMPASS DATA — single source of truth for the Compass diagnostic.
+ *
+ * Each option has a `weights` object mapping pathway slugs to weight values.
+ * After all 3 questions are answered, weights are summed. Top pathway wins.
+ *
+ * To add new pathways: add to PATHWAYS map, add new option(s) to the
+ * relevant questions, and update the new playbook's NEAREST_PATHWAY tag
+ * in pathway_definitions.py. The Compass auto-flows to new content because
+ * it routes to PATHWAYS, and pathway pages already list every playbook
+ * tagged to them.
+ * =======================================================================*/
+
+const PATHWAYS = {
+  'work-reset': {
+    name: 'The Work Reset',
+    tagline: 'Make Monday Lighter',
+    first_playbook: 'given',
+    first_playbook_name: 'Manna: Given',
+  },
+  'identity-walk': {
+    name: 'The Identity Walk',
+    tagline: 'Stop Performing, Start Being',
+    first_playbook: 'the-hermit-crabs-shell',
+    first_playbook_name: "The Hermit Crab's Shell",
+  },
+  'ai-age': {
+    name: 'The AI Age',
+    tagline: "Operate The Future, Don't Fear It",
+    first_playbook: 'the-lifted-ceiling',
+    first_playbook_name: 'The Lifted Ceiling',
+  },
+  'money-architecture': {
+    name: 'The Money Architecture',
+    tagline: 'Build Wealth That Compounds',
+    first_playbook: 'the-squirrel-economy',
+    first_playbook_name: 'The Squirrel Economy',
+  },
+  'resilience-stack': {
+    name: 'The Resilience Stack',
+    tagline: 'Harder To Break, Slower To Burn',
+    first_playbook: 'the-mantis-shrimps-eye',
+    first_playbook_name: "The Mantis Shrimp's Eye",
+  },
+  'inner-battle': {
+    name: 'The Inner Battle',
+    tagline: 'Lay Down The Seven Weights',
+    first_playbook: 'lay-it-down',
+    first_playbook_name: 'Lay It Down',
+  },
+  'family-foundation': {
+    name: 'The Family Foundation',
+    tagline: 'Hard Conversations, Soft Delivery',
+    first_playbook: 'dad-talks-the-dopamine-drought',
+    first_playbook_name: 'Dad Talks: The Dopamine Drought',
+  },
+  'strategist-toolkit': {
+    name: "The Strategist's Toolkit",
+    tagline: 'Decide Better, Lead Cleaner',
+    first_playbook: 'the-eagles-lens',
+    first_playbook_name: "The Eagle's Lens",
+  },
+  'process-model': {
+    name: 'A Process Model',
+    tagline: 'You Are Not A Thing. You Are The Interaction.',
+    first_playbook: 'the-tide-pools-echo',
+    first_playbook_name: "The Tide Pool's Echo",
+  },
+};
+
+const QUESTIONS = [
+  {
+    id: 'q1',
+    options: [
+      {label: "I have the job I wanted and I dread Monday morning.", weights: {'work-reset': 3}},
+      {label: "I have performed so long, I forgot there was someone underneath.", weights: {'identity-walk': 3}},
+      {label: "AI is everywhere and I am not sure how to operate inside it.", weights: {'ai-age': 3}},
+      {label: "Money is happening to me. I want it to happen through me instead.", weights: {'money-architecture': 3}},
+      {label: "I am facing something hard right now and I need real tools to survive it.", weights: {'resilience-stack': 3}},
+      {label: "I keep losing to the same old patterns in myself, year after year.", weights: {'inner-battle': 3}},
+      {label: "I have to talk to my kid about hard things, and I do not want to lecture.", weights: {'family-foundation': 3}},
+      {label: "I make decisions for other people. I need sharper instruments.", weights: {'strategist-toolkit': 3}},
+      {label: "I am tired of being told I am a noun. I want a different ontology entirely.", weights: {'process-model': 3}},
+    ],
+  },
+  {
+    id: 'q2',
+    options: [
+      {label: "<strong>A reframe.</strong> A single sentence that names what I have not been able to name.",
+       weights: {'work-reset': 2, 'identity-walk': 2, 'process-model': 2, 'inner-battle': 1}},
+      {label: "<strong>A practice.</strong> Something I can do tomorrow morning.",
+       weights: {'resilience-stack': 2, 'family-foundation': 2, 'work-reset': 1, 'inner-battle': 2}},
+      {label: "<strong>A map.</strong> A landscape I can keep coming back to.",
+       weights: {'strategist-toolkit': 2, 'money-architecture': 2, 'ai-age': 2}},
+      {label: "<strong>A community.</strong> Someone walking the same direction.",
+       weights: {'family-foundation': 1, 'inner-battle': 1, 'work-reset': 1}},
+    ],
+  },
+  {
+    id: 'q3',
+    options: [
+      {label: "<strong>The breakthrough sentence.</strong> Give me the line, I will work out the rest.",
+       weights: {'identity-walk': 2, 'process-model': 2, 'inner-battle': 1, 'work-reset': 1}},
+      {label: "<strong>The diagnostic.</strong> Show me where I actually am right now.",
+       weights: {'resilience-stack': 2, 'work-reset': 2, 'money-architecture': 1, 'strategist-toolkit': 1}},
+      {label: "<strong>The story.</strong> Walk me into it through a scene I will remember.",
+       weights: {'family-foundation': 2, 'ai-age': 2, 'process-model': 1, 'identity-walk': 1}},
+      {label: "<strong>The architecture.</strong> Give me the whole system so I can see how it connects.",
+       weights: {'strategist-toolkit': 2, 'ai-age': 1, 'money-architecture': 2, 'inner-battle': 1}},
+    ],
+  },
+];
+
+/* =========================================================================
+ * RUNTIME — render questions, track scores, show result
+ * =======================================================================*/
+let currentQuestion = 1;
+const scores = {};
+Object.keys(PATHWAYS).forEach(k => scores[k] = 0);
+
+function renderOptions(qIdx) {
+  const q = QUESTIONS[qIdx - 1];
+  const container = document.getElementById(`q${qIdx}-options`);
+  container.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'q-option';
+    btn.innerHTML = opt.label;
+    btn.addEventListener('click', () => selectOption(qIdx, opt));
+    container.appendChild(btn);
+  });
+}
+
+function selectOption(qIdx, opt) {
+  // Add weights
+  for (const [path, w] of Object.entries(opt.weights)) {
+    scores[path] = (scores[path] || 0) + w;
+  }
+  // Advance
+  if (qIdx < QUESTIONS.length) {
+    showQuestion(qIdx + 1);
+  } else {
+    showResult();
+  }
+}
+
+function showQuestion(n) {
+  document.querySelectorAll('.q-card').forEach(c => c.classList.remove('active'));
+  document.querySelector(`.q-card[data-q="${n}"]`).classList.add('active');
+  document.querySelectorAll('.dot').forEach(d => {
+    const s = parseInt(d.dataset.step);
+    d.classList.toggle('active', s === n);
+    d.classList.toggle('done', s < n);
+  });
+  currentQuestion = n;
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function showResult() {
+  // Sort pathways by score descending
+  const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+  const [topSlug, topScore] = sorted[0];
+  const top = PATHWAYS[topSlug];
+
+  // Hide questions and progress dots
+  document.querySelectorAll('.q-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('dots').style.display = 'none';
+  document.getElementById('intro').style.display = 'none';
+
+  // Render result
+  const banner = document.getElementById('result-banner');
+  banner.className = 'result-banner ' + topSlug;
+  document.getElementById('result-name').textContent = top.name;
+  document.getElementById('result-tagline').textContent = top.tagline;
+  document.getElementById('result-because').innerHTML =
+    `Your answers point most strongly to <strong>${top.name}</strong>. ` +
+    `The pathway starts with <strong>${top.first_playbook_name}</strong>, ` +
+    `which delivers the core reframe in about thirty minutes.`;
+  const cta = document.getElementById('result-cta');
+  cta.href = `/playbooks/pathways/${topSlug}`;
+  cta.querySelector('span').textContent = `Start ${top.name}`;
+
+  // Show top 3 other pathways as alternatives
+  const others = sorted.slice(1, 4);
+  const otherList = document.getElementById('result-other-list');
+  otherList.innerHTML = '';
+  others.forEach(([slug]) => {
+    const link = document.createElement('a');
+    link.className = 'result-other-link';
+    link.href = `/playbooks/pathways/${slug}`;
+    link.textContent = PATHWAYS[slug].name;
+    otherList.appendChild(link);
+  });
+
+  document.getElementById('result').classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function restartCompass() {
+  Object.keys(scores).forEach(k => scores[k] = 0);
+  document.getElementById('result').classList.remove('active');
+  document.getElementById('dots').style.display = 'flex';
+  document.getElementById('intro').style.display = 'block';
+  showQuestion(1);
+}
+
+// Initialize
+renderOptions(1);
+renderOptions(2);
+renderOptions(3);
+</script>
+
+</body>
+</html>

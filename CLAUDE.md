@@ -282,6 +282,15 @@ This powers three features: constellation map (`/constellation`), end-of-playboo
 - [ ] If playbook fits an existing theme path: add it to that path's steps list
 - [ ] If standalone: consider creating a new 3-4 step thematic path that includes it
 
+### Step 9b: Pathway Mapping (`pathway_definitions.py`) — REQUIRED
+- [ ] Decide which of the 9 Pathways this playbook belongs to (`work-reset`, `identity-walk`, `ai-age`, `money-architecture`, `resilience-stack`, `inner-battle`, `family-foundation`, `strategist-toolkit`, `process-model`)
+- [ ] Add entry to `NEAREST_PATHWAY` map: `"new-slug": "pathway-slug"`
+- [ ] If playbook is part of the pathway's curated sequence (not just related): add to that pathway's `playbook_sequence` list in `PATHWAYS`
+- [ ] If a new Pathway is needed: also add to `PATHWAYS` list, update `static/index.html` homepage with a new pathway card, add to `scripts/generate_pathway_pages.py` ACCENTS, and to `static/compass.html` PATHWAYS map + relevant QUESTIONS option weights
+- [ ] Regenerate pathway pages: `python scripts/generate_pathway_pages.py`
+- [ ] Regenerate archive grid: `python scripts/update_archive_columns.py`
+- [ ] **The Compass** auto-routes new playbooks to their tagged pathway via NEAREST_PATHWAY — no Compass code changes needed unless a new Pathway is being added.
+
 ### Step 10: Commit & Push
 - [ ] `git add` all changed files: assets/*.html, assets/pull-quotes/*.png, assets/pdf/*.pdf, assets/pdf-bookcut/*.pdf, static/*.html, static/index.html, api/routers/legacy.py, all seed scripts, CLAUDE.md
 - [ ] Commit with descriptive message

@@ -315,11 +315,17 @@ async def archive():
 
 @router.get("/pathways/{slug}", include_in_schema=False)
 async def pathway_detail(slug: str):
-    """Pathway detail page — one of 8 curated pathways."""
+    """Pathway detail page — one of 9 curated pathways."""
     file_path = STATIC_DIR / "pathways" / f"{slug}.html"
     if not file_path.is_file():
         raise HTTPException(status_code=404, detail=f"Pathway not found: {slug}")
     return FileResponse(file_path)
+
+
+@router.get("/compass", include_in_schema=False)
+async def compass():
+    """The Compass — 3-question diagnostic that recommends a pathway."""
+    return FileResponse(STATIC_DIR / "compass.html")
 
 
 @router.get("/health", include_in_schema=False)
