@@ -865,6 +865,192 @@ dfn.def:hover::after{opacity:1;transform:translateX(-50%) scale(1);pointer-event
   <p><strong>If you add Arm 3 before Arm 1 is stable, you will collapse.</strong> This is not opinion. This is the #1 cause of death for multi-stream builders: they jump to the exciting, scalable arms before the foundational arms are producing steady revenue and content. The octopus grows arms sequentially for a reason, each arm needs the nutrients the previous arm provides.</p>
 </section>
 
+<div class="diagnostic-widget" id="arm-mapper">
+<style>
+#arm-mapper{margin:48px 0;border-radius:18px;overflow:hidden;border:2px solid rgba(20,80,120,0.2);background:#fff;box-shadow:0 8px 28px rgba(10,30,50,0.1)}
+#arm-mapper .am-head{background:linear-gradient(135deg,#0E2030,#1A4060);padding:28px 32px;text-align:center;color:#fff}
+#arm-mapper .am-kicker{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:#A8D8E8;margin-bottom:8px}
+#arm-mapper .am-head h3{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#fff;margin:0 0 6px;letter-spacing:-0.01em}
+#arm-mapper .am-head p{font-family:'Lora',serif;font-style:italic;font-size:0.92rem;color:rgba(255,255,255,0.7);margin:0 auto;max-width:480px}
+#arm-mapper .am-body{padding:32px}
+#arm-mapper .am-arms{display:grid;gap:14px;margin-bottom:22px}
+#arm-mapper .am-arm{padding:18px;border-radius:12px;background:#F4F8FC;border:1.5px solid rgba(20,80,120,0.12);transition:all 0.2s}
+#arm-mapper .am-arm:hover{border-color:rgba(20,80,120,0.25)}
+#arm-mapper .am-arm-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+#arm-mapper .am-arm-num{flex-shrink:0;width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#1A4060,#2E6080);color:#A8D8E8;font-family:'Poppins',sans-serif;font-weight:800;font-size:0.78rem;text-align:center;line-height:32px}
+#arm-mapper .am-arm-name{flex:1;font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:700;color:#0E2030}
+#arm-mapper .am-arm-desc{font-family:'Lora',serif;font-style:italic;font-size:0.78rem;color:#3A5070}
+#arm-mapper .am-state-picker{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:12px}
+@media(max-width:580px){#arm-mapper .am-state-picker{grid-template-columns:repeat(2,1fr)}}
+#arm-mapper .am-state-btn{padding:10px 6px;background:#fff;border:1.5px solid rgba(20,80,120,0.1);border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.62rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#3A5070;cursor:pointer;transition:all 0.15s;line-height:1.3}
+#arm-mapper .am-state-btn:hover{border-color:#1A4060;background:rgba(168,216,232,0.1)}
+#arm-mapper .am-state-btn.active{background:linear-gradient(135deg,#1A4060,#2E6080);color:#fff;border-color:#1A4060}
+#arm-mapper .am-state-btn.active.s0{background:linear-gradient(135deg,#5A5060,#7A7080)}
+#arm-mapper .am-state-btn.active.s1{background:linear-gradient(135deg,#C07840,#D08840)}
+#arm-mapper .am-state-btn.active.s2{background:linear-gradient(135deg,#1A4060,#2E6080)}
+#arm-mapper .am-state-btn.active.s3{background:linear-gradient(135deg,#1A6850,#2E8060)}
+#arm-mapper .am-state-btn.active.s4{background:linear-gradient(135deg,#7A50C0,#9070E0)}
+#arm-mapper .am-recommendation{padding:24px;background:linear-gradient(135deg,#0E2030,#1A4060);color:#fff;border-radius:12px}
+#arm-mapper .am-rec-kicker{font-family:'Poppins',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#A8D8E8;margin-bottom:8px}
+#arm-mapper .am-rec-title{font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:#fff;margin-bottom:10px;line-height:1.2}
+#arm-mapper .am-rec-text{font-family:'Lora',serif;color:rgba(255,255,255,0.85);line-height:1.6;font-size:0.92rem;margin-bottom:14px}
+#arm-mapper .am-rec-action{font-family:'Lora',serif;font-style:italic;color:#A8D8E8;line-height:1.55;font-size:0.88rem;padding-top:12px;border-top:1px solid rgba(168,216,232,0.2)}
+#arm-mapper .am-progress{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+#arm-mapper .am-progress-bar{flex:1;height:8px;background:rgba(20,80,120,0.08);border-radius:4px;overflow:hidden}
+#arm-mapper .am-progress-fill{height:100%;background:linear-gradient(90deg,#1A4060,#2E6080);width:0%;transition:width 0.6s ease;border-radius:4px}
+#arm-mapper .am-progress-text{font-family:'Poppins',sans-serif;font-weight:800;color:#0E2030;font-size:0.78rem;white-space:nowrap}
+</style>
+
+<div class="am-head">
+  <div class="am-kicker">Interactive Mapper</div>
+  <h3>Map Your Octopus</h3>
+  <p>Click your current state on each of the five arms. The mapper tells you exactly which arm to focus on next.</p>
+</div>
+<div class="am-body">
+  <div class="am-progress">
+    <div class="am-progress-text">Total Octopus:</div>
+    <div class="am-progress-bar"><div class="am-progress-fill" id="am-fill"></div></div>
+    <div class="am-progress-text"><span id="am-pct">0</span>%</div>
+  </div>
+
+  <div class="am-arms" id="am-arms"></div>
+
+  <div class="am-recommendation" id="am-recommendation">
+    <div class="am-rec-kicker">Your next move</div>
+    <div class="am-rec-title" id="am-rec-title">Pick a state on each arm to see your recommendation</div>
+    <div class="am-rec-text" id="am-rec-text">The Octopus Protocol gives you the sequence. Start by marking where each arm is today.</div>
+    <div class="am-rec-action" id="am-rec-action" style="display:none"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const arms = [
+    { num: 1, name: 'Service (Done-For-You)', desc: 'Your skill traded directly for money: consulting, freelancing, coaching.' },
+    { num: 2, name: 'Digital Product', desc: 'Repeatable parts of your service packaged into something they can buy without you.' },
+    { num: 3, name: 'Course or Workshop', desc: 'Teaching others to do what you do, structured as transformation.' },
+    { num: 4, name: 'Community or Membership', desc: 'Recurring access to you, your frameworks, your community.' },
+    { num: 5, name: 'Licensing or Partnerships', desc: 'Other people sell or implement your system. Scales without you.' }
+  ];
+  const states = [
+    { value: 0, label: 'Not Started', short: 'Not started' },
+    { value: 1, label: 'Building', short: 'Building' },
+    { value: 2, label: 'Earning', short: 'Earning' },
+    { value: 3, label: 'Threshold', short: 'At threshold' },
+    { value: 4, label: 'Autonomous', short: 'Running on its own' }
+  ];
+
+  const widget = document.getElementById('arm-mapper');
+  const container = widget.querySelector('#am-arms');
+  const armStates = arms.map(() => null);
+
+  arms.forEach(function(arm, i){
+    const armDiv = document.createElement('div');
+    armDiv.className = 'am-arm';
+    armDiv.setAttribute('data-arm', i);
+    let stateButtons = '';
+    states.forEach(function(s){
+      stateButtons += '<button class="am-state-btn s' + s.value + '" data-state="' + s.value + '">' + s.short + '</button>';
+    });
+    armDiv.innerHTML =
+      '<div class="am-arm-head">' +
+        '<div class="am-arm-num">' + arm.num + '</div>' +
+        '<div><div class="am-arm-name">' + arm.name + '</div>' +
+        '<div class="am-arm-desc">' + arm.desc + '</div></div>' +
+      '</div>' +
+      '<div class="am-state-picker">' + stateButtons + '</div>';
+    container.appendChild(armDiv);
+  });
+
+  function recommend(){
+    // Total progress
+    const total = armStates.reduce(function(sum, s){ return sum + (s === null ? 0 : s); }, 0);
+    const max = arms.length * 4;
+    const pct = Math.round((total/max)*100);
+    widget.querySelector('#am-fill').style.width = pct + '%';
+    widget.querySelector('#am-pct').textContent = pct;
+
+    // All set?
+    const unset = armStates.filter(function(s){ return s === null; }).length;
+    if(unset > 0){
+      widget.querySelector('#am-rec-title').textContent = unset === arms.length ? 'Pick a state on each arm to see your recommendation' : 'Set the remaining ' + unset + ' arm' + (unset>1?'s':'') + ' to see your recommendation';
+      widget.querySelector('#am-rec-text').textContent = 'The mapper needs all five arms rated before it can compute the right next move.';
+      widget.querySelector('#am-rec-action').style.display = 'none';
+      return;
+    }
+
+    // Find first arm that is not at threshold (state < 3) — that is the focus
+    let focusArm = -1;
+    for(let i=0; i<armStates.length; i++){
+      if(armStates[i] < 3){ focusArm = i; break; }
+    }
+
+    let title, text, action;
+    if(focusArm === -1){
+      // All arms at threshold or autonomous
+      title = 'Full Octopus Operational';
+      text = 'All five arms are at threshold or running autonomously. This is the rare full octopus state. The work shifts from building arms to optimizing the brain, the strategic coordination across them.';
+      action = 'This week: audit which arms are taking the most central-brain attention. If one arm is demanding disproportionate energy, that is a ganglion problem, not a growth problem. Push more local autonomy to that arm.';
+    } else if(focusArm > 0 && armStates[focusArm - 1] < 3){
+      // The arm before this one is below threshold; we should NOT be working on focusArm
+      title = 'Sequence Violation: Drop Back to Arm ' + arms[focusArm - 1].num;
+      text = 'You marked Arm ' + arms[focusArm].num + ' as in progress, but Arm ' + arms[focusArm - 1].num + ' (' + arms[focusArm - 1].name + ') has not reached its threshold yet. This is the #1 cause of multi-stream collapse: skipping the sequence.';
+      action = 'This week: deprioritize Arm ' + arms[focusArm].num + ' temporarily. Get Arm ' + arms[focusArm - 1].num + ' to threshold first. Each arm creates the assets and audience the next arm needs. The sequence is not preference. It is structure.';
+    } else {
+      // Focus on the current arm
+      const arm = arms[focusArm];
+      const state = armStates[focusArm];
+      if(state === 0){
+        title = 'Build Arm ' + arm.num + ': ' + arm.name;
+        text = 'This is your next arm. Everything else is premature until this one is producing.';
+        if(focusArm === 0){
+          action = 'This week: reach out to 10 people in your network who might need your core skill. Offer 2-3 of them a founding rate. You need clients, not strategy.';
+        } else {
+          action = 'This week: extract one element from your work on Arms 1-' + focusArm + ' that could be productized or systematized. The next arm is built from what the previous arms already produced.';
+        }
+      } else if(state === 1){
+        title = 'Push Arm ' + arm.num + ' Through to Earning';
+        text = 'Arm ' + arm.num + ' is in the build phase. Stay focused. Do not start the next arm until this one is generating actual revenue and stability.';
+        action = 'This week: identify the single specific milestone that would move this arm from Building to Earning. Move toward that milestone, not toward parallel projects.';
+      } else if(state === 2){
+        title = 'Stabilize Arm ' + arm.num + ' to Threshold';
+        text = 'Arm ' + arm.num + ' is earning but not yet at threshold. This is where most builders get tempted to start the next arm. Resist. The threshold is the signal, not the revenue.';
+        action = 'This week: identify what threshold this arm needs to reach (stable revenue for 2+ months, documented processes, repeatable system). Build the stability that lets this arm run with less of your attention.';
+      } else {
+        // state === 3 (Threshold)
+        title = 'Add Arm ' + (arm.num + 1);
+        text = 'Arm ' + arm.num + ' is at threshold. You have earned the right to add the next arm. Start it now.';
+        action = 'This week: the next arm uses what Arm ' + arm.num + ' produced as raw material. Extract that material this week and use it to launch the next arm in its earliest form.';
+      }
+    }
+
+    widget.querySelector('#am-rec-title').textContent = title;
+    widget.querySelector('#am-rec-text').textContent = text;
+    const actionEl = widget.querySelector('#am-rec-action');
+    actionEl.textContent = action;
+    actionEl.style.display = 'block';
+  }
+
+  container.addEventListener('click', function(e){
+    const btn = e.target.closest('.am-state-btn');
+    if(!btn) return;
+    const armDiv = btn.closest('.am-arm');
+    const armIdx = parseInt(armDiv.getAttribute('data-arm'), 10);
+    const stateVal = parseInt(btn.getAttribute('data-state'), 10);
+    armStates[armIdx] = stateVal;
+
+    // toggle active state in this arm only
+    armDiv.querySelectorAll('.am-state-btn').forEach(function(b){
+      b.classList.toggle('active', b === btn);
+    });
+    recommend();
+  });
+
+  recommend();
+})();
+</script>
+</div>
+
 <div class="think">
   <div class="think-label"><svg class="ico"><use href="#ico-thought"/></svg> Map Your Arms</div>
   <h4>What would your five arms look like?</h4>
