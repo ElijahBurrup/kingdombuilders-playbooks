@@ -537,9 +537,11 @@ async def get_referral_stats(user_id: UUID, db: AsyncSession) -> dict:
         )
         lifetime_earnings_cents = int(lifetime_result.scalar())
 
+    # BASE_URL on prod is the full origin including any subpath (e.g.
+    # https://kingdombuilders.ai/playbooks). Do NOT re-append URL_PREFIX
+    # or the link doubles to /playbooks/playbooks/...
     base_url = settings.BASE_URL.rstrip("/")
-    prefix = settings.URL_PREFIX.rstrip("/") if settings.URL_PREFIX else ""
-    referral_link = f"{base_url}{prefix}/r/{code_row.code}"
+    referral_link = f"{base_url}/r/{code_row.code}"
 
     return {
         "referral_code": code_row.code,

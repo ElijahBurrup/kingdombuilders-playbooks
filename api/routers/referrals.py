@@ -145,8 +145,8 @@ async def create_connect_account(
 
         link = stripe.AccountLink.create(
             account=account.id,
-            refresh_url=f"{settings.BASE_URL}{settings.URL_PREFIX}/referrals?connect=refresh",
-            return_url=f"{settings.BASE_URL}{settings.URL_PREFIX}/referrals?connect=success",
+            refresh_url=f"{settings.BASE_URL}/referrals?connect=refresh",
+            return_url=f"{settings.BASE_URL}/referrals?connect=success",
             type="account_onboarding",
         )
     except stripe.error.StripeError as e:
@@ -196,8 +196,8 @@ async def refresh_connect_onboarding(
     try:
         link = stripe.AccountLink.create(
             account=profile.stripe_connect_id,
-            refresh_url=f"{settings.BASE_URL}{settings.URL_PREFIX}/referrals?connect=refresh",
-            return_url=f"{settings.BASE_URL}{settings.URL_PREFIX}/referrals?connect=success",
+            refresh_url=f"{settings.BASE_URL}/referrals?connect=refresh",
+            return_url=f"{settings.BASE_URL}/referrals?connect=success",
             type="account_onboarding",
         )
     except stripe.error.StripeError as e:
