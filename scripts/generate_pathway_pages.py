@@ -68,14 +68,15 @@ def _strip(html_fragment: str) -> str:
 
 
 def extract_playbook_meta(slug: str) -> dict:
-    """Pull title, tagline, quote, chapter count from the asset HTML."""
+    """Pull title, tagline, quote, banner gradient, and chapter h2s."""
     html = _read_asset(slug)
     if not html:
         return {
             "title": slug.replace('-', ' ').title(),
             "tagline": "",
             "quote": "",
-            "chapters": 0,
+            "gradient": "",
+            "chapters": [],
         }
 
     title_m = re.search(r'<h1[^>]*>(.*?)</h1>', html, flags=re.DOTALL | re.IGNORECASE)
@@ -123,10 +124,44 @@ def extract_playbook_meta(slug: str) -> dict:
     if quote and tagline and (_norm(quote) == _norm(tagline) or _norm(quote) in _norm(tagline) or _norm(tagline) in _norm(quote)):
         quote = ""
 
+    # Per-playbook gradient: use the FIRST linear-gradient found in the
+    # asset (almost always the cover/body background). Skip overlays
+    # (those use rgba() or refer to CSS vars).
+    gradient = ""
+    for g in re.findall(r'linear-gradient\([^)]+\)', html):
+        if 'var(' in g or 'rgba' in g:
+            continue
+        gradient = g
+        break
+
+    # First few chapter h2 titles for the Includes data line.
+    chapter_titles = []
+    for m in re.findall(r'<h2[^>]*>(.*?)</h2>', html, flags=re.DOTALL | re.IGNORECASE):
+        title_text = _strip(m)
+        # Skip obvious navigation / TOC entries
+        if not title_text or len(title_text) > 90:
+            continue
+        if title_text.lower() in ('contents', 'table of contents', 'index'):
+            continue
+        chapter_titles.append(title_text)
+        if len(chapter_titles) >= 3:
+            break
+
+    # Shorten tagline to the first complete sentence under 120 chars
+    short_tagline = tagline
+    if short_tagline:
+        m = re.match(r'(.{20,120}?[.!?])(?:\s|$)', short_tagline)
+        if m:
+            short_tagline = m.group(1).strip()
+        elif len(short_tagline) > 120:
+            short_tagline = short_tagline[:117].rstrip() + "..."
+
     return {
         "title": title,
-        "tagline": tagline,
+        "tagline": short_tagline,
         "quote": quote,
+        "gradient": gradient,
+        "chapters": chapter_titles,
     }
 
 
@@ -150,8 +185,23 @@ def step_card(slug: str, step_num: int, accent: dict) -> str:
         f'<p class="step-quote">&ldquo;{meta["quote"]}&rdquo;</p>' if meta["quote"] else ""
     )
 
+    chapters = meta.get("chapters", [])
+    if chapters:
+        includes = " &middot; ".join(chapters[:3])
+        includes_block = f'<p class="step-includes"><strong>Includes</strong> {includes}.</p>'
+        chapter_count = max(len(chapters), 1)
+        meta_chapters = f'<span class="dot"></span><span>{chapter_count}+ chapters</span>'
+    else:
+        includes_block = ""
+        meta_chapters = ""
+
+    # Per-step gradient — each playbook's own cover gradient becomes the
+    # banner background so opening the playbook doesn't visually jar.
+    gradient = meta.get("gradient", "")
+    banner_style = f' style="background:{gradient}"' if gradient else ''
+
     return f"""    <a href="/playbooks/read/{slug}" class="step">
-      <div class="step-banner">
+      <div class="step-banner"{banner_style}>
         <div class="step-banner-left">
           <div class="step-num">{step_num_label}</div>
           <div class="step-name">{meta["title"]}</div>
@@ -160,8 +210,9 @@ def step_card(slug: str, step_num: int, accent: dict) -> str:
       </div>
       <div class="step-body">
         {quote_block}
+        {includes_block}
         <div class="step-footer">
-          <div class="step-meta"><span>~30 min</span><span class="dot"></span>{price_label}</div>
+          <div class="step-meta"><span>~30 min</span><span class="dot"></span>{price_label}{meta_chapters}</div>
           <div class="step-action">Open Step {step_num:02d} &rarr;</div>
         </div>
       </div>
@@ -217,22 +268,24 @@ body{{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--cream)
 .path-intro p{{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:var(--text-light);max-width:560px;margin:10px auto 0}}
 .path-grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:24px}}
 
-.step{{background:var(--white);border-radius:20px;overflow:hidden;box-shadow:var(--shadow-mid);border:1px solid var(--cream-deep);text-decoration:none;color:inherit;display:flex;flex-direction:column;transition:all 0.4s}}
-.step:hover{{transform:translateY(-4px);box-shadow:0 16px 60px rgba(14,15,26,0.18);border-color:rgba(212,168,67,0.35)}}
-.step-banner{{padding:24px 26px 22px;background:linear-gradient(160deg,{acc1} 0%,{acc2} 50%,{acc3} 100%);position:relative;overflow:hidden}}
+.step{{background:var(--white);border-radius:20px;overflow:hidden;box-shadow:var(--shadow-mid);border:1px solid var(--cream-deep);text-decoration:none;color:inherit;display:flex;flex-direction:column;transition:all 0.4s cubic-bezier(.2,.7,.3,1);position:relative}}
+.step:hover{{transform:translateY(-4px);box-shadow:0 16px 60px rgba(14,15,26,0.22);border-color:rgba(212,168,67,0.35)}}
+.step-banner{{padding:22px 26px 20px;background:linear-gradient(160deg,{acc1} 0%,{acc2} 50%,{acc3} 100%);position:relative;overflow:hidden;display:flex;justify-content:space-between;align-items:flex-start}}
 .step-banner::before{{content:'';position:absolute;top:-40%;right:-12%;width:280px;height:280px;background:radial-gradient(circle,rgba(245,224,168,0.16) 0%,transparent 65%);border-radius:50%;pointer-events:none}}
-.step-banner-left{{position:relative;z-index:2}}
-.step-num{{font-family:'Poppins',sans-serif;font-size:0.58rem;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;color:var(--accent-pale);margin-bottom:8px;opacity:0.85;line-height:1.4}}
-.step-name{{font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:var(--white);letter-spacing:-0.015em;line-height:1.18;margin-bottom:8px}}
-.step-sub{{font-family:'Lora',serif;font-style:italic;font-size:0.95rem;color:rgba(255,255,255,0.78);line-height:1.45}}
-.step-body{{padding:22px 26px 20px;display:flex;flex-direction:column;flex:1}}
-.step-quote{{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:var(--text-light);line-height:1.55;padding-left:14px;border-left:3px solid var(--accent);margin-bottom:18px;flex:1}}
-.step-footer{{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:auto}}
-.step-meta{{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-family:'Poppins',sans-serif;font-size:0.7rem;font-weight:600;color:var(--text-muted);letter-spacing:0.3px}}
+.step-banner-left{{position:relative;z-index:2;flex:1}}
+.step-num{{font-family:'Poppins',sans-serif;font-size:0.58rem;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;color:var(--accent-pale);margin-bottom:6px;opacity:0.85;line-height:1.4}}
+.step-name{{font-family:'Nunito',sans-serif;font-size:1.35rem;font-weight:900;color:var(--white);letter-spacing:-0.015em;line-height:1.18;margin-bottom:4px}}
+.step-sub{{font-family:'Lora',serif;font-style:italic;font-size:0.86rem;color:var(--gold-pale);line-height:1.45;opacity:0.85;max-width:480px}}
+.step-body{{padding:20px 26px 20px;background:var(--white);display:flex;flex-direction:column;flex:1}}
+.step-quote{{font-family:'Lora',serif;font-size:1.02rem;font-style:italic;font-weight:600;color:var(--dawn);line-height:1.45;padding-left:14px;border-left:3px solid var(--accent);margin-bottom:14px}}
+.step-includes{{font-family:'Lora',serif;font-size:0.92rem;color:var(--text-light);line-height:1.55;margin-bottom:16px;flex:1}}
+.step-includes strong{{color:var(--accent-deep);font-weight:800;font-family:'Poppins',sans-serif;font-size:0.62rem;letter-spacing:2.5px;text-transform:uppercase;display:inline-block;margin-right:6px}}
+.step-footer{{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:14px;border-top:1px solid var(--cream-deep);margin-top:auto}}
+.step-meta{{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-family:'Poppins',sans-serif;font-size:0.72rem;font-weight:600;color:var(--text-muted)}}
 .step-meta .dot{{width:3px;height:3px;border-radius:50%;background:var(--text-muted);opacity:0.5}}
-.step-meta .free{{color:#1E7E34;font-weight:700}}
-.step-action{{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.76rem;font-weight:700;letter-spacing:0.3px;color:var(--accent-deep);border:1.5px solid var(--cream-deep);white-space:nowrap}}
-.step:hover .step-action{{border-color:var(--accent);background:var(--accent-soft)}}
+.step-meta .free{{color:#2D8A4E;font-weight:700}}
+.step-action{{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.76rem;font-weight:700;letter-spacing:0.3px;color:var(--accent-deep);background:transparent;border:1.5px solid var(--cream-deep);white-space:nowrap;transition:all 0.25s}}
+.step:hover .step-action{{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-deep)}}
 footer{{background:var(--night);color:rgba(255,255,255,0.4);padding:48px 24px 36px;text-align:center;margin-top:80px}}
 footer p{{font-family:'Lora',serif;font-size:0.85rem;font-style:italic;color:rgba(245,224,168,0.4);margin-bottom:14px;max-width:540px;margin-left:auto;margin-right:auto}}
 footer .brand-mark{{font-family:'Poppins',sans-serif;font-size:0.55rem;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.18)}}
