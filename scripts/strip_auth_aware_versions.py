@@ -20,7 +20,7 @@ PAGES = [
 ]
 
 pat = re.compile(
-    r'\s*<script data-auth-aware="v[12]">.*?</script>',
+    r'\s*<script data-auth-aware="v[1-3]">.*?</script>',
     re.DOTALL,
 )
 

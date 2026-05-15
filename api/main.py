@@ -70,6 +70,25 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
+    # --- Block direct playbook HTML access ---
+    # The /assets StaticFiles mount serves images, CSS, fonts, videos used
+    # by playbooks — but it ALSO exposed every playbook HTML file directly
+    # (e.g. /playbooks/assets/The_Whales_Breath.html), bypassing the
+    # subscription gate enforced by /read/{slug}. Force every request for
+    # an HTML file under /assets to go through the gated /read route by
+    # returning 404 on direct asset HTML hits.
+    from starlette.responses import PlainTextResponse
+
+    @app.middleware("http")
+    async def gate_direct_playbook_html(request, call_next):
+        path = request.url.path.lower()
+        if path.endswith(".html") and "/assets/" in path:
+            return PlainTextResponse(
+                "Not found.",
+                status_code=404,
+            )
+        return await call_next(request)
+
     # --- API routers (v1) ---
     from api.routers.auth import router as auth_router
     from api.routers.catalog import router as catalog_router

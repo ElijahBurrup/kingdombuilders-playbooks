@@ -356,6 +356,7 @@ footer p{font-family:'Lora',serif;font-size:0.85rem;font-style:italic;color:rgba
 .cell-rating .rating-seed-tag{margin-left:6px;padding:2px 7px;border-radius:30px;background:rgba(212,168,67,0.10);color:var(--text-muted);font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:1.3px;text-transform:uppercase;border:1px solid rgba(212,168,67,0.22)}
 
 </style>
+<style id="auth-hide-referral">body:not(.auth-admin) a[href$="/referrals"],body:not(.auth-admin) form[action$="/referrals"]{display:none !important}</style>
 </head>
 <body>
 
@@ -746,87 +747,6 @@ function closeNavDrawer(){
 }
 </script>
 
-
-<script data-auth-aware="v3">
-(async function(){
-  async function doLogout(ev){
-    if(ev) ev.preventDefault();
-    try{
-      await fetch('/playbooks/auth/logout', {
-        method:'POST',
-        credentials:'same-origin',
-        headers:{'Accept':'application/json','X-Requested-With':'fetch'},
-      });
-    }catch(e){}
-    window.location.href = '/playbooks/';
-  }
-
-  function makeLogoutBtn(cls, label, block){
-    const b = document.createElement('button');
-    b.type = 'button';
-    b.textContent = label;
-    b.className = cls;
-    b.style.cssText = 'border:none;cursor:pointer;font:inherit;letter-spacing:inherit;text-transform:inherit'
-      + (block ? ';display:block;width:100%' : '');
-    b.addEventListener('click', doLogout);
-    return b;
-  }
-
-  // Manage Subscription -> Stripe Billing Portal via existing POST endpoint.
-  // Stripe owns the cancel/refund/prorate logic so we cannot mis-handle it.
-  function makeManageForm(isDrawer){
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = '/playbooks/manage-subscription';
-    form.style.cssText = 'margin:0;padding:0;' + (isDrawer ? 'display:block' : 'display:inline');
-    const btn = document.createElement('button');
-    btn.type = 'submit';
-    btn.textContent = 'Manage Subscription';
-    if(isDrawer){
-      btn.className = 'drawer-cta';
-      btn.style.cssText = 'border:none;cursor:pointer;font:inherit;width:100%;display:block;padding:14px 18px;'
-        + 'font-family:Poppins,sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:1.5px;'
-        + 'text-transform:uppercase;text-align:center;color:rgba(245,224,168,0.85);'
-        + 'background:rgba(245,224,168,0.06);border-radius:10px;margin-bottom:6px';
-    } else {
-      btn.className = 'nav-link';
-      btn.style.cssText = 'border:none;cursor:pointer;background:transparent;font:inherit;letter-spacing:inherit;text-transform:inherit';
-    }
-    form.appendChild(btn);
-    return form;
-  }
-
-  try{
-    const r = await fetch('/playbooks/auth/status', {credentials:'same-origin'});
-    if(!r.ok) return;
-    const data = await r.json();
-    if(!data || !data.signed_in) return;
-
-    // Topnav: Manage Subscription chip (subscribers only), then swap Sign In -> Sign Out
-    if(data.is_subscriber){
-      document.querySelectorAll('.topnav-utility').forEach(box => {
-        if(box.querySelector('form[action$="/manage-subscription"]')) return;
-        const signIn = box.querySelector('a.nav-button, button.nav-button');
-        const form = makeManageForm(false);
-        if(signIn) box.insertBefore(form, signIn); else box.appendChild(form);
-      });
-    }
-
-    document.querySelectorAll('a.nav-button[href$="/auth"]').forEach(a => {
-      a.replaceWith(makeLogoutBtn(a.className, 'Sign Out', false));
-    });
-
-    // Mobile drawer: insert Manage Subscription above Sign Out
-    document.querySelectorAll('.nav-drawer a[href$="/auth"]').forEach(a => {
-      if(data.is_subscriber){
-        a.parentNode.insertBefore(makeManageForm(true), a);
-      }
-      a.replaceWith(makeLogoutBtn(a.className, 'Sign Out', true));
-    });
-  }catch(e){}
-})();
-</script>
-
 <script id="archive-default-ratings" type="application/json">{"attend": 7.88, "before-the-garden-returns": 8.31, "conductors-playbook": 8.62, "dad-talks-the-dopamine-drought": 7.25, "dad-talks-the-first-punch": 7.38, "dad-talks-the-flinch": 7.5, "dad-talks-the-invisible-contract": 7.62, "dad-talks-the-mirror-test": 7.81, "dad-talks-the-scoreboard-lie": 7.25, "done-before-you-started": 7.62, "given": 8.62, "lay-it-down": 7.31, "lay-it-down-envy": 7.94, "lay-it-down-gluttony": 7.5, "lay-it-down-greed": 8.0, "lay-it-down-lust": 7.69, "lay-it-down-pride": 8.0, "lay-it-down-sloth": 8.12, "lay-it-down-wrath": 7.69, "returning": 8.06, "tending-the-garden": 7.88, "the-ant-network": 7.19, "the-arrival": 7.81, "the-bears-winter": 7.19, "the-bees-dance": 7.75, "the-body-lie": 8.69, "the-bonsai-method": 7.81, "the-butterflys-crossing": 7.75, "the-centipedes-march": 7.56, "the-chameleons-code": 7.38, "the-cost-ledger": 7.81, "the-coyotes-laugh": 7.81, "the-crows-gambit": 8.25, "the-cuttlefishs-canvas": 8.25, "the-eagles-lens": 7.5, "the-elephants-ground": 7.88, "the-fibonacci-trim": 7.88, "the-fireflys-signal": 7.38, "the-foxs-trail": 7.38, "the-fruit": 7.62, "the-geckos-grip": 7.56, "the-ghost-frame": 7.25, "the-gravity-well": 8.5, "the-hermit-crabs-shell": 7.56, "the-horses-gait": 8.31, "the-kintsugi-bowl": 8.31, "the-lifted-ceiling": 8.75, "the-lyrebirds-echo": 7.25, "the-mantis-shrimps-eye": 8.5, "the-mockingbirds-song": 8.5, "the-moths-flame": 7.38, "the-mycelium-network": 7.19, "the-narrator": 8.19, "the-new-earning": 8.19, "the-octopus-protocol": 8.12, "the-otters-play": 7.56, "the-pangolins-armor": 7.69, "the-porcupines-quills": 8.0, "the-ravens-trial": 7.81, "the-roche-limit": 7.5, "the-scorpions-molt": 8.5, "the-soil": 7.69, "the-source": 7.69, "the-spiders-loom": 7.81, "the-squirrel-economy": 8.81, "the-starlings-murmuration": 7.75, "the-tardigrade-protocol": 8.38, "the-termite-cathedral": 7.69, "the-three-tables": 7.5, "the-tide-pools-echo": 7.31, "the-unfinished-song": 7.31, "the-vampire-squids-light": 7.56, "the-whales-breath": 7.69, "the-wolfs-table": 8.69}</script>
 
 <script data-archive-ratings="v2">
@@ -889,6 +809,96 @@ function closeNavDrawer(){
       });
     })
     .catch(function(){});
+})();
+</script>
+
+
+<script data-auth-aware="v4">
+(async function(){
+  async function doLogout(ev){
+    if(ev) ev.preventDefault();
+    try{
+      await fetch('/playbooks/auth/logout', {
+        method:'POST',
+        credentials:'same-origin',
+        headers:{'Accept':'application/json','X-Requested-With':'fetch'},
+      });
+    }catch(e){}
+    window.location.href = '/playbooks/';
+  }
+
+  function makeLogoutBtn(cls, label, block){
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = label;
+    b.className = cls;
+    b.style.cssText = 'border:none;cursor:pointer;font:inherit;letter-spacing:inherit;text-transform:inherit'
+      + (block ? ';display:block;width:100%' : '');
+    b.addEventListener('click', doLogout);
+    return b;
+  }
+
+  // Manage Subscription -> Stripe Billing Portal via existing POST endpoint.
+  // Stripe owns the cancel/refund/prorate logic so we cannot mis-handle it.
+  function makeManageForm(isDrawer){
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/playbooks/manage-subscription';
+    form.style.cssText = 'margin:0;padding:0;' + (isDrawer ? 'display:block' : 'display:inline');
+    const btn = document.createElement('button');
+    btn.type = 'submit';
+    btn.textContent = 'Manage Subscription';
+    if(isDrawer){
+      btn.className = 'drawer-cta';
+      btn.style.cssText = 'border:none;cursor:pointer;font:inherit;width:100%;display:block;padding:14px 18px;'
+        + 'font-family:Poppins,sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:1.5px;'
+        + 'text-transform:uppercase;text-align:center;color:rgba(245,224,168,0.85);'
+        + 'background:rgba(245,224,168,0.06);border-radius:10px;margin-bottom:6px';
+    } else {
+      btn.className = 'nav-link';
+      btn.style.cssText = 'border:none;cursor:pointer;background:transparent;font:inherit;letter-spacing:inherit;text-transform:inherit';
+    }
+    form.appendChild(btn);
+    return form;
+  }
+
+  try{
+    const r = await fetch('/playbooks/auth/status', {credentials:'same-origin'});
+    if(!r.ok) return;
+    const data = await r.json();
+
+    // Mark admins on the body so CSS rules like the referral-link hiding
+    // selector (body:not(.auth-admin) a[href$="/referrals"]) can un-hide
+    // admin-only surfaces. Doing this for every page paint keeps the rest
+    // of the codebase declarative.
+    if(data && data.is_admin){
+      document.body.classList.add('auth-admin');
+    }
+
+    if(!data || !data.signed_in) return;
+
+    // Topnav: Manage Subscription chip (subscribers only), then swap Sign In -> Sign Out
+    if(data.is_subscriber){
+      document.querySelectorAll('.topnav-utility').forEach(box => {
+        if(box.querySelector('form[action$="/manage-subscription"]')) return;
+        const signIn = box.querySelector('a.nav-button, button.nav-button');
+        const form = makeManageForm(false);
+        if(signIn) box.insertBefore(form, signIn); else box.appendChild(form);
+      });
+    }
+
+    document.querySelectorAll('a.nav-button[href$="/auth"]').forEach(a => {
+      a.replaceWith(makeLogoutBtn(a.className, 'Sign Out', false));
+    });
+
+    // Mobile drawer: insert Manage Subscription above Sign Out
+    document.querySelectorAll('.nav-drawer a[href$="/auth"]').forEach(a => {
+      if(data.is_subscriber){
+        a.parentNode.insertBefore(makeManageForm(true), a);
+      }
+      a.replaceWith(makeLogoutBtn(a.className, 'Sign Out', true));
+    });
+  }catch(e){}
 })();
 </script>
 

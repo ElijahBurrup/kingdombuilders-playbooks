@@ -20,10 +20,10 @@ PAGES = [
     'static/pathways/process-model.html',
 ]
 
-SCRIPT_MARKER = 'data-auth-aware="v3"'
+SCRIPT_MARKER = 'data-auth-aware="v4"'
 
 SCRIPT = """
-<script data-auth-aware="v3">
+<script data-auth-aware="v4">
 (async function(){
   async function doLogout(ev){
     if(ev) ev.preventDefault();
@@ -76,6 +76,15 @@ SCRIPT = """
     const r = await fetch('/playbooks/auth/status', {credentials:'same-origin'});
     if(!r.ok) return;
     const data = await r.json();
+
+    // Mark admins on the body so CSS rules like the referral-link hiding
+    // selector (body:not(.auth-admin) a[href$="/referrals"]) can un-hide
+    // admin-only surfaces. Doing this for every page paint keeps the rest
+    // of the codebase declarative.
+    if(data && data.is_admin){
+      document.body.classList.add('auth-admin');
+    }
+
     if(!data || !data.signed_in) return;
 
     // Topnav: Manage Subscription chip (subscribers only), then swap Sign In -> Sign Out
