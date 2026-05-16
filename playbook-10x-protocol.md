@@ -631,6 +631,92 @@ Brief mode**:
 - Dashboard MUST be present, MUST compound from Apply boxes,
   MUST export to clipboard
 
+### From Dad Talks: The Dopamine Drought v2 (2026-05-16)
+
+The first **Diagnosis + Action hybrid** in the catalog. The first four
+chapters diagnose; chapters 5-6 operate the intervention. This works
+when the playbook has a clean before/after structure: *here is your
+problem → here is the fix you operate*.
+
+- **The cold-open as a self-scoring ring.** Six yes/no questions →
+  six-dot ring → stage label that names where the reader sits ("Fresh
+  exposure" / "Drifting" / "Captured" / "Dependent" / "The Rat"). The
+  ring is small enough to render in the cover region but functional
+  enough to be the first interactive the reader meets. **Pattern: when
+  a playbook diagnoses a spectrum, render the diagnostic as a ring or
+  bar whose fill IS the diagnosis. Don't make the reader read a result;
+  make them see it.** Universal for Diagnosis archetype.
+- **The hits-counter chip tray.** Tap-to-add chips, each carrying an
+  estimated unit value, summing into a single big number with a bar
+  that fills against an evolutionary baseline. Visceral because the
+  number is THEIR number, not an average. The verdict text changes
+  tier as the count climbs ("manageable" → "the curve is bending" →
+  "you are the rat"). **Pattern: when a playbook claims a quantity is
+  unreasonably large, build a tap-to-add counter whose verdict shifts
+  tier as the count grows. Don't claim the quantity is large; make the
+  reader's own day produce the number.**
+- **The Empty Victory Audit.** The reader names a recent win, then
+  rates 1-5 how satisfying it actually felt. Low ratings trigger a
+  diagnostic callback that explains the emptiness mechanically. This
+  is the move that turns Dad's vulnerability (his WoW story) into the
+  reader's own diagnosis. **Pattern: when an Action/Diagnosis playbook
+  features a personal-confession story, follow it with a widget that
+  invites the reader to surface their own version of that confession.
+  The author's vulnerability becomes the reader's mirror.**
+- **The hierarchy slider with chips that fall onto the rail.** A 0–N
+  gradient rail with chips above. Click a chip and it lands at its
+  natural value, sorted in the placed-zone below. The reader sees
+  their own life mapped against a fixed scale. **Pattern: when a
+  playbook claims activities have different intensities, build a
+  rail-and-chip widget where the chips carry their values. Static
+  tables → self-applied maps.**
+- **The A/B inversion locator.** For 5-7 behaviors, pick A (pleasure)
+  or B (relief). Once ≥3 answered, a horizontal bar splits into A%/B%
+  with a stage label ("Mostly pleasure" → "Drifting toward inversion"
+  → "Inverted" → "Fully captured"). The bar IS the opponent-process
+  theory. **Pattern: when a playbook teaches a ratio that inverts with
+  exposure, build a percentage bar that updates as the reader answers
+  diagnostic questions. The bar's pivot point is the playbook's claim
+  made visible.** This was the single highest-impact widget in the
+  build.
+- **The Commitment Card.** A name input + checkbox grid + buddy name +
+  daily check-in time. Triggers a "Signed" affordance only when name
+  AND at least one app are filled. This converts a prose list of rules
+  into a structured contract the reader operates. **Pattern: when a
+  playbook hands the reader a multi-rule protocol, build a contract
+  card with explicit fields. Prose lists are intentions. Filled fields
+  are commitments.**
+- **The Drought Tracker dashboard.** 14-cell grid with mood/focus/sat
+  sliders per day. Cells warm through three intensity tiers as scores
+  rise. Summary row averages roll up automatically. Wired to
+  `kbWidget.attachSave` so the reader bookmarks the reset itself.
+  **Pattern confirmed: for any time-bounded protocol, the dashboard
+  is a grid-of-N-cells with the period length. Each cell stores
+  multiple slider values. Cell color is a function of the average,
+  not just logged/unlogged. This shows trajectory at a glance, not
+  just compliance.**
+- **The 60% prose cut.** Bigger than the protocol's 30-50% target. The
+  cut was enabled by widgets absorbing the dialogue padding ("Ethan
+  said X, Dad said Y" exchanges became a single widget interaction).
+  **Pattern: in playbooks with heavy father-son dialogue, the widgets
+  do the asking. The reader becomes Ethan; the playbook becomes Dad.
+  This is the cleanest justification for aggressive dialogue cuts.**
+- **Diagnosis + Action hybrid recipe (new).**
+  - Cold-open: a self-scoring diagnostic that names the reader's stage
+  - Diagnostic-style widget per early chapter (counter, audit, slider,
+    locator) — each adds a new lens to the reader's profile
+  - Personal confession story (Dad's WoW) sandwiched between widgets
+    so the reader processes through their own audit, not through prose
+  - Architecture pivot: chapter 5 = the contract; chapter 6 = the
+    tracker. Move from diagnosis voice (clinical-warm) to action voice
+    (direct second-person commands) at the pivot.
+  - Resistance section before the dashboard, not before the contract.
+    The contract is the commitment moment; the resistance is the
+    pre-empt of why they won't honor it; the dashboard is the proof.
+  - Frame-break sentence at every chapter close — escalating in
+    intensity from "you are not bored" through "you will not feel like
+    doing this. that is the proof you must."
+
 ### Contrast pitfalls (running list)
 - **Italic small-caps eyebrows on cream.**
   Reception's signature look — small italic letter-spaced
