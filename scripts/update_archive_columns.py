@@ -183,8 +183,34 @@ html = html.replace(
     "'yes':'Free','no':'Not Free',",
 )
 
+# Auto-update the global playbook count wherever it appears.
+# Without this, the archive shows N rows but the counter still says N-1
+# from the previous build, and the catalog feels out of sync after
+# every new playbook ships.
+total = len(rows)
+html = re.sub(
+    r'(Showing <strong id="row-count">)\d+(</strong> of <strong>)\d+(</strong>)',
+    rf'\g<1>{total}\g<2>{total}\g<3>',
+    html,
+)
 with open('static/archive.html', 'w', encoding='utf-8') as f:
     f.write(html)
 
-print(f"Archive updated: {len(rows)} rows")
+# Sync the homepage "library has N playbooks" copy.
+try:
+    with open('static/index.html', encoding='utf-8') as f:
+        idx = f.read()
+    new_idx = re.sub(
+        r'(The library has )\d+( playbooks)',
+        rf'\g<1>{total}\g<2>',
+        idx,
+    )
+    if new_idx != idx:
+        with open('static/index.html', 'w', encoding='utf-8') as f:
+            f.write(new_idx)
+        print(f"Homepage counter synced to {total}")
+except FileNotFoundError:
+    pass
+
+print(f"Archive updated: {total} rows")
 print("Columns: Title | Pathway | Series | Category | Free | Status")

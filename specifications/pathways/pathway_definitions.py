@@ -72,16 +72,18 @@ PATHWAYS = [
         "name": "The AI Age",
         "tagline": "Operate The Future, Don't Fear It",
         "audience": "If you are equal parts curious about AI and afraid of it",
-        "promise": "Stop fearing the machines. Start operating them. Six playbooks that frame the new economy, then leave you to find the pillars you need.",
+        "promise": "Stop fearing the machines. Start operating them. Eight playbooks on the actual economy and mechanics arriving now.",
         "accent": "teal",
-        "estimated_minutes": 210,
+        "estimated_minutes": 270,
         "playbook_sequence": [
-            "before-the-garden-returns",
             "the-lifted-ceiling",
             "the-new-earning",
             "conductors-playbook",
             "the-mockingbirds-song",
-            "tending-the-garden",
+            "the-cuttlefishs-canvas",
+            "the-centipedes-march",
+            "the-ravens-trial",
+            "the-lyrebirds-echo",
         ],
         "scripture": '"And God said, Let us make man in our image, after our likeness: and let them have dominion." Genesis 1:26',
     },
@@ -187,25 +189,6 @@ PATHWAYS = [
         ],
         "scripture": '"The simple believeth every word: but the prudent man looketh well to his going." Proverbs 14:15',
     },
-    {
-        "slug": "process-model",
-        "order": 9,
-        "name": "A Process Model",
-        "tagline": "You Are Not A Thing. You Are The Interaction.",
-        "audience": "If you are tired of being told who you are and want a different ontology entirely",
-        "promise": "Six philosophy playbooks that replace the substance view of reality with a process view. You are not a noun. You are a verb mid-conjugation.",
-        "accent": "moss",
-        "estimated_minutes": 240,
-        "playbook_sequence": [
-            "the-tide-pools-echo",
-            "the-whales-breath",
-            "the-butterflys-crossing",
-            "the-elephants-ground",
-            "the-bees-dance",
-            "the-otters-play",
-        ],
-        "scripture": '"For in him we live, and move, and have our being." Acts 17:28',
-    },
 ]
 
 
@@ -286,9 +269,9 @@ NEAREST_PATHWAY = {
 
     # === Archive-only (nearest pathway by theme) ===
     # Work Reset adjacent
-    "before-the-garden-returns": "ai-age",       # Eden Pattern framing for AI Age
+    "before-the-garden-returns": "work-reset",  # Eden Pattern foundation
     "the-soil": "work-reset",                    # Eden Pattern stability
-    "tending-the-garden": "ai-age",              # Eden Pattern closing for AI Age
+    "tending-the-garden": "work-reset",          # Eden Pattern orchestration
     "the-horses-gait": "work-reset",             # burnout / resonant frequency
     "the-gravity-well": "work-reset",            # attention as gravity
     "the-arrival": "work-reset",                 # insertion burn at goal-arrival
@@ -312,13 +295,14 @@ NEAREST_PATHWAY = {
     # are in seed_playbooks.py but have no asset file (planned/placeholder).
     # They will not appear in the archive grid until their assets are built.
 
-    # A Process Model / Philosophy — now their own pathway
-    "the-tide-pools-echo": "process-model",
-    "the-whales-breath": "process-model",
-    "the-butterflys-crossing": "process-model",
-    "the-elephants-ground": "process-model",
-    "the-bees-dance": "process-model",
-    "the-otters-play": "process-model",
+    # A Process Model / Philosophy — these get the "philosophy" sub-label in archive
+    # but their nearest active pathway is Identity Walk (Tide Pool, Otter) or Resilience (Whale, Elephant, Butterfly, Bee)
+    "the-tide-pools-echo": "identity-walk",
+    "the-otters-play": "identity-walk",
+    "the-whales-breath": "resilience-stack",
+    "the-elephants-ground": "resilience-stack",
+    "the-butterflys-crossing": "resilience-stack",
+    "the-bees-dance": "family-foundation",       # communication
 }
 
 

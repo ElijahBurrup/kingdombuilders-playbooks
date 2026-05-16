@@ -290,7 +290,7 @@ This powers three features: constellation map (`/constellation`), end-of-playboo
 - [ ] If playbook is part of the pathway's curated sequence (not just related): add to that pathway's `playbook_sequence` list in `PATHWAYS`
 - [ ] If a new Pathway is needed: also add to `PATHWAYS` list, update `static/index.html` homepage with a new pathway card, add to `scripts/generate_pathway_pages.py` ACCENTS, and to `static/compass.html` PATHWAYS map + relevant QUESTIONS option weights
 - [ ] Regenerate pathway pages: `python scripts/generate_pathway_pages.py`
-- [ ] Regenerate archive grid: `python scripts/update_archive_columns.py`
+- [ ] **MANDATORY: Add a card for the new playbook to `static/archive-original.html.bak`** (modeled on an existing card with matching free/paid status). The archive grid is regenerated FROM this file; if you skip this, the playbook will not appear in `/playbooks/archive` and search will not find it. After: run `python scripts/update_archive_columns.py` which (a) regenerates `static/archive.html` with the new row, (b) updates the `row-count` counter in the archive header, and (c) syncs the "library has N playbooks" line on `static/index.html`. All three happen in one script run; do not skip any.
 - [ ] **The Compass** auto-routes new playbooks to their tagged pathway via NEAREST_PATHWAY — no Compass code changes needed unless a new Pathway is being added.
 
 ### Step 10: Commit & Push
