@@ -540,7 +540,66 @@ This section grows after every 10x. Append, do not rewrite.
   two playbooks. **Pattern: for any multi-part series, the
   finale of part N should explicitly name what each prior part
   contributed. Treat the series as a single arc.**
-- **Contrast pitfall: italic small-caps eyebrows on cream.**
+### From The Fox's Trail v2 (2026-05-16) — Application Brief
+
+The user said: "I love the ideas but not sure how to apply it.
+See if we can prime the pump more how to apply these concepts."
+This unlocked an explicit **Application Brief** — a 10x variant
+where the focus is not embodiment (Reception) or operation
+(Action) but **specificity-to-the-reader's-situation**.
+
+- **The cold-open anchor pattern.** The cold-open input is not
+  just a frame; it is text that gets ECHOED BACK in every chapter's
+  Apply box header. Reader sees their own trail-text inside each
+  chapter's application widget. The chapter feels like it was
+  written for their specific situation because, in a sense, it now
+  was. **Use this any time a playbook's applicability varies by
+  reader situation.**
+- **The universal Apply box.** Rust/teal-bordered card with top
+  accent bar, eyebrow + title + sub, anchor chip echoing the cold-
+  open input, labeled input fields with example callouts in green,
+  save button, "✓ Saved" affordance. **Consistent visual language
+  across all chapters** means readers learn the interaction once
+  and trust it for the rest of the playbook. Avoid bespoke widget
+  designs per chapter for Application-Brief playbooks.
+- **The "Example" green callout pattern.** Italic green chip with
+  `<b>Example:</b>` headers showing a concrete worked instance
+  using a fictional but specific persona. Reduces blank-page
+  paralysis. Without examples, application widgets get half-filled
+  or skipped.
+- **Compounding dashboard that exports.** Persistent dashboard
+  whose cells auto-populate from each chapter's Apply box.
+  Includes a copy-to-clipboard button that exports the full state
+  as Markdown the reader can paste into Notion/Slack/doc. **The
+  playbook's output is no longer notes; it is a personal
+  strategy.** Pattern is now mandatory for Application Brief.
+- **Multi-input Apply box structured to mirror the concept.** When
+  the chapter's concept has internal structure (three trails /
+  three threats / four IPB steps), the Apply box has multiple
+  labeled inputs arranged to match. Form mirrors content; the
+  filled widget IS the concept made personal.
+- **Pre-filled placeholder text matching the chapter's grammar.**
+  Every input's placeholder starts with the natural-language stem
+  ("they would predict that I...", "my third trail is..."). Lowers
+  the cost of writing the first word.
+- **"What is your X?" framing for case studies.** Don't just tell
+  Stewart Butterfield's Slack story. Ask the reader "which of
+  these three abandoned items is YOUR Slack?" Turn the famous case
+  study into a self-identifying prompt. Works for any anecdote
+  where a transferable pattern is being illustrated.
+
+When the user says "10x [playbook]" AND mentions application,
+context, or "how do I use this" — switch into **Application
+Brief mode**:
+- Cold-open MUST capture one specific reader situation
+- EVERY chapter MUST end with an Apply box, not a Reflect block
+- Apply boxes MUST be consistent in visual structure
+- EVERY Apply box MUST include a concrete worked example
+- Dashboard MUST be present, MUST compound from Apply boxes,
+  MUST export to clipboard
+
+### Contrast pitfalls (running list)
+- **Italic small-caps eyebrows on cream.**
   Reception's signature look — small italic letter-spaced
   eyebrow text in gold-deep or rose-dawn on cream backgrounds —
   was the single biggest contrast risk. Required darkening
