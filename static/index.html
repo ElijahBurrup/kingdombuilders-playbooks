@@ -505,6 +505,7 @@ footer .brand-mark{
     <a href="/playbooks/archive">Archive</a>
   </div>
   <div class="topnav-utility">
+    <a href="/playbooks/my-saves" class="nav-link" id="nav-my-saves" style="display:none">My Saves</a>
     <a href="/playbooks/referrals" class="nav-link">Refer</a>
     <a href="/playbooks/auth" class="nav-button">Sign In</a>
   </div>
@@ -797,6 +798,7 @@ footer .brand-mark{
   <div class="drawer-divider"></div>
   <a href="/playbooks/referrals">Refer</a>
   <a href="/playbooks/my-playbooks">My Playbooks</a>
+  <a href="/playbooks/my-saves" id="drawer-my-saves" style="display:none">My Saves</a>
   <a href="/playbooks/auth" class="drawer-cta">Sign In</a>
 </div>
 <script>
@@ -810,6 +812,18 @@ function closeNavDrawer(){
   document.getElementById('nav-drawer-backdrop').classList.remove('open');
   document.body.style.overflow='';
 }
+// Show "My Saves" only for signed-in users
+fetch('/playbooks/auth/status', {credentials:'same-origin'})
+  .then(function(r){ return r.ok ? r.json() : null; })
+  .then(function(d){
+    if(d && d.signed_in){
+      var n1 = document.getElementById('nav-my-saves');
+      var n2 = document.getElementById('drawer-my-saves');
+      if(n1) n1.style.display = '';
+      if(n2) n2.style.display = '';
+    }
+  })
+  .catch(function(){});
 </script>
 
 

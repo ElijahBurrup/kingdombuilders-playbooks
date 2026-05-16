@@ -99,6 +99,7 @@ def create_app() -> FastAPI:
     from api.routers.referrals import router as referrals_router
     from api.routers.feedback import router as feedback_router
     from api.routers.widgets import router as widgets_router
+    from api.routers.saves import router as saves_router
 
     app.include_router(auth_router, prefix="/api/v1")
     app.include_router(catalog_router, prefix="/api/v1")
@@ -109,6 +110,7 @@ def create_app() -> FastAPI:
     app.include_router(referrals_router, prefix="/api/v1")
     app.include_router(feedback_router, prefix="/api/v1")
     app.include_router(widgets_router, prefix="/api/v1")
+    app.include_router(saves_router, prefix="/api/v1")
 
     # --- Legacy backward-compatible router (serves existing HTML pages) ---
     from api.routers.legacy import router as legacy_router

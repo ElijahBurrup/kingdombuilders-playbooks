@@ -1101,6 +1101,27 @@ footer .brand{margin-top:8px;color:var(--teal-pale)}
       }
     });
   }
+
+  // ===== Save to My Saves =====
+  function attachSaveBtn(){
+    if(!window.kbWidget || !window.kbWidget.attachSave) return;
+    var host = document.getElementById('pmap');
+    if(!host) return;
+    window.kbWidget.attachSave(host, {
+      slug: 'the-tide-pools-echo',
+      key: 'process-map',
+      widgetTitle: 'Your Process Map',
+      playbookTitle: "The Tide Pool's Echo",
+      getPayload: function(){ return touched; },
+      getPreview: function(){
+        var n = Object.keys(touched).filter(function(k){ return touched[k]; }).length;
+        return n + ' / ' + concepts.length + ' concepts contacted in the body';
+      }
+    });
+  }
+  if(window.kbWidget && window.kbWidget._ready) attachSaveBtn();
+  else if(window.kbWidget && window.kbWidget.onReady) window.kbWidget.onReady(attachSaveBtn);
+  else window.addEventListener('load', attachSaveBtn);
 })();
 </script>
 

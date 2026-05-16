@@ -916,7 +916,7 @@ footer .brand{font-family:'Nunito',sans-serif;font-size:0.58rem;font-weight:800;
 
 <!-- ============================== DASHBOARD WIDGET ============================== -->
 <div class="page section">
-<div class="dashboard reveal">
+<div class="dashboard reveal" id="reps-dashboard">
   <div class="dashboard-head">
     <div class="dashboard-kicker">The Tracker</div>
     <div class="dashboard-title">The Six Reps Dashboard</div>
@@ -1305,7 +1305,25 @@ footer .brand{font-family:'Nunito',sans-serif;font-size:0.58rem;font-weight:800;
       rollover(); render();
     }
 
-    if(window.kbWidget) kbWidget.onReady(async () => { const r = await kbWidget.load(SLUG, WIDGET); if(r && r.data) restore(r.data); else render(); });
+    if(window.kbWidget) kbWidget.onReady(async () => {
+      const r = await kbWidget.load(SLUG, WIDGET);
+      if(r && r.data) restore(r.data); else render();
+      if(window.kbWidget.attachSave){
+        const host = document.getElementById('reps-dashboard');
+        if(host) window.kbWidget.attachSave(host, {
+          slug: SLUG,
+          key: 'six-reps-dashboard',
+          widgetTitle: 'Six Reps Dashboard',
+          playbookTitle: 'Love the Practice',
+          getPayload: () => state,
+          getPreview: () => {
+            const todayN = Object.keys(state.todayReps || {}).length;
+            const totalN = Object.values(state.history || {}).reduce((a, d) => a + Object.keys(d || {}).length, 0) + todayN;
+            return todayN + '/6 today · ' + totalN + ' total reps logged';
+          }
+        });
+      }
+    });
     else render();
   })();
 })();

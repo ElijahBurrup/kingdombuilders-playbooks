@@ -1365,6 +1365,28 @@ You were placed here.</p>
   } else {
     updateProgress();
   }
+
+  // ===== Save to My Saves =====
+  function attachSaveBtn(){
+    if(!window.kbWidget || !window.kbWidget.attachSave) return;
+    var host = document.getElementById('walker');
+    if(!host) return;
+    window.kbWidget.attachSave(host, {
+      slug: 'returning',
+      key: 'domain-walker',
+      widgetTitle: 'The Domain Walker',
+      playbookTitle: 'Manna: Returning',
+      getPayload: function(){ return {states: states, gifts: gifts}; },
+      getPreview: function(){
+        var received = Object.values(states).filter(function(s){ return s === 'received'; }).length;
+        var named = Object.values(gifts).filter(function(g){ return g && g.length; }).length;
+        return received + '/7 received · ' + named + ' gifts named';
+      }
+    });
+  }
+  if(window.kbWidget && window.kbWidget._ready) attachSaveBtn();
+  else if(window.kbWidget && window.kbWidget.onReady) window.kbWidget.onReady(attachSaveBtn);
+  else window.addEventListener('load', attachSaveBtn);
 })();
 </script>
 

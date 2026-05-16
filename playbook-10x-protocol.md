@@ -139,6 +139,39 @@ Section at the bottom: "New Patterns Discovered." Add anything
 that worked unexpectedly well, or any new move that should be
 in the library for future sessions.
 
+### 13b. Wire the persistent dashboard to My Saves
+Every playbook's headline persistent dashboard (the Trail Map, the
+Process Map, the Gift Inventory, the Domain Walker, the Six Reps
+Tracker, etc.) MUST call `kbWidget.attachSave()` so signed-in
+readers can bookmark it. The standard call:
+
+```js
+kbWidget.attachSave(dashboardEl, {
+  slug: 'playbook-slug',
+  key: 'unique-widget-key',        // distinct within this playbook
+  widgetTitle: 'Human-readable name',
+  playbookTitle: 'Playbook Title',
+  getPayload: () => CURRENT_STATE,
+  getPreview: () => 'one-line summary the reader will see in My Saves'
+});
+```
+
+The helper injects a "Save" pill in the top-right of the dashboard,
+auth-gates the click (redirects anonymous users to /auth?next=...
+back to the widget anchor, then auto-presses Save after they sign
+in), and persists the snapshot to /api/v1/saves.
+
+Patterns:
+- Always anchor save to the playbook's most-personal-state widget,
+  not every interactive
+- Provide a `getPreview` — short, scannable, what the reader will
+  see in their My Saves list (e.g., "5/7 received · 12 gifts named")
+- The save container element must have a non-static position so the
+  pill can absolute-position inside it (the helper auto-adds the
+  `kb-save-host` class which sets `position: relative`)
+- If a playbook has multiple meaningful persistent surfaces (e.g.,
+  a journal AND a tracker), attach Save to each, with distinct keys
+
 ### 14. Record stats in the 10x Stats doc on S:
 Open `S:\My Drive\1. Projects\KingdomBuilders.AI\Playbook 10x Stats.md`
 and add a `## vN (YYYY-MM-DD)` block at the TOP of that playbook's

@@ -2854,6 +2854,30 @@ async def my_playbooks_page(request: Request):
     )
 
 
+@router.get("/my-saves", include_in_schema=False)
+async def my_saves_page(request: Request):
+    """Personal page listing every widget the user has bookmarked.
+
+    Server-rendered with sign-in gate. The list itself loads via
+    /api/v1/saves on the client so unsave/re-render stays interactive.
+    """
+    prefix = settings.URL_PREFIX or ""
+    user_id = get_session_user_id(request)
+    if not user_id:
+        return RedirectResponse(
+            url=f"{prefix}/auth?tab=login&next={prefix}/my-saves",
+            status_code=303,
+        )
+    return templates.TemplateResponse(
+        "my_saves.html",
+        {
+            "request": request,
+            "prefix": prefix,
+            "ga_id": settings.GA_MEASUREMENT_ID,
+        },
+    )
+
+
 @router.post("/manage-subscription", include_in_schema=False)
 async def manage_subscription(request: Request, db: AsyncSession = Depends(get_db)):
     """Redirect subscriber to Stripe Customer Portal to manage/cancel subscription."""

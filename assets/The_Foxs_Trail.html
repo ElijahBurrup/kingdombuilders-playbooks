@@ -1059,6 +1059,30 @@ footer .brand{margin-top:8px;color:var(--gold-pale)}
       setTimeout(function(){ toast.classList.remove('show'); }, 2200);
     }
   });
+
+  // ===== Save to My Saves =====
+  function attach(){
+    if(!window.kbWidget || !window.kbWidget.attachSave) return;
+    var host = document.getElementById('trailmap');
+    if(!host) return;
+    window.kbWidget.attachSave(host, {
+      slug: 'the-foxs-trail',
+      key: 'trail-map',
+      widgetTitle: 'My Trail Map',
+      playbookTitle: "The Fox's Trail",
+      getPayload: function(){ return STATE; },
+      getPreview: function(){
+        var parts = [];
+        if(STATE.trail) parts.push('Trail: ' + STATE.trail);
+        if(STATE.ch6 && STATE.ch6.third) parts.push('Third trail: ' + STATE.ch6.third);
+        if(STATE.ch3 && STATE.ch3.doubling) parts.push('Doubling: ' + STATE.ch3.doubling);
+        return parts.join(' · ');
+      }
+    });
+  }
+  if(window.kbWidget && window.kbWidget._ready) attach();
+  else if(window.kbWidget && window.kbWidget.onReady) window.kbWidget.onReady(attach);
+  else window.addEventListener('load', attach);
 })();
 </script>
 

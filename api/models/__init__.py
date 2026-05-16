@@ -7,6 +7,7 @@ from api.models.email import Subscriber, EmailLog, EmailCampaign, PromoCode
 from api.models.referral import ReferralCode, Referral, Commission, Payout, ReferrerProfile
 from api.models.feedback import TopicSuggestion, PlaybookFeedback
 from api.models.widget import WidgetResponse
+from api.models.user_save import UserSave
 
 __all__ = [
     "User",
@@ -41,4 +42,5 @@ __all__ = [
     "TopicSuggestion",
     "PlaybookFeedback",
     "WidgetResponse",
+    "UserSave",
 ]

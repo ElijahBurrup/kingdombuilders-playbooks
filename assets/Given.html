@@ -1128,6 +1128,17 @@ footer .brand{font-family:'Cormorant Garamond',serif;font-size:0.72rem;font-styl
         const r = await kbWidget.load(SLUG, 'gift-inventory');
         if(r && r.data && Array.isArray(r.data.entries)){ entries = r.data.entries; }
         render();
+        if(window.kbWidget.attachSave){
+          window.kbWidget.attachSave(card, {
+            slug: SLUG,
+            key: 'gift-inventory',
+            widgetTitle: 'Gift Inventory',
+            playbookTitle: 'Manna: Given',
+            getPayload: () => ({entries}),
+            getPreview: () => entries.length + (entries.length === 1 ? ' gift named' : ' gifts named') +
+              (entries.length ? ' · most recent: ' + entries[entries.length-1].text : '')
+          });
+        }
       });
     } else { render(); }
   })();

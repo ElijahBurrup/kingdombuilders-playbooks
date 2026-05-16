@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Saves | Kingdom Builders</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#D4A843;--gold-light:#E8C96A;--gold-pale:#F5E0A8;
+  --purple-deep:#1A0A2E;--purple-dark:#2D1B4E;--purple-mid:#4A2D7A;
+  --cream:#FAF6ED;--white:#FFFFFF;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;min-height:100vh;
+  background:linear-gradient(165deg,var(--purple-deep) 0%,var(--purple-dark) 40%,var(--purple-mid) 100%);
+  color:var(--white);padding:0 0 80px}
+
+/* Header */
+.ms-header{text-align:center;padding:64px 24px 28px;max-width:760px;margin:0 auto}
+.ms-badge{display:inline-block;padding:6px 18px;border:1px solid rgba(212,168,67,0.3);border-radius:100px;
+  font-size:11px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+.ms-title{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:600;line-height:1.2;margin-bottom:10px}
+.ms-subtitle{font-size:15px;color:rgba(255,255,255,0.55);line-height:1.6;max-width:520px;margin:0 auto}
+
+/* Back link */
+.ms-back{position:fixed;top:16px;left:16px;z-index:9999;display:flex;align-items:center;gap:6px;
+  padding:8px 16px 8px 12px;background:rgba(10,6,20,0.78);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,0.1);border-radius:50px;font-size:0.7rem;font-weight:600;
+  color:rgba(255,255,255,0.7);text-decoration:none;transition:all 0.25s}
+.ms-back:hover{background:rgba(10,6,20,0.9);color:var(--gold);border-color:rgba(212,168,67,0.3)}
+.ms-back svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+
+/* Count */
+.ms-count{text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:1.1rem;color:var(--gold-pale);margin-bottom:30px;opacity:0.85}
+
+/* List */
+.ms-list{max-width:760px;margin:0 auto;padding:0 20px;display:flex;flex-direction:column;gap:14px}
+.ms-card{padding:22px 24px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+  border-radius:14px;transition:all 0.25s;position:relative}
+.ms-card:hover{background:rgba(255,255,255,0.08);border-color:rgba(212,168,67,0.25)}
+.ms-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:8px}
+.ms-card-titles{flex:1;min-width:0}
+.ms-card-playbook{font-family:'Outfit',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:2.5px;
+  text-transform:uppercase;color:var(--gold);margin-bottom:4px;opacity:0.85}
+.ms-card-widget{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:600;
+  color:var(--white);line-height:1.25;margin-bottom:6px}
+.ms-card-when{font-family:'Outfit',sans-serif;font-size:0.72rem;font-weight:500;letter-spacing:1px;
+  color:rgba(255,255,255,0.4);white-space:nowrap;flex-shrink:0;margin-top:3px}
+.ms-card-preview{font-family:'Lora',serif;font-style:italic;font-size:0.95rem;color:rgba(255,255,255,0.7);
+  line-height:1.6;margin:8px 0 14px}
+.ms-card-preview.empty{font-style:italic;color:rgba(255,255,255,0.3);font-size:0.85rem}
+.ms-card-actions{display:flex;gap:10px;flex-wrap:wrap}
+.ms-card-open{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;
+  background:linear-gradient(135deg,var(--gold),var(--gold-light));color:#1F2440;text-decoration:none;
+  font-family:'Outfit',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;border-radius:50px;transition:all 0.2s}
+.ms-card-open:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(212,168,67,0.4)}
+.ms-card-open svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.ms-card-unsave{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:transparent;
+  color:rgba(255,255,255,0.55);font-family:'Outfit',sans-serif;font-size:0.7rem;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;border:1px solid rgba(255,255,255,0.15);
+  border-radius:50px;cursor:pointer;transition:all 0.2s}
+.ms-card-unsave:hover{background:rgba(255,80,80,0.12);color:#FFB3B3;border-color:rgba(255,179,179,0.35)}
+.ms-card.removing{opacity:0.4;pointer-events:none}
+
+/* Empty */
+.ms-empty{max-width:560px;margin:40px auto;padding:48px 32px;text-align:center;
+  background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:16px}
+.ms-empty-icon{font-size:42px;margin-bottom:14px;opacity:0.6}
+.ms-empty p{font-family:'Lora',serif;font-style:italic;color:rgba(255,255,255,0.65);
+  font-size:1rem;line-height:1.7;margin-bottom:8px}
+.ms-empty a{color:var(--gold-light);text-decoration:none;border-bottom:1px solid rgba(245,224,168,0.3);
+  font-weight:500;font-style:normal;font-family:'Outfit',sans-serif}
+.ms-empty a:hover{border-bottom-color:var(--gold-light)}
+
+/* Loading */
+.ms-loading{text-align:center;padding:80px 24px;color:rgba(255,255,255,0.35);font-size:14px}
+.ms-spinner{width:32px;height:32px;border:3px solid rgba(255,255,255,0.1);border-top-color:var(--gold);
+  border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:600px){
+  .ms-title{font-size:32px}
+  .ms-card{padding:18px 18px}
+  .ms-card-widget{font-size:1.15rem}
+  .ms-card-head{flex-direction:column;gap:4px}
+  .ms-card-when{font-size:0.66rem;margin-top:0}
+}
+</style>
+{% if ga_id %}<script async src="https://www.googletagmanager.com/gtag/js?id={{ ga_id }}"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','{{ ga_id }}');</script>{% endif %}
+</head>
+<body>
+<a class="ms-back" href="{{ prefix }}/"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Playbooks</a>
+
+<div id="ms-loading" class="ms-loading">
+  <div class="ms-spinner"></div>
+  Loading your saves...
+</div>
+
+<div id="ms-content" style="display:none">
+  <div class="ms-header">
+    <div class="ms-badge">Saved by you</div>
+    <h1 class="ms-title">My Saves</h1>
+    <p class="ms-subtitle">Every widget you have saved across the library, newest first. Open one to return to its playbook, or unsave to remove it.</p>
+  </div>
+
+  <div class="ms-count" id="ms-count"></div>
+  <div class="ms-list" id="ms-list"></div>
+
+  <div class="ms-empty" id="ms-empty" style="display:none">
+    <div class="ms-empty-icon">&#x1F516;</div>
+    <p>You have not saved any widgets yet.</p>
+    <p>Look for the <strong style="color:var(--gold-pale);font-family:'Outfit',sans-serif;font-style:normal">Save</strong> button on any interactive in a playbook.</p>
+    <p style="margin-top:18px"><a href="{{ prefix }}/">Browse the catalog &rarr;</a></p>
+  </div>
+</div>
+
+<script>
+(function(){
+  var prefix = '{{ prefix }}';
+
+  function relTime(iso){
+    var t = new Date(iso).getTime();
+    var now = Date.now();
+    var diff = Math.max(0, now - t);
+    var sec = Math.floor(diff/1000);
+    if(sec < 60) return 'just now';
+    var min = Math.floor(sec/60);
+    if(min < 60) return min + (min === 1 ? ' min ago' : ' mins ago');
+    var hr = Math.floor(min/60);
+    if(hr < 24) return hr + (hr === 1 ? ' hour ago' : ' hours ago');
+    var day = Math.floor(hr/24);
+    if(day < 7) return day + (day === 1 ? ' day ago' : ' days ago');
+    if(day < 30) {
+      var w = Math.floor(day/7);
+      return w + (w === 1 ? ' week ago' : ' weeks ago');
+    }
+    return new Date(iso).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+  }
+
+  function esc(s){
+    return String(s == null ? '' : s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+
+  function render(saves){
+    document.getElementById('ms-loading').style.display = 'none';
+    document.getElementById('ms-content').style.display = 'block';
+    var count = document.getElementById('ms-count');
+    var list = document.getElementById('ms-list');
+    var empty = document.getElementById('ms-empty');
+    list.innerHTML = '';
+
+    if(!saves || saves.length === 0){
+      count.textContent = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+    count.textContent = saves.length + (saves.length === 1 ? ' save' : ' saves');
+
+    saves.forEach(function(s){
+      var card = document.createElement('div');
+      card.className = 'ms-card';
+      card.setAttribute('data-id', s.id);
+      var preview = s.preview_text && s.preview_text.length
+        ? '<div class="ms-card-preview">' + esc(s.preview_text) + '</div>'
+        : '<div class="ms-card-preview empty">(no preview text)</div>';
+      card.innerHTML =
+        '<div class="ms-card-head">' +
+          '<div class="ms-card-titles">' +
+            '<div class="ms-card-playbook">' + esc(s.playbook_title) + '</div>' +
+            '<div class="ms-card-widget">' + esc(s.widget_title) + '</div>' +
+          '</div>' +
+          '<div class="ms-card-when">' + relTime(s.saved_at) + '</div>' +
+        '</div>' +
+        preview +
+        '<div class="ms-card-actions">' +
+          '<a class="ms-card-open" href="' + prefix + '/read/' + esc(s.playbook_slug) +
+            '#save-anchor-' + esc(s.widget_key) + '">' +
+            '<svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg> Open in Playbook' +
+          '</a>' +
+          '<button class="ms-card-unsave" type="button" data-id="' + esc(s.id) + '">' +
+            'Unsave' +
+          '</button>' +
+        '</div>';
+      list.appendChild(card);
+    });
+
+    list.querySelectorAll('.ms-card-unsave').forEach(function(b){
+      b.addEventListener('click', function(){
+        var id = b.getAttribute('data-id');
+        var card = b.closest('.ms-card');
+        card.classList.add('removing');
+        fetch(prefix + '/api/v1/saves/' + encodeURIComponent(id), {
+          method: 'DELETE', credentials: 'include'
+        }).then(function(r){
+          if(r.ok){ card.remove(); afterRemove(); }
+          else { card.classList.remove('removing'); }
+        }).catch(function(){ card.classList.remove('removing'); });
+      });
+    });
+  }
+
+  function afterRemove(){
+    var list = document.getElementById('ms-list');
+    var remaining = list.querySelectorAll('.ms-card').length;
+    document.getElementById('ms-count').textContent = remaining === 0 ? '' :
+      (remaining + (remaining === 1 ? ' save' : ' saves'));
+    if(remaining === 0) document.getElementById('ms-empty').style.display = 'block';
+  }
+
+  fetch(prefix + '/api/v1/saves', { credentials: 'include' })
+    .then(function(r){
+      if(r.status === 401){
+        location.href = prefix + '/auth?tab=login&next=' + encodeURIComponent(prefix + '/my-saves');
+        return null;
+      }
+      return r.json();
+    })
+    .then(function(d){ if(d) render(d.saves || []); })
+    .catch(function(){
+      document.getElementById('ms-loading').innerHTML =
+        '<div style="color:rgba(255,255,255,0.4)">Could not load your saves. Try refreshing.</div>';
+    });
+})();
+</script>
+</body>
+</html>
