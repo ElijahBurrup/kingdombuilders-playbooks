@@ -1273,12 +1273,15 @@ def _inject_back_button_and_tracking(html: str, slug: str, signed_in: bool = Fal
     .then(function(d){{
       if(d && d.referral_code) refCode = d.referral_code;
       refReady = true;
-      // Tailor the sub-text for subscribers vs anonymous
-      var sub = document.getElementById('pbShareSubText');
-      if(d && d.signed_in && refCode){{
-        sub.textContent = 'Sharing earns you $1.50/mo for every friend who subscribes — and on three levels of their network. Your link includes your code.';
-      }} else if(!d || !d.signed_in){{
-        sub.textContent = 'Share with one person who needs this. Sign in first to earn $1.50/mo for every friend who subscribes through your link.';
+      // Referral copy is admin-only until referrals ship. Non-admins keep
+      // the default "share with one person on your mind" message.
+      if(d && d.is_admin){{
+        var sub = document.getElementById('pbShareSubText');
+        if(d.signed_in && refCode){{
+          sub.textContent = 'Sharing earns you $1.50/mo for every friend who subscribes — and on three levels of their network. Your link includes your code.';
+        }} else if(!d.signed_in){{
+          sub.textContent = 'Share with one person who needs this. Sign in first to earn $1.50/mo for every friend who subscribes through your link.';
+        }}
       }}
     }})
     .catch(function(){{ refReady = true; }});
