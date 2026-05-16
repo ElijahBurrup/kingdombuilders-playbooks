@@ -40,6 +40,26 @@ about?" The answer should be yes.
 
 ## Process (run this every time)
 
+### 0. Snapshot the current version BEFORE editing
+Before touching the file, copy the existing
+`assets/{Playbook}.html` to
+`assets/archive/{Playbook}-v{N}-{YYYY-MM-DD}.html` where N is the
+version being preserved (i.e., the version that exists right now,
+the one your 10x is about to replace).
+
+Naming examples:
+- About to ship v2? Snapshot the current file as `...-v1-2026-05-16.html`
+- About to ship v3? Snapshot the current file as `...-v2-2026-05-16.html`
+
+This guarantees we can always diff against, recover from, or
+reference the prior version of a playbook even after the 10x
+overwrites it. Git history also preserves it, but the explicit
+archive file is faster to open and compare side-by-side.
+
+The archive folder is not served as a public asset (the router
+only resolves `assets/*.html` not `assets/archive/*.html`), so
+snapshots do not appear in the catalog or pollute routes.
+
 ### 1. Read the existing playbook end to end
 Read the actual asset HTML. Count prose words, SVG count, chapter
 count. Note current widget count and type.
@@ -118,6 +138,42 @@ the URL renders.
 Section at the bottom: "New Patterns Discovered." Add anything
 that worked unexpectedly well, or any new move that should be
 in the library for future sessions.
+
+### 14. Record stats in the 10x Stats doc on S:
+Open `S:\My Drive\1. Projects\KingdomBuilders.AI\Playbook 10x Stats.md`
+and add a `## vN (YYYY-MM-DD)` block at the TOP of that playbook's
+section. Versions accumulate (v2, then v3, then v4) — never rewrite
+prior version blocks. If the playbook has no section yet, add a new
+top-level `# Playbook Name` section and insert it alphabetically in
+the index.
+
+Every version block records:
+- Commit hash and one-line message
+- Archetype
+- Prose words before → after (delta %)
+- Asset lines before → after
+- Interactive widgets count + short list
+- Custom SVG / visual count
+- Frame-break panel count
+- Cold-open: yes/no (kind)
+- Persistent dashboard: yes/no (kind)
+- Contrast audit: SEVERE before → SEVERE after
+- What was added (bullet list)
+- What was cut (bullet list)
+- Patterns this version contributed back to the protocol library
+- Self-assessed score before → after with notes on the jump
+- Open questions / things to push further next time
+
+The stats doc lives on Drive (not in the repo) so it survives across
+machines and can be opened as a Google Doc. Treat it as the canonical
+trail of how each playbook evolved.
+
+**Important — Drive Stream new-file workaround.** When creating the
+stats file for the first time, or any brand-new file on S:, clone
+an existing file to the target path first (`cp existing.md target.md`),
+wait ~10 seconds, then overwrite with real content. Drive Stream
+deletes brand-new files within ~60 seconds; cloning baits Drive Stream
+into treating it as an edit, not a create.
 
 ---
 
@@ -403,3 +459,93 @@ This section grows after every 10x. Append, do not rewrite.
   thing" instead of "open ChatGPT and generate three outputs."
   Persists per user via kbWidget. The cold-open as a universal
   pattern across archetypes is confirmed; only the verb changes.
+
+### From Manna: Returning v2 (2026-05-16)
+
+- **The Trace-Back stack.** Three click-to-reveal questions
+  ("Who hired me? Who taught me? Who built the industry?") that
+  each unfold a sentence beneath the question. After all three
+  are clicked, a final summary fades in: "Your work is a thousand
+  gifts compounded. None of them paid for." The reader physically
+  walks back through the layers of stewardship. Lower-effort than
+  a slider; higher-impact than a static list. **Pattern: when a
+  playbook's claim is layered (this depends on this depends on
+  this), build a click-to-reveal stack that physically unfolds
+  the layers.** Use for any "you did not author X" argument.
+- **The Stranger Lens slider with progressive SVG detail.**
+  Sliding from "Certain" to "Strange" makes hidden lines, eye
+  details, and wrinkles fade in on a simple face SVG, while the
+  overlay text changes ("You have not really looked at this face
+  in a long time" → "You are looking at a stranger"). The reader
+  sees the same face transform as their attention transforms.
+  **Pattern: when a playbook claims the same object becomes
+  different under different attention, build a slider that reveals
+  hidden detail as the slider moves.** Decay Slider's cousin —
+  decay reveals loss; this slider reveals presence.
+- **The clickable Installment Calendar.** Seven day-circles in a
+  row; six lit, one dashed-empty (tomorrow). Click any to reveal
+  a sentence about what that day's arrival actually is. The
+  static install-viz from v1 became operated, not consumed.
+  **Pattern: any "this happens daily/repeatedly" claim deserves
+  a clickable representation of the repetition where each element
+  reveals its specific specifically.** Reception especially.
+- **The 60-Second Stop timer.** A literal countdown ring that
+  asks the reader to sit still and look at one ordinary thing
+  for sixty seconds, then capture what they saw. This is the
+  most embodied move in the playbook — the playbook stops, the
+  page stops, the reader stops, all simultaneously. **Pattern:
+  when the playbook teaches stillness, build a widget that
+  enforces stillness in the page.** When teaching speed, build
+  one that enforces speed. Form must do, not just describe.
+- **The Inversion Flip cards (3D).** Three flip-cards with
+  CSS 3D rotation; each click rotates the card 180° to reveal
+  the inverted statement. Front: "I am raising my child." Back:
+  "I was given to this child." The literal physical inversion
+  of the card embodies the conceptual inversion. **Pattern: when
+  a playbook teaches a Gestalt flip (figure-ground reversal,
+  inversion of belonging, reframing), build a flip widget where
+  the visual rotation matches the conceptual rotation.**
+- **The Place Witness text input.** Reader types their town or
+  address and a sentence appears below: "You were placed in
+  [town] for the holding of a specific life." Trivial mechanic;
+  surprisingly powerful in the body. Personalizes the claim
+  without scoring or quantifying it. **Pattern: when a playbook
+  makes a "you specifically" claim, take a single text input,
+  echo it back inside the claim sentence. Receive what they
+  typed; do not analyze it.** Reception specifically: no scoring.
+- **The two-pane persistent dashboard (States + Journal).**
+  Domain Walker has two tabs — one for state-per-domain
+  (demand/opening/received), one for gift-per-domain (free text
+  input). Both persist via kbWidget. Widget glows brighter as
+  more gifts accumulate. **Pattern: when a playbook has both
+  diagnostic AND practice surfaces, separate them into tabs of
+  the same dashboard rather than two separate widgets.** Keeps
+  the cognitive load down; the reader navigates one persistent
+  thing, not two.
+- **The "next door" recommendation engine.** The Domain Walker
+  reads the state-per-domain map and surfaces a specific
+  recommendation: "Begin with X — the chapter that resists you
+  the most is the door that will open the most." Makes the
+  widget feel like it is reading the user back to themselves.
+  **Pattern: any state-collection widget should compute a single
+  next-action recommendation, not just display the state.**
+- **Soft Resistance section ("Why You Will Not Return") works
+  the same architecture as Action's "Why You Won't" but with
+  Reception's gentler verbs.** Same 4-5 disarmed excuses pattern.
+  Confirmed: resistance is universal; voice is archetype-specific.
+- **The series-callback closing.** Closing the playbook by
+  explicitly tying it back to its sibling ("Given named the
+  condition. Returning walked you through the rooms") gives the
+  reader a sense of having completed a journey, not consumed
+  two playbooks. **Pattern: for any multi-part series, the
+  finale of part N should explicitly name what each prior part
+  contributed. Treat the series as a single arc.**
+- **Contrast pitfall: italic small-caps eyebrows on cream.**
+  Reception's signature look — small italic letter-spaced
+  eyebrow text in gold-deep or rose-dawn on cream backgrounds —
+  was the single biggest contrast risk. Required darkening
+  `--gold-deep` from `#A6822B` to `#6F551A` and introducing
+  `--rose-deep` `#8E4554` for label uses. **Pattern: every new
+  Reception playbook should pre-emptively use the deeper variants
+  for labels/eyebrows; reserve the lighter rose/gold tones for
+  body text on dark backgrounds only.**

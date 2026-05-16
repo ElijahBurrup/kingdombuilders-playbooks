@@ -4,13 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Manna: Returning | Kingdom Builders AI</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="/static/kb-widget.js" defer></script>
 <style>
 :root{
  --night:#0E0F1A;--dawn:#1F2440;--sky:#3D4670;
  --sky-light:#5A648A;--rose-dawn:#C88090;--rose-pale:#E2B4BC;
  --honey:#E8B870;--honey-glow:#F5D898;
- --gold:#D4A843;--gold-glow:#E8C96A;--gold-pale:#F5E0A8;--gold-soft:rgba(212,168,67,0.08);
+ --gold:#D4A843;--gold-glow:#E8C96A;--gold-pale:#F5E0A8;--gold-deep:#6F551A;
+ --rose-deep:#8E4554;
  --cream-bright:#F8F2DC;--cream:#F5EFE0;--cream-warm:#ECE5CC;--cream-deep:#DAD0B0;
  --dew:#B0BFAC;--moss:#7B8C5B;
  --text:#1A1A26;--text-light:#4A4E5E;--text-muted:#7A7E8E;
@@ -21,13 +23,13 @@
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;font-size:18px}
 body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--cream);line-height:1.82;-webkit-font-smoothing:antialiased}
-h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
+h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.18;letter-spacing:-0.005em}
 .page{max-width:720px;margin:0 auto;padding-left:24px;padding-right:24px}
 .section{padding:48px 0}
 .prose p{margin-bottom:22px;font-size:1rem}
 .prose p:last-child{margin-bottom:0}
 .prose strong{color:var(--dawn);font-weight:700}
-.prose em{color:var(--rose-dawn);font-style:italic}
+.prose em{color:var(--rose-deep);font-style:italic}
 
 /* ===== COVER ===== */
 .cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;
@@ -49,151 +51,238 @@ h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
 @keyframes manna-fall{0%{top:-20px;opacity:0;transform:translateX(0) rotate(0deg)}10%{opacity:0.9}50%{opacity:0.7;transform:translateX(15px) rotate(180deg)}90%{opacity:0.4}100%{top:110%;opacity:0;transform:translateX(-10px) rotate(360deg)}}
 .dawn-glow{position:absolute;bottom:0;left:0;right:0;height:55%;background:linear-gradient(to top,rgba(200,128,144,0.25),rgba(232,184,112,0.08) 50%,transparent);filter:blur(20px);pointer-events:none}
 .cover-content{position:relative;z-index:2;padding:48px 24px}
-.cover-badge{display:inline-block;padding:6px 22px;border:1px solid rgba(245,224,168,0.35);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.67rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:16px}
-.cover-series{display:inline-block;padding:4px 16px;border:1px solid rgba(245,224,168,0.25);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.58rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:36px}
-.cover h1{font-family:'Nunito',sans-serif;font-size:clamp(3.4rem,9vw,6.4rem);font-weight:900;color:var(--gold-glow);line-height:1;letter-spacing:-0.04em;margin-bottom:8px;text-shadow:0 4px 30px rgba(245,224,168,0.15)}
-.cover-tagline{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.72);margin-top:28px;line-height:1.75;max-width:580px;margin-left:auto;margin-right:auto}
-.cover-tagline em{color:var(--gold-pale);font-style:normal;font-weight:600}
-.cover-sub{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.38);margin-top:14px}
+.cover-eyebrow{font-family:'Cormorant Garamond',serif;font-size:0.85rem;font-style:italic;letter-spacing:5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:44px;opacity:0.7}
+.cover h1{font-family:'Cormorant Garamond',serif;font-size:clamp(3.6rem,9vw,6rem);font-weight:500;font-style:italic;color:var(--gold-glow);line-height:0.92;letter-spacing:-0.02em;margin-bottom:14px;text-shadow:0 4px 30px rgba(245,224,168,0.15)}
+.cover-sub{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-style:italic;color:rgba(255,255,255,0.55);margin-bottom:48px;letter-spacing:1px}
+.cover-tagline{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-style:italic;color:rgba(255,255,255,0.78);margin-top:8px;line-height:1.6;max-width:560px;margin-left:auto;margin-right:auto}
 .cover-author{font-family:'Poppins',sans-serif;font-size:0.58rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-top:48px}
-
-/* ===== SERIES PROGRESS ===== */
-.series-progress{text-align:center;padding:24px 24px 12px;background:transparent}
-.series-dots{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px}
-.series-dot{width:12px;height:12px;border-radius:50%;border:2px solid rgba(245,224,168,0.35);background:transparent}
+.series-dots{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:24px}
+.series-dot{width:10px;height:10px;border-radius:50%;border:2px solid rgba(245,224,168,0.35);background:transparent}
 .series-dot.active{background:var(--gold);border-color:var(--gold);box-shadow:0 0 8px rgba(212,168,67,0.5)}
 .series-dot.done{background:rgba(245,224,168,0.4);border-color:rgba(245,224,168,0.5)}
-.series-dot-label{font-family:'Poppins',sans-serif;font-size:0.55rem;color:rgba(255,255,255,0.48);letter-spacing:3px;text-transform:uppercase}
+.series-dot-label{font-family:'Cormorant Garamond',serif;font-size:0.78rem;font-style:italic;letter-spacing:3px;text-transform:uppercase;color:rgba(245,224,168,0.85);margin-top:10px}
+
+/* ===== STOP BEFORE READING (cold-open) ===== */
+.stopbefore{background:linear-gradient(135deg,#FBF6E7,#F5EFE0);padding:64px 24px;text-align:center;border-bottom:1px solid var(--cream-deep)}
+.stopbefore-inner{max-width:600px;margin:0 auto}
+.stopbefore-eyebrow{font-family:'Cormorant Garamond',serif;font-size:0.78rem;font-style:italic;letter-spacing:4px;text-transform:uppercase;color:var(--gold-deep);margin-bottom:18px}
+.stopbefore h2{font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,4vw,2.3rem);font-weight:500;font-style:italic;color:var(--dawn);max-width:560px;margin:0 auto 22px;line-height:1.28}
+.stopbefore p{font-family:'Lora',serif;font-size:1rem;color:var(--text-light);line-height:1.7;margin-bottom:24px;font-style:italic}
+.stopbefore-input{display:block;width:100%;max-width:480px;margin:0 auto 18px;padding:14px 18px;font-family:'Lora',serif;font-size:1rem;font-style:italic;background:#fff;border:1.5px solid rgba(212,168,67,0.3);border-radius:12px;color:var(--dawn);text-align:center}
+.stopbefore-input:focus{outline:none;border-color:var(--gold)}
+.stopbefore-btn{display:inline-block;padding:13px 30px;background:linear-gradient(135deg,var(--dawn),var(--sky));color:var(--gold-pale);font-family:'Cormorant Garamond',serif;font-size:0.95rem;font-style:italic;letter-spacing:2px;text-decoration:none;border:1px solid rgba(212,168,67,0.3);border-radius:50px;cursor:pointer;transition:all 0.3s}
+.stopbefore-btn:hover{background:linear-gradient(135deg,var(--sky),var(--dawn));color:#fff}
+.stopbefore-saved{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--gold-deep);margin-top:14px;font-size:0.95rem;opacity:0;transition:opacity 0.4s}
+.stopbefore-saved.show{opacity:1}
 
 /* ===== CHAPTER HEADS ===== */
 .ch-head{background:linear-gradient(170deg,var(--dawn),var(--sky));padding:72px 24px 52px;position:relative;overflow:hidden}
 .ch-head::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23F5E0A8' fill-opacity='0.06'%3E%3Ccircle cx='20' cy='20' r='1.5'/%3E%3Ccircle cx='50' cy='15' r='1'/%3E%3Ccircle cx='70' cy='30' r='1.5'/%3E%3Ccircle cx='25' cy='55' r='1'/%3E%3Ccircle cx='60' cy='60' r='1.5'/%3E%3Ccircle cx='15' cy='75' r='1'/%3E%3Ccircle cx='75' cy='70' r='1'/%3E%3C/g%3E%3C/svg%3E")}
-.ch-badge{display:inline-block;padding:4px 16px;background:rgba(245,224,168,0.12);border:1px solid rgba(245,224,168,0.3);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:20px;position:relative;z-index:2}
-.ch-num{font-family:'Nunito',sans-serif;font-size:5.5rem;font-weight:900;line-height:0.9;color:rgba(245,224,168,0.2);margin-bottom:-10px;position:relative;z-index:2}
-.ch-title{font-family:'Nunito',sans-serif;font-size:2.1rem;font-weight:900;color:var(--white);line-height:1.15;letter-spacing:-0.02em;margin-bottom:10px;position:relative;z-index:2}
-.ch-sub{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.62);line-height:1.6;position:relative;z-index:2}
-.ch-icon{position:absolute;top:24px;right:28px;width:56px;height:56px;opacity:0.32;z-index:1}
+.ch-badge{display:inline-block;font-family:'Cormorant Garamond',serif;font-size:0.78rem;font-style:italic;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:18px;opacity:0.8;position:relative;z-index:2}
+.ch-num{font-family:'Cormorant Garamond',serif;font-size:5.5rem;font-weight:400;line-height:0.85;color:rgba(212,168,67,0.2);margin-bottom:-4px;font-style:italic;position:relative;z-index:2}
+.ch-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,5vw,2.8rem);font-weight:500;font-style:italic;color:var(--white);line-height:1.12;letter-spacing:-0.01em;margin-bottom:14px;position:relative;z-index:2}
+.ch-sub{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-style:italic;color:rgba(255,255,255,0.65);line-height:1.5;position:relative;z-index:2}
 
 /* ===== RIBBON ===== */
-.ribbon{margin:20px 0;text-align:center;padding:22px 24px;background:linear-gradient(135deg,rgba(232,184,112,0.06),rgba(200,128,144,0.05));border-top:1.5px solid rgba(212,168,67,0.18);border-bottom:1.5px solid rgba(212,168,67,0.18)}
-.ribbon p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:var(--text-light);max-width:540px;margin:0 auto}
-.ribbon .ref{font-weight:600;color:var(--rose-dawn);font-style:normal}
-
-/* ===== CHARACTERS ===== */
-.char-grid{display:grid;gap:24px;margin:40px 0}
-@media(min-width:640px){.char-grid{grid-template-columns:1fr}}
-.char-card{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft);transition:all 0.3s ease}
-.char-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-mid)}
-.char-head{background:linear-gradient(135deg,var(--gold-soft),rgba(200,128,144,0.05));padding:18px 20px;border-bottom:1px solid var(--cream-deep);display:flex;align-items:center;gap:14px}
-.char-emoji{font-size:2rem;line-height:1;display:flex;align-items:center;justify-content:center}
-.char-name{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;color:var(--dawn);line-height:1.25}
-.char-title{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-top:2px}
-.char-body{padding:20px}
-.char-body p{font-size:0.92rem;color:var(--text-light);line-height:1.75;margin:0}
-
-/* ===== SCENE ===== */
-.scene{background:linear-gradient(135deg,var(--cream-warm),var(--cream));border:1px solid var(--cream-deep);border-radius:var(--radius);padding:28px;margin:32px 0;box-shadow:var(--shadow-soft)}
-.scene-label{font-family:'Nunito',sans-serif;font-size:0.68rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--rose-dawn);margin-bottom:16px;display:flex;align-items:center;gap:8px}
-.scene h4{font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:800;color:var(--dawn);margin-bottom:14px;line-height:1.3}
-.scene p{font-size:0.95rem;color:var(--text-light);line-height:1.78;margin-bottom:14px}
-.scene p:last-child{margin-bottom:0}
-
-/* ===== GLOW BOX ===== */
-.glow-box{background:linear-gradient(135deg,var(--dawn),var(--sky));border:2px solid rgba(245,224,168,0.25);border-radius:var(--radius);padding:32px;margin:36px 0;position:relative;overflow:hidden;box-shadow:0 4px 24px rgba(14,15,26,0.2)}
-.glow-box::before{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(245,224,168,0.12) 0%,transparent 70%);border-radius:50%}
-.glow-box h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--gold-glow);margin-bottom:14px;position:relative}
-.glow-box p{font-size:0.95rem;color:rgba(255,255,255,0.88);line-height:1.78;position:relative;margin-bottom:12px}
-.glow-box p:last-child{margin-bottom:0}
-.glow-box strong{color:var(--gold-pale)}
-.glow-box em{color:var(--rose-pale);font-style:italic}
+.ribbon{margin:20px 0;text-align:center;padding:30px 24px;background:linear-gradient(135deg,rgba(232,184,112,0.06),rgba(200,128,144,0.05));border-top:1.5px solid rgba(212,168,67,0.18);border-bottom:1.5px solid rgba(212,168,67,0.18)}
+.ribbon p{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-style:italic;color:var(--text-light);max-width:540px;margin:0 auto;line-height:1.55}
+.ribbon .ref{display:block;font-family:'Cormorant Garamond',serif;font-size:0.78rem;font-style:italic;letter-spacing:3px;text-transform:uppercase;color:var(--gold-deep);margin-top:14px;opacity:0.85}
 
 /* ===== INSIGHT CARD ===== */
 .insight-card{background:linear-gradient(135deg,var(--dawn),var(--sky));border-radius:var(--radius);padding:56px 32px;margin:40px 0;text-align:center;position:relative;overflow:hidden;border:3px solid rgba(245,224,168,0.3)}
 .insight-card::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;background:radial-gradient(circle,rgba(245,224,168,0.18) 0%,rgba(232,184,112,0.06) 40%,transparent 75%);border-radius:50%}
-.insight-card .ins-label{font-family:'Nunito',sans-serif;font-size:0.58rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:14px;position:relative}
-.insight-card h3{font-family:'Nunito',sans-serif;font-size:clamp(1.5rem,4vw,2.4rem);font-weight:900;color:var(--gold-glow);letter-spacing:-0.02em;position:relative;line-height:1.2}
+.ins-label{font-family:'Cormorant Garamond',serif;font-size:0.78rem;font-style:italic;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:14px;position:relative;opacity:0.85}
+.insight-card h3{font-family:'Cormorant Garamond',serif;font-size:clamp(1.5rem,4vw,2.4rem);font-weight:500;font-style:italic;color:var(--gold-glow);letter-spacing:-0.01em;position:relative;line-height:1.2}
 
-/* ===== GRAND QUOTE ===== */
-.grand-quote{text-align:center;padding:48px 24px;margin:40px 0;position:relative}
-.grand-quote::before{content:'\201C';font-family:'Lora',serif;font-size:8rem;color:rgba(212,168,67,0.16);position:absolute;top:-20px;left:50%;transform:translateX(-50%);line-height:1}
-.grand-quote blockquote{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:var(--dawn);line-height:1.7;max-width:540px;margin:0 auto;position:relative}
-.grand-quote cite{display:block;margin-top:16px;font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--rose-dawn);font-style:normal}
+/* ===== SCENE ===== */
+.scene{background:linear-gradient(135deg,var(--cream-warm),var(--cream));border:1px solid var(--cream-deep);border-radius:var(--radius);padding:28px;margin:32px 0;box-shadow:var(--shadow-soft)}
+.scene-label{font-family:'Cormorant Garamond',serif;font-size:0.82rem;font-style:italic;letter-spacing:2.5px;text-transform:uppercase;color:var(--rose-deep);margin-bottom:16px}
+.scene h4{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:500;font-style:italic;color:var(--dawn);margin-bottom:14px;line-height:1.3}
+.scene p{font-size:0.95rem;color:var(--text-light);line-height:1.78;margin-bottom:14px}
+.scene p:last-child{margin-bottom:0}
+.scene em{color:var(--rose-deep);font-style:italic}
 
-/* ===== ROOT CHECK ===== */
-.root-ck{margin:40px auto;max-width:720px;padding:36px 32px;background:linear-gradient(135deg,rgba(232,184,112,0.05),rgba(200,128,144,0.06));border-radius:var(--radius);border:2px solid rgba(212,168,67,0.18)}
-.root-ck .rc-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--rose-dawn);margin-bottom:12px}
-.root-ck h4{font-size:1.05rem;color:var(--dawn);margin-bottom:20px}
-.r-item{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
+/* ===== INVITE BLOCK (Reception equivalent of "Now Do It") ===== */
+.invite{background:linear-gradient(135deg,#FBF6E7,#F5E0A8);border:1.5px solid rgba(212,168,67,0.25);border-radius:var(--radius);padding:32px 28px;margin:36px 0;text-align:center;box-shadow:var(--shadow-soft)}
+.invite-eyebrow{font-family:'Cormorant Garamond',serif;font-size:0.75rem;font-style:italic;letter-spacing:3.5px;text-transform:lowercase;color:var(--gold-deep);margin-bottom:12px;opacity:0.85}
+.invite p{font-family:'Cormorant Garamond',serif;font-size:1.18rem;font-style:italic;color:var(--dawn);max-width:480px;margin:0 auto;line-height:1.5;font-weight:500}
+
+/* ===== FRAME BREAK (pull quote at chapter close) ===== */
+.framebreak{margin:40px 0;padding:38px 28px;background:linear-gradient(135deg,var(--dawn),var(--sky));border-left:4px solid var(--gold);border-radius:0 var(--radius) var(--radius) 0;position:relative;overflow:hidden}
+.framebreak::before{content:'\201C';position:absolute;top:-10px;left:18px;font-family:'Cormorant Garamond',serif;font-size:6rem;color:rgba(212,168,67,0.18);line-height:1}
+.framebreak p{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-style:italic;color:var(--gold-pale);line-height:1.45;margin:0;padding-left:36px;position:relative;font-weight:500}
+.framebreak .fb-attr{display:block;margin-top:14px;font-family:'Cormorant Garamond',serif;font-size:0.78rem;font-style:italic;letter-spacing:2.5px;text-transform:uppercase;color:rgba(245,224,168,0.55);padding-left:36px}
+
+/* ===== ROOT CHECK (cumulative) ===== */
+.root-ck{margin:40px auto;max-width:720px;padding:32px;background:linear-gradient(135deg,rgba(232,184,112,0.05),rgba(200,128,144,0.06));border-radius:var(--radius);border:2px solid rgba(212,168,67,0.18)}
+.rc-label{font-family:'Cormorant Garamond',serif;font-size:0.78rem;font-style:italic;letter-spacing:3.5px;text-transform:uppercase;color:var(--rose-deep);margin-bottom:14px}
+.root-ck h4{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:500;font-style:italic;color:var(--dawn);margin-bottom:18px}
+.r-item{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}
 .r-item:last-child{margin-bottom:0}
-.r-dot{flex-shrink:0;width:8px;height:8px;border-radius:50%;background:var(--gold);margin-top:7px;box-shadow:0 0 6px rgba(212,168,67,0.3)}
+.r-dot{flex-shrink:0;width:8px;height:8px;border-radius:50%;background:var(--gold);margin-top:9px;box-shadow:0 0 6px rgba(212,168,67,0.3)}
 .r-text{font-size:0.92rem;color:var(--text-light);line-height:1.7}
 
-/* ===== THINK ===== */
-.think{background:linear-gradient(135deg,rgba(232,184,112,0.07),rgba(200,128,144,0.05));border:2px solid rgba(212,168,67,0.2);border-radius:var(--radius);padding:28px;margin:36px 0}
-.think-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--rose-dawn);margin-bottom:14px}
-.think p{font-size:0.95rem;color:var(--text-light);line-height:1.78;margin-bottom:12px}
-.think p:last-child{margin-bottom:0}
-.think-line{border:none;border-bottom:1.5px dashed rgba(212,168,67,0.3);margin:8px 0}
+/* ===== TRACE-BACK (Ch1 Work interactive) ===== */
+.traceback{margin:36px 0;padding:28px;border-radius:var(--radius);background:#fff;border:1.5px solid var(--cream-deep);box-shadow:var(--shadow-soft)}
+.tb-head{text-align:center;margin-bottom:20px}
+.tb-eyebrow{font-family:'Cormorant Garamond',serif;font-size:0.72rem;font-style:italic;letter-spacing:3px;text-transform:uppercase;color:var(--gold-deep);margin-bottom:8px}
+.tb-head h4{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:500;font-style:italic;color:var(--dawn)}
+.tb-questions{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+.tb-q{padding:14px 18px;background:linear-gradient(135deg,var(--cream),var(--cream-warm));border:1.5px solid var(--cream-deep);border-radius:10px;font-family:'Cormorant Garamond',serif;font-size:1rem;font-style:italic;color:var(--dawn);cursor:pointer;text-align:left;transition:all 0.25s}
+.tb-q:hover{transform:translateY(-1px);border-color:var(--gold);box-shadow:0 2px 12px rgba(212,168,67,0.15)}
+.tb-q.opened{background:linear-gradient(135deg,var(--gold-pale),#F0DCB8);border-color:var(--gold)}
+.tb-stack{min-height:0;padding:0 4px}
+.tb-card{padding:16px 18px;margin-top:10px;background:linear-gradient(135deg,var(--dawn),var(--sky));color:#fff;border-radius:10px;border-left:3px solid var(--gold);font-family:'Lora',serif;font-style:italic;font-size:0.92rem;line-height:1.6;animation:tb-rise 0.45s ease}
+.tb-card strong{color:var(--gold-pale);font-weight:600;font-style:normal}
+@keyframes tb-rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.tb-final{margin-top:18px;padding:16px;text-align:center;background:linear-gradient(135deg,rgba(212,168,67,0.18),rgba(200,128,144,0.12));border-radius:10px;border:1.5px dashed rgba(212,168,67,0.4);font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--dawn);font-size:1.05rem;opacity:0;transition:opacity 0.5s;font-weight:500}
+.tb-final.show{opacity:1}
 
-/* ===== FINAL TEST ===== */
-.final-test{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:36px;margin:40px 0;box-shadow:var(--shadow-soft)}
-.final-test h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--dawn);margin-bottom:6px}
-.final-test .test-sub{font-size:0.85rem;color:var(--text-muted);margin-bottom:24px;font-style:italic}
-.test-q{padding:14px 0;border-bottom:1px solid var(--cream-deep)}
-.test-q:last-child{border-bottom:none}
-.test-num{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--rose-dawn);margin-bottom:4px}
-.test-q p{font-size:0.92rem;color:var(--text);line-height:1.65}
+/* ===== POSTURE TOGGLE (Ch2 Body — Manage/Meet) ===== */
+.posture{margin:40px 0;padding:32px 24px;border-radius:var(--radius);transition:background 0.6s ease,border 0.6s ease;border:2px solid var(--cream-deep);background:linear-gradient(135deg,#E8DCC8,#D8CCB0)}
+.posture.meet{background:linear-gradient(135deg,#FBF6E7,#F5E0A8);border-color:var(--gold)}
+.posture-head{text-align:center;margin-bottom:22px}
+.posture-eyebrow{font-family:'Cormorant Garamond',serif;font-size:0.72rem;font-style:italic;letter-spacing:3px;text-transform:uppercase;color:#3D3530;margin-bottom:8px;transition:color 0.6s}
+.posture.meet .posture-eyebrow{color:var(--gold-deep)}
+.posture-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:500;font-style:italic;color:var(--dawn);transition:color 0.6s}
+.posture-toggle{display:flex;justify-content:center;gap:8px;margin-bottom:22px;background:rgba(255,255,255,0.5);padding:6px;border-radius:50px;max-width:340px;margin-left:auto;margin-right:auto}
+.posture-btn{flex:1;padding:11px 18px;background:transparent;border:none;font-family:'Cormorant Garamond',serif;font-size:0.95rem;font-style:italic;font-weight:500;color:var(--text-light);cursor:pointer;border-radius:50px;transition:all 0.4s;letter-spacing:0.5px}
+.posture-btn.active{background:#fff;color:var(--dawn);box-shadow:0 2px 8px rgba(31,36,64,0.12)}
+.posture-list{list-style:none;padding:0;max-width:440px;margin:0 auto}
+.posture-list li{padding:10px 0;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:var(--dawn);line-height:1.5;border-bottom:1px dashed rgba(31,36,64,0.12);text-align:center}
+.posture-list li:last-child{border-bottom:none}
 
-/* ===== PROMPT ===== */
-.prompt-card{background:linear-gradient(135deg,var(--dawn),var(--sky));border-radius:var(--radius);padding:36px;margin:40px 0;box-shadow:0 4px 24px rgba(14,15,26,0.2)}
-.prompt-card h3{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;color:var(--gold-glow);margin-bottom:16px}
-.prompt-card p{font-size:0.88rem;color:rgba(255,255,255,0.78);line-height:1.65;margin-bottom:10px}
-.prompt-card code{background:rgba(255,255,255,0.08);padding:2px 8px;border-radius:4px;font-size:0.82rem;color:var(--gold-pale)}
+/* ===== STRANGER LENS (Ch3 Marriage slider) ===== */
+.lens{margin:40px 0;padding:32px 24px;border-radius:var(--radius);background:linear-gradient(135deg,var(--cream-warm),var(--cream));border:1.5px solid var(--cream-deep);box-shadow:var(--shadow-soft)}
+.lens-head{text-align:center;margin-bottom:24px}
+.lens-eyebrow{font-family:'Cormorant Garamond',serif;font-size:0.72rem;font-style:italic;letter-spacing:3px;text-transform:uppercase;color:var(--rose-deep);margin-bottom:8px}
+.lens-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:500;font-style:italic;color:var(--dawn)}
+.lens-portrait{height:180px;margin:18px auto;position:relative;display:flex;align-items:center;justify-content:center}
+.lens-portrait svg{width:160px;height:160px}
+.lens-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:0.95rem;color:var(--dawn);text-align:center;padding:20px;line-height:1.5;background:rgba(255,255,255,0.85);border-radius:8px;opacity:0;transition:opacity 0.5s;max-width:260px;margin:auto}
+.lens-overlay.show{opacity:1}
+.lens-slider{width:100%;max-width:480px;margin:14px auto;display:block;height:4px;-webkit-appearance:none;appearance:none;background:linear-gradient(90deg,var(--cream-deep),var(--gold));border-radius:2px;outline:none}
+.lens-slider::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--dawn);border:2.5px solid var(--gold);cursor:pointer;box-shadow:0 2px 8px rgba(14,15,26,0.25)}
+.lens-slider::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--dawn);border:2.5px solid var(--gold);cursor:pointer}
+.lens-labels{display:flex;justify-content:space-between;max-width:480px;margin:6px auto 0;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:0.78rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-light)}
 
-/* ===== DOMAIN GRID (the seven) ===== */
-.domain-map{margin:40px 0;padding:32px 20px;background:linear-gradient(135deg,var(--cream-warm),var(--cream));border-radius:var(--radius);border:1.5px solid var(--cream-deep)}
-.domain-map-label{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--rose-dawn);text-align:center;margin-bottom:20px}
-.domain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px}
-.domain-tile{background:var(--white);border:1.5px solid var(--cream-deep);border-radius:12px;padding:18px 12px;text-align:center;transition:all 0.3s}
-.domain-tile.active{background:linear-gradient(135deg,var(--gold-glow),var(--gold-pale));border-color:var(--gold);box-shadow:0 2px 12px rgba(212,168,67,0.25)}
-.domain-tile.done{background:linear-gradient(135deg,#EFE3C8,#E8D8B8);border-color:#D4B888}
-.domain-tile-icon{width:32px;height:32px;margin:0 auto 8px}
-.domain-tile-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--dawn)}
+/* ===== INSTALLMENT CALENDAR (Ch4 Time) ===== */
+.installments{margin:40px 0;padding:32px 18px;border-radius:var(--radius);background:linear-gradient(135deg,var(--cream-warm),var(--cream));border:1.5px solid var(--cream-deep);box-shadow:var(--shadow-soft)}
+.inst-head{text-align:center;margin-bottom:22px}
+.inst-eyebrow{font-family:'Cormorant Garamond',serif;font-size:0.72rem;font-style:italic;letter-spacing:3px;text-transform:uppercase;color:var(--gold-deep);margin-bottom:8px}
+.inst-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:500;font-style:italic;color:var(--dawn)}
+.inst-row{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.inst-day{display:flex;flex-direction:column;align-items:center;cursor:pointer;width:62px}
+.inst-circle{width:42px;height:42px;border-radius:50%;background:radial-gradient(circle at 35% 35%,var(--gold-glow),var(--gold) 70%);box-shadow:0 0 12px rgba(245,224,168,0.4);margin-bottom:6px;transition:transform 0.25s;border:2.5px solid transparent}
+.inst-circle.tomorrow{background:radial-gradient(circle at 35% 35%,#E8DCC0,#C8BCA0);box-shadow:none;opacity:0.45;border-style:dashed;border-color:var(--cream-deep)}
+.inst-day:hover .inst-circle{transform:scale(1.08)}
+.inst-day.selected .inst-circle{box-shadow:0 0 18px rgba(232,201,106,0.7);border-color:var(--gold)}
+.inst-lbl{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:0.85rem;color:var(--text-light)}
+.inst-msg{padding:18px 20px;text-align:center;background:linear-gradient(135deg,var(--dawn),var(--sky));color:var(--gold-pale);border-radius:10px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;line-height:1.55;min-height:60px;max-width:520px;margin:0 auto;display:flex;align-items:center;justify-content:center}
 
-/* ===== MEET/MANAGE VIZ ===== */
-.mm-viz{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:40px 0}
-@media(max-width:600px){.mm-viz{grid-template-columns:1fr}}
-.mm-panel{padding:24px 18px;border-radius:var(--radius);text-align:center;border:2px solid var(--cream-deep)}
-.mm-panel.manage{background:linear-gradient(135deg,#E8DCC8,#D8CCB0)}
-.mm-panel.meet{background:linear-gradient(135deg,var(--gold-pale),#F0DCB8)}
-.mm-label{font-family:'Nunito',sans-serif;font-size:0.58rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px}
-.mm-panel.manage .mm-label{color:#7A6A55}
-.mm-panel.meet .mm-label{color:#A6822B}
-.mm-title{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:var(--dawn);margin-bottom:10px}
-.mm-desc{font-family:'Lora',serif;font-size:0.85rem;font-style:italic;color:var(--text-light);line-height:1.6}
+/* ===== 60-SECOND STOP (Ch5 Beauty) ===== */
+.stop60{margin:40px 0;padding:36px 24px;border-radius:var(--radius);background:linear-gradient(135deg,#FBF6E7,#F5EFE0);border:1.5px solid rgba(212,168,67,0.25);text-align:center;box-shadow:var(--shadow-soft)}
+.stop60-eyebrow{font-family:'Cormorant Garamond',serif;font-size:0.72rem;font-style:italic;letter-spacing:3px;text-transform:uppercase;color:var(--gold-deep);margin-bottom:10px}
+.stop60-title{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:500;font-style:italic;color:var(--dawn);margin-bottom:24px}
+.stop60-ring{position:relative;width:160px;height:160px;margin:0 auto 22px}
+.stop60-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.stop60-ring-bg{stroke:var(--cream-deep);stroke-width:5;fill:none}
+.stop60-ring-fg{stroke:var(--gold);stroke-width:5;fill:none;stroke-linecap:round;stroke-dasharray:471;stroke-dashoffset:471;transition:stroke-dashoffset 1s linear}
+.stop60-count{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-style:italic}
+.stop60-num{font-size:2.6rem;color:var(--dawn);font-weight:500;line-height:1}
+.stop60-lbl{font-size:0.78rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-light);margin-top:4px}
+.stop60-prompt{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.1rem;color:var(--dawn);max-width:420px;margin:0 auto 22px;line-height:1.5;min-height:60px}
+.stop60-btn{display:inline-block;padding:13px 30px;background:linear-gradient(135deg,var(--dawn),var(--sky));color:var(--gold-pale);font-family:'Cormorant Garamond',serif;font-size:0.95rem;font-style:italic;letter-spacing:2px;border:1px solid rgba(212,168,67,0.3);border-radius:50px;cursor:pointer;transition:all 0.3s}
+.stop60-btn:hover{background:linear-gradient(135deg,var(--sky),var(--dawn));color:#fff}
+.stop60-btn:disabled{opacity:0.5;cursor:not-allowed}
+.stop60-record{display:none;margin-top:18px}
+.stop60-record.show{display:block}
+.stop60-record input{display:block;width:100%;max-width:420px;margin:0 auto 12px;padding:12px 16px;font-family:'Lora',serif;font-style:italic;font-size:0.95rem;background:#fff;border:1.5px solid rgba(212,168,67,0.3);border-radius:10px;text-align:center;color:var(--dawn)}
+.stop60-record input:focus{outline:none;border-color:var(--gold)}
+.stop60-saved{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--gold-deep);font-size:0.95rem;opacity:0;transition:opacity 0.4s;margin-top:8px}
+.stop60-saved.show{opacity:1}
 
-/* ===== INSTALLMENT VIZ ===== */
-.install-viz{display:flex;align-items:center;justify-content:center;gap:6px;margin:36px 0;padding:28px 12px;background:linear-gradient(135deg,var(--cream-warm),var(--cream));border-radius:var(--radius);border:1.5px solid var(--cream-deep);flex-wrap:wrap}
-.install-day{width:54px;display:flex;flex-direction:column;align-items:center}
-.install-circle{width:38px;height:38px;border-radius:50%;background:radial-gradient(circle at 35% 35%,var(--gold-glow),var(--gold) 70%);box-shadow:0 0 12px rgba(245,224,168,0.4);margin-bottom:6px}
-.install-circle.empty{background:radial-gradient(circle at 35% 35%,#E8DCC0,#C8BCA0);box-shadow:none;opacity:0.4}
-.install-lbl{font-family:'Nunito',sans-serif;font-size:0.48rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted)}
-.install-caption{text-align:center;margin-top:14px;font-family:'Lora',serif;font-size:0.82rem;font-style:italic;color:var(--text-light);width:100%}
+/* ===== INVERSION FLIP (Ch6 Children) ===== */
+.flip-set{margin:40px 0;display:flex;flex-direction:column;gap:16px}
+.flip-head{text-align:center;margin-bottom:6px}
+.flip-eyebrow{font-family:'Cormorant Garamond',serif;font-size:0.72rem;font-style:italic;letter-spacing:3px;text-transform:uppercase;color:var(--rose-deep);margin-bottom:8px}
+.flip-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:500;font-style:italic;color:var(--dawn)}
+.flip-card{height:120px;perspective:1000px;cursor:pointer}
+.flip-inner{position:relative;width:100%;height:100%;text-align:center;transition:transform 0.7s cubic-bezier(0.65,0.05,0.36,1);transform-style:preserve-3d}
+.flip-card.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-face{position:absolute;width:100%;height:100%;-webkit-backface-visibility:hidden;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;padding:18px 24px;border-radius:var(--radius);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.15rem;line-height:1.4;border:1.5px solid var(--cream-deep)}
+.flip-front{background:linear-gradient(135deg,#E8DCC8,#D8CCB0);color:var(--text-light)}
+.flip-back{background:linear-gradient(135deg,var(--gold-pale),#F0DCB8);color:var(--dawn);transform:rotateY(180deg);border-color:var(--gold);font-weight:500;font-size:1.2rem}
+.flip-hint{text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:0.85rem;color:var(--text-light);margin-top:4px}
 
-/* ===== INVERSION VIZ (for Children) ===== */
-.invert-viz{margin:40px 0;padding:28px 20px;background:linear-gradient(135deg,var(--cream-warm),var(--cream));border-radius:var(--radius);border:1.5px solid var(--cream-deep)}
-.invert-row{display:flex;align-items:center;justify-content:center;gap:18px;margin-bottom:14px}
-.invert-row:last-child{margin-bottom:0}
-.invert-side{flex:1;text-align:center;padding:14px;background:var(--white);border-radius:10px;border:1.5px solid var(--cream-deep);font-family:'Nunito',sans-serif;font-size:0.78rem;font-weight:700;color:var(--dawn)}
-.invert-side.before{opacity:0.6}
-.invert-side.after{background:linear-gradient(135deg,var(--gold-pale),#F0DCB8);border-color:var(--gold)}
-.invert-arrow{font-family:'Nunito',sans-serif;color:var(--rose-dawn);font-size:1.4rem;font-weight:300}
+/* ===== PLACE WITNESS (Ch7 Place) ===== */
+.place-w{margin:40px 0;padding:32px 24px;border-radius:var(--radius);background:linear-gradient(135deg,#FBF6E7,#F5EFE0);border:1.5px solid rgba(212,168,67,0.25);box-shadow:var(--shadow-soft);text-align:center}
+.place-eyebrow{font-family:'Cormorant Garamond',serif;font-size:0.72rem;font-style:italic;letter-spacing:3px;text-transform:uppercase;color:var(--gold-deep);margin-bottom:10px}
+.place-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:500;font-style:italic;color:var(--dawn);margin-bottom:22px}
+.place-input{display:block;width:100%;max-width:380px;margin:0 auto 16px;padding:14px 18px;font-family:'Lora',serif;font-size:1rem;font-style:italic;background:#fff;border:1.5px solid rgba(212,168,67,0.3);border-radius:10px;color:var(--dawn);text-align:center}
+.place-input:focus{outline:none;border-color:var(--gold)}
+.place-out{margin-top:14px;padding:18px 22px;background:linear-gradient(135deg,var(--dawn),var(--sky));color:var(--gold-pale);border-radius:10px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.1rem;line-height:1.5;max-width:520px;margin:14px auto 0;opacity:0;transition:opacity 0.5s;text-align:center}
+.place-out.show{opacity:1}
+
+/* ===== DOMAIN WALKER (enhanced persistent widget) ===== */
+.walker{margin:40px 0;border-radius:18px;overflow:hidden;border:2px solid rgba(212,168,67,0.3);background:linear-gradient(135deg,#FDFAF3,#F5EFE0);box-shadow:0 8px 28px rgba(14,15,26,0.12);position:relative}
+.walker::after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 50%,rgba(245,224,168,0.0),rgba(245,224,168,0.0));transition:background 1.2s ease}
+.walker.glow-1::after{background:radial-gradient(circle at 50% 50%,rgba(245,224,168,0.07),rgba(245,224,168,0))}
+.walker.glow-2::after{background:radial-gradient(circle at 50% 50%,rgba(245,224,168,0.14),rgba(245,224,168,0))}
+.walker.glow-3::after{background:radial-gradient(circle at 50% 50%,rgba(245,224,168,0.22),rgba(245,224,168,0))}
+.walker-head{background:linear-gradient(135deg,#1F2440,#3D4670);padding:26px 30px;text-align:center;color:#fff;position:relative;z-index:1}
+.walker-kicker{font-family:'Cormorant Garamond',serif;font-size:0.78rem;font-style:italic;letter-spacing:4px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:8px;opacity:0.85}
+.walker-head h3{font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-weight:500;font-style:italic;color:#fff;margin:0 0 6px}
+.walker-head p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:0.98rem;color:rgba(255,255,255,0.72);margin:0 auto;max-width:520px;line-height:1.5}
+.walker-body{padding:28px;position:relative;z-index:1}
+.walker-tabs{display:flex;justify-content:center;gap:6px;margin-bottom:20px;background:rgba(31,36,64,0.06);padding:5px;border-radius:50px;max-width:340px;margin-left:auto;margin-right:auto}
+.walker-tab{flex:1;padding:9px 14px;background:transparent;border:none;font-family:'Cormorant Garamond',serif;font-size:0.92rem;font-style:italic;color:var(--text-light);cursor:pointer;border-radius:50px;transition:all 0.3s}
+.walker-tab.active{background:#fff;color:var(--dawn);box-shadow:0 2px 8px rgba(31,36,64,0.12);font-weight:500}
+.walker-pane{display:none}
+.walker-pane.active{display:block}
+.w-progress{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.w-progress-bar{flex:1;height:7px;background:rgba(31,36,64,0.08);border-radius:4px;overflow:hidden}
+.w-progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-glow));width:0%;transition:width 0.5s ease;border-radius:4px}
+.w-progress-txt{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--dawn);font-size:0.88rem;white-space:nowrap}
+.w-domains{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:14px}
+.w-domain{background:#fff;border:1.5px solid var(--cream-deep);border-radius:12px;padding:14px;transition:all 0.25s}
+.w-domain.demand{background:linear-gradient(135deg,rgba(200,128,144,0.12),rgba(226,180,188,0.06));border-color:var(--rose-dawn)}
+.w-domain.opening{background:linear-gradient(135deg,rgba(232,184,112,0.14),rgba(245,224,168,0.06));border-color:var(--honey)}
+.w-domain.received{background:linear-gradient(135deg,rgba(212,168,67,0.18),rgba(232,201,106,0.1));border-color:var(--gold)}
+.w-domain-name{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:500;font-style:italic;color:var(--dawn);margin-bottom:3px}
+.w-domain-insight{font-family:'Lora',serif;font-style:italic;font-size:0.78rem;color:var(--text-light);line-height:1.4;margin-bottom:12px}
+.w-state-btns{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.w-state-btn{padding:7px 4px;background:#fff;border:1.2px solid rgba(31,36,64,0.1);border-radius:6px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:0.72rem;color:var(--text-light);cursor:pointer;letter-spacing:0.5px;transition:all 0.15s;line-height:1.2}
+.w-state-btn:hover{border-color:var(--gold);color:var(--dawn)}
+.w-state-btn.active.demand{background:var(--rose-dawn);color:#fff;border-color:var(--rose-dawn)}
+.w-state-btn.active.opening{background:var(--honey);color:#fff;border-color:var(--honey)}
+.w-state-btn.active.received{background:var(--gold);color:#fff;border-color:var(--gold)}
+.w-rec{margin-top:18px;padding:18px;background:linear-gradient(135deg,#1F2440,#3D4670);color:#fff;border-radius:12px}
+.w-rec-kicker{font-family:'Cormorant Garamond',serif;font-size:0.72rem;font-style:italic;letter-spacing:3px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:6px;opacity:0.85}
+.w-rec-title{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-style:italic;color:#fff;margin-bottom:8px}
+.w-rec-text{font-family:'Cormorant Garamond',serif;font-style:italic;color:rgba(255,255,255,0.85);line-height:1.55;font-size:0.95rem;margin:0}
+.w-rec-text strong{color:var(--gold-pale);font-weight:500;font-style:normal}
+/* journal pane */
+.w-journal-domain{margin-bottom:16px;padding:14px 16px;background:#fff;border:1.5px solid var(--cream-deep);border-radius:10px}
+.w-journal-label{font-family:'Cormorant Garamond',serif;font-size:0.95rem;font-style:italic;color:var(--dawn);margin-bottom:6px;font-weight:500}
+.w-journal-input{width:100%;padding:10px 12px;font-family:'Lora',serif;font-style:italic;font-size:0.92rem;background:var(--cream);border:1px solid var(--cream-deep);border-radius:8px;color:var(--dawn)}
+.w-journal-input:focus{outline:none;border-color:var(--gold);background:#fff}
+.w-journal-count{text-align:center;margin-top:12px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:0.95rem;color:var(--text-light)}
+
+/* ===== RESISTANCE ===== */
+.resist{margin:48px 0;padding:36px 28px;border-radius:var(--radius);background:linear-gradient(135deg,rgba(200,128,144,0.06),rgba(232,184,112,0.05));border:1.5px solid rgba(200,128,144,0.18)}
+.resist-eyebrow{font-family:'Cormorant Garamond',serif;font-size:0.78rem;font-style:italic;letter-spacing:3.5px;text-transform:uppercase;color:var(--rose-deep);margin-bottom:10px;text-align:center}
+.resist h3{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:500;font-style:italic;color:var(--dawn);text-align:center;margin-bottom:24px}
+.resist-item{padding:18px 0;border-bottom:1px dashed rgba(200,128,144,0.2)}
+.resist-item:last-child{border-bottom:none}
+.resist-q{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.08rem;color:var(--dawn);margin-bottom:6px;font-weight:500}
+.resist-a{font-family:'Lora',serif;font-style:italic;font-size:0.95rem;color:var(--text-light);line-height:1.65}
 
 /* ===== FINALE ===== */
-.finale{background:linear-gradient(170deg,var(--night),var(--dawn));padding:80px 24px;text-align:center;position:relative;overflow:hidden}
-.finale::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(245,224,168,0.08) 0%,transparent 70%);border-radius:50%}
-.finale h2{font-family:'Nunito',sans-serif;font-size:clamp(1.6rem,4.4vw,2.4rem);font-weight:300;color:rgba(255,255,255,0.78);line-height:1.3;position:relative;margin-bottom:8px}
-.finale h2 strong{font-weight:900;color:var(--gold-glow);display:block}
+.finale{background:linear-gradient(170deg,var(--night),var(--dawn));padding:96px 24px;text-align:center;position:relative;overflow:hidden}
+.finale::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(245,224,168,0.1) 0%,transparent 70%);border-radius:50%}
+.finale h2{font-family:'Cormorant Garamond',serif;font-size:clamp(1.7rem,4.4vw,2.5rem);font-weight:300;font-style:italic;color:rgba(255,255,255,0.78);line-height:1.3;position:relative;margin-bottom:10px}
+.finale h2 strong{font-weight:500;color:var(--gold-glow);display:block;font-style:italic}
 
 /* ===== FOOTER ===== */
 .footer{text-align:center;padding:48px 24px;background:var(--night);color:rgba(255,255,255,0.3);font-family:'Poppins',sans-serif;font-size:0.6rem;letter-spacing:2px;text-transform:uppercase}
@@ -202,13 +291,12 @@ h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
 
 @media(max-width:640px){
   .page{padding-left:20px;padding-right:20px}
-  .root-ck{margin-left:20px;margin-right:20px;padding:28px 20px}
-  .char-grid{grid-template-columns:1fr}
-  .ch-title{font-size:1.7rem}
-  .ch-num{font-size:4rem}
-  .insight-card h3{font-size:1.5rem}
+  .root-ck{margin-left:20px;margin-right:20px;padding:24px 20px}
+  .framebreak p{font-size:1.12rem;padding-left:30px}
+  .framebreak .fb-attr{padding-left:30px}
+  .lens-portrait svg{width:130px;height:130px}
 }
-@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}.flip-inner{transition:none!important}}
 </style>
 </head>
 <body>
@@ -220,24 +308,33 @@ h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
 <div class="manna-flake"></div><div class="manna-flake"></div><div class="manna-flake"></div><div class="manna-flake"></div>
 <div class="dawn-glow"></div>
 <div class="cover-content">
-<div class="cover-badge">Kingdom Builders AI</div><br>
-<div class="cover-series">Manna &middot; Part 2 of 2</div>
+<div class="cover-eyebrow">Manna &middot; Part Two</div>
 <h1>Returning</h1>
-<p class="cover-tagline"><em>Given</em> taught you to see. <em>Returning</em> teaches you where to look first. Seven domains where reception was lost. Seven walks back. Begin where the demand is heaviest, and the gift is waiting underneath.</p>
-<p class="cover-sub">Where The Seeing Comes Back On</p>
-<div class="series-progress">
-  <div class="series-dots">
-    <span class="series-dot done" title="Given"></span>
-    <span class="series-dot active" title="Returning"></span>
-  </div>
-  <div class="series-dot-label">Part 2 of 2</div>
+<div class="cover-sub">where the seeing comes back on</div>
+<p class="cover-tagline"><em>Given</em> taught you to see. <em>Returning</em> teaches you where to look first. Seven rooms in your own house. Seven doors. Begin where the demand is heaviest.</p>
+<div class="series-dots">
+  <span class="series-dot done" title="Given"></span>
+  <span class="series-dot active" title="Returning"></span>
 </div>
+<div class="series-dot-label">Part 2 of 2</div>
 <p class="cover-author">KingdomBuilders AI</p>
 </div>
 </section>
 
+<!-- ===== STOP BEFORE READING (cold-open) ===== -->
+<section class="stopbefore">
+<div class="stopbefore-inner">
+<div class="stopbefore-eyebrow">A moment, before you begin</div>
+<h2>Walk one room in your house. Find one gift hiding under a demand.</h2>
+<p>The kitchen. The bedroom. The hallway. Look for something you have been treating as a chore that began as a chance someone gave you. Then come back here and name it.</p>
+<input id="sb-input" class="stopbefore-input" type="text" placeholder="one gift you found, hiding under a demand" maxlength="180" autocomplete="off">
+<button id="sb-btn" class="stopbefore-btn" type="button">Begin Returning</button>
+<div id="sb-saved" class="stopbefore-saved">Saved. The returning has already begun.</div>
+</div>
+</section>
+
 <div class="ribbon">
-<p>"He hath made every thing beautiful in his time."<br><span class="ref">Ecclesiastes 3:11</span></p>
+<p>He hath made every thing beautiful in his time.<span class="ref">Ecclesiastes 3:11</span></p>
 </div>
 
 <!-- ===== PREGAME ===== -->
@@ -252,234 +349,57 @@ h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
 
 <div class="page section prose">
 
-<p>A man stands at the edge of his life with the five frames in his pocket.</p>
+<p>A man stands at the edge of his life with the five frames from <em>Given</em> in his pocket.</p>
 
 <p>He can see, in principle, that everything around him began as a gift. He can see, in principle, that the seeing has decayed and can be restored. <em>He does not know where to start.</em></p>
 
-<p>The whole of his life is a single demand to him. The job. The marriage. The body. The day he is in. The house. The country. There is no door.</p>
+<p>The whole of his life is a single demand to him. The job. The marriage. The body. The day. The house. The country. There is no door.</p>
 
 <p>This book is the door.</p>
 
-<p>Seven domains.<br>
-Seven misses.<br>
-Seven returns.</p>
+<p>Seven domains. Seven misses. Seven returns. You will not need to do anything new. <strong>You will need to walk through your own kitchen and your own car and your own bed and your own street, and see, for the first time in years, what has been there the whole time.</strong></p>
 
-<p>You will not need to do anything new. You will need to walk through your own kitchen and your own car and your own bed and your own street, and see, for the first time in years, what has been there the whole time.</p>
-
-<p><strong>The seeing returns one domain at a time.</strong></p>
-
-<div class="glow-box">
-<h3>The Seven Returns</h3>
-<p>Each chapter takes one domain where reception was lost and shows the micro breakthrough that opens it. Each is a single sentence. Each is a door.</p>
-<p>The work in this book is not to read seven chapters. The work is to walk through one door, then walk through the next, until the gift sight has been restored in the rooms you actually live in.</p>
-<p><em>Given</em> named the disease.<br>
-<em>Returning</em> shows you the seven places where it lives in your house.</p>
-</div>
-
-<div class="diagnostic-widget" id="domain-tracker">
-<style>
-#domain-tracker{margin:40px 0;border-radius:18px;overflow:hidden;border:2px solid rgba(212,168,67,0.3);background:linear-gradient(135deg,#FDFAF3,#F5EFE0);box-shadow:0 8px 28px rgba(14,15,26,0.12)}
-#domain-tracker .dt-head{background:linear-gradient(135deg,#1F2440,#3D4670);padding:24px 30px;text-align:center;color:#fff}
-#domain-tracker .dt-kicker{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:#E8C96A;margin-bottom:8px}
-#domain-tracker .dt-head h3{font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:800;color:#fff;margin:0 0 6px;letter-spacing:-0.01em}
-#domain-tracker .dt-head p{font-family:'Lora',serif;font-style:italic;font-size:0.9rem;color:rgba(255,255,255,0.7);margin:0 auto;max-width:500px}
-#domain-tracker .dt-body{padding:28px}
-#domain-tracker .dt-progress{display:flex;align-items:center;gap:10px;margin-bottom:18px}
-#domain-tracker .dt-progress-bar{flex:1;height:8px;background:rgba(31,36,64,0.08);border-radius:4px;overflow:hidden}
-#domain-tracker .dt-progress-fill{height:100%;background:linear-gradient(90deg,#D4A843,#E8C96A);width:0%;transition:width 0.4s ease;border-radius:4px}
-#domain-tracker .dt-progress-text{font-family:'Nunito',sans-serif;font-weight:800;color:#1F2440;font-size:0.78rem;white-space:nowrap}
-#domain-tracker .dt-domains{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:18px}
-#domain-tracker .dt-domain{background:#fff;border:2px solid #ECE5CC;border-radius:12px;padding:14px;cursor:pointer;transition:all 0.2s;text-align:left}
-#domain-tracker .dt-domain:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(31,36,64,0.08);border-color:#D4A843}
-#domain-tracker .dt-domain.demand{background:linear-gradient(135deg,rgba(200,128,144,0.12),rgba(226,180,188,0.06));border-color:#C88090}
-#domain-tracker .dt-domain.opening{background:linear-gradient(135deg,rgba(232,184,112,0.14),rgba(245,224,168,0.06));border-color:#E8B870}
-#domain-tracker .dt-domain.received{background:linear-gradient(135deg,rgba(212,168,67,0.18),rgba(232,201,106,0.1));border-color:#D4A843}
-#domain-tracker .dt-domain-name{font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:800;color:#1F2440;margin-bottom:4px}
-#domain-tracker .dt-domain-insight{font-family:'Lora',serif;font-style:italic;font-size:0.72rem;color:#7A7E8E;line-height:1.4;margin-bottom:10px}
-#domain-tracker .dt-state-btns{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
-#domain-tracker .dt-state-btn{padding:6px 4px;background:#fff;border:1.5px solid rgba(31,36,64,0.1);border-radius:6px;font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;color:#7A7E8E;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all 0.15s;line-height:1.3}
-#domain-tracker .dt-state-btn:hover{border-color:#D4A843;color:#1F2440}
-#domain-tracker .dt-state-btn.active.demand{background:#C88090;color:#fff;border-color:#C88090}
-#domain-tracker .dt-state-btn.active.opening{background:#E8B870;color:#fff;border-color:#E8B870}
-#domain-tracker .dt-state-btn.active.received{background:#D4A843;color:#fff;border-color:#D4A843}
-#domain-tracker .dt-rec{padding:20px;background:linear-gradient(135deg,#1F2440,#3D4670);color:#fff;border-radius:12px}
-#domain-tracker .dt-rec-kicker{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:#E8C96A;margin-bottom:8px}
-#domain-tracker .dt-rec-title{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:10px}
-#domain-tracker .dt-rec-text{font-family:'Lora',serif;color:rgba(255,255,255,0.85);line-height:1.6;font-size:0.92rem;margin:0}
-#domain-tracker .dt-rec-text strong{color:#E8C96A;font-weight:700}
-</style>
-
-<div class="dt-head">
-  <div class="dt-kicker">Interactive Tracker</div>
-  <h3>Where The Seeing Has Returned</h3>
-  <p>For each of the seven domains, mark the state. Demand. Opening. Received. The widget identifies which door to walk through next.</p>
-</div>
-<div class="dt-body">
-  <div class="dt-progress">
-    <div class="dt-progress-text">Domains received:</div>
-    <div class="dt-progress-bar"><div class="dt-progress-fill" id="dt-fill"></div></div>
-    <div class="dt-progress-text"><span id="dt-count">0</span> / 7</div>
-  </div>
-
-  <div class="dt-domains" id="dt-grid"></div>
-
-  <div class="dt-rec" id="dt-rec">
-    <div class="dt-rec-kicker">Begin where it resists</div>
-    <div class="dt-rec-title" id="dt-rec-title">Mark each domain to see your next door.</div>
-    <div class="dt-rec-text" id="dt-rec-text">The chapter that resists you the most is the door that will open the most. Mark the states honestly to see which domain to walk through next.</div>
-  </div>
-</div>
-
-<script>
-(function(){
-  const domains = [
-    { key: 'work', name: 'Work', insight: 'Trusted to you, not earned.', link: '/playbooks/read/returning#work',
-      receive: 'You see the job as a loan you were trusted with. The steward posture is alive.' },
-    { key: 'body', name: 'Body', insight: 'Your roommate, not your project.', link: '/playbooks/read/returning#body',
-      receive: 'You greet the body in the morning rather than managing it. The meeting has begun.' },
-    { key: 'marriage', name: 'Marriage', insight: 'A stranger you keep meeting.', link: '/playbooks/read/returning#marriage',
-      receive: 'You see your spouse without certainty. Familiarity has been replaced by recognition.' },
-    { key: 'time', name: 'Time', insight: 'Arrives in installments.', link: '/playbooks/read/returning#time',
-      receive: 'You receive the day rather than auditing it. The day is manna again.' },
-    { key: 'beauty', name: 'Beauty', insight: 'Increases by stopping.', link: '/playbooks/read/returning#beauty',
-      receive: 'You see the light on the wall. The pursuit has stopped. The seeing has returned.' },
-    { key: 'children', name: 'Children', insight: 'Not yours. You are theirs.', link: '/playbooks/read/returning#children',
-      receive: 'You see yourself as the gift sent to your child. The inversion has landed.' },
-    { key: 'place', name: 'Place', insight: 'You were placed here.', link: '/playbooks/read/returning#place',
-      receive: 'You see the yard as assignment, not backdrop. You stop looking for the door out.' }
-  ];
-
-  const widget = document.getElementById('domain-tracker');
-  const grid = widget.querySelector('#dt-grid');
-  const states = {};
-
-  domains.forEach(function(d){
-    states[d.key] = null;
-    const div = document.createElement('div');
-    div.className = 'dt-domain';
-    div.setAttribute('data-key', d.key);
-    div.innerHTML =
-      '<div class="dt-domain-name">' + d.name + '</div>' +
-      '<div class="dt-domain-insight">' + d.insight + '</div>' +
-      '<div class="dt-state-btns">' +
-        '<button class="dt-state-btn" data-key="' + d.key + '" data-state="demand">Demand</button>' +
-        '<button class="dt-state-btn" data-key="' + d.key + '" data-state="opening">Opening</button>' +
-        '<button class="dt-state-btn" data-key="' + d.key + '" data-state="received">Received</button>' +
-      '</div>';
-    grid.appendChild(div);
-  });
-
-  function update(){
-    let received = 0;
-    let demands = [];
-    let openings = [];
-    domains.forEach(function(d){
-      const tile = grid.querySelector('[data-key="' + d.key + '"]');
-      tile.classList.remove('demand','opening','received');
-      if(states[d.key]){
-        tile.classList.add(states[d.key]);
-        if(states[d.key] === 'received') received++;
-        else if(states[d.key] === 'demand') demands.push(d);
-        else if(states[d.key] === 'opening') openings.push(d);
-      }
-    });
-    const pct = Math.round((received/7)*100);
-    widget.querySelector('#dt-fill').style.width = pct + '%';
-    widget.querySelector('#dt-count').textContent = received;
-
-    const totalSet = received + demands.length + openings.length;
-    if(totalSet < 7){
-      widget.querySelector('#dt-rec-title').textContent = 'Mark the remaining ' + (7-totalSet) + ' domain' + (7-totalSet===1?'':'s') + ' to see your next door.';
-      widget.querySelector('#dt-rec-text').textContent = 'Demand: this domain feels heavy, costly, unwanted. Opening: you have started seeing it differently, but the reception is not stable. Received: you regularly see this domain as gift.';
-      return;
-    }
-
-    if(received === 7){
-      widget.querySelector('#dt-rec-title').textContent = 'All seven received.';
-      widget.querySelector('#dt-rec-text').innerHTML = '<strong>This is the rare full state.</strong> Hold it. The gift sight returns in flashes for most people; the seven simultaneously is the architecture working at full strength. Protect the conditions that produced it.';
-      return;
-    }
-
-    let next;
-    if(demands.length > 0){
-      next = demands[0];
-      widget.querySelector('#dt-rec-title').textContent = 'Start with: ' + next.name;
-      widget.querySelector('#dt-rec-text').innerHTML = '<strong>The chapter that resists you the most is the door that will open the most.</strong> You marked ' + next.name + ' as demand. That is where the playbook will produce the largest change. The micro breakthrough for this domain: <em>' + next.insight + '</em>';
-    } else if(openings.length > 0){
-      next = openings[0];
-      widget.querySelector('#dt-rec-title').textContent = 'Stabilize: ' + next.name;
-      widget.querySelector('#dt-rec-text').innerHTML = '<strong>' + next.name + ' is opening but not yet received.</strong> The seeing has begun in flashes. The work is to hold the frame steady enough that the flashes lengthen and become the baseline. Re read the chapter on ' + next.name + ' and let the frame settle.';
-    }
-  }
-
-  const SLUG = 'returning';
-  const WIDGET = 'domain-restoration-tracker';
-  function save(){ if(window.kbWidget) kbWidget.save(SLUG, WIDGET, {states}); }
-
-  function applyState(key, state){
-    states[key] = state;
-    const tile = grid.querySelector('.dt-domain[data-key="'+key+'"]');
-    if(!tile) return;
-    tile.querySelectorAll('.dt-state-btn').forEach(function(b){
-      b.classList.remove('active','demand','opening','received');
-      if(b.getAttribute('data-state') === state){ b.classList.add('active', state); }
-    });
-  }
-
-  grid.addEventListener('click', function(e){
-    const btn = e.target.closest('.dt-state-btn');
-    if(!btn) return;
-    const key = btn.getAttribute('data-key');
-    const state = btn.getAttribute('data-state');
-    applyState(key, state);
-    update();
-    save();
-  });
-
-  function restore(data){
-    if(!data || !data.states) return;
-    Object.entries(data.states).forEach(([k,v]) => { if(v) applyState(k, v); });
-    update();
-  }
-  if(window.kbWidget){
-    kbWidget.onReady(async () => {
-      const r = await kbWidget.load(SLUG, WIDGET);
-      if(r && r.data) restore(r.data); else update();
-    });
-  } else {
-    update();
-  }
-})();
-</script>
+<div class="insight-card">
+<div class="ins-label">The Pregame Return</div>
+<h3>The seeing returns one domain at a time.</h3>
 </div>
 
 <p>You may read these in order. You may read the one whose name made you flinch. <em>The chapter that resists you the most is the door that will open the most.</em> Begin there.</p>
 
 </div>
 
-<!-- ===== CHARACTERS ===== -->
+<!-- ===== DOMAIN WALKER (persistent widget) ===== -->
 <div class="page">
-<div class="char-grid">
-<div class="char-card">
-<div class="char-head">
-<div class="char-emoji"><svg viewBox="0 0 48 48" width="42" height="42"><circle cx="24" cy="24" r="14" fill="none" stroke="#D4A843" stroke-width="2"/><path d="M16 24 L22 30 L32 18" stroke="#D4A843" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></div>
-<div><div class="char-name">The Walker</div><div class="char-title">Moves Through The Domains</div></div>
+<div class="walker" id="walker">
+<div class="walker-head">
+  <div class="walker-kicker">A persistent walking</div>
+  <h3>The Domain Walker</h3>
+  <p>Mark where the seeing currently lives in each domain. Name one gift you noticed there today. The widget remembers.</p>
 </div>
-<div class="char-body"><p>Holds the five frames lightly. Walks one room at a time. Does not try to fix the whole house at once. Sees what is being given in this domain, today, and lets the seeing teach the next room how to be entered.</p></div>
-</div>
-<div class="char-card">
-<div class="char-head">
-<div class="char-emoji"><svg viewBox="0 0 48 48" width="42" height="42"><rect x="10" y="14" width="28" height="22" rx="2" fill="none" stroke="#7A7E8E" stroke-width="2"/><path d="M10 22 L24 30 L38 22" stroke="#7A7E8E" stroke-width="1.5" fill="none"/><circle cx="24" cy="10" r="2" fill="#7A7E8E"/></svg></div>
-<div><div class="char-name">The Resident</div><div class="char-title">Lives Inside Unseen Gifts</div></div>
-</div>
-<div class="char-body"><p>Inhabits a house full of gifts they have stopped seeing. Wakes in a bed they cannot believe they have. Drives a car they do not notice. Eats food they no longer taste. They are not ungrateful. They are unseeing. The Resident is most of modern adulthood.</p></div>
-</div>
-<div class="char-card">
-<div class="char-head">
-<div class="char-emoji"><svg viewBox="0 0 48 48" width="42" height="42"><path d="M24 8 L24 40 M14 18 L24 8 L34 18" stroke="#C88090" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="24" cy="32" r="3" fill="#C88090"/></svg></div>
-<div><div class="char-name">The Returnee</div><div class="char-title">Has Come Back To Sight</div></div>
-</div>
-<div class="char-body"><p>Walked the seven domains. Was the Resident for years. Discovered, one room at a time, that the gifts had been there the entire time, and only the seeing had failed. The Returnee is what you become if you walk the doors in this book and do not turn back.</p></div>
+<div class="walker-body">
+  <div class="walker-tabs">
+    <button class="walker-tab active" data-pane="states">States</button>
+    <button class="walker-tab" data-pane="journal">Gifts Named</button>
+  </div>
+
+  <div class="walker-pane active" data-pane="states">
+    <div class="w-progress">
+      <div class="w-progress-txt">Domains received</div>
+      <div class="w-progress-bar"><div class="w-progress-fill" id="w-fill"></div></div>
+      <div class="w-progress-txt"><span id="w-count">0</span> / 7</div>
+    </div>
+    <div class="w-domains" id="w-grid"></div>
+    <div class="w-rec">
+      <div class="w-rec-kicker">Begin where it resists</div>
+      <div class="w-rec-title" id="w-rec-title">Mark each domain to see your next door.</div>
+      <div class="w-rec-text" id="w-rec-text">The chapter that resists you the most is the door that will open the most. Mark honestly to find which domain to walk through first.</div>
+    </div>
+  </div>
+
+  <div class="walker-pane" data-pane="journal">
+    <div id="w-journal"></div>
+    <div class="w-journal-count" id="w-jcount">No gifts named yet. Name one in any domain.</div>
+  </div>
 </div>
 </div>
 </div>
@@ -498,53 +418,51 @@ Seven returns.</p>
 
 <p>A woman receives an email. It is her offer letter. The job she has been wanting for three years. She prints it. She frames the printed copy. She puts it on the wall of her apartment that night.</p>
 
-<p>The frame is in a closet now.</p>
+<p>The frame is in a closet now.<br>
+The job is still hers.<br>
+She no longer remembers what the email said.</p>
 
-<p>The job is still hers.</p>
-
-<p>She no longer remembers what the email said.</p>
-
-<p>What was once an offering has become an output.<br>
-What was once a hand opening has become a hand on the keyboard.<br>
-What was once a chance has become a chore.</p>
-
-<p>Her work was given.<br>
-She does not know how to receive what is already hers.</p>
+<p>What was once an offering has become an output. <em>What was once a hand opening has become a hand on the keyboard.</em></p>
 
 <div class="insight-card">
 <div class="ins-label">Domain 1 &middot; The Return</div>
-<h3>You did not earn your work; you were trusted with it.</h3>
+<h3>You did not earn your work. You were trusted with it.</h3>
 </div>
 
-<p>Every job in your life arrived as a trust. Someone, somewhere, decided you were the person to whom this particular work would be given. <strong>The decision was not a calculation. It was a leap.</strong> They could have given the work to anyone. They gave it to you.</p>
+<p>Every job in your life arrived as a trust. Someone decided you were the person to whom this particular work would be given. <strong>The decision was a leap, not a calculation.</strong> They could have given the work to anyone. They gave it to you.</p>
 
-<p>The work is not a possession. The work is a loan. You will return it the day you retire. You will return it the day you are fired. You will return it the day you die. The job will outlive you, and someone else will be trusted with it, and they will resent it too if they forget how it arrived.</p>
+<p>Stewardship is the posture of work received. Achievement is the posture of work owned. <em>The owner is tired. The steward is alive.</em></p>
 
-<p>Stewardship is the posture of work received.<br>
-Achievement is the posture of work owned.</p>
-
-<p>The owner is tired. The steward is alive.</p>
+<div class="traceback" id="traceback">
+<div class="tb-head">
+  <div class="tb-eyebrow">A tracing, in three steps</div>
+  <h4>Where Did This Work Come From?</h4>
+</div>
+<div class="tb-questions">
+  <button class="tb-q" data-step="1">Who hired me?</button>
+  <button class="tb-q" data-step="2">Who taught me the skill?</button>
+  <button class="tb-q" data-step="3">Who built the industry I work in?</button>
+</div>
+<div class="tb-stack" id="tb-stack"></div>
+<div class="tb-final" id="tb-final">Your work is a thousand gifts compounded. None of them paid for. <strong>You inherited a stewardship.</strong></div>
+</div>
 
 <div class="scene">
-<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> The Letter Not Sent</div>
+<div class="scene-label">The Letter Not Sent</div>
 <h4>The Resignation In The Drawer</h4>
-<p>A man writes a resignation letter at two in the morning. He has been writing it in his head for two years. The job has become unbearable. He is one signature from leaving.</p>
-<p>In the morning he reads what he wrote. He sees, for the first time, that the letter is addressed to a job that no longer exists. <em>The job he is describing is a project he has been managing in his head, not the job he is actually doing.</em></p>
-<p>He had stopped seeing the job for what it was. He had been resigning from his own optimization of it.</p>
-<p>He does not send the letter. He goes to work that morning and sees the building as if from outside. The hallway. The light through the conference room window. The man who has been his colleague for nine years.</p>
-<p>He does the same work that day, and the day is different.</p>
+<p>A man writes a resignation letter at two in the morning. He has been writing it in his head for two years. In the morning he reads what he wrote. He sees, for the first time, that the letter is addressed to a job that no longer exists. <em>The job he is describing is a project he has been managing in his head, not the job he is actually doing.</em></p>
+<p>He does not send the letter. He goes to work that morning and sees the building as if from outside. The light through the conference room. The man who has been his colleague for nine years. He does the same work that day, and the day is different.</p>
 <p><strong>The job did not change. The seeing did.</strong></p>
 </div>
 
-<p>The shift from owner to steward is not a productivity trick. It is a recognition of a truth that was always true. <em>You did not author your competence.</em> You inherited the brain that learned the skill. You were born in the country that built the industry. You were taught by people you did not pay enough. The work that you call yours is a thousand gifts compounded.</p>
+<div class="invite">
+<div class="invite-eyebrow">a moment</div>
+<p>Tomorrow morning, walk into the same building. Do the same work. Walk in as a steward, not an owner. Notice what stops aching.</p>
+</div>
 
-<p>The job is not heavy. The position is heavy. <strong>Set down the position, and the job remains, and the job was always a gift.</strong></p>
-
-<div class="think">
-<div class="think-label">Stop and Re Receive Your Work</div>
-<p>Trace your current job backwards to the moment it was given to you. Who made the call? Who signed off? Who taught you the skill that qualified you? Who made the industry possible? You will arrive, within a minute of tracing, at the recognition that the work is held together by gifts you did not pay for.</p>
-<hr class="think-line">
-<p>Tomorrow morning, walk into the same building. Do the same work. Walk in as a steward, not an owner. Notice what changes in the body. Notice what stops aching.</p>
+<div class="framebreak">
+<p>You did not author your competence. You inherited the brain that learned the skill. Set down the position, and the job remains, and the job was always a gift.</p>
+<span class="fb-attr">Domain 1 &middot; Work</span>
 </div>
 
 </div>
@@ -552,11 +470,11 @@ Achievement is the posture of work owned.</p>
 <div class="root-ck">
   <div class="rc-label">Root System</div>
   <h4>The Domains You Have Returned To</h4>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Work.</strong> You did not earn your work; you were trusted with it. The job is a loan, not a possession. The owner is tired. The steward is alive.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Work.</strong> Trusted to you, not earned. The owner is tired. The steward is alive.</div></div>
 </div>
 
 <div class="ribbon">
-<p>"Moreover it is required in stewards, that a man be found faithful."<br><span class="ref">1 Corinthians 4:2</span></p>
+<p>Moreover it is required in stewards, that a man be found faithful.<span class="ref">1 Corinthians 4:2</span></p>
 </div>
 
 <!-- ===== CHAPTER 2: BODY ===== -->
@@ -575,59 +493,51 @@ Achievement is the posture of work owned.</p>
 
 <p>She has never met it.</p>
 
-<p>She has measured it. Tracked it. Improved it. Adjusted its inputs. Photographed it. Compared it to other bodies. She knows its dimensions and its history and its weaknesses better than she knows her own sister.</p>
+<p>She has measured it. Tracked it. Improved it. Photographed it. Compared it to other bodies. <em>She has never met it.</em></p>
 
-<p>She has never met it.</p>
-
-<p>A roommate is someone you live with. You did not make them. They were here, in your apartment, when you moved in. They have habits you cannot control. They have a face you did not design. They have a presence you cannot opt out of.</p>
-
-<p>A roommate is to be met.<br>
-A project is to be managed.</p>
+<p>A roommate is someone you live with. You did not make them. They were here when you moved in. They have habits you cannot control. They have a face you did not design. A roommate is to be met. <strong>A project is to be managed.</strong></p>
 
 <div class="insight-card">
 <div class="ins-label">Domain 2 &middot; The Return</div>
 <h3>Your body is your roommate, not your project.</h3>
 </div>
 
-<p>You did not make this body. <strong>You woke up inside it on a day you do not remember.</strong> It came with eyes that already knew what colors were. It came with a stomach that knew when it was hungry. It came with a brain that knew how to be afraid before you had anything to be afraid of.</p>
+<p>You did not make this body. You woke up inside it on a day you do not remember. It came with eyes that already knew what colors were. It came with a stomach that knew when it was hungry. <em>You did not assemble any of this.</em></p>
 
-<p>You did not assemble any of this.</p>
-
-<p>You are renting this body from no one. The lease has no terms. It will end when it ends.</p>
-
-<div class="mm-viz">
-<div class="mm-panel manage">
-<div class="mm-label">The Project</div>
-<div class="mm-title">Managed</div>
-<div class="mm-desc">Measured. Optimized. Photographed. Compared. Never quite right. Never quite met.</div>
+<div class="posture" id="posture">
+<div class="posture-head">
+  <div class="posture-eyebrow">A toggle, for the body</div>
+  <div class="posture-title" id="posture-title">The Project Posture</div>
 </div>
-<div class="mm-panel meet">
-<div class="mm-label">The Roommate</div>
-<div class="mm-title">Met</div>
-<div class="mm-desc">Greeted in the morning. Noticed across the day. Heard when it speaks. Lived inside as a guest.</div>
+<div class="posture-toggle">
+  <button class="posture-btn active" data-mode="manage">Manage</button>
+  <button class="posture-btn" data-mode="meet">Meet</button>
 </div>
+<ul class="posture-list" id="posture-list">
+  <li>Weighed yesterday. Weighed again.</li>
+  <li>Photographed for comparison.</li>
+  <li>Measured against other bodies.</li>
+  <li>Audited for failure to improve.</li>
+  <li>Treated as a resistant project.</li>
+</ul>
 </div>
 
 <div class="scene">
-<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> The Hand</div>
+<div class="scene-label">The Hand</div>
 <h4>What Has Held Everything</h4>
-<p>A woman in her sixties has been holding her right hand on her left palm for ten minutes. She has not held her own hand like this since she was a child.</p>
-<p>She is looking at the lines. The veins on the back of the hand. The single brown spot near the knuckle. The small scar from a knife slip in 1987 that she does not remember the moment of. The nail beds. The way the fingers do not lie completely flat anymore.</p>
-<p>This is the hand that has held everything she has ever held. Her babies. Her steering wheel. Her phone. Her husband. Her mother before her mother died.</p>
-<p><em>She has never seen it.</em></p>
-<p>She had been managing it. Now she is meeting it.</p>
+<p>A woman in her sixties holds her right hand on her left palm for ten minutes. She has not held her own hand like this since she was a child. She is looking at the lines. The veins. The brown spot near the knuckle. The small scar from a knife slip in 1987.</p>
+<p>This is the hand that has held everything she has ever held. Her babies. Her steering wheel. Her husband. Her mother before her mother died. <em>She has never seen it.</em></p>
 <p>She begins to cry quietly. The crying is not grief. <strong>It is the recognition of having lived inside something this beautiful without seeing it for sixty four years.</strong></p>
 </div>
 
-<p>The body does not need a better manager. The body needs to be met. Greet it in the morning the way you would greet a roommate you live with. Notice when it is tired. Notice when it is hungry. Notice when it is afraid. <em>Treat the noticing as an act of reception, not an input for the optimization spreadsheet.</em></p>
+<div class="invite">
+<div class="invite-eyebrow">a moment</div>
+<p>Look at one part of your body the way you would look at a stranger's body. The part you have spent the most years trying to improve. Three minutes. The gift sight returns the instant the project frame is set down.</p>
+</div>
 
-<p>You will discover, within weeks, that the body you have been trying to fix for years is a roommate who has been trying to talk to you the whole time.</p>
-
-<div class="think">
-<div class="think-label">Stop and Meet One Part</div>
-<p>Look at one part of your body the way you would look at a stranger's body. Your hands. Your collarbone. Your knee. The body part you have spent the most years trying to improve.</p>
-<hr class="think-line">
-<p>You will discover you have never actually seen it. The optimizing closed the door to the meeting. Open the door now. Spend three minutes looking. The gift sight returns immediately when the project frame is set down.</p>
+<div class="framebreak">
+<p>The body does not need a better manager. The body needs to be met. The optimizing was the door closing. The greeting is the door opening.</p>
+<span class="fb-attr">Domain 2 &middot; Body</span>
 </div>
 
 </div>
@@ -635,12 +545,12 @@ A project is to be managed.</p>
 <div class="root-ck">
   <div class="rc-label">Root System</div>
   <h4>The Domains You Have Returned To</h4>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Work.</strong> Trusted to you, not earned.</div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Body.</strong> Your body is your roommate, not your project. You did not make it. You moved into it. It is to be met, not managed. The optimizing closes the door to the meeting.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Work.</strong> Trusted to you.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Body.</strong> Your roommate, not your project. To be met, not managed. The optimizing closes the door to the meeting.</div></div>
 </div>
 
 <div class="ribbon">
-<p>"I will praise thee; for I am fearfully and wonderfully made."<br><span class="ref">Psalm 139:14</span></p>
+<p>I will praise thee; for I am fearfully and wonderfully made.<span class="ref">Psalm 139:14</span></p>
 </div>
 
 <!-- ===== CHAPTER 3: MARRIAGE ===== -->
@@ -657,55 +567,63 @@ A project is to be managed.</p>
 
 <p>A man pours coffee for his wife on a Wednesday morning. He has poured coffee for this woman on twelve thousand Wednesdays. He hands her the cup without looking at her.</p>
 
-<p>He could pick her out of a crowd of a thousand by the back of her head.<br>
-He could not, in this moment, tell you the color of her eyes.</p>
+<p>He could pick her out of a crowd of a thousand by the back of her head. He could not, in this moment, tell you the color of her eyes.</p>
 
-<p>He stopped seeing her, not because she became less, but because he became sure of her. Certainty is the death of seeing. The known person is no longer being received.</p>
+<p>He stopped seeing her, not because she became less, but because he became sure of her. <em>Certainty is the death of seeing.</em></p>
 
 <div class="insight-card">
 <div class="ins-label">Domain 3 &middot; The Return</div>
 <h3>Your spouse is a stranger you have agreed to keep meeting.</h3>
 </div>
 
-<p>Marriage was sold to you as two people becoming one. <strong>The two becoming one is the catastrophe.</strong> The two becoming one is when the seeing collapses. The two becoming one is when familiarity replaces meeting and management replaces reception.</p>
+<p>Marriage was sold to you as two people becoming one. <strong>The two becoming one is the catastrophe.</strong> The two becoming one is when the seeing collapses and management replaces reception.</p>
 
-<p>Marriage is two strangers agreeing to keep meeting for the rest of their lives.</p>
+<p>Marriage is two strangers agreeing to keep meeting for the rest of their lives. The stranger across the table this morning is not the stranger you married. <em>They have moved through a thousand quiet revisions you did not catalog.</em></p>
 
-<p>The stranger across the table this morning is not the stranger you married. They have moved through a thousand quiet revisions you did not catalog. <em>You married a person who no longer exists, and you are sleeping next to a person you have not yet met.</em></p>
+<div class="lens" id="lens">
+<div class="lens-head">
+  <div class="lens-eyebrow">A lens, for the same face</div>
+  <div class="lens-title">Slide the gaze. The face does not change.</div>
+</div>
+<div class="lens-portrait">
+  <svg viewBox="0 0 160 160">
+    <defs>
+      <radialGradient id="lensSkin" cx="50%" cy="42%" r="55%">
+        <stop offset="0%" stop-color="#F5E0C8"/>
+        <stop offset="100%" stop-color="#D8B8A0"/>
+      </radialGradient>
+    </defs>
+    <ellipse cx="80" cy="80" rx="45" ry="55" fill="url(#lensSkin)" stroke="#7A6A55" stroke-width="1"/>
+    <ellipse cx="64" cy="72" rx="3.5" ry="4.5" fill="#3D3530" id="lens-eye-l"/>
+    <ellipse cx="96" cy="72" rx="3.5" ry="4.5" fill="#3D3530" id="lens-eye-r"/>
+    <path d="M62 95 Q80 100 98 95" stroke="#7A4A50" stroke-width="1.5" fill="none" stroke-linecap="round" id="lens-mouth"/>
+    <path d="M68 58 Q72 54 78 56" stroke="#7A6A55" stroke-width="1" fill="none" opacity="0" id="lens-line1"/>
+    <path d="M88 58 Q92 54 98 56" stroke="#7A6A55" stroke-width="1" fill="none" opacity="0" id="lens-line2"/>
+    <path d="M62 110 Q80 113 98 110" stroke="#7A6A55" stroke-width="0.8" fill="none" opacity="0" id="lens-line3"/>
+  </svg>
+  <div class="lens-overlay" id="lens-overlay"></div>
+</div>
+<input type="range" min="0" max="100" value="0" class="lens-slider" id="lens-slider">
+<div class="lens-labels"><span>Certain</span><span>Strange</span></div>
+</div>
 
 <div class="scene">
-<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> The Coffee</div>
+<div class="scene-label">The Coffee</div>
 <h4>The Wednesday That Stopped Being A Wednesday</h4>
-<p>The man pours the coffee. He turns to hand it to her. He looks up at the last second.</p>
-<p>She is reading something on her phone. The light from the screen is on her face. He has not looked at her face like this, with no purpose, in months. <em>The face has changed.</em> There are lines now that were not there at the wedding. The hair is partly grey at the part. The mouth is set in a way that is hers and only hers, and he had stopped noticing it.</p>
-<p>She looks up.</p>
-<p>"What," she says.</p>
-<p>"Nothing," he says. He hands her the coffee. He does not say what he just saw. He could not say it without sounding strange.</p>
-<p>What he saw was that he had stopped meeting his wife. He saw, in the half second between looking and her looking back, that there was a stranger in his kitchen wearing his wife's robe, and he had been pouring coffee for a memory.</p>
-<p>He decides, without telling her, that he will meet her this week. <strong>The same woman in the same kitchen. He will see her on Wednesday the way he saw her at the wedding.</strong></p>
-<p>Saturday morning she catches him looking at her while she reads.</p>
-<p>"What is happening to you," she says. She is smiling. She has not been smiled at like this in a long time, and the smile that returns is the first half of a marriage coming back.</p>
+<p>He turns to hand her the coffee. He looks up at the last second. She is reading something on her phone. The light from the screen is on her face. <em>The face has changed.</em> There are lines now that were not there at the wedding. The hair is partly grey at the part.</p>
+<p>"What," she says, looking up.</p>
+<p>"Nothing," he says. He hands her the coffee.</p>
+<p>He had stopped meeting his wife. He saw, in the half second between looking and her looking back, that there was a stranger in his kitchen wearing his wife's robe, and he had been pouring coffee for a memory.</p>
 </div>
 
-<p>You do not have to discover infidelity to discover your spouse. You have to set down the certainty. <em>The act of pretending you have not yet met them is closer to the truth than the act of pretending you have.</em></p>
-
-<p>Ask the question you stopped asking on the third date.<br>
-Listen to the answer the way you listened on the third date.<br>
-Notice what they choose to wear before you choose what they should wear.<br>
-Watch them across a room before you walk over.</p>
-
-<p>The reception of a spouse is not work added to a marriage. <strong>It is the marriage you thought you had been doing all along.</strong></p>
-
-<div class="grand-quote">
-<blockquote>Familiarity is the loss. Strangeness restored is the return. The same person across the table, met as a stranger, is the person you married. The certainty was the impostor.</blockquote>
-<cite>The Wednesday Morning</cite>
+<div class="invite">
+<div class="invite-eyebrow">a moment</div>
+<p>Watch your spouse for thirty seconds without speaking. While they are doing something ordinary. The dishes. The phone. Pretend you have never seen them before. You will find that you have not.</p>
 </div>
 
-<div class="think">
-<div class="think-label">Stop and Meet The Stranger</div>
-<p>Watch your spouse for thirty seconds without speaking. Today. While they are doing something ordinary. The dishes. Walking to the car. Looking at their phone. Pretend you have never seen them before.</p>
-<hr class="think-line">
-<p>You will find that you have not. The person you have been certain of is a composite of memories. The person across the room right now is a stranger who has been waiting to be met. Meet them.</p>
+<div class="framebreak">
+<p>Familiarity is the loss. Strangeness restored is the return. The same person across the table, met as a stranger, is the person you married.</p>
+<span class="fb-attr">Domain 3 &middot; Marriage</span>
 </div>
 
 </div>
@@ -714,12 +632,12 @@ Watch them across a room before you walk over.</p>
   <div class="rc-label">Root System</div>
   <h4>The Domains You Have Returned To</h4>
   <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Work.</strong> Trusted to you.</div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Body.</strong> Your roommate, not your project.</div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Marriage.</strong> Your spouse is a stranger you have agreed to keep meeting. Familiarity is the loss. Strangeness restored is the return.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Body.</strong> Your roommate.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Marriage.</strong> A stranger you have agreed to keep meeting. Familiarity is the loss.</div></div>
 </div>
 
 <div class="ribbon">
-<p>"This is now bone of my bones, and flesh of my flesh."<br><span class="ref">Genesis 2:23</span></p>
+<p>This is now bone of my bones, and flesh of my flesh.<span class="ref">Genesis 2:23</span></p>
 </div>
 
 <!-- ===== CHAPTER 4: TIME ===== -->
@@ -738,50 +656,38 @@ Watch them across a room before you walk over.</p>
 
 <p>She has not been losing time. <strong>Time has been arriving for her every morning, and she has been treating each delivery as a theft.</strong></p>
 
-<p>You do not own time. You have never owned time. Time is delivered to you, one day at a time, the way manna was delivered to the Hebrew camp. <em>It cannot be saved. It cannot be hoarded. It can only be received and spent and received again tomorrow.</em></p>
-
 <div class="insight-card">
 <div class="ins-label">Domain 4 &middot; The Return</div>
-<h3>You are not running out of time. Time is being given to you in installments.</h3>
+<h3>You are not running out of time. You are being delivered to.</h3>
 </div>
 
-<p>The scarcity frame says: I have a fixed budget of years, and every day I lose one. The frame is technically true and existentially wrong. <strong>You did not have the budget to begin with.</strong> You were given the day you were born. You were given the day after. You have been given every day since, and every day has been a fresh delivery, not a withdrawal from an account you opened.</p>
+<p>The scarcity frame says: I have a fixed budget of years, and every day I lose one. The frame is technically true and existentially wrong. <em>You did not have the budget to begin with.</em> Every day has been a fresh delivery, not a withdrawal from an account you opened.</p>
 
-<div class="install-viz">
-<div class="install-day"><div class="install-circle"></div><div class="install-lbl">Mon</div></div>
-<div class="install-day"><div class="install-circle"></div><div class="install-lbl">Tue</div></div>
-<div class="install-day"><div class="install-circle"></div><div class="install-lbl">Wed</div></div>
-<div class="install-day"><div class="install-circle"></div><div class="install-lbl">Thu</div></div>
-<div class="install-day"><div class="install-circle"></div><div class="install-lbl">Fri</div></div>
-<div class="install-day"><div class="install-circle"></div><div class="install-lbl">Sat</div></div>
-<div class="install-day"><div class="install-circle"></div><div class="install-lbl">Sun</div></div>
-<p class="install-caption">Each day a fresh delivery. None of them owed to you. None of them survivable yesterday's hoarding.</p>
+<div class="installments" id="installments">
+<div class="inst-head">
+  <div class="inst-eyebrow">Click a day. Hear what arrived.</div>
+  <div class="inst-title">The Week As It Was Sent</div>
 </div>
-
-<p>The body that wakes you at five o clock in the morning was not promised to you. <em>It arrived.</em> The day was not promised. It arrived. The hour you are reading this in was not in the schedule of the universe. It was sent.</p>
-
-<p>You are not running out of anything. You are being delivered to.</p>
+<div class="inst-row" id="inst-row"></div>
+<div class="inst-msg" id="inst-msg">Each circle is a day that arrived. Click any one.</div>
+</div>
 
 <div class="scene">
-<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> The List</div>
+<div class="scene-label">The List</div>
 <h4>The Day That Could Not Be Hoarded</h4>
-<p>A man writes a list of everything he wants to get done before he dies. It is forty seven items long. He has been writing this list, in various forms, since he was twenty two.</p>
-<p>He is fifty one.</p>
-<p>He has crossed off thirteen items in twenty nine years.</p>
-<p>One morning he sits with his coffee and does not write the list. He notices the coffee. He notices the steam. He notices that he is alive in the kitchen of a house he paid off two years ago, and he is sitting in a chair he bought for fifteen dollars at a garage sale in 1998, and the chair has held him for two decades.</p>
-<p><em>The day cannot be hoarded.</em></p>
-<p>The day can only be received and lived. The thirty four uncrossed items will be there tomorrow. Some of them will never be crossed off. They were never the point. <strong>The point was the day, and the day arrived again, and he had been spending twenty nine years auditing the delivery instead of opening the package.</strong></p>
+<p>A man writes a list of everything he wants to get done before he dies. Forty seven items. He is fifty one. He has crossed off thirteen in twenty nine years.</p>
+<p>One morning he sits with his coffee and does not write the list. He notices the coffee. The steam. He is alive in the kitchen of a house he paid off two years ago, in a chair he bought for fifteen dollars at a garage sale in 1998. <em>The day cannot be hoarded.</em></p>
+<p><strong>The point was the day, and the day arrived again, and he had been spending twenty nine years auditing the delivery instead of opening the package.</strong></p>
 </div>
 
-<p>The shift from owner to recipient changes the architecture of an ordinary Wednesday. You stop trying to bank time. You stop calculating what you have left. <em>You wake up and notice that you woke up.</em> You drink coffee and notice that the coffee arrived. You speak to your child and notice that the child was given to you for this morning specifically. The day stops being a withdrawal from a finite account, and the day becomes manna.</p>
+<div class="invite">
+<div class="invite-eyebrow">a moment</div>
+<p>Look at the rest of today as a delivery you did not order. The hours between now and bedtime arrived for you specifically. What do you do with hours that arrived as a gift instead of hours debited from a budget?</p>
+</div>
 
-<p>This is the condition Israel was being trained for during forty years in the wilderness. They could not save manna. They had to receive it new every day. <strong>The wilderness was not a punishment. It was a school for time.</strong></p>
-
-<div class="think">
-<div class="think-label">Stop and Receive Today</div>
-<p>Look at the rest of today. Not as a list of remaining items. As a delivery you did not order. The hours between now and bedtime arrived for you specifically. They were not in any spreadsheet.</p>
-<hr class="think-line">
-<p>What do you do with hours that arrived as a gift instead of hours that were debited from a budget? You will find that you do them slower, and the slower doing is the doing that was lost when time became a resource.</p>
+<div class="framebreak">
+<p>The wilderness was not a punishment. It was a school for time. Israel could not save manna. They had to receive it new every day. So do you.</p>
+<span class="fb-attr">Domain 4 &middot; Time</span>
 </div>
 
 </div>
@@ -792,11 +698,11 @@ Watch them across a room before you walk over.</p>
   <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Work.</strong> Trusted to you.</div></div>
   <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Body.</strong> Your roommate.</div></div>
   <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Marriage.</strong> A stranger to keep meeting.</div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Time.</strong> Time arrives in installments. Each day is fresh delivery, not a withdrawal. You do not own time. You are being delivered to. The day cannot be hoarded.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Time.</strong> Arrives in installments. Delivered, not debited. The day cannot be hoarded.</div></div>
 </div>
 
 <div class="ribbon">
-<p>"Give us this day our daily bread."<br><span class="ref">Matthew 6:11</span></p>
+<p>Give us this day our daily bread.<span class="ref">Matthew 6:11</span></p>
 </div>
 
 <!-- ===== CHAPTER 5: BEAUTY ===== -->
@@ -811,56 +717,52 @@ Watch them across a room before you walk over.</p>
 
 <div class="page section prose">
 
-<p>A man drives the same road home every evening for nine years.</p>
+<p>A man drives the same road home every evening for nine years. For the first month he noticed the trees on the western side of the highway when the sun set behind them. By month four he had stopped seeing the trees. By year nine he had stopped seeing the road.</p>
 
-<p>For the first month he noticed the trees on the western side of the highway when the sun set behind them. He told his wife about it the first week. He took a photograph in the second month and sent it to his mother.</p>
-
-<p>By month four he had stopped seeing the trees.</p>
-
-<p>By year nine he had stopped seeing the road.</p>
-
-<p>The road has not changed.<br>
-The trees have not changed.<br>
-The light has not changed.<br>
-The driver has stopped.</p>
+<p>The road has not changed. The trees have not changed. The light has not changed. <em>The driver has stopped.</em></p>
 
 <div class="insight-card">
 <div class="ins-label">Domain 5 &middot; The Return</div>
 <h3>Beauty does not increase by seeking. It increases by stopping.</h3>
 </div>
 
-<p>Modern adults pursue beauty the way they pursue everything else. <strong>They optimize for it.</strong> They travel for it. They photograph it. They curate it. They consume it. They sit in front of the most extraordinary scenery in the world and feel almost nothing, because the seeking gaze is not the receiving gaze.</p>
+<p>Modern adults pursue beauty the way they pursue everything else. <strong>They optimize for it.</strong> They travel for it. They photograph it. They sit in front of the most extraordinary scenery in the world and feel almost nothing, because the seeking gaze is not the receiving gaze.</p>
 
-<p>Beauty is not a destination. <em>Beauty is a posture.</em></p>
+<p>Beauty is not a destination. <em>Beauty is a posture.</em> The road home is full of it. The kitchen window is full of it. The face of the cashier is full of it. The supply has not decreased. The pursuit replaced the noticing.</p>
 
-<p>The road home is full of it. The kitchen window is full of it. The face of the cashier is full of it. The light on the wall at four in the afternoon is full of it. The supply has not decreased. The pursuit replaced the noticing, and the noticing was the entire mechanism.</p>
-
-<div class="scene">
-<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> The Window</div>
-<h4>What Was On The Other Side</h4>
-<p>A woman sits at her kitchen table for ten minutes without her phone. She has not done this in months. She is not meditating. She is not journaling. She is sitting.</p>
-<p>The window is to her left. The afternoon light is on the cabinet across from her. The light is moving very slowly across a small ceramic bowl her daughter made in third grade. <em>The bowl is glowing.</em></p>
-<p>She has owned this bowl for eleven years. She has walked past it every day. She has put fruit in it. She has emptied it. She has wiped it with a rag.</p>
-<p>She has never seen the light on it.</p>
-<p>The light has been there every afternoon for eleven years, on a bowl her daughter made when she was eight, in a kitchen that has been her kitchen for the entire time, and she had been pursuing beauty in Italy.</p>
-<p>The pursuit was the cataract. <strong>Stopping was the surgery.</strong></p>
+<div class="stop60" id="stop60">
+<div class="stop60-eyebrow">A practice, sixty seconds long</div>
+<div class="stop60-title">Stop. Look at one ordinary thing.</div>
+<div class="stop60-ring">
+  <svg viewBox="0 0 160 160">
+    <circle class="stop60-ring-bg" cx="80" cy="80" r="75"/>
+    <circle class="stop60-ring-fg" cx="80" cy="80" r="75" id="stop60-fg"/>
+  </svg>
+  <div class="stop60-count">
+    <div class="stop60-num" id="stop60-num">60</div>
+    <div class="stop60-lbl">Seconds</div>
+  </div>
+</div>
+<div class="stop60-prompt" id="stop60-prompt">Pick one ordinary object in the room you are in. The cup. The lamp. The corner of the wall where the light is hitting it.</div>
+<button class="stop60-btn" id="stop60-btn" type="button">Begin Stopping</button>
+<div class="stop60-record" id="stop60-record">
+  <input id="stop60-input" type="text" placeholder="what did you see?" maxlength="180" autocomplete="off">
+  <button class="stop60-btn" id="stop60-save" type="button">Save What I Saw</button>
+  <div class="stop60-saved" id="stop60-saved">Saved. The beauty was waiting for the looking.</div>
+</div>
 </div>
 
-<p>You do not need a more beautiful life. You need to stop walking past the one you have. <em>The beauty is calibrated to find you the moment you are still enough to be found.</em></p>
+<div class="scene">
+<div class="scene-label">The Window</div>
+<h4>What Was On The Other Side</h4>
+<p>A woman sits at her kitchen table for ten minutes without her phone. She has not done this in months. The window is to her left. The afternoon light is on the cabinet across from her, moving very slowly across a small ceramic bowl her daughter made in third grade. <em>The bowl is glowing.</em></p>
+<p>She has owned this bowl for eleven years. She has put fruit in it. She has wiped it with a rag. She has never seen the light on it.</p>
+<p>The light has been there every afternoon for eleven years, on a bowl her daughter made when she was eight, and she had been pursuing beauty in Italy. <strong>The pursuit was the cataract. Stopping was the surgery.</strong></p>
+</div>
 
-<p>Sit at the window.<br>
-Look at the cup.<br>
-Watch the dog you have had for six years.<br>
-Listen to the rain on a roof you paid for.<br>
-Notice the light on the wall before you reach to adjust it.</p>
-
-<p>This is not a slowing down practice. <strong>It is a seeing practice. The slowing is incidental.</strong></p>
-
-<div class="think">
-<div class="think-label">Stop and See One Thing</div>
-<p>Pick one ordinary object in the room you are in. The coffee cup. The lamp. The corner of the wall where the light is hitting it. Look at it for sixty seconds without moving on.</p>
-<hr class="think-line">
-<p>You will discover that it is more beautiful than you remembered, and that you have never spent sixty seconds looking at any single object in this room. The beauty has been waiting for the looking. The looking is the entire return.</p>
+<div class="framebreak">
+<p>You do not need a more beautiful life. You need to stop walking past the one you have. The beauty is calibrated to find you the moment you are still enough to be found.</p>
+<span class="fb-attr">Domain 5 &middot; Beauty</span>
 </div>
 
 </div>
@@ -872,11 +774,11 @@ Notice the light on the wall before you reach to adjust it.</p>
   <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Body.</strong> Your roommate.</div></div>
   <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Marriage.</strong> A stranger to keep meeting.</div></div>
   <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Time.</strong> Arrives in installments.</div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Beauty.</strong> Increases by stopping, not by seeking. The supply is everywhere. The pursuit was the cataract. Stopping was the surgery.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Beauty.</strong> Increases by stopping. The supply is everywhere. The pursuit was the cataract.</div></div>
 </div>
 
 <div class="ribbon">
-<p>"The heavens declare the glory of God; and the firmament sheweth his handywork."<br><span class="ref">Psalm 19:1</span></p>
+<p>The heavens declare the glory of God; and the firmament sheweth his handywork.<span class="ref">Psalm 19:1</span></p>
 </div>
 
 <!-- ===== CHAPTER 6: CHILDREN ===== -->
@@ -893,62 +795,57 @@ Notice the light on the wall before you reach to adjust it.</p>
 
 <p>A woman stands at the door of her son's bedroom at ten at night. The son is asleep. He is eight years old.</p>
 
-<p>She has been thinking, for years, that this child is hers. She has said so out loud. She has said his name with the word my in front of it. She has been managing his schedule and his meals and his education and his friendships. <em>She has been carrying him through his life.</em></p>
+<p>She has been thinking, for years, that this child is hers. She has said his name with the word my in front of it. <em>She has been carrying him through his life.</em></p>
 
 <p>She stands in the doorway and sees, for the first time, that the arrangement runs the other way.</p>
 
-<p>He was not given to her.<br>
-She was given to him.</p>
+<p>He was not given to her. <strong>She was given to him.</strong></p>
 
 <div class="insight-card">
 <div class="ins-label">Domain 6 &middot; The Return</div>
 <h3>Your children are not yours. You are theirs.</h3>
 </div>
 
-<p>The inversion is total. <strong>You did not receive a child. The child received you.</strong> A whole universe of nothingness existed for this child, and into that universe you arrived as the first face, the first voice, the first hands, the first warm body that they would ever know.</p>
+<p>The inversion is total. <em>You did not receive a child. The child received you.</em> A whole universe of nothingness existed for this child, and into that universe you arrived as the first face, the first voice, the first hands, the first warm body that they would ever know.</p>
 
 <p>You are the first gift this person ever opened.</p>
 
-<p>Modern parenting frames the child as the gift. The framing is half true and entirely backwards. <em>The child is the recipient. You are the package.</em> You arrived for them. You were placed in their life as their parent. You will be the most important person they ever know for the first several years of their existence, and you did not earn this position. You were assigned it.</p>
-
-<div class="invert-viz">
-<div class="invert-row">
-<div class="invert-side before">I am raising my child</div>
-<div class="invert-arrow">&rarr;</div>
-<div class="invert-side after">I was given to this child</div>
+<div class="flip-set">
+<div class="flip-head">
+  <div class="flip-eyebrow">An inversion, in three turns</div>
+  <div class="flip-title">Tap each card to invert it.</div>
 </div>
-<div class="invert-row">
-<div class="invert-side before">They are my responsibility</div>
-<div class="invert-arrow">&rarr;</div>
-<div class="invert-side after">I am their inheritance</div>
-</div>
-<div class="invert-row">
-<div class="invert-side before">I am sacrificing for them</div>
-<div class="invert-arrow">&rarr;</div>
-<div class="invert-side after">I am the gift they were sent</div>
-</div>
+<div class="flip-card" data-flip="1"><div class="flip-inner">
+  <div class="flip-face flip-front">I am raising my child.</div>
+  <div class="flip-face flip-back">I was given to this child.</div>
+</div></div>
+<div class="flip-card" data-flip="2"><div class="flip-inner">
+  <div class="flip-face flip-front">They are my responsibility.</div>
+  <div class="flip-face flip-back">I am their inheritance.</div>
+</div></div>
+<div class="flip-card" data-flip="3"><div class="flip-inner">
+  <div class="flip-face flip-front">I am sacrificing for them.</div>
+  <div class="flip-face flip-back">I am the gift they were sent.</div>
+</div></div>
+<div class="flip-hint">All three cards turn. The body recognizes the inversion when the cards do.</div>
 </div>
 
 <div class="scene">
-<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> The Doorway</div>
+<div class="scene-label">The Doorway</div>
 <h4>The Mother Who Was The Gift</h4>
-<p>The woman stands in the doorway and watches her son sleep. She sees, for the first time, that she has been treating him as a project that arrived for her.</p>
-<p>She sees that the arrangement runs the other way.</p>
-<p>She was given to him. She is the woman he calls mom. She is the voice he hears in his head when he is afraid at school. She is the face that will be in his earliest memories. She is the first hands that held him. She did not earn any of this. <em>She was sent.</em></p>
-<p>She kneels beside the bed and watches him breathe. She has watched him sleep a thousand nights. <strong>She has never watched him sleep as his gift.</strong></p>
-<p>The tiredness she has been carrying for years lifts in the doorway. The work of being his mother is the same work she did yesterday and the day before. But she had been doing it as a parent who owned a child. Now she is doing it as a gift who was sent to a person.</p>
-<p>The work feels light, because the gift is not heavy. <em>Only the position of owner was heavy.</em></p>
+<p>The woman kneels beside the bed and watches him breathe. She has watched him sleep a thousand nights. <strong>She has never watched him sleep as his gift.</strong></p>
+<p>She is the woman he calls mom. She is the voice he hears in his head when he is afraid at school. She is the face that will be in his earliest memories. <em>She was sent.</em></p>
+<p>The tiredness she has been carrying for years lifts in the doorway. The work is the same work she did yesterday. But she had been doing it as a parent who owned a child. Now she is doing it as a gift who was sent to a person. <em>Only the position of owner was heavy.</em></p>
 </div>
 
-<p>This frame does not let you off the hook. <strong>It puts you more deeply on it.</strong> If you are not the manager but the gift, then the quality of the gift matters in a way that the quality of management never did. The child will inherit you. They will inherit your patience. They will inherit your gentleness. They will inherit your noticing.</p>
+<div class="invite">
+<div class="invite-eyebrow">a moment</div>
+<p>Picture your child. Now ask: what does it feel like to be the gift this person was sent, rather than the person who was sent a child? The body recognizes the inversion immediately. The tiredness lifts.</p>
+</div>
 
-<p>You will not be measured by what you produced in them. You will be measured by what you were to them. <em>The first gift this person ever opened was you.</em> Be the gift worth opening.</p>
-
-<div class="think">
-<div class="think-label">Stop and Invert</div>
-<p>Picture your child. Picture yourself standing in their doorway. Now ask: what does it feel like to be the gift this person was sent, rather than the person who was sent a child?</p>
-<hr class="think-line">
-<p>The body recognizes the inversion immediately. The tiredness lifts. The grievance loosens. The work remains, but the work is no longer the work of an owner. It is the work of an arrival who was placed in this child's life on purpose.</p>
+<div class="framebreak">
+<p>You will not be measured by what you produced in them. You will be measured by what you were to them. The first gift this person ever opened was you. Be the gift worth opening.</p>
+<span class="fb-attr">Domain 6 &middot; Children</span>
 </div>
 
 </div>
@@ -961,11 +858,11 @@ She was given to him.</p>
   <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Marriage.</strong> A stranger to keep meeting.</div></div>
   <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Time.</strong> Arrives in installments.</div></div>
   <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Beauty.</strong> Increases by stopping.</div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Children.</strong> Your children are not yours. You are theirs. The child is the recipient. You are the gift they were sent. Be the gift worth opening.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Children.</strong> Not yours. You are theirs. You are the gift they were sent.</div></div>
 </div>
 
 <div class="ribbon">
-<p>"Lo, children are an heritage of the Lord."<br><span class="ref">Psalm 127:3</span></p>
+<p>Lo, children are an heritage of the Lord.<span class="ref">Psalm 127:3</span></p>
 </div>
 
 <!-- ===== CHAPTER 7: PLACE ===== -->
@@ -984,8 +881,6 @@ She was given to him.</p>
 
 <p>He has wanted, for fourteen years, to live somewhere else.</p>
 
-<p>He has thought of Colorado. He has thought of the Carolinas. He has thought of the country house his grandparents had in Pennsylvania. He has thought of any place that is not this yard.</p>
-
 <p>He has spent fourteen years standing inside an assignment treating it as a delay.</p>
 
 <div class="insight-card">
@@ -993,39 +888,35 @@ She was given to him.</p>
 <h3>You did not choose where you live. You were placed.</h3>
 </div>
 
-<p>The modern frame treats location as backdrop. The real frame, the older frame, treats location as deployment. <strong>You did not arrive in this neighborhood by accident.</strong> You arrived in this neighborhood because, of all the houses in the country, this is the one that was available on the week you were ready, at the price you could pay, in the school district that opened to you, and the convergence of those vectors was not engineered by you.</p>
-
-<p>You were placed.</p>
+<p>The modern frame treats location as backdrop. The older frame treats location as deployment. <strong>You did not arrive in this neighborhood by accident.</strong> You arrived because, of all the houses in the country, this is the one that was available on the week you were ready, at the price you could pay, in the school district that opened to you. The convergence of those vectors was not engineered by you.</p>
 
 <p>The house. The street. The city. The country. <em>The era you were born into.</em> All of it was assignment, not selection.</p>
 
+<div class="place-w" id="place-w">
+<div class="place-eyebrow">Name the place that holds you</div>
+<div class="place-title">Where were you placed?</div>
+<input id="place-input" class="place-input" type="text" placeholder="town, neighborhood, or house" maxlength="120" autocomplete="off">
+<button class="stop60-btn" id="place-btn" type="button">Receive The Placement</button>
+<div class="place-out" id="place-out"></div>
+</div>
+
 <div class="scene">
-<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> The Yard</div>
+<div class="scene-label">The Yard</div>
 <h4>The Assignment That Looked Like A Delay</h4>
-<p>The man at the kitchen window decides, on a Tuesday, to walk the small back yard for ten minutes. He is fifty four years old. He has owned this house for fourteen years. He has walked the yard maybe twice with intention in all that time.</p>
-<p>He walks the perimeter. He looks at the corner where his daughter buried a hamster in 2014. He looks at the small patch where his son set up a tent the summer the basement flooded. He looks at the back fence where his wife planted three rose bushes that did not survive but left a depression in the soil.</p>
+<p>The man at the kitchen window decides, on a Tuesday, to walk the small back yard for ten minutes. He looks at the corner where his daughter buried a hamster in 2014. He looks at the patch where his son set up a tent the summer the basement flooded. He looks at the back fence where his wife planted three rose bushes that did not survive but left a depression in the soil.</p>
 <p><em>He sees that this yard has held his life.</em></p>
-<p>It is not the yard he wanted. It was the yard he was given. It is the yard in which his family became a family. It is the yard where his children buried things and built things and grew up and left. <strong>The Colorado he dreamed of would not have been able to hold any of this. It was not the yard for him. This was.</strong></p>
+<p>It is not the yard he wanted. It was the yard he was given. <strong>The Colorado he dreamed of would not have been able to hold any of this. It was not the yard for him. This was.</strong></p>
 <p>He stands in the corner where the hamster was buried. He says, out loud, to the place: thank you for holding us.</p>
-<p>The yard does not answer. He walks back inside. The kitchen is the same. The window is the same. He is not the same.</p>
 </div>
 
-<p>The reception of place is the recognition that the where of your life is the where you were meant to be in. Not the place you would have chosen. <em>The place that chose you.</em></p>
-
-<p>You did not engineer the convergence of vectors that put you in this house. You did not author the timing of the housing market in the spring of the year you bought. You did not select your country at birth. You did not pick your continent. <strong>Every coordinate of your address is the result of a thousand placements you did not negotiate.</strong></p>
-
-<p>You were placed here for the holding of a life. The yard is small. The yard is exactly the right size for the life that was meant to happen in it. The country is large. The country is exactly the country you were meant to be a citizen of for this particular incarnation. <em>The reception of place is the end of the search for the place.</em></p>
-
-<div class="grand-quote">
-<blockquote>You did not choose where you live. You were placed. The yard you wanted to leave is the yard that held your children. The kitchen you wanted to upgrade is the kitchen where your marriage survived. The country you criticize is the country that grew you. Receive what placed you. Stop looking for the door out of the room you were sent to.</blockquote>
-<cite>The Seventh Return</cite>
+<div class="invite">
+<div class="invite-eyebrow">a moment</div>
+<p>Walk your home today. Outside if you can. The yard. The street. The block. Look at it as if you were just placed here, today, for the first time. Thank it. Out loud if you can.</p>
 </div>
 
-<div class="think">
-<div class="think-label">Stop and Walk Your Place</div>
-<p>Take ten minutes today and walk your home. Outside if you can. The yard. The street. The block. Look at it as if you were just placed here, today, for the first time. Notice what you have not noticed in years.</p>
-<hr class="think-line">
-<p>This is the place that has been holding you. Thank it. Out loud if you can. The thanking is not sentimental. It is the act of receiving the placement that has been receiving you for years.</p>
+<div class="framebreak">
+<p>You were placed here for the holding of a life. Stop looking for the door out of the room you were sent to. The reception of place is the end of the search for the place.</p>
+<span class="fb-attr">Domain 7 &middot; Place</span>
 </div>
 
 </div>
@@ -1038,12 +929,40 @@ She was given to him.</p>
   <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Marriage.</strong> A stranger you have agreed to keep meeting.</div></div>
   <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Time.</strong> Arrives in installments. The day is delivered, not debited.</div></div>
   <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Beauty.</strong> Increases by stopping, not by seeking.</div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Children.</strong> Not yours. You are theirs. You are the gift they were sent.</div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Place.</strong> You did not choose where you live. You were placed. Location is assignment, not backdrop. Stop looking for the door out of the room you were sent to.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Children.</strong> Not yours. You are theirs.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Place.</strong> You did not choose where you live. You were placed. Location is assignment, not backdrop.</div></div>
 </div>
 
 <div class="ribbon">
-<p>"The lines are fallen unto me in pleasant places; yea, I have a goodly heritage."<br><span class="ref">Psalm 16:6</span></p>
+<p>The lines are fallen unto me in pleasant places; yea, I have a goodly heritage.<span class="ref">Psalm 16:6</span></p>
+</div>
+
+<!-- ===== RESISTANCE ===== -->
+<div class="page">
+<div class="resist">
+<div class="resist-eyebrow">A gentle naming</div>
+<h3>Why You Will Not Return</h3>
+<div class="resist-item">
+  <p class="resist-q">I am too busy to notice.</p>
+  <p class="resist-a">The busyness is the loss. Noticing is not work added to a full day. It is the act that makes the full day feel less full.</p>
+</div>
+<div class="resist-item">
+  <p class="resist-q">I have tried this before.</p>
+  <p class="resist-a">You have tried it. You did not stay with it. The return is daily, not once. The day you stopped is the day the seeing dimmed again.</p>
+</div>
+<div class="resist-item">
+  <p class="resist-q">My situation is harder than the scenes in the book.</p>
+  <p class="resist-a">Maybe. The seven returns are not solutions. They are sightings. The hardest situation still has gifts underneath the demand. The harder the situation, the more buried.</p>
+</div>
+<div class="resist-item">
+  <p class="resist-q">These are platitudes I have heard before.</p>
+  <p class="resist-a">You have heard them. You have not yet walked them. A platitude becomes a return the moment a body practices it.</p>
+</div>
+<div class="resist-item">
+  <p class="resist-q">I will start tomorrow.</p>
+  <p class="resist-a">You started in the cold-open. You named one gift hiding under a demand. The return is already underway. Tomorrow you name another.</p>
+</div>
+</div>
 </div>
 
 <!-- ===== CLOSING ===== -->
@@ -1051,7 +970,7 @@ She was given to him.</p>
 
 <p>You have walked the seven doors.</p>
 
-<p>Work. Body. Marriage. Time. Beauty. Children. Place. Each was a domain where reception was lost. Each had a single sentence that opened it. Each sentence was already true the whole time, and you only needed to be told once to see it.</p>
+<p>Work. Body. Marriage. Time. Beauty. Children. Place. Each was a domain where reception was lost. Each had a single sentence that opened it. <em>Each sentence was already true the whole time. You only needed to be told once to see it.</em></p>
 
 <p>You did not earn your work.<br>
 Your body is your roommate.<br>
@@ -1065,58 +984,27 @@ You were placed here.</p>
 
 <p>The series called <em>Manna</em> is now in your hands. <em>Given</em> named the condition and installed the frames. <em>Returning</em> walked you through the rooms where the condition lives and showed you the door in each. <strong>The work from here is not new reading. It is daily walking through the doors.</strong></p>
 
-<p>Not every domain opens at once. Not every domain opens cleanly. Some of these chapters you will read and feel a small click as the door opens. Others you will read and feel resistance, and the resistance is the diagnostic. <em>The chapter that resists you the most is the door that will open the most when you return to it.</em></p>
-
-<p>Walk them in order. Walk them out of order. Walk them more than once. The seven returns are not a course. They are a map of a house you have been living in without seeing.</p>
+<p>Not every domain opens at once. Some you will read and feel a small click. Others you will read and feel resistance, and the resistance is the diagnostic. <em>The chapter that resists you the most is the door that will open the most when you return to it.</em></p>
 
 <p>The seeing returns one domain at a time.</p>
 
 <p>The joy follows the seeing.</p>
 
-<p>The day, the kitchen, the body, the spouse, the work, the child, the place, were always gifts.</p>
-
 <p><strong>Now you can see them.</strong></p>
 
 </div>
 
-<!-- ===== FINAL TEST ===== -->
-<div class="page section">
-<div class="final-test">
-<h3>Can You Name The Seven Returns?</h3>
-<p class="test-sub">Seven questions, one for each domain. If you can answer all seven, the map has installed.</p>
-<div class="test-q"><div class="test-num">Question 1</div><p>Why is the posture of stewardship lighter than the posture of achievement, even when the job is the same?</p></div>
-<div class="test-q"><div class="test-num">Question 2</div><p>What is the difference between meeting your body and managing it? Which one have you been doing?</p></div>
-<div class="test-q"><div class="test-num">Question 3</div><p>Why is familiarity the loss in marriage, and what does it mean to meet your spouse as a stranger you have agreed to keep meeting?</p></div>
-<div class="test-q"><div class="test-num">Question 4</div><p>What changes about an ordinary Wednesday when you treat the day as an installment that arrived rather than a withdrawal that depleted?</p></div>
-<div class="test-q"><div class="test-num">Question 5</div><p>Why does beauty increase by stopping rather than by seeking? Where in your life have you been pursuing it past where it actually lives?</p></div>
-<div class="test-q"><div class="test-num">Question 6</div><p>What is the inversion at the heart of parenting, and what does it mean that you are the gift your child was sent?</p></div>
-<div class="test-q"><div class="test-num">Question 7</div><p>Why is location assignment rather than backdrop, and what changes when you stop looking for the door out of the room you were placed in?</p></div>
-</div>
-</div>
-
-<!-- ===== PROMPT ===== -->
-<div class="page section">
-<div class="prompt-card">
-<h3>Continue The Conversation</h3>
-<p>Copy these prompts into any AI and let the doors keep opening:</p>
-<p><code>"Walk me through the seven domains of Manna and help me identify which two doors are most closed for me right now. Ask diagnostic questions about how each domain currently feels."</code></p>
-<p><code>"Help me practice the inversion in one specific domain this week. I will pick the domain. You hold me to a daily noticing for seven days."</code></p>
-<p><code>"I am resisting one of the seven returns. Help me find why. The resistance is the diagnostic for which gift I am most afraid to receive."</code></p>
-<p><code>"Translate the seven returns into the language of my specific life. My work is [X]. My body is [Y]. My marriage is [Z]. Help me see what is being given in each."</code></p>
-</div>
-</div>
-
 <div class="ribbon">
-<p>"This is the day which the Lord hath made; we will rejoice and be glad in it."<br><span class="ref">Psalm 118:24</span></p>
+<p>This is the day which the Lord hath made; we will rejoice and be glad in it.<span class="ref">Psalm 118:24</span></p>
 </div>
 
-<div class="series-progress" style="padding:32px 24px;background:var(--cream-warm);border-top:1px solid rgba(14,15,26,0.06)">
-  <div style="font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--rose-dawn);margin-bottom:14px">Manna &middot; Complete</div>
+<div style="text-align:center;padding:32px 24px;background:var(--cream-warm);border-top:1px solid rgba(14,15,26,0.06)">
+  <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:0.85rem;letter-spacing:3px;text-transform:uppercase;color:var(--rose-deep);margin-bottom:14px">Manna &middot; Complete</div>
   <div class="series-dots">
-    <span class="series-dot done" title="Given"></span>
-    <span class="series-dot active" title="Returning"></span>
+    <span class="series-dot done"></span>
+    <span class="series-dot done"></span>
   </div>
-  <div class="series-dot-label" style="color:var(--text-muted)">Part 2 of 2 &middot; Returning</div>
+  <div class="series-dot-label" style="color:var(--text-light);margin-top:10px">Given &middot; Returning</div>
 </div>
 
 <section class="finale">
@@ -1126,5 +1014,359 @@ You were placed here.</p>
 <footer class="footer">
 <p>Returning &middot; Manna (Part 2 of 2) &middot; KingdomBuilders AI<br><a href="./">View All Playbooks</a></p>
 </footer>
+
+<script>
+(function(){
+  // ===== Stop Before Reading =====
+  var sbInput = document.getElementById('sb-input');
+  var sbBtn = document.getElementById('sb-btn');
+  var sbSaved = document.getElementById('sb-saved');
+  if(window.kbWidget){
+    kbWidget.load('returning-stop-before', function(v){ if(v && v.gift){ sbInput.value = v.gift; sbSaved.classList.add('show'); }});
+  }
+  sbBtn.addEventListener('click', function(){
+    var v = sbInput.value.trim();
+    if(!v) return;
+    if(window.kbWidget) kbWidget.save('returning-stop-before', {gift:v, at:Date.now()});
+    sbSaved.classList.add('show');
+  });
+
+  // ===== Trace-Back (Ch1 Work) =====
+  var tbAnswers = {
+    1: "<strong>Someone hired you.</strong> Out of all the candidates, they chose you. The choice was a leap, not a calculation.",
+    2: "<strong>Someone taught you the skill.</strong> A teacher. A mentor. An older sibling. A book by someone you never met. The competence is inherited.",
+    3: "<strong>Someone built the industry.</strong> Predecessors created the field you walk into. You did not invent the road. You drive on it."
+  };
+  var tbStack = document.getElementById('tb-stack');
+  var tbFinal = document.getElementById('tb-final');
+  var tbOpened = {};
+  document.querySelectorAll('.tb-q').forEach(function(q){
+    q.addEventListener('click', function(){
+      var step = q.getAttribute('data-step');
+      if(tbOpened[step]) return;
+      tbOpened[step] = true;
+      q.classList.add('opened');
+      var c = document.createElement('div');
+      c.className = 'tb-card';
+      c.innerHTML = tbAnswers[step];
+      tbStack.appendChild(c);
+      if(Object.keys(tbOpened).length === 3){
+        setTimeout(function(){ tbFinal.classList.add('show'); }, 400);
+      }
+    });
+  });
+
+  // ===== Posture Toggle (Ch2 Body) =====
+  var posture = document.getElementById('posture');
+  var postureTitle = document.getElementById('posture-title');
+  var postureList = document.getElementById('posture-list');
+  var postureItems = {
+    manage: [
+      'Weighed yesterday. Weighed again.',
+      'Photographed for comparison.',
+      'Measured against other bodies.',
+      'Audited for failure to improve.',
+      'Treated as a resistant project.'
+    ],
+    meet: [
+      'Greeted in the morning.',
+      'Noticed across the day.',
+      'Heard when it speaks.',
+      'Thanked for what it carries.',
+      'Lived inside as a guest.'
+    ]
+  };
+  var postureTitles = {manage:'The Project Posture', meet:'The Roommate Posture'};
+  document.querySelectorAll('.posture-btn').forEach(function(b){
+    b.addEventListener('click', function(){
+      var mode = b.getAttribute('data-mode');
+      document.querySelectorAll('.posture-btn').forEach(function(x){ x.classList.remove('active'); });
+      b.classList.add('active');
+      if(mode === 'meet') posture.classList.add('meet'); else posture.classList.remove('meet');
+      postureTitle.textContent = postureTitles[mode];
+      postureList.innerHTML = postureItems[mode].map(function(t){ return '<li>'+t+'</li>'; }).join('');
+    });
+  });
+
+  // ===== Stranger Lens (Ch3 Marriage) =====
+  var lensSlider = document.getElementById('lens-slider');
+  var lensOverlay = document.getElementById('lens-overlay');
+  var lensLines = [document.getElementById('lens-line1'), document.getElementById('lens-line2'), document.getElementById('lens-line3')];
+  var lensEyeL = document.getElementById('lens-eye-l');
+  var lensEyeR = document.getElementById('lens-eye-r');
+  var lensOverlays = {
+    0: 'You have not really looked at this face in a long time.',
+    25: 'A line near the eye you did not catalog.',
+    50: 'The mouth is set in a way that is theirs and only theirs.',
+    75: 'Hair grey at the part. The face has changed.',
+    100: 'You are looking at a stranger. The person you married, restored.'
+  };
+  lensSlider.addEventListener('input', function(){
+    var v = parseInt(lensSlider.value, 10);
+    var op = v / 100;
+    lensLines[0].setAttribute('opacity', Math.min(op*1.4, 1).toFixed(2));
+    lensLines[1].setAttribute('opacity', Math.min(op*1.4, 1).toFixed(2));
+    lensLines[2].setAttribute('opacity', Math.min(op*1.6, 1).toFixed(2));
+    lensEyeL.setAttribute('stroke', '#3D3530');
+    lensEyeL.setAttribute('stroke-width', (op*0.8).toFixed(2));
+    lensEyeR.setAttribute('stroke', '#3D3530');
+    lensEyeR.setAttribute('stroke-width', (op*0.8).toFixed(2));
+    var key = v < 13 ? 0 : v < 38 ? 25 : v < 63 ? 50 : v < 88 ? 75 : 100;
+    lensOverlay.textContent = lensOverlays[key];
+    if(v > 8) lensOverlay.classList.add('show'); else lensOverlay.classList.remove('show');
+  });
+
+  // ===== Installment Calendar (Ch4 Time) =====
+  var instRow = document.getElementById('inst-row');
+  var instMsg = document.getElementById('inst-msg');
+  var days = [
+    {l:'Mon', m:'Monday arrived. You did not pay for it.'},
+    {l:'Tue', m:'Tuesday was sent. It was not in any spreadsheet.'},
+    {l:'Wed', m:'Wednesday was delivered. The hour you read this in was not promised.'},
+    {l:'Thu', m:'Thursday came. The body that woke up was not owed.'},
+    {l:'Fri', m:'Friday was given. The coffee, the steam, the chair you bought in 1998.'},
+    {l:'Sat', m:'Saturday arrived. The list was not the point. The day was.'},
+    {l:'Sun', m:'Sunday will arrive. It is not yet sent. Receive it tomorrow.', tomorrow:true}
+  ];
+  days.forEach(function(d, i){
+    var w = document.createElement('div');
+    w.className = 'inst-day';
+    w.innerHTML = '<div class="inst-circle'+(d.tomorrow?' tomorrow':'')+'"></div><div class="inst-lbl">'+d.l+'</div>';
+    w.addEventListener('click', function(){
+      document.querySelectorAll('.inst-day').forEach(function(x){ x.classList.remove('selected'); });
+      w.classList.add('selected');
+      instMsg.textContent = d.m;
+    });
+    instRow.appendChild(w);
+  });
+
+  // ===== 60-Second Stop (Ch5 Beauty) =====
+  var s60Btn = document.getElementById('stop60-btn');
+  var s60Num = document.getElementById('stop60-num');
+  var s60Fg = document.getElementById('stop60-fg');
+  var s60Prompt = document.getElementById('stop60-prompt');
+  var s60Record = document.getElementById('stop60-record');
+  var s60Input = document.getElementById('stop60-input');
+  var s60Save = document.getElementById('stop60-save');
+  var s60Saved = document.getElementById('stop60-saved');
+  var s60Timer = null;
+  if(window.kbWidget){
+    kbWidget.load('returning-stop60', function(v){ if(v && v.saw){ s60Input.value = v.saw; s60Saved.classList.add('show'); s60Record.classList.add('show'); }});
+  }
+  s60Btn.addEventListener('click', function(){
+    if(s60Timer) return;
+    s60Btn.disabled = true;
+    s60Btn.textContent = 'Stopping...';
+    s60Prompt.textContent = 'Eyes on one ordinary thing. Do not look away.';
+    var t = 60;
+    s60Num.textContent = t;
+    s60Fg.style.strokeDashoffset = '0';
+    s60Timer = setInterval(function(){
+      t -= 1;
+      s60Num.textContent = t;
+      s60Fg.style.strokeDashoffset = (471 - (471 * (60-t)/60)).toFixed(0);
+      if(t <= 0){
+        clearInterval(s60Timer);
+        s60Timer = null;
+        s60Btn.style.display = 'none';
+        s60Num.textContent = '✓';
+        s60Prompt.innerHTML = 'The beauty was waiting for the looking. <em>What did you see?</em>';
+        s60Record.classList.add('show');
+      }
+    }, 1000);
+  });
+  s60Save.addEventListener('click', function(){
+    var v = s60Input.value.trim();
+    if(!v) return;
+    if(window.kbWidget) kbWidget.save('returning-stop60', {saw:v, at:Date.now()});
+    s60Saved.classList.add('show');
+  });
+
+  // ===== Inversion Flip (Ch6 Children) =====
+  document.querySelectorAll('.flip-card').forEach(function(c){
+    c.addEventListener('click', function(){
+      c.classList.toggle('flipped');
+    });
+  });
+
+  // ===== Place Witness (Ch7 Place) =====
+  var placeInput = document.getElementById('place-input');
+  var placeBtn = document.getElementById('place-btn');
+  var placeOut = document.getElementById('place-out');
+  if(window.kbWidget){
+    kbWidget.load('returning-place', function(v){
+      if(v && v.where){
+        placeInput.value = v.where;
+        placeOut.textContent = 'You were placed in ' + v.where + ' for the holding of a specific life. The yard, the kitchen, the street were the room you were sent to.';
+        placeOut.classList.add('show');
+      }
+    });
+  }
+  placeBtn.addEventListener('click', function(){
+    var v = placeInput.value.trim();
+    if(!v) return;
+    placeOut.textContent = 'You were placed in ' + v + ' for the holding of a specific life. The yard, the kitchen, the street were the room you were sent to.';
+    placeOut.classList.add('show');
+    if(window.kbWidget) kbWidget.save('returning-place', {where:v, at:Date.now()});
+  });
+
+  // ===== Domain Walker (persistent dashboard) =====
+  var domains = [
+    {key:'work', name:'Work', insight:'Trusted to you, not earned.',
+      receive:'You see the job as a loan you were trusted with. The steward posture is alive.'},
+    {key:'body', name:'Body', insight:'Your roommate, not your project.',
+      receive:'You greet the body in the morning rather than managing it. The meeting has begun.'},
+    {key:'marriage', name:'Marriage', insight:'A stranger you keep meeting.',
+      receive:'You see your spouse without certainty. Familiarity has been replaced by recognition.'},
+    {key:'time', name:'Time', insight:'Arrives in installments.',
+      receive:'You receive the day rather than auditing it. The day is manna again.'},
+    {key:'beauty', name:'Beauty', insight:'Increases by stopping.',
+      receive:'You see the light on the wall. The pursuit has stopped. The seeing returned.'},
+    {key:'children', name:'Children', insight:'Not yours. You are theirs.',
+      receive:'You see yourself as the gift sent to your child. The inversion has landed.'},
+    {key:'place', name:'Place', insight:'You were placed here.',
+      receive:'You see the yard as assignment, not backdrop. You stop looking for the door out.'}
+  ];
+
+  var walker = document.getElementById('walker');
+  var grid = document.getElementById('w-grid');
+  var journal = document.getElementById('w-journal');
+  var jcount = document.getElementById('w-jcount');
+  var states = {};
+  var gifts = {};
+
+  function applyGlow(){
+    var n = Object.values(gifts).filter(function(g){ return g && g.length; }).length;
+    walker.classList.remove('glow-1','glow-2','glow-3');
+    if(n >= 1 && n <= 2) walker.classList.add('glow-1');
+    else if(n >= 3 && n <= 4) walker.classList.add('glow-2');
+    else if(n >= 5) walker.classList.add('glow-3');
+    if(n === 0) jcount.textContent = 'No gifts named yet. Name one in any domain.';
+    else jcount.textContent = n + (n === 1 ? ' gift named.' : ' gifts named.') + ' The widget warms as the practice continues.';
+  }
+
+  function updateProgress(){
+    var received = Object.values(states).filter(function(s){ return s === 'received'; }).length;
+    document.getElementById('w-count').textContent = received;
+    document.getElementById('w-fill').style.width = (received / 7 * 100).toFixed(0) + '%';
+    var recTitle = document.getElementById('w-rec-title');
+    var recText = document.getElementById('w-rec-text');
+    if(received === 7){
+      recTitle.textContent = 'All seven received.';
+      recText.innerHTML = 'The seeing has returned across the whole house. <strong>Return to the door that wants to dim again tomorrow.</strong>';
+      return;
+    }
+    var demanding = domains.find(function(d){ return states[d.key] === 'demand'; });
+    var opening = domains.find(function(d){ return states[d.key] === 'opening'; });
+    if(demanding){
+      recTitle.textContent = 'Begin with ' + demanding.name + '.';
+      recText.innerHTML = '<strong>' + demanding.name + '</strong> is in demand. ' + demanding.insight + ' The chapter that resists you the most is the door that will open the most.';
+    } else if(opening){
+      recTitle.textContent = 'Stay with ' + opening.name + '.';
+      recText.innerHTML = '<strong>' + opening.name + '</strong> is opening. ' + opening.receive;
+    } else {
+      recTitle.textContent = 'Mark each domain to see your next door.';
+      recText.textContent = 'Demand. Opening. Received. Mark honestly to find which domain to walk through first.';
+    }
+  }
+
+  function setState(key, state){
+    states[key] = state;
+    var tile = grid.querySelector('[data-key="'+key+'"]');
+    tile.classList.remove('demand','opening','received');
+    tile.classList.add(state);
+    tile.querySelectorAll('.w-state-btn').forEach(function(b){
+      b.classList.remove('active','demand','opening','received');
+      if(b.getAttribute('data-state') === state){ b.classList.add('active', state); }
+    });
+    updateProgress();
+    if(window.kbWidget) kbWidget.save('returning-walker-states', states);
+  }
+
+  function setGift(key, txt){
+    gifts[key] = txt;
+    applyGlow();
+    if(window.kbWidget) kbWidget.save('returning-walker-gifts', gifts);
+  }
+
+  // Build tiles
+  domains.forEach(function(d){
+    var div = document.createElement('div');
+    div.className = 'w-domain';
+    div.setAttribute('data-key', d.key);
+    div.innerHTML =
+      '<div class="w-domain-name">' + d.name + '</div>' +
+      '<div class="w-domain-insight">' + d.insight + '</div>' +
+      '<div class="w-state-btns">' +
+        '<button class="w-state-btn" data-state="demand">Demand</button>' +
+        '<button class="w-state-btn" data-state="opening">Opening</button>' +
+        '<button class="w-state-btn" data-state="received">Received</button>' +
+      '</div>';
+    grid.appendChild(div);
+
+    var jdiv = document.createElement('div');
+    jdiv.className = 'w-journal-domain';
+    jdiv.innerHTML =
+      '<div class="w-journal-label">' + d.name + ' &middot; <em>' + d.insight + '</em></div>' +
+      '<input class="w-journal-input" data-key="' + d.key + '" type="text" maxlength="180" placeholder="one gift noticed in ' + d.name.toLowerCase() + ' today" autocomplete="off">';
+    journal.appendChild(jdiv);
+  });
+
+  // Tab switching
+  document.querySelectorAll('.walker-tab').forEach(function(t){
+    t.addEventListener('click', function(){
+      var pane = t.getAttribute('data-pane');
+      document.querySelectorAll('.walker-tab').forEach(function(x){ x.classList.remove('active'); });
+      document.querySelectorAll('.walker-pane').forEach(function(p){ p.classList.remove('active'); });
+      t.classList.add('active');
+      document.querySelector('.walker-pane[data-pane="'+pane+'"]').classList.add('active');
+    });
+  });
+
+  // State button clicks
+  grid.addEventListener('click', function(e){
+    var b = e.target.closest('.w-state-btn');
+    if(!b) return;
+    var tile = b.closest('.w-domain');
+    var key = tile.getAttribute('data-key');
+    var state = b.getAttribute('data-state');
+    setState(key, state);
+  });
+
+  // Journal input
+  journal.addEventListener('input', function(e){
+    var i = e.target.closest('.w-journal-input');
+    if(!i) return;
+    var key = i.getAttribute('data-key');
+    setGift(key, i.value.trim());
+  });
+
+  // Load persisted
+  if(window.kbWidget){
+    kbWidget.load('returning-walker-states', function(v){
+      if(v && typeof v === 'object'){
+        Object.keys(v).forEach(function(k){
+          if(v[k]) setState(k, v[k]);
+        });
+      } else {
+        updateProgress();
+      }
+    });
+    kbWidget.load('returning-walker-gifts', function(v){
+      if(v && typeof v === 'object'){
+        gifts = v;
+        Object.keys(gifts).forEach(function(k){
+          var i = journal.querySelector('.w-journal-input[data-key="'+k+'"]');
+          if(i) i.value = gifts[k];
+        });
+        applyGlow();
+      }
+    });
+  } else {
+    updateProgress();
+  }
+})();
+</script>
+
 </body>
 </html>
