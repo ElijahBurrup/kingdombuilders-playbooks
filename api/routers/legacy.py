@@ -1219,11 +1219,13 @@ def _inject_back_button_and_tracking(html: str, slug: str, signed_in: bool = Fal
 .pb-share-top:hover{{background:linear-gradient(135deg,#D4A843,#E8C96A);color:#1F2440;border-color:#E8C96A}}
 .pb-share-top svg{{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}}
 .pb-share-bottom{{max-width:760px;margin:48px auto 0;padding:0 24px;font-family:'Poppins',Helvetica,sans-serif}}
-.pb-share-bottom-card{{padding:28px 26px;border-radius:18px;background:linear-gradient(135deg,rgba(212,168,67,0.10),rgba(232,201,106,0.06));
-  border:1px solid rgba(212,168,67,0.25);color:rgba(255,255,255,0.85);text-align:center}}
-.pb-share-bottom-kicker{{font-size:0.55rem;font-weight:800;letter-spacing:4.5px;color:#E8C96A;text-transform:uppercase;margin-bottom:8px}}
-.pb-share-bottom-title{{font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:800;color:#fff;line-height:1.2;margin-bottom:10px}}
-.pb-share-bottom-sub{{font-family:'Lora',serif;font-style:italic;font-size:0.95rem;color:rgba(255,255,255,0.7);margin-bottom:20px;line-height:1.55}}
+.pb-share-bottom-card{{padding:32px 28px;border-radius:18px;
+  background:linear-gradient(135deg,#1A2240 0%,#262E50 50%,#1A2240 100%);
+  border:1.5px solid rgba(212,168,67,0.45);color:#fff;text-align:center;
+  box-shadow:0 10px 36px rgba(10,15,30,0.32)}}
+.pb-share-bottom-kicker{{font-size:0.58rem;font-weight:800;letter-spacing:4.5px;color:#F0DB94;text-transform:uppercase;margin-bottom:10px}}
+.pb-share-bottom-title{{font-family:'Nunito',sans-serif;font-size:1.45rem;font-weight:800;color:#FFFFFF;line-height:1.22;margin-bottom:12px;text-shadow:0 2px 12px rgba(0,0,0,0.4)}}
+.pb-share-bottom-sub{{font-family:'Lora',serif;font-style:italic;font-size:0.98rem;color:rgba(255,255,255,0.88);margin-bottom:22px;line-height:1.6;max-width:520px;margin-left:auto;margin-right:auto}}
 .pb-share-bottom-btn{{display:inline-flex;align-items:center;gap:10px;padding:14px 30px;
   background:linear-gradient(135deg,#D4A843,#E8C96A);color:#1F2440;border:none;cursor:pointer;
   border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.85rem;font-weight:800;letter-spacing:1.5px;
