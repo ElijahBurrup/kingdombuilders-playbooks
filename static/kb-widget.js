@@ -32,6 +32,11 @@
  */
 
 (function (global) {
+    // Idempotent: legacy.py now injects this in <head>, but some newly-shipped
+    // playbooks still include their own <script src="kb-widget.js">. Without
+    // this guard, init() runs twice and re-defines all the closures.
+    if (global.kbWidget && global.kbWidget._kb_loaded) return;
+
     var LS_PREFIX = "kb:widget:";
     var MIGRATED_FLAG = "kb:widget:migrated:";
 
@@ -489,7 +494,8 @@
         isSignedIn: isSignedIn,
         attachSave: attachSave,
         onReady: onReady,
-        _ready: false
+        _ready: false,
+        _kb_loaded: true
     };
 
     global.kbWidget = kbWidget;

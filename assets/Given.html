@@ -1082,26 +1082,28 @@ footer .brand{font-family:'Cormorant Garamond',serif;font-size:0.72rem;font-styl
     document.querySelectorAll('.ff-frame .ff-open-btn').forEach(btn => {
       btn.addEventListener('click', () => btn.closest('.ff-frame').classList.add('opened'));
     });
-    if(window.kbWidget){
-      kbWidget.onReady(async () => {
-        const r = await kbWidget.load(SLUG, 'five-frames-applied');
-        if(r && r.data && r.data.demand){ input.value = r.data.demand; syncDemand(); }
-        if(window.kbWidget.attachSave){
-          const host = document.getElementById('five-frames');
-          if(host) window.kbWidget.attachSave(host, {
-            slug: SLUG,
-            key: 'five-frames-applied',
-            widgetTitle: 'Five Frames Applied',
-            playbookTitle: 'Manna: Given',
-            getPayload: () => ({demand: input.value.trim()}),
-            getPreview: () => {
-              const v = input.value.trim();
-              return v ? 'Holding to the light: ' + v : '(no demand named)';
-            }
-          });
-        }
-      });
+    async function hydrate(){
+      if(!window.kbWidget) return;
+      const r = await kbWidget.load(SLUG, 'five-frames-applied');
+      if(r && r.data && r.data.demand){ input.value = r.data.demand; syncDemand(); }
+      if(window.kbWidget.attachSave){
+        const host = document.getElementById('five-frames');
+        if(host) window.kbWidget.attachSave(host, {
+          slug: SLUG,
+          key: 'five-frames-applied',
+          widgetTitle: 'Five Frames Applied',
+          playbookTitle: 'Manna: Given',
+          getPayload: () => ({demand: input.value.trim()}),
+          getPreview: () => {
+            const v = input.value.trim();
+            return v ? 'Holding to the light: ' + v : '(no demand named)';
+          }
+        });
+      }
     }
+    if(window.kbWidget && window.kbWidget._ready) hydrate();
+    else if(window.kbWidget && window.kbWidget.onReady) window.kbWidget.onReady(hydrate);
+    else window.addEventListener('load', hydrate);
   })();
 
   // ========== GIFT INVENTORY ==========
@@ -1137,24 +1139,28 @@ footer .brand{font-family:'Cormorant Garamond',serif;font-size:0.72rem;font-styl
       save();
     });
     input.addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); btn.click(); } });
-    if(window.kbWidget){
-      kbWidget.onReady(async () => {
-        const r = await kbWidget.load(SLUG, 'gift-inventory');
-        if(r && r.data && Array.isArray(r.data.entries)){ entries = r.data.entries; }
-        render();
-        if(window.kbWidget.attachSave){
-          window.kbWidget.attachSave(card, {
-            slug: SLUG,
-            key: 'gift-inventory',
-            widgetTitle: 'Gift Inventory',
-            playbookTitle: 'Manna: Given',
-            getPayload: () => ({entries}),
-            getPreview: () => entries.length + (entries.length === 1 ? ' gift named' : ' gifts named') +
-              (entries.length ? ' · most recent: ' + entries[entries.length-1].text : '')
-          });
-        }
-      });
-    } else { render(); }
+
+    async function hydrate(){
+      if(!window.kbWidget){ render(); return; }
+      const r = await kbWidget.load(SLUG, 'gift-inventory');
+      if(r && r.data && Array.isArray(r.data.entries)){ entries = r.data.entries; }
+      render();
+      if(window.kbWidget.attachSave){
+        window.kbWidget.attachSave(card, {
+          slug: SLUG,
+          key: 'gift-inventory',
+          widgetTitle: 'Gift Inventory',
+          playbookTitle: 'Manna: Given',
+          getPayload: () => ({entries}),
+          getPreview: () => entries.length + (entries.length === 1 ? ' gift named' : ' gifts named') +
+            (entries.length ? ' · most recent: ' + entries[entries.length-1].text : '')
+        });
+      }
+    }
+    // Defer kb-widget loads after this inline script; gate hydrate on it.
+    if(window.kbWidget && window.kbWidget._ready) hydrate();
+    else if(window.kbWidget && window.kbWidget.onReady) window.kbWidget.onReady(hydrate);
+    else window.addEventListener('load', hydrate);
   })();
 
   // ========== PROGRESS + CHAPTER PILL ==========

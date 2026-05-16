@@ -370,10 +370,20 @@ def _inject_back_button_and_tracking(html: str, slug: str, signed_in: bool = Fal
     """Inject fixed back button and exit tracking script before </body>."""
     prefix = settings.URL_PREFIX or ""
     signed_in_js = "true" if signed_in else "false"
-    widget_bootstrap = f"""
+    # Bootstrap goes in <head> (synchronous, no defer) so window.kbWidget
+    # exists when the playbook's inline IIFEs run. Inline scripts are parsed
+    # in the body BEFORE any <script> placed at the end of </body>, so a
+    # deferred kb-widget.js at the bottom would arrive too late — widget
+    # IIFEs run their `if(window.kbWidget)` check, find nothing, and skip
+    # load+attachSave entirely. Putting the script in <head> without defer
+    # ensures it's available before any widget IIFE executes.
+    widget_head_bootstrap = f"""
 <script>window.KB_USER = {{signed_in: {signed_in_js}, slug: '{slug}'}};</script>
-<script src="{prefix}/static/kb-widget.js?v=2026-05-16-saves-2" defer></script>
+<script src="{prefix}/static/kb-widget.js?v=2026-05-16-saves-3"></script>
 """
+    # Empty placeholder for the bottom-of-body injection (kept for the
+    # `</body>` replace chain).
+    widget_bootstrap = ""
     back_button = f"""
 <style>
 .pb-back{{position:fixed;top:16px;left:16px;z-index:9999;display:flex;align-items:center;gap:6px;
@@ -1339,6 +1349,14 @@ def _inject_back_button_and_tracking(html: str, slug: str, signed_in: bool = Fal
 }})();
 </script>
 """
+    # 1. Inject kbWidget bootstrap in <head> (synchronous, before any inline
+    #    body IIFEs). Fall back to before-</body> if no </head> tag is found.
+    if "</head>" in html:
+        html = html.replace("</head>", widget_head_bootstrap + "</head>", 1)
+    else:
+        html = html.replace("<body", widget_head_bootstrap + "<body", 1)
+
+    # 2. Inject the rest of the chrome before </body> as before.
     return html.replace("</body>", share_block + back_button + chain_panel + email_slidein + rating_popup + tts_controls + print_css + pdf_trigger + widget_bootstrap + tracking_script + ga_snippet + "</body>")
 
 
