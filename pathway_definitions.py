@@ -80,7 +80,7 @@ PATHWAYS = [
             "the-lifted-ceiling",
             "the-new-earning",
             "conductors-playbook",
-            "the-mockingbirds-song",
+            "love-the-practice",
             "tending-the-garden",
         ],
         "scripture": '"And God said, Let us make man in our image, after our likeness: and let them have dominion." Genesis 1:26',
