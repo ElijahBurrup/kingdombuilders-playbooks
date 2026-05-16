@@ -1086,6 +1086,20 @@ footer .brand{font-family:'Cormorant Garamond',serif;font-size:0.72rem;font-styl
       kbWidget.onReady(async () => {
         const r = await kbWidget.load(SLUG, 'five-frames-applied');
         if(r && r.data && r.data.demand){ input.value = r.data.demand; syncDemand(); }
+        if(window.kbWidget.attachSave){
+          const host = document.getElementById('five-frames');
+          if(host) window.kbWidget.attachSave(host, {
+            slug: SLUG,
+            key: 'five-frames-applied',
+            widgetTitle: 'Five Frames Applied',
+            playbookTitle: 'Manna: Given',
+            getPayload: () => ({demand: input.value.trim()}),
+            getPreview: () => {
+              const v = input.value.trim();
+              return v ? 'Holding to the light: ' + v : '(no demand named)';
+            }
+          });
+        }
       });
     }
   })();

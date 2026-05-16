@@ -325,8 +325,7 @@ footer .brand{margin-top:8px;color:var(--teal-pale)}
   </div>
 </div>
 
-<!-- ===== FELT-SENSE COLD OPEN ===== -->
-<section class="feltopen">
+<!-- ===== FELT-SENSE COLD OPEN ===== --><section class="feltopen" id="feltopen">
 <div class="feltopen-inner">
 <div class="feltopen-eyebrow">Feel it before you read it</div>
 <h2>Sit for ten seconds. Then name the word.</h2>
@@ -1105,17 +1104,64 @@ footer .brand{margin-top:8px;color:var(--teal-pale)}
   // ===== Save to My Saves =====
   function attachSaveBtn(){
     if(!window.kbWidget || !window.kbWidget.attachSave) return;
-    var host = document.getElementById('pmap');
-    if(!host) return;
-    window.kbWidget.attachSave(host, {
-      slug: 'the-tide-pools-echo',
-      key: 'process-map',
-      widgetTitle: 'Your Process Map',
-      playbookTitle: "The Tide Pool's Echo",
+    var SLUG = 'the-tide-pools-echo';
+    var PB = "The Tide Pool's Echo";
+
+    var pmap = document.getElementById('pmap');
+    if(pmap) window.kbWidget.attachSave(pmap, {
+      slug: SLUG, key: 'process-map',
+      widgetTitle: 'Your Process Map', playbookTitle: PB,
       getPayload: function(){ return touched; },
       getPreview: function(){
         var n = Object.keys(touched).filter(function(k){ return touched[k]; }).length;
         return n + ' / ' + concepts.length + ' concepts contacted in the body';
+      }
+    });
+
+    var fo = document.getElementById('feltopen');
+    if(fo) window.kbWidget.attachSave(fo, {
+      slug: SLUG, key: 'felt-sense-open',
+      widgetTitle: 'Felt-Sense Cold Open', playbookTitle: PB,
+      getPayload: function(){
+        var i = document.getElementById('fo-input');
+        return {word: i ? i.value.trim() : ''};
+      },
+      getPreview: function(){
+        var i = document.getElementById('fo-input');
+        var v = i ? i.value.trim() : '';
+        return v ? 'The word: ' + v : '(not yet named)';
+      }
+    });
+
+    var mx = document.getElementById('mixer');
+    if(mx) window.kbWidget.attachSave(mx, {
+      slug: SLUG, key: 'two-stream-crossing',
+      widgetTitle: 'Two-Stream Crossing', playbookTitle: PB,
+      getPayload: function(){
+        var a = document.getElementById('mx-a');
+        var b = document.getElementById('mx-b');
+        return {a: a ? a.value.trim() : '', b: b ? b.value.trim() : ''};
+      },
+      getPreview: function(){
+        var a = document.getElementById('mx-a');
+        var b = document.getElementById('mx-b');
+        var av = a ? a.value.trim() : '', bv = b ? b.value.trim() : '';
+        return (av || bv) ? (av + ' × ' + bv) : '(no streams named)';
+      }
+    });
+
+    var pa = document.getElementById('pause');
+    if(pa) window.kbWidget.attachSave(pa, {
+      slug: SLUG, key: 'the-pause',
+      widgetTitle: 'The Pause', playbookTitle: PB,
+      getPayload: function(){
+        var i = document.getElementById('pa-input');
+        return {word: i ? i.value.trim() : ''};
+      },
+      getPreview: function(){
+        var i = document.getElementById('pa-input');
+        var v = i ? i.value.trim() : '';
+        return v ? 'The word that landed: ' + v : '(not yet received)';
       }
     });
   }

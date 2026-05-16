@@ -322,7 +322,7 @@ h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.18;letter-spaci
 </section>
 
 <!-- ===== STOP BEFORE READING (cold-open) ===== -->
-<section class="stopbefore">
+<section class="stopbefore" id="stopbefore">
 <div class="stopbefore-inner">
 <div class="stopbefore-eyebrow">A moment, before you begin</div>
 <h2>Walk one room in your house. Find one gift hiding under a demand.</h2>
@@ -1369,9 +1369,8 @@ You were placed here.</p>
   // ===== Save to My Saves =====
   function attachSaveBtn(){
     if(!window.kbWidget || !window.kbWidget.attachSave) return;
-    var host = document.getElementById('walker');
-    if(!host) return;
-    window.kbWidget.attachSave(host, {
+    var walker = document.getElementById('walker');
+    if(walker) window.kbWidget.attachSave(walker, {
       slug: 'returning',
       key: 'domain-walker',
       widgetTitle: 'The Domain Walker',
@@ -1381,6 +1380,57 @@ You were placed here.</p>
         var received = Object.values(states).filter(function(s){ return s === 'received'; }).length;
         var named = Object.values(gifts).filter(function(g){ return g && g.length; }).length;
         return received + '/7 received · ' + named + ' gifts named';
+      }
+    });
+
+    var sb = document.getElementById('stopbefore');
+    if(sb) window.kbWidget.attachSave(sb, {
+      slug: 'returning',
+      key: 'stop-before-reading',
+      widgetTitle: 'Stop Before Reading',
+      playbookTitle: 'Manna: Returning',
+      getPayload: function(){
+        var i = document.getElementById('sb-input');
+        return {gift: i ? i.value.trim() : ''};
+      },
+      getPreview: function(){
+        var i = document.getElementById('sb-input');
+        var v = i ? i.value.trim() : '';
+        return v ? 'One gift hiding under a demand: ' + v : '(not yet named)';
+      }
+    });
+
+    var s60 = document.getElementById('stop60');
+    if(s60) window.kbWidget.attachSave(s60, {
+      slug: 'returning',
+      key: 'stop60',
+      widgetTitle: '60-Second Stop',
+      playbookTitle: 'Manna: Returning',
+      getPayload: function(){
+        var i = document.getElementById('stop60-input');
+        return {saw: i ? i.value.trim() : ''};
+      },
+      getPreview: function(){
+        var i = document.getElementById('stop60-input');
+        var v = i ? i.value.trim() : '';
+        return v ? 'What I saw: ' + v : '(not yet captured)';
+      }
+    });
+
+    var pw = document.getElementById('place-w');
+    if(pw) window.kbWidget.attachSave(pw, {
+      slug: 'returning',
+      key: 'place-witness',
+      widgetTitle: 'Place Witness',
+      playbookTitle: 'Manna: Returning',
+      getPayload: function(){
+        var i = document.getElementById('place-input');
+        return {where: i ? i.value.trim() : ''};
+      },
+      getPreview: function(){
+        var i = document.getElementById('place-input');
+        var v = i ? i.value.trim() : '';
+        return v ? 'Placed in ' + v : '(not yet named)';
       }
     });
   }
