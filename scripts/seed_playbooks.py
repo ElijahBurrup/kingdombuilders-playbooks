@@ -112,6 +112,12 @@ SERIES_DEFS = [
         "description": "A 2-part (and growing) series on the economic shape of the AI age. Part 1 (The Lifted Ceiling) marshals 600 years of evidence that technology lifts ceilings rather than destroying floors. Part 2 (The New Earning) maps 16 income categories that compound as AI compounds and introduces the thermodynamics test for work that survives.",
         "display_order": 10,
     },
+    {
+        "name": "The Mastery Series",
+        "slug": "mastery-series",
+        "description": "A series on the architecture of mastery in the AI age. Part 1 (Love the Practice) teaches the six fundamentals that compound into AI superpower through the stories of Stephen Curry, Jiro Ono, Roger Bannister, Pixar, Lin-Manuel Miranda, and the Hubble Telescope team.",
+        "display_order": 11,
+    },
 ]
 
 # ---------------------------------------------------------------------------
@@ -119,6 +125,7 @@ SERIES_DEFS = [
 # ---------------------------------------------------------------------------
 PLAYBOOKS_DATA = [
     {"slug": "conductors-playbook", "title": "The Conductor's Playbook", "route": "/conductorsplaybook", "category": "productivity", "landing_file": "landing.html", "asset_file": "The_Conductors_Playbook.html", "pricing_type": "paid", "price_cents": 6700, "cover_emoji": "\U0001f3bc", "featured": True},
+    {"slug": "love-the-practice", "title": "Love the Practice", "route": "/lovethepractice", "category": "productivity", "series": "mastery-series", "series_order": 1, "landing_file": "love-the-practice.html", "asset_file": "Love_The_Practice.html", "pricing_type": "free", "price_cents": 0, "cover_emoji": "\U0001f3af", "featured": True},
     {"slug": "lay-it-down", "title": "Lay It Down", "route": "/layitdown", "category": "faith", "series": "lay-it-down", "series_order": 0, "landing_file": "lay-it-down.html", "asset_file": "Lay_It_Down.html", "cover_emoji": "\u2694\ufe0f", "pricing_type": "free", "price_cents": 0},
     {"slug": "the-ant-network", "title": "The Ant Network", "route": "/theantnetwork", "category": "technology", "landing_file": "the-ant-network.html", "asset_file": "The_Ant_Network.html", "cover_emoji": "\U0001f41c"},
     {"slug": "the-cost-ledger", "title": "The Cost Ledger", "route": "/thecostledger", "category": "mindset", "landing_file": "the-cost-ledger.html", "asset_file": "The_Cost_Ledger.html", "cover_emoji": "\U0001f4d2"},

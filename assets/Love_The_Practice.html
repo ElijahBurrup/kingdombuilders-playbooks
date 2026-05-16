@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Love the Practice. Six Reps For Working With AI Like A Master</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0A1530;--navy-deep:#040B1F;--navy-mid:#142446;--navy-light:#2A3C68;
+  --gold:#D4A843;--gold-glow:#E8C96A;--gold-pale:#F0DB94;--gold-deep:#A8821C;
+  --crimson:#B43A4E;--crimson-glow:#D45A6E;--crimson-pale:#E89BA8;
+  --ink:#0B1428;--ink-mid:#1E2A48;
+  --cream:#FBF8F0;--cream-warm:#F5EFE0;--cream-deep:#E8DFC8;
+  --text:#0F1A30;--text-light:#2A3D58;--text-muted:#5A6E88;
+  --white:#FFFFFF;--radius:14px;
+  --shadow-soft:0 2px 14px rgba(10,21,48,0.07);
+  --shadow-mid:0 6px 30px rgba(10,21,48,0.12);
+  --shadow-deep:0 10px 44px rgba(10,21,48,0.18);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--cream);line-height:1.82;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.18;letter-spacing:-0.005em}
+.page{max-width:720px;margin:0 auto;padding:0 24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--navy);font-weight:700}
+.prose em{color:var(--crimson);font-style:normal;font-weight:600}
+.prose h2{font-size:1.42rem;color:var(--navy);margin:44px 0 16px;letter-spacing:-0.01em;display:flex;align-items:center;gap:10px}
+.prose h3{font-size:1.15rem;color:var(--navy);margin:32px 0 12px}
+
+/* progress bar + chapter pill */
+#progress-bar{position:fixed;top:0;left:0;width:0%;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold-glow));z-index:1000;transition:width 0.1s linear}
+#chapter-pill{position:fixed;top:14px;right:14px;background:rgba(10,21,48,0.85);backdrop-filter:blur(12px);color:var(--gold-pale);font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;padding:7px 16px;border-radius:50px;z-index:999;opacity:0;transition:opacity 0.3s ease}
+#chapter-pill.show{opacity:1}
+
+/* COVER */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(170deg,#04081C 0%,#0A1530 30%,#142446 60%,#0A1530 100%);position:relative;overflow:hidden}
+.star{position:absolute;border-radius:50%;animation:star-pulse ease-in-out infinite;pointer-events:none}
+.star:nth-child(1){width:3px;height:3px;background:rgba(212,168,67,0.55);left:12%;top:22%;animation-duration:6s}
+.star:nth-child(2){width:2px;height:2px;background:rgba(232,201,106,0.6);left:28%;top:48%;animation-duration:7s;animation-delay:-2s}
+.star:nth-child(3){width:4px;height:4px;background:rgba(212,168,67,0.45);left:52%;top:18%;animation-duration:8s;animation-delay:-3s}
+.star:nth-child(4){width:2px;height:2px;background:rgba(232,201,106,0.7);left:71%;top:41%;animation-duration:6.5s;animation-delay:-1s}
+.star:nth-child(5){width:3px;height:3px;background:rgba(180,58,78,0.5);left:84%;top:28%;animation-duration:9s;animation-delay:-5s}
+.star:nth-child(6){width:2px;height:2px;background:rgba(212,168,67,0.5);left:18%;top:73%;animation-duration:7.5s;animation-delay:-4s}
+.star:nth-child(7){width:3px;height:3px;background:rgba(232,201,106,0.4);left:78%;top:68%;animation-duration:8s;animation-delay:-6s}
+.star:nth-child(8){width:2px;height:2px;background:rgba(180,58,78,0.5);left:40%;top:78%;animation-duration:6s;animation-delay:-7s}
+@keyframes star-pulse{0%,100%{transform:scale(0.6);opacity:0.25}50%{transform:scale(1.4);opacity:0.85}}
+.cover-grain{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.025;mix-blend-mode:overlay;pointer-events:none}
+.cover-content{position:relative;z-index:2;padding:48px 24px}
+.cover-badge{display:inline-block;padding:6px 22px;border:1px solid rgba(212,168,67,0.32);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:4.5px;text-transform:uppercase;color:var(--gold-glow);margin-bottom:36px;background:rgba(212,168,67,0.06)}
+.cover-art{display:block;margin:0 auto 30px;width:160px;height:160px;animation:cover-float 6s ease-in-out infinite}
+@keyframes cover-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.cover h1{font-family:'Nunito',sans-serif;font-size:clamp(2.4rem,6vw,3.8rem);font-weight:900;color:var(--white);line-height:1.05;margin-bottom:6px}
+.cover h1 strong{font-weight:900;color:var(--gold-glow);display:block;font-size:clamp(2.8rem,7.5vw,4.6rem)}
+.cover-tagline{font-family:'Lora',serif;font-size:1.02rem;font-style:italic;color:rgba(255,255,255,0.55);margin-top:26px;line-height:1.74;max-width:560px;margin-left:auto;margin-right:auto}
+.cover-tagline em{color:var(--gold-pale);font-style:normal;font-weight:600}
+.cover-sub{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-top:18px}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.58rem;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.18);margin-top:52px}
+
+/* CHAPTER HEADS */
+.ch-head{background:linear-gradient(170deg,var(--navy-deep),var(--navy));padding:72px 24px 52px;position:relative;overflow:hidden;margin:0}
+.ch-head::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(212,168,67,0.04) 50%,transparent 100%);pointer-events:none}
+.ch-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 5%,var(--gold) 50%,transparent 95%);opacity:0.45}
+.ch-head .page{position:relative;z-index:2}
+.ch-badge{display:inline-block;padding:5px 18px;background:rgba(212,168,67,0.1);border:1px solid rgba(212,168,67,0.3);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:18px}
+.ch-num{font-family:'Nunito',sans-serif;font-size:5.5rem;font-weight:900;line-height:0.9;color:rgba(212,168,67,0.16);margin-bottom:-12px;position:relative;z-index:2}
+.ch-title{font-family:'Nunito',sans-serif;font-size:2.4rem;font-weight:900;color:var(--white);line-height:1.1;letter-spacing:-0.02em;margin-bottom:12px;position:relative;z-index:2}
+.ch-sub{font-family:'Lora',serif;font-size:0.98rem;font-style:italic;color:rgba(255,255,255,0.55);line-height:1.7;max-width:560px;position:relative;z-index:2}
+
+/* RIBBONS (scripture between chapters) */
+.ribbon{margin:20px 0;padding:24px 28px;background:linear-gradient(135deg,rgba(212,168,67,0.06),rgba(180,58,78,0.04));border-top:1.5px solid rgba(212,168,67,0.22);border-bottom:1.5px solid rgba(212,168,67,0.22);text-align:center}
+.ribbon p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:var(--text-light);max-width:560px;margin:0 auto;line-height:1.7}
+.ribbon .ref{display:block;font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold-deep);margin-top:10px;font-style:normal}
+
+/* SCOREBOARD (signature element of this playbook) */
+.scoreboard{margin:40px 0;background:linear-gradient(135deg,var(--navy-deep),var(--navy-mid));border-radius:var(--radius);padding:28px 26px;color:#fff;box-shadow:var(--shadow-deep);position:relative;overflow:hidden;border:1px solid rgba(212,168,67,0.2)}
+.scoreboard::before{content:'';position:absolute;top:-20%;right:-10%;width:200px;height:200px;background:radial-gradient(circle,rgba(212,168,67,0.1) 0%,transparent 70%);border-radius:50%}
+.sb-label{font-family:'Nunito',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:14px;position:relative;z-index:2}
+.sb-name{font-family:'Nunito',sans-serif;font-size:1.5rem;font-weight:900;color:#fff;margin-bottom:6px;position:relative;z-index:2}
+.sb-detail{font-family:'Lora',serif;font-size:0.92rem;font-style:italic;color:rgba(255,255,255,0.7);line-height:1.7;margin-bottom:20px;position:relative;z-index:2}
+.sb-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;position:relative;z-index:2}
+@media(max-width:560px){.sb-stats{grid-template-columns:1fr 1fr}}
+.sb-stat{padding:14px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(212,168,67,0.18);border-radius:10px;text-align:center}
+.sb-stat-num{font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--gold-glow);line-height:1.1;margin-bottom:4px}
+.sb-stat-label{font-family:'Nunito',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);line-height:1.3}
+
+/* DRILL CARD (the daily practice protocol) */
+.drill{margin:40px 0;background:#fff;border-radius:var(--radius);overflow:hidden;border:2px solid var(--gold);box-shadow:var(--shadow-mid)}
+.drill-head{padding:18px 26px;background:linear-gradient(135deg,var(--gold) 0%,var(--gold-glow) 100%);color:var(--navy-deep);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.drill-head-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:900;letter-spacing:4px;text-transform:uppercase}
+.drill-time{font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:700;background:rgba(10,21,48,0.18);padding:4px 10px;border-radius:50px}
+.drill-title{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;color:var(--navy);padding:20px 26px 8px;line-height:1.3}
+.drill-body{padding:0 26px 24px;font-family:'Lora',serif;font-size:0.95rem;color:var(--text);line-height:1.78}
+.drill-body strong{color:var(--navy);font-weight:700}
+.drill-steps{counter-reset:step;list-style:none;padding:14px 0 0;margin:0}
+.drill-steps li{position:relative;padding:14px 0 14px 44px;border-top:1px solid rgba(212,168,67,0.18);font-size:0.92rem;line-height:1.65}
+.drill-steps li:first-child{border-top:none;padding-top:8px}
+.drill-steps li::before{counter-increment:step;content:counter(step);position:absolute;left:0;top:14px;width:28px;height:28px;border-radius:50%;background:var(--navy);color:var(--gold-glow);font-family:'Nunito',sans-serif;font-weight:800;font-size:0.78rem;display:flex;align-items:center;justify-content:center}
+.drill-steps li:first-child::before{top:8px}
+
+/* SCENE (the master's story) */
+.scene{margin:40px 0;padding:30px 30px 26px;background:linear-gradient(160deg,var(--cream-warm),#FFFDF2);border-radius:var(--radius);border-left:4px solid var(--crimson);box-shadow:var(--shadow-soft);position:relative}
+.scene-label{font-family:'Nunito',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--crimson);margin-bottom:14px}
+.scene h4{font-family:'Nunito',sans-serif;font-size:1.12rem;color:var(--navy);margin-bottom:14px;line-height:1.3}
+.scene p{font-size:0.95rem;color:var(--text);line-height:1.78;margin-bottom:14px}
+.scene p:last-child{margin-bottom:0}
+.scene em{color:var(--crimson);font-style:normal;font-weight:600}
+.scene strong{color:var(--navy);font-weight:700}
+
+/* VIZ (the AI translation) */
+.viz{margin:40px 0;background:#fff;border-radius:var(--radius);overflow:hidden;border:1.5px solid rgba(10,21,48,0.1);box-shadow:var(--shadow-soft)}
+.viz-head{padding:14px 24px;background:linear-gradient(135deg,var(--navy-deep),var(--navy-mid));color:#fff;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(212,168,67,0.2)}
+.viz-icon{width:36px;height:36px;border-radius:50%;background:rgba(212,168,67,0.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--gold-glow)}
+.viz-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.viz-meta{flex:1}
+.viz-label{font-family:'Nunito',sans-serif;font-size:0.48rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:3px}
+.viz h4{font-family:'Nunito',sans-serif;font-size:1rem;color:#fff;font-weight:700;line-height:1.25}
+.viz-body{padding:24px 26px}
+.viz-body p{font-size:0.93rem;color:var(--text);line-height:1.78;margin-bottom:14px}
+.viz-body p:last-child{margin-bottom:0}
+.viz-body strong{color:var(--navy);font-weight:700}
+.viz-body em{color:var(--crimson);font-style:normal;font-weight:600}
+
+/* GRAND QUOTE */
+.gq{margin:44px 0;text-align:center;padding:32px 30px;background:linear-gradient(140deg,var(--navy-deep),var(--navy));border-radius:var(--radius);border:1px solid rgba(212,168,67,0.25);position:relative;overflow:hidden;box-shadow:var(--shadow-deep)}
+.gq::before{content:'';position:absolute;top:-30%;left:-10%;width:240px;height:240px;background:radial-gradient(circle,rgba(212,168,67,0.08) 0%,transparent 70%);border-radius:50%}
+.gq blockquote{font-family:'Lora',Georgia,serif;font-size:1.18rem;font-style:italic;color:#fff;line-height:1.6;max-width:560px;margin:0 auto;position:relative;z-index:2}
+.gq cite{display:block;font-family:'Nunito',sans-serif;font-size:0.58rem;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold-glow);margin-top:18px;font-style:normal;position:relative;z-index:2}
+
+/* THINK BOX */
+.think{margin:40px 0;padding:28px 30px;background:linear-gradient(140deg,#fff,var(--cream-warm));border-radius:var(--radius);border:1.5px solid rgba(10,21,48,0.1);box-shadow:var(--shadow-soft);position:relative}
+.think-label{font-family:'Nunito',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--gold-deep);margin-bottom:14px}
+.think h4{font-family:'Nunito',sans-serif;font-size:1.08rem;color:var(--navy);margin-bottom:14px;line-height:1.3}
+.think p{font-size:0.92rem;color:var(--text);line-height:1.75;margin-bottom:12px}
+.think-line{height:1px;background:rgba(10,21,48,0.12);margin:16px 0;border:none}
+.think .q-start{font-family:'Lora',serif;font-style:italic;color:var(--text-light);font-size:0.92rem;margin-bottom:8px}
+
+/* ROOT CHECK */
+.root-ck{margin:40px 0;padding:30px 30px 26px;background:linear-gradient(140deg,var(--cream-warm),#FFFDF2);border-radius:var(--radius);border:1.5px solid rgba(212,168,67,0.25);box-shadow:var(--shadow-soft)}
+.rc-label{font-family:'Nunito',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--gold-deep);margin-bottom:8px;text-align:center}
+.root-ck h4{font-family:'Nunito',sans-serif;font-size:1.05rem;color:var(--navy);text-align:center;margin-bottom:20px}
+.r-item{display:flex;gap:12px;padding:10px 0;border-top:1px solid rgba(212,168,67,0.18);align-items:flex-start}
+.r-item:first-of-type{border-top:none}
+.r-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);margin-top:8px;flex-shrink:0;box-shadow:0 0 0 3px rgba(212,168,67,0.18)}
+.r-text{font-family:'Lora',serif;font-size:0.9rem;color:var(--text);line-height:1.7}
+.r-text strong{color:var(--navy);font-weight:700}
+
+/* WIDGET */
+.widget{margin:48px 0;background:linear-gradient(160deg,var(--navy-deep),var(--navy));border-radius:18px;padding:34px 28px;color:#fff;box-shadow:var(--shadow-deep);border:2px solid rgba(212,168,67,0.28);position:relative;overflow:hidden}
+.widget::before{content:'';position:absolute;top:-30%;right:-15%;width:300px;height:300px;background:radial-gradient(circle,rgba(212,168,67,0.08) 0%,transparent 70%);border-radius:50%}
+.widget-head{text-align:center;margin-bottom:24px;position:relative;z-index:2}
+.widget-kicker{font-family:'Nunito',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--gold-glow);margin-bottom:8px}
+.widget-title{font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:#fff;margin-bottom:8px;letter-spacing:-0.01em}
+.widget-sub{font-family:'Lora',serif;font-size:0.9rem;font-style:italic;color:rgba(255,255,255,0.6);max-width:480px;margin:0 auto;line-height:1.6}
+.widget-streak{display:flex;justify-content:center;gap:14px;margin:20px 0 22px;position:relative;z-index:2}
+.streak-stat{padding:12px 20px;background:rgba(212,168,67,0.1);border:1px solid rgba(212,168,67,0.28);border-radius:10px;text-align:center;min-width:90px}
+.streak-num{font-family:'JetBrains Mono',monospace;font-size:1.6rem;font-weight:700;color:var(--gold-glow);line-height:1;margin-bottom:4px}
+.streak-label{font-family:'Nunito',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5)}
+.widget-reps{display:grid;grid-template-columns:1fr;gap:8px;position:relative;z-index:2}
+.rep-row{display:flex;align-items:center;gap:14px;padding:13px 16px;background:rgba(255,255,255,0.04);border:1px solid rgba(212,168,67,0.18);border-radius:10px;cursor:pointer;transition:all 0.18s;color:rgba(255,255,255,0.85)}
+.rep-row:hover{background:rgba(212,168,67,0.08);border-color:rgba(212,168,67,0.4)}
+.rep-row.done{background:rgba(45,170,90,0.12);border-color:rgba(120,220,150,0.4)}
+.rep-row.done .rep-check{background:#5ACA85;color:#fff;border-color:#5ACA85}
+.rep-row.done .rep-name{color:#A8E5BC}
+.rep-check{width:24px;height:24px;border-radius:50%;border:1.5px solid rgba(212,168,67,0.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:transparent;transition:all 0.18s;font-weight:800;font-size:0.85rem}
+.rep-name{font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:700;flex:1}
+.rep-tag{font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:var(--gold-pale);background:rgba(212,168,67,0.12);padding:2px 8px;border-radius:50px;white-space:nowrap}
+.widget-msg{margin-top:18px;text-align:center;font-family:'Lora',serif;font-size:0.88rem;font-style:italic;color:rgba(232,201,106,0.85);position:relative;z-index:2;min-height:24px}
+
+/* LAYERING SECTION */
+.layering{margin:48px 0;padding:36px 30px;background:linear-gradient(140deg,#fff,var(--cream-warm));border-radius:var(--radius);border:1.5px solid rgba(212,168,67,0.25);box-shadow:var(--shadow-mid)}
+.layering h3{font-family:'Nunito',sans-serif;font-size:1.3rem;color:var(--navy);text-align:center;margin-bottom:8px}
+.layering-sub{text-align:center;font-family:'Lora',serif;font-size:0.92rem;font-style:italic;color:var(--text-muted);margin-bottom:26px}
+.layer-grid{display:grid;grid-template-columns:1fr;gap:12px}
+.layer-card{display:flex;gap:16px;align-items:center;padding:14px 18px;background:#fff;border:1px solid rgba(10,21,48,0.08);border-radius:10px;box-shadow:var(--shadow-soft)}
+.layer-num{font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;color:var(--gold-deep);background:rgba(212,168,67,0.1);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.layer-name{font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:800;color:var(--navy);margin-right:auto}
+.layer-claim{font-family:'Lora',serif;font-size:0.86rem;color:var(--text-light);font-style:italic;text-align:right;flex-shrink:0;max-width:55%}
+
+/* FINAL TEST */
+.final-test{margin:48px 0;padding:36px 30px;background:linear-gradient(165deg,var(--navy-deep),var(--navy));border-radius:var(--radius);color:#fff;box-shadow:var(--shadow-deep)}
+.final-test h3{font-family:'Nunito',sans-serif;font-size:1.3rem;color:var(--gold-glow);text-align:center;margin-bottom:10px}
+.test-sub{text-align:center;font-family:'Lora',serif;font-size:0.92rem;font-style:italic;color:rgba(255,255,255,0.55);margin-bottom:24px;max-width:520px;margin-left:auto;margin-right:auto}
+.test-q{margin:14px 0;padding:18px 22px;background:rgba(255,255,255,0.05);border:1px solid rgba(212,168,67,0.18);border-radius:10px;cursor:pointer;transition:all 0.2s}
+.test-q:hover{background:rgba(212,168,67,0.1);border-color:rgba(212,168,67,0.32)}
+.test-num{font-family:'Nunito',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--gold-glow);margin-bottom:8px}
+.test-q p{font-family:'Lora',serif;font-size:0.96rem;color:rgba(255,255,255,0.92);line-height:1.65;margin:0}
+.test-q.open .test-a{display:block}
+.test-a{display:none;margin-top:14px;padding-top:14px;border-top:1px solid rgba(212,168,67,0.22);font-family:'Lora',serif;font-style:italic;color:var(--gold-pale);font-size:0.9rem;line-height:1.7}
+
+/* PROMPT CARD */
+.prompt{margin:44px 0;background:linear-gradient(140deg,var(--navy-deep),var(--navy-mid));border-radius:var(--radius);padding:30px 30px;color:#fff;box-shadow:var(--shadow-deep);border:1.5px solid rgba(212,168,67,0.28)}
+.prompt-head{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:4.5px;text-transform:uppercase;color:var(--gold-glow);margin-bottom:14px;text-align:center}
+.prompt h3{font-family:'Nunito',sans-serif;font-size:1.15rem;color:#fff;text-align:center;margin-bottom:14px}
+.prompt p{font-size:0.92rem;color:rgba(255,255,255,0.75);line-height:1.7;margin-bottom:12px}
+.prompt code{display:block;margin:14px 0 0;background:rgba(10,21,48,0.6);border:1px solid rgba(212,168,67,0.22);border-radius:8px;padding:18px 20px;font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--gold-pale);line-height:1.7;white-space:pre-wrap;overflow-x:auto}
+
+/* FINALE */
+.finale{padding:80px 26px 60px;text-align:center;background:linear-gradient(170deg,var(--navy-deep),var(--navy));position:relative;overflow:hidden}
+.finale::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(212,168,67,0.06) 0%,transparent 70%);border-radius:50%}
+.finale h2{font-family:'Nunito',sans-serif;font-size:clamp(1.7rem,4.5vw,2.6rem);font-weight:300;color:rgba(255,255,255,0.78);line-height:1.25;position:relative;margin-bottom:10px}
+.finale h2 strong{font-weight:900;color:var(--gold-glow);display:block}
+.finale p{font-family:'Lora',serif;font-size:0.96rem;color:rgba(255,255,255,0.55);max-width:540px;margin:18px auto 0;line-height:1.75;position:relative;z-index:2;font-style:italic}
+
+/* FOOTER */
+footer{background:#040A1A;padding:50px 26px 40px;text-align:center;color:rgba(255,255,255,0.5)}
+footer p{font-family:'Lora',serif;font-size:0.92rem;font-style:italic;line-height:1.7;max-width:540px;margin:0 auto 22px;color:rgba(255,255,255,0.42)}
+footer .brand{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--gold-glow)}
+
+/* REVEAL ANIMATION */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.7s ease,transform 0.7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* PRINT + MOBILE */
+@media(max-width:640px){
+  .page{padding-left:20px;padding-right:20px}
+  .ch-num{font-size:4rem}
+  .ch-title{font-size:1.85rem}
+  .scoreboard,.drill,.scene,.viz,.gq,.think,.root-ck,.widget,.layering,.final-test,.prompt{margin-left:0;margin-right:0;padding-left:22px;padding-right:22px}
+  .layer-card{flex-direction:column;align-items:flex-start}
+  .layer-claim{text-align:left;max-width:100%}
+  .sb-stats{grid-template-columns:1fr 1fr}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+
+/* ICON SYSTEM */
+.ico{display:inline-block;vertical-align:middle;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;width:18px;height:18px}
+.ch-badge .ico{width:11px;height:11px;margin-right:5px;vertical-align:-1px;stroke-width:2.2}
+.scene-label .ico,.widget-kicker .ico,.viz-label .ico,.think-label .ico,.rc-label .ico,.prompt-head .ico{width:13px;height:13px;margin-right:6px;vertical-align:-2px;stroke-width:2.2}
+.prose h2 .ico{width:22px;height:22px;margin-right:8px;vertical-align:-4px;color:var(--gold)}
+.r-text .ico{width:13px;height:13px;margin-right:5px;vertical-align:-2px;color:var(--gold-deep)}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<div id="chapter-pill"></div>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="ico-basket" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3v18M5.5 5.5l13 13M18.5 5.5l-13 13"/></symbol>
+  <symbol id="ico-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="ico-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></symbol>
+  <symbol id="ico-tag" viewBox="0 0 24 24"><path d="M3 12V5a2 2 0 012-2h7l9 9-9 9-9-9z"/><circle cx="8" cy="8" r="1.5" fill="currentColor"/></symbol>
+  <symbol id="ico-split" viewBox="0 0 24 24"><path d="M3 6h6l3 6 3-6h6M3 18h6l3-6 3 6h6"/></symbol>
+  <symbol id="ico-refresh" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0114-7l3 3M3 12l3 3 3-3M21 12a9 9 0 01-14 7l-3-3M21 12l-3-3-3 3"/></symbol>
+  <symbol id="ico-layers" viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5 9-5zM3 13l9 5 9-5M3 18l9 5 9-5"/></symbol>
+  <symbol id="ico-check-circ" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 6-7"/></symbol>
+  <symbol id="ico-scoreboard" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M9 10v4M15 10v4M12 8v8"/></symbol>
+  <symbol id="ico-drill" viewBox="0 0 24 24"><path d="M5 21h14M7 21V11l5-6 5 6v10M10 11h4M10 14h4M10 17h4"/></symbol>
+  <symbol id="ico-think" viewBox="0 0 24 24"><circle cx="12" cy="11" r="8"/><path d="M9 21h6M11 19v2M13 19v2M9 10h.01M15 10h.01"/></symbol>
+  <symbol id="ico-anchor" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><path d="M12 7v15M5 14c0 4 3 7 7 7s7-3 7-7M3 14h4M17 14h4"/></symbol>
+  <symbol id="ico-step" viewBox="0 0 24 24"><path d="M5 21l3-4 4 1 4-5 4 2"/></symbol>
+  <symbol id="ico-prompt" viewBox="0 0 24 24"><path d="M4 4h16v12H7l-3 3z"/><path d="M8 9h8M8 12h5"/></symbol>
+  <symbol id="ico-star" viewBox="0 0 24 24"><path d="M12 3l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></symbol>
+  <symbol id="ico-trophy" viewBox="0 0 24 24"><path d="M6 3h12v5a6 6 0 01-12 0V3z"/><path d="M6 6H3v2a3 3 0 003 3M18 6h3v2a3 3 0 01-3 3M9 14h6M9 19h6M12 14v5"/></symbol>
+</svg>
+
+<!-- ============================== COVER ============================== -->
+<section class="cover">
+  <div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div>
+  <div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div>
+  <div class="cover-grain"></div>
+  <div class="cover-content">
+    <div class="cover-badge">The Mastery Series &middot; Part 1</div>
+    <svg class="cover-art" viewBox="0 0 160 160" aria-hidden="true">
+      <defs>
+        <linearGradient id="cv-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#F0DB94"/>
+          <stop offset="100%" stop-color="#D4A843"/>
+        </linearGradient>
+        <radialGradient id="cv-glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#D4A843" stop-opacity="0.35"/>
+          <stop offset="100%" stop-color="#D4A843" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <circle cx="80" cy="80" r="74" fill="url(#cv-glow)"/>
+      <!-- target rings -->
+      <circle cx="80" cy="80" r="60" fill="none" stroke="url(#cv-gold)" stroke-width="1.5" opacity="0.35"/>
+      <circle cx="80" cy="80" r="44" fill="none" stroke="url(#cv-gold)" stroke-width="1.5" opacity="0.55"/>
+      <circle cx="80" cy="80" r="28" fill="none" stroke="url(#cv-gold)" stroke-width="2"/>
+      <circle cx="80" cy="80" r="14" fill="none" stroke="url(#cv-gold)" stroke-width="2"/>
+      <circle cx="80" cy="80" r="4" fill="url(#cv-gold)"/>
+      <!-- arc -->
+      <path d="M20 130 Q 80 30 140 130" fill="none" stroke="url(#cv-gold)" stroke-width="2" stroke-linecap="round" opacity="0.85"/>
+      <circle cx="20" cy="130" r="4" fill="#B43A4E"/>
+      <circle cx="140" cy="130" r="4" fill="url(#cv-gold)"/>
+    </svg>
+    <h1>Love<strong>The Practice</strong></h1>
+    <p class="cover-tagline">Stephen Curry's half-court shot is not magic. It is the visible tip of three million invisible reps. <em>So is every result you envy.</em> Six fundamentals, practiced daily, turn anyone into an AI master.</p>
+    <div class="cover-sub">Six Reps For Working With AI Like A Master</div>
+    <div class="cover-author">KingdomBuilders AI</div>
+  </div>
+</section>
+
+<!-- ============================== BEFORE WE BEGIN ============================== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-badge"><svg class="ico"><use href="#ico-star"/></svg>Pregame</div>
+    <div class="ch-num">00</div>
+    <h2 class="ch-title">The Magic Trick</h2>
+    <p class="ch-sub">The half-court shot is the visible 1 percent of an invisible 99. Every result you envy works this way. Including the people who look like AI wizards.</p>
+  </div>
+</div>
+
+<div class="page section prose">
+  <p>Stephen Curry walks onto the court for warmups. He picks up a ball at half court, takes one dribble, releases. The ball travels forty seven feet through the air. Before it lands, Curry has already turned away. He is looking at the next ball. The shot goes in. The crowd loses its mind.</p>
+  <p>The audience sees magic. Curry sees rep fifty thousand.</p>
+  <p>The math nobody runs: five hundred shots a day, multiplied by seven days, multiplied by fifty two weeks, multiplied by a career, equals roughly <strong>three million shots taken in private</strong> for every televised moment. The visible game is a thin surface rising up out of an ocean of practice the cameras never recorded. The wizardry is the practice surfacing.</p>
+
+  <div class="scoreboard">
+    <div class="sb-label"><svg class="ico"><use href="#ico-scoreboard"/></svg>The Math Nobody Wants To Do</div>
+    <div class="sb-name">Stephen Curry. Sixteen Year Career.</div>
+    <div class="sb-detail">Each invisible day became the visible career. The math is brutal in only one direction: it works.</div>
+    <div class="sb-stats">
+      <div class="sb-stat"><div class="sb-stat-num">500</div><div class="sb-stat-label">Shots Per Day</div></div>
+      <div class="sb-stat"><div class="sb-stat-num">182K</div><div class="sb-stat-label">Per Year</div></div>
+      <div class="sb-stat"><div class="sb-stat-num">2.9M</div><div class="sb-stat-label">Career Reps</div></div>
+    </div>
+  </div>
+
+  <p>The same arithmetic produced Jiro Ono on rice. Roger Federer on the serve. Marie Curie on the fractionation of pitchblende. Bach on his morning fugues. Every visible mastery is the integral of a daily practice the public never witnessed.</p>
+  <p>The thesis of this playbook is brief. There is a new arena rising in front of you. The arena is called <em>working with AI</em>, and inside it, a generation will quietly accumulate three million reps while everyone else accumulates one thousand. Five years from now, the wizards will look like wizards. They are not. They will be the ones who fell in love with six specific fundamentals and practiced them every day while the rest of you waited to feel inspired.</p>
+
+  <div class="gq">
+    <blockquote>"The visible magic is the invisible practice surfacing. So is the visible mediocrity."</blockquote>
+    <cite>The Half-Court Shot</cite>
+  </div>
+
+  <p>What follows is the rep sheet. Six fundamentals. One master per fundamental, drawn from people who built superpowers by drilling boring things for a long time. One <em>specific drill for AI work</em> per fundamental. Each drill takes ten to fifteen minutes. None of them will feel impressive on day one. The point is not day one. The point is day three hundred and sixty five.</p>
+
+  <p>If you do these six reps daily for a year, you will look like a wizard. Not because you became one. Because you finally let the boring math run.</p>
+</div>
+
+<div class="ribbon">
+  <p>"Train yourself to be godly. For physical training is of some value, but godliness has value for all things, holding promise for both the present life and the life to come."</p>
+  <span class="ref">1 Timothy 4:7-8</span>
+</div>
+
+<!-- ============================== CHAPTER 1: TASTE ============================== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-badge"><svg class="ico"><use href="#ico-step"/></svg>Chapter One</div>
+    <div class="ch-num">01</div>
+    <h2 class="ch-title">Taste</h2>
+    <p class="ch-sub">Curry knows mid-release whether the shot is good. Most people cannot tell after watching the ball land. The first fundamental is the eye.</p>
+  </div>
+</div>
+
+<div class="page section prose">
+  <p>If you watch Curry shoot a thousand times, the strangest thing is what happens between release and result. The ball has left his hand. There are still two full seconds before it arrives at the rim. In that two second window, Curry is no longer watching the ball. He is jogging back on defense. He is calling out a coverage. Sometimes he is celebrating before the ball lands.</p>
+  <p>This is not arrogance. This is taste. The ball left his fingertips at exactly the right release height, exactly the right backspin, exactly the right arc. His body knew before the result arrived. Most amateurs watch the ball intently because they cannot tell. <em>The professional cannot tell whether the shot will go in. The master cannot tell whether the shot is good.</em></p>
+
+  <div class="scene">
+    <div class="scene-label"><svg class="ico"><use href="#ico-eye"/></svg>The Master</div>
+    <h4>The Five Hundred Shots Curry Rates, Not Just Takes</h4>
+    <p>Curry's father Dell, an NBA shooter himself, drilled one thing harder than the shot: <em>rate every shot.</em> After every release, Stephen had to say one of three words. Pure. Off. Why. If "pure" he banked the rep. If "off" he had to name what was off before the next one. The Currys were not training the shot. They were training the judgment of the shot.</p>
+    <p>By the time Stephen reached the NBA, the judgment had collapsed into the body. He no longer needed to say the word. The shot left his hand and he <strong>was</strong> the rating. This is what taste means in any domain. The aesthetic judgment fuses with the action so completely that the two become one event.</p>
+  </div>
+
+  <div class="viz">
+    <div class="viz-head">
+      <div class="viz-icon"><svg viewBox="0 0 24 24"><use href="#ico-eye"/></svg></div>
+      <div class="viz-meta">
+        <div class="viz-label">For AI Work</div>
+        <h4>The Taste Fundamental</h4>
+      </div>
+    </div>
+    <div class="viz-body">
+      <p>The hardest skill in the AI era is not generating output. Generation is free. The hardest skill is <strong>distinguishing genuinely good AI output from confident slop</strong>. Most users cannot. They accept the first thing that arrives because it looks plausible. They ship the average. The market gets flooded with mediocre work that looks fine because nobody is rating shots.</p>
+      <p>The master rates every shot. Three pieces of AI output came back from the same prompt. One of them is better than the other two. <em>Why?</em> Naming the why is the rep. The why becomes vocabulary. The vocabulary becomes taste. Taste collapses into judgment that fires before the result is even fully read.</p>
+      <p>This is the fundamental that protects you against the generic. Everyone has the same models. Only some people can tell which output to ship.</p>
+    </div>
+  </div>
+
+  <div class="drill">
+    <div class="drill-head">
+      <div class="drill-head-label"><svg class="ico"><use href="#ico-drill"/></svg>The Daily Drill</div>
+      <div class="drill-time">12 min</div>
+    </div>
+    <div class="drill-title">The Three Outputs Rating</div>
+    <div class="drill-body">
+      <p>Pick one real task you actually need done today. Email, summary, outline, code, recipe. The task itself does not matter.</p>
+      <ol class="drill-steps">
+        <li>Generate the same output <strong>three times</strong>. Same prompt, three runs. If your tool has model selection, run the same prompt against three different models.</li>
+        <li>Read all three carefully. Rank them best to worst.</li>
+        <li>Write one sentence about why the best one beat the others. The sentence must use a <em>specific concrete word</em>. Not "better tone." Say "more concrete," "less hedging," "the example was real," "the structure went general-to-specific instead of specific-to-general." Vague reasons do not build taste. Specific reasons do.</li>
+        <li>Write one sentence about why the worst one is the worst. Same rule. Specific concrete word.</li>
+        <li>Keep a running list. After thirty days you will have sixty specific named flaws and virtues. That list is your <strong>taste lexicon</strong>. After ninety days the lexicon will start firing automatically while you read.</li>
+      </ol>
+      <p>Curry's father did not tell Stephen what good shots looked like. He made Stephen rate them and explain why. The rating is the rep. <em>Do not skip the why.</em></p>
+    </div>
+  </div>
+
+  <div class="think">
+    <div class="think-label"><svg class="ico"><use href="#ico-think"/></svg>Stop and Notice</div>
+    <h4>How many AI outputs have you shipped without rating?</h4>
+    <p class="q-start">Of the last ten things you accepted from an AI, how many did you explicitly rank against alternatives before sending? The honest answer is the size of your taste deficit.</p>
+  </div>
+</div>
+
+<div class="ribbon">
+  <p>"The simple believes everything, but the prudent gives thought to his steps."</p>
+  <span class="ref">Proverbs 14:15</span>
+</div>
+
+<!-- ============================== CHAPTER 2: NAMING ============================== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-badge"><svg class="ico"><use href="#ico-step"/></svg>Chapter Two</div>
+    <div class="ch-num">02</div>
+    <h2 class="ch-title">Naming</h2>
+    <p class="ch-sub">Jiro can identify a flaw from one grain. He spent seventy years naming imperfections. The second fundamental is the precision of the word.</p>
+  </div>
+</div>
+
+<div class="page section prose">
+  <p>In a basement subway sushi bar in Tokyo, Jiro Ono spent seventy years making nigiri. By the time he was old enough that his hands trembled at rest, the moment he picked up rice the tremor stopped. The rice <em>required</em> his hands to be steady, and his hands obeyed.</p>
+  <p>The astonishing thing about Jiro is not the sushi. It is what he can name. He can name the difference between rice cooked at 96 degrees and rice cooked at 97. He can name the rate at which a piece of tuna releases oil at different temperatures. He can name twelve specific imperfections in a single grain. His apprentices spend ten years on rice alone before they are allowed to touch fish. The ten years is not for the rice. It is for the <em>names</em>.</p>
+
+  <div class="scene">
+    <div class="scene-label"><svg class="ico"><use href="#ico-tag"/></svg>The Master</div>
+    <h4>The Ten Year Rice Apprenticeship</h4>
+    <p>Jiro's son Yoshikazu trained under him for over a decade. For most of those years his only job was rice. Wash, measure, cook, season, shape, taste. Wash, measure, cook, season, shape, taste. After eight years, Jiro pulled him aside and said: <em>"The rice is ready."</em></p>
+    <p>What had Yoshikazu actually learned? Not how to make rice. He had learned to <strong>name what was wrong with rice</strong>. Too soft. Too dry. Vinegar penetration uneven. Grain temperature dropping faster on the surface. Compression artifacts from his thumb. He had built a vocabulary of imperfection that allowed him to <em>see</em> what no untrained eye could see. The vocabulary was the skill. The skill was the vocabulary.</p>
+  </div>
+
+  <div class="viz">
+    <div class="viz-head">
+      <div class="viz-icon"><svg viewBox="0 0 24 24"><use href="#ico-tag"/></svg></div>
+      <div class="viz-meta">
+        <div class="viz-label">For AI Work</div>
+        <h4>The Naming Fundamental</h4>
+      </div>
+    </div>
+    <div class="viz-body">
+      <p>The difference between a vague prompt and a surgical prompt is not effort. It is vocabulary. The amateur writes <em>"give me an email to my client about the project delay."</em> The master writes <em>"give me a 90 word email to a client I have worked with for 4 years explaining a 2 week delay caused by a vendor issue, accepting full responsibility, naming a specific recovery date, written in our usual warm-but-direct register, no apologies for the apology."</em></p>
+      <p>The first prompt produces generic email. The second produces a specific email. The model is the same. The naming is the leverage.</p>
+      <p>Most people have a sloppy vocabulary because they have never been forced to be precise. <strong>Naming is the rep that turns fuzzy thinking into surgical thinking.</strong> The model only knows what you say. You only get good output when you can say what you actually want.</p>
+    </div>
+  </div>
+
+  <div class="drill">
+    <div class="drill-head">
+      <div class="drill-head-label"><svg class="ico"><use href="#ico-drill"/></svg>The Daily Drill</div>
+      <div class="drill-time">10 min</div>
+    </div>
+    <div class="drill-title">The 25 / 15 / 5 Funnel</div>
+    <div class="drill-body">
+      <p>Pick one fuzzy thing you actually want today. A piece of work, an outcome, a feeling, a relationship adjustment, a deliverable. Anything currently vague in your head.</p>
+      <ol class="drill-steps">
+        <li>Write what you want in <strong>exactly 25 words</strong>. No more. This is the first compression. You will discover what you do not actually know.</li>
+        <li>Now compress to <strong>exactly 15 words</strong>. You will be forced to delete the noise and keep the signal. This is uncomfortable. The discomfort is the rep.</li>
+        <li>Compress one more time. <strong>Exactly 5 words.</strong> No verbs allowed unless the verb is the point. The 5 word version is the <em>name</em> of what you want.</li>
+        <li>Prompt the AI using the 5 word name as the title and the 25 word version as the spec. The 15 word version is your check: if the AI output does not satisfy that sentence, you have not gotten what you asked for.</li>
+        <li>Note the friction. Where did the compression hurt most? That is the place your thinking was actually fuzzy.</li>
+      </ol>
+      <p>The 5 word version is what Jiro would call the dish. The 25 word version is the recipe. <em>If you cannot name it in five words, you do not know what you want.</em> The AI cannot help you find out.</p>
+    </div>
+  </div>
+
+  <div class="gq">
+    <blockquote>"The vocabulary of imperfection is the skill. The skill is the vocabulary."</blockquote>
+    <cite>Jiro On Rice</cite>
+  </div>
+</div>
+
+<div class="ribbon">
+  <p>"Death and life are in the power of the tongue."</p>
+  <span class="ref">Proverbs 18:21</span>
+</div>
+
+<!-- ============================== CHAPTER 3: DECOMPOSITION ============================== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-badge"><svg class="ico"><use href="#ico-step"/></svg>Chapter Three</div>
+    <div class="ch-num">03</div>
+    <h2 class="ch-title">Decomposition</h2>
+    <p class="ch-sub">Bannister did not run a four minute mile. He ran four perfect quarter miles. The third fundamental is breaking the impossible into doable.</p>
+  </div>
+</div>
+
+<div class="page section prose">
+  <p>Before May 6, 1954, doctors said the four minute mile was beyond human physiology. Hearts would burst. Lungs would collapse. The barrier was treated as a biological fact, not a record. Then a 25 year old medical student named Roger Bannister ran it in 3:59.4. Within two months, three other men also broke four minutes. Within ten years, schoolboys were doing it. <em>What changed?</em></p>
+  <p>The biology did not change. The naming did, and the decomposition did. Bannister did not train to run a four minute mile. He trained to run <strong>four perfect quarter miles</strong>, each in 59 seconds. He stopped thinking about a mile entirely. He thought only about the next quarter, then the next, then the next. The lap was the unit. The mile was the side effect.</p>
+
+  <div class="scene">
+    <div class="scene-label"><svg class="ico"><use href="#ico-split"/></svg>The Master</div>
+    <h4>The Mile Was An Accident Of Four Laps</h4>
+    <p>Bannister was a medical student with limited training time, no coach for years, and a self designed program. While the established runners worked on stamina at the mile distance, Bannister did relentless interval work at the quarter mile. <em>Ten times 400 meters at 60 seconds, with two minute recoveries.</em> Then nine. Then eight. He drilled the unit, not the goal.</p>
+    <p>On the day of the race, his pacers brought him through 0.75 miles in 3:00.7. The final quarter was the only one he ran alone, and he ran it in 58.9. Add the four splits: 57.5, 60.7, 62.3, 58.9. The mile was 3:59.4. He never ran a mile in training under four minutes. He <strong>only ran the splits</strong>. The mile was what happened when the splits aligned.</p>
+  </div>
+
+  <div class="viz">
+    <div class="viz-head">
+      <div class="viz-icon"><svg viewBox="0 0 24 24"><use href="#ico-split"/></svg></div>
+      <div class="viz-meta">
+        <div class="viz-label">For AI Work</div>
+        <h4>The Decomposition Fundamental</h4>
+      </div>
+    </div>
+    <div class="viz-body">
+      <p>Most prompts fail because the problem is too big. <em>"Build me a marketing strategy for my new product launch"</em> is a mile. The AI tries. The output is generic because no model can do the whole mile in one stride. The amateur reads the generic output and concludes the AI is not good enough. The amateur is wrong. The amateur never decomposed.</p>
+      <p>The master breaks the mile into laps. <em>"List 8 specific customer pain points the product solves, with one concrete example each."</em> Lap one. <em>"For each pain point, write 3 short positioning statements."</em> Lap two. <em>"Pick the strongest statement and write 5 ad variations against it."</em> Lap three. <em>"For each ad, write the 3 hooks most likely to land for our audience profile."</em> Lap four. The mile assembles itself from the laps.</p>
+      <p><strong>The skill is finding the smallest atomic step the AI can actually nail.</strong> Most users never zoom in that far. They aim at the goal. The master aims at the unit.</p>
+    </div>
+  </div>
+
+  <div class="drill">
+    <div class="drill-head">
+      <div class="drill-head-label"><svg class="ico"><use href="#ico-drill"/></svg>The Daily Drill</div>
+      <div class="drill-time">15 min</div>
+    </div>
+    <div class="drill-title">The Five Step Pipeline</div>
+    <div class="drill-body">
+      <p>Take any real task that is currently bigger than one prompt. A project. An analysis. A piece of writing. A decision you have been avoiding because it feels too big to start.</p>
+      <ol class="drill-steps">
+        <li>Write the goal in one sentence. Be clear about what done looks like.</li>
+        <li>Now write the <strong>smallest possible first step</strong> the AI could fully complete in one turn. Not the first big chunk. The first <em>atomic</em> step. The decomposition is good when the step is almost embarrassingly small.</li>
+        <li>Write step two. Step two takes step one's output as input. Use the actual phrase <em>"using the output above"</em> in your prompt so you are forced to chain them.</li>
+        <li>Continue to step five. By the time you reach step five, the original goal should be visibly closer or done.</li>
+        <li>Run the pipeline. Note which step was the bottleneck. The bottleneck is the lap you need to drill again until it runs in under one minute.</li>
+      </ol>
+      <p>Bannister did not run the mile. He ran the laps. <em>You do not prompt the project. You prompt the lap.</em></p>
+    </div>
+  </div>
+
+  <div class="think">
+    <div class="think-label"><svg class="ico"><use href="#ico-think"/></svg>Stop and Decompose</div>
+    <h4>Name one project that has been stuck because it felt too big.</h4>
+    <p class="q-start">What is the smallest first step the AI could fully complete in one turn? If you cannot answer that in 30 seconds, the project is not stuck because of the project. It is stuck because of the decomposition.</p>
+  </div>
+</div>
+
+<div class="ribbon">
+  <p>"Whoever can be trusted with very little can also be trusted with much."</p>
+  <span class="ref">Luke 16:10</span>
+</div>
+
+<!-- ============================== CHAPTER 4: ITERATION ============================== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-badge"><svg class="ico"><use href="#ico-step"/></svg>Chapter Four</div>
+    <div class="ch-num">04</div>
+    <h2 class="ch-title">Iteration</h2>
+    <p class="ch-sub">The Incredibles went through 27 versions of every scene. The amateur ships turn one. The master is on turn ten.</p>
+  </div>
+</div>
+
+<div class="page section prose">
+  <p>Brad Bird directed The Incredibles. Late in production, he gave a talk that has been quoted in design schools ever since. He said something close to this: <em>the difference between Pixar and other studios is one number.</em> Other studios go to version three of a scene. Pixar goes to version twenty. The films that look effortless took twenty drafts. There was a version one of The Incredibles. It was, in Bird's own words, <strong>"terrible."</strong> The audience does not see version one. The audience sees version twenty seven.</p>
+  <p>Pixar calls it <em>plussing</em>. Every meeting, every reviewer adds something to make the current version slightly better. The director's job is to keep the iteration going long after the team thinks they are done. The team's job is to not lose heart through draft eleven.</p>
+
+  <div class="scene">
+    <div class="scene-label"><svg class="ico"><use href="#ico-refresh"/></svg>The Master</div>
+    <h4>The Toy Story 2 Rebuild</h4>
+    <p>In 1998, Pixar was in production on Toy Story 2 as a direct-to-video sequel. After eight months, they screened the cut. It was bad. Pixar leadership made a stunning call. They threw out the entire film and rebuilt it from scratch in nine months. The completely rebuilt Toy Story 2 grossed nearly half a billion dollars and is widely considered the rarest of things: a sequel that surpasses the original.</p>
+    <p>What Pixar understood that other studios did not is that <strong>first attempts are not real attempts. They are scaffolding.</strong> The point of a first attempt is to reveal the shape of the problem. The real work begins on attempt two. The breakthrough often arrives somewhere around attempt twelve. Studios that ship first attempts ship scaffolding.</p>
+  </div>
+
+  <div class="viz">
+    <div class="viz-head">
+      <div class="viz-icon"><svg viewBox="0 0 24 24"><use href="#ico-refresh"/></svg></div>
+      <div class="viz-meta">
+        <div class="viz-label">For AI Work</div>
+        <h4>The Iteration Fundamental</h4>
+      </div>
+    </div>
+    <div class="viz-body">
+      <p>Studies of how people use AI consistently find the same pattern. The median user has a <em>conversation length of one to two turns</em>. They prompt. They receive. They accept or they leave. The bottom half of users average less than two turns per task.</p>
+      <p>The master is doing something completely different. The master treats turn one as scaffolding. <strong>Turn one's job is not to produce the output. Turn one's job is to reveal what is wrong with the prompt.</strong> The output is read for what it gets wrong. Turn two corrects. Turn three refines. By turn ten, the master has steered the model into producing something the model could not have produced in any single turn.</p>
+      <p>Most of the magic AI work being produced right now is happening at turn 8 or beyond. Most users will never see that work because they quit at turn 2.</p>
+    </div>
+  </div>
+
+  <div class="drill">
+    <div class="drill-head">
+      <div class="drill-head-label"><svg class="ico"><use href="#ico-drill"/></svg>The Daily Drill</div>
+      <div class="drill-time">15 min</div>
+    </div>
+    <div class="drill-title">The Ten Turn Refinement</div>
+    <div class="drill-body">
+      <p>Take a real output you got in one or two turns this week and accepted. Open a fresh conversation. Bring the original task back.</p>
+      <ol class="drill-steps">
+        <li><strong>Turn one.</strong> The original prompt. Generate output.</li>
+        <li><strong>Turn two.</strong> Identify the single weakest part of the output. Ask for that part to be rewritten.</li>
+        <li><strong>Turn three.</strong> Identify the next weakest part. Same move.</li>
+        <li><strong>Turns four through seven.</strong> One specific improvement per turn. Tone. Structure. Specificity. Examples. Length. Each turn fixes one thing.</li>
+        <li><strong>Turn eight.</strong> Ask the AI to critique its own current output as if it were grading someone else's work. The critique is now your spec.</li>
+        <li><strong>Turn nine.</strong> Have it incorporate the critique.</li>
+        <li><strong>Turn ten.</strong> Compare to the original turn one output. Note the gap. The gap is your iteration deficit.</li>
+      </ol>
+      <p>Pixar's first draft of The Incredibles was, by their own admission, terrible. Your first turn is too. The product is not turn one. <em>The product is turn ten.</em></p>
+    </div>
+  </div>
+
+  <div class="gq">
+    <blockquote>"First attempts are not real attempts. They are scaffolding. The real work begins on attempt two."</blockquote>
+    <cite>The Pixar Rule</cite>
+  </div>
+</div>
+
+<div class="ribbon">
+  <p>"The end of a matter is better than its beginning, and patience is better than pride."</p>
+  <span class="ref">Ecclesiastes 7:8</span>
+</div>
+
+<!-- ============================== CHAPTER 5: SYNTHESIS ============================== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-badge"><svg class="ico"><use href="#ico-step"/></svg>Chapter Five</div>
+    <div class="ch-num">05</div>
+    <h2 class="ch-title">Synthesis</h2>
+    <p class="ch-sub">Hamilton was not new history, not new hip-hop, not new theater. Miranda spent six years combining three known things into one unknown thing.</p>
+  </div>
+</div>
+
+<div class="page section prose">
+  <p>Lin-Manuel Miranda was on vacation in 2008 and picked up a book by Ron Chernow about Alexander Hamilton. By page 30 he was scribbling. By page 100 he had already written the first song. The book's premise was that Hamilton was a self-invented immigrant who hustled his way to power through sheer verbal velocity. Miranda's brain did the strange thing. <em>This man is a hip hop artist.</em></p>
+  <p>It took six more years to finish the musical. Hamilton premiered in 2015 and became one of the most acclaimed works in Broadway history. The shocking thing about it is that <strong>not a single component was new</strong>. Founding Father biographies existed. Hip hop existed. Broadway musicals existed. R&amp;B existed. Miranda did not invent any of the parts. He spent six years synthesizing them into one thing that did not exist before.</p>
+
+  <div class="scene">
+    <div class="scene-label"><svg class="ico"><use href="#ico-layers"/></svg>The Master</div>
+    <h4>Six Years In The Synthesis Room</h4>
+    <p>Miranda wrote and discarded entire songs. He sent demos to his friend Tommy Kail every few months and Kail would tell him what was not working. He read every Hamilton biography. He listened to hours of historical recordings and modern rap. The work was not the writing. The work was the <em>matching</em>. Which hip hop verse structure fit the cabinet battle? Which R&amp;B ballad form fit the death of Hamilton's son? Which Broadway tradition could carry the duel?</p>
+    <p>What Miranda was doing was synthesis as <strong>repeated experiment</strong>. He kept generating combinations and rating them. Most failed. A few clicked. The clicks were the show. The synthesis was the genius. None of the parts were.</p>
+  </div>
+
+  <div class="viz">
+    <div class="viz-head">
+      <div class="viz-icon"><svg viewBox="0 0 24 24"><use href="#ico-layers"/></svg></div>
+      <div class="viz-meta">
+        <div class="viz-label">For AI Work</div>
+        <h4>The Synthesis Fundamental</h4>
+      </div>
+    </div>
+    <div class="viz-body">
+      <p>Most people use AI as a single-shot oracle. One prompt, one output, take it or leave it. The master uses AI as <em>a synthesizer's keyboard</em>. Run the same prompt against three different framings. Run it against two different models. Take an output and feed it back to a different model as the input. Watch what happens when you ask the same question to a model trained on technical writing versus a model trained on conversational writing.</p>
+      <p>The original work is not what comes out of any single prompt. <strong>The original work is the synthesis across multiple prompts.</strong> You generate the parts. You combine the parts. The combination is what nobody else could have written, because nobody else ran your specific synthesis.</p>
+      <p>This is the place where AI work stops feeling derivative and starts feeling like yours. Miranda's parts were not original. The synthesis was the entire achievement.</p>
+    </div>
+  </div>
+
+  <div class="drill">
+    <div class="drill-head">
+      <div class="drill-head-label"><svg class="ico"><use href="#ico-drill"/></svg>The Daily Drill</div>
+      <div class="drill-time">15 min</div>
+    </div>
+    <div class="drill-title">The Three Source Combine</div>
+    <div class="drill-body">
+      <p>Pick one task today where you want output that feels original, not generic. Writing, ideas, a plan, an explanation, an angle on a problem.</p>
+      <ol class="drill-steps">
+        <li>Generate the same thing <strong>three different ways</strong>. Different model if available. Different framing in each prompt. (Example: prompt A asks for it analytical. Prompt B asks for it as a story. Prompt C asks for it as a list of contradictions.)</li>
+        <li>Read all three. Highlight the <em>single strongest line, idea, or paragraph</em> in each. Just one per source.</li>
+        <li>Write a fresh prompt that says: <em>"Combine these three elements into one coherent piece"</em> and paste your three highlights.</li>
+        <li>Read the synthesis. Edit by hand to make it sound like you.</li>
+        <li>Note: the final piece is <strong>not what any single prompt produced</strong>. It is the synthesis that only you could have built because only you picked those three highlights.</li>
+      </ol>
+      <p>Hamilton is three known things assembled in a previously unknown way. <em>The synthesis is the originality.</em> The parts were always going to be there. The combination was waiting for the combiner.</p>
+    </div>
+  </div>
+
+  <div class="think">
+    <div class="think-label"><svg class="ico"><use href="#ico-think"/></svg>Stop and Combine</div>
+    <h4>What are the three known fields you should be synthesizing across?</h4>
+    <p class="q-start">Most original work in the AI age will come from people who can hold two or three domains at once and combine them through the model. Name three you already know well. The synthesis lives where they overlap.</p>
+  </div>
+</div>
+
+<div class="ribbon">
+  <p>"There is nothing new under the sun. Is there a thing of which it is said, 'See, this is new'? It has been already in the ages before us."</p>
+  <span class="ref">Ecclesiastes 1:9-10</span>
+</div>
+
+<!-- ============================== CHAPTER 6: VERIFICATION ============================== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-badge"><svg class="ico"><use href="#ico-step"/></svg>Chapter Six</div>
+    <div class="ch-num">06</div>
+    <h2 class="ch-title">Verification</h2>
+    <p class="ch-sub">When the Hubble launched, every image was blurry. The team found a flaw one fiftieth the width of a human hair and fixed it in orbit. The sixth fundamental is comparing output to reality before you ship.</p>
+  </div>
+</div>
+
+<div class="page section prose">
+  <p>NASA launched the Hubble Space Telescope in April 1990. It cost 1.5 billion dollars. It was meant to be the most precise eye ever pointed at the universe. When the first images came back, they were blurry. Every single one. The most expensive scientific instrument in history was producing pictures worse than a backyard telescope.</p>
+  <p>The team that diagnosed the problem, including an astronomer named Marcia Rieke, did not panic. They <strong>verified every pixel</strong> against the expected models of starlight. By comparing the actual output to what the optics should have produced, they isolated the flaw. The Hubble's primary mirror had been ground to the wrong shape by <em>one fiftieth the width of a human hair</em>. That microscopic error blurred every image. They designed a corrective lens, sent a shuttle mission up to install it in 1993, and the Hubble began producing the iconic images that defined modern astronomy.</p>
+
+  <div class="scene">
+    <div class="scene-label"><svg class="ico"><use href="#ico-check-circ"/></svg>The Master</div>
+    <h4>Comparing Output To Reality</h4>
+    <p>The Hubble team did not assume the telescope was right. They assumed there was an unknown reality and the output was an approximation of it. Their job was to <em>compare</em>. They had calibration stars whose light output was known. They had physics models that predicted what each pixel should record. When the actual recorded value diverged from the model, they knew something was wrong upstream of the sensor.</p>
+    <p>This is the most undertrained skill in the AI era. The model produces something. It looks plausible. <strong>Plausible is not the same as true.</strong> The master never confuses the two. The amateur ships what is plausible. The master compares plausible to verified and only ships what survives.</p>
+  </div>
+
+  <div class="viz">
+    <div class="viz-head">
+      <div class="viz-icon"><svg viewBox="0 0 24 24"><use href="#ico-check-circ"/></svg></div>
+      <div class="viz-meta">
+        <div class="viz-label">For AI Work</div>
+        <h4>The Verification Fundamental</h4>
+      </div>
+    </div>
+    <div class="viz-body">
+      <p>AI hallucinates. It will produce confident citations of books that do not exist, statistics that were never measured, quotes attributed to people who never said them. The output looks right because the model is fluent. Fluency is the enemy of verification. Fluent wrong is more dangerous than obvious wrong.</p>
+      <p>The master picks specific anchor points in every output and verifies them. <strong>One factual claim. One logical step. One specific number.</strong> The verification is not exhaustive. It is targeted. You are not auditing the whole piece. You are <em>sampling</em> for hallucination the way the Hubble team sampled pixels against calibration stars.</p>
+      <p>If the sample passes, you have evidence the whole is probably trustworthy. If the sample fails, you have caught the flaw before you shipped a blurry telescope. Most AI mistakes that have damaged careers in the last two years would have been caught by one minute of verification.</p>
+    </div>
+  </div>
+
+  <div class="drill">
+    <div class="drill-head">
+      <div class="drill-head-label"><svg class="ico"><use href="#ico-drill"/></svg>The Daily Drill</div>
+      <div class="drill-time">10 min</div>
+    </div>
+    <div class="drill-title">The Three Anchor Check</div>
+    <div class="drill-body">
+      <p>Before you ship any AI output that has any factual content, pick three anchors.</p>
+      <ol class="drill-steps">
+        <li><strong>Anchor one. A specific factual claim.</strong> A date. A name. A quoted phrase. Open a primary source and verify it. Wikipedia is a starting point, not an ending point. Click through to the cited source.</li>
+        <li><strong>Anchor two. A specific number or statistic.</strong> Where did the model get this? Search for the number. If you cannot find an authoritative source within two minutes, the number is probably wrong or invented.</li>
+        <li><strong>Anchor three. A logical leap.</strong> Find one place in the output where the model concluded something. Ask: would a careful reader agree that step follows from the prior step? If you have to argue for it, the leap is suspicious.</li>
+        <li>If any of the three anchors fails, treat the entire output as suspect. Verify more, or rewrite the section.</li>
+        <li>Keep a log. After thirty days you will have ninety verifications. You will know your model's hallucination patterns: which kinds of claims it gets right and which kinds it routinely invents. That pattern recognition <em>is</em> verification mastery.</li>
+      </ol>
+      <p>The Hubble team did not assume their billion dollar telescope was right. <em>You do not have a billion dollar telescope.</em> The verification is the difference between the master and the embarrassment.</p>
+    </div>
+  </div>
+</div>
+
+<div class="ribbon">
+  <p>"The first to plead his case seems right, until another comes and examines him."</p>
+  <span class="ref">Proverbs 18:17</span>
+</div>
+
+<!-- ============================== LAYERING ============================== -->
+<div class="page section">
+<div class="layering reveal">
+  <h3><svg class="ico" style="color:var(--gold);width:22px;height:22px;vertical-align:-4px;margin-right:6px"><use href="#ico-layers"/></svg>The Layering</h3>
+  <p class="layering-sub">Six fundamentals do not compete. They stack. Each is the foundation for the next.</p>
+  <div class="layer-grid">
+    <div class="layer-card"><div class="layer-num">01</div><div class="layer-name">Taste</div><div class="layer-claim">tells you what good is</div></div>
+    <div class="layer-card"><div class="layer-num">02</div><div class="layer-name">Naming</div><div class="layer-claim">asks for it precisely</div></div>
+    <div class="layer-card"><div class="layer-num">03</div><div class="layer-name">Decomposition</div><div class="layer-claim">makes it possible</div></div>
+    <div class="layer-card"><div class="layer-num">04</div><div class="layer-name">Iteration</div><div class="layer-claim">gets you all the way there</div></div>
+    <div class="layer-card"><div class="layer-num">05</div><div class="layer-name">Synthesis</div><div class="layer-claim">combines the parts into the work only you could make</div></div>
+    <div class="layer-card"><div class="layer-num">06</div><div class="layer-name">Verification</div><div class="layer-claim">protects what you ship</div></div>
+  </div>
+</div>
+</div>
+
+<!-- ============================== INTERACTIVE WIDGET: SIX REPS TRACKER ============================== -->
+<div class="page section">
+<div class="widget reveal">
+  <div class="widget-head">
+    <div class="widget-kicker"><svg class="ico"><use href="#ico-trophy"/></svg>Interactive Tracker</div>
+    <div class="widget-title">The Six Reps</div>
+    <div class="widget-sub">Tap a rep when you complete its drill today. Your streak builds across days. At day 30 you have a new vocabulary. At day 90 you have a new instinct. At day 365 you are the wizard.</div>
+  </div>
+
+  <div class="widget-streak">
+    <div class="streak-stat"><div class="streak-num" id="streak-today">0</div><div class="streak-label">Today</div></div>
+    <div class="streak-stat"><div class="streak-num" id="streak-current">0</div><div class="streak-label">Day Streak</div></div>
+    <div class="streak-stat"><div class="streak-num" id="streak-total">0</div><div class="streak-label">Total Reps</div></div>
+  </div>
+
+  <div class="widget-reps" id="six-reps">
+    <div class="rep-row" data-rep="taste"><div class="rep-check">&#10003;</div><div class="rep-name">Taste &middot; The Three Outputs Rating</div><div class="rep-tag">12 min</div></div>
+    <div class="rep-row" data-rep="naming"><div class="rep-check">&#10003;</div><div class="rep-name">Naming &middot; The 25 / 15 / 5 Funnel</div><div class="rep-tag">10 min</div></div>
+    <div class="rep-row" data-rep="decompose"><div class="rep-check">&#10003;</div><div class="rep-name">Decomposition &middot; The Five Step Pipeline</div><div class="rep-tag">15 min</div></div>
+    <div class="rep-row" data-rep="iterate"><div class="rep-check">&#10003;</div><div class="rep-name">Iteration &middot; The Ten Turn Refinement</div><div class="rep-tag">15 min</div></div>
+    <div class="rep-row" data-rep="synthesis"><div class="rep-check">&#10003;</div><div class="rep-name">Synthesis &middot; The Three Source Combine</div><div class="rep-tag">15 min</div></div>
+    <div class="rep-row" data-rep="verify"><div class="rep-check">&#10003;</div><div class="rep-name">Verification &middot; The Three Anchor Check</div><div class="rep-tag">10 min</div></div>
+  </div>
+
+  <div class="widget-msg" id="widget-msg">Tap any rep to mark it done. Come back tomorrow.</div>
+</div>
+</div>
+
+<script>
+(function(){
+  const SLUG = 'love-the-practice';
+  const WIDGET = 'six-reps-tracker';
+  const REPS = ['taste','naming','decompose','iterate','synthesis','verify'];
+  const todayKey = () => new Date().toISOString().slice(0,10);
+  const state = {
+    today: todayKey(),
+    todayReps: {},
+    history: {}, // {date: {rep: 1}}
+    streak: 0,
+    total: 0
+  };
+
+  function computeDerived(){
+    state.total = 0;
+    Object.values(state.history).forEach(d => state.total += Object.keys(d).length);
+    state.total += Object.keys(state.todayReps).length;
+    // Streak: count back from today / yesterday with any rep
+    let s = 0;
+    let cur = new Date();
+    const todayHas = Object.keys(state.todayReps).length > 0;
+    if(todayHas) s = 1;
+    cur.setDate(cur.getDate() - 1);
+    while(true){
+      const k = cur.toISOString().slice(0,10);
+      if(state.history[k] && Object.keys(state.history[k]).length > 0){ s++; cur.setDate(cur.getDate()-1); }
+      else break;
+    }
+    state.streak = s;
+  }
+
+  function render(){
+    computeDerived();
+    document.getElementById('streak-today').textContent = Object.keys(state.todayReps).length;
+    document.getElementById('streak-current').textContent = state.streak;
+    document.getElementById('streak-total').textContent = state.total;
+    REPS.forEach(rep => {
+      const row = document.querySelector('.rep-row[data-rep="'+rep+'"]');
+      if(!row) return;
+      row.classList.toggle('done', !!state.todayReps[rep]);
+    });
+    const done = Object.keys(state.todayReps).length;
+    const msg = document.getElementById('widget-msg');
+    if(done === 0) msg.textContent = 'Tap any rep to mark it done. Come back tomorrow.';
+    else if(done < 6) msg.textContent = done + ' of 6 reps logged today. Keep going.';
+    else msg.textContent = 'All six fundamentals practiced today. This is what mastery looks like, one day.';
+  }
+
+  function save(){
+    if(window.kbWidget) kbWidget.save(SLUG, WIDGET, {today: state.today, todayReps: state.todayReps, history: state.history});
+  }
+
+  function rollOverIfNewDay(){
+    const t = todayKey();
+    if(t !== state.today){
+      if(Object.keys(state.todayReps).length > 0){
+        state.history[state.today] = Object.assign({}, state.todayReps);
+      }
+      state.today = t;
+      state.todayReps = {};
+    }
+  }
+
+  document.getElementById('six-reps').addEventListener('click', e => {
+    const row = e.target.closest('.rep-row');
+    if(!row) return;
+    rollOverIfNewDay();
+    const rep = row.dataset.rep;
+    if(state.todayReps[rep]) delete state.todayReps[rep];
+    else state.todayReps[rep] = Date.now();
+    render();
+    save();
+  });
+
+  function restore(data){
+    if(!data) return;
+    if(data.today) state.today = data.today;
+    if(data.todayReps) state.todayReps = data.todayReps;
+    if(data.history) state.history = data.history;
+    rollOverIfNewDay();
+    render();
+  }
+
+  if(window.kbWidget){
+    kbWidget.onReady(async () => {
+      const r = await kbWidget.load(SLUG, WIDGET);
+      if(r && r.data) restore(r.data); else render();
+    });
+  } else {
+    render();
+  }
+})();
+</script>
+
+<!-- ============================== ROOT CHECK ============================== -->
+<div class="page section">
+<div class="root-ck reveal">
+  <div class="rc-label"><svg class="ico"><use href="#ico-anchor"/></svg>Root System</div>
+  <h4>What You Now Carry</h4>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><svg class="ico"><use href="#ico-eye"/></svg><strong>Taste.</strong> Curry rated every shot. You rate every output. The eye builds before the result lands.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><svg class="ico"><use href="#ico-tag"/></svg><strong>Naming.</strong> Jiro named every imperfection in a single grain. You compress fuzzy intent into surgical words. The model only knows what you say.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><svg class="ico"><use href="#ico-split"/></svg><strong>Decomposition.</strong> Bannister did not run the mile. He ran the laps. You do not prompt the project. You prompt the smallest atomic step.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><svg class="ico"><use href="#ico-refresh"/></svg><strong>Iteration.</strong> Pixar shipped on draft 27. You stop accepting turn one. Turn one is scaffolding. The work is at turn ten.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><svg class="ico"><use href="#ico-layers"/></svg><strong>Synthesis.</strong> Miranda built Hamilton from three known fields. You run three sources, take one highlight from each, and combine. The synthesis is the originality.</div></div>
+  <div class="r-item"><div class="r-dot"></div><div class="r-text"><svg class="ico"><use href="#ico-check-circ"/></svg><strong>Verification.</strong> The Hubble team checked every pixel. You check three anchors per output. Fluent is not the same as true.</div></div>
+</div>
+</div>
+
+<!-- ============================== AI INSTALLATION PROMPT ============================== -->
+<div class="page section">
+<div class="prompt reveal">
+  <div class="prompt-head"><svg class="ico"><use href="#ico-prompt"/></svg>AI Installation Prompt</div>
+  <h3>Run This With Any AI To Continue The Work</h3>
+  <p>Copy and paste this prompt into any AI conversation to install the six fundamentals as a coaching system you can return to.</p>
+  <code>I just read "Love the Practice" by Kingdom Builders AI. It teaches six fundamentals for working with AI like a master: taste (rate three outputs, name why), naming (compress fuzzy intent to 25 / 15 / 5 words), decomposition (break tasks into atomic steps), iteration (refine through ten turns), synthesis (combine three sources into one piece), and verification (check three anchors per output).
+
+I want you to coach me through one of these fundamentals today. Ask me which one I want to drill. Then run the drill with me, step by step, on a real task I name. After we finish the drill, tell me one specific thing I did well and one specific way to make the drill harder tomorrow.
+
+Be a coach, not a cheerleader. The point is the rep, not the affirmation.</code>
+</div>
+</div>
+
+<!-- ============================== FINAL TEST ============================== -->
+<div class="page section">
+<div class="final-test reveal">
+  <h3>The Final Test</h3>
+  <p class="test-sub">Six questions. Try to answer each one without scrolling back. The answers are hidden until you tap.</p>
+  <div class="test-q" onclick="this.classList.toggle('open')"><div class="test-num">Question 1</div><p>What is the difference between a professional and a master, according to the Taste chapter?</p><div class="test-a">The professional cannot tell whether the shot will go in until the ball lands. The master cannot tell whether the shot was good, because the body has already rated the release before the result. Mastery is when judgment fuses with action.</div></div>
+  <div class="test-q" onclick="this.classList.toggle('open')"><div class="test-num">Question 2</div><p>Why did Jiro Ono make his apprentices spend ten years on rice before they touched fish?</p><div class="test-a">The ten years were not for the rice. They were for the vocabulary of imperfection. The apprentices were building the ability to name every flaw so they could see what an untrained eye could not see. The naming is the skill.</div></div>
+  <div class="test-q" onclick="this.classList.toggle('open')"><div class="test-num">Question 3</div><p>Bannister did not train to run a four minute mile. What did he train?</p><div class="test-a">Four perfect quarter miles at 60 seconds each. He drilled the lap, not the mile. The mile assembled itself from the laps. The skill in AI work is finding the smallest atomic step the model can fully complete in one turn.</div></div>
+  <div class="test-q" onclick="this.classList.toggle('open')"><div class="test-num">Question 4</div><p>What does Pixar's "plussing" practice say about turn one of any AI conversation?</p><div class="test-a">Turn one is scaffolding. Its job is not to produce the output. Its job is to reveal what is wrong with the prompt. The real work begins on turn two. The output most worth shipping arrives near turn ten.</div></div>
+  <div class="test-q" onclick="this.classList.toggle('open')"><div class="test-num">Question 5</div><p>What was the shocking thing about Hamilton, in terms of originality?</p><div class="test-a">Not a single component was new. Founding Father biographies, hip hop, Broadway, R&amp;B all existed. Miranda spent six years synthesizing them into one thing that did not exist before. The synthesis was the originality. The parts were not.</div></div>
+  <div class="test-q" onclick="this.classList.toggle('open')"><div class="test-num">Question 6</div><p>Why is fluency the enemy of verification when working with AI?</p><div class="test-a">AI hallucinations are produced fluently. The output looks right because the model is articulate. Plausible is not the same as true. The master compares anchors in every output (one factual claim, one number, one logical leap) to reality before shipping. Fluent wrong is more dangerous than obvious wrong.</div></div>
+</div>
+</div>
+
+<!-- ============================== FINALE ============================== -->
+<section class="finale">
+  <h2>The wizards are not wizards.<strong>They just loved the practice.</strong></h2>
+  <p>Most people will not do these reps. They will keep prompting in one turn. They will accept the first output. They will not verify. They will not synthesize. They will be slow when AI is fast.</p>
+  <p>You will do six reps a day. For a year. Five years from now, you will look like a wizard to everyone who did not. You will not be one. You will be a person who loved the practice. There has never been any other path.</p>
+  <p>Walk on.</p>
+</section>
+
+<footer>
+  <p>"Train yourself to be godly. For physical training is of some value, but godliness has value for all things, holding promise for both the present life and the life to come."<br>1 Timothy 4:7-8</p>
+  <div class="brand">KingdomBuilders AI &middot; The Mastery Series &middot; Part 1</div>
+</footer>
+
+<script>
+(function(){
+  const bar = document.getElementById('progress-bar');
+  const pill = document.getElementById('chapter-pill');
+  const chEls = [{el:document.querySelector('.cover'),label:'Cover'},...Array.from(document.querySelectorAll('.ch-head')).map((el,i)=>({el,label:el.querySelector('.ch-num')?.textContent?.trim() ? ('Ch '+el.querySelector('.ch-num').textContent.trim()) : ('Ch '+(i+1))}))].filter(c=>c.el);
+  function onScroll(){
+    const h=document.documentElement;
+    const pct = h.scrollTop / (h.scrollHeight - h.clientHeight) * 100;
+    bar.style.width = pct + '%';
+    let cur='';
+    for(const c of chEls){if(c.el.getBoundingClientRect().top<200) cur=c.label}
+    if(cur){pill.textContent=cur;pill.classList.add('show')}else{pill.classList.remove('show')}
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  const revealEls = document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    const obs = new IntersectionObserver(entries=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); } });
+    }, {threshold:0.12});
+    revealEls.forEach(el=>obs.observe(el));
+  } else {
+    revealEls.forEach(el=>el.classList.add('visible'));
+  }
+})();
+</script>
+</body>
+</html>

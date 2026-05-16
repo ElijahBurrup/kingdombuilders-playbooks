@@ -15,6 +15,7 @@ SLUG_TO_FILE: dict[str, str] = {
     "the-narrator": "The_Narrator.html",
     "the-squirrel-economy": "The_Squirrel_Economy_Modified.html",
     "conductors-playbook": "The_Conductors_Playbook.html",
+    "love-the-practice": "Love_The_Practice.html",
     "the-wolfs-table": "The_Wolfs_Table.html",
     "the-crows-gambit": "The_Crows_Gambit.html",
     "the-eagles-lens": "The_Eagles_Lens.html",
