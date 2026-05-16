@@ -138,6 +138,7 @@ def create_app() -> FastAPI:
         app.include_router(referrals_router, prefix=f"{settings.URL_PREFIX}/api/v1")
         app.include_router(feedback_router, prefix=f"{settings.URL_PREFIX}/api/v1")
         app.include_router(widgets_router, prefix=f"{settings.URL_PREFIX}/api/v1")
+        app.include_router(saves_router, prefix=f"{settings.URL_PREFIX}/api/v1")
 
         # Also mount static/assets under the prefix
         if STATIC_DIR.is_dir():
