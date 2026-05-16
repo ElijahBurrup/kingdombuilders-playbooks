@@ -4,1295 +4,1154 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Manna: Given | Kingdom Builders AI</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta name="description" content="There is a condition almost everyone you know is in. Almost no one names it. They have more than their grandparents and are exhausted in a way their grandparents would not recognize. This playbook names it. Five frames return the seeing.">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
- --night:#0E0F1A;--dawn:#1F2440;--sky:#3D4670;
- --sky-light:#5A648A;--rose-dawn:#C88090;--rose-pale:#E2B4BC;
- --honey:#E8B870;--honey-glow:#F5D898;
- --gold:#D4A843;--gold-glow:#E8C96A;--gold-pale:#F5E0A8;--gold-soft:rgba(212,168,67,0.08);
- --cream-bright:#F8F2DC;--cream:#F5EFE0;--cream-warm:#ECE5CC;--cream-deep:#DAD0B0;
- --dew:#B0BFAC;--moss:#7B8C5B;
- --text:#1A1A26;--text-light:#4A4E5E;--text-muted:#7A7E8E;
- --white:#FFFFFF;--radius:16px;
- --shadow-soft:0 2px 16px rgba(14,15,26,0.08);
- --shadow-mid:0 4px 28px rgba(14,15,26,0.14);
- --before-bg:#F2E3D8;--before-border:#A86A30;--before-text:#5A3018;
- --after-bg:#EFE9D2;--after-border:#8A6B20;--after-text:#1A1A26
+  --dawn:#1F2440;--sky:#3D4670;--light:#5E6890;--mist:#A4ACCC;
+  --gold:#D4A843;--gold-pale:#F0DB94;--gold-glow:#E8C96A;--gold-faint:rgba(212,168,67,0.15);
+  --rose:#C88090;--rose-pale:#F0CFD8;--rose-deep:#A85870;
+  --cream:#FAF6EC;--cream-warm:#F5EFE0;--cream-deep:#ECE5CC;
+  --ink:#0E0F1A;--ink-light:#2A2B3F;
+  --text:#1F2440;--text-light:#4A4F70;--text-muted:#7A7E98;
+  --white:#FFFFFF;
+  --radius:14px;
+  --shadow-soft:0 2px 14px rgba(14,15,26,0.06);
+  --shadow-mid:0 6px 28px rgba(14,15,26,0.1);
+  --shadow-deep:0 10px 44px rgba(14,15,26,0.16);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;font-size:18px}
-body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--cream);line-height:1.82;-webkit-font-smoothing:antialiased}
-h1,h2,h3,h4{font-family:'Nunito',sans-serif;line-height:1.2}
-.page{max-width:720px;margin:0 auto;padding-left:24px;padding-right:24px}
-.section{padding:48px 0}
-.prose p{margin-bottom:22px;font-size:1rem}
+body{font-family:'Lora',Georgia,serif;color:var(--text);background:var(--cream);line-height:1.86;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.18;letter-spacing:-0.005em}
+.page{max-width:680px;margin:0 auto;padding:0 26px}
+.section{padding:56px 0}
+.prose p{margin-bottom:24px;font-size:1.06rem;color:var(--text)}
 .prose p:last-child{margin-bottom:0}
 .prose strong{color:var(--dawn);font-weight:700}
-.prose em{color:var(--rose-dawn);font-style:italic}
-.prose h2{font-size:1.4rem;color:var(--dawn);margin:40px 0 16px;letter-spacing:-0.01em}
+.prose em{color:var(--rose-deep);font-style:italic;font-weight:500}
 
-dfn.def{font-style:normal;border-bottom:1.5px dotted var(--gold);cursor:help;position:relative}
-dfn.def:hover::after{content:attr(data-def);position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:var(--dawn);color:var(--cream);padding:8px 14px;border-radius:8px;font-size:0.78rem;font-family:'Nunito',sans-serif;white-space:normal;width:280px;text-align:center;z-index:100;box-shadow:0 4px 16px rgba(14,15,26,0.3);line-height:1.5;pointer-events:none}
+#progress-bar{position:fixed;top:0;left:0;width:0%;height:2px;background:linear-gradient(90deg,var(--gold-pale),var(--gold));z-index:1000;transition:width 0.1s linear;opacity:0.7}
+#chapter-pill{position:fixed;top:14px;right:14px;background:rgba(31,36,64,0.78);backdrop-filter:blur(12px);color:var(--gold-pale);font-family:'Cormorant Garamond',serif;font-size:0.7rem;font-style:italic;letter-spacing:1.5px;padding:6px 16px;border-radius:50px;z-index:999;opacity:0;transition:opacity 0.4s ease}
+#chapter-pill.show{opacity:1}
 
 /* ===== COVER ===== */
-.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;
- background:linear-gradient(175deg,#06070E 0%,var(--night) 22%,var(--dawn) 52%,var(--sky) 80%,var(--rose-dawn) 100%);
- position:relative;overflow:hidden}
-.manna-flake{position:absolute;width:5px;height:5px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(248,242,220,0.95),rgba(245,224,168,0.6));pointer-events:none;animation:manna-fall linear infinite;opacity:0;filter:blur(0.5px)}
-.manna-flake:nth-child(1){left:6%;animation-duration:14s;animation-delay:0s}
-.manna-flake:nth-child(2){left:14%;animation-duration:16s;animation-delay:-3s;width:4px;height:4px}
-.manna-flake:nth-child(3){left:22%;animation-duration:18s;animation-delay:-7s}
-.manna-flake:nth-child(4){left:30%;animation-duration:15s;animation-delay:-11s;width:6px;height:6px}
-.manna-flake:nth-child(5){left:38%;animation-duration:17s;animation-delay:-2s}
-.manna-flake:nth-child(6){left:46%;animation-duration:19s;animation-delay:-8s;width:4px;height:4px}
-.manna-flake:nth-child(7){left:54%;animation-duration:14s;animation-delay:-13s}
-.manna-flake:nth-child(8){left:62%;animation-duration:16s;animation-delay:-5s;width:5px;height:5px}
-.manna-flake:nth-child(9){left:70%;animation-duration:20s;animation-delay:-9s;width:3px;height:3px}
-.manna-flake:nth-child(10){left:78%;animation-duration:15s;animation-delay:-14s}
-.manna-flake:nth-child(11){left:86%;animation-duration:17s;animation-delay:-4s;width:6px;height:6px}
-.manna-flake:nth-child(12){left:94%;animation-duration:19s;animation-delay:-10s}
-@keyframes manna-fall{0%{top:-20px;opacity:0;transform:translateX(0) rotate(0deg)}10%{opacity:0.9}50%{opacity:0.7;transform:translateX(15px) rotate(180deg)}90%{opacity:0.4}100%{top:110%;opacity:0;transform:translateX(-10px) rotate(360deg)}}
-.dawn-glow{position:absolute;bottom:0;left:0;right:0;height:55%;background:linear-gradient(to top,rgba(200,128,144,0.25),rgba(232,184,112,0.08) 50%,transparent);filter:blur(20px);pointer-events:none}
-.ghost-noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.025;mix-blend-mode:overlay;pointer-events:none}
-.cover-content{position:relative;z-index:2;padding:48px 24px}
-.cover-badge{display:inline-block;padding:6px 22px;border:1px solid rgba(245,224,168,0.35);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.67rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:16px}
-.cover-series{display:inline-block;padding:4px 16px;border:1px solid rgba(245,224,168,0.25);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.58rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:36px}
-.cover h1{font-family:'Nunito',sans-serif;font-size:clamp(4rem,11vw,7.5rem);font-weight:900;color:var(--gold-glow);line-height:1;letter-spacing:-0.04em;margin-bottom:8px;text-shadow:0 4px 30px rgba(245,224,168,0.15)}
-.cover-tagline{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.72);margin-top:28px;line-height:1.75;max-width:580px;margin-left:auto;margin-right:auto}
-.cover-tagline em{color:var(--gold-pale);font-style:normal;font-weight:600}
-.cover-sub{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.38);margin-top:14px}
-.cover-author{font-family:'Poppins',sans-serif;font-size:0.58rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-top:48px}
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(170deg,#0E0F1A 0%,#1F2440 35%,#2A2F58 70%,#1A1A2E 100%);position:relative;overflow:hidden}
+.manna-rain{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.manna-drop{position:absolute;width:3px;height:3px;background:#F0DB94;border-radius:50%;box-shadow:0 0 6px rgba(232,201,106,0.6);opacity:0;animation:manna-fall linear infinite}
+@keyframes manna-fall{
+  0%{opacity:0;transform:translateY(-20px)}
+  10%{opacity:0.7}
+  90%{opacity:0.5}
+  100%{opacity:0;transform:translateY(100vh)}
+}
+.cover-grain{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.03;mix-blend-mode:overlay;pointer-events:none}
+.cover-content{position:relative;z-index:2;padding:60px 24px;max-width:640px}
+.cover-eyebrow{font-family:'Cormorant Garamond',serif;font-size:0.85rem;font-style:italic;letter-spacing:5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:44px;opacity:0.7}
+.cover h1{font-family:'Cormorant Garamond',serif;font-size:clamp(3.6rem,9vw,6rem);font-weight:500;font-style:italic;color:var(--gold-glow);line-height:0.92;letter-spacing:-0.02em;margin-bottom:14px;text-shadow:0 4px 30px rgba(245,224,168,0.15)}
+.cover-sub{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-style:italic;color:rgba(255,255,255,0.55);margin-bottom:48px;letter-spacing:1px}
+.cover-tagline{font-family:'Lora',serif;font-size:1.02rem;font-style:italic;color:rgba(255,255,255,0.7);line-height:1.85;max-width:560px;margin:0 auto}
+.cover-tagline em{color:var(--gold-pale);font-style:normal;font-weight:500}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.58rem;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.18);margin-top:60px}
 
-/* ===== SERIES PROGRESS ===== */
-.series-progress{text-align:center;padding:24px 24px 12px;background:transparent}
-.series-dots{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px}
-.series-dot{width:12px;height:12px;border-radius:50%;border:2px solid rgba(245,224,168,0.35);background:transparent}
-.series-dot.active{background:var(--gold);border-color:var(--gold);box-shadow:0 0 8px rgba(212,168,67,0.5)}
-.series-dot.done{background:rgba(245,224,168,0.4);border-color:rgba(245,224,168,0.5)}
-.series-dot-label{font-family:'Poppins',sans-serif;font-size:0.55rem;color:rgba(255,255,255,0.48);letter-spacing:3px;text-transform:uppercase}
+/* ===== STOP BEFORE READING (Reception cold-open) ===== */
+.stopbefore{padding:56px 28px;background:linear-gradient(160deg,#F5EFE0,#FAF6EC);text-align:center;border-bottom:1px solid var(--cream-deep)}
+.stopbefore-eyebrow{font-family:'Cormorant Garamond',serif;font-size:0.78rem;font-style:italic;letter-spacing:4px;text-transform:uppercase;color:var(--gold-deep);margin-bottom:18px}
+.stopbefore h2{font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,4vw,2.3rem);font-weight:500;font-style:italic;color:var(--dawn);max-width:560px;margin:0 auto 22px;line-height:1.28}
+.stopbefore p{font-family:'Lora',serif;font-size:1.02rem;font-style:italic;color:var(--text-light);line-height:1.78;max-width:540px;margin:0 auto 16px}
+.stopbefore p:last-of-type{margin-bottom:26px}
+.stopbefore strong{color:var(--rose-deep);font-weight:500;font-style:normal}
+.stopbefore-btn{display:inline-block;padding:13px 30px;background:linear-gradient(135deg,var(--dawn),var(--sky));color:var(--gold-pale);font-family:'Cormorant Garamond',serif;font-size:0.95rem;font-style:italic;letter-spacing:2px;text-decoration:none;border:1px solid rgba(212,168,67,0.3);border-radius:50px;cursor:pointer;transition:all 0.3s}
+.stopbefore-btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(31,36,64,0.18)}
+.stopbefore-btn.done{background:linear-gradient(135deg,var(--gold),var(--gold-glow));color:var(--dawn);font-style:normal}
 
 /* ===== CHAPTER HEADS ===== */
-.ch-head{background:linear-gradient(170deg,var(--dawn),var(--sky));padding:72px 24px 52px;position:relative;overflow:hidden}
-.ch-head::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23F5E0A8' fill-opacity='0.06'%3E%3Ccircle cx='20' cy='20' r='1.5'/%3E%3Ccircle cx='50' cy='15' r='1'/%3E%3Ccircle cx='70' cy='30' r='1.5'/%3E%3Ccircle cx='25' cy='55' r='1'/%3E%3Ccircle cx='60' cy='60' r='1.5'/%3E%3Ccircle cx='15' cy='75' r='1'/%3E%3Ccircle cx='75' cy='70' r='1'/%3E%3C/g%3E%3C/svg%3E")}
-.ch-badge{display:inline-block;padding:4px 16px;background:rgba(245,224,168,0.12);border:1px solid rgba(245,224,168,0.3);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.52rem;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:20px;position:relative;z-index:2}
-.ch-num{font-family:'Nunito',sans-serif;font-size:5.5rem;font-weight:900;line-height:0.9;color:rgba(245,224,168,0.2);margin-bottom:-10px;position:relative;z-index:2}
-.ch-title{font-family:'Nunito',sans-serif;font-size:2.1rem;font-weight:900;color:var(--white);line-height:1.15;letter-spacing:-0.02em;margin-bottom:10px;position:relative;z-index:2}
-.ch-sub{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.62);line-height:1.6;position:relative;z-index:2}
+.ch-head{background:linear-gradient(170deg,#1F2440,#2A2F58);padding:68px 28px 50px;position:relative;overflow:hidden}
+.ch-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(212,168,67,0.4),transparent)}
+.ch-head .page{position:relative;z-index:2}
+.ch-badge{display:inline-block;font-family:'Cormorant Garamond',serif;font-size:0.78rem;font-style:italic;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:18px;opacity:0.75}
+.ch-num{font-family:'Cormorant Garamond',serif;font-size:5.5rem;font-weight:400;line-height:0.85;color:rgba(212,168,67,0.18);margin-bottom:-4px;font-style:italic}
+.ch-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,5vw,2.8rem);font-weight:500;font-style:italic;color:var(--white);line-height:1.12;letter-spacing:-0.01em;margin-bottom:14px}
+.ch-sub{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.55);line-height:1.7;max-width:560px}
 
-/* ===== RIBBON ===== */
-.ribbon{margin:20px 0;text-align:center;padding:22px 24px;background:linear-gradient(135deg,rgba(232,184,112,0.06),rgba(200,128,144,0.05));border-top:1.5px solid rgba(212,168,67,0.18);border-bottom:1.5px solid rgba(212,168,67,0.18)}
-.ribbon p{font-family:'Lora',serif;font-size:0.95rem;font-style:italic;color:var(--text-light);max-width:540px;margin:0 auto}
-.ribbon .ref{font-weight:600;color:var(--rose-dawn);font-style:normal}
+/* ===== RIBBON (scripture) ===== */
+.ribbon{margin:0;padding:32px 30px;background:linear-gradient(135deg,rgba(212,168,67,0.06),rgba(200,128,144,0.04));border-top:1px solid rgba(212,168,67,0.18);border-bottom:1px solid rgba(212,168,67,0.18);text-align:center}
+.ribbon p{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-style:italic;color:var(--text-light);max-width:540px;margin:0 auto;line-height:1.55}
+.ribbon .ref{display:block;font-family:'Cormorant Garamond',serif;font-size:0.78rem;font-style:italic;letter-spacing:3px;text-transform:uppercase;color:var(--gold-deep);margin-top:14px;opacity:0.85}
 
-/* ===== CHARACTERS ===== */
-.char-grid{display:grid;gap:24px;margin:40px 0}
-@media(min-width:640px){.char-grid{grid-template-columns:1fr}}
-.char-card{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft);transition:all 0.3s ease}
-.char-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-mid)}
-.char-head{background:linear-gradient(135deg,var(--gold-soft),rgba(200,128,144,0.05));padding:18px 20px;border-bottom:1px solid var(--cream-deep);display:flex;align-items:center;gap:14px}
-.char-emoji{font-size:2rem;line-height:1;display:flex;align-items:center;justify-content:center}
-.char-name{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;color:var(--dawn);line-height:1.25}
-.char-title{font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-top:2px}
-.char-body{padding:20px}
-.char-body p{font-size:0.92rem;color:var(--text-light);line-height:1.75;margin:0}
+/* ===== INSIGHT CARD (the frame) ===== */
+.insight-card{margin:36px 0;padding:30px 32px;background:linear-gradient(135deg,#fff,var(--cream-warm));border-radius:var(--radius);border-left:3px solid var(--gold);text-align:center;box-shadow:var(--shadow-soft)}
+.ins-label{font-family:'Cormorant Garamond',serif;font-size:0.78rem;font-style:italic;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold-deep);margin-bottom:14px;opacity:0.8}
+.insight-card h3{font-family:'Cormorant Garamond',serif;font-size:clamp(1.4rem,3.5vw,1.85rem);font-weight:500;font-style:italic;color:var(--dawn);line-height:1.35;margin:0}
 
 /* ===== SCENE ===== */
-.scene{background:linear-gradient(135deg,var(--cream-warm),var(--cream));border:1px solid var(--cream-deep);border-radius:var(--radius);padding:28px;margin:32px 0;box-shadow:var(--shadow-soft)}
-.scene-label{font-family:'Nunito',sans-serif;font-size:0.68rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--rose-dawn);margin-bottom:16px;display:flex;align-items:center;gap:8px}
-.scene h4{font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:800;color:var(--dawn);margin-bottom:14px;line-height:1.3}
-.scene p{font-size:0.95rem;color:var(--text-light);line-height:1.78;margin-bottom:14px}
+.scene{margin:36px 0;padding:30px 32px;background:linear-gradient(160deg,var(--cream-warm),#FFFDF8);border-radius:var(--radius);border-left:3px solid var(--rose);box-shadow:var(--shadow-soft)}
+.scene-label{font-family:'Cormorant Garamond',serif;font-size:0.78rem;font-style:italic;letter-spacing:3.5px;text-transform:uppercase;color:var(--rose-deep);margin-bottom:14px;opacity:0.85}
+.scene h4{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-style:italic;color:var(--dawn);margin-bottom:16px;line-height:1.35}
+.scene p{font-size:1rem;color:var(--text);line-height:1.78;margin-bottom:16px}
 .scene p:last-child{margin-bottom:0}
+.scene em{color:var(--rose-deep);font-style:italic;font-weight:500}
+.scene strong{color:var(--dawn);font-weight:600}
 
-/* ===== BEFORE / AFTER ===== */
-.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:36px 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft)}
-@media(max-width:600px){.ba-grid{grid-template-columns:1fr}}
-.ba-col{padding:28px 24px}
-.ba-col.before{background:var(--before-bg);border-right:2px solid var(--cream-deep)}
-.ba-col.after{background:var(--after-bg)}
-@media(max-width:600px){.ba-col.before{border-right:none;border-bottom:2px solid var(--cream-deep)}}
-.ba-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px}
-.ba-col.before .ba-label{color:var(--before-border)}
-.ba-col.after .ba-label{color:var(--after-border)}
-.ba-col h4{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;margin-bottom:10px;line-height:1.3}
-.ba-col.before h4{color:var(--before-text)}
-.ba-col.after h4{color:var(--after-text)}
-.ba-col p{font-size:0.88rem;line-height:1.7;margin-bottom:8px}
-.ba-col.before p{color:#5A3018}
-.ba-col.after p{color:#1A1A26}
-.ba-col ul{list-style:none;padding:0;margin:0}
-.ba-col ul li{font-size:0.88rem;line-height:1.7;padding:4px 0 4px 18px;position:relative}
-.ba-col.before ul li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:8px;border-radius:50%;background:var(--before-border);opacity:0.55}
-.ba-col.after ul li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:8px;border-radius:50%;background:var(--after-border);opacity:0.55}
+/* ===== INVITATION (replaces "Now Do It" for reception) ===== */
+.invite{margin:38px 0 0;padding:28px 32px;background:linear-gradient(135deg,rgba(245,224,168,0.4),rgba(232,201,106,0.18));border:1px solid rgba(212,168,67,0.32);border-radius:var(--radius);text-align:center}
+.invite-eyebrow{font-family:'Cormorant Garamond',serif;font-size:0.82rem;font-style:italic;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold-deep);margin-bottom:12px}
+.invite p{font-family:'Cormorant Garamond',serif;font-size:1.18rem;font-style:italic;color:var(--dawn);line-height:1.5;margin:0;max-width:520px;margin-left:auto;margin-right:auto}
 
-/* ===== DATA ===== */
-.data-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin:32px 0}
-.data-box{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:24px 16px;text-align:center;box-shadow:var(--shadow-soft)}
-.data-num{font-family:'Nunito',sans-serif;font-size:1.8rem;font-weight:900;color:var(--rose-dawn);line-height:1;margin-bottom:6px}
-.data-label{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+/* ===== FRAME BREAK (pull quote at chapter close) ===== */
+.framebreak{margin:36px 0 0;padding:34px 36px;background:linear-gradient(140deg,#1F2440,#2A2F58);border-radius:var(--radius);border-left:4px solid var(--gold);position:relative;overflow:hidden;box-shadow:var(--shadow-deep)}
+.framebreak::before{content:'"';position:absolute;top:-12px;left:14px;font-family:'Cormorant Garamond',serif;font-size:6rem;color:rgba(212,168,67,0.22);line-height:1;font-style:italic}
+.framebreak-eyebrow{font-family:'Cormorant Garamond',serif;font-size:0.78rem;font-style:italic;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold-glow);margin-bottom:10px;position:relative;z-index:2;opacity:0.85}
+.framebreak p{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-style:italic;color:#fff;line-height:1.5;margin:0;position:relative;z-index:2;font-weight:500}
+.framebreak p strong{color:var(--gold-glow);font-weight:600;font-style:italic}
 
-.data-hero{text-align:center;padding:48px 24px;margin:40px 0;background:linear-gradient(135deg,var(--dawn),var(--sky));border-radius:var(--radius);position:relative;overflow:hidden}
-.data-hero::before{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(245,224,168,0.12) 0%,transparent 70%);border-radius:50%}
-.data-hero .dh-num{font-family:'Nunito',sans-serif;font-size:3.4rem;font-weight:900;color:var(--gold-glow);line-height:1;margin-bottom:10px;position:relative}
-.data-hero .dh-label{font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.55);position:relative}
-.data-hero .dh-sub{font-family:'Lora',serif;font-size:0.92rem;font-style:italic;color:rgba(255,255,255,0.65);margin-top:12px;max-width:440px;margin-left:auto;margin-right:auto;position:relative}
+/* ===== INTERACTIVE: DECAY SLIDER (Ch 2) ===== */
+.decay-slider-widget{margin:36px 0;padding:34px 28px;background:#fff;border-radius:var(--radius);border:1px solid var(--cream-deep);box-shadow:var(--shadow-soft);text-align:center}
+.dsw-label{font-family:'Cormorant Garamond',serif;font-size:0.78rem;font-style:italic;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold-deep);margin-bottom:6px}
+.dsw-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-style:italic;color:var(--dawn);margin-bottom:24px}
+.dsw-circle{width:130px;height:130px;border-radius:50%;margin:0 auto 22px;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-style:italic;color:#fff;letter-spacing:1px;transition:all 1s ease;box-shadow:0 8px 28px rgba(14,15,26,0.18)}
+.dsw-stage-name{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-style:italic;color:var(--dawn);margin-bottom:6px;transition:color 0.6s ease}
+.dsw-stage-time{font-family:'Cormorant Garamond',serif;font-size:0.85rem;font-style:italic;color:var(--text-muted);margin-bottom:18px;letter-spacing:1px}
+.dsw-sentence{font-family:'Lora',serif;font-size:0.98rem;font-style:italic;color:var(--text-light);line-height:1.78;max-width:480px;margin:0 auto 24px;min-height:78px;transition:opacity 0.4s ease}
+.dsw-slider{width:100%;max-width:440px;accent-color:var(--gold);margin:0 auto;display:block}
+.dsw-ticks{display:flex;justify-content:space-between;max-width:440px;margin:8px auto 22px;font-family:'Cormorant Garamond',serif;font-size:0.74rem;font-style:italic;color:var(--text-muted);letter-spacing:1px}
+.dsw-restore{display:inline-block;padding:11px 24px;background:linear-gradient(135deg,var(--gold-pale),var(--gold));color:var(--dawn);font-family:'Cormorant Garamond',serif;font-size:0.95rem;font-style:italic;letter-spacing:2px;border:none;border-radius:50px;cursor:pointer;transition:all 0.3s;opacity:0.6}
+.dsw-restore:hover{opacity:1;transform:translateY(-1px)}
 
-/* ===== GLOW BOX ===== */
-.glow-box{background:linear-gradient(135deg,var(--dawn),var(--sky));border:2px solid rgba(245,224,168,0.25);border-radius:var(--radius);padding:32px;margin:36px 0;position:relative;overflow:hidden;box-shadow:0 4px 24px rgba(14,15,26,0.2)}
-.glow-box::before{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(245,224,168,0.12) 0%,transparent 70%);border-radius:50%}
-.glow-box h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--gold-glow);margin-bottom:14px;position:relative}
-.glow-box p{font-size:0.95rem;color:rgba(255,255,255,0.88);line-height:1.78;position:relative;margin-bottom:12px}
-.glow-box p:last-child{margin-bottom:0}
-.glow-box strong{color:var(--gold-pale)}
-.glow-box em{color:var(--rose-pale);font-style:italic}
+/* ===== INTERACTIVE: GAP BARS (Ch 4) ===== */
+.gap-widget{margin:36px 0;padding:30px 28px;background:#fff;border-radius:var(--radius);border:1px solid var(--cream-deep);box-shadow:var(--shadow-soft)}
+.gw-grid{display:grid;grid-template-columns:1fr;gap:22px}
+@media(min-width:560px){.gw-grid{grid-template-columns:1fr 1fr}}
+.gw-panel{padding:22px 18px;background:var(--cream-warm);border-radius:10px}
+.gw-panel-label{font-family:'Cormorant Garamond',serif;font-size:0.82rem;font-style:italic;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold-deep);margin-bottom:14px;text-align:center}
+.gw-bars{display:flex;justify-content:center;gap:22px;height:130px;align-items:flex-end;position:relative;margin-bottom:10px}
+.gw-bar-wrap{position:relative;width:48px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.gw-bar{width:100%;border-radius:6px 6px 0 0;transition:height 1s cubic-bezier(.34,1.4,.46,1);position:relative}
+.gw-bar.exp{background:linear-gradient(180deg,var(--mist),var(--light))}
+.gw-bar.given{background:linear-gradient(180deg,var(--gold-pale),var(--gold))}
+.gw-bar-num{position:absolute;top:-22px;left:0;right:0;text-align:center;font-family:'Cormorant Garamond',serif;font-size:0.78rem;font-style:italic;color:var(--text-light);font-weight:600}
+.gw-gap-band{position:absolute;left:0;right:0;background:linear-gradient(180deg,rgba(232,201,106,0.32),rgba(212,168,67,0.18));border-top:1.5px dashed var(--gold);border-bottom:1.5px dashed var(--gold);transition:all 1s cubic-bezier(.34,1.4,.46,1);display:flex;align-items:center;justify-content:center}
+.gw-gap-label{font-family:'Cormorant Garamond',serif;font-size:0.7rem;font-style:italic;color:var(--gold-deep);letter-spacing:1.5px;text-transform:uppercase;background:rgba(250,246,236,0.8);padding:1px 8px;border-radius:3px;white-space:nowrap}
+.gw-bar-labels{display:flex;justify-content:center;gap:22px;margin-top:10px}
+.gw-bar-lbl{width:48px;text-align:center;font-family:'Cormorant Garamond',serif;font-size:0.68rem;font-style:italic;color:var(--text-muted);letter-spacing:1px}
+.gw-caption{font-family:'Lora',serif;font-size:0.84rem;font-style:italic;color:var(--text-light);text-align:center;margin-top:6px;line-height:1.55}
 
-/* ===== INSIGHT CARD (the heart, the central revelation) ===== */
-.insight-card{background:linear-gradient(135deg,var(--dawn),var(--sky));border-radius:var(--radius);padding:56px 32px;margin:40px 0;text-align:center;position:relative;overflow:hidden;border:3px solid rgba(245,224,168,0.3)}
-.insight-card::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;background:radial-gradient(circle,rgba(245,224,168,0.18) 0%,rgba(232,184,112,0.06) 40%,transparent 75%);border-radius:50%}
-.insight-card .ins-label{font-family:'Nunito',sans-serif;font-size:0.58rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:14px;position:relative}
-.insight-card h3{font-family:'Nunito',sans-serif;font-size:clamp(1.8rem,4.6vw,2.8rem);font-weight:900;color:var(--gold-glow);letter-spacing:-0.02em;position:relative;line-height:1.15}
+/* ===== INTERACTIVE: TRAJECTORY WALKER (Ch 5) ===== */
+.trajwalk{margin:36px 0;padding:30px 26px;background:#fff;border-radius:var(--radius);border:1px solid var(--cream-deep);box-shadow:var(--shadow-soft)}
+.tw-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-style:italic;color:var(--dawn);text-align:center;margin-bottom:6px}
+.tw-instr{font-family:'Lora',serif;font-size:0.9rem;font-style:italic;color:var(--text-muted);text-align:center;margin-bottom:22px}
+.tw-stages{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:20px}
+.tw-stage{padding:14px 6px;background:var(--cream-warm);border:1.5px solid var(--cream-deep);border-radius:8px;text-align:center;cursor:pointer;transition:all 0.3s}
+.tw-stage:hover{border-color:var(--gold);background:#fff}
+.tw-stage.active{background:linear-gradient(140deg,var(--gold-pale),var(--gold-glow));border-color:var(--gold);box-shadow:0 4px 14px rgba(212,168,67,0.22)}
+.tw-stage.active .tw-stage-name{color:var(--dawn)}
+.tw-stage-num{font-family:'Cormorant Garamond',serif;font-size:0.7rem;font-style:italic;color:var(--text-muted);margin-bottom:4px}
+.tw-stage-name{font-family:'Cormorant Garamond',serif;font-size:0.92rem;font-style:italic;color:var(--text-light);font-weight:600;line-height:1.1}
+.tw-detail{padding:22px 22px;background:linear-gradient(140deg,var(--cream-warm),#FFFDF8);border-radius:10px;min-height:120px;text-align:center}
+.tw-detail-stage{font-family:'Cormorant Garamond',serif;font-size:0.78rem;font-style:italic;letter-spacing:3px;text-transform:uppercase;color:var(--rose-deep);margin-bottom:10px}
+.tw-detail-text{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:var(--text);line-height:1.75;margin:0}
+.tw-detail-text strong{color:var(--dawn);font-weight:600;font-style:normal}
+.tw-controls{display:flex;justify-content:center;gap:10px;margin-top:18px}
+.tw-btn{padding:9px 20px;background:transparent;color:var(--gold-deep);font-family:'Cormorant Garamond',serif;font-size:0.92rem;font-style:italic;letter-spacing:1.5px;border:1px solid rgba(212,168,67,0.35);border-radius:50px;cursor:pointer;transition:all 0.25s}
+.tw-btn:hover{background:rgba(212,168,67,0.08);border-color:var(--gold)}
+.tw-btn.primary{background:linear-gradient(135deg,var(--gold-pale),var(--gold-glow));color:var(--dawn);border-color:var(--gold)}
 
-/* ===== GRAND QUOTE ===== */
-.grand-quote{text-align:center;padding:48px 24px;margin:40px 0;position:relative}
-.grand-quote::before{content:'\201C';font-family:'Lora',serif;font-size:8rem;color:rgba(212,168,67,0.16);position:absolute;top:-20px;left:50%;transform:translateX(-50%);line-height:1}
-.grand-quote blockquote{font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:var(--dawn);line-height:1.7;max-width:540px;margin:0 auto;position:relative}
-.grand-quote cite{display:block;margin-top:16px;font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--rose-dawn);font-style:normal}
+/* ===== INTERACTIVE: POSTURE TOGGLE (Ch 6) ===== */
+.posture{margin:36px 0;padding:36px 28px;background:linear-gradient(160deg,#FAF6EC,#F0E8D4);border-radius:var(--radius);border:1px solid var(--cream-deep);text-align:center;transition:background 0.8s ease}
+.posture.recv{background:linear-gradient(160deg,#F5EFDB,#F0DB94)}
+.posture-instr{font-family:'Cormorant Garamond',serif;font-size:0.95rem;font-style:italic;color:var(--text-light);margin-bottom:18px}
+.posture-switch{display:inline-flex;align-items:center;background:var(--white);border-radius:50px;padding:5px;box-shadow:var(--shadow-mid);margin-bottom:24px}
+.posture-opt{padding:11px 26px;font-family:'Cormorant Garamond',serif;font-size:1rem;font-style:italic;color:var(--text-muted);background:transparent;border:none;border-radius:50px;cursor:pointer;transition:all 0.35s;letter-spacing:1px}
+.posture-opt.active{background:linear-gradient(135deg,var(--dawn),var(--sky));color:var(--gold-pale);box-shadow:0 4px 16px rgba(31,36,64,0.22)}
+.posture.recv .posture-opt.active{background:linear-gradient(135deg,var(--gold),var(--gold-glow));color:var(--dawn)}
+.posture-content{min-height:140px;transition:opacity 0.5s ease}
+.posture-heading{font-family:'Cormorant Garamond',serif;font-size:1.32rem;font-style:italic;color:var(--dawn);margin-bottom:12px}
+.posture-list{display:grid;grid-template-columns:1fr;gap:6px;max-width:420px;margin:0 auto;text-align:left}
+.posture-item{padding:9px 14px;background:rgba(255,255,255,0.7);border-radius:6px;font-family:'Lora',serif;font-size:0.92rem;font-style:italic;color:var(--text-light);line-height:1.55}
+.posture.recv .posture-item{background:rgba(255,255,255,0.85)}
 
-/* ===== ROOT CHECK ===== */
-.root-ck{margin:40px auto;max-width:720px;padding:36px 32px;background:linear-gradient(135deg,rgba(232,184,112,0.05),rgba(200,128,144,0.06));border-radius:var(--radius);border:2px solid rgba(212,168,67,0.18)}
-.root-ck .rc-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--rose-dawn);margin-bottom:12px}
-.root-ck h4{font-size:1.05rem;color:var(--dawn);margin-bottom:20px}
-.r-item{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
-.r-item:last-child{margin-bottom:0}
-.r-dot{flex-shrink:0;width:8px;height:8px;border-radius:50%;background:var(--gold);margin-top:7px;box-shadow:0 0 6px rgba(212,168,67,0.3)}
-.r-text{font-size:0.92rem;color:var(--text-light);line-height:1.7}
+/* ===== FIVE FRAMES APPLICATION (existing widget, restyled) ===== */
+.five-frames{margin:36px 0;padding:32px 28px;background:linear-gradient(140deg,#1F2440,#2A2F58);border-radius:var(--radius);color:#fff;box-shadow:var(--shadow-deep)}
+.ff-head{text-align:center;margin-bottom:22px}
+.ff-eyebrow{font-family:'Cormorant Garamond',serif;font-size:0.82rem;font-style:italic;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold-glow);margin-bottom:8px}
+.ff-title{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-style:italic;color:#fff;margin-bottom:10px}
+.ff-sub{font-family:'Lora',serif;font-size:0.92rem;font-style:italic;color:rgba(255,255,255,0.62);max-width:480px;margin:0 auto;line-height:1.65}
+.ff-input{width:100%;padding:14px 18px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(212,168,67,0.32);border-radius:10px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:#fff;margin-bottom:22px}
+.ff-input::placeholder{color:rgba(232,201,106,0.55)}
+.ff-input:focus{outline:none;border-color:var(--gold);background:rgba(212,168,67,0.05)}
+.ff-frames{display:grid;grid-template-columns:1fr;gap:12px}
+.ff-frame{padding:18px 20px;background:rgba(255,255,255,0.04);border:1px solid rgba(212,168,67,0.18);border-radius:10px}
+.ff-frame.opened{background:linear-gradient(135deg,rgba(212,168,67,0.1),rgba(232,201,106,0.05));border-color:var(--gold)}
+.ff-frame-num{display:inline-block;font-family:'Cormorant Garamond',serif;font-size:0.7rem;font-style:italic;letter-spacing:2px;text-transform:uppercase;color:var(--gold-glow);background:rgba(212,168,67,0.18);padding:3px 12px;border-radius:50px;margin-bottom:10px}
+.ff-frame-title{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-style:italic;color:#fff;line-height:1.35;margin-bottom:12px}
+.ff-open-btn{font-family:'Cormorant Garamond',serif;font-size:0.92rem;font-style:italic;color:var(--gold-glow);background:transparent;border:1px solid rgba(212,168,67,0.32);padding:7px 18px;border-radius:50px;cursor:pointer;letter-spacing:1px}
+.ff-open-btn:hover{background:rgba(212,168,67,0.08)}
+.ff-frame.opened .ff-open-btn{display:none}
+.ff-answer{display:none;font-family:'Lora',serif;font-size:0.94rem;font-style:italic;color:rgba(255,255,255,0.85);line-height:1.7;margin-top:4px}
+.ff-frame.opened .ff-answer{display:block}
+.ff-answer strong{color:var(--gold-glow);font-weight:500;font-style:normal}
 
-/* ===== VIZ ===== */
-.viz{margin:32px 0;border-radius:var(--radius);border:2px solid var(--gold);overflow:hidden;box-shadow:0 0 20px rgba(212,168,67,0.1)}
-.viz-inner{padding:0}
-.viz-top{display:flex;align-items:center;gap:16px;padding:20px 28px;background:linear-gradient(135deg,rgba(245,224,168,0.12),rgba(245,224,168,0.04))}
-.viz-icon{flex-shrink:0;width:40px;height:40px;border-radius:50%;background:var(--gold);color:var(--white);display:flex;align-items:center;justify-content:center}
-.viz-icon svg{width:20px;height:20px}
-.viz-meta .viz-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
-.viz-meta h4{font-size:1rem;color:var(--dawn);margin:0}
-.viz-body{padding:24px 28px;background:var(--white)}
-.viz-body p{font-size:0.92rem;color:var(--text-light);line-height:1.78;margin-bottom:12px}
-.viz-body strong{color:var(--dawn);font-weight:700}
-.viz-body em{color:var(--rose-dawn);font-style:italic;font-weight:500}
-.viz-body p:last-child{margin-bottom:0}
-.viz-trigger{padding:16px 28px;background:linear-gradient(135deg,rgba(245,224,168,0.08),rgba(245,224,168,0.02));border-top:1px solid rgba(212,168,67,0.15);font-size:0.88rem;color:var(--dawn);font-style:italic}
+/* ===== GIFT INVENTORY (persistent widget) ===== */
+.giftinv{margin:38px 0;padding:34px 30px;background:linear-gradient(160deg,#FFFDF8,var(--cream-warm));border-radius:var(--radius);border:1.5px solid rgba(212,168,67,0.25);box-shadow:var(--shadow-soft);position:relative;overflow:hidden;transition:all 1.2s ease}
+.giftinv::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:0;height:0;background:radial-gradient(circle,rgba(232,201,106,0.4) 0%,transparent 70%);transition:width 1.5s ease,height 1.5s ease;pointer-events:none;border-radius:50%}
+.giftinv.glow1::before{width:280px;height:280px}
+.giftinv.glow2::before{width:480px;height:480px}
+.giftinv.glow3::before{width:760px;height:760px}
+.giftinv-head{text-align:center;margin-bottom:22px;position:relative;z-index:2}
+.giftinv-eyebrow{font-family:'Cormorant Garamond',serif;font-size:0.82rem;font-style:italic;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold-deep);margin-bottom:8px}
+.giftinv-title{font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-style:italic;color:var(--dawn);margin-bottom:10px}
+.giftinv-sub{font-family:'Lora',serif;font-size:0.94rem;font-style:italic;color:var(--text-light);max-width:480px;margin:0 auto;line-height:1.7}
+.giftinv-count{text-align:center;margin:18px 0 14px;position:relative;z-index:2}
+.giftinv-num{font-family:'Cormorant Garamond',serif;font-size:3rem;font-style:italic;color:var(--gold-deep);line-height:1}
+.giftinv-num-lbl{font-family:'Cormorant Garamond',serif;font-size:0.72rem;font-style:italic;letter-spacing:2.5px;text-transform:uppercase;color:var(--text-muted)}
+.giftinv-add{position:relative;z-index:2}
+.giftinv-input{width:100%;padding:14px 18px;background:#fff;border:1.5px solid var(--cream-deep);border-radius:10px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1rem;color:var(--text);margin-bottom:10px}
+.giftinv-input:focus{outline:none;border-color:var(--gold);box-shadow:0 4px 14px rgba(212,168,67,0.12)}
+.giftinv-btn{display:inline-block;padding:11px 26px;background:linear-gradient(135deg,var(--gold),var(--gold-glow));color:var(--dawn);font-family:'Cormorant Garamond',serif;font-size:0.98rem;font-style:italic;letter-spacing:1.5px;border:none;border-radius:50px;cursor:pointer;transition:all 0.25s}
+.giftinv-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(212,168,67,0.3)}
+.giftinv-list{margin-top:22px;display:grid;gap:6px;position:relative;z-index:2;max-height:240px;overflow-y:auto}
+.giftinv-entry{padding:11px 16px;background:rgba(255,253,248,0.7);border-left:2px solid var(--gold);border-radius:6px;font-family:'Cormorant Garamond',serif;font-size:0.98rem;font-style:italic;color:var(--text);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.giftinv-entry-date{font-family:'Cormorant Garamond',serif;font-size:0.7rem;color:var(--text-muted);font-style:italic;letter-spacing:0.5px;white-space:nowrap}
 
-/* ===== THINK ===== */
-.think{background:linear-gradient(135deg,rgba(232,184,112,0.07),rgba(200,128,144,0.05));border:2px solid rgba(212,168,67,0.2);border-radius:var(--radius);padding:28px;margin:36px 0}
-.think-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--rose-dawn);margin-bottom:14px}
-.think p{font-size:0.95rem;color:var(--text-light);line-height:1.78;margin-bottom:12px}
-.think p:last-child{margin-bottom:0}
-.think-line{border:none;border-bottom:1.5px dashed rgba(212,168,67,0.3);margin:8px 0}
-
-/* ===== FINAL TEST ===== */
-.final-test{background:var(--white);border:2px solid var(--cream-deep);border-radius:var(--radius);padding:36px;margin:40px 0;box-shadow:var(--shadow-soft)}
-.final-test h3{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--dawn);margin-bottom:6px}
-.final-test .test-sub{font-size:0.85rem;color:var(--text-muted);margin-bottom:24px;font-style:italic}
-.test-q{padding:14px 0;border-bottom:1px solid var(--cream-deep)}
-.test-q:last-child{border-bottom:none}
-.test-num{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--rose-dawn);margin-bottom:4px}
-.test-q p{font-size:0.92rem;color:var(--text);line-height:1.65}
-
-/* ===== PROMPT ===== */
-.prompt-card{background:linear-gradient(135deg,var(--dawn),var(--sky));border-radius:var(--radius);padding:36px;margin:40px 0;box-shadow:0 4px 24px rgba(14,15,26,0.2)}
-.prompt-card h3{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;color:var(--gold-glow);margin-bottom:16px}
-.prompt-card p{font-size:0.88rem;color:rgba(255,255,255,0.78);line-height:1.65;margin-bottom:10px}
-.prompt-card code{background:rgba(255,255,255,0.08);padding:2px 8px;border-radius:4px;font-size:0.82rem;color:var(--gold-pale)}
-
-/* ===== NEXT CARD ===== */
-.next-card{background:linear-gradient(135deg,var(--sky),var(--dawn));border-radius:var(--radius);padding:36px 32px;margin:40px 0;box-shadow:0 4px 24px rgba(14,15,26,0.2);text-align:center;position:relative;overflow:hidden}
-.next-card::before{content:'';position:absolute;top:-30%;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(245,224,168,0.15) 0%,transparent 70%);border-radius:50%}
-.next-label{font-family:'Nunito',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--gold-pale);margin-bottom:12px;position:relative}
-.next-title{font-family:'Nunito',sans-serif;font-size:1.6rem;font-weight:900;color:var(--white);margin-bottom:10px;position:relative}
-.next-tag{font-family:'Lora',serif;font-size:0.92rem;font-style:italic;color:rgba(255,255,255,0.78);margin-bottom:14px;position:relative}
+/* ===== RESISTANCE: WHY YOU WILL NOT SEE ===== */
+.resistance{margin:40px 0;padding:38px 30px;background:linear-gradient(140deg,#1F2440,#2A2F58);border-radius:var(--radius);color:#fff;box-shadow:var(--shadow-deep)}
+.resistance-eyebrow{font-family:'Cormorant Garamond',serif;font-size:0.82rem;font-style:italic;letter-spacing:3.5px;text-transform:uppercase;color:var(--rose-pale);text-align:center;margin-bottom:8px}
+.resistance h3{font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-style:italic;color:#fff;text-align:center;margin-bottom:10px}
+.resistance-sub{font-family:'Lora',serif;font-size:0.92rem;font-style:italic;color:rgba(255,255,255,0.62);text-align:center;margin-bottom:26px;max-width:520px;margin-left:auto;margin-right:auto}
+.excuses{display:grid;grid-template-columns:1fr;gap:14px}
+.excuse{padding:18px 22px;background:rgba(255,255,255,0.04);border:1px solid rgba(232,201,106,0.18);border-radius:10px}
+.excuse-line{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-style:italic;color:#fff;margin-bottom:8px;line-height:1.4}
+.excuse-line::before{content:'"';color:var(--rose-pale);font-size:1.2em}
+.excuse-line::after{content:'"';color:var(--rose-pale);font-size:1.2em}
+.excuse-answer{font-family:'Lora',serif;font-size:0.92rem;font-style:italic;color:rgba(255,255,255,0.78);line-height:1.7}
+.excuse-answer strong{color:var(--gold-glow);font-weight:500;font-style:italic}
 
 /* ===== FINALE ===== */
-.finale{background:linear-gradient(170deg,var(--night),var(--dawn));padding:80px 24px;text-align:center;position:relative;overflow:hidden}
-.finale::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(245,224,168,0.08) 0%,transparent 70%);border-radius:50%}
-.finale h2{font-family:'Nunito',sans-serif;font-size:clamp(1.6rem,4.4vw,2.4rem);font-weight:300;color:rgba(255,255,255,0.78);line-height:1.3;position:relative;margin-bottom:8px}
-.finale h2 strong{font-weight:900;color:var(--gold-glow);display:block}
+.finale{padding:80px 26px 64px;text-align:center;background:linear-gradient(170deg,#1F2440,#1A1A2E);position:relative;overflow:hidden}
+.finale::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(212,168,67,0.08),transparent 65%);border-radius:50%}
+.finale h2{font-family:'Cormorant Garamond',serif;font-size:clamp(1.7rem,4.4vw,2.5rem);font-weight:400;font-style:italic;color:rgba(255,255,255,0.85);line-height:1.28;position:relative;z-index:2;margin-bottom:14px}
+.finale h2 strong{font-weight:600;color:var(--gold-glow);display:block;margin-top:6px}
+.finale p{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-style:italic;color:rgba(255,255,255,0.6);max-width:540px;margin:14px auto 0;line-height:1.65;position:relative;z-index:2}
 
-/* ===== FOOTER ===== */
-.footer{text-align:center;padding:48px 24px;background:var(--night);color:rgba(255,255,255,0.3);font-family:'Poppins',sans-serif;font-size:0.6rem;letter-spacing:2px;text-transform:uppercase}
-.footer a{color:var(--gold);text-decoration:none;opacity:0.65}
-.footer a:hover{opacity:1}
+/* ===== NEXT IN SERIES ===== */
+.next-card{margin:36px auto;padding:28px 30px;max-width:560px;background:linear-gradient(135deg,#fff,var(--cream-warm));border-radius:var(--radius);border:1px solid var(--cream-deep);box-shadow:var(--shadow-soft);text-align:center}
+.next-label{font-family:'Cormorant Garamond',serif;font-size:0.78rem;font-style:italic;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold-deep);margin-bottom:10px}
+.next-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-style:italic;color:var(--dawn);margin-bottom:12px}
+.next-tag{font-family:'Lora',serif;font-size:0.94rem;font-style:italic;color:var(--text-light);line-height:1.7}
+.next-tag em{color:var(--rose-deep);font-style:italic;font-weight:500}
+
+footer{background:#0E0F1A;padding:50px 26px 38px;text-align:center;color:rgba(255,255,255,0.45)}
+footer p{font-family:'Cormorant Garamond',serif;font-size:0.95rem;font-style:italic;line-height:1.7;max-width:540px;margin:0 auto 18px;color:rgba(255,255,255,0.42)}
+footer .brand{font-family:'Cormorant Garamond',serif;font-size:0.72rem;font-style:italic;letter-spacing:3px;text-transform:uppercase;color:var(--gold-glow);opacity:0.78}
+
+/* REVEAL animation - slower fade for reception */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 1.4s ease,transform 1.4s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
 
 @media(max-width:640px){
-  .page{padding-left:20px;padding-right:20px}
-  .root-ck{margin-left:20px;margin-right:20px;padding:28px 20px}
-  .char-grid{grid-template-columns:1fr}
-  .data-hero .dh-num{font-size:2.6rem}
-  .ch-title{font-size:1.7rem}
+  .page{padding-left:22px;padding-right:22px}
   .ch-num{font-size:4rem}
-  .insight-card h3{font-size:1.7rem}
+  .ch-title{font-size:1.85rem}
+  .insight-card,.scene,.invite,.framebreak,.decay-slider-widget,.gap-widget,.trajwalk,.posture,.five-frames,.giftinv,.resistance{margin-left:0;margin-right:0}
+  .tw-stages{grid-template-columns:repeat(5,1fr);font-size:0.8em}
+  .tw-stage-name{font-size:0.78rem}
 }
 @media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
-
-/* ===== DECAY TIMELINE ===== */
-.decay-timeline{display:flex;align-items:flex-start;justify-content:center;gap:4px;margin:40px 0;padding:36px 16px 28px;background:var(--cream-warm);border-radius:var(--radius);border:1.5px solid var(--cream-deep);overflow-x:auto}
-.decay-step{display:flex;flex-direction:column;align-items:center;min-width:88px;flex-shrink:0}
-.decay-circle{width:56px;height:56px;border-radius:50%;margin-bottom:10px;box-shadow:0 2px 10px rgba(14,15,26,0.12);display:flex;align-items:center;justify-content:center}
-.decay-circle.s1{background:radial-gradient(circle at 35% 35%,var(--gold-glow),var(--gold) 70%);box-shadow:0 0 24px rgba(245,224,168,0.5),0 2px 10px rgba(14,15,26,0.12)}
-.decay-circle.s2{background:radial-gradient(circle at 35% 35%,#F0CA85,#C8A858 75%)}
-.decay-circle.s3{background:radial-gradient(circle at 35% 35%,#C0AC80,#9A8868 80%)}
-.decay-circle.s4{background:radial-gradient(circle at 35% 35%,#909088,#6A6A60)}
-.decay-circle.s5{background:radial-gradient(circle at 35% 35%,#5A5A60,#3A3A40)}
-.decay-label{font-family:'Nunito',sans-serif;font-size:0.58rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--dawn);text-align:center;line-height:1.2}
-.decay-yr{font-family:'Lora',serif;font-size:0.68rem;font-style:italic;color:var(--text-muted);margin-top:5px;text-align:center}
-.decay-arrow{font-family:'Nunito',sans-serif;font-size:1.4rem;color:var(--text-muted);font-weight:300;flex-shrink:0;align-self:center;margin-top:8px;opacity:0.5}
-.decay-caption{text-align:center;margin-top:20px;font-family:'Lora',serif;font-size:0.85rem;font-style:italic;color:var(--text-light);max-width:520px;margin-left:auto;margin-right:auto}
-
-/* ===== CONVERSION DIAGRAM ===== */
-.conversion-viz{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;margin:40px 0;padding:36px 20px;background:linear-gradient(135deg,var(--cream-warm),var(--cream));border-radius:var(--radius);border:1.5px solid var(--cream-deep)}
-@media(max-width:600px){.conversion-viz{grid-template-columns:1fr;text-align:center;gap:8px}}
-.conv-box{text-align:center;padding:8px}
-.conv-shape{width:88px;height:88px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-weight:900;color:var(--white);font-size:0.7rem;letter-spacing:1.5px}
-.conv-shape.gift{border-radius:50%;background:radial-gradient(circle at 35% 35%,var(--gold-glow),var(--gold) 60%,var(--honey));box-shadow:0 4px 24px rgba(212,168,67,0.35);color:var(--dawn)}
-.conv-shape.means{background:linear-gradient(135deg,#5A5E6E,#7A7E8E);border-radius:8px;color:var(--white)}
-.conv-label{font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--dawn);margin-bottom:4px}
-.conv-sub{font-family:'Lora',serif;font-size:0.78rem;font-style:italic;color:var(--text-muted)}
-.conv-process{text-align:center;padding:0 8px;color:#A86A30}
-.conv-process .conv-gear{width:44px;height:44px;border-radius:50%;background:rgba(168,106,48,0.12);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:#A86A30}
-.conv-process-label{font-family:'Nunito',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#A86A30}
-
-/* ===== GAP VISUALIZATION ===== */
-.gap-viz{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:40px 0;padding:32px 20px;background:linear-gradient(135deg,var(--cream-warm),var(--cream));border-radius:var(--radius);border:1.5px solid var(--cream-deep)}
-@media(max-width:600px){.gap-viz{grid-template-columns:1fr}}
-.gap-panel{text-align:center}
-.gap-label{font-family:'Nunito',sans-serif;font-size:0.58rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--rose-dawn);margin-bottom:14px}
-.gap-bars{display:flex;align-items:flex-end;justify-content:center;gap:14px;height:200px;position:relative}
-.gap-bar-wrap{width:60px;height:200px;position:relative;display:flex;flex-direction:column;justify-content:flex-end}
-.gap-bar{width:100%;border-radius:6px 6px 0 0;font-family:'Nunito',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--white);display:flex;align-items:flex-start;justify-content:center;padding-top:6px}
-.gap-bar.exp{background:linear-gradient(to top,#7A7E8E,#9A9EAE)}
-.gap-bar.given{background:linear-gradient(to top,var(--gold),var(--gold-glow));color:var(--dawn)}
-.gap-shade-zone{position:absolute;left:0;right:0;background:repeating-linear-gradient(45deg,rgba(232,184,112,0.18),rgba(232,184,112,0.18) 6px,rgba(232,184,112,0.32) 6px,rgba(232,184,112,0.32) 12px);border-top:1.5px dashed var(--gold);border-bottom:1.5px dashed var(--gold);display:flex;align-items:center;justify-content:center}
-.gap-shade-label{font-family:'Nunito',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:1.5px;color:#8A6020;text-transform:uppercase;background:var(--cream);padding:2px 8px;border-radius:50px}
-.gap-caption{font-family:'Lora',serif;font-size:0.82rem;font-style:italic;color:var(--text-light);margin-top:14px}
-.gap-bar-labels{display:flex;justify-content:center;gap:14px;margin-top:8px}
-.gap-bar-lbl{width:60px;font-family:'Nunito',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);text-align:center}
-
-/* ===== TRAJECTORY MAP ===== */
-.trajectory{margin:40px 0;padding:32px 16px;background:linear-gradient(135deg,var(--cream-warm),var(--cream));border-radius:var(--radius);border:1.5px solid var(--cream-deep)}
-.traj-stages{display:flex;align-items:center;justify-content:space-between;gap:6px;overflow-x:auto;padding-bottom:4px}
-.traj-stage{flex:1;min-width:78px;text-align:center;padding:16px 6px;border-radius:8px;font-family:'Nunito',sans-serif;font-size:0.58rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;border:1.5px solid var(--cream-deep);background:var(--white);color:var(--dawn);flex-shrink:0}
-.traj-stage.s1{background:linear-gradient(135deg,var(--gold-glow),var(--gold-pale));color:var(--dawn);border-color:var(--gold);box-shadow:0 2px 10px rgba(212,168,67,0.25)}
-.traj-stage.s2{background:#EFE3C8;color:#8A6B30;border-color:#D4B888}
-.traj-stage.s3{background:#D8CCB0;color:#5A5040;border-color:#9A8A6A}
-.traj-stage.s4{background:#A0A0A8;color:var(--white);border-color:#7A7A82}
-.traj-stage.s5{background:linear-gradient(135deg,#5A5E6E,#3A3E4E);color:var(--white);border-color:#2A2E3E}
-.traj-arrow{font-family:'Nunito',sans-serif;font-size:1.1rem;color:var(--text-muted);font-weight:300;flex-shrink:0;opacity:0.5}
-.traj-reverse{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:18px;padding:14px;background:linear-gradient(90deg,rgba(212,168,67,0.06),rgba(212,168,67,0.16),rgba(212,168,67,0.06));border-radius:8px;border:1.5px dashed var(--gold)}
-.traj-rev-arrow{color:var(--gold);font-weight:700;font-size:1.1rem}
-.traj-rev-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:#A6822B}
-
-/* ===== HANDS VIZ ===== */
-.hands-viz{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:40px 0}
-@media(max-width:600px){.hands-viz{grid-template-columns:1fr}}
-.hand-panel{padding:28px 20px;border-radius:var(--radius);text-align:center;border:2px solid var(--cream-deep)}
-.hand-panel.closed{background:linear-gradient(135deg,#E8DCC8,#D8CCB0)}
-.hand-panel.open{background:linear-gradient(135deg,var(--gold-pale),#F0DCB8)}
-.hand-icon{width:72px;height:72px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center}
-.hand-label{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px}
-.hand-panel.closed .hand-label{color:#7A6A55}
-.hand-panel.open .hand-label{color:#A6822B}
-.hand-title{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:900;color:var(--dawn);margin-bottom:10px}
-.hand-desc{font-family:'Lora',serif;font-size:0.85rem;font-style:italic;color:var(--text-light);line-height:1.55}
 </style>
 </head>
 <body>
 
-<!-- ===== COVER ===== -->
+<div id="progress-bar"></div>
+<div id="chapter-pill"></div>
+
+<!-- ============================== COVER ============================== -->
 <section class="cover">
-<div class="manna-flake"></div><div class="manna-flake"></div><div class="manna-flake"></div><div class="manna-flake"></div>
-<div class="manna-flake"></div><div class="manna-flake"></div><div class="manna-flake"></div><div class="manna-flake"></div>
-<div class="manna-flake"></div><div class="manna-flake"></div><div class="manna-flake"></div><div class="manna-flake"></div>
-<div class="dawn-glow"></div>
-<div class="ghost-noise"></div>
-<div class="cover-content">
-<div class="cover-badge">Kingdom Builders AI</div><br>
-<div class="cover-series">Manna &middot; Part 1 of 2</div>
-<h1>Given</h1>
-<p class="cover-tagline">There is a condition almost everyone you know is in, and almost no one is naming it. They have more than their grandparents had, and they are exhausted in a way their grandparents would not recognize. <em>They are not depressed. They are not lazy. They have lost the ability to receive what is being given.</em></p>
-<p class="cover-sub">The Crisis No One Names And The Way Back</p>
-<div class="series-progress">
-  <div class="series-dots">
-    <span class="series-dot active" title="Given"></span>
-    <span class="series-dot" title="Returning"></span>
+  <div class="manna-rain" id="manna-rain"></div>
+  <div class="cover-grain"></div>
+  <div class="cover-content">
+    <div class="cover-eyebrow">Manna &middot; Part One</div>
+    <h1>Given</h1>
+    <p class="cover-sub">A book about reception.</p>
+    <p class="cover-tagline">There is a condition almost everyone you know is in, and almost no one is naming. They have more than their grandparents had, and they are exhausted in a way their grandparents would not recognize. <em>They are not depressed. They have lost the capacity to receive what is being given.</em></p>
+    <div class="cover-author">KingdomBuilders AI</div>
   </div>
-  <div class="series-dot-label">Part 1 of 2</div>
-</div>
-<p class="cover-author">KingdomBuilders AI</p>
-</div>
 </section>
 
-<div class="ribbon">
-<p>"This is the bread which the Lord hath given you to eat."<br><span class="ref">Exodus 16:15</span></p>
-</div>
+<!-- ============================== STOP BEFORE READING (Reception cold-open) ============================== -->
+<section class="stopbefore">
+  <div class="stopbefore-eyebrow">Before The First Word</div>
+  <h2>Look up from this screen.</h2>
+  <p>Find one thing in the room you are in. Anything. The light on a wall. The cup near your hand. The sound of someone in the next room. The temperature of the air.</p>
+  <p>You did not arrange that thing. <strong>It is being given to you while you read.</strong></p>
+  <p>Sit with that for one breath. Then continue.</p>
+  <button class="stopbefore-btn" id="stopbefore-btn">I did. Continue.</button>
+</section>
 
-<!-- ===== PREGAME ===== -->
+<!-- ============================== PREGAME ============================== -->
 <div class="ch-head">
-<div class="page">
-<div class="ch-badge">Pregame</div>
-<div class="ch-num">00</div>
-<div class="ch-title">The Condition You Are In</div>
-<div class="ch-sub">What you will know when you finish this playbook.</div>
-</div>
+  <div class="page">
+    <div class="ch-badge">Pregame</div>
+    <div class="ch-num">00</div>
+    <h2 class="ch-title">The Condition You Are In</h2>
+    <p class="ch-sub">A name for what almost no one has been able to name. The first half of every cure.</p>
+  </div>
 </div>
 
 <div class="page section prose">
+  <p>A woman sits in her kitchen on a Tuesday morning. The coffee is hot. The light is on the wall. The house is paid for. The children are healthy. She has the life she asked for.</p>
+  <p>She is tired in a way the coffee will not touch.</p>
+  <p>She is not depressed. She is not lazy. She does not know what is wrong, and so she calls it stress. She has been calling it stress for nine years.</p>
 
-<p>A woman sits in her kitchen on a Tuesday morning. The coffee is hot. The light is on the wall. The house is paid for. The children are healthy. The work she chose at twenty five is the work she still has at forty three. She has the life she asked for.</p>
+  <div class="insight-card">
+    <div class="ins-label">What is wrong</div>
+    <h3>You have lost the capacity to receive what is being given.</h3>
+  </div>
 
-<p>She is tired in a way the coffee will not touch.</p>
+  <p>Your work was given. Your marriage was given. Your body was given. Your time was given. Your face in the mirror was given. <strong>You converted them, almost without noticing, into demands.</strong> The conversion did not happen in the things. It happened in your seeing.</p>
 
-<p>She is not depressed. She is not lazy. She does not know what is wrong, and so she calls it stress. She has been calling it stress for nine years.</p>
+  <p>This playbook is Part One of a series called <em>Manna</em>. Manna was the bread that fell every morning on the Hebrew camp for forty years. It could not be saved. It could not be earned. It could only be received, fresh, on the morning it was given.</p>
 
-<p>There is a condition almost everyone you know is in.<br>
-There is a name for it almost no one is saying.<br>
-There is a way out almost no one can find,<br>
-because they cannot find the name.</p>
+  <p>What follows is five frames. Each one is a way the seeing returns.</p>
 
-<p><strong>You cannot escape what you cannot name.</strong></p>
-
-<p>This book gives you the name. This book gives you the way.</p>
-
-<div class="glow-box">
-<h3>The Architecture Of What Follows</h3>
-<p>The condition is the systematic loss of the capacity to receive what is given.</p>
-<p>Your work was given. Your marriage was given. Your body was given. Your time was given. Your country was given. Your children were given. Your face in the mirror was given.</p>
-<p><strong>You converted them, almost without noticing, into demands.</strong></p>
-<p>The conversion did not happen in the things. It happened in your seeing.</p>
-<p>This playbook is Part 1 of a series called <em>Manna</em>. Manna was the bread that fell every morning on the Hebrew camp for forty years. It could not be saved. It could not be earned. It could only be received, fresh, on the morning it was given. <em>Manna is the shape of every received life.</em> Daily. Fresh. Never hoarded. Only received and eaten and received again tomorrow.</p>
-<p>The five frames in this book are how the seeing returns.</p>
-</div>
-
-<p>When you finish, you will know the name of what is wrong. You will know why your job feels demanding when it began as a dream. You will know why the marriage you chose feels heavy. You will know why the body you maintain feels like a project. <strong>And you will hold five ways of seeing that turn the world you live in back into the world that was given to you.</strong></p>
-
-</div>
-
-<!-- ===== CHARACTERS ===== -->
-<div class="page">
-<div class="char-grid">
-<div class="char-card">
-<div class="char-head">
-<div class="char-emoji"><svg viewBox="0 0 48 48" width="42" height="42"><path d="M16 28 Q24 22 32 28 L32 36 L16 36 Z" fill="#3D4670"/><circle cx="24" cy="20" r="6" fill="#E8B870"/><path d="M14 36 Q24 32 34 36" stroke="#D4A843" stroke-width="1.5" fill="none"/><circle cx="20" cy="10" r="1.5" fill="#F5E0A8"><animate attributeName="cy" values="10;6;10" dur="3s" repeatCount="indefinite"/></circle><circle cx="28" cy="8" r="1.5" fill="#F5E0A8"><animate attributeName="cy" values="8;4;8" dur="4s" repeatCount="indefinite"/></circle></svg></div>
-<div><div class="char-name">The Receiver</div><div class="char-title">Sees What Is Given</div></div>
-</div>
-<div class="char-body"><p>Wakes into a day they did not earn. Drinks coffee they did not grow. Lives in a body they did not assemble. Speaks a language someone else handed them. Loves a spouse they cannot fully account for. The Receiver does not produce a life. They receive one, and the seeing produces joy because joy is the body's response to noticing what is being given.</p></div>
-</div>
-<div class="char-card">
-<div class="char-head">
-<div class="char-emoji"><svg viewBox="0 0 48 48" width="42" height="42"><rect x="14" y="14" width="20" height="20" fill="none" stroke="#A86A30" stroke-width="2"/><path d="M14 14 L24 24 L34 14" stroke="#A86A30" stroke-width="1.5" fill="none"/><path d="M14 34 L24 24 L34 34" stroke="#A86A30" stroke-width="1.5" fill="none"/><circle cx="24" cy="24" r="2" fill="#A86A30"/></svg></div>
-<div><div class="char-name">The Earner</div><div class="char-title">Cannot Accept Gifts</div></div>
-</div>
-<div class="char-body"><p>Believes everything must be earned, paid for, deserved. Treats compliments as debt. Treats grace as suspicious. Treats kindness as transaction. The Earner has built an entire life around closing the gap where gratitude lives. They are competent and exhausted. They do not understand why people who receive freely seem lighter than they are.</p></div>
-</div>
-<div class="char-card">
-<div class="char-head">
-<div class="char-emoji"><svg viewBox="0 0 48 48" width="42" height="42"><circle cx="24" cy="24" r="14" fill="none" stroke="#7A7E8E" stroke-width="2"/><circle cx="24" cy="24" r="8" fill="none" stroke="#7A7E8E" stroke-width="1" opacity="0.6"/><circle cx="24" cy="24" r="3" fill="#7A7E8E" opacity="0.5"/><line x1="10" y1="10" x2="38" y2="38" stroke="#7A7E8E" stroke-width="1" opacity="0.3"/><line x1="38" y1="10" x2="10" y2="38" stroke="#7A7E8E" stroke-width="1" opacity="0.3"/></svg></div>
-<div><div class="char-name">The Familiar</div><div class="char-title">Has Stopped Seeing</div></div>
-</div>
-<div class="char-body"><p>Once celebrated everything they now resent. The job that was a dream. The spouse who was a wonder. The body that was a gift. The home that was a sanctuary. Nothing has changed in the objects. The seeing has decayed. The Familiar does not know this and so cannot understand why their life of accumulated success feels like accumulated weight. This is most modern adults. This was you yesterday morning.</p></div>
-</div>
-</div>
-</div>
-
-<!-- ===== CHAPTER 1 ===== -->
-<div class="ch-head">
-<div class="page">
-<div class="ch-badge">Chapter One</div>
-<div class="ch-num">01</div>
-<div class="ch-title">The Crisis No One Names</div>
-<div class="ch-sub">A condition shared by almost everyone, and almost never spoken aloud.</div>
-</div>
-</div>
-
-<div class="page section prose">
-
-<p>Look at the adults you know who have what they wanted.</p>
-
-<p>The career they chose. The house they saved for. The spouse they married. The child they prayed for. The body they have maintained across two decades. The faith they were raised in. Watch how they carry these things.</p>
-
-<p><strong>Most of them are not joyful.</strong> They are competent. They are responsible. They are getting through it.</p>
-
-<p>They have the life they wanted, and they are vaguely aggrieved by it.</p>
-
-<p>This is not depression. They have therapists. The therapists do not cure it.<br>
-This is not burnout. They have taken vacations. The vacations do not heal it.<br>
-This is not midlife crisis. It happens at thirty. It happens at sixty. It happens at seventy.</p>
-
-<p>It does not respond to optimization.</p>
-
-<p>It does not respond to wellness protocols, productivity hacks, gratitude journals, therapy, church attendance, or pilgrimage. <strong>Every cure assumes the problem is something they are doing. The problem is something they have stopped seeing.</strong></p>
-
-<div class="scene">
-<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> The Recognition</div>
-<h4>The Man Who Could Not Name It</h4>
-<p>A man in his early forties sits across from his pastor. By every external measure he has won. The job he wanted at twenty. The wife he chose at twenty four. Two children. The house. The body that still works. The faith he was raised in.</p>
-<p>He says, "I do not know what is wrong with me. I have everything I asked for. I dread Mondays. I am irritated with my wife. My kids exhaust me. I am suspicious of my friends. I have prayed. I have read the books. I have done the therapy. <em>Nothing touches it.</em>"</p>
-<p>The pastor listens. Then he says one sentence the man has never heard before.</p>
-<p>"You have stopped being able to receive what God is giving you."</p>
-<p>The man cries.</p>
-<p><strong>He cries because the sentence is true, and he has never heard it before.</strong> The relief of being named is the first half of the cure.</p>
-</div>
-
-<p>The condition is structural, not personal.</p>
-
-<p>Pre modern people relied on receiving. From God. From tradition. From family. From the seasons. From the land. They were embedded in givenness, and they had never been taught otherwise.</p>
-
-<p>Modern people are trained from childhood to produce. To choose. To achieve. To build. To optimize. <em>Reception is not a skill the culture teaches.</em> The capacity atrophies through disuse, the way any muscle atrophies, and the atrophy is silent, and by the time it is noticed it has been gone for years.</p>
-
-<p>This is why the retiree collapses despite leisure.<br>
-Why the parent is exhausted by the child she wanted.<br>
-Why the marriage dies in plenty.<br>
-Why depression rises with prosperity.<br>
-Why beauty becomes invisible in the company of beauty.<br>
-Why ordinary food no longer satisfies.<br>
-Why faith feels like duty.</p>
-
-<p>Each has been written about as its own crisis. Each is the same crisis.</p>
-
-<p><strong>It is the crisis of reception.</strong></p>
-
-<div class="data-hero">
-<div class="dh-num">~70%</div>
-<div class="dh-label">of adults in saturated economies report low or no daily gratitude</div>
-<div class="dh-sub">In societies with the most material abundance in human history. Surrounded by gifts they cannot see. This is what the loss of reception looks like measured.</div>
-</div>
-
-<div class="think">
-<div class="think-label">Stop and Find Yourself</div>
-<p>Pick the area of your life where the gap between what you wanted and what you have is the smallest. The job you chose. The spouse you chose. The home you saved for. The body you maintained. Now ask honestly: do you experience that thing as gift, or as demand?</p>
-<hr class="think-line">
-<p>The area where the gift should be most obvious is the area where the demand is most heavy. That is the diagnostic. The condition is most visible exactly where it should not be possible. Welcome to the playbook.</p>
-</div>
-
-</div>
-
-<div class="root-ck">
-  <div class="rc-label">Root System</div>
-  <h4>Water What Was Planted</h4>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Crisis No One Names.</strong> A generation has more than any prior generation and feels given to less. The condition is the systematic loss of the capacity to receive. It is not depression, not burnout, not midlife crisis. It is structural to modernity. It cannot be fixed at the level of behavior because it lives at the level of seeing. The first half of the cure is being able to name what is wrong.</div></div>
+  <div class="framebreak">
+    <div class="framebreak-eyebrow">The Frame This Book Hangs On</div>
+    <p>You cannot escape what you cannot name. <strong>This book gives you the name.</strong></p>
+  </div>
 </div>
 
 <div class="ribbon">
-<p>"Every good gift and every perfect gift is from above, coming down from the Father of lights, with whom is no variableness, neither shadow of turning."<br><span class="ref">James 1:17</span></p>
+  <p>Every good gift and every perfect gift is from above, coming down from the Father of lights.</p>
+  <span class="ref">James 1:17</span>
 </div>
 
-<!-- ===== CHAPTER 2 ===== -->
+<!-- ============================== CHAPTER 1: THE CRISIS ============================== -->
 <div class="ch-head">
-<div class="page">
-<div class="ch-badge">Chapter Two</div>
-<div class="ch-num">02</div>
-<div class="ch-title">Demand Is Decayed Reception</div>
-<div class="ch-sub">The first frame. The mechanism by which gifts become burdens.</div>
-</div>
+  <div class="page">
+    <div class="ch-badge">Chapter One</div>
+    <div class="ch-num">01</div>
+    <h2 class="ch-title">The Crisis No One Names</h2>
+    <p class="ch-sub">A condition shared by almost everyone. Almost never spoken aloud.</p>
+  </div>
 </div>
 
 <div class="page section prose">
+  <p>Look at the adults you know who have what they wanted. The career. The house. The spouse. The child they prayed for. The body maintained across two decades. Watch how they carry these things.</p>
+  <p>Most of them are not joyful. They are <em>competent</em>. They are responsible. They are getting through it.</p>
+  <p>They have the life they wanted, and they are vaguely aggrieved by it.</p>
+  <p>This is not depression. They have therapists. This is not burnout. They have taken vacations. This is not midlife crisis. It happens at thirty. It happens at sixty. It happens at seventy. <strong>It does not respond to optimization.</strong></p>
 
-<p>A man took a photograph of his business card the day he received it.</p>
+  <div class="scene">
+    <div class="scene-label">The Recognition</div>
+    <h4>The Man Who Could Not Name It</h4>
+    <p>A man in his early forties sits across from his pastor. By every external measure he has won. He says, "I do not know what is wrong with me. I have everything I asked for. I dread Mondays. I am irritated with my wife. My kids exhaust me. I have prayed. I have read the books. <em>Nothing touches it.</em>"</p>
+    <p>The pastor listens. Then he says one sentence the man has never heard before.</p>
+    <p>"You have stopped being able to receive what God is giving you."</p>
+    <p>The man cries. <strong>He cries because the sentence is true, and he has never heard it before.</strong> The relief of being named is the first half of the cure.</p>
+  </div>
 
-<p>He had wanted this card for years. He held it in his hand and saw his own name printed on white paper as if his name had just been said for the first time by someone older than the world. He photographed it and sent the picture to his mother.</p>
+  <p>The condition is structural, not personal. Pre-modern people relied on receiving. From God. From tradition. From family. From the seasons. From the land. They were embedded in givenness.</p>
+  <p>Modern people are trained from childhood to produce. To choose. To achieve. To optimize. <em>Reception is not a skill the culture teaches.</em> The capacity atrophies through disuse. By the time the atrophy is noticed it has been gone for years.</p>
 
-<p>The card is in a drawer now.</p>
+  <p>This is why the retiree collapses despite leisure.<br>
+  Why the parent is exhausted by the child she wanted.<br>
+  Why the marriage dies in plenty.<br>
+  Why beauty becomes invisible in the company of beauty.<br>
+  Why faith feels like duty.</p>
 
-<p>The drawer holds three other cards from the years between. He has not opened the drawer in months. The card has not changed. <strong>He has.</strong></p>
+  <p>Each has been written about as its own crisis. <strong>Each is the same crisis.</strong></p>
 
-<p>What is true of his card is true of his job.<br>
-What is true of his job is true of his wife.<br>
-What is true of his wife is true of his body.<br>
-What is true of his body is true of every gift he has ever received.</p>
+  <div class="invite">
+    <div class="invite-eyebrow">A moment</div>
+    <p>Pick the area of your life where the gap between what you wanted and what you have is smallest. Now sit, for one breath, with the question: do I experience that thing as gift, or as demand?</p>
+  </div>
 
-<p>The objects are the same.<br>
-The seeing has decayed.</p>
-
-<p>This is the law of the book.</p>
-
-<div class="insight-card">
-<div class="ins-label">The Frame</div>
-<h3>Demand is decayed reception.</h3>
-</div>
-
-<p>The conversion did not happen in the object. It happened in your perception, and your perception did not announce itself when it moved. <em>The thing you photographed on day one is the thing you resent on day two thousand, and somewhere across those years the seeing slipped while you were not watching.</em></p>
-
-<div class="decay-timeline">
-<div class="decay-step"><div class="decay-circle s1"></div><div class="decay-label">Gift</div><div class="decay-yr">Day 1</div></div>
-<div class="decay-arrow">&rarr;</div>
-<div class="decay-step"><div class="decay-circle s2"></div><div class="decay-label">Wonder</div><div class="decay-yr">Month 3</div></div>
-<div class="decay-arrow">&rarr;</div>
-<div class="decay-step"><div class="decay-circle s3"></div><div class="decay-label">Routine</div><div class="decay-yr">Year 1</div></div>
-<div class="decay-arrow">&rarr;</div>
-<div class="decay-step"><div class="decay-circle s4"></div><div class="decay-label">Burden</div><div class="decay-yr">Year 4</div></div>
-<div class="decay-arrow">&rarr;</div>
-<div class="decay-step"><div class="decay-circle s5"></div><div class="decay-label">Demand</div><div class="decay-yr">Year 7+</div></div>
-</div>
-
-<p class="decay-caption">The same job. The same spouse. The same body. The same home. <em>The object never changed. The seeing did.</em></p>
-
-<p>By the time you notice the demand, you have forgotten the gift it began as. The grievance feels true. The gift feels like a story you told yourself when you were young.</p>
-
-<p><strong>You are not young, and the gift was not a story.</strong></p>
-
-<p>Here is the second half of the frame, the half almost no one knows.</p>
-
-<p><strong>Decay is reversible.</strong></p>
-
-<p>The trajectory runs both directions. The same job that decayed into demand can re emerge as gift. The same spouse. The same body. The same home. <em>This is not optimism. This is mechanics.</em> When the seeing is restored, the gift quality reappears, because it never left.</p>
-
-<div class="think">
-<div class="think-label">Stop and Trace One</div>
-<p>Pick one specific demand in your life right now. The heaviest one this week. Trace it backwards. Find the day it was first given to you. Remember how you felt. Remember what you said. Remember who you called.</p>
-<hr class="think-line">
-<p>That demand was that gift. Nothing in between was real change. The decay was perceptual. The restoration is also perceptual. Begin it now by holding both seeings at once.</p>
-</div>
-
-</div>
-
-<div class="root-ck">
-  <div class="rc-label">Root System</div>
-  <h4>Water What Was Planted</h4>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Crisis No One Names.</strong> A generation with more than any prior generation, given to less. Not depression. The systematic loss of the capacity to receive.</div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Demand Is Decayed Reception.</strong> Every demand you feel was a gift before you stopped seeing it. The conversion happened in your perception, not in the objects. Decay is gradual. Restoration is perceptual. The objects never stopped being gifts. The seeing did.</div></div>
+  <div class="framebreak">
+    <div class="framebreak-eyebrow">Frame Break</div>
+    <p>The cure is not something you do. <strong>It is something you stop doing, so that the seeing can return.</strong></p>
+  </div>
 </div>
 
 <div class="ribbon">
-<p>"What hast thou that thou didst not receive?"<br><span class="ref">1 Corinthians 4:7</span></p>
+  <p>What hast thou that thou didst not receive?</p>
+  <span class="ref">1 Corinthians 4:7</span>
 </div>
 
-<!-- ===== CHAPTER 3 ===== -->
+<!-- ============================== CHAPTER 2: DEMAND IS DECAYED RECEPTION ============================== -->
 <div class="ch-head">
-<div class="page">
-<div class="ch-badge">Chapter Three</div>
-<div class="ch-num">03</div>
-<div class="ch-title">You Cannot Optimize A Gift</div>
-<div class="ch-sub">The mechanism. The act of optimization is the act of killing the receptive quality.</div>
-</div>
+  <div class="page">
+    <div class="ch-badge">Chapter Two &middot; Frame One</div>
+    <div class="ch-num">02</div>
+    <h2 class="ch-title">Demand Is Decayed Reception</h2>
+    <p class="ch-sub">The first frame. The mechanism by which gifts become burdens.</p>
+  </div>
 </div>
 
 <div class="page section prose">
+  <p>A man took a photograph of his business card the day he received it. He had wanted this card for years. He held it in his hand and saw his own name printed on white paper as if his name had just been said for the first time. He photographed it and sent the picture to his mother.</p>
+  <p>The card is in a drawer now. He has not opened the drawer in months. The card has not changed. <strong>He has.</strong></p>
 
-<p>A woman buys flowers on a Saturday morning. She arranges them in a glass jar on the kitchen table. She does not arrange them well. She does not arrange them poorly. She arranges them.</p>
+  <p>What is true of his card is true of his job.<br>
+  What is true of his job is true of his wife.<br>
+  What is true of his wife is true of his body.<br>
+  What is true of his body is true of every gift he has ever received.</p>
 
-<p>That afternoon she watches a video about how to arrange flowers.</p>
+  <p>The objects are the same.<br>
+  <em>The seeing has decayed.</em></p>
 
-<p>The next Saturday she buys the same flowers and arranges them better.<br>
-The Saturday after that she buys better flowers and arranges them better.<br>
-The Saturday after that she watches the video again.</p>
+  <div class="insight-card">
+    <div class="ins-label">The First Frame</div>
+    <h3>Demand is decayed reception.</h3>
+  </div>
 
-<p>By the eighth Saturday the flowers are beautiful and she no longer notices that she bought them.</p>
+  <!-- INTERACTIVE: DECAY SLIDER -->
+  <div class="decay-slider-widget reveal">
+    <div class="dsw-label">Watch The Decay In Your Own Hand</div>
+    <div class="dsw-title">The Same Gift, Aging In Your Perception</div>
+    <div class="dsw-circle" id="dsw-circle">Gift</div>
+    <div class="dsw-stage-name" id="dsw-stage">Gift</div>
+    <div class="dsw-stage-time" id="dsw-time">Day 1</div>
+    <div class="dsw-sentence" id="dsw-sentence">You photograph it. You send it to your mother. You hold it like a name said for the first time.</div>
+    <input type="range" class="dsw-slider" id="dsw-slider" min="0" max="100" value="0">
+    <div class="dsw-ticks"><span>Day 1</span><span>Month 3</span><span>Year 1</span><span>Year 4</span><span>Year 7</span></div>
+    <button class="dsw-restore" id="dsw-restore">&larr; Drag back</button>
+  </div>
 
-<div class="insight-card">
-<div class="ins-label">The Frame</div>
-<h3>You cannot optimize a gift.</h3>
-</div>
+  <p>By the time you notice the demand, you have forgotten the gift it began as. The grievance feels true. The gift feels like a story you told yourself when you were young.</p>
+  <p>You are not young, and the gift was not a story.</p>
 
-<p>To improve a thing you must first treat it as material. The framing performs the conversion. <strong>Once you have made the thing a means, it is no longer an end, and the only quality you cared about is gone.</strong></p>
+  <p>Here is the second half of the frame, the half almost no one knows.</p>
+  <p><strong>Decay is reversible.</strong></p>
 
-<div class="conversion-viz">
-<div class="conv-box">
-<div class="conv-shape gift">GIFT</div>
-<div class="conv-label">An End</div>
-<div class="conv-sub">Held, received, alive</div>
-</div>
-<div class="conv-process">
-<div class="conv-gear">&#9881;</div>
-<div class="conv-process-label">Optimize</div>
-</div>
-<div class="conv-box">
-<div class="conv-shape means">PROJECT</div>
-<div class="conv-label">A Means</div>
-<div class="conv-sub">Managed, measured, dead</div>
-</div>
-</div>
+  <p>The same job that decayed into demand can re-emerge as gift. The same spouse. The same body. The same home. <em>This is not optimism. This is mechanics.</em> When the seeing is restored, the gift quality reappears, because it never left.</p>
 
-<p>The flower is a gift only while you are not trying to use it. The moment you turn it into material, even for a beautiful end, it stops being a flower in your hands and becomes a resource you are processing.</p>
+  <div class="invite">
+    <div class="invite-eyebrow">A moment</div>
+    <p>Pick one specific demand in your life. The heaviest this week. Trace it backwards. Remember the day it was first given to you. Remember how you felt. Remember who you called.</p>
+  </div>
 
-<p><em>The most optimized generation in human history is the least content.</em></p>
-
-<p>They are improving lives they have already converted into projects, and wondering why the projects do not feel like lives.</p>
-
-<div class="scene">
-<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> The Optimized Marriage</div>
-<h4>What Improvement Does</h4>
-<p>A couple in year ten decides to really invest in their marriage. They read the books. They schedule date nights. They run weekly check ins. They take communication workshops. They overlap their sleep schedules. They optimize their conflict styles. They optimize their love languages.</p>
-<p>By year thirteen the marriage is materially better by every metric. They communicate better. They fight less. The date nights are well executed. <em>They no longer love each other the way they used to.</em> They cannot name what is wrong. They did everything the books said. The marriage is an arrangement now. Functional. Optimized. Dead.</p>
-<p>They did not lose love through neglect.</p>
-<p><strong>They lost love through conversion.</strong></p>
-<p>The act of treating the marriage as a thing to improve required them to first treat it as a project. Projects are not loved. Projects are managed. Once they had managed the marriage well enough, they could no longer find the marriage they had wanted to optimize. It had become its own optimization.</p>
-</div>
-
-<p>You cannot fix a domain that has decayed by working harder at improving it. The work of improvement is the work that decayed it.</p>
-
-<p><strong>The escape is sideways.</strong></p>
-
-<p>Stop treating the marriage as a project. Start receiving the person across the table as the gift you celebrated getting. <em>The same evening, the same conversation, the same dinner, performed from the receiving posture rather than the optimizing posture, produces a different marriage.</em></p>
-
-<p>The objects do not change. The frame changes.</p>
-
-<p>You cannot optimize a body and end up with a received body.<br>
-You cannot optimize a friendship and end up with a friend.<br>
-You cannot optimize prayer and end up with prayer.<br>
-You cannot optimize a day and end up with a lived day.</p>
-
-<p>The very act of optimization closes the door it was trying to open.</p>
-
-<div class="grand-quote">
-<blockquote>You cannot improve your way back to what was given. You can only set down the improving and receive what was always there.</blockquote>
-<cite>The Frame That Frees</cite>
-</div>
-
-<div class="think">
-<div class="think-label">Stop and Find Your Conversion</div>
-<p>Identify one domain where you have been optimizing for years and the domain has gotten better without becoming more alive. Your body. Your marriage. Your prayer life. Your friendships. Your career.</p>
-<hr class="think-line">
-<p>That is the domain to set down the optimization in. Not to optimize harder. The optimization is what killed it. Stop optimizing, and the gift can begin to be received again.</p>
-</div>
-
-</div>
-
-<div class="root-ck">
-  <div class="rc-label">Root System</div>
-  <h4>Water What Was Planted</h4>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Crisis No One Names.</strong></div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Demand Is Decayed Reception.</strong></div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>You Cannot Optimize A Gift.</strong> The act of optimization converts an end into a means. Once converted, the thing loses the receptive quality you were trying to enhance. The most optimized generation in human history is the least content. The cure is not better optimization. The cure is to stop optimizing and let the gift be a gift again.</div></div>
+  <div class="framebreak">
+    <div class="framebreak-eyebrow">Frame Break</div>
+    <p>The thing you photographed on day one is the thing you resent on day two thousand. <strong>The slipping happened in the seeing.</strong></p>
+  </div>
 </div>
 
 <div class="ribbon">
-<p>"Consider the lilies of the field, how they grow; they toil not, neither do they spin."<br><span class="ref">Matthew 6:28</span></p>
+  <p>Sing unto the Lord, bless his name. Show forth his salvation from day to day.</p>
+  <span class="ref">Psalm 96:2</span>
 </div>
 
-<!-- ===== CHAPTER 4 ===== -->
+<!-- ============================== CHAPTER 3: YOU CANNOT OPTIMIZE A GIFT ============================== -->
 <div class="ch-head">
-<div class="page">
-<div class="ch-badge">Chapter Four</div>
-<div class="ch-num">04</div>
-<div class="ch-title">What You Can Name As Deserved You Cannot Receive As Gift</div>
-<div class="ch-sub">The root. Entitlement is the systematic closing of the gap where gratitude lives.</div>
-</div>
+  <div class="page">
+    <div class="ch-badge">Chapter Three &middot; Frame Two</div>
+    <div class="ch-num">03</div>
+    <h2 class="ch-title">You Cannot Optimize A Gift</h2>
+    <p class="ch-sub">The act of optimization is the act of killing the receptive quality.</p>
+  </div>
 </div>
 
 <div class="page section prose">
+  <p>A woman buys flowers on a Saturday morning. She arranges them in a glass jar on the kitchen table. She does not arrange them well. She does not arrange them poorly. She arranges them.</p>
+  <p>That afternoon she watches a video about how to arrange flowers.</p>
+  <p>The next Saturday she buys the same flowers and arranges them better.<br>
+  The Saturday after that she buys better flowers and arranges them better.<br>
+  The Saturday after that she watches the video again.</p>
+  <p>By the eighth Saturday the flowers are beautiful and she no longer notices that she bought them.</p>
 
-<p>A child finds a sandwich on the counter that her mother made for her.</p>
+  <div class="insight-card">
+    <div class="ins-label">The Second Frame</div>
+    <h3>You cannot optimize a gift.</h3>
+  </div>
 
-<p>If she expected the sandwich, it is lunch.<br>
-If she did not expect the sandwich, it is love.</p>
+  <p>To improve a thing you must first treat it as material. The framing performs the conversion. <strong>Once you have made the thing a means, it is no longer an end</strong>, and the only quality you cared about is gone.</p>
 
-<p>Same sandwich. Different child.</p>
+  <div class="scene">
+    <div class="scene-label">The Optimized Marriage</div>
+    <h4>What Improvement Does</h4>
+    <p>A couple in year ten decides to really invest in their marriage. They read the books. They schedule date nights. They run weekly check-ins. They take communication workshops. They optimize their conflict styles and their love languages.</p>
+    <p>By year thirteen the marriage is materially better by every metric. <em>They no longer love each other the way they used to.</em> They cannot name what is wrong. They did everything the books said.</p>
+    <p>They did not lose love through neglect. <strong>They lost love through conversion.</strong> Projects are not loved. Projects are managed. The act of treating the marriage as a thing to improve required them to first treat it as a project, and the marriage they had wanted to optimize was no longer findable inside the management.</p>
+  </div>
 
-<div class="insight-card">
-<div class="ins-label">The Frame</div>
-<h3>What you can name as deserved you cannot receive as gift.</h3>
-</div>
+  <p>You cannot fix a domain that has decayed by working harder at improving it. The work of improvement is the work that decayed it.</p>
+  <p><strong>The escape is sideways.</strong></p>
+  <p>Stop treating the marriage as a project. Start receiving the person across the table as the gift you celebrated getting. <em>The same evening, the same conversation, performed from the receiving posture rather than the optimizing posture, produces a different marriage.</em> The objects do not change. The frame changes.</p>
 
-<p>Reception requires a gap. The gap between what you expected and what was given. <strong>The gap is where gratitude lives.</strong></p>
+  <p>You cannot optimize a body and end up with a received body.<br>
+  You cannot optimize a friendship and end up with a friend.<br>
+  You cannot optimize prayer and end up with prayer.<br>
+  You cannot optimize a day and end up with a lived day.</p>
 
-<p>Close the gap and gratitude has nowhere to stand.</p>
+  <p>The very act of optimization closes the door it was trying to open.</p>
 
-<div class="gap-viz">
-<div class="gap-panel">
-<div class="gap-label">Your Grandparents</div>
-<div class="gap-bars">
-<div class="gap-bar-wrap"><div class="gap-bar exp" style="height:30%">Expect</div></div>
-<div class="gap-bar-wrap"><div class="gap-bar given" style="height:75%">Given</div><div class="gap-shade-zone" style="bottom:30%;top:25%"><span class="gap-shade-label">Gratitude</span></div></div>
-</div>
-<div class="gap-bar-labels"><div class="gap-bar-lbl">Expected</div><div class="gap-bar-lbl">Given</div></div>
-<p class="gap-caption">Low expectation. Wide gap. Joy in the receiving.</p>
-</div>
-<div class="gap-panel">
-<div class="gap-label">You, Today</div>
-<div class="gap-bars">
-<div class="gap-bar-wrap"><div class="gap-bar exp" style="height:72%">Expect</div></div>
-<div class="gap-bar-wrap"><div class="gap-bar given" style="height:75%">Given</div><div class="gap-shade-zone" style="bottom:72%;top:25%"><span class="gap-shade-label">&nbsp;</span></div></div>
-</div>
-<div class="gap-bar-labels"><div class="gap-bar-lbl">Expected</div><div class="gap-bar-lbl">Given</div></div>
-<p class="gap-caption">Trained expectation. Closed gap. Nowhere for gratitude to live.</p>
-</div>
-</div>
+  <div class="invite">
+    <div class="invite-eyebrow">A moment</div>
+    <p>Identify one domain where you have been optimizing for years and the domain has become better without becoming more alive. Your body. Your marriage. Your prayer. Your career. <em>Not to optimize harder. To set the optimizing down.</em></p>
+  </div>
 
-<p>Modern life trains you to expect what was given. The training is silent. It moves through advertisements, through comparison, through the language of self esteem, through the assumption that you live in a country where things are owed to you. <strong>By the time most adults are forty, they have a comprehensive list of things they believe they are entitled to.</strong></p>
-
-<p>Almost nothing can register as gift, because almost everything fits inside something already expected.</p>
-
-<p>This is not a moral failure. It is a perceptual one.</p>
-
-<p>The way out is not guilt. The way out is to widen the gap, by telling the truth about what was earned and what was given.</p>
-
-<div class="scene">
-<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> The Widening</div>
-<h4>The Calculation No One Runs</h4>
-<p>Take a week of your life. Write down what you did to deserve being alive that week. Not what you did at work. Not what you produced. What you did to deserve the oxygen, the morning light, the friends who called, the body that walked you around, the language you speak, the country you live in, the time you were given.</p>
-<p>You will struggle to write much. <em>The honest answer is almost nothing.</em></p>
-<p>You did not earn most of what arrived in your week. You inherited it. You received it. You did not pay for it in any meaningful sense.</p>
-<p>Now look at your dissatisfaction across that same week. What were you irritated about? Disappointed by? Resentful toward? You will find small grievances against things that were given to you for free. The gap between what you deserved (almost nothing) and what you got (essentially everything) was enormous. <em>The grievances were operating inside a gap that does not exist when you run the numbers.</em></p>
-<p>This is the perceptual surgery the playbook asks for. Not "be more grateful." That is too thin to do anything. <strong>Run the calculation. Find what you actually deserved. The gap is wider than you have been treating it.</strong></p>
-<p>Gratitude returns automatically when the gap is restored, because gratitude is the body's response to noticing the gap.</p>
-</div>
-
-<p>You cannot talk a person out of entitlement.</p>
-
-<p>Entitlement is not a belief. It is a perceptual configuration. The person who feels owed cannot be argued into feeling given to. <em>They can only be retrained, and the retraining only happens by running the calculation honestly enough that the gap reopens.</em></p>
-
-<p><strong>You cannot deserve your way back to receiving.</strong> You can only set down the believing you deserve, and the receiving becomes possible again.</p>
-
-<div class="data-hero">
-<div class="dh-num">~0</div>
-<div class="dh-label">of what you have today did you earn at the most foundational level</div>
-<div class="dh-sub">You did not earn your body, your language, your country, your parents, your era, your DNA, your beginnings. Everything else is downstream of these. The gap is infinite if you run the calculation honestly. Gratitude becomes inexhaustible at the same time.</div>
-</div>
-
-<div class="think">
-<div class="think-label">Stop and Run The Numbers</div>
-<p>What in your life right now do you genuinely believe you deserved? Be specific. The promotion. The marriage. The body. The home. The friends. The intelligence. The health.</p>
-<hr class="think-line">
-<p>Now subtract from each of those the parts you did not earn. The DNA that made the intelligence possible. The country that allowed the career. The parents that gave you the upbringing. The era that made the work possible. What you are left with is the actual sliver of "earned." It is much smaller than your sense of entitlement suggests. The gap reopens the moment you tell yourself the truth.</p>
-</div>
-
-</div>
-
-<div class="root-ck">
-  <div class="rc-label">Root System</div>
-  <h4>Water What Was Planted</h4>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Crisis No One Names.</strong></div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Demand Is Decayed Reception.</strong></div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>You Cannot Optimize A Gift.</strong></div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>What You Can Name As Deserved You Cannot Receive As Gift.</strong> Reception requires a gap between expectation and given. Entitlement closes the gap. Modern life trains you to expect what was given. The result is that the same gifts that would have produced joy in your grandparents produce inertia in you. The fix is not feeling guilty. The fix is running the calculation honestly and rediscovering the gap.</div></div>
+  <div class="framebreak">
+    <div class="framebreak-eyebrow">Frame Break</div>
+    <p>You cannot improve your way back to what was given. <strong>You can only set down the improving and receive what was always there.</strong></p>
+  </div>
 </div>
 
 <div class="ribbon">
-<p>"For who maketh thee to differ from another? and what hast thou that thou didst not receive? now if thou didst receive it, why dost thou glory, as if thou hadst not received it?"<br><span class="ref">1 Corinthians 4:7</span></p>
+  <p>Consider the lilies of the field, how they grow. They toil not, neither do they spin.</p>
+  <span class="ref">Matthew 6:28</span>
 </div>
 
-<!-- ===== CHAPTER 5 ===== -->
+<!-- ============================== CHAPTER 4: DESERVED ≠ GIFT ============================== -->
 <div class="ch-head">
-<div class="page">
-<div class="ch-badge">Chapter Five</div>
-<div class="ch-num">05</div>
-<div class="ch-title">Resentment Is Reception Going Backwards</div>
-<div class="ch-sub">The deepest cost. What happens to relationships when the gift sight is lost.</div>
-</div>
+  <div class="page">
+    <div class="ch-badge">Chapter Four &middot; Frame Three</div>
+    <div class="ch-num">04</div>
+    <h2 class="ch-title">What You Can Name As Deserved You Cannot Receive As Gift</h2>
+    <p class="ch-sub">The root. Entitlement is the systematic closing of the gap where gratitude lives.</p>
+  </div>
 </div>
 
 <div class="page section prose">
+  <p>A child finds a sandwich on the counter that her mother made for her.</p>
+  <p>If she expected the sandwich, it is lunch.<br>
+  If she did not expect the sandwich, it is love.</p>
+  <p>Same sandwich. Different child.</p>
 
-<p>Every resentment you carry was once a gift.</p>
+  <div class="insight-card">
+    <div class="ins-label">The Third Frame</div>
+    <h3>What you can name as deserved you cannot receive as gift.</h3>
+  </div>
 
-<p>Every single one.</p>
+  <p>Reception requires a gap. The gap between what you expected and what was given. <strong>The gap is where gratitude lives.</strong></p>
+  <p>Close the gap and gratitude has nowhere to stand.</p>
 
-<p>The friend who hurt you was, before the hurting, given to you as a friend.<br>
-The parent who failed you was, before the failing, given to you as a parent.<br>
-The marriage that disappointed you was, before the disappointment, the wedding you wept at.<br>
-The body that betrays you was, before the betrayal, the body you were born into without asking.</p>
+  <!-- INTERACTIVE: GAP BARS -->
+  <div class="gap-widget reveal">
+    <div class="gw-grid">
+      <div class="gw-panel">
+        <div class="gw-panel-label">Your Grandparents</div>
+        <div class="gw-bars">
+          <div class="gw-bar-wrap"><div class="gw-bar exp" id="gw-gp-exp" style="height:25%"><div class="gw-bar-num">25</div></div></div>
+          <div class="gw-bar-wrap"><div class="gw-bar given" id="gw-gp-giv" style="height:80%"><div class="gw-bar-num">80</div></div></div>
+          <div class="gw-gap-band" id="gw-gp-band" style="bottom:25%;height:55%;left:0;right:0"><span class="gw-gap-label">Gratitude</span></div>
+        </div>
+        <div class="gw-bar-labels"><div class="gw-bar-lbl">Expected</div><div class="gw-bar-lbl">Given</div></div>
+        <p class="gw-caption">Low expectation. Wide gap. Joy in the receiving.</p>
+      </div>
+      <div class="gw-panel">
+        <div class="gw-panel-label">You, Today</div>
+        <div class="gw-bars">
+          <div class="gw-bar-wrap"><div class="gw-bar exp" id="gw-you-exp" style="height:75%"><div class="gw-bar-num">75</div></div></div>
+          <div class="gw-bar-wrap"><div class="gw-bar given" id="gw-you-giv" style="height:80%"><div class="gw-bar-num">80</div></div></div>
+          <div class="gw-gap-band" id="gw-you-band" style="bottom:75%;height:5%;left:0;right:0;opacity:0.5"><span class="gw-gap-label" style="font-size:0.55rem">none</span></div>
+        </div>
+        <div class="gw-bar-labels"><div class="gw-bar-lbl">Expected</div><div class="gw-bar-lbl">Given</div></div>
+        <p class="gw-caption">Trained expectation. Closed gap. Nowhere for gratitude to live.</p>
+      </div>
+    </div>
+  </div>
 
-<p>Resentment never starts as resentment. It starts as gift, and travels backwards through five stages so slowly that no one notices the trajectory while it is happening.</p>
+  <p>Modern life trains you to expect what was given. The training is silent. It moves through advertisements, through comparison, through the assumption that you live in a country where things are owed. <strong>By the time most adults are forty, they have a comprehensive list of things they believe they are entitled to.</strong></p>
+  <p>Almost nothing can register as gift, because almost everything fits inside something already expected.</p>
+  <p>This is not a moral failure. It is a perceptual one.</p>
 
-<div class="insight-card">
-<div class="ins-label">The Frame</div>
-<h3>Resentment is reception going backwards.</h3>
-</div>
+  <div class="scene">
+    <div class="scene-label">The Widening</div>
+    <h4>The Calculation No One Runs</h4>
+    <p>Take a week of your life. Write down what you did to deserve being alive that week. Not what you did at work. Not what you produced. What you did to deserve the oxygen, the morning light, the friends, the body that walked you around, the language you speak, the country, the time.</p>
+    <p>You will struggle to write much. <em>The honest answer is almost nothing.</em></p>
+    <p>You did not earn most of what arrived in your week. You inherited it. You received it. You did not pay for it in any meaningful sense. <strong>The gap reopens the moment you tell yourself the truth.</strong></p>
+  </div>
 
-<div class="trajectory">
-<div class="traj-stages">
-<div class="traj-stage s1">Gift</div>
-<div class="traj-arrow">&rarr;</div>
-<div class="traj-stage s2">Routine</div>
-<div class="traj-arrow">&rarr;</div>
-<div class="traj-stage s3">Obligation</div>
-<div class="traj-arrow">&rarr;</div>
-<div class="traj-stage s4">Debt</div>
-<div class="traj-arrow">&rarr;</div>
-<div class="traj-stage s5">Grievance</div>
-</div>
-<div class="traj-reverse">
-<span class="traj-rev-arrow">&larr;</span>
-<span class="traj-rev-label">The Forgiveness Path</span>
-<span class="traj-rev-arrow">&larr;</span>
-</div>
-</div>
+  <p>You cannot deserve your way back to receiving. You can only set down the believing you deserve, and the receiving becomes possible again.</p>
 
-<p>This reorganizes everything about forgiveness.</p>
+  <div class="invite">
+    <div class="invite-eyebrow">A moment</div>
+    <p>What in your life right now do you genuinely believe you deserved? Now subtract the parts you did not earn. The DNA. The country. The parents. The era. The body. What is left is much smaller than your sense of entitlement suggests.</p>
+  </div>
 
-<p>Forgiveness has been taught for decades as the suppression of legitimate grievance. The willingness to overlook real wrongs. <em>No wonder forgiveness fails.</em> You see grievance. You are told to feel gift. The teaching cannot bridge the gap, so most people fake forgiveness or refuse it entirely.</p>
-
-<p>The reception frame is different.</p>
-
-<p><strong>Forgiveness is the act of walking the trajectory in reverse, from grievance to debt to obligation to routine to gift, until you can see again the person you were originally given.</strong></p>
-
-<p>The person did not become a grievance. They started as gift. Your perception traveled the trajectory backwards. <em>Forgiveness is reception restored.</em></p>
-
-<div class="scene">
-<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> The Walk Back</div>
-<h4>The Father Who Was A Gift</h4>
-<p>A man in his fifties has not spoken to his father in a decade. The grievance is real and earned. His father was emotionally unavailable, critical, often absent, sometimes harsh. He has worked through it in therapy for years. The therapy has not produced forgiveness.</p>
-<p>One day his pastor asks him a question he has never been asked. "Before he was the man who failed you, who was he?"</p>
-<p>The man pauses. He begins to talk about his father as a young man. His father got married at twenty two. Had a son at twenty four. Worked two jobs to feed the family. The man remembers, for the first time in years, that his father was not always the figure of grievance. <em>His father was first a young man who was given to him as a father.</em> The young man did not know how to be a father. He failed at it. Before the failure he was a gift given to a baby who needed a father.</p>
-<p>The man cries.</p>
-<p>The cry is not the cry of grief. It is the cry of reception restored. The same father is in the same grave. <strong>The seeing changed.</strong></p>
-<p>The man does not minimize the harm. He still sees the failures. He can also now see the man who was given to him before the failures, and the seeing produces forgiveness that ten years of suppressing grievance could not produce. <em>Reception was restored. Forgiveness was the byproduct.</em></p>
-</div>
-
-<p>Each resentment you carry was a gift that became a routine that became an obligation that became a debt that became a grievance.</p>
-
-<p>The path back is the same path in reverse.</p>
-
-<p>It is not easy. It is not sentimental. It is the work of a perception that has decided to try to see again the gift that the trajectory has buried. Sometimes the work succeeds and the resentment dissolves. Sometimes the work is harder than this playbook can carry, and you will need a friend, a pastor, a therapist who understands the path.</p>
-
-<p><strong>But you now know there is a path.</strong> Resentment is not a permanent state. It is a stage in a trajectory. The trajectory runs both directions.</p>
-
-<div class="think">
-<div class="think-label">Stop and Find One Trajectory</div>
-<p>Pick one person or thing you currently resent. Trace the trajectory backwards. Grievance, debt, obligation, routine, gift. At what stage are you?</p>
-<hr class="think-line">
-<p>Now ask: who was this person, or this thing, before they became a grievance? Not minimizing the grievance. Not pretending the harm did not happen. Just remembering what was there before. The remembering is the first step backwards along the trajectory.</p>
-</div>
-
-</div>
-
-<div class="root-ck">
-  <div class="rc-label">Root System</div>
-  <h4>Water What Was Planted</h4>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Crisis No One Names.</strong></div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Demand Is Decayed Reception.</strong></div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>You Cannot Optimize A Gift.</strong></div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>What You Can Name As Deserved You Cannot Receive As Gift.</strong></div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Resentment Is Reception Going Backwards.</strong> Every resentment was once a gift. Gift becomes routine becomes obligation becomes debt becomes grievance. Forgiveness is the act of traveling the trajectory in reverse until the gift can be seen again. The harm is not minimized. The seeing is restored.</div></div>
+  <div class="framebreak">
+    <div class="framebreak-eyebrow">Frame Break</div>
+    <p>Entitlement is not a belief. <strong>It is a perceptual configuration.</strong> No one is argued out of it. Only the calculation reopens the gap.</p>
+  </div>
 </div>
 
 <div class="ribbon">
-<p>"And be ye kind one to another, tenderhearted, forgiving one another, even as God for Christ's sake hath forgiven you."<br><span class="ref">Ephesians 4:32</span></p>
+  <p>Now if thou didst receive it, why dost thou glory, as if thou hadst not received it?</p>
+  <span class="ref">1 Corinthians 4:7</span>
 </div>
 
-<!-- ===== CHAPTER 6 ===== -->
+<!-- ============================== CHAPTER 5: RESENTMENT IS RECEPTION GOING BACKWARDS ============================== -->
 <div class="ch-head">
-<div class="page">
-<div class="ch-badge">Chapter Six</div>
-<div class="ch-num">06</div>
-<div class="ch-title">You Will Spend Your Life Either Receiving Or Being Owed</div>
-<div class="ch-sub">The two postures. There is no neutral. Most modern people have defaulted to the wrong one.</div>
-</div>
+  <div class="page">
+    <div class="ch-badge">Chapter Five &middot; Frame Four</div>
+    <div class="ch-num">05</div>
+    <h2 class="ch-title">Resentment Is Reception Going Backwards</h2>
+    <p class="ch-sub">The deepest cost. What happens to relationships when the gift sight is lost.</p>
+  </div>
 </div>
 
 <div class="page section prose">
+  <p>Every resentment you carry was once a gift. Every single one.</p>
+  <p>The friend who hurt you was, before the hurting, given to you as a friend.<br>
+  The parent who failed you was, before the failing, given to you as a parent.<br>
+  The marriage that disappointed you was, before the disappointment, the wedding you wept at.<br>
+  The body that betrays you was, before the betrayal, the body you were born into without asking.</p>
 
-<p>Watch yourself across an ordinary day. Hour by hour. Notice the posture.</p>
+  <p>Resentment never starts as resentment. It starts as gift, and travels backwards through five stages so slowly that no one notices the trajectory while it is happening.</p>
 
-<p>You are not many things at once. You are one of two things, almost always.</p>
+  <div class="insight-card">
+    <div class="ins-label">The Fourth Frame</div>
+    <h3>Resentment is reception going backwards.</h3>
+  </div>
 
-<p>You are receiving what arrives.<br>
-Or you are tabulating what has not.</p>
+  <!-- INTERACTIVE: TRAJECTORY WALKER -->
+  <div class="trajwalk reveal">
+    <div class="tw-title">Walk The Trajectory</div>
+    <p class="tw-instr">Tap any stage to see what is happening inside the person at that point. Then walk back.</p>
+    <div class="tw-stages" id="tw-stages">
+      <div class="tw-stage" data-stage="0"><div class="tw-stage-num">1</div><div class="tw-stage-name">Gift</div></div>
+      <div class="tw-stage" data-stage="1"><div class="tw-stage-num">2</div><div class="tw-stage-name">Routine</div></div>
+      <div class="tw-stage" data-stage="2"><div class="tw-stage-num">3</div><div class="tw-stage-name">Obligation</div></div>
+      <div class="tw-stage" data-stage="3"><div class="tw-stage-num">4</div><div class="tw-stage-name">Debt</div></div>
+      <div class="tw-stage" data-stage="4"><div class="tw-stage-num">5</div><div class="tw-stage-name">Grievance</div></div>
+    </div>
+    <div class="tw-detail">
+      <div class="tw-detail-stage" id="tw-detail-stage">Tap a stage</div>
+      <p class="tw-detail-text" id="tw-detail-text">The same person, at five different points in your perception. Each stage is a real internal state. The trajectory runs both directions.</p>
+    </div>
+    <div class="tw-controls">
+      <button class="tw-btn" id="tw-forward">Walk Forward &rarr;</button>
+      <button class="tw-btn primary" id="tw-back">&larr; Walk Back</button>
+    </div>
+  </div>
 
-<div class="insight-card">
-<div class="ins-label">The Frame</div>
-<h3>You will spend your life either receiving or being owed.</h3>
-</div>
+  <p>Forgiveness has been taught for decades as the suppression of legitimate grievance. <em>No wonder forgiveness fails.</em> You see grievance. You are told to feel gift. The teaching cannot bridge the gap, so most people fake forgiveness or refuse it entirely.</p>
 
-<div class="hands-viz">
-<div class="hand-panel closed">
-<div class="hand-icon"><svg viewBox="0 0 64 64" width="72" height="72"><path d="M20 30 C18 28 16 28 14 30 L14 44 C14 50 18 54 24 54 L40 54 C46 54 50 50 50 44 L50 26 C50 24 48 22 46 22 C44 22 42 24 42 26 L42 16 C42 14 40 12 38 12 C36 12 34 14 34 16 L34 26 L34 14 C34 12 32 10 30 10 C28 10 26 12 26 14 L26 26 L26 18 C26 16 24 14 22 14 C20 14 18 16 18 18 L18 32" fill="#9A8A6A" stroke="#7A6A55" stroke-width="1.5"/><line x1="22" y1="36" x2="42" y2="36" stroke="#5A4A3A" stroke-width="0.8" opacity="0.4"/><line x1="22" y1="42" x2="42" y2="42" stroke="#5A4A3A" stroke-width="0.8" opacity="0.4"/><line x1="22" y1="48" x2="42" y2="48" stroke="#5A4A3A" stroke-width="0.8" opacity="0.4"/></svg></div>
-<div class="hand-label">The Owed</div>
-<div class="hand-title">The Closed Hand</div>
-<div class="hand-desc">A list of what should arrive. A ledger of what fell short. Every relationship a transaction not yet completed in your favor.</div>
-</div>
-<div class="hand-panel open">
-<div class="hand-icon"><svg viewBox="0 0 64 64" width="72" height="72"><path d="M14 34 C12 32 12 28 14 26 L20 18 C22 16 24 16 26 18 L26 14 C26 12 28 10 30 10 C32 10 34 12 34 14 L34 16 C34 14 36 12 38 12 C40 12 42 14 42 16 L42 18 C42 16 44 14 46 14 C48 14 50 16 50 18 L50 24 C50 26 48 28 46 28 L46 34 C50 34 52 36 52 38 L52 44 L40 44 L38 50 L22 50 L18 44 L14 38 Z" fill="#E8C078" stroke="#A6822B" stroke-width="1.5"/><circle cx="32" cy="22" r="3.5" fill="#F5E0A8" opacity="0.85"><animate attributeName="cy" values="22;18;22" dur="3s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.4;1;0.4" dur="3s" repeatCount="indefinite"/></circle><circle cx="32" cy="22" r="6" fill="none" stroke="#F5E0A8" stroke-width="0.8" opacity="0.4"><animate attributeName="r" values="4;10;4" dur="3s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.6;0;0.6" dur="3s" repeatCount="indefinite"/></circle></svg></div>
-<div class="hand-label">The Receiving</div>
-<div class="hand-title">The Open Hand</div>
-<div class="hand-desc">No list. No ledger. Open to what arrives. Sustained by an endless supply of arrivals that owed you nothing.</div>
-</div>
-</div>
+  <p><strong>Forgiveness is the act of walking the trajectory in reverse, from grievance to debt to obligation to routine to gift, until you can see again the person you were originally given.</strong></p>
 
-<p>The owed stance is not a personality flaw. <strong>It is the trained posture of modernity.</strong> Forty years of a culture that has been telling you what you have a right to expect. You did not choose this posture. You can now see it, and seeing it is half of replacing it.</p>
+  <div class="scene">
+    <div class="scene-label">The Walk Back</div>
+    <h4>The Father Who Was A Gift</h4>
+    <p>A man in his fifties has not spoken to his father in a decade. The grievance is real and earned. His father was emotionally unavailable, critical, often absent. He has worked through it in therapy for years. The therapy has not produced forgiveness.</p>
+    <p>One day his pastor asks him a question he has never been asked. "Before he was the man who failed you, who was he?"</p>
+    <p>The man pauses. He begins to talk about his father as a young man. Married at twenty-two. A son at twenty-four. Worked two jobs. The man remembers, for the first time in years, that his father was not always the figure of grievance. <em>His father was first a young man who was given to him as a father.</em></p>
+    <p>The man cries. The cry is not the cry of grief. It is the cry of reception restored. The same father is in the same grave. <strong>The seeing changed.</strong></p>
+  </div>
 
-<p>The owed stance is the most exhausting posture a human can adopt, because it converts every relationship into a transaction not yet completed in your favor.</p>
+  <div class="invite">
+    <div class="invite-eyebrow">A moment</div>
+    <p>Pick one person you currently resent. At what stage of the trajectory are you? Now ask: who was this person before they became a grievance? Not minimizing the harm. <em>Just remembering what was there before.</em></p>
+  </div>
 
-<p><em>No wonder modern adults are tired.</em></p>
-
-<p>They are running endless ledgers, and the ledgers always show them at a loss.</p>
-
-<p>The receiving stance is the inverse. Nothing was guaranteed, so everything that arrives arrives as gift. <strong>The receiver is not naive. The receiver simply does not start with a ledger.</strong></p>
-
-<p>There is no neutral position. Either you are running a ledger or you are receiving. This is structural to how human perception works. The brain organizes incoming experience either as transaction or as gift, and the organization happens before your conscious mind gets involved.</p>
-
-<p><em>The posture you wake up with is the posture every previous morning has trained you into.</em></p>
-
-<p>The retraining is the work of years. The first step is recognition. The next time someone owes you, notice that you have entered the ledger stance. The noticing is the start of the exit.</p>
-
-<p>This is also why the receiving stance is the most subversive thing a modern person can practice. <strong>It quietly contradicts the central organizing assumption of late modern life.</strong> Modernity tells you that you have rights, you have expectations, you are owed things by life. The receiver lives as if none of this is true, and discovers, paradoxically, that the life owed nothing is the life that gives the most.</p>
-
-<p>The closed hand cannot receive what is being placed in it.<br>
-The open hand can.</p>
-
-<div class="grand-quote">
-<blockquote>The most exhausting posture a modern person can adopt is the one most of them have. They are owed by everyone and everything. The endless ledger is the source of their fatigue. The work is not to balance the ledger. The work is to close it.</blockquote>
-<cite>The Two Postures</cite>
-</div>
-
-<div class="think">
-<div class="think-label">Stop and Locate Your Posture</div>
-<p>Look at the last hour of your life. Notice the posture you have been holding. Were you receiving what arrived, or tabulating what was missing? Be honest. Most modern adults have been in the owed stance almost every hour of every day for years.</p>
-<hr class="think-line">
-<p>The recognition is the entry to the inverse. You cannot fight your way to the receiving stance. You can only set down the ledger. The setting down is a daily practice. Hourly sometimes. It gets easier across months as the body learns that the absence of the ledger does not lead to loss but to a different kind of life.</p>
-</div>
-
-</div>
-
-<div class="root-ck">
-  <div class="rc-label">Root System</div>
-  <h4>Water What Was Planted</h4>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Crisis No One Names.</strong></div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Demand Is Decayed Reception.</strong></div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>You Cannot Optimize A Gift.</strong></div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>What You Can Name As Deserved You Cannot Receive As Gift.</strong></div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Resentment Is Reception Going Backwards.</strong></div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>You Will Spend Your Life Either Receiving Or Being Owed.</strong> Two postures. No neutral. Modern life trains you into the owed stance. The receiving stance is the most subversive thing a modern person can practice. The work is not to balance the ledger but to close it.</div></div>
+  <div class="framebreak">
+    <div class="framebreak-eyebrow">Frame Break</div>
+    <p>Resentment is not a permanent state. <strong>It is a stage in a trajectory.</strong> The trajectory runs both directions.</p>
+  </div>
 </div>
 
 <div class="ribbon">
-<p>"Freely ye have received, freely give."<br><span class="ref">Matthew 10:8</span></p>
+  <p>Be kind one to another, tenderhearted, forgiving one another.</p>
+  <span class="ref">Ephesians 4:32</span>
 </div>
 
-<!-- ===== CHAPTER 7 ===== -->
+<!-- ============================== CHAPTER 6: TWO POSTURES ============================== -->
 <div class="ch-head">
-<div class="page">
-<div class="ch-badge">Chapter Seven</div>
-<div class="ch-num">07</div>
-<div class="ch-title">The Path Back</div>
-<div class="ch-sub">Joy is the body's response to noticing what is being given.</div>
-</div>
+  <div class="page">
+    <div class="ch-badge">Chapter Six &middot; Frame Five</div>
+    <div class="ch-num">06</div>
+    <h2 class="ch-title">You Will Spend Your Life Either Receiving Or Being Owed</h2>
+    <p class="ch-sub">The two postures. There is no neutral. Most modern people have defaulted to the wrong one.</p>
+  </div>
 </div>
 
 <div class="page section prose">
+  <p>Watch yourself across an ordinary day. Hour by hour. Notice the posture.</p>
+  <p>You are one of two things, almost always.</p>
+  <p>You are receiving what arrives.<br>
+  Or you are tabulating what has not.</p>
 
-<p>The five frames are installed. The condition has a name. Demand is decayed reception. Optimization kills gifts. Entitlement closes the gap. Resentment is the trajectory in reverse. The owed stance is the trained posture.</p>
+  <div class="insight-card">
+    <div class="ins-label">The Fifth Frame</div>
+    <h3>You will spend your life either receiving or being owed.</h3>
+  </div>
 
-<p>Now what?</p>
+  <!-- INTERACTIVE: POSTURE TOGGLE -->
+  <div class="posture reveal" id="posture-widget">
+    <p class="posture-instr">Toggle the two postures. Notice which one feels familiar.</p>
+    <div class="posture-switch">
+      <button class="posture-opt active" data-posture="owed">The Owed</button>
+      <button class="posture-opt" data-posture="recv">The Receiving</button>
+    </div>
+    <div class="posture-content" id="posture-content">
+      <div class="posture-heading">Hands closed.</div>
+      <div class="posture-list">
+        <div class="posture-item">Tabulates what has not arrived</div>
+        <div class="posture-item">Names the people who owe</div>
+        <div class="posture-item">Reads the morning as a list of demands</div>
+        <div class="posture-item">Is exhausted by abundance</div>
+        <div class="posture-item">Cannot feel grateful even when grateful</div>
+      </div>
+    </div>
+  </div>
 
-<p>This last chapter is not a protocol. It is a description of what naturally happens to a person who holds these frames long enough that the seeing returns.</p>
+  <p>The owed posture feels like the responsible adult posture. It is not. It is the posture of a person who has trained themselves out of joy. <em>The receiving posture is not naive. It is more accurate.</em> Almost nothing in your life was earned at the deepest level. The accurate posture is the receiving one.</p>
 
-<p>Here is what happens.</p>
+  <div class="invite">
+    <div class="invite-eyebrow">A moment</div>
+    <p>The next ten minutes of your day. Just the next ten minutes. Hold the receiving posture. Notice what arrives. <em>This is not work. It is the absence of work.</em></p>
+  </div>
 
-<p>The body begins to detect gifts it has been blind to for years.</p>
-
-<p>The first cup of coffee becomes noticeable again.<br>
-The face of your spouse in the kitchen becomes a person you cannot believe you live with.<br>
-The walk from the car to the office becomes a small stretch of given weather.<br>
-The exchanged glance with a stranger becomes a connection.<br>
-The taste of bread becomes complicated.<br>
-The sound of your child's voice becomes piercing.</p>
-
-<p>You did not arrange any of this. You did not make the coffee taste this way. You did not produce your spouse. You did not generate the bread or the weather or the child. <strong>They were given.</strong> The seeing had been off, and the seeing has come back on, and the body's response to the seeing is what you used to call joy and had not felt at this depth in years.</p>
-
-<div class="insight-card">
-<div class="ins-label">The Restoration</div>
-<h3>Joy is the body's response to noticing what is being given.</h3>
-</div>
-
-<p>Joy is not a temperament. Joy is not a mood you either have or do not have. <em>Joy is a perceptual phenomenon.</em> It is what the body produces when it notices a gift.</p>
-
-<p>The reason modern adults experience so little joy is not that the gifts have decreased. <strong>The supply of gifts has increased in late modernity to a degree the medieval peasant would have called miraculous.</strong> The reason for the joy famine is that the noticing has collapsed.</p>
-
-<p>Restore the noticing and joy returns automatically. The body has not lost the capacity. The body has lost the conditions under which the capacity activates. The five frames restore the conditions.</p>
-
-<p>This means joy is not chased. Joy is not pursued. Joy is not earned. Every effort to produce joy through accumulation, optimization, or experience collection has failed for the same reason. <em>Joy is downstream of seeing, not downstream of having.</em></p>
-
-<p>The person with very little who can still see has more joy than the person with everything who has stopped seeing.</p>
-
-<p>This is the testimony of the contemplative traditions across every culture and every century. It is the testimony of the Hebrew slaves who collected manna with joy and the Roman senators who had everything and went mad. <strong>The amount you have is not the variable. The seeing is.</strong></p>
-
-<div class="scene">
-<div class="scene-label"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> The Return</div>
-<h4>The Wife Across The Table</h4>
-<p>A man has been married for fifteen years. He loves his wife in the way one loves a settled fact. She is there. He is there. They have made a life. He has not really seen her in a long time.</p>
-<p>One evening he sits across from her at dinner. He is tired from the day. He looks up and sees her face. He sees the lines around her eyes that came from laughing with him. He sees the way her hands move when she talks. He sees that she is, in this moment, in this kitchen, eating dinner with him.</p>
-<p><strong>He sees that she did not have to be here.</strong></p>
-<p>She was given to him. She was given to him on a Saturday in October fifteen years ago in front of two hundred people, and she has been here every night since. He had stopped seeing this entirely. He saw the wife. He had not seen the gift.</p>
-<p>He almost cannot breathe. The gift sight has returned, and what is in front of him is so enormous he does not know how he has been walking past it. <em>She does not know what is happening on his side of the table.</em> She is talking about her day. He listens to her, completely, and the listening is itself an act of reception.</p>
-<p>The dinner becomes one of the dinners he will remember on his deathbed.</p>
-<p><strong>The dinner did not change. The seeing did.</strong></p>
-</div>
-
-<p>Expect this to happen unevenly.</p>
-
-<p>The seeing returns in flashes at first. A specific cup of coffee one morning. A specific evening with your child. A specific moment in church. <strong>The flashes are not the destination. They are evidence.</strong> They prove the capacity is intact.</p>
-
-<p>The work is to hold the frames steadily enough that the flashes lengthen, deepen, become the baseline. Over months and years, your default perception shifts. The owed stance loosens. The gift sight returns to many domains at once. <em>Joy stops being something you feel occasionally and becomes the background atmosphere of an ordinary day.</em></p>
-
-<p>This is the condition the contemplative traditions called receptivity to grace. It is the condition Israel was being trained for during forty years of manna in the wilderness. It is the condition the psalmist meant when he said the day is the Lord's and we rejoice in it.</p>
-
-<p>It is the condition almost no one in late modernity is in.</p>
-
-<p>It is available to anyone who can see what is in front of them as gift.</p>
-
-<p>The path back is a path of recovered sight.</p>
-
-<div class="data-hero">
-<div class="dh-num">∞</div>
-<div class="dh-label">gifts are in your day right now waiting to be received</div>
-<div class="dh-sub">The supply has not decreased. The seeing has. The five frames are how the seeing returns. Joy is what comes next.</div>
-</div>
-
-</div>
-
-<div class="root-ck">
-  <div class="rc-label">Root System</div>
-  <h4>Water What Was Planted</h4>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Crisis No One Names.</strong></div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Demand Is Decayed Reception.</strong></div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>You Cannot Optimize A Gift.</strong></div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>What You Can Name As Deserved You Cannot Receive As Gift.</strong></div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>Resentment Is Reception Going Backwards.</strong></div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>You Will Spend Your Life Either Receiving Or Being Owed.</strong></div></div>
-  <div class="r-item"><div class="r-dot"></div><div class="r-text"><strong>The Path Back.</strong> Joy is the body's response to noticing what is being given. Joy is not chased; it is detected. The five frames restore the conditions under which the body's capacity for joy activates. The seeing returns in flashes at first, then deepens. The path back is a path of recovered sight.</div></div>
+  <div class="framebreak">
+    <div class="framebreak-eyebrow">Frame Break</div>
+    <p>The owed posture feels mature. <strong>It is the posture of a person who has forgotten that they are alive on purpose.</strong></p>
+  </div>
 </div>
 
 <div class="ribbon">
-<p>"This is the day which the Lord hath made; we will rejoice and be glad in it."<br><span class="ref">Psalm 118:24</span></p>
+  <p>This is the day which the Lord hath made; we will rejoice and be glad in it.</p>
+  <span class="ref">Psalm 118:24</span>
 </div>
 
-<!-- ===== CLOSING ===== -->
+<!-- ============================== CHAPTER 7: THE PATH BACK ============================== -->
+<div class="ch-head">
+  <div class="page">
+    <div class="ch-badge">Chapter Seven</div>
+    <div class="ch-num">07</div>
+    <h2 class="ch-title">The Path Back</h2>
+    <p class="ch-sub">Joy is the body's response to noticing what is being given.</p>
+  </div>
+</div>
+
 <div class="page section prose">
+  <p>The five frames are installed. The condition has a name. Demand is decayed reception. Optimization kills gifts. Entitlement closes the gap. Resentment is the trajectory in reverse. The owed posture is the trained default.</p>
+  <p>Now what?</p>
+  <p>This last chapter is not a protocol. It is a description of what naturally happens to a person who holds these frames long enough that the seeing returns.</p>
 
-<p>You now hold the architecture of received life.</p>
+  <p>The body begins to detect gifts it has been blind to for years.</p>
 
-<p>Five perceptual frames that diagnose and reverse the central crisis of late modernity. The condition has been named. The mechanism has been exposed. The trajectory has been mapped in both directions. The two postures have been identified. The return of joy has been described, not as a forced outcome, but as a natural consequence of the seeing that returns.</p>
+  <p>The first cup of coffee becomes noticeable again.<br>
+  The face of your spouse becomes a person you cannot believe you live with.<br>
+  The walk from the car to the office becomes a small stretch of given weather.<br>
+  The taste of bread becomes complicated.<br>
+  The sound of your child's voice becomes piercing.</p>
 
-<p>The next playbook, Part 2 of Manna, is called <em>Returning</em>. It walks seven specific domains where reception was lost and shows what restoration looks like in each. Your body. Your work. Your marriage. Your time. Your beauty. Your child. Your place. <strong>If <em>Given</em> teaches you to see, <em>Returning</em> teaches you where to look first.</strong></p>
+  <p>You did not arrange any of this. You did not make the coffee taste this way. You did not produce your spouse. <strong>They were given.</strong> The seeing had been off, and the seeing has come back on, and the body's response to the seeing is what you used to call joy and had not felt at this depth in years.</p>
 
-<p>For now, sit with the frames. Let them work. Notice the next time a demand reveals itself as a gift in disguise. Notice the next time you reach to optimize something and recognize the act as the conversion it is. Notice the next time you tabulate what you are owed.</p>
+  <div class="insight-card">
+    <div class="ins-label">The Restoration</div>
+    <h3>Joy is the body's response to noticing what is being given.</h3>
+  </div>
 
-<p>The noticing is the entire practice.</p>
+  <p>Joy is not a temperament. Joy is not a mood. <em>Joy is a perceptual phenomenon.</em> It is what the body produces when it notices a gift. The reason modern adults experience so little joy is not that the gifts decreased. <strong>The supply of gifts has increased in late modernity to a degree the medieval peasant would have called miraculous.</strong> The noticing has collapsed.</p>
 
-<p>The body retrains itself across months. The joy returns of its own accord. You will not have to chase it.</p>
+  <p>Restore the noticing and joy returns automatically. The body has not lost the capacity. The body has lost the conditions under which the capacity activates. The five frames restore the conditions.</p>
 
-<p><strong>You will only have to keep seeing.</strong></p>
+  <div class="scene">
+    <div class="scene-label">The Return</div>
+    <h4>The Wife Across The Table</h4>
+    <p>A man has been married for fifteen years. He loves his wife in the way one loves a settled fact. She is there. He is there. They have made a life. He has not really seen her in a long time.</p>
+    <p>One evening he sits across from her at dinner. He looks up and sees her face. He sees the lines around her eyes that came from laughing with him. He sees the way her hands move when she talks. <strong>He sees that she did not have to be here.</strong></p>
+    <p>She was given to him. She was given to him on a Saturday in October fifteen years ago in front of two hundred people, and she has been here every night since. He had stopped seeing this entirely. He saw the wife. He had not seen the gift.</p>
+    <p>He almost cannot breathe. The gift sight has returned, and what is in front of him is so enormous he does not know how he has been walking past it. <em>The dinner becomes one of the dinners he will remember on his deathbed.</em></p>
+    <p>The dinner did not change. <strong>The seeing did.</strong></p>
+  </div>
 
+  <p>Expect this to happen unevenly. The seeing returns in flashes at first. A specific cup of coffee. A specific evening with your child. <strong>The flashes are not the destination. They are evidence.</strong> They prove the capacity is intact.</p>
+
+  <p>The work is to hold the frames steadily enough that the flashes lengthen. Over months, your default perception shifts. The owed stance loosens. The gift sight returns to many domains at once. <em>Joy stops being something you feel occasionally and becomes the background atmosphere of an ordinary day.</em></p>
+
+  <div class="framebreak">
+    <div class="framebreak-eyebrow">Frame Break</div>
+    <p>Joy is downstream of seeing, not downstream of having. <strong>The person with very little who can still see has more joy than the person with everything who has stopped seeing.</strong></p>
+  </div>
 </div>
 
-<!-- ===== NEXT IN SERIES ===== -->
-<div class="page">
-<div class="next-card">
-<div class="next-label">Next In The Series</div>
-<div class="next-title">Returning</div>
-<div class="next-tag">Part 2 of Manna. A tour through seven domains where reception was lost. The body, the work, the marriage, the time, the beauty, the child, the place. Each with its own micro breakthrough. The frames from <em>Given</em> applied to where you actually live.</div>
-</div>
+<div class="ribbon">
+  <p>O taste and see that the Lord is good.</p>
+  <span class="ref">Psalm 34:8</span>
 </div>
 
-<!-- ===== FIVE FRAMES APPLICATION ===== -->
+<!-- ============================== FIVE FRAMES APPLICATION ============================== -->
 <div class="page section">
-<div class="diagnostic-widget" id="five-frames">
-<style>
-#five-frames{margin:0 0 32px;border-radius:18px;overflow:hidden;border:2px solid rgba(212,168,67,0.3);background:linear-gradient(135deg,#FDFAF3,#F5EFE0);box-shadow:0 8px 28px rgba(14,15,26,0.12)}
-#five-frames .ff-head{background:linear-gradient(135deg,#0E0F1A,#1F2440);padding:26px 30px;text-align:center;color:#fff}
-#five-frames .ff-kicker{font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:#E8C96A;margin-bottom:8px}
-#five-frames .ff-head h3{font-family:'Nunito',sans-serif;font-size:1.5rem;font-weight:900;color:#E8C96A;margin:0 0 6px;letter-spacing:-0.01em}
-#five-frames .ff-head p{font-family:'Lora',serif;font-style:italic;font-size:0.92rem;color:rgba(255,255,255,0.7);margin:0 auto;max-width:500px}
-#five-frames .ff-body{padding:30px}
-#five-frames .ff-demand-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:#1F2440;margin-bottom:6px;display:block}
-#five-frames .ff-demand-input{width:100%;padding:14px 18px;border:2px solid rgba(212,168,67,0.25);border-radius:12px;font-family:'Lora',serif;font-style:italic;font-size:1rem;color:#1F2440;background:#fff;transition:all 0.2s;margin-bottom:6px}
-#five-frames .ff-demand-input:focus{outline:none;border-color:#D4A843;box-shadow:0 4px 16px rgba(212,168,67,0.15)}
-#five-frames .ff-hint{font-family:'Lora',serif;font-style:italic;font-size:0.78rem;color:#7A7E8E;margin-bottom:22px;line-height:1.5}
-#five-frames .ff-frames{display:grid;gap:14px;margin-bottom:18px}
-#five-frames .ff-frame{padding:20px;background:#fff;border:2px solid #ECE5CC;border-radius:12px;transition:all 0.25s;position:relative}
-#five-frames .ff-frame.opened{border-color:#D4A843;background:linear-gradient(135deg,#fff,rgba(245,224,168,0.06));box-shadow:0 4px 16px rgba(212,168,67,0.1)}
-#five-frames .ff-frame-num{position:absolute;top:-12px;left:18px;padding:4px 12px;background:linear-gradient(135deg,#1F2440,#3D4670);color:#E8C96A;border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:2px;text-transform:uppercase}
-#five-frames .ff-frame-title{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:#1F2440;line-height:1.3;margin-bottom:14px;padding-top:6px}
-#five-frames .ff-prompt{font-family:'Lora',serif;font-style:italic;color:#4A4E5E;font-size:0.92rem;line-height:1.55;margin-bottom:10px}
-#five-frames .ff-prompt strong{color:#1F2440;font-style:normal;font-weight:700}
-#five-frames .ff-answer{display:none;padding:14px 16px;margin-top:10px;background:linear-gradient(135deg,rgba(212,168,67,0.06),rgba(232,201,106,0.04));border-left:4px solid #D4A843;border-radius:0 8px 8px 0}
-#five-frames .ff-frame.opened .ff-answer{display:block}
-#five-frames .ff-answer-label{font-family:'Nunito',sans-serif;font-size:0.58rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:#C88090;margin-bottom:6px}
-#five-frames .ff-answer-text{font-family:'Lora',serif;color:#1F2440;font-size:0.92rem;line-height:1.6;margin:0}
-#five-frames .ff-answer-text strong{color:#D4A843;font-weight:700}
-#five-frames .ff-open-btn{padding:10px 18px;background:transparent;border:1.5px solid rgba(212,168,67,0.4);border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;color:#1F2440;cursor:pointer;letter-spacing:1.5px;text-transform:uppercase;transition:all 0.2s;display:inline-block}
-#five-frames .ff-open-btn:hover{background:rgba(212,168,67,0.08);border-color:#D4A843}
-#five-frames .ff-frame.opened .ff-open-btn{display:none}
-#five-frames .ff-closing{padding:22px;background:linear-gradient(135deg,#0E0F1A,#1F2440);color:#fff;border-radius:12px;text-align:center;margin-top:14px}
-#five-frames .ff-closing-text{font-family:'Lora',serif;font-style:italic;color:rgba(255,255,255,0.85);font-size:0.95rem;line-height:1.6;margin:0}
-#five-frames .ff-closing-text strong{color:#E8C96A;font-style:normal;font-weight:700}
-</style>
-
-<div class="ff-head">
-  <div class="ff-kicker">Interactive Application</div>
-  <h3>Apply the Five Frames</h3>
-  <p>Type one specific demand. Walk it through all five frames. The demand will change shape before your eyes.</p>
-</div>
-<div class="ff-body">
-  <label class="ff-demand-label">A demand you feel right now</label>
-  <input type="text" class="ff-demand-input" id="ff-demand" placeholder="e.g., my job, this deadline, the kids' bedtime, the unread email, my marriage, my body" value="">
-  <p class="ff-hint">Pick something specific. The frames work on specifics. Vague demands stay vague through the exercise.</p>
-
-  <div class="ff-frames" id="ff-frames">
-    <div class="ff-frame" data-i="0">
+<div class="five-frames" id="five-frames">
+  <div class="ff-head">
+    <div class="ff-eyebrow">Apply The Five Frames</div>
+    <div class="ff-title">Hold One Demand To The Light</div>
+    <p class="ff-sub">Name one thing you are currently experiencing as demand. Each frame, when opened, performs a small surgery on the seeing.</p>
+  </div>
+  <input type="text" class="ff-input" id="ff-input" placeholder="A name for what is heavy this week...">
+  <div class="ff-frames">
+    <div class="ff-frame" data-id="1">
       <div class="ff-frame-num">Frame 1</div>
-      <div class="ff-frame-title">Demand is decayed reception</div>
-      <div class="ff-prompt"><strong>When was the first day this arrived as a gift?</strong> Trace back. Find the moment when this thing you now experience as demand was something you celebrated, were chosen for, prayed for, or felt grateful to have.</div>
-      <button class="ff-open-btn" data-i="0">Reveal the frame</button>
-      <div class="ff-answer">
-        <div class="ff-answer-label">The Frame at Work</div>
-        <div class="ff-answer-text"><strong>The object did not change. The seeing did.</strong> The thing you currently call a demand was a gift on the day it arrived. Nothing in the object itself transformed it into burden; the perception slipped, slowly, while you were not watching. Restoration is also perceptual. You do not need to change <span id="ff-demand-1" style="font-style:italic">the demand</span>. You need to remember the day it was given.</div>
-      </div>
+      <div class="ff-frame-title">Was it given before it was demanded?</div>
+      <button class="ff-open-btn">Open</button>
+      <div class="ff-answer"><strong><span class="ff-demand">This</span></strong> began as gift. Trace it backwards to the day it was first given to you. Remember how you felt. Hold both seeings at once.</div>
     </div>
-
-    <div class="ff-frame" data-i="1">
+    <div class="ff-frame" data-id="2">
       <div class="ff-frame-num">Frame 2</div>
-      <div class="ff-frame-title">You cannot optimize a gift</div>
-      <div class="ff-prompt"><strong>Where have you been optimizing this?</strong> What are you trying to improve, manage, fix, or fine tune? The optimizing posture is the conversion that turned the gift into a project.</div>
-      <button class="ff-open-btn" data-i="1">Reveal the frame</button>
-      <div class="ff-answer">
-        <div class="ff-answer-label">The Frame at Work</div>
-        <div class="ff-answer-text">To improve something you must first treat it as material. <strong>The act of treating <span id="ff-demand-2" style="font-style:italic">it</span> as a thing to manage required you to first treat it as a project.</strong> Projects are not loved. Projects are managed. Stop optimizing. The same evening, the same conversation, the same task, performed from the receiving posture rather than the optimizing posture, produces a different experience.</div>
-      </div>
+      <div class="ff-frame-title">Have you been optimizing it?</div>
+      <button class="ff-open-btn">Open</button>
+      <div class="ff-answer">If you have been improving <strong><span class="ff-demand">it</span></strong> for years and it has gotten better without becoming more alive, that is the conversion. <em>Set down the optimization for a week. See what happens.</em></div>
     </div>
-
-    <div class="ff-frame" data-i="2">
+    <div class="ff-frame" data-id="3">
       <div class="ff-frame-num">Frame 3</div>
-      <div class="ff-frame-title">What you can name as deserved you cannot receive as gift</div>
-      <div class="ff-prompt"><strong>What part of this do you believe you deserve?</strong> Be honest. The income, the health, the cooperation, the appreciation, the time. Naming the entitlement is what reopens the gap.</div>
-      <button class="ff-open-btn" data-i="2">Reveal the frame</button>
-      <div class="ff-answer">
-        <div class="ff-answer-label">The Frame at Work</div>
-        <div class="ff-answer-text">Gratitude lives in the gap between expectation and given. <strong>You cannot deserve your way back to receiving.</strong> The expectation closes the gap and the gift becomes the bare minimum. The cure is not guilt. The cure is to run the numbers honestly on <span id="ff-demand-3" style="font-style:italic">this</span>: what did you actually earn, what was inherited, what was given that you did not pay for? The gap reopens the moment you tell yourself the truth.</div>
-      </div>
+      <div class="ff-frame-title">What part of it do you actually deserve?</div>
+      <button class="ff-open-btn">Open</button>
+      <div class="ff-answer">Subtract the DNA, the country, the era, the parents, the body, the time you were given. From <strong><span class="ff-demand">this</span></strong>, what fraction is genuinely earned? <em>The honest answer reopens the gap where gratitude lives.</em></div>
     </div>
-
-    <div class="ff-frame" data-i="3">
+    <div class="ff-frame" data-id="4">
       <div class="ff-frame-num">Frame 4</div>
-      <div class="ff-frame-title">Resentment is reception going backwards</div>
-      <div class="ff-prompt"><strong>What stage of the trajectory are you on?</strong> Gift, routine, obligation, debt, grievance. Be specific. Most demands sit at obligation or debt; only the heaviest reach grievance.</div>
-      <button class="ff-open-btn" data-i="3">Reveal the frame</button>
-      <div class="ff-answer">
-        <div class="ff-answer-label">The Frame at Work</div>
-        <div class="ff-answer-text">Every resentment was once a gift. <strong>The trajectory runs both directions.</strong> Forgiveness is not the suppression of grievance. Forgiveness is walking the trajectory in reverse, from grievance to debt to obligation to routine to gift, until you can see again what <span id="ff-demand-4" style="font-style:italic">this</span> originally was. You do not have to minimize what happened. You only have to remember what was there before.</div>
-      </div>
+      <div class="ff-frame-title">If it is a person, what stage are you on?</div>
+      <button class="ff-open-btn">Open</button>
+      <div class="ff-answer">Gift, routine, obligation, debt, grievance. Where are you on the trajectory with <strong><span class="ff-demand">them</span></strong>? Now ask: who was this person before they became this stage?</div>
     </div>
-
-    <div class="ff-frame" data-i="4">
+    <div class="ff-frame" data-id="5">
       <div class="ff-frame-num">Frame 5</div>
-      <div class="ff-frame-title">You will spend your life either receiving or being owed</div>
-      <div class="ff-prompt"><strong>Which posture are you holding right now?</strong> Tabulating what is owed, or receiving what is arriving? Both feel true in different hours, but only one of them is the posture that is currently in charge.</div>
-      <button class="ff-open-btn" data-i="4">Reveal the frame</button>
-      <div class="ff-answer">
-        <div class="ff-answer-label">The Frame at Work</div>
-        <div class="ff-answer-text">There is no neutral. The closed hand cannot receive what is being placed in it. <strong>The open hand can.</strong> The owed stance is the most exhausting posture a modern person can adopt because it converts every relationship into a transaction not yet completed in your favor. With <span id="ff-demand-5" style="font-style:italic">this specific situation</span>, the work is not to balance the ledger. The work is to close it.</div>
-      </div>
+      <div class="ff-frame-title">Which posture have you been holding?</div>
+      <button class="ff-open-btn">Open</button>
+      <div class="ff-answer">Have you held <strong><span class="ff-demand">this</span></strong> with hands open or hands closed? <em>The same situation, held with the receiving posture, becomes a different situation.</em></div>
     </div>
-  </div>
-
-  <div class="ff-closing">
-    <p class="ff-closing-text">Read the five frames out loud against the specific demand you typed. <strong>The object did not change. The seeing did.</strong> Restoration is also perceptual.</p>
   </div>
 </div>
+</div>
+
+<!-- ============================== GIFT INVENTORY ============================== -->
+<div class="page section">
+<div class="giftinv" id="giftinv">
+  <div class="giftinv-head">
+    <div class="giftinv-eyebrow">A Persistent Practice</div>
+    <div class="giftinv-title">Your Gift Inventory</div>
+    <p class="giftinv-sub">Each day, name one thing in your life as gift. Not for productivity. Not for streaks. Just for the noticing. The list accumulates. The page brightens.</p>
+  </div>
+  <div class="giftinv-count">
+    <div class="giftinv-num" id="giftinv-num">0</div>
+    <div class="giftinv-num-lbl">gifts named</div>
+  </div>
+  <div class="giftinv-add">
+    <input type="text" class="giftinv-input" id="giftinv-input" placeholder="One thing that arrived today, unearned...">
+    <div style="text-align:center"><button class="giftinv-btn" id="giftinv-btn">Add to inventory</button></div>
+  </div>
+  <div class="giftinv-list" id="giftinv-list"></div>
+</div>
+</div>
+
+<!-- ============================== WHY YOU WILL NOT SEE ============================== -->
+<div class="page section">
+<div class="resistance reveal">
+  <div class="resistance-eyebrow">A Last Honesty</div>
+  <h3>Why You Will Not See</h3>
+  <p class="resistance-sub">Most readers will not let the frames work. Here is exactly what you will say to yourself. Here is the gentler answer.</p>
+  <div class="excuses">
+    <div class="excuse">
+      <div class="excuse-line">I'll notice when life slows down.</div>
+      <div class="excuse-answer">There is no such week. Reception is not the reward at the end of busyness. It is the posture inside the busyness that prevents the busyness from consuming you. <strong>The retired do not see more than the working. They are sometimes more disappointed, because they expected the seeing to arrive with the leisure.</strong></div>
+    </div>
+    <div class="excuse">
+      <div class="excuse-line">Gratitude journals do not work for me.</div>
+      <div class="excuse-answer">Probably true. Gratitude journals try to manufacture gratitude. Gratitude cannot be manufactured. <strong>It is what the body produces when the gap reopens.</strong> The frames here are not about producing gratitude. They are about reopening the gap. Gratitude follows on its own.</div>
+    </div>
+    <div class="excuse">
+      <div class="excuse-line">My problems are real, not perceptual.</div>
+      <div class="excuse-answer">Many of them are real. The diagnosis is not "your suffering is imagined." The diagnosis is "your suffering is real AND the seeing has collapsed AND both can be true at once." <strong>Reception is not denial. It is the wider frame inside which real pain still hurts and is no longer the whole.</strong></div>
+    </div>
+    <div class="excuse">
+      <div class="excuse-line">I tried this and it lasted three days.</div>
+      <div class="excuse-answer">The seeing returns in flashes at first. Three days of flashes is not failure. <strong>It is the body proving the capacity is intact.</strong> Hold the frames longer. Months, not days. The flashes lengthen into seasons.</div>
+    </div>
+    <div class="excuse">
+      <div class="excuse-line">This sounds religious.</div>
+      <div class="excuse-answer">It is. It is also true for the agnostic. Reception is a structural feature of being a creature who did not arrange their own existence. <strong>The contemplative traditions of every century have noticed this.</strong> The frames work for the believer and the doubter alike, because they describe a perceptual reality that does not depend on whom you credit for the gift.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================== FINALE ============================== -->
+<section class="finale">
+  <h2>You are not what is wrong with you.<strong>The seeing is.</strong></h2>
+  <p>Sit with the frames. Let them work. Notice the next time a demand reveals itself as a gift in disguise. Notice the next time you reach to optimize something. Notice the next time you tabulate what you are owed.</p>
+  <p>The noticing is the entire practice. The body retrains itself across months. <em>The joy returns of its own accord. You will not have to chase it.</em></p>
+  <p>You will only have to keep seeing.</p>
+</section>
+
+<!-- ============================== NEXT IN SERIES ============================== -->
+<div class="next-card">
+  <div class="next-label">Next In The Series</div>
+  <div class="next-title">Returning</div>
+  <div class="next-tag">Part 2 of Manna. A tour through seven domains where reception was lost. The body, the work, the marriage, the time, the beauty, the child, the place. <em>The frames from Given applied to where you actually live.</em></div>
+</div>
+
+<footer>
+  <p>"Every good gift and every perfect gift is from above, coming down from the Father of lights."<br>James 1:17</p>
+  <div class="brand">KingdomBuilders AI &middot; Manna &middot; Part One</div>
+</footer>
 
 <script>
 (function(){
   const SLUG = 'given';
-  const WIDGET = 'five-frames-application';
-  const widget = document.getElementById('five-frames');
-  const demandInput = widget.querySelector('#ff-demand');
-  const frames = widget.querySelectorAll('.ff-frame');
-  const opened = new Set();
 
-  function updateDemandRefs(){
-    const v = demandInput.value.trim();
-    for(let i=1; i<=5; i++){
-      const el = widget.querySelector('#ff-demand-' + i);
-      if(el){
-        if(i === 1) el.textContent = v ? '"' + v + '"' : 'the demand';
-        else el.textContent = v ? '"' + v + '"' : (i === 5 ? 'this specific situation' : 'this');
-      }
+  // ========== MANNA RAIN ==========
+  (function(){
+    const container = document.getElementById('manna-rain');
+    if(!container) return;
+    const count = 28;
+    for(let i=0; i<count; i++){
+      const drop = document.createElement('div');
+      drop.className = 'manna-drop';
+      drop.style.left = (Math.random()*100) + '%';
+      drop.style.animationDuration = (5 + Math.random()*4) + 's';
+      drop.style.animationDelay = (-Math.random()*7) + 's';
+      container.appendChild(drop);
     }
-  }
-  function save(){
-    if(window.kbWidget) kbWidget.save(SLUG, WIDGET, {demand: demandInput.value, opened: Array.from(opened)});
-  }
-  function onDemand(){ updateDemandRefs(); save(); }
-  demandInput.addEventListener('input', onDemand);
+  })();
 
-  widget.addEventListener('click', function(e){
-    const btn = e.target.closest('.ff-open-btn');
+  // ========== STOP BEFORE READING ==========
+  (function(){
+    const btn = document.getElementById('stopbefore-btn');
     if(!btn) return;
-    const frame = btn.closest('.ff-frame');
-    frame.classList.add('opened');
-    const idx = Array.from(frames).indexOf(frame);
-    if(idx >= 0){ opened.add(idx); save(); }
-  });
-
-  function restore(data){
-    if(!data) return;
-    if(data.demand) demandInput.value = data.demand;
-    if(Array.isArray(data.opened)){
-      data.opened.forEach(i => {
-        if(frames[i]){ frames[i].classList.add('opened'); opened.add(i); }
+    if(window.kbWidget){
+      kbWidget.load(SLUG, 'stopbefore').then(r => {
+        if(r && r.data && r.data.done) markDone();
       });
     }
-    updateDemandRefs();
-  }
-  if(window.kbWidget){
-    kbWidget.onReady(async () => {
-      const r = await kbWidget.load(SLUG, WIDGET);
-      if(r && r.data) restore(r.data); else updateDemandRefs();
+    function markDone(){
+      btn.classList.add('done');
+      btn.textContent = 'Continue ↓';
+    }
+    btn.addEventListener('click', () => {
+      markDone();
+      if(window.kbWidget) kbWidget.save(SLUG, 'stopbefore', {done:true, at:Date.now()});
+      setTimeout(() => {
+        const next = document.querySelector('.ch-head');
+        if(next) next.scrollIntoView({behavior:'smooth'});
+      }, 200);
     });
-  } else {
-    updateDemandRefs();
-  }
+  })();
+
+  // ========== DECAY SLIDER ==========
+  (function(){
+    const slider = document.getElementById('dsw-slider');
+    const restoreBtn = document.getElementById('dsw-restore');
+    const circle = document.getElementById('dsw-circle');
+    const stageEl = document.getElementById('dsw-stage');
+    const timeEl = document.getElementById('dsw-time');
+    const sentenceEl = document.getElementById('dsw-sentence');
+    if(!slider) return;
+    const STAGES = [
+      {min:0, max:8, name:'Gift', time:'Day 1', color:'#D4A843', glow:'#F0DB94', sentence:'You photograph it. You send it to your mother. You hold it like a name said for the first time.'},
+      {min:8, max:25, name:'Wonder', time:'Month 3', color:'#C29A45', glow:'#E0C57A', sentence:'You still see it sometimes. The morning it sat on your desk catches the light. You smile without meaning to.'},
+      {min:25, max:50, name:'Routine', time:'Year 1', color:'#9E8852', glow:'#BFA868', sentence:'You walk past it without seeing it. It is part of the furniture of your life. You would notice if it were gone. You do not notice that it is there.'},
+      {min:50, max:75, name:'Burden', time:'Year 4', color:'#7E7560', glow:'#9A8E72', sentence:'It is heavier now. The thing that arrived as a gift now arrives as an expectation. You have started to call it a job.'},
+      {min:75, max:100, name:'Demand', time:'Year 7+', color:'#5C5A56', glow:'#787470', sentence:'You resent it. You cannot remember when. The grievance feels true. The gift feels like a story you told yourself when you were young.'}
+    ];
+    function paint(){
+      const v = parseInt(slider.value);
+      const s = STAGES.find(x => v >= x.min && v <= x.max) || STAGES[0];
+      circle.style.background = `linear-gradient(135deg, ${s.color}, ${s.glow})`;
+      // Text color flips based on bg luminance so it's always readable
+      circle.style.color = v < 30 ? '#1F2440' : '#FFFFFF';
+      circle.textContent = s.name;
+      stageEl.textContent = s.name;
+      timeEl.textContent = s.time;
+      sentenceEl.style.opacity = '0';
+      setTimeout(() => { sentenceEl.textContent = s.sentence; sentenceEl.style.opacity = '1'; }, 220);
+      stageEl.style.color = v > 50 ? '#5C5A56' : '#1F2440';
+      if(window.kbWidget) kbWidget.save(SLUG, 'decay-slider', {pos: v});
+    }
+    slider.addEventListener('input', paint);
+    let restoring = false;
+    restoreBtn.addEventListener('click', () => {
+      if(restoring) return;
+      restoring = true;
+      const target = 0;
+      const start = parseInt(slider.value);
+      const step = (start - target) / 40;
+      let cur = start;
+      const interval = setInterval(() => {
+        cur -= step;
+        if(cur <= target){ cur = target; clearInterval(interval); restoring = false; }
+        slider.value = cur;
+        paint();
+      }, 45);
+    });
+    if(window.kbWidget){
+      kbWidget.onReady(async () => {
+        const r = await kbWidget.load(SLUG, 'decay-slider');
+        if(r && r.data && typeof r.data.pos === 'number'){ slider.value = r.data.pos; }
+        paint();
+      });
+    } else { paint(); }
+  })();
+
+  // ========== TRAJECTORY WALKER ==========
+  (function(){
+    const stages = document.querySelectorAll('#tw-stages .tw-stage');
+    if(!stages.length) return;
+    const STAGE_DETAILS = [
+      {name:'Gift', text:'<strong>You were given them.</strong> Before they could fail you, they were the person who arrived in your life and was an unearned good. You felt this clearly when they first arrived. You may have forgotten.'},
+      {name:'Routine', text:'<strong>You assume them.</strong> They are part of the furniture of your life now. The first wonder has settled into the comfortable not-noticing of constant company. The gift is still there. The seeing has dimmed.'},
+      {name:'Obligation', text:'<strong>They are an expectation.</strong> You expect them to act. You expect them to call. You expect them to show up. The expectations are not bad. But you have stopped noticing that they did not have to be in your life at all.'},
+      {name:'Debt', text:'<strong>They owe you.</strong> The expectations have hardened into a ledger. You are tracking what they have failed to do. You are reading their actions against the bill they ought to be paying. The gift sight is fully gone.'},
+      {name:'Grievance', text:'<strong>They are the wound.</strong> You can only see them through the lens of how they have failed you. The original gift is unrecoverable from this position. <em>This is where most people stop, and where forgiveness keeps failing.</em> The trajectory runs both directions. The walk back is the cure.'}
+    ];
+    let currentIdx = -1;
+    function setStage(idx){
+      currentIdx = idx;
+      stages.forEach((s,i) => s.classList.toggle('active', i === idx));
+      const d = STAGE_DETAILS[idx];
+      document.getElementById('tw-detail-stage').textContent = 'Stage ' + (idx+1) + ' &middot; ' + d.name;
+      document.getElementById('tw-detail-text').innerHTML = d.text;
+      if(window.kbWidget) kbWidget.save(SLUG, 'trajwalk', {idx});
+    }
+    stages.forEach((s,i) => s.addEventListener('click', () => setStage(i)));
+    document.getElementById('tw-forward').addEventListener('click', () => {
+      if(currentIdx < 4) setStage(currentIdx + 1); else setStage(4);
+    });
+    document.getElementById('tw-back').addEventListener('click', () => {
+      if(currentIdx > 0) setStage(currentIdx - 1); else setStage(0);
+    });
+    if(window.kbWidget){
+      kbWidget.onReady(async () => {
+        const r = await kbWidget.load(SLUG, 'trajwalk');
+        if(r && r.data && typeof r.data.idx === 'number') setStage(r.data.idx);
+      });
+    }
+  })();
+
+  // ========== POSTURE TOGGLE ==========
+  (function(){
+    const widget = document.getElementById('posture-widget');
+    if(!widget) return;
+    const opts = widget.querySelectorAll('.posture-opt');
+    const content = document.getElementById('posture-content');
+    const POSTURES = {
+      owed: {
+        recv: false,
+        heading: 'Hands closed.',
+        items: [
+          'Tabulates what has not arrived',
+          'Names the people who owe',
+          'Reads the morning as a list of demands',
+          'Is exhausted by abundance',
+          'Cannot feel grateful even when grateful'
+        ]
+      },
+      recv: {
+        recv: true,
+        heading: 'Hands open.',
+        items: [
+          'Notices what has already arrived',
+          'Names what was given before the asking',
+          'Reads the morning as a series of small surprises',
+          'Is replenished by ordinary things',
+          'Feels grateful before the conditions for gratitude are met'
+        ]
+      }
+    };
+    function setPosture(key){
+      const p = POSTURES[key];
+      opts.forEach(o => o.classList.toggle('active', o.dataset.posture === key));
+      widget.classList.toggle('recv', p.recv);
+      content.style.opacity = '0';
+      setTimeout(() => {
+        content.innerHTML = '<div class="posture-heading">' + p.heading + '</div><div class="posture-list">' + p.items.map(i => '<div class="posture-item">' + i + '</div>').join('') + '</div>';
+        content.style.opacity = '1';
+      }, 280);
+      if(window.kbWidget) kbWidget.save(SLUG, 'posture', {key});
+    }
+    opts.forEach(o => o.addEventListener('click', () => setPosture(o.dataset.posture)));
+    if(window.kbWidget){
+      kbWidget.onReady(async () => {
+        const r = await kbWidget.load(SLUG, 'posture');
+        if(r && r.data && r.data.key) setPosture(r.data.key);
+      });
+    }
+  })();
+
+  // ========== FIVE FRAMES APPLICATION ==========
+  (function(){
+    const input = document.getElementById('ff-input');
+    if(!input) return;
+    function syncDemand(){
+      const v = input.value.trim();
+      const display = v ? '"' + v + '"' : 'this';
+      document.querySelectorAll('.ff-demand').forEach(el => el.textContent = display);
+      if(window.kbWidget) kbWidget.save(SLUG, 'five-frames-applied', {demand: v});
+    }
+    input.addEventListener('input', syncDemand);
+    document.querySelectorAll('.ff-frame .ff-open-btn').forEach(btn => {
+      btn.addEventListener('click', () => btn.closest('.ff-frame').classList.add('opened'));
+    });
+    if(window.kbWidget){
+      kbWidget.onReady(async () => {
+        const r = await kbWidget.load(SLUG, 'five-frames-applied');
+        if(r && r.data && r.data.demand){ input.value = r.data.demand; syncDemand(); }
+      });
+    }
+  })();
+
+  // ========== GIFT INVENTORY ==========
+  (function(){
+    const input = document.getElementById('giftinv-input');
+    const btn = document.getElementById('giftinv-btn');
+    const list = document.getElementById('giftinv-list');
+    const num = document.getElementById('giftinv-num');
+    const card = document.getElementById('giftinv');
+    if(!input) return;
+    let entries = [];
+    function fmtDate(ts){
+      const d = new Date(ts);
+      return d.toLocaleDateString(undefined, {month:'short', day:'numeric'});
+    }
+    function render(){
+      num.textContent = entries.length;
+      list.innerHTML = entries.slice().reverse().slice(0, 12).map(e =>
+        '<div class="giftinv-entry"><span>' + e.text.replace(/[<>]/g, '') + '</span><span class="giftinv-entry-date">' + fmtDate(e.at) + '</span></div>'
+      ).join('');
+      card.classList.remove('glow1','glow2','glow3');
+      if(entries.length >= 30) card.classList.add('glow3');
+      else if(entries.length >= 15) card.classList.add('glow2');
+      else if(entries.length >= 5) card.classList.add('glow1');
+    }
+    function save(){ if(window.kbWidget) kbWidget.save(SLUG, 'gift-inventory', {entries}, {history:false}); }
+    btn.addEventListener('click', () => {
+      const t = input.value.trim();
+      if(!t) return;
+      entries.push({text: t, at: Date.now()});
+      input.value = '';
+      render();
+      save();
+    });
+    input.addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); btn.click(); } });
+    if(window.kbWidget){
+      kbWidget.onReady(async () => {
+        const r = await kbWidget.load(SLUG, 'gift-inventory');
+        if(r && r.data && Array.isArray(r.data.entries)){ entries = r.data.entries; }
+        render();
+      });
+    } else { render(); }
+  })();
+
+  // ========== PROGRESS + CHAPTER PILL ==========
+  (function(){
+    const bar = document.getElementById('progress-bar');
+    const pill = document.getElementById('chapter-pill');
+    const chEls = [{el:document.querySelector('.cover'),label:'Cover'},...Array.from(document.querySelectorAll('.ch-head')).map((el,i) => ({el, label: 'Ch ' + (el.querySelector('.ch-num')?.textContent?.trim() || (i+1))}))].filter(c=>c.el);
+    function onScroll(){
+      const h = document.documentElement;
+      bar.style.width = h.scrollTop / (h.scrollHeight - h.clientHeight) * 100 + '%';
+      let cur = '';
+      for(const c of chEls){ if(c.el.getBoundingClientRect().top < 200) cur = c.label; }
+      if(cur){ pill.textContent = cur; pill.classList.add('show'); } else { pill.classList.remove('show'); }
+    }
+    window.addEventListener('scroll', onScroll, {passive:true});
+    const revealEls = document.querySelectorAll('.reveal');
+    if('IntersectionObserver' in window){
+      const obs = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); } }), {threshold:0.12});
+      revealEls.forEach(el => obs.observe(el));
+    } else { revealEls.forEach(el => el.classList.add('visible')); }
+  })();
 })();
 </script>
-</div>
-</div>
-
-<!-- ===== FINAL TEST ===== -->
-<div class="page section">
-<div class="final-test">
-<h3>Can You Answer These Without Looking Back?</h3>
-<p class="test-sub">Seven questions, one for each core frame. If you can answer all seven, the architecture has installed.</p>
-<div class="test-q"><div class="test-num">Question 1</div><p>What is the condition no one names, and why is it not depression, burnout, or midlife crisis?</p></div>
-<div class="test-q"><div class="test-num">Question 2</div><p>Walk through the structural law: demand is decayed reception. Apply it to one specific domain of your life.</p></div>
-<div class="test-q"><div class="test-num">Question 3</div><p>Why does the act of optimization kill the receptive quality of whatever it touches?</p></div>
-<div class="test-q"><div class="test-num">Question 4</div><p>Where does gratitude live, and what does entitlement do to it?</p></div>
-<div class="test-q"><div class="test-num">Question 5</div><p>Trace the trajectory of resentment in reverse. Name the five stages.</p></div>
-<div class="test-q"><div class="test-num">Question 6</div><p>What are the two postures, and which one are you in right now?</p></div>
-<div class="test-q"><div class="test-num">Question 7</div><p>Why is joy not chased but detected? What restores the detection?</p></div>
-</div>
-</div>
-
-<!-- ===== PROMPT ===== -->
-<div class="page section">
-<div class="prompt-card">
-<h3>Continue The Conversation</h3>
-<p>Copy these prompts into any AI and let the seeing deepen:</p>
-<p><code>"Help me identify which domains of my life have decayed from gift to demand. Ask me diagnostic questions across work, marriage, body, time, friendships, faith, place."</code></p>
-<p><code>"Run the entitlement calculation with me. Walk through what I genuinely earned versus what I inherited or received. Help me see the gap where gratitude lives."</code></p>
-<p><code>"Pick one resentment I am carrying and help me trace it backwards through the five stages until I can see the original gift again."</code></p>
-<p><code>"I am stuck in the owed stance toward [specific person or situation]. Help me practice setting down the ledger for one hour."</code></p>
-</div>
-</div>
-
-<div class="ribbon">
-<p>"And let us not be weary in well doing: for in due season we shall reap, if we faint not."<br><span class="ref">Galatians 6:9</span></p>
-</div>
-
-<div class="series-progress" style="padding:32px 24px;background:var(--cream-warm);border-top:1px solid rgba(14,15,26,0.06)">
-  <div style="font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--rose-dawn);margin-bottom:14px">Manna</div>
-  <div class="series-dots">
-    <span class="series-dot active" title="Given"></span>
-    <span class="series-dot" title="Returning"></span>
-  </div>
-  <div class="series-dot-label" style="color:var(--text-muted)">Part 1 of 2 &middot; Given</div>
-</div>
-
-<section class="finale">
-<h2>You are not what is wrong with you.<br><strong>The seeing is.</strong></h2>
-</section>
-
-<footer class="footer">
-<p>Given &middot; Manna (Part 1 of 2) &middot; KingdomBuilders AI<br><a href="./">View All Playbooks</a></p>
-</footer>
 </body>
 </html>

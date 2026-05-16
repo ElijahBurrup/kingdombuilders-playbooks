@@ -1,5 +1,8 @@
 # Kingdom Builders AI — Playbooks
 
+## 10x Commands
+When the user says **"10x [playbook name]"** or asks to "make this playbook 10x better" or any variant: open and follow `playbook-10x-protocol.md` in this repo root. That file is the source of truth for the 10x methodology, the move library, the archetype-specific recipes, and the patterns learned from prior 10x rounds. After completing a 10x, append new patterns discovered to the "New Patterns Discovered" section of that file so the protocol compounds.
+
 ## Project Overview
 Interactive animal-parable sales playbooks for Kingdom Builders AI. Each playbook is a self-contained visual experience teaching business/leadership principles through animal metaphors.
 
