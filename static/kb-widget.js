@@ -289,34 +289,47 @@
         var s = document.createElement("style");
         s.id = "kb-save-styles";
         s.textContent = [
-            ".kb-save-btn{position:absolute;top:12px;right:12px;display:inline-flex;align-items:center;gap:6px;",
-            "  padding:7px 13px 7px 11px;background:rgba(255,255,255,0.94);border:1.5px solid rgba(0,0,0,0.14);",
-            "  border-radius:50px;cursor:pointer;z-index:5;font-family:'Nunito',sans-serif;font-size:0.6rem;",
-            "  font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#2A2A2A;transition:all 0.2s;",
-            "  box-shadow:0 2px 8px rgba(0,0,0,0.1)}",
-            ".kb-save-btn:hover{background:#fff;border-color:#666;color:#000;transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,0.15)}",
-            ".kb-save-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}",
-            ".kb-save-btn.saved{background:#1F2440;border-color:#1F2440;color:#F5E0A8}",
-            ".kb-save-btn.saved:hover{background:#3D4670;color:#fff}",
-            ".kb-save-btn.saved svg{fill:#F5E0A8}",
-            ".kb-save-btn:focus{outline:2px solid rgba(212,168,67,0.6);outline-offset:2px}",
+            ".kb-save-btn{position:absolute;top:14px;right:14px;display:inline-flex;align-items:center;gap:7px;",
+            "  padding:8px 16px 8px 12px;background:linear-gradient(135deg,#FBF6E7,#F5E0A8);",
+            "  border:1.5px solid rgba(212,168,67,0.45);border-radius:50px;cursor:pointer;z-index:5;",
+            "  font-family:'Nunito','Poppins',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:1.2px;",
+            "  text-transform:uppercase;color:#7A5A1F;transition:all 0.25s cubic-bezier(0.4,0,0.2,1);",
+            "  box-shadow:0 2px 10px rgba(212,168,67,0.22),inset 0 1px 0 rgba(255,255,255,0.5)}",
+            ".kb-save-btn:hover{background:linear-gradient(135deg,#F5E0A8,#E8C96A);",
+            "  border-color:#D4A843;color:#5A3F0F;transform:translateY(-1px);",
+            "  box-shadow:0 4px 16px rgba(212,168,67,0.4),inset 0 1px 0 rgba(255,255,255,0.6)}",
+            ".kb-save-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:all 0.3s}",
+            ".kb-save-btn.saved{background:linear-gradient(135deg,#1F2440,#3D4670);border-color:#D4A843;color:#F5E0A8;",
+            "  box-shadow:0 4px 14px rgba(31,36,64,0.32),0 0 0 2px rgba(212,168,67,0.18),inset 0 1px 0 rgba(245,224,168,0.15)}",
+            ".kb-save-btn.saved:hover{background:linear-gradient(135deg,#3D4670,#1F2440);color:#fff}",
+            ".kb-save-btn.saved svg{fill:#F5E0A8;stroke:#F5E0A8;animation:kb-save-pop 0.45s cubic-bezier(0.34,1.56,0.64,1)}",
+            "@keyframes kb-save-pop{0%{transform:scale(0.6);opacity:0.4}60%{transform:scale(1.18)}100%{transform:scale(1);opacity:1}}",
+            ".kb-save-btn:focus{outline:none;box-shadow:0 0 0 3px rgba(212,168,67,0.45),0 4px 16px rgba(212,168,67,0.4)}",
+            ".kb-save-btn:active{transform:translateY(0)}",
             ".kb-save-host{position:relative}",
-            ".kb-save-toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);",
-            "  background:#1F2440;color:#F5E0A8;padding:13px 24px;border-radius:30px;font-family:'Nunito',sans-serif;",
-            "  font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;z-index:99999;opacity:0;",
-            "  transition:all 0.4s;pointer-events:none;box-shadow:0 8px 28px rgba(0,0,0,0.35)}",
+            ".kb-save-toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(80px);",
+            "  background:linear-gradient(135deg,#1F2440,#3D4670);color:#F5E0A8;padding:14px 26px;",
+            "  border:1px solid rgba(212,168,67,0.35);border-radius:50px;font-family:'Nunito','Poppins',sans-serif;",
+            "  font-size:0.72rem;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;z-index:99999;",
+            "  opacity:0;transition:all 0.4s cubic-bezier(0.4,0,0.2,1);pointer-events:none;",
+            "  box-shadow:0 10px 32px rgba(0,0,0,0.4)}",
             ".kb-save-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}",
-            "@media (max-width:520px){.kb-save-btn{top:8px;right:8px;padding:6px 11px 6px 9px;font-size:0.55rem}}",
-            "@media (prefers-reduced-motion: reduce){.kb-save-btn,.kb-save-toast{transition:none}}",
+            ".kb-save-toast.err{background:linear-gradient(135deg,#5A2424,#8E3A14);border-color:rgba(255,179,179,0.35);color:#FFE0D8}",
+            "@media (max-width:520px){.kb-save-btn{top:10px;right:10px;padding:7px 13px 7px 10px;font-size:0.58rem;gap:5px}.kb-save-btn svg{width:12px;height:12px}}",
+            "@media (prefers-reduced-motion: reduce){.kb-save-btn,.kb-save-toast,.kb-save-btn.saved svg{transition:none;animation:none}}",
         ].join("");
         document.head.appendChild(s);
     }
 
+    // Outlined heart-bookmark — softer than the utilitarian bookmark glyph,
+    // suggests "keep this close" rather than "file this away."
     function bookmarkSVG() {
-        return '<svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>';
+        return '<svg viewBox="0 0 24 24" aria-hidden="true">' +
+            '<path d="M12 21s-7.5-4.6-9.3-9.5C1.4 7.6 4.2 4 7.8 4c2 0 3.3 1 4.2 2.4C12.9 5 14.2 4 16.2 4c3.6 0 6.4 3.6 5.1 7.5C19.5 16.4 12 21 12 21z"/>' +
+            '</svg>';
     }
 
-    function showSaveToast(msg) {
+    function showSaveToast(msg, isError) {
         ensureSaveStyles();
         var t = document.getElementById("kb-save-toast-host");
         if (!t) {
@@ -326,9 +339,18 @@
             document.body.appendChild(t);
         }
         t.textContent = msg;
+        t.classList.toggle("err", !!isError);
         t.classList.add("show");
         clearTimeout(t._timer);
-        t._timer = setTimeout(function () { t.classList.remove("show"); }, 2400);
+        t._timer = setTimeout(function () { t.classList.remove("show"); }, isError ? 4000 : 2400);
+    }
+
+    function errorMessage(status) {
+        if (status === 404) return "Save is rolling out — try again in a minute";
+        if (status === 413) return "Too much to save in one go";
+        if (status === 422) return "Could not save (bad data)";
+        if (status >= 500) return "Server hiccup — try again";
+        return "Could not save (status " + status + ")";
     }
 
     function redirectToSignIn(returnUrl) {
@@ -406,7 +428,7 @@
                     } else if (del.status === 401) {
                         redirectToSignIn(returnUrl());
                     } else {
-                        showSaveToast("Could not unsave");
+                        showSaveToast(errorMessage(del.status), true);
                     }
                 } else {
                     var payload = opts.getPayload();
@@ -434,7 +456,7 @@
                         render();
                         showSaveToast("Saved to My Saves");
                     } else {
-                        showSaveToast("Could not save");
+                        showSaveToast(errorMessage(resp.status), true);
                     }
                 }
             } finally {

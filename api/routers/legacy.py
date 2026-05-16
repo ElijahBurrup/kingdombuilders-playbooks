@@ -372,7 +372,7 @@ def _inject_back_button_and_tracking(html: str, slug: str, signed_in: bool = Fal
     signed_in_js = "true" if signed_in else "false"
     widget_bootstrap = f"""
 <script>window.KB_USER = {{signed_in: {signed_in_js}, slug: '{slug}'}};</script>
-<script src="{prefix}/static/kb-widget.js" defer></script>
+<script src="{prefix}/static/kb-widget.js?v=2026-05-16-saves-2" defer></script>
 """
     back_button = f"""
 <style>
