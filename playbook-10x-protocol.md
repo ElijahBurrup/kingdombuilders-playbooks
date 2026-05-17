@@ -717,6 +717,88 @@ problem → here is the fix you operate*.
     intensity from "you are not bored" through "you will not feel like
     doing this. that is the proof you must."
 
+### From The Conductor's Playbook v2 (2026-05-16)
+
+The flagship product. First **Architecture + Action hybrid**. Four
+pillars (Conductor / Seed-Steer-Ship / Negative Space / Forge) each
+ship with a real tool the reader operates inside the playbook.
+
+- **Self-rated radar as cold-open.** Four pillars, 1-5 scoring each,
+  SVG radar polygon redraws live. Weakest pillar surfaces a "start
+  here" callout pointing at the chapter's widget. This pattern is
+  cleaner than a single result number because the reader's profile is
+  inherently 2D — and the weakest petal directly routes them to the
+  most relevant chapter widget. **Pattern: for Architecture-archetype
+  playbooks, the cold-open should be a polygon radar (n axes for n
+  pillars) where weakest axis becomes the entry-point recommendation.**
+- **The Spec Builder + Library combo.** Four-field form that compiles
+  into a paste-ready block. Save-to-library keeps the last 5; click
+  any to reload into the form. **Pattern: when a playbook teaches a
+  composable template (audience/outcome/taste/constraints, or any
+  fillable structure), the widget should be a builder that compiles
+  ready-to-paste output AND a library that retains past compositions.
+  The reader leaves with both the practice and a personal toolkit.**
+- **Coached signal trainer (3 samples, multiple-choice with feedback).**
+  Three sample outputs to one prompt. Pick Green/Yellow/Red. Each pick
+  triggers either "you got it" or "here's what you missed" feedback.
+  This is the cleanest training drill in the playbook — the reader
+  practices a real reflex on real-looking outputs. **Pattern: when a
+  playbook teaches a fast pattern-matching reflex (taste, triage,
+  diagnosis), build a sample-and-pick widget with 3-5 cards, each
+  with the "correct" answer hidden, and surface coached feedback after
+  every pick. Train the reflex, don't just describe it.**
+- **30-day grid × N-rocket-slots-per-day.** Generalization of the
+  time-bounded grid pattern from Dopamine Drought, but each cell
+  contains multiple sub-checks (3 rockets per day). Cell color is a
+  function of partial-vs-full completion. Click a cell → expand a
+  detail panel for that day's seed inputs and check toggles. Summary
+  row computes derived stats (launch rate, longest full-day streak).
+  **Pattern: when a playbook teaches a daily N-rep practice, the grid
+  cell is not binary done/not-done — it's a partial-fill that reflects
+  N-of-M completion. Cell warmth visualizes density at-a-glance.**
+- **The Chisel (3 textareas → corridor compiler).** Scar/Stone/Edge
+  textareas; widget compiles a single corridor sentence ("Knowing X is
+  off the table, and the corridor must respect Y, the answer must
+  accomplish Z. Now ask AI: 'What is left?'"). Copy-to-clipboard
+  exports the structured cuts. **Pattern: when a playbook teaches an
+  elimination protocol (3 cuts, 5 filters, etc.), build a multi-input
+  compiler that produces a single compressed output sentence. The
+  compression is the reveal.**
+- **Prompt library with usage counter per item.** Five gear cards each
+  hold a prompt template + copy button + "Used today" toggle that
+  increments a per-gear counter and logs the day. The counter badge
+  surfaces which gear is neglected (e.g. "Integration: 0×"). **Pattern:
+  when a playbook teaches a multi-tool kit (5 gears, 7 modes, N
+  prompts), each tool should have its own copy-prompt button AND a
+  usage counter, so the reader can see which tools they actually use
+  vs which they only nod at. Neglected tools surface naturally.**
+- **Weekly install tracker as the closing chapter.** Each week is a
+  card with N checkboxes for that week's commitments. Weeks light up
+  when complete (4/4). Aggregates roll up across all four weeks. This
+  is what the "30 days" prose chapter SHOULD be — the plan IS the
+  dashboard. **Pattern: for any playbook ending with a multi-week
+  installation plan, the plan should be a tracker with per-week
+  checkboxes and aggregation, not a text outline.**
+- **47% prose cut from the flagship.** Larger than expected because
+  most of the cuts came from compressing dialogue padding ("Ethan said
+  X, Dad said Y" style intros) and one of two duplicate "See It In
+  Action" stories. The four mental models, the Standing Wave physics,
+  the 80/20 inversion, the Three Signals, the Five Gears all preserved
+  intact. **Pattern: when 10x'ing a content-strong flagship, the
+  highest cuts come from removing the duplicate examples (kept one
+  per chapter) and replacing prose-only practice prompts with the
+  widget that does what the prompt was asking for.**
+- **Architecture + Action recipe (new).**
+  - Cold-open: radar diagnostic (one axis per pillar)
+  - Each chapter installs ONE pillar with: stat block → mental model
+    prose → visualization → operable widget → frame-break sentence
+  - Resistance section between the four chapters and the 30-day plan
+    (not at the very end — the resistance should pre-empt the
+    installation, not the reading)
+  - Closing chapter IS the install tracker, not a separate plan + tracker
+  - The attachSave anchor is the dashboard with the longest time horizon
+    (Daily Rockets has 30 days; that's where save lives)
+
 ### Contrast pitfalls (running list)
 - **Italic small-caps eyebrows on cream.**
   Reception's signature look — small italic letter-spaced
