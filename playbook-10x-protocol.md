@@ -799,6 +799,73 @@ ship with a real tool the reader operates inside the playbook.
   - The attachSave anchor is the dashboard with the longest time horizon
     (Daily Rockets has 30 days; that's where save lives)
 
+### From The Whale's Breath v2 (2026-05-16)
+- **Reception-archetype cold-open: noticing without scoring.**
+  A diagnostic ring's UI (6 dots, count, stage label) can be
+  repurposed for Reception by changing the framing — each tap is
+  "I felt this in my body right now," not "I score N on this
+  trait." Stage labels become Reception verbs: Begin listening →
+  First whisper → Body emerging → Half-heard → Clearly heard →
+  Almost fluent → Already fluent. Same widget mechanics, opposite
+  archetype.
+- **Anchor-sentence echo at the dashboard.**
+  The cold-open captures one sentence ("what is your body
+  pre-adjusting to right now?") in an input field. That sentence
+  is rendered back inside the closing dashboard's preview text
+  AND inside the dashboard's footer caption. The reader feels
+  the playbook remembered what they said. Pattern: ANY playbook
+  whose first widget collects one anchor input should echo that
+  input back inside the closing dashboard.
+- **Tap-to-notice list as Reception alternative to diagnostic ring.**
+  Visually identical to a diagnostic dot ring, but each row is a
+  prompt of the form "your X is doing Y right now" and the tap
+  is a witnessing event, not a measurement. Stays Reception by
+  framing alone.
+- **Live SVG polygon radar (generalized).**
+  Conductor's Four-Pillar Radar generalized to N-domain radar.
+  Works for any playbook with multiple equal-weight domains (life
+  areas, faculties, channels). The polygon updates in real time
+  from sliders; the shortest-pillar callback adds a tiny
+  diagnostic note without making the widget feel diagnostic.
+- **Mode-toggle inventory (binary teaching widget).**
+  When a chapter teaches a binary (Thrashing vs Decompressing,
+  Predicting vs Implying, Ascending too fast vs Descending), the
+  inventory lets the reader name several items and mark which
+  mode each is currently in. Recovers Reception (witnessing
+  current state) rather than prescription (telling them what to
+  do). Body-location input completes the witness.
+- **Implied-vs-Occurred witness card.**
+  Two paired text inputs (expectation vs reality) with a
+  generated delta panel. A Reception-friendly way to capture
+  the gap between implying and occurring without converting it
+  into action items. The reader leaves with a personal dive
+  history.
+- **N-window × M-day grid tracker.**
+  When a daily protocol has multiple windows (morning, midday,
+  evening), the tracker should be N rows of M cells, not one
+  row of N×M cells. Each row reveals its own pattern over time
+  — morning streaks differ from evening streaks. Pattern:
+  multi-window protocols deserve multi-row dashboards.
+- **Reception "Now Do It" command block.**
+  Even the command block in a Reception playbook uses receptive
+  verbs ("Mark the first cell. Tap morning.") not push verbs
+  ("Push through. Drill. Force."). Reception requires you to
+  shape command-block language to the archetype.
+- **Reception archetype prose-cut floor (~30%).**
+  Reception playbooks should NOT cut prose as deeply as Action
+  (47-60%) because the meditative pacing IS doing operative work
+  — the prose density is part of the verb. Cutting too far
+  betrays the archetype. Target: 25-35%. The Whale's Breath
+  landed at 32% and was the right call.
+- **Reception + Parable hybrid recipe (new).**
+  - Cold-open: noticing exercise + anchor sentence
+  - Each chapter: parable scene → key concept → reception widget
+    → split contrast (taught vs proved) → term card → frame-break
+  - Closing chapter: brief explanation + Resistance section +
+    "Now Do It" + multi-window grid tracker (the attachSave anchor)
+  - The parable carries voice, the widgets carry operability, the
+    frame-breaks carry weight, the tracker carries proof-over-time
+
 ### Contrast pitfalls (running list)
 - **Italic small-caps eyebrows on cream.**
   Reception's signature look — small italic letter-spaced
