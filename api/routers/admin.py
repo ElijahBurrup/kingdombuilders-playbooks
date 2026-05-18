@@ -529,12 +529,10 @@ async def reconcile_user_from_stripe(
             subs = []
 
         for sub_obj in subs:
-            # Stripe SDK objects don't all support .get() like dicts —
-            # convert to a plain dict for consistent access.
-            try:
-                sub = sub_obj.to_dict_recursive()
-            except Exception:
-                sub = dict(sub_obj)
+            # Stripe SDK objects don't all support .get() like dicts in newer
+            # versions. Round-trip through JSON to get a plain dict.
+            import json as _json
+            sub = _json.loads(str(sub_obj))
             sub_id = sub["id"]
             existing = await db.execute(
                 select(Subscription).where(
@@ -605,10 +603,8 @@ async def reconcile_user_from_stripe(
             sessions = []
 
         for sess_obj in sessions:
-            try:
-                sess = sess_obj.to_dict_recursive()
-            except Exception:
-                sess = dict(sess_obj)
+            import json as _json
+            sess = _json.loads(str(sess_obj))
             if sess.get("payment_status") != "paid":
                 continue
             if sess.get("mode") != "payment":
