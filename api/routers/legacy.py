@@ -17,7 +17,7 @@ import httpx
 import stripe
 from fastapi import APIRouter, Depends, Form, HTTPException, Request, status
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, RedirectResponse
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from jinja2 import Environment, FileSystemLoader
 from starlette.templating import Jinja2Templates
@@ -2744,25 +2744,76 @@ async def _handle_subscription_updated(subscription: dict, db: AsyncSession) -> 
     )
     sc = result.scalar_one_or_none()
     if not sc:
-        print(f"Webhook: no StripeCustomer for {stripe_customer_id}")
-        # Silent-bail: subscription event fired before we linked the customer.
+        # Subscription event arrived before checkout.session.completed (Stripe
+        # doesn't guarantee ordering). Recover by fetching the customer from
+        # Stripe, matching by email to a local User, and creating the link.
+        recovered_uid = None
+        recovered_email = None
+        try:
+            stripe.api_key = settings.STRIPE_SECRET_KEY
+            customer = stripe.Customer.retrieve(stripe_customer_id)
+            recovered_email = (customer.get("email") or "").strip().lower() if hasattr(customer, "get") else (getattr(customer, "email", "") or "").strip().lower()
+            if recovered_email:
+                user_lookup = await db.execute(
+                    select(User).where(func.lower(User.email) == recovered_email)
+                )
+                user_row = user_lookup.scalar_one_or_none()
+                if user_row is not None:
+                    recovered_uid = user_row.id
+                    db.add(StripeCustomer(
+                        user_id=user_row.id,
+                        stripe_customer_id=stripe_customer_id,
+                    ))
+                    await db.flush()
+                    sc_lookup = await db.execute(
+                        select(StripeCustomer).where(
+                            StripeCustomer.stripe_customer_id == stripe_customer_id
+                        )
+                    )
+                    sc = sc_lookup.scalar_one()
+        except Exception as e:
+            print(f"Webhook recovery (customer lookup) failed for {stripe_customer_id}: {e}")
+
+        if not sc:
+            print(f"Webhook: no StripeCustomer for {stripe_customer_id}; recovery failed")
+            try:
+                from api.services.audit_service import log_event as _audit
+                await _audit(
+                    event_type="webhook.no_stripe_customer",
+                    email=recovered_email,
+                    provider_subscription_id=stripe_sub_id,
+                    stripe_customer_id=stripe_customer_id,
+                    status="error",
+                    message=(
+                        "Subscription event arrived but no StripeCustomer row "
+                        "exists and recovery via Stripe customer lookup failed. "
+                        "Run admin reconcile-user with their email."
+                    ),
+                    metadata={"stripe_status": stripe_status},
+                )
+            except Exception:
+                pass
+            return
+
+        # Recovery succeeded — log it so we can spot order-dependency events
+        # in the audit log going forward.
         try:
             from api.services.audit_service import log_event as _audit
             await _audit(
-                event_type="webhook.no_stripe_customer",
+                event_type="webhook.stripe_customer_recovered",
+                email=recovered_email,
+                user_id=recovered_uid,
                 provider_subscription_id=stripe_sub_id,
                 stripe_customer_id=stripe_customer_id,
-                status="error",
+                status="warning",
                 message=(
-                    "Subscription event arrived but no StripeCustomer row "
-                    "exists for this customer. Run admin reconcile-user with "
-                    "their email."
+                    "Subscription event arrived before checkout.session.completed; "
+                    "auto-recovered by looking up customer email in Stripe."
                 ),
                 metadata={"stripe_status": stripe_status},
             )
         except Exception:
             pass
-        return
 
     # Check if subscription already exists
     result = await db.execute(

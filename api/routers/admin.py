@@ -693,6 +693,26 @@ async def reconcile_user_from_stripe(
 
 
 # ============================================================================
+# Manually trigger the monitoring cron jobs (for testing / on-demand runs)
+# ============================================================================
+@router.post("/run-nightly-reconcile")
+async def trigger_nightly_reconcile(admin: User = Depends(get_admin_user)):
+    """Run the nightly reconcile job right now (instead of waiting for 4 AM UTC).
+    Sends the same admin summary email if any drift is found."""
+    from api.services.monitoring_service import run_nightly_reconcile
+    return await run_nightly_reconcile()
+
+
+@router.post("/run-audit-digest")
+async def trigger_audit_digest(admin: User = Depends(get_admin_user)):
+    """Run the daily audit digest right now. Returns row count; emails admin
+    only if there are error/warning rows in the last 24h."""
+    from api.services.monitoring_service import run_daily_audit_digest
+    n = await run_daily_audit_digest()
+    return {"rows_in_digest": n, "email_sent": n > 0}
+
+
+# ============================================================================
 # Customer lookup HTML page — quick admin UI for the reconcile + audit endpoints
 # ============================================================================
 @router.get("/customer-lookup", response_class=HTMLResponse, include_in_schema=False)

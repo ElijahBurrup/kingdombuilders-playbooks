@@ -51,6 +51,30 @@ def init_scheduler() -> None:
                 id="monthly_referral_payouts",
                 replace_existing=True,
             )
+
+            # Nightly Stripe reconcile — every day at 4:00 AM UTC. Pulls
+            # truth from Stripe, fixes any local Subscription drift, emails
+            # admin a summary if anything was found.
+            scheduler.add_job(
+                func="api.services.monitoring_service:run_nightly_reconcile_sync",
+                trigger="cron",
+                hour=4,
+                minute=0,
+                id="nightly_stripe_reconcile",
+                replace_existing=True,
+            )
+
+            # Daily audit_log error digest — every morning at 8:00 AM UTC.
+            # Emails admin a summary of any error/warning rows from the
+            # past 24h. Silent (no email) if there's nothing to report.
+            scheduler.add_job(
+                func="api.services.monitoring_service:run_daily_audit_digest_sync",
+                trigger="cron",
+                hour=8,
+                minute=0,
+                id="daily_audit_digest",
+                replace_existing=True,
+            )
     except Exception as e:
         print(f"Scheduler startup failed (non-fatal): {e}")
 
