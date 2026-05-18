@@ -2340,11 +2340,39 @@ async def checkout(
             session_params["customer_creation"] = "always"
 
         session = stripe.checkout.Session.create(**session_params)
+        # Log the session so we can correlate it with a webhook later.
+        try:
+            from api.services.audit_service import log_event as _audit
+            await _audit(
+                event_type="checkout.created",
+                email=customer_email,
+                user_id=user_id,
+                provider_session_id=session.id,
+                status="success",
+                message=f"mode={mode} slug={slug}",
+                metadata={"mode": mode, "slug": slug, "price_id": price_id},
+                request=request,
+            )
+        except Exception:
+            pass
         # Use JS redirect instead of 303 — Cloudflare Worker follows 303
         # redirects server-side, which breaks cross-origin Stripe redirects.
         return _redirect_with_cookie(session.url)
     except Exception as e:
         print(f"Stripe checkout error: {e}")
+        try:
+            from api.services.audit_service import log_event as _audit
+            await _audit(
+                event_type="checkout.created",
+                email=customer_email,
+                user_id=user_id,
+                status="error",
+                message=f"Stripe checkout error: {e}",
+                metadata={"mode": mode, "slug": slug},
+                request=request,
+            )
+        except Exception:
+            pass
         return _redirect_with_cookie(f"{base}{cancel_path}?payment=error")
 
 
@@ -2371,6 +2399,8 @@ async def checkout_redirect(request: Request):
 # ============================================================================
 @router.post("/webhook/stripe", include_in_schema=False)
 async def stripe_webhook(request: Request, db: AsyncSession = Depends(get_db)):
+    from api.services.audit_service import log_event as _audit
+
     stripe.api_key = settings.STRIPE_SECRET_KEY
     payload = await request.body()
     sig_header = request.headers.get("Stripe-Signature", "")
@@ -2380,12 +2410,49 @@ async def stripe_webhook(request: Request, db: AsyncSession = Depends(get_db)):
             payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
         )
     except ValueError:
+        await _audit(
+            event_type="webhook.invalid_payload",
+            status="error",
+            message="Invalid Stripe webhook payload",
+            request=request,
+        )
         raise HTTPException(status_code=400, detail="Invalid payload")
     except stripe.error.SignatureVerificationError:
+        await _audit(
+            event_type="webhook.invalid_signature",
+            status="error",
+            message="Invalid Stripe webhook signature",
+            request=request,
+        )
         raise HTTPException(status_code=400, detail="Invalid signature")
 
     event_type = event["type"]
     obj = event["data"]["object"]
+
+    # Pull whatever identifiers Stripe gave us for cross-system correlation.
+    _email = (
+        obj.get("customer_details", {}).get("email")
+        if isinstance(obj.get("customer_details"), dict)
+        else None
+    ) or obj.get("customer_email") or obj.get("receipt_email")
+    _customer_id = obj.get("customer") if isinstance(obj.get("customer"), str) else None
+    _session_id = obj.get("id") if event_type.startswith("checkout.") else None
+    _sub_id = (
+        obj.get("id") if event_type.startswith("customer.subscription.")
+        else (obj.get("subscription") if isinstance(obj.get("subscription"), str) else None)
+    )
+
+    await _audit(
+        event_type="webhook.received",
+        email=_email,
+        provider_session_id=_session_id,
+        provider_subscription_id=_sub_id,
+        stripe_customer_id=_customer_id,
+        status="success",
+        message=f"Stripe event: {event_type}",
+        metadata={"stripe_event_type": event_type, "stripe_event_id": event.get("id")},
+        request=request,
+    )
 
     try:
         if event_type == "checkout.session.completed":
@@ -2460,6 +2527,20 @@ async def stripe_webhook(request: Request, db: AsyncSession = Depends(get_db)):
                     print(f"Refund commission handling failed (non-critical): {e}")
     except Exception as e:
         print(f"Stripe webhook handler error for {event_type}: {e}")
+        try:
+            await _audit(
+                event_type="webhook.handler_error",
+                email=_email,
+                provider_session_id=_session_id,
+                provider_subscription_id=_sub_id,
+                stripe_customer_id=_customer_id,
+                status="error",
+                message=f"{event_type}: {e}",
+                metadata={"stripe_event_type": event_type, "stripe_event_id": event.get("id")},
+                request=request,
+            )
+        except Exception:
+            pass
 
     return {"status": "ok"}
 
@@ -2495,6 +2576,24 @@ async def _handle_checkout_completed(session: dict, db: AsyncSession) -> None:
 
     if not user_id_str:
         print(f"Webhook: no user_id in metadata for session {session_id}")
+        # Critical silent-bail case — log so admin can reconcile by email.
+        try:
+            from api.services.audit_service import log_event as _audit
+            await _audit(
+                event_type="webhook.no_user_id",
+                email=customer_email,
+                provider_session_id=session_id,
+                stripe_customer_id=session.get("customer"),
+                status="error",
+                message=(
+                    "checkout.session.completed had no user_id in metadata — "
+                    "customer cannot be granted access automatically. "
+                    "Run admin reconcile-user."
+                ),
+                metadata={"mode": mode, "metadata": metadata, "amount_cents": amount_cents},
+            )
+        except Exception:
+            pass
         return
 
     uid = _uuid.UUID(user_id_str)
@@ -2535,6 +2634,22 @@ async def _handle_checkout_completed(session: dict, db: AsyncSession) -> None:
 
     await db.commit()
 
+    # Success audit so an admin can see this customer got access.
+    try:
+        from api.services.audit_service import log_event as _audit
+        await _audit(
+            event_type="webhook.checkout_completed",
+            email=customer_email,
+            user_id=uid,
+            provider_session_id=session_id,
+            stripe_customer_id=session.get("customer"),
+            status="success",
+            message=f"Granted access for mode={mode}",
+            metadata={"mode": mode, "slug": metadata.get("slug", ""), "amount_cents": amount_cents},
+        )
+    except Exception:
+        pass
+
     # Process referral commissions
     try:
         if mode == "single":
@@ -2569,8 +2684,33 @@ async def _handle_checkout_completed(session: dict, db: AsyncSession) -> None:
         _aio.get_running_loop().run_in_executor(
             None, send_delivery_email, customer_email, "", pb_title, slug
         )
+        try:
+            from api.services.audit_service import log_event as _audit
+            await _audit(
+                event_type="email.delivery_sent",
+                email=customer_email,
+                user_id=uid,
+                provider_session_id=session_id,
+                status="success",
+                message=f"Delivery email queued for {pb_title or slug or 'playbook'}",
+                metadata={"slug": slug, "title": pb_title},
+            )
+        except Exception:
+            pass
     except Exception as e:
         print(f"Delivery email failed: {e}")
+        try:
+            from api.services.audit_service import log_event as _audit
+            await _audit(
+                event_type="email.delivery_failed",
+                email=customer_email,
+                user_id=uid,
+                provider_session_id=session_id,
+                status="error",
+                message=f"Delivery email failed: {e}",
+            )
+        except Exception:
+            pass
 
 
 async def _handle_subscription_updated(subscription: dict, db: AsyncSession) -> None:
@@ -2605,6 +2745,23 @@ async def _handle_subscription_updated(subscription: dict, db: AsyncSession) -> 
     sc = result.scalar_one_or_none()
     if not sc:
         print(f"Webhook: no StripeCustomer for {stripe_customer_id}")
+        # Silent-bail: subscription event fired before we linked the customer.
+        try:
+            from api.services.audit_service import log_event as _audit
+            await _audit(
+                event_type="webhook.no_stripe_customer",
+                provider_subscription_id=stripe_sub_id,
+                stripe_customer_id=stripe_customer_id,
+                status="error",
+                message=(
+                    "Subscription event arrived but no StripeCustomer row "
+                    "exists for this customer. Run admin reconcile-user with "
+                    "their email."
+                ),
+                metadata={"stripe_status": stripe_status},
+            )
+        except Exception:
+            pass
         return
 
     # Check if subscription already exists

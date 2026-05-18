@@ -8,6 +8,7 @@ from api.models.referral import ReferralCode, Referral, Commission, Payout, Refe
 from api.models.feedback import TopicSuggestion, PlaybookFeedback
 from api.models.widget import WidgetResponse
 from api.models.user_save import UserSave
+from api.models.audit_log import AuditLog
 
 __all__ = [
     "User",
@@ -43,4 +44,5 @@ __all__ = [
     "PlaybookFeedback",
     "WidgetResponse",
     "UserSave",
+    "AuditLog",
 ]

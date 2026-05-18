@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 
 import httpx
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -9,6 +9,7 @@ from api.config import settings
 from api.database import get_db
 from api.dependencies import get_current_user
 from api.models.user import OAuthAccount, RefreshToken, User, VerificationToken
+from api.services.audit_service import log_event as _audit
 from api.schemas.auth import (
     ForgotPasswordRequest,
     GoogleAuthRequest,
@@ -72,10 +73,17 @@ async def _create_token_pair(
     response_model=TokenResponse,
     status_code=status.HTTP_201_CREATED,
 )
-async def register(body: RegisterRequest, db: AsyncSession = Depends(get_db)):
+async def register(body: RegisterRequest, request: Request, db: AsyncSession = Depends(get_db)):
     # Check for existing user
     result = await db.execute(select(User).where(User.email == body.email))
     if result.scalar_one_or_none() is not None:
+        await _audit(
+            event_type="auth.register",
+            email=body.email,
+            status="warning",
+            message="Registration attempt with already-registered email",
+            request=request,
+        )
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="Email already registered",
@@ -104,33 +112,74 @@ async def register(body: RegisterRequest, db: AsyncSession = Depends(get_db)):
     from api.services.email_service import send_verification_email
     send_verification_email(user.email, raw_token)
 
+    await _audit(
+        event_type="auth.register",
+        email=user.email,
+        user_id=user.id,
+        status="success",
+        message="New user registered via email/password",
+        request=request,
+    )
+
     return await _create_token_pair(user, db)
 
 
 # ---------- 2. POST /login ----------
 @router.post("/login", response_model=TokenResponse)
-async def login(body: LoginRequest, db: AsyncSession = Depends(get_db)):
+async def login(body: LoginRequest, request: Request, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(User).where(User.email == body.email))
     user = result.scalar_one_or_none()
 
     if user is None or user.password_hash is None:
+        await _audit(
+            event_type="auth.login",
+            email=body.email,
+            user_id=user.id if user else None,
+            status="warning",
+            message="Login failed: no user or no password set",
+            request=request,
+        )
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password",
         )
 
     if not verify_password(body.password, user.password_hash):
+        await _audit(
+            event_type="auth.login",
+            email=user.email,
+            user_id=user.id,
+            status="warning",
+            message="Login failed: wrong password",
+            request=request,
+        )
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password",
         )
 
     if not user.is_active:
+        await _audit(
+            event_type="auth.login",
+            email=user.email,
+            user_id=user.id,
+            status="warning",
+            message="Login failed: account inactive",
+            request=request,
+        )
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Account is inactive",
         )
 
+    await _audit(
+        event_type="auth.login",
+        email=user.email,
+        user_id=user.id,
+        status="success",
+        message="Email/password login succeeded",
+        request=request,
+    )
     return await _create_token_pair(user, db)
 
 
@@ -192,7 +241,7 @@ async def logout(
 # ---------- 5. POST /google ----------
 @router.post("/google", response_model=TokenResponse)
 async def google_auth(
-    body: GoogleAuthRequest, db: AsyncSession = Depends(get_db)
+    body: GoogleAuthRequest, request: Request, db: AsyncSession = Depends(get_db)
 ):
     # Verify the id_token with Google
     async with httpx.AsyncClient() as client:
@@ -273,6 +322,14 @@ async def google_auth(
         user.email_verified = True
         await db.flush()
 
+    await _audit(
+        event_type="auth.google",
+        email=user.email,
+        user_id=user.id,
+        status="success",
+        message="Google OAuth login/signup",
+        request=request,
+    )
     return await _create_token_pair(user, db)
 
 
