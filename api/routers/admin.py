@@ -528,7 +528,13 @@ async def reconcile_user_from_stripe(
             summary["warnings"].append(f"Sub list failed for {stripe_customer_id}: {e}")
             subs = []
 
-        for sub in subs:
+        for sub_obj in subs:
+            # Stripe SDK objects don't all support .get() like dicts —
+            # convert to a plain dict for consistent access.
+            try:
+                sub = sub_obj.to_dict_recursive()
+            except Exception:
+                sub = dict(sub_obj)
             sub_id = sub["id"]
             existing = await db.execute(
                 select(Subscription).where(
@@ -539,17 +545,18 @@ async def reconcile_user_from_stripe(
                 summary["subscriptions_existing"].append(sub_id)
                 continue
 
-            items = sub.get("items", {}).get("data", [])
-            price_id = items[0]["price"]["id"] if items else ""
+            items = (sub.get("items") or {}).get("data", []) or []
+            first_price = (items[0].get("price") or {}) if items else {}
+            price_id = first_price.get("id", "")
             if price_id == settings.STRIPE_PRICE_YEARLY:
                 plan_type = "yearly"
-                price_cents = items[0]["price"].get("unit_amount", 10000) if items else 10000
+                price_cents = first_price.get("unit_amount") or 10000
             elif price_id == settings.STRIPE_PRICE_MONTHLY:
                 plan_type = "monthly"
-                price_cents = items[0]["price"].get("unit_amount", 1000) if items else 1000
+                price_cents = first_price.get("unit_amount") or 1000
             else:
                 plan_type = "monthly"
-                price_cents = items[0]["price"].get("unit_amount", 0) if items else 0
+                price_cents = first_price.get("unit_amount") or 0
 
             ps = sub.get("current_period_start")
             pe = sub.get("current_period_end")
@@ -597,7 +604,11 @@ async def reconcile_user_from_stripe(
             summary["warnings"].append(f"Session list failed for {stripe_customer_id}: {e}")
             sessions = []
 
-        for sess in sessions:
+        for sess_obj in sessions:
+            try:
+                sess = sess_obj.to_dict_recursive()
+            except Exception:
+                sess = dict(sess_obj)
             if sess.get("payment_status") != "paid":
                 continue
             if sess.get("mode") != "payment":
