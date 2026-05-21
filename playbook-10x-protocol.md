@@ -866,6 +866,101 @@ ship with a real tool the reader operates inside the playbook.
   - The parable carries voice, the widgets carry operability, the
     frame-breaks carry weight, the tracker carries proof-over-time
 
+### From The Mirror Series — 3 playbooks (2026-05-20)
+The three Mirror Series 10x'es (Hermit Crab / Scorpion / Vampire Squid)
+shipped in a single commit (`0ac737d`). They share a Diagnosis + Parable
+core archetype with each playbook adding one additional verb (Action for
+Scorpion, Architecture+Reception for Vampire Squid). Patterns:
+- **Body-map SVG with tap-to-light zones.**
+  6 anatomical SVG regions (chest/stomach/jaw/throat/shoulders/spine)
+  that highlight in coral when the reader taps a paired signal prompt.
+  Generalizes to any playbook with somatic content. Replaces the
+  text-only "circle three" prompt with visual diagnostic state.
+- **Multi-field card with progressive fill state.**
+  Each card has N inputs; card visually "fills" (border + background
+  change) once the load-bearing M inputs are populated. Tells the
+  reader at a glance which cards are real vs. half-attempted. Useful
+  for inventory builders (Shell Catalog, Supply Map, Doors).
+- **Pick-your-stage flow widget.**
+  Read-only sequence diagrams (Shame → Charm → Anger → Withdrawal →
+  Collapse) become clickable cells where exactly one is selected. The
+  selection IS the diagnostic. Generalizes to any escalating sequence.
+- **Sophisticated-shells cold-open.**
+  Cold-open prompts can target the reader's META-defenses (the shells
+  protecting them from the playbook itself). Naming the Critic shell
+  or the Therapized shell in the first question forces the reader to
+  see the defense activating in real time.
+- **N-row tightness slider cold-open.**
+  When a playbook teaches an N-layer architecture, the cold-open is N
+  sliders measuring tightness/activation per layer. Live readout
+  identifies the tightest pillar. Generalizes the Conductor's
+  Four-Pillar Radar pattern to VERTICAL layers (where the order
+  matters: surface to core).
+- **Multiple-choice diagnostic with correct/wrong feedback.**
+  Read-only "tap to reveal" scenarios become actual multiple choice
+  with green/red answer feedback. **The reader's incorrect guesses
+  are MORE informative than the correct ones** — they reveal which
+  defenses are most invisible to the reader.
+- **Per-week toggle schedule.**
+  N weeks × 1 toggle is the lowest-friction tracker for graduated
+  exposure protocols. The schedule rows visually transition from
+  amber-uncommitted to sage-complete.
+- **Wall-to-Door pair card with commitment input.**
+  Each row shows wall response and door response side-by-side AND
+  takes a "person + situation where I will practice this door" input.
+  The card teaches AND captures commitment in one widget.
+- **N-scenario filament test cold-open.**
+  Multi-scenario × multi-candidate picker → mode of picks names the
+  reader's primary type. Faster than a long personality quiz.
+- **Incomplete-translation re-naming widget.**
+  Each label gets a paired "what they called you / incomplete
+  translation" + a reader-supplied "yes, and" input. Pattern
+  recognizes both truths simultaneously. For playbooks that teach
+  reframing of inherited language.
+- **Clickable zone self-locator.**
+  N single-select cards with rich behavioral descriptions per zone.
+  Reader names where they ARE, not where they want to be. Visual:
+  each zone has its own color treatment (dark to bright) reinforcing
+  the metaphor in pure CSS.
+- **6-prompt structured letter builder.**
+  N labeled textareas as a forced frame (Dear ___ / I did / Because /
+  It cost / I am not asking / I am telling because). The labels
+  prevent the four shells the letter usually catches (Explanation,
+  Minimizer, Performance, Redemption).
+- **Multi-cadence dashboard tracker (5 rows).**
+  AM / Midday / PM / Weekly / Monthly. Each row carries a distinct
+  cadence. Visual cadence (1 row = 30 cells regardless) makes weekly
+  and monthly entries feel less daunting than dedicated trackers
+  per cadence.
+- **Series-wide anchor-sentence echo across multiple playbooks.**
+  When a playbook is part of a series, each playbook's cold-open
+  captures one sentence that echoes back at its closing dashboard.
+  Three sentences across a 3-part series form a portrait of the
+  reader's defense system in their own evolving words.
+- **Series-wide tracker complexity progression.**
+  Each part of the series escalates tracker complexity to mirror the
+  depth of the work. Part 1: 21d × 3 rows. Part 2: 28d × 4 rows.
+  Part 3: 30d × 5 rows. The reader's commitment surface grows.
+- **Preserved-strength widget pattern (extended from Garden).**
+  When v1 already has a strong interactive (like the Hermit Crab
+  Species Test), preserve it VERBATIM inside a v2 notice-host wrapper.
+  Do not rebuild what already works.
+- **Diagnosis + Parable hybrid recipe (new).**
+  - Cold-open: defense-activating checklist + anchor sentence
+  - Each chapter: parable scene → key teaching → diagnostic widget
+    converting prose into reader's-own-data → frame-break
+  - Closing chapter: action commitment widget + tracker dashboard
+  - The parable carries voice; the widgets carry diagnosis;
+    the tracker carries proof-over-time
+- **Architecture + Reception + Parable triple-hybrid recipe (new).**
+  - Cold-open: typology picker that names the reader's primary type
+  - Reframe widget for the labels the reader is carrying in
+  - Architectural widget per pillar (one per chapter)
+  - Self-locator near the end (zone, depth, level, etc.)
+  - Final builder exercise (the Letter)
+  - Multi-cadence dashboard as closing
+  - Most complex archetype combination in the protocol library to date
+
 ### Contrast pitfalls (running list)
 - **Italic small-caps eyebrows on cream.**
   Reception's signature look — small italic letter-spaced
