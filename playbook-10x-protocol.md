@@ -971,3 +971,64 @@ Scorpion, Architecture+Reception for Vampire Squid). Patterns:
   Reception playbook should pre-emptively use the deeper variants
   for labels/eyebrows; reserve the lighter rose/gold tones for
   body text on dark backgrounds only.**
+
+### From the Eden Pattern + Attending series — 6 playbooks (2026-05-20)
+The Eden Pattern (The Source, The Soil, The Fruit, Tending The Garden) and
+The Attending (Attend, Done Before You Started) were 10x'd in one session.
+The Source was built fully by hand to establish the component template; the
+other five reused it. New patterns:
+
+- **Cross-sibling component porting via a palette-alias `:root` block.**
+  When 10x-ing a series whose parts share one CSS framework (the five Eden
+  parts each use identical class names with a different palette), build part
+  one's components fully (cold-open `.coldopen`, drill `.drill`, frame-break
+  `.fb`, dashboard `.kb-dash` + 90-cell grid, resistance `.resist`, the
+  contrast-fix block, the trailing kbWidget `<script>`), then port them to
+  each sibling by PREPENDING an alias block that maps the template's
+  variables onto the sibling's native palette:
+  `:root{--depth:<sibling-darkest>;--water:<sibling-dark>;--spring:<saturated mid for numbers on white>;--silver-pale:<pale tint for light-on-dark>}`
+  The component CSS/JS then pastes in verbatim and renders native. This made
+  parts 2 to 5 dramatically faster than part 1. **Use for any multi-part
+  series that shares a framework.**
+
+- **The reusable contrast-fix block (now standard for cream playbooks).**
+  Append a scoped block calibrated to the file's actual cream/cream-warm/white:
+  deep gold `~#7A5E12` for `.think-label,.test-num,.viz-meta .viz-label,.rc-label,.drill-eye,.protocol-num`;
+  deep copper `~#8A5A28` (darker on warmer creams) for `.ribbon .ref,.scene-label,.protocol-head,.grand-quote cite,.resist-excuse,.prose em,.scene p em,.scene em,.viz-body em,.ba-col.before .ba-label`;
+  dark slate `~#566270` (or a warm dark like `#5A4D3A` on earth palettes) for `.char-title,.data-label,.final-test .test-sub,.resist-sub,.sort-btn`.
+  Verify each color against the ACTUAL background it sits on (the audit prints
+  `bgWorst` per failing node).
+
+- **The blanket-`.prose em` pitfall (bit every single playbook).**
+  Recoloring `.prose em` to a deep light-bg color CLOBBERS light em-on-dark
+  inside `.glow-box` (equal specificity, later source order wins). You MUST
+  re-assert dark-box light text AFTER the blanket rule:
+  `.glow-box em{color:var(--gold-pale or --silver-pale)} .glow-box strong{color:var(--gold-pale)}`.
+  Also mind specificity: `.final-test .test-sub` (0,2,0) beats a bare
+  `.test-sub` (0,1,0) — match or exceed existing specificity or your fix
+  silently loses the cascade.
+
+- **Multi-sub-mark dashboard cell (finale/integration playbooks).**
+  Tending The Garden generalized the 90-cell grid so each cell holds N
+  sub-marks (one per pillar: Source/Soil/Fruit). Cell color encodes how many
+  of the N were tended that day (1/3 copper, 2/3 sage, 3/3 gold). **Use for
+  any playbook that tracks several parallel daily practices at once.**
+
+- **Reception finale handling, confirmed again (Done Before You Started).**
+  Gift Inventory (cumulative, glow grows with entries, NO streak shaming) +
+  "Now Sit With This" soft pause + "Why You Will Not Receive" gentle
+  resistance + embodied slow-fade-in opening, never an Action move. The
+  series-callback ("Attend gave the practice of staying; this gives the
+  received identity that makes staying sustainable") closed the 2-part arc.
+
+- **Process: series 10x via sequential subagents under one git coordinator.**
+  Build part one by hand (sets the template + contrast recipe). Delegate each
+  sibling to a subagent that reads part one as the concrete template plus this
+  protocol. Verify each independently (re-run the contrast audit yourself +
+  grep for the component ids), then commit and push from the coordinator,
+  staging ONLY that playbook's two files (`assets/X.html` + its archive
+  snapshot). This was essential because a second Claude session was 10x-ing
+  the Mirror/Resilience series in the SAME working tree at the same time;
+  staging specific files (never `git add -A`) kept the two streams from
+  clobbering each other, and shared docs (this file, the stats doc) must be
+  appended with safe-fail Edits, not Writes.
