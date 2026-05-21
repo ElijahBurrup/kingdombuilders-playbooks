@@ -28,14 +28,52 @@ We use a SEPARATE database session (independent of the caller's session) so:
   - We don't pollute the caller's session with our writes.
 """
 
+import asyncio
+import weakref
 from datetime import datetime, timezone
 from typing import Any, Optional
 
 from fastapi import Request
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
-from api.database import async_session
+from api.config import settings
+from api.database import async_session as _main_async_session
 from api.models.audit_log import AuditLog
+
+
+# ---------------------------------------------------------------------------
+# Per-event-loop session factory.
+#
+# `log_event` gets called from BOTH the main FastAPI event loop AND from
+# BackgroundScheduler-spawned event loops in worker threads. asyncpg
+# connections are loop-bound; sharing the main pool across loops corrupts
+# it. We keep one engine per loop, weakly keyed so loops can be GC'd.
+# The main loop uses the shared `async_session` from api.database.
+# ---------------------------------------------------------------------------
+_per_loop_factories: "weakref.WeakKeyDictionary[asyncio.AbstractEventLoop, tuple]" = (
+    weakref.WeakKeyDictionary()
+)
+
+
+def _session_factory_for_current_loop():
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        return _main_async_session
+    cached = _per_loop_factories.get(loop)
+    if cached is not None:
+        return cached[1]
+    # Lazily create a small engine pinned to this loop. The cron jobs that
+    # spin up a fresh loop only need a tiny pool; we keep pool_size small.
+    engine = create_async_engine(
+        settings.DATABASE_URL,
+        echo=False,
+        pool_size=2,
+        max_overflow=0,
+    )
+    factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+    _per_loop_factories[loop] = (engine, factory)
+    return factory
 
 
 async def log_event(
@@ -72,7 +110,8 @@ async def log_event(
             pass
 
     try:
-        async with async_session() as session:
+        factory = _session_factory_for_current_loop()
+        async with factory() as session:
             row = AuditLog(
                 event_type=event_type,
                 status=status,

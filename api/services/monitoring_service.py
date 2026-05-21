@@ -22,18 +22,50 @@ asyncio.run() inside the sync wrapper.
 
 import asyncio
 import json
+from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
 
 import resend
 import stripe
 from sqlalchemy import desc, func, select
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from api.config import settings
-from api.database import async_session
 from api.models.audit_log import AuditLog
 from api.models.purchase import StripeCustomer, Subscription
 from api.models.user import User
 from api.services.audit_service import log_event
+
+
+# ---------------------------------------------------------------------------
+# Cron-isolated DB session.
+#
+# The app's main `async_session` is tied to an engine whose asyncpg
+# connections were created on the main FastAPI event loop. The APScheduler
+# `BackgroundScheduler` runs jobs in WORKER THREADS, where we call
+# `asyncio.run()` to create a *new* event loop. asyncpg connections are
+# loop-bound; reusing the main pool from a different loop corrupts the
+# pool and produces `InterfaceError: another operation is in progress`
+# for every subsequent request on the affected connection. That bug was
+# silently breaking login until this isolation was added.
+#
+# Each cron run gets its own engine + sessionmaker scoped to the new
+# loop, and disposes the engine when the run completes.
+# ---------------------------------------------------------------------------
+@asynccontextmanager
+async def _cron_session():
+    engine = create_async_engine(
+        settings.DATABASE_URL,
+        echo=False,
+        pool_size=2,
+        max_overflow=0,
+    )
+    factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+    try:
+        async with factory() as session:
+            yield session
+    finally:
+        await engine.dispose()
 
 resend.api_key = settings.RESEND_API_KEY
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -72,7 +104,7 @@ async def run_nightly_reconcile() -> dict:
         )
         return {"error": str(e), "scanned": 0, "fixed": [], "failed": [], "missing_user": []}
 
-    async with async_session() as db:
+    async with _cron_session() as db:
         for sub_obj in subs_iter:
             scanned += 1
             try:
@@ -284,7 +316,7 @@ async def run_daily_audit_digest() -> int:
     No-op silently if there are no error/warning rows — no spam emails.
     """
     cutoff = datetime.now(timezone.utc) - timedelta(hours=24)
-    async with async_session() as db:
+    async with _cron_session() as db:
         rows_q = await db.execute(
             select(AuditLog)
             .where(AuditLog.timestamp >= cutoff)

@@ -854,13 +854,26 @@ def run_monthly_payouts_sync() -> dict:
     """
     Synchronous entry point for APScheduler.
 
-    Creates a fresh async session, runs the payout logic, and returns
-    the summary dict.
+    APScheduler.BackgroundScheduler runs jobs in worker threads with a new
+    event loop. asyncpg connections are loop-bound, so we MUST NOT use the
+    shared main-loop engine here — that corrupts the pool and breaks every
+    subsequent request (login, etc.). Build a fresh engine pinned to this
+    cron's loop, then dispose it when done.
     """
+    from sqlalchemy.ext.asyncio import AsyncSession as _AsyncSession
+    from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+    from api.config import settings as _settings
 
     async def _run() -> dict:
-        async with AsyncSessionLocal() as db:
-            return await process_monthly_payouts(db)
+        engine = create_async_engine(
+            _settings.DATABASE_URL, echo=False, pool_size=2, max_overflow=0
+        )
+        factory = async_sessionmaker(engine, class_=_AsyncSession, expire_on_commit=False)
+        try:
+            async with factory() as db:
+                return await process_monthly_payouts(db)
+        finally:
+            await engine.dispose()
 
     return asyncio.run(_run())
 
