@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lay It Down: Envy | Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1A1008;--ink-mid:#2C2010;--ink-soft:#3D3020;
+  --steel:#5A4830;--steel-light:#8A7A60;--fog:#B0A090;
+  --fire:#E8860A;--fire-mid:rgba(232,134,10,0.18);--fire-pale:rgba(232,134,10,0.07);
+  --ember:#FF6B2B;--ember-mid:rgba(255,107,43,0.15);
+  --gold:#D4A030;--gold-mid:rgba(212,160,48,0.18);--gold-pale:rgba(212,160,48,0.08);
+  --ash:#E85050;--ash-mid:rgba(232,80,80,0.15);
+  --green:#2D8A4E;--green-mid:rgba(45,138,78,0.15);
+  --cream:#FFF9F0;--cream-warm:#FFF4E6;--paper:#FFFBF5;--white:#FFFFFF;
+  --radius:10px;--shadow:0 2px 16px rgba(26,16,8,0.09);--shadow-deep:0 8px 40px rgba(26,16,8,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.78;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.label{font-family:'Poppins',sans-serif}
+.page{max-width:700px;margin:0 auto;padding-left:24px;padding-right:24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--ink-mid);font-weight:600;font-family:'Poppins',sans-serif}
+
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(160deg,#1A0A02 0%,#2A1508 40%,#1A1020 100%);position:relative;overflow:hidden}
+.cover-grain{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:0.5}
+.cover-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 25%,rgba(10,5,2,0.7) 100%)}
+.flame-ring{position:absolute;border-radius:50%;border:1px solid rgba(232,134,10,0.06);animation:flame-expand 7s ease-out infinite}
+.flame-ring:nth-child(3){width:180px;height:180px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:0s}
+.flame-ring:nth-child(4){width:360px;height:360px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:1.8s}
+.flame-ring:nth-child(5){width:540px;height:540px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:3.6s}
+@keyframes flame-expand{0%{opacity:0.6;transform:translate(-50%,-50%) scale(0.85)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.25)}}
+.cover-content{position:relative;z-index:2;padding:60px 24px 40px}
+.cover-badge{display:inline-block;padding:5px 18px;border:1px solid rgba(232,134,10,0.3);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.67rem;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:var(--fire);margin-bottom:40px;background:rgba(232,134,10,0.07)}
+.cover h1{font-family:'Poppins',sans-serif;font-size:clamp(3rem,9vw,5.5rem);font-weight:300;color:#FFFFFF;line-height:0.95;margin-bottom:6px;letter-spacing:-0.02em}
+.cover h1 em{display:block;color:var(--fire);font-style:normal;font-weight:700;font-size:0.5em;margin-top:12px;letter-spacing:0.01em}
+.cover-sub{font-family:'Lora',Georgia,serif;font-size:clamp(0.95rem,2.5vw,1.15rem);font-style:italic;color:rgba(255,255,255,0.45);margin-top:28px;line-height:1.7;max-width:480px;margin-left:auto;margin-right:auto}
+.cover-sub em{color:rgba(232,134,10,0.85);font-style:normal;font-weight:600}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.5rem;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-top:52px}
+.cover-verse{margin-top:28px;padding:14px 24px;display:inline-block;background:rgba(232,134,10,0.06);border:1px solid rgba(232,134,10,0.12);border-radius:8px;font-family:'Lora',Georgia,serif;font-size:0.82rem;font-style:italic;color:rgba(255,255,255,0.35);line-height:1.6}
+.cover-art{width:220px;height:180px;margin:0 auto 28px;display:block;animation:cover-breathe 5s ease-in-out infinite}
+.cover-art svg{width:100%;height:100%;filter:drop-shadow(0 0 20px rgba(232,134,10,0.18)) drop-shadow(0 0 50px rgba(232,134,10,0.08))}
+@keyframes cover-breathe{0%,100%{transform:scale(1);opacity:0.9}50%{transform:scale(1.04);opacity:1}}
+
+.ch-head{background:linear-gradient(160deg,#1A0A02 0%,#201218 100%);padding:72px 24px 52px;position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 50%,rgba(232,134,10,0.04) 0%,transparent 50%)}
+.ch-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 5%,var(--fire) 50%,transparent 95%);opacity:0.5}
+.ch-head .page{position:relative;z-index:2}
+.ch-num{font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--fire);opacity:0.9;margin-bottom:8px}
+.ch-title{font-family:'Poppins',sans-serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:700;color:#FFFFFF;margin:10px 0 8px;letter-spacing:-0.01em}
+.ch-sub{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:rgba(232,134,10,0.55)}
+
+.ribbon{margin:20px 0;text-align:center;padding:20px 24px;background:var(--cream-warm);border-top:1px solid rgba(26,16,8,0.06);border-bottom:1px solid rgba(26,16,8,0.06)}
+.ribbon p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:var(--steel-light);max-width:540px;margin:0 auto;line-height:1.6}
+
+.mission{text-align:center;padding:36px 32px;margin:36px 0;background:linear-gradient(140deg,rgba(232,134,10,0.08),rgba(232,134,10,0.03));border-radius:14px;border:2px solid rgba(232,134,10,0.2);box-shadow:0 0 0 1px rgba(232,134,10,0.06),var(--shadow)}
+.mission-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--fire);margin-bottom:12px}
+.mission p{font-family:'Poppins',sans-serif;font-size:clamp(0.88rem,2.2vw,1.05rem);font-weight:500;color:var(--ink-mid);line-height:1.65}
+.mission p em{color:var(--fire);font-style:normal;font-weight:700}
+
+.insight{margin:30px 0;padding:28px 32px;background:linear-gradient(140deg,#1A0A02,#201218);border-radius:14px;border:2px solid rgba(232,134,10,0.25);border-left:5px solid var(--fire);position:relative;overflow:hidden;box-shadow:var(--shadow-deep)}
+.insight::before{content:'';position:absolute;top:-40%;right:-10%;width:200px;height:200px;background:radial-gradient(circle,rgba(232,134,10,0.07) 0%,transparent 70%);border-radius:50%}
+.insight p{font-family:'Lora',Georgia,serif;font-size:1.02rem;font-style:italic;color:rgba(255,255,255,0.9);line-height:1.72;position:relative;z-index:2}.insight strong{color:rgba(255,255,255,0.9);font-weight:700}
+.insight em{color:var(--fire);font-style:normal;font-weight:700}
+
+.gq{margin:32px 0;text-align:center;padding:32px 24px;position:relative;background:linear-gradient(160deg,rgba(232,134,10,0.04),rgba(232,134,10,0.07));border-radius:14px;border:1.5px solid rgba(232,134,10,0.15)}
+.gq::before,.gq::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:48px;height:2px;background:linear-gradient(90deg,transparent,var(--fire),transparent)}
+.gq::before{top:0}.gq::after{bottom:0}
+.gq p{font-family:'Lora',Georgia,serif;font-size:1.05rem;font-style:italic;color:var(--ink-soft);line-height:1.6;max-width:520px;margin:0 auto}
+
+.viz{margin:44px 0 32px;border-radius:14px;overflow:hidden;border:2px solid rgba(232,134,10,0.22);box-shadow:var(--shadow-deep);position:relative;background:var(--white)}
+.viz-top{background:linear-gradient(135deg,rgba(232,134,10,0.1),rgba(232,134,10,0.04));padding:20px 26px 18px;display:flex;align-items:center;gap:14px;border-bottom:1px solid rgba(232,134,10,0.12)}
+.viz-icon{width:48px;height:48px;border-radius:50%;border:2px solid rgba(232,134,10,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(145deg,#fff,rgba(255,244,230,0.6))}
+.viz-meta{flex:1}
+.viz-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);margin-bottom:2px}
+.viz h4{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:var(--ink-mid)}
+.viz-body{padding:26px 26px 22px;background:linear-gradient(170deg,#FFFDF8 0%,#FFF8F0 100%)}
+.viz-body p{font-size:0.95rem;color:var(--steel);line-height:1.78;margin-bottom:14px}
+.viz-body strong{color:var(--ink-mid);font-weight:700}
+.viz-body em{color:var(--fire);font-style:normal;font-weight:600}
+.viz-body p:last-child{margin-bottom:0}
+
+.ba-pair{margin:32px 0;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:620px){.ba-pair{grid-template-columns:1fr}}
+.ba-card{border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.ba-head{padding:11px 18px;font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.ba-before{background:linear-gradient(170deg,#FFF0F0,#FFE8E8)}
+.ba-before .ba-head{background:rgba(232,80,80,0.12);color:#8B1F1F}
+.ba-after{background:linear-gradient(170deg,#FFF8EE,#FFF2E0)}
+.ba-after .ba-head{background:rgba(232,134,10,0.12);color:#5A3800}
+.ba-dot{width:7px;height:7px;border-radius:50%}
+.ba-before .ba-dot{background:var(--ash)}
+.ba-after .ba-dot{background:var(--fire)}
+.ba-body{padding:16px 18px;font-size:0.88rem;line-height:1.65}
+.ba-body ul{list-style:none;padding:0;margin:0}
+.ba-body ul li{padding:6px 0;border-bottom:1px solid rgba(0,0,0,0.05);font-family:'Poppins',sans-serif;font-size:0.8rem}
+.ba-body ul li:last-child{border-bottom:none}
+
+.dd{margin:24px 0;padding:22px 26px;border-radius:12px;border-left:4px solid var(--fire);background:var(--white);box-shadow:var(--shadow)}
+.dd:nth-of-type(even){background:var(--cream)}
+.dd h4{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--ink-mid);margin-bottom:4px}
+.dd .sub{font-family:'Poppins',sans-serif;font-size:0.54rem;font-weight:700;color:var(--fire);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.dd p{font-size:0.95rem;color:var(--steel);line-height:1.78;margin-bottom:8px}
+.dd p:last-child{margin-bottom:0}
+
+.think{margin:16px 0 36px;padding:30px;background:linear-gradient(145deg,rgba(232,134,10,0.08),rgba(232,134,10,0.04));border:2px dashed rgba(232,134,10,0.35);border-radius:14px;position:relative;box-shadow:0 4px 16px rgba(232,134,10,0.08)}
+.think::before{content:'';position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--paper);padding:0 12px;width:28px;height:28px;display:block;margin-left:-14px;background:var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23E8860A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22c-2 0-4-1.5-4-4 0-2 2-3 4-3s4 1 4 3c0 2.5-2 4-4 4z'/%3E%3Cpath d='M12 15c-1.5-2-5-4-5-8a5 5 0 0 1 10 0c0 4-3.5 6-5 8z'/%3E%3Cpath d='M9.5 9c.3-1.8 1.5-3 2.5-3'/%3E%3C/svg%3E") center/contain no-repeat}
+.think-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);text-align:center;margin-bottom:10px}
+.think h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--ink-mid);text-align:center;margin-bottom:14px}
+.think p{font-size:0.86rem;color:var(--steel);margin-bottom:8px;font-family:'Poppins',sans-serif}
+.think-line{border-bottom:1.5px solid rgba(232,134,10,0.25);height:30px;margin-bottom:4px;cursor:text}
+.think p.q-start{font-family:'Poppins',sans-serif;font-weight:500;color:var(--ink-soft);font-size:0.82rem;text-align:left;margin-top:14px;margin-bottom:4px}
+.think .closing{font-weight:600;color:var(--fire);margin-top:12px;font-family:'Poppins',sans-serif;font-size:0.8rem}
+
+.breathe{margin:44px 0;text-align:center;padding:52px 24px;position:relative;background:linear-gradient(160deg,rgba(232,134,10,0.08),rgba(232,134,10,0.04));border-radius:16px;border:2px solid rgba(232,134,10,0.15)}
+.breathe-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1.5px solid rgba(232,134,10,0.1)}
+.breathe-ring:nth-child(1){width:140px;height:140px;animation:breathe-pulse 6s ease-in-out infinite}
+.breathe-ring:nth-child(2){width:90px;height:90px;animation:breathe-pulse 6s ease-in-out infinite 1.5s}
+.breathe-ring:nth-child(3){width:45px;height:45px;animation:breathe-pulse 6s ease-in-out infinite 3s}
+@keyframes breathe-pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.5}50%{transform:translate(-50%,-50%) scale(1.25);opacity:0.1}}
+.breathe-content{position:relative;z-index:2}
+.breathe-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--fire);margin-bottom:8px}
+.breathe h4{font-family:'Poppins',sans-serif;font-size:0.94rem;font-weight:600;color:var(--ink-mid);margin-bottom:8px}
+.breathe p{font-family:'Lora',Georgia,serif;font-size:0.88rem;font-style:italic;color:var(--steel);max-width:420px;margin:0 auto;line-height:1.65}
+
+.stack{margin:38px 0;text-align:center}
+.stack-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);opacity:0.7;margin-bottom:16px}
+.stack-flow{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap}
+.stack-node{display:inline-flex;align-items:center;justify-content:center;padding:10px 18px;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.68rem;font-weight:600;line-height:1.35;white-space:nowrap}
+.sn-dark{background:var(--ink-mid);color:#FFFFFF;border:1.5px solid rgba(232,134,10,0.2)}
+.sn-fire{background:rgba(232,134,10,0.13);color:var(--ink-mid);border:1.5px solid rgba(232,134,10,0.25)}
+.sn-gold{background:rgba(212,160,48,0.13);color:var(--ink-soft);border:1.5px solid rgba(212,160,48,0.28)}
+.sn-red{background:rgba(232,80,80,0.1);color:#5A1818;border:1.5px solid rgba(232,80,80,0.2)}
+.sn-green{background:rgba(45,138,78,0.1);color:#1A3A28;border:1.5px solid rgba(45,138,78,0.2)}
+.stack-arr{font-size:1rem;color:rgba(232,134,10,0.45);padding:0 7px}
+
+.prayer{margin:32px 0;padding:28px 30px;background:linear-gradient(160deg,#1A0A02,#181020);border-radius:14px;border:2px solid rgba(212,160,48,0.25);position:relative;overflow:hidden}
+.prayer::before{content:'';position:absolute;top:-20%;left:-10%;width:160px;height:160px;background:radial-gradient(circle,rgba(212,160,48,0.06) 0%,transparent 70%);border-radius:50%}
+.prayer-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;position:relative;z-index:2}
+.prayer p{font-family:'Lora',Georgia,serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.85);line-height:1.8;position:relative;z-index:2;margin-bottom:8px}
+.prayer p:last-child{margin-bottom:0}
+.prayer strong{color:var(--gold);font-style:normal;font-weight:700}
+
+.finale{text-align:center;padding:80px 24px;background:linear-gradient(160deg,#1A0A02 0%,#201218 100%);position:relative;overflow:hidden}
+.finale::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 50% 50%,rgba(232,134,10,0.04) 0%,transparent 50%)}
+.finale h2{font-family:'Poppins',sans-serif;font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;color:#FFFFFF;margin-bottom:8px;position:relative;z-index:2}
+.finale h2 span{color:var(--fire)}
+.finale p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.38);max-width:460px;margin:16px auto;line-height:1.65;position:relative;z-index:2}
+
+footer{text-align:center;padding:36px 24px;background:#080602}
+footer p{font-family:'Lora',Georgia,serif;font-size:0.8rem;font-style:italic;color:rgba(232,134,10,0.2);margin-bottom:12px}
+footer .brand{font-family:'Poppins',sans-serif;font-size:0.67rem;font-style:normal;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.12)}
+
+.prompt{margin:32px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(232,134,10,0.22);box-shadow:var(--shadow-deep)}
+.prompt-head{padding:12px 20px;background:linear-gradient(90deg,#1A0A02,#201218);font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--fire)}
+.prompt-body{padding:24px 26px;background:#120A04;color:#C0B8A8;font-family:'Poppins',sans-serif;font-size:0.82rem;line-height:1.8}
+.prompt-body strong{color:var(--fire)}
+
+.series-progress{text-align:center;padding:32px 24px;background:var(--cream-warm);border-top:1px solid rgba(26,16,8,0.06)}
+.series-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--fire);margin-bottom:14px}
+.series-dots{display:flex;align-items:center;justify-content:center;gap:12px}
+.series-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(232,134,10,0.3);background:transparent}
+.series-dot.done{background:rgba(232,134,10,0.25);border-color:rgba(232,134,10,0.5)}
+.series-dot.active{background:var(--fire);border-color:var(--fire);box-shadow:0 0 8px rgba(232,134,10,0.3)}
+.series-dot-label{font-family:'Poppins',sans-serif;font-size:0.55rem;color:var(--steel-light);margin-top:10px}
+
+dfn.def{cursor:help;font-style:normal;font-weight:600;color:var(--fire);border-bottom:1.5px dotted var(--fire);position:relative}
+dfn.def:hover::after,dfn.def:focus::after{content:attr(data-def);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--ink);color:var(--cream);font-size:0.72rem;font-weight:400;padding:10px 14px;border-radius:8px;white-space:normal;width:260px;line-height:1.5;box-shadow:var(--shadow-deep);z-index:10;pointer-events:none;font-family:'Poppins',sans-serif}
+
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.65s ease,transform 0.65s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.think:hover{box-shadow:0 0 0 2px rgba(232,134,10,0.25),0 8px 32px rgba(232,134,10,0.1)}
+.think{transition:box-shadow 0.3s ease}
+@keyframes insight-border{0%,100%{border-left-color:var(--fire)}50%{border-left-color:rgba(232,134,10,0.3)}}
+.insight{animation:insight-border 4s ease-in-out infinite}
+
+#read-progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--fire),rgba(232,134,10,0.4));z-index:9999;pointer-events:none;transition:width 0.08s linear}
+#chapter-pill{position:fixed;bottom:24px;right:24px;background:var(--ink);border:1px solid rgba(232,134,10,0.25);color:var(--fire);font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:8px 18px;border-radius:50px;opacity:0;transition:opacity 0.35s ease;pointer-events:none;z-index:1000;box-shadow:0 4px 24px rgba(0,0,0,0.4)}
+#chapter-pill.show{opacity:1}
+
+@media(max-width:620px){.stack-node{font-size:0.6rem;padding:8px 12px}}
+@media(max-width:640px){.page{padding-left:16px;padding-right:16px}}
+@media print{
+  @page{margin:18mm 16mm 22mm 16mm}
+  body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .cover{min-height:auto;padding:80px 24px;break-after:page}
+  .ch-head{break-before:page;padding:56px 24px 40px}
+  .think,.viz,.ba-pair,.mission,.insight,.dd,.breathe,.prayer,.prompt,.stack{break-inside:avoid}
+  .flame-ring,.cover-grain,.breathe-ring,.cover-vignette{animation:none!important;display:none}
+  .section{padding:36px 0}
+  #read-progress,#chapter-pill,.no-print{display:none!important}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+</style>
+</head>
+<body>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="ico-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="ico-heart" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></symbol>
+  <symbol id="ico-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></symbol>
+</svg>
+
+<div id="read-progress"></div>
+<div id="chapter-pill"></div>
+
+<!-- ===== COVER ===== -->
+<section class="cover">
+  <div class="cover-grain"></div>
+  <div class="cover-vignette"></div>
+  <div class="flame-ring"></div>
+  <div class="flame-ring"></div>
+  <div class="flame-ring"></div>
+  <div class="cover-content">
+    <div class="cover-badge">Lay It Down Series. Part 2 of 7</div>
+    <div class="cover-art">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 180" aria-label="Light splitting through a lens into separate colored bands">
+        <defs>
+          <linearGradient id="lde-lens" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#5A4830" stop-opacity="0.4"/><stop offset="100%" stop-color="#3D3020" stop-opacity="0.2"/></linearGradient>
+        </defs>
+        <!-- White light beam entering -->
+        <line x1="20" y1="90" x2="95" y2="90" stroke="#FFFFFF" stroke-width="3" opacity="0.4"/>
+        <line x1="20" y1="90" x2="95" y2="90" stroke="#FFFFFF" stroke-width="8" opacity="0.08"/>
+        <!-- Lens -->
+        <ellipse cx="110" cy="90" rx="18" ry="55" fill="url(#lde-lens)" stroke="#8A7A60" stroke-width="1.5" opacity="0.6"/>
+        <ellipse cx="110" cy="90" rx="12" ry="50" fill="none" stroke="#D4A030" stroke-width="0.5" opacity="0.3"/>
+        <!-- Separated color bands exiting -->
+        <line x1="125" y1="82" x2="200" y2="45" stroke="#E85050" stroke-width="2.5" opacity="0.6"/>
+        <line x1="125" y1="86" x2="200" y2="62" stroke="#FF6B2B" stroke-width="2.5" opacity="0.55"/>
+        <line x1="125" y1="90" x2="200" y2="80" stroke="#E8860A" stroke-width="2.5" opacity="0.5"/>
+        <line x1="125" y1="94" x2="200" y2="98" stroke="#D4A030" stroke-width="2.5" opacity="0.5"/>
+        <line x1="125" y1="98" x2="200" y2="118" stroke="#2D8A4E" stroke-width="2.5" opacity="0.45"/>
+        <line x1="125" y1="102" x2="200" y2="138" stroke="#4466AA" stroke-width="2.5" opacity="0.4"/>
+        <!-- Glow at entry point -->
+        <circle cx="95" cy="90" r="8" fill="#FFFFFF" opacity="0.06"/>
+        <!-- Label dots for each band -->
+        <circle cx="200" cy="45" r="3" fill="#E85050" opacity="0.5"/>
+        <circle cx="200" cy="62" r="3" fill="#FF6B2B" opacity="0.45"/>
+        <circle cx="200" cy="80" r="3" fill="#E8860A" opacity="0.4"/>
+        <circle cx="200" cy="98" r="3" fill="#D4A030" opacity="0.4"/>
+        <circle cx="200" cy="118" r="3" fill="#2D8A4E" opacity="0.35"/>
+        <circle cx="200" cy="138" r="3" fill="#4466AA" opacity="0.3"/>
+      </svg>
+    </div>
+    <h1>Lay It Down<em>Envy</em></h1>
+    <p class="cover-sub">Envy is not a feeling. It is a <em>lens defect</em>. It separates what should be seen as one image into colors that cannot recombine.</p>
+    <div class="cover-verse">"A heart at peace gives life to the body,<br>but envy rots the bones."<br> Proverbs 14:30 (NIV)</div>
+    <p class="cover-author">KingdomBuilders AI</p>
+  </div>
+</section>
+
+<!-- ===== BEFORE WE BEGIN ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Before We Begin</div><h2 class="ch-title">The Aberration</h2><p class="ch-sub">Your perception is splitting reality into colors that were never meant to be seen separately.</p></div></div>
+
+<div class="page prose section reveal">
+  <p>In 1666, Isaac Newton passed white light through a glass prism and watched it split into a rainbow. Red, orange, yellow, green, blue, violet. Each color had been inside the white light all along, traveling together, inseparable. The prism separated what was whole.</p>
+
+  <p>Every lens does this to some degree. It is called <dfn class="def" data-def="A lens defect where different wavelengths (colors) of light are focused at slightly different points. The result is colored fringes around objects, blurred edges, and an image where nothing is quite in focus at the same time. Cheap lenses have more of it. Expensive lenses correct for it using achromatic doublets.">chromatic aberration</dfn>. Because glass bends short wavelengths (blue light) more than long wavelengths (red light), a simple lens cannot focus all colors at the same point. The image has colored fringes. Edges blur. What should be a single, sharp picture becomes layered with distortion.</p>
+
+  <p>Envy is chromatic aberration of the soul.</p>
+
+  <p>You look at someone else's life through the lens of comparison, and the white light of their reality splits into separate bands. You see their success as one color. Their happiness as another. Their talent, their relationships, their ease. Each band is real. Each one is genuinely part of their life. But you are seeing them separated, isolated from the full spectrum. And because you can only focus on one band at a time, every single one looks more vivid, more saturated, more intense than it actually is.</p>
+
+  <p>Meanwhile, your own life, viewed through the same defective lens, splits too. Your struggles separate from your strengths. Your failures separate from your growth. You see your own spectrum in fragments, and each fragment looks dimmer than it should because it has been isolated from the whole.</p>
+
+  <div class="mission reveal">
+    <div class="mission-label">The Mission</div>
+    <p>Identify the <em>chromatic aberration</em> in your perception. Learn how the lens of comparison separates reality into distorted bands. Build an achromatic corrector that lets you see others and yourself in true white light.</p>
+  </div>
+
+  <div class="insight reveal">
+    <p>"Envy is not wanting what they have. It is seeing what they have <em>in isolation from everything else</em>. And seeing what you have in isolation from everything else. Both images are distorted. Neither is real."</p>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 1 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter One</div><h2 class="ch-title">The Splitting Lens</h2><p class="ch-sub">How comparison separates white light into weaponized colors.</p></div></div>
+<div class="ribbon"><p>"Let each one examine his own work, and then he will have reason for boasting in regard to himself alone, and not in regard to another.". Galatians 6:4 (NASB)</p></div>
+
+<div class="page prose section reveal">
+  <p>A camera lens with severe chromatic aberration produces an image where the red channel, the green channel, and the blue channel are all slightly misaligned. Each channel is technically accurate. The red parts really are red. The green parts really are green. But because they do not line up, the composite image is blurred, fringed, and false. No single channel is lying. The combination is.</p>
+
+  <p>Social media is a chromatic aberration machine. It separates people's lives into isolated channels. One channel for achievement. One for beauty. One for relationships. One for travel. One for parenting. Each channel is technically real. That vacation happened. That promotion is genuine. That family photo is not fake. But you are seeing each channel in isolation, without the off camera reality that gives it context.</p>
+
+  <div class="viz reveal">
+    <div class="viz-top">
+      <div class="viz-icon"><svg><use href="#ico-eye"/></svg></div>
+      <div class="viz-meta">
+        <div class="viz-label">Mechanism</div>
+        <h4>How the lens splits a life</h4>
+      </div>
+    </div>
+    <div class="viz-body">
+      <p><strong>Their white light:</strong> A career with promotions AND missed recitals. A body that looks great AND required surgery they do not mention. A marriage that appears effortless AND cost years of counseling. A bank account that is impressive AND came with sacrifices you cannot see.</p>
+      <p><strong>What you see through the aberrated lens:</strong> Promotion. Body. Marriage. Bank account. Four vivid, saturated, isolated bands. Each one more vivid than reality because separation intensifies color.</p>
+      <p><strong>Your white light:</strong> A life with genuine strengths AND genuine struggles, woven together into a coherent whole.</p>
+      <p><strong>What you see through the same lens:</strong> Your struggles, isolated and magnified. Your strengths, dimmed by separation from the full spectrum.</p>
+    </div>
+  </div>
+
+  <p>In optics, this distortion gets worse at the edges. The center of the lens is closest to the <dfn class="def" data-def="The central axis of a lens, where light passes through with the least distortion. The further from this axis, the more pronounced chromatic aberration becomes. In envy, the 'optical axis' is your own calling. The further you stray from it to examine someone else's life, the more distorted your perception.">optical axis</dfn>, where distortion is minimal. The further from center you look, the more severe the aberration becomes. Your peripheral vision through the lens is the most distorted part.</p>
+
+  <p>The same is true for envy. The people whose lives look most distorted through your lens are the ones furthest from your center. The ones you know the least. The ones whose full spectrum you have never seen up close. The coworker whose Instagram you follow but whose marriage is crumbling. The influencer whose confidence you envy but whose anxiety medication you do not see. The further from your optical axis, the more the colors separate.</p>
+
+  <p>There is a reason the algorithm shows you the strangers and the acquaintances most often. Closeness corrects the lens. The platform's incentive is to keep the lens uncorrected. The longer you stare at fringed, hyper saturated images of lives you do not actually know, the more time you spend on the platform. Your envy is the engagement metric. The aberration is the product.</p>
+
+  <p>Notice what this implies. The same lens, used at a different distance, produces a different image. A friend you have known for fifteen years passes by your peripheral vision and the lens splits her life into colors too. But because you know her full spectrum, your mind recombines the colors before they have a chance to deceive you. The lens still aberrates. Your knowledge cancels the aberration in real time. This is the mechanism every chapter ahead will teach you to install deliberately.</p>
+
+  <div class="think reveal">
+    <div class="think-label">Aberration Map</div>
+    <h4>Who are you seeing through the most distorted part of the lens?</h4>
+    <p class="q-start">Name three people you envy. For each one, write what specific "color band" you are focusing on.</p>
+    <div class="think-line"></div>
+    <p class="q-start">For each person, what do you NOT know about their full spectrum? What might the off camera channels contain?</p>
+    <div class="think-line"></div>
+    <p class="q-start">How close to your optical axis are these people? Do you actually know them, or are you viewing them through the most distorted edge of the lens?</p>
+    <div class="think-line"></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 2 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Two</div><h2 class="ch-title">The Achromatic Correction</h2><p class="ch-sub">How lens makers solved the aberration. And how you can too.</p></div></div>
+<div class="ribbon"><p>"We do not dare to classify or compare ourselves with some who commend themselves. When they measure themselves by themselves and compare themselves with themselves, they are not wise.", 2 Corinthians 10:12 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>In 1733, an English barrister named Chester Moore Hall solved chromatic aberration. He did not invent a better single lens. He realized that a single lens would always separate colors. Instead, he combined two lenses made from different types of glass. The first lens, made from crown glass, introduced aberration in one direction. The second lens, made from flint glass, introduced aberration in the opposite direction. When cemented together, the two aberrations canceled. The image was sharp. The colors recombined into white light.</p>
+
+  <p>This is called an <dfn class="def" data-def="A lens system made by combining two optical elements (usually crown glass and flint glass) to correct chromatic aberration. Each element alone distorts the image. Together, their distortions cancel, producing a sharper, truer image. The key insight: the correction does not come from removing distortion. It comes from adding a second distortion that is exactly complementary.">achromatic doublet</dfn>. And the principle behind it is the key to curing envy.</p>
+
+  <p>You cannot stop the first lens from splitting light. Comparison is built into human perception. You will always see other people's lives through a lens that separates their reality into vivid, isolated bands. You cannot remove that lens.</p>
+
+  <p>But you can add a second lens.</p>
+
+  <div class="dd reveal">
+    <h4>The Second Lens: Proximity</h4>
+    <div class="sub">Crown glass meets flint glass</div>
+    <p>The second lens is proximity. Not physical closeness, though that helps. Psychological proximity. The willingness to learn someone's full spectrum instead of viewing isolated bands from a distance.</p>
+    <p>When you get close enough to someone to see their struggles alongside their successes, their fears alongside their confidence, their cost alongside their reward, the colors recombine. The aberration corrects. You see white light again.</p>
+  </div>
+
+  <p>This is why you rarely envy your closest friends as much as you envy acquaintances and strangers. Your closest friends have allowed you near enough to see the full spectrum. The lens still splits, but the second lens of intimate knowledge corrects it. You see their promotions AND their burnout. Their beautiful home AND their mortgage anxiety. Their talent AND their discipline that cost them things you would not trade.</p>
+
+  <div class="ba-pair reveal">
+    <div class="ba-card ba-before">
+      <div class="ba-head"><span class="ba-dot"></span> Aberrated View (Distance)</div>
+      <div class="ba-body">
+        <ul>
+          <li>She got promoted again. Everything comes easy to her.</li>
+          <li>His body looks incredible. Must be nice to have those genetics.</li>
+          <li>Their kids are perfect. Why can mine not behave?</li>
+          <li>They travel constantly. I cannot afford that.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="ba-card ba-after">
+      <div class="ba-head"><span class="ba-dot"></span> Corrected View (Proximity)</div>
+      <div class="ba-body">
+        <ul>
+          <li>She works 70 hours a week and missed her son's play. The promotion cost something.</li>
+          <li>He had surgery and takes medication that affects his mood. The body came with a price.</li>
+          <li>Their kids perform in public because the discipline at home is exhausting.</li>
+          <li>They travel to escape a marriage that feels empty at home.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="gq reveal">
+    <p>The cure for envy is not gratitude lists. It is a second lens that recombines the colors you have been seeing in isolation.</p>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 3 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Three</div><h2 class="ch-title">The Self Aberration</h2><p class="ch-sub">The same lens that distorts their image distorts yours.</p></div></div>
+<div class="ribbon"><p>"Rejoice with those who rejoice, and weep with those who weep.". Romans 12:15 (NKJV)</p></div>
+
+<div class="page prose section reveal">
+  <p>Chromatic aberration does not just distort what you see through the lens. It distorts everything. Including the image of yourself that reflects back through it. When the lens separates other people's lives into vivid bands, it does the same to your own. Except the effect is reversed. Their colors appear saturated. Yours appear washed out.</p>
+
+  <p>This is the cruelest trick of envy. It is not just that you see their lives as better than they are. It is that you simultaneously see your own life as worse than it is. The same defective lens that over separates their achievements under separates your struggles from your growth. You see your failures in high definition and your strengths at low resolution.</p>
+
+  <div class="viz reveal">
+    <div class="viz-top">
+      <div class="viz-icon"><svg><use href="#ico-sun"/></svg></div>
+      <div class="viz-meta">
+        <div class="viz-label">The Double Distortion</div>
+        <h4>One lens, two victims</h4>
+      </div>
+    </div>
+    <div class="viz-body">
+      <p>In photography, chromatic aberration creates <em>purple fringing</em> on the bright side of an edge and <em>green fringing</em> on the dark side. The same defect produces opposite distortions depending on which side of the boundary you are viewing.</p>
+      <p>Envy creates the same effect. On the bright side (their life), you see vivid color halos that make everything appear more luminous than it is. On the dark side (your life), you see muted, greenish fringing that makes everything appear less vibrant than it is.</p>
+      <p><strong>Same lens. Same defect. Opposite distortions.</strong> If you correct the view of their life, you simultaneously correct the view of your own.</p>
+    </div>
+  </div>
+
+  <p>This is why genuine celebration of others' success actually reduces envy. Not as a moral exercise. As an optical correction. When you practice seeing someone else's achievement as part of their full spectrum rather than an isolated band, the same correction applies to how you see yourself. The lens recalibrates. Your own colors begin to recombine.</p>
+
+  <p>Watch what happens when the lens corrects. A woman in her thirties has been envying her coworker's promotion for six months. The envy has cost her two friendships and a stomach ulcer. She sits down one evening and writes, by hand, what she actually knows about the coworker's full spectrum. Eighty hour weeks. A daughter who calls her by the nanny's name. A back injury from chair posture that requires monthly injections. A husband who has stopped suggesting vacations because she cannot take them. The promotion is real. The promotion is also one band of a six band image. As she writes, something shifts. Not pity. Not schadenfreude. Truthfulness. The lens recombines. And in the same instant, her own image recombines. She sees that the bonus she did not get came with hours she does keep. The recognition she did not receive came with the recital she did not miss. Same defect. Same correction. Both images at once.</p>
+
+  <p>This is the asymmetric gift of optical correction. You cannot adjust the perception of yourself without simultaneously adjusting the perception of others. And you cannot adjust the perception of others without simultaneously adjusting the perception of yourself. The lens is one piece of glass.</p>
+
+  <div class="breathe reveal">
+    <div class="breathe-ring"></div>
+    <div class="breathe-ring"></div>
+    <div class="breathe-ring"></div>
+    <div class="breathe-content">
+      <div class="breathe-label">Pause</div>
+      <h4>The aberration is symmetric.</h4>
+      <p>Every time you correct how you see them, you correct how you see yourself. The lens cannot distort in only one direction.</p>
+    </div>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Self Spectrum Recovery</div>
+    <h4>What colors have you been seeing in isolation?</h4>
+    <p class="q-start">What is the dominant "failure band" you see when you look at your own life? The thing that is always in sharp, painful focus?</p>
+    <div class="think-line"></div>
+    <p class="q-start">What achievement or strength sits right next to it that the aberration has blurred into the background?</p>
+    <div class="think-line"></div>
+    <p class="q-start">If you saw your life in white light, with all the bands recombined, what would the composite image look like?</p>
+    <div class="think-line"></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 4 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Four</div><h2 class="ch-title">Your Wavelength</h2><p class="ch-sub">The color only you can contribute to the spectrum.</p></div></div>
+<div class="ribbon"><p>"If the whole body were an eye, where would the sense of hearing be? If the whole body were an ear, where would the sense of smell be?", 1 Corinthians 12:17 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>Every color in the visible spectrum has a specific wavelength. Red is approximately 700 nanometers. Violet is approximately 380 nanometers. No wavelength is better than another. Each is simply a different frequency of the same electromagnetic phenomenon. But remove any single wavelength from white light, and the light is no longer white. It becomes a <dfn class="def" data-def="The color you see when one wavelength is removed from white light. Remove red (700nm) and white light becomes cyan. Remove green (530nm) and it becomes magenta. Remove blue (470nm) and it becomes yellow. The complement reveals what was missing. Your envy reveals the wavelength you are not emitting.">complementary color</dfn>, tinted by the absence of what is missing.</p>
+
+  <p>Paul understood this when he wrote about the body of Christ. The eye cannot say to the hand, "I do not need you." Each member has a specific wavelength, a specific frequency of contribution that the body requires to produce white light. Remove any wavelength and the entire spectrum shifts. The body becomes tinted by the absence.</p>
+
+  <p>Here is what envy misses completely. When you envy someone else's wavelength, you are not just admiring their color. You are abandoning your own. You are trying to emit at 530 nanometers when your design frequency is 620. And a person emitting at the wrong wavelength does not add to the spectrum. They subtract from it. They create the very absence they are trying to fill.</p>
+
+  <div class="insight reveal">
+    <p>"Envy does not just make you want their wavelength. It makes you <em>stop emitting your own</em>. The spectrum loses two colors instead of gaining one."</p>
+  </div>
+
+  <p>The antidote is not to ignore their wavelength. It is to recognize that their wavelength exists to fill a gap in the spectrum that your wavelength cannot fill. And your wavelength fills a gap that theirs cannot. These gaps are not competition. They are the architecture of white light. Remove either one and the whole image shifts toward distortion.</p>
+
+  <div class="dd reveal">
+    <h4>The Wavelength Discovery</h4>
+    <div class="sub">Finding your design frequency</div>
+    <p>Your wavelength is not what you do best. It is what the spectrum is missing when you are not emitting. It is the gap people feel when you leave. The quality that, when absent, changes the color of every room and relationship you are part of.</p>
+    <p>You already know what it is. It is the thing people keep asking you for that you dismiss as ordinary. The contribution that feels so natural you assume everyone can do it. The wavelength you emit without effort, so consistently that you have stopped noticing it.</p>
+  </div>
+
+  <p>Consider a few examples of what a wavelength looks like in practice. A woman walks into a tense meeting and the temperature drops by six degrees. She did not plan this. She is not playing a role. She simply emits at a frequency that the room reorganizes itself around. People in her presence speak more carefully and listen more accurately. She has spent twenty years envying the woman down the hall who closes deals, never noticing that her own wavelength is the reason that woman's deals stay closed. The deal closer's success runs on the calm she generates in shared meetings. Remove her frequency and the spectrum collapses. She would never have guessed this. The wavelength she undervalues is load bearing for the whole room.</p>
+
+  <p>A man tells stories. Not professionally. He tells them at dinner tables and on phone calls and in passing in the hallway. He has spent his life envying his brother who paints. He believes the brother emits a frequency that produces something visible and lasting, while his own stories evaporate. But in his absence, his family loses the frame through which they understand their own history. His three children are still finding their footing because they cannot quite hear, on their own, what the family's story is. His wavelength was the narration. He has been emitting the structural light of his family for forty years without recognizing it.</p>
+
+  <p>The signature is consistent. The wavelength you actually emit is the one that feels too ordinary to count. You assume the room would be the same without it because you are inside the room. You cannot see the color of the air you breathe. But step outside the room for two weeks and the people inside it will name your wavelength back to you in three different sentences. Listen for the repetition. The thing three different people thank you for is the thing you cannot see.</p>
+
+  <div class="prayer reveal">
+    <div class="prayer-label">Prayer</div>
+    <p>Lord, I have been trying to emit at someone else's wavelength. I have been envying a frequency that was never mine, while the spectrum aches for the color <strong>only I can contribute.</strong> Show me my wavelength. Not as a consolation prize. As the frequency You designed me to emit, without which the light of this body is incomplete. Amen.</p>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 5 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Five</div><h2 class="ch-title">Three Aberrations</h2><p class="ch-sub">The lens has been splitting light since the first family on earth.</p></div></div>
+<div class="ribbon"><p>"Wrath is cruel and anger a torrent, but who can stand before envy?". Proverbs 27:4 (ESV)</p></div>
+
+<div class="page prose section reveal">
+  <p>The chromatic aberration of envy did not begin with social media. It began the moment two human beings stood in the same field with different offerings. The scripture tells three stories of the same lens defect, calibrated to three different wavelengths. Each is a case study. Each shows what the aberration does when it is left uncorrected.</p>
+
+  <div class="dd reveal">
+    <h4>Cain. The Career Band.</h4>
+    <div class="sub">Genesis 4. The first murder is an act of optical distortion.</div>
+    <p>Two brothers bring offerings. God receives one and not the other. The text gives no editorial about why, only that the lens of comparison immediately separates Abel's life into a single band, accepted, and Cain's into a single band, rejected. The full spectrum is invisible to Cain. Abel's coming death is invisible. Abel's faith is invisible. The two thousand offerings Cain will be free to bring in the future are invisible. There is one color in Cain's vision, and that color is what he does not have.</p>
+    <p>God speaks the cure into the moment. "If you do well, will you not be accepted?" The question is an offer to add the second lens. Look at your own spectrum. Examine your own work. You are not in competition for a finite portion of favor. The light is white. The recombination is available right now. Cain chooses the aberration. The first blood on earth is shed because a man refused to recombine the colors.</p>
+  </div>
+
+  <div class="dd reveal">
+    <h4>Saul. The Anointing Band.</h4>
+    <div class="sub">1 Samuel 18. The women sing, and the king cannot hear his own song.</div>
+    <p>David has just killed Goliath. Saul is still king. The crown is still on his head. The army is still his. The kingdom is still his. But the women sing, "Saul has slain his thousands, and David his ten thousands," and from that moment Saul cannot see anything but the gap between two numbers. The lens splits David's life into a single color, the ten thousands, and renders Saul's own life in its washed out complement.</p>
+    <p>Saul's thousands were real. The Philistine victories were real. The deliverance of Israel was real. But in the aberrated lens, the only band in focus is the one band he does not have. He spends the rest of his life trying to extinguish that color in David, and in doing so, he extinguishes every other color in himself. The cure was available every morning of those years. He had only to look at his own spectrum. He never did.</p>
+  </div>
+
+  <div class="dd reveal">
+    <h4>Joseph's Brothers. The Favor Band.</h4>
+    <div class="sub">Genesis 37. A coat of many colors becomes a single band of envy.</div>
+    <p>Jacob gives Joseph an ornate robe. The brothers see it through the lens of comparison, and a coat that was literally many colored collapses, in their perception, to a single color. Father's favor. They do not see Joseph's coming slavery. They do not see his coming prison. They do not see his coming providence over their own lives during famine. They see one color. The brightness of the favor band. And they sell him to remove it from the spectrum.</p>
+    <p>The irony is exact. By trying to extract the wavelength they envied, they amplify it. The aberration deepens the longer it operates uncorrected. The lens, untreated, does not stay still. It distorts further. Until the family is broken, the brothers are starving, and the colors they tried to suppress are now the only light keeping them alive.</p>
+  </div>
+
+  <div class="insight reveal">
+    <p>"Three lenses. Three murders, attempted or completed. Three stories where the cure was available in the first paragraph and refused. The aberration is ancient. The achromatic correction is older."</p>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 6 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Six</div><h2 class="ch-title">Building Your Achromatic</h2><p class="ch-sub">The practical protocol for correcting the lens.</p></div></div>
+<div class="ribbon"><p>"Do nothing out of selfish ambition or vain conceit. Rather, in humility value others above yourselves.". Philippians 2:3 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>Lens makers do not build achromatic doublets by guessing. They measure the <dfn class="def" data-def="Abbe number is a measure of how much a particular glass disperses (splits) light into different colors. High Abbe number means low dispersion (less color splitting). Low Abbe number means high dispersion (more splitting). Crown glass has high Abbe numbers. Flint glass has low Abbe numbers. Combining them creates an achromatic system.">Abbe number</dfn> of each glass, a precise index of how severely it disperses light. Then they pair glasses whose dispersion profiles are complementary. The mathematics is exact. The correction is not approximate. When done well, an achromatic lens produces an image that is indistinguishable from reality.</p>
+
+  <p>You can build your own achromatic corrector with the same precision.</p>
+
+  <div class="viz reveal">
+    <div class="viz-top">
+      <div class="viz-icon"><svg><use href="#ico-heart"/></svg></div>
+      <div class="viz-meta">
+        <div class="viz-label">The Achromatic Protocol</div>
+        <h4>Four weeks to correct the lens</h4>
+      </div>
+    </div>
+    <div class="viz-body">
+      <p><strong>Week 1: Map your dispersion.</strong> Every time you feel envy this week, write down what triggered it and which isolated "color band" you were focusing on. Career, appearance, relationships, finances, talent. Track the triggers without trying to change them. You are measuring your Abbe number.</p>
+      <p><strong>Week 2: Add the second lens.</strong> For every envy trigger from Week 1, research or ask about the full spectrum. If you envied a colleague's promotion, learn what it cost them. If you envied someone's physique, learn what they sacrifice to maintain it. The goal is not to diminish their achievement. It is to recombine the colors.</p>
+      <p><strong>Week 3: Correct your own spectrum.</strong> Write down every strength, achievement, and gift you possess alongside every struggle. Force yourself to see the full picture. Pair every "failure band" with a "growth band." Your life in white light, not separated into fragments.</p>
+      <p><strong>Week 4: Emit your wavelength.</strong> Identify the contribution that is uniquely yours and increase it. Do more of the thing only you can do. The more you emit at your own frequency, the less bandwidth envy has to split your attention toward someone else's.</p>
+    </div>
+  </div>
+
+  <div class="gq reveal">
+    <p>An achromatic lens does not remove the individual colors. It recombines them into something the eye can see truthfully. That is the goal. Not blindness to others' gifts. Accurate vision of the whole.</p>
+  </div>
+
+  <div class="dd reveal">
+    <h4>Two Edge Cases</h4>
+    <div class="sub">The aberrations that distance theory cannot reach.</div>
+    <p><strong>Envy of someone close.</strong> The proximity rule says you cannot easily envy someone whose full spectrum you know. But there is a sharper form of envy that does survive proximity. It is the envy of a friend whose path is structurally similar to yours and whose results have diverged. The same age, the same field, the same starting point, and the visible band has split open between you. The cure here is not more knowledge of their spectrum. You already know it. The cure is to notice that the comparison has selected the one variable in which they are ahead and silenced six in which you are. The aberration is not in your knowledge of them. It is in your selection. You are looking only at the wavelength where the gap is widest. Widen the selection and the lens recombines.</p>
+    <p><strong>Envy of a previous version of yourself.</strong> This is the strangest aberration. You stand at thirty eight and envy the body you had at twenty four. You stand at fifty one and envy the freedom you had at twenty nine. The previous version of yourself is the most aberrated image of all, because you only remember the wavelengths you currently lack and have lost the bands that were also genuinely missing then. The twenty four year old body was real. The twenty four year old anxiety, financial scarcity, identity confusion, and chronic loneliness were also real, and you have edited them out of the image. The cure is the same. Find the bands you are not seeing. The past was not white light either. It was a different aberration, viewed now through a forgetting lens that recombines selectively.</p>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Achromatic Calibration</div>
+    <h4>Begin measuring your dispersion right now.</h4>
+    <p class="q-start">What triggered envy most recently? What single "color band" were you isolating?</p>
+    <div class="think-line"></div>
+    <p class="q-start">What would the full spectrum of that person's reality include that you did not see?</p>
+    <div class="think-line"></div>
+    <p class="q-start">What is your wavelength? The color the spectrum misses when you are not contributing?</p>
+    <div class="think-line"></div>
+  </div>
+
+  <div class="prompt reveal">
+    <div class="prompt-head">Continue with AI. Prompt Card</div>
+    <div class="prompt-body">
+      <p><strong>Copy this prompt into any AI assistant to continue the work:</strong></p>
+      <p>"I just read Lay It Down: Envy by Kingdom Builders AI. It uses the chromatic aberration model: envy is a lens defect that splits reality into isolated color bands, making others look more vivid and myself look more washed out than reality warrants. I want to build my personal achromatic corrector. Ask me about my top three envy triggers this week, help me identify which isolated 'color band' I am focusing on for each, then guide me to recombine the full spectrum. Also help me identify my unique wavelength, the contribution only I can make that the spectrum needs. Be precise like an optician, not sentimental."</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ABERRATION MAPPER WIDGET ===== -->
+<div class="page section reveal">
+  <div class="viz" style="border-color:rgba(232,134,10,0.35);">
+    <div class="viz-top">
+      <div class="viz-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#E8860A" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3v18"/></svg></div>
+      <div class="viz-meta">
+        <div class="viz-label">Interactive</div>
+        <h4>The Aberration Mapper</h4>
+      </div>
+    </div>
+    <div class="viz-body" style="padding-top:8px;">
+      <p style="margin-bottom:18px;">Name one person you have been envying this week. Then walk through the six bands. The widget will show you, in real time, the difference between the aberrated and corrected image.</p>
+
+      <div id="amap-root" style="font-family:'Poppins',sans-serif;">
+        <label style="display:block;font-size:0.7rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#5A3800;margin-bottom:8px;">Who are you envying?</label>
+        <input id="amap-name" type="text" placeholder="A name or a relationship (e.g. my college friend)" style="width:100%;padding:12px 14px;font-size:0.95rem;border:1.5px solid rgba(232,134,10,0.3);border-radius:8px;font-family:'Lora',Georgia,serif;background:#FFFDF8;margin-bottom:18px;" />
+
+        <div id="amap-bands" style="display:grid;grid-template-columns:1fr;gap:10px;">
+          <!-- bands injected below -->
+        </div>
+
+        <div id="amap-result" style="margin-top:24px;padding:20px;border-radius:10px;background:linear-gradient(135deg,#1A0A02,#201218);color:rgba(255,255,255,0.92);display:none;">
+          <div style="font-size:0.55rem;letter-spacing:5px;text-transform:uppercase;color:#E8860A;margin-bottom:8px;font-weight:700;">Corrected Image</div>
+          <div id="amap-summary" style="font-family:'Lora',Georgia,serif;font-size:1rem;line-height:1.7;font-style:italic;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const BANDS = [
+    {key:'career', label:'Career / Achievement', q:'What achievement of theirs are you focused on?', off:'What hours, family time, or health did this likely cost them that you do not see?'},
+    {key:'appearance', label:'Body / Appearance', q:'What aspect of their appearance are you fixated on?', off:'What discipline, surgery, genetics, or insecurity might sit behind this band?'},
+    {key:'relationships', label:'Relationships', q:'Which relationship of theirs looks ideal to you?', off:'What conflict, loneliness, or compromise probably exists off camera?'},
+    {key:'finances', label:'Finances / Possessions', q:'What financial position or possession are you envying?', off:'What debt, anxiety, or trade-off underwrites it?'},
+    {key:'talent', label:'Talent / Recognition', q:'What gift or recognition draws your attention?', off:'What years of unseen practice, failed attempts, or rejection preceded it?'},
+    {key:'ease', label:'Apparent Ease', q:'What about their life looks effortless?', off:'What internal struggle or quiet cost is the ease concealing?'}
+  ];
+  const root = document.getElementById('amap-bands');
+  if(!root) return;
+  BANDS.forEach((b, i) => {
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'border:1px solid rgba(232,134,10,0.18);border-radius:10px;overflow:hidden;background:#FFFDF8;';
+    wrap.innerHTML = `
+      <button data-i="${i}" style="width:100%;padding:12px 16px;text-align:left;background:rgba(232,134,10,0.06);border:none;cursor:pointer;font-family:'Poppins',sans-serif;font-size:0.85rem;font-weight:600;color:#1A1008;display:flex;justify-content:space-between;align-items:center;">
+        <span><span style="color:#E8860A;margin-right:8px;">${String(i+1).padStart(2,'0')}</span>${b.label}</span>
+        <span style="color:#8A7A60;font-size:0.7rem;">tap to map</span>
+      </button>
+      <div class="amap-panel" style="display:none;padding:14px 18px;">
+        <label style="display:block;font-size:0.65rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#8B1F1F;margin-bottom:6px;">Aberrated view (what you see)</label>
+        <textarea data-i="${i}" data-k="ab" placeholder="${b.q}" style="width:100%;min-height:50px;padding:10px;border:1px solid rgba(232,80,80,0.25);border-radius:6px;font-family:'Lora',Georgia,serif;font-size:0.9rem;background:#FFF8F8;resize:vertical;"></textarea>
+        <label style="display:block;font-size:0.65rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#5A3800;margin:14px 0 6px;">Second lens (the off-camera spectrum)</label>
+        <textarea data-i="${i}" data-k="co" placeholder="${b.off}" style="width:100%;min-height:50px;padding:10px;border:1px solid rgba(232,134,10,0.25);border-radius:6px;font-family:'Lora',Georgia,serif;font-size:0.9rem;background:#FFFBF5;resize:vertical;"></textarea>
+      </div>`;
+    root.appendChild(wrap);
+  });
+  const SLUG = 'lay-it-down-envy';
+  const WIDGET = 'aberration-mapper';
+  root.addEventListener('click', e => {
+    const btn = e.target.closest('button[data-i]');
+    if(!btn) return;
+    const panel = btn.nextElementSibling;
+    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+  });
+  function currentState(){
+    const ab = {}, co = {};
+    BANDS.forEach((b,i) => {
+      const a = document.querySelector('textarea[data-i="'+i+'"][data-k="ab"]');
+      const c = document.querySelector('textarea[data-i="'+i+'"][data-k="co"]');
+      if(a) ab[i] = a.value;
+      if(c) co[i] = c.value;
+    });
+    return {name: document.getElementById('amap-name').value, ab, co};
+  }
+  function save(){ if(window.kbWidget) kbWidget.save(SLUG, WIDGET, currentState()); }
+  function update(){
+    const name = (document.getElementById('amap-name').value || 'this person').trim();
+    const filled = [];
+    BANDS.forEach((b,i) => {
+      const co = document.querySelector('textarea[data-i="'+i+'"][data-k="co"]');
+      if(co && co.value.trim().length > 8) filled.push(b.label.toLowerCase());
+    });
+    const result = document.getElementById('amap-result');
+    const summary = document.getElementById('amap-summary');
+    if(filled.length >= 2){
+      result.style.display = 'block';
+      summary.innerHTML = `When you look at ${name}, you have been seeing isolated bands of ${filled.slice(0,3).join(', ')}${filled.length>3?' and more':''}. The corrected image you have now sketched shows the off camera spectrum that the aberrated lens hid. The same correction is operating, simultaneously, on your image of yourself.`;
+    } else {
+      result.style.display = 'none';
+    }
+  }
+  function onInput(){ update(); save(); }
+  root.addEventListener('input', onInput);
+  document.getElementById('amap-name').addEventListener('input', onInput);
+  function restore(data){
+    if(!data) return;
+    if(data.name) document.getElementById('amap-name').value = data.name;
+    BANDS.forEach((b,i) => {
+      const a = document.querySelector('textarea[data-i="'+i+'"][data-k="ab"]');
+      const c = document.querySelector('textarea[data-i="'+i+'"][data-k="co"]');
+      if(a && data.ab && data.ab[i]) a.value = data.ab[i];
+      if(c && data.co && data.co[i]) c.value = data.co[i];
+    });
+    update();
+  }
+  if(window.kbWidget){
+    kbWidget.onReady(async () => {
+      const r = await kbWidget.load(SLUG, WIDGET);
+      if(r && r.data) restore(r.data);
+    });
+  }
+})();
+</script>
+
+<!-- ===== POCKET CARD ===== -->
+<div class="page section reveal">
+  <div class="insight" style="border-left-color:#D4A030;">
+    <p style="font-style:normal;font-family:'Poppins',sans-serif;font-size:0.55rem;letter-spacing:5px;text-transform:uppercase;color:#D4A030;margin-bottom:14px;font-weight:700;">Pocket Card · The Daily Achromatic</p>
+    <p style="font-style:normal;font-family:'Lora',Georgia,serif;color:rgba(255,255,255,0.92);font-size:0.98rem;line-height:1.78;">Carry the protocol into the day. Three checks. Twelve seconds each.</p>
+
+    <div style="display:grid;grid-template-columns:1fr;gap:14px;margin-top:18px;">
+      <div style="padding:16px 18px;background:rgba(212,160,48,0.08);border:1px solid rgba(212,160,48,0.25);border-radius:8px;">
+        <div style="font-family:'Poppins',sans-serif;font-size:0.55rem;letter-spacing:4px;text-transform:uppercase;color:#D4A030;margin-bottom:6px;font-weight:700;">Check 1. Name the band.</div>
+        <p style="font-family:'Lora',Georgia,serif;font-size:0.92rem;color:rgba(255,255,255,0.82);line-height:1.65;margin:0;">When the envy spike fires, do not fight it. Name the specific band you are seeing. Career. Body. Marriage. Money. Talent. Ease. The naming alone collapses half of the distortion, because aberration depends on unconscious focus.</p>
+      </div>
+      <div style="padding:16px 18px;background:rgba(212,160,48,0.08);border:1px solid rgba(212,160,48,0.25);border-radius:8px;">
+        <div style="font-family:'Poppins',sans-serif;font-size:0.55rem;letter-spacing:4px;text-transform:uppercase;color:#D4A030;margin-bottom:6px;font-weight:700;">Check 2. Add the second lens.</div>
+        <p style="font-family:'Lora',Georgia,serif;font-size:0.92rem;color:rgba(255,255,255,0.82);line-height:1.65;margin:0;">Force one off camera fact into the image. Not three. Not five. One. The hours. The injury. The marriage that is straining. The childhood debt. One real piece of the full spectrum you had been excluding. The lens recombines on the strength of one true fact.</p>
+      </div>
+      <div style="padding:16px 18px;background:rgba(212,160,48,0.08);border:1px solid rgba(212,160,48,0.25);border-radius:8px;">
+        <div style="font-family:'Poppins',sans-serif;font-size:0.55rem;letter-spacing:4px;text-transform:uppercase;color:#D4A030;margin-bottom:6px;font-weight:700;">Check 3. Emit your wavelength.</div>
+        <p style="font-family:'Lora',Georgia,serif;font-size:0.92rem;color:rgba(255,255,255,0.82);line-height:1.65;margin:0;">Within the next hour, do one act that is on your own frequency. A sentence written, a call placed, a child held, a sentence prayed. The act does not have to be large. It only has to be on the wavelength only you emit. The spectrum recovers when you stop trying to fill someone else's gap and resume filling your own.</p>
+      </div>
+    </div>
+
+    <p style="font-style:normal;font-family:'Lora',Georgia,serif;color:rgba(232,134,10,0.85);font-size:0.92rem;line-height:1.65;margin-top:20px;text-align:center;">Three checks. Twelve seconds each. Run them the next four times the spike fires. By the fifth, the lens will be measurably different.</p>
+  </div>
+</div>
+
+<!-- ===== FINALE ===== -->
+<section class="finale reveal">
+  <h2>Lay It <span>Down.</span></h2>
+  <p>"A heart at peace gives life to the body, but envy rots the bones."</p>
+  <p> Proverbs 14:30 (NIV)</p>
+</section>
+
+<!-- ===== SERIES PROGRESS ===== -->
+<div class="series-progress">
+  <div class="series-label">Lay It Down. The Seven Deadly Sins</div>
+  <div class="series-dots">
+    <span class="series-dot done" title="Pride"></span>
+    <span class="series-dot active" title="Envy"></span>
+    <span class="series-dot" title="Wrath"></span>
+    <span class="series-dot" title="Greed"></span>
+    <span class="series-dot" title="Gluttony"></span>
+    <span class="series-dot" title="Lust"></span>
+    <span class="series-dot" title="Sloth"></span>
+  </div>
+  <div class="series-dot-label">Part 2 of 7. Envy</div>
+</div>
+
+<footer>
+  <p>"A heart at peace gives life to the body, but envy rots the bones.". Proverbs 14:30</p>
+  <div class="brand">KingdomBuilders AI</div>
+</footer>
+
+<script>
+(function(){
+  const bar=document.getElementById('read-progress');
+  const pill=document.getElementById('chapter-pill');
+  const chEls=[{el:document.querySelector('.cover'),label:'Cover'},...Array.from(document.querySelectorAll('.ch-head')).map((el,i)=>({el,label:el.querySelector('.ch-num')?.textContent?.trim()||('Ch '+(i+1))}))].filter(c=>c.el);
+  function onScroll(){
+    const h=document.documentElement;
+    const pct=h.scrollTop/(h.scrollHeight-h.clientHeight)*100;
+    bar.style.width=pct+'%';
+    let cur='';
+    for(const c of chEls){if(c.el.getBoundingClientRect().top<200)cur=c.label}
+    if(cur){pill.textContent=cur;pill.classList.add('show')}else{pill.classList.remove('show')}
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  const revealEls=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    const obs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:0.12});
+    revealEls.forEach(el=>obs.observe(el));
+  }else{revealEls.forEach(el=>el.classList.add('visible'))}
+})();
+</script>
+</body>
+</html>

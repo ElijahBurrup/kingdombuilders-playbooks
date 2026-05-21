@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lay It Down: Greed | Kingdom Builders AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0A1810;--ink-mid:#14281C;--ink-soft:#1E3828;
+  --steel:#3A5848;--steel-light:#6A8A7A;--fog:#90B0A0;
+  --greed:#2E8B57;--greed-mid:rgba(46,139,87,0.18);--greed-pale:rgba(46,139,87,0.07);
+  --emerald:#34A065;--emerald-mid:rgba(52,160,101,0.15);
+  --gold:#D4A030;--gold-mid:rgba(212,160,48,0.18);--gold-pale:rgba(212,160,48,0.08);
+  --brass:#B8860B;--brass-mid:rgba(184,134,11,0.15);
+  --green:#2D8A4E;--green-mid:rgba(45,138,78,0.15);
+  --cream:#F8FFF6;--cream-warm:#F4FFF0;--paper:#FAFFF8;--white:#FFFFFF;
+  --radius:10px;--shadow:0 2px 16px rgba(10,24,16,0.09);--shadow-deep:0 8px 40px rgba(10,24,16,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{font-family:'Lora',Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.78;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.label{font-family:'Poppins',sans-serif}
+.page{max-width:700px;margin:0 auto;padding-left:24px;padding-right:24px}
+.section{padding:48px 0}
+.prose p{margin-bottom:22px;font-size:1rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--ink-mid);font-weight:600;font-family:'Poppins',sans-serif}
+
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(160deg,#020E06 0%,#0A2212 40%,#081A10 100%);position:relative;overflow:hidden}
+.cover-grain{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:0.5}
+.cover-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 25%,rgba(2,10,4,0.7) 100%)}
+.vault-ring{position:absolute;border-radius:50%;border:1px solid rgba(46,139,87,0.06);animation:vault-expand 7s ease-out infinite}
+.vault-ring:nth-child(3){width:180px;height:180px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:0s}
+.vault-ring:nth-child(4){width:360px;height:360px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:1.8s}
+.vault-ring:nth-child(5){width:540px;height:540px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:3.6s}
+@keyframes vault-expand{0%{opacity:0.6;transform:translate(-50%,-50%) scale(0.85)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.25)}}
+.cover-art{margin:0 auto 28px;animation:cover-breathe 4s ease-in-out infinite}
+.cover-art svg{width:190px;height:180px;filter:drop-shadow(0 0 20px rgba(46,139,87,0.3)) drop-shadow(0 0 50px rgba(212,160,48,0.15))}
+@keyframes cover-breathe{0%,100%{transform:scale(1);opacity:0.9}50%{transform:scale(1.04);opacity:1}}
+.cover-content{position:relative;z-index:2;padding:60px 24px 40px}
+.cover-badge{display:inline-block;padding:5px 18px;border:1px solid rgba(46,139,87,0.3);border-radius:50px;font-family:'Poppins',sans-serif;font-size:0.67rem;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:var(--greed);margin-bottom:40px;background:rgba(46,139,87,0.07)}
+.cover h1{font-family:'Poppins',sans-serif;font-size:clamp(3rem,9vw,5.5rem);font-weight:300;color:#FFFFFF;line-height:0.95;margin-bottom:6px;letter-spacing:-0.02em}
+.cover h1 em{display:block;color:var(--greed);font-style:normal;font-weight:700;font-size:0.5em;margin-top:12px;letter-spacing:0.01em}
+.cover-sub{font-family:'Lora',Georgia,serif;font-size:clamp(0.95rem,2.5vw,1.15rem);font-style:italic;color:rgba(255,255,255,0.45);margin-top:28px;line-height:1.7;max-width:480px;margin-left:auto;margin-right:auto}
+.cover-sub em{color:rgba(46,139,87,0.85);font-style:normal;font-weight:600}
+.cover-author{font-family:'Poppins',sans-serif;font-size:0.5rem;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-top:52px}
+.cover-verse{margin-top:28px;padding:14px 24px;display:inline-block;background:rgba(46,139,87,0.06);border:1px solid rgba(46,139,87,0.12);border-radius:8px;font-family:'Lora',Georgia,serif;font-size:0.82rem;font-style:italic;color:rgba(255,255,255,0.35);line-height:1.6}
+
+.ch-head{background:linear-gradient(160deg,#020E06 0%,#101E18 100%);padding:72px 24px 52px;position:relative;overflow:hidden}
+.ch-head::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 50%,rgba(46,139,87,0.04) 0%,transparent 50%)}
+.ch-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 5%,var(--greed) 50%,transparent 95%);opacity:0.5}
+.ch-head .page{position:relative;z-index:2}
+.ch-num{font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--greed);opacity:0.9;margin-bottom:8px}
+.ch-title{font-family:'Poppins',sans-serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:700;color:#FFFFFF;margin:10px 0 8px;letter-spacing:-0.01em}
+.ch-sub{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:rgba(46,139,87,0.55)}
+
+.ribbon{margin:20px 0;text-align:center;padding:20px 24px;background:var(--cream-warm);border-top:1px solid rgba(10,24,16,0.06);border-bottom:1px solid rgba(10,24,16,0.06)}
+.ribbon p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:var(--steel-light);max-width:540px;margin:0 auto;line-height:1.6}
+
+.mission{text-align:center;padding:36px 32px;margin:36px 0;background:linear-gradient(140deg,rgba(46,139,87,0.08),rgba(46,139,87,0.03));border-radius:14px;border:2px solid rgba(46,139,87,0.2);box-shadow:0 0 0 1px rgba(46,139,87,0.06),var(--shadow)}
+.mission-label{font-family:'Poppins',sans-serif;font-size:0.45rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--greed);margin-bottom:12px}
+.mission p{font-family:'Poppins',sans-serif;font-size:clamp(0.88rem,2.2vw,1.05rem);font-weight:500;color:var(--ink-mid);line-height:1.65}
+.mission p em{color:var(--greed);font-style:normal;font-weight:700}
+
+.insight{margin:30px 0;padding:28px 32px;background:linear-gradient(140deg,#020E06,#101E18);border-radius:14px;border:2px solid rgba(46,139,87,0.25);border-left:5px solid var(--greed);position:relative;overflow:hidden;box-shadow:var(--shadow-deep)}
+.insight::before{content:'';position:absolute;top:-40%;right:-10%;width:200px;height:200px;background:radial-gradient(circle,rgba(46,139,87,0.07) 0%,transparent 70%);border-radius:50%}
+.insight p{font-family:'Lora',Georgia,serif;font-size:1.02rem;font-style:italic;color:rgba(255,255,255,0.9);line-height:1.72;position:relative;z-index:2}.insight strong{color:rgba(255,255,255,0.9);font-weight:700}
+.insight em{color:var(--greed);font-style:normal;font-weight:700}
+
+.gq{margin:32px 0;text-align:center;padding:32px 24px;position:relative;background:linear-gradient(160deg,rgba(46,139,87,0.04),rgba(46,139,87,0.07));border-radius:14px;border:1.5px solid rgba(46,139,87,0.15)}
+.gq::before,.gq::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:48px;height:2px;background:linear-gradient(90deg,transparent,var(--greed),transparent)}
+.gq::before{top:0}.gq::after{bottom:0}
+.gq p{font-family:'Lora',Georgia,serif;font-size:1.05rem;font-style:italic;color:var(--ink-soft);line-height:1.6;max-width:520px;margin:0 auto}
+
+.viz{margin:44px 0 32px;border-radius:14px;overflow:hidden;border:2px solid rgba(46,139,87,0.22);box-shadow:var(--shadow-deep);position:relative;background:var(--white)}
+.viz-top{background:linear-gradient(135deg,rgba(46,139,87,0.1),rgba(46,139,87,0.04));padding:20px 26px 18px;display:flex;align-items:center;gap:14px;border-bottom:1px solid rgba(46,139,87,0.12)}
+.viz-icon{width:48px;height:48px;border-radius:50%;border:2px solid rgba(46,139,87,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(145deg,#fff,rgba(240,255,244,0.6))}
+.viz-meta{flex:1}
+.viz-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--greed);margin-bottom:2px}
+.viz h4{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:var(--ink-mid)}
+.viz-body{padding:26px 26px 22px;background:linear-gradient(170deg,#FAFFF8 0%,#F4FFF0 100%)}
+.viz-body p{font-size:0.95rem;color:var(--steel);line-height:1.78;margin-bottom:14px}
+.viz-body strong{color:var(--ink-mid);font-weight:700}
+.viz-body em{color:var(--greed);font-style:normal;font-weight:600}
+.viz-body p:last-child{margin-bottom:0}
+
+.ba-pair{margin:32px 0;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:620px){.ba-pair{grid-template-columns:1fr}}
+.ba-card{border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.ba-head{padding:11px 18px;font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.ba-before{background:linear-gradient(170deg,#F0FFF0,#E0FFE0)}
+.ba-before .ba-head{background:rgba(46,139,87,0.12);color:#1A4A28}
+.ba-after{background:linear-gradient(170deg,#FFFFF0,#FFF8E0)}
+.ba-after .ba-head{background:rgba(212,160,48,0.12);color:#5A3800}
+.ba-dot{width:7px;height:7px;border-radius:50%}
+.ba-before .ba-dot{background:var(--greed)}
+.ba-after .ba-dot{background:var(--gold)}
+.ba-body{padding:16px 18px;font-size:0.88rem;line-height:1.65}
+.ba-body ul{list-style:none;padding:0;margin:0}
+.ba-body ul li{padding:6px 0;border-bottom:1px solid rgba(0,0,0,0.05);font-family:'Poppins',sans-serif;font-size:0.8rem}
+.ba-body ul li:last-child{border-bottom:none}
+
+.dd{margin:24px 0;padding:22px 26px;border-radius:12px;border-left:4px solid var(--greed);background:var(--white);box-shadow:var(--shadow)}
+.dd:nth-of-type(even){background:var(--cream)}
+.dd h4{font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--ink-mid);margin-bottom:4px}
+.dd .sub{font-family:'Poppins',sans-serif;font-size:0.54rem;font-weight:700;color:var(--greed);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.dd p{font-size:0.95rem;color:var(--steel);line-height:1.78;margin-bottom:8px}
+.dd p:last-child{margin-bottom:0}
+
+.think{margin:16px 0 36px;padding:30px;background:linear-gradient(145deg,rgba(46,139,87,0.08),rgba(46,139,87,0.04));border:2px dashed rgba(46,139,87,0.35);border-radius:14px;position:relative;box-shadow:0 4px 16px rgba(46,139,87,0.08)}
+.think::before{content:'';position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--paper);padding:0 12px;width:28px;height:28px;display:block;margin-left:-14px;background:var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232E8B57' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22c-2 0-4-1.5-4-4 0-2 2-3 4-3s4 1 4 3c0 2.5-2 4-4 4z'/%3E%3Cpath d='M12 15c-1.5-2-5-4-5-8a5 5 0 0 1 10 0c0 4-3.5 6-5 8z'/%3E%3Cpath d='M9.5 9c.3-1.8 1.5-3 2.5-3'/%3E%3C/svg%3E") center/contain no-repeat}
+.think-label{font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--greed);text-align:center;margin-bottom:10px}
+.think h4{font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--ink-mid);text-align:center;margin-bottom:14px}
+.think p{font-size:0.86rem;color:var(--steel);margin-bottom:8px;font-family:'Poppins',sans-serif}
+.think-line{border-bottom:1.5px solid rgba(46,139,87,0.25);height:30px;margin-bottom:4px;cursor:text}
+.think p.q-start{font-family:'Poppins',sans-serif;font-weight:500;color:var(--ink-soft);font-size:0.82rem;text-align:left;margin-top:14px;margin-bottom:4px}
+.think .closing{font-weight:600;color:var(--greed);margin-top:12px;font-family:'Poppins',sans-serif;font-size:0.8rem}
+
+.breathe{margin:44px 0;text-align:center;padding:52px 24px;position:relative;background:linear-gradient(160deg,rgba(46,139,87,0.08),rgba(46,139,87,0.04));border-radius:16px;border:2px solid rgba(46,139,87,0.15)}
+.breathe-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1.5px solid rgba(46,139,87,0.1)}
+.breathe-ring:nth-child(1){width:140px;height:140px;animation:breathe-pulse 6s ease-in-out infinite}
+.breathe-ring:nth-child(2){width:90px;height:90px;animation:breathe-pulse 6s ease-in-out infinite 1.5s}
+.breathe-ring:nth-child(3){width:45px;height:45px;animation:breathe-pulse 6s ease-in-out infinite 3s}
+@keyframes breathe-pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.5}50%{transform:translate(-50%,-50%) scale(1.25);opacity:0.1}}
+.breathe-content{position:relative;z-index:2}
+.breathe-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--greed);margin-bottom:8px}
+.breathe h4{font-family:'Poppins',sans-serif;font-size:0.94rem;font-weight:600;color:var(--ink-mid);margin-bottom:8px}
+.breathe p{font-family:'Lora',Georgia,serif;font-size:0.88rem;font-style:italic;color:var(--steel);max-width:420px;margin:0 auto;line-height:1.65}
+
+.stack{margin:38px 0;text-align:center}
+.stack-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--greed);opacity:0.7;margin-bottom:16px}
+.stack-flow{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap}
+.stack-node{display:inline-flex;align-items:center;justify-content:center;padding:10px 18px;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.68rem;font-weight:600;line-height:1.35;white-space:nowrap}
+.sn-dark{background:var(--ink-mid);color:#FFFFFF;border:1.5px solid rgba(46,139,87,0.2)}
+.sn-greed{background:rgba(46,139,87,0.13);color:var(--ink-mid);border:1.5px solid rgba(46,139,87,0.25)}
+.sn-gold{background:rgba(212,160,48,0.13);color:var(--ink-soft);border:1.5px solid rgba(212,160,48,0.28)}
+.sn-brass{background:rgba(184,134,11,0.1);color:#5A3800;border:1.5px solid rgba(184,134,11,0.2)}
+.sn-green{background:rgba(45,138,78,0.1);color:#1A3A28;border:1.5px solid rgba(45,138,78,0.2)}
+.stack-arr{font-size:1rem;color:rgba(46,139,87,0.45);padding:0 7px}
+
+.prayer{margin:32px 0;padding:28px 30px;background:linear-gradient(160deg,#020E06,#101820);border-radius:14px;border:2px solid rgba(212,160,48,0.25);position:relative;overflow:hidden}
+.prayer::before{content:'';position:absolute;top:-20%;left:-10%;width:160px;height:160px;background:radial-gradient(circle,rgba(212,160,48,0.06) 0%,transparent 70%);border-radius:50%}
+.prayer-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;position:relative;z-index:2}
+.prayer p{font-family:'Lora',Georgia,serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,0.85);line-height:1.8;position:relative;z-index:2;margin-bottom:8px}
+.prayer p:last-child{margin-bottom:0}
+.prayer strong{color:var(--gold);font-style:normal;font-weight:700}
+
+.finale{text-align:center;padding:80px 24px;background:linear-gradient(160deg,#020E06 0%,#101E18 100%);position:relative;overflow:hidden}
+.finale::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 50% 50%,rgba(46,139,87,0.04) 0%,transparent 50%)}
+.finale h2{font-family:'Poppins',sans-serif;font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;color:#FFFFFF;margin-bottom:8px;position:relative;z-index:2}
+.finale h2 span{color:var(--greed)}
+.finale p{font-family:'Lora',Georgia,serif;font-size:0.95rem;font-style:italic;color:rgba(255,255,255,0.38);max-width:460px;margin:16px auto;line-height:1.65;position:relative;z-index:2}
+
+footer{text-align:center;padding:36px 24px;background:#020604}
+footer p{font-family:'Lora',Georgia,serif;font-size:0.8rem;font-style:italic;color:rgba(46,139,87,0.2);margin-bottom:12px}
+footer .brand{font-family:'Poppins',sans-serif;font-size:0.67rem;font-style:normal;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.12)}
+
+.prompt{margin:32px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(46,139,87,0.22);box-shadow:var(--shadow-deep)}
+.prompt-head{padding:12px 20px;background:linear-gradient(90deg,#020E06,#101E18);font-family:'Poppins',sans-serif;font-size:0.52rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--greed)}
+.prompt-body{padding:24px 26px;background:#040A06;color:#B0C0B8;font-family:'Poppins',sans-serif;font-size:0.82rem;line-height:1.8}
+.prompt-body strong{color:var(--greed)}
+
+.series-progress{text-align:center;padding:32px 24px;background:var(--cream-warm);border-top:1px solid rgba(10,24,16,0.06)}
+.series-label{font-family:'Poppins',sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--greed);margin-bottom:14px}
+.series-dots{display:flex;align-items:center;justify-content:center;gap:12px}
+.series-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(46,139,87,0.3);background:transparent}
+.series-dot.done{background:rgba(46,139,87,0.25);border-color:rgba(46,139,87,0.5)}
+.series-dot.active{background:var(--greed);border-color:var(--greed);box-shadow:0 0 8px rgba(46,139,87,0.3)}
+.series-dot-label{font-family:'Poppins',sans-serif;font-size:0.55rem;color:var(--steel-light);margin-top:10px}
+
+dfn.def{cursor:help;font-style:normal;font-weight:600;color:var(--greed);border-bottom:1.5px dotted var(--greed);position:relative}
+dfn.def:hover::after,dfn.def:focus::after{content:attr(data-def);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--ink);color:var(--cream);font-size:0.72rem;font-weight:400;padding:10px 14px;border-radius:8px;white-space:normal;width:260px;line-height:1.5;box-shadow:var(--shadow-deep);z-index:10;pointer-events:none;font-family:'Poppins',sans-serif}
+
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.65s ease,transform 0.65s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.think:hover{box-shadow:0 0 0 2px rgba(46,139,87,0.25),0 8px 32px rgba(46,139,87,0.1)}
+.think{transition:box-shadow 0.3s ease}
+@keyframes insight-border{0%,100%{border-left-color:var(--greed)}50%{border-left-color:rgba(46,139,87,0.3)}}
+.insight{animation:insight-border 4s ease-in-out infinite}
+
+#read-progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--greed),rgba(46,139,87,0.4));z-index:9999;pointer-events:none;transition:width 0.08s linear}
+#chapter-pill{position:fixed;bottom:24px;right:24px;background:var(--ink);border:1px solid rgba(46,139,87,0.25);color:var(--greed);font-family:'Poppins',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:8px 18px;border-radius:50px;opacity:0;transition:opacity 0.35s ease;pointer-events:none;z-index:1000;box-shadow:0 4px 24px rgba(0,0,0,0.4)}
+#chapter-pill.show{opacity:1}
+
+@media(max-width:620px){.stack-node{font-size:0.6rem;padding:8px 12px}}
+@media(max-width:640px){.page{padding-left:16px;padding-right:16px}}
+@media print{
+  @page{margin:18mm 16mm 22mm 16mm}
+  body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .cover{min-height:auto;padding:80px 24px;break-after:page}
+  .ch-head{break-before:page;padding:56px 24px 40px}
+  .think,.viz,.ba-pair,.mission,.insight,.dd,.breathe,.prayer,.prompt,.stack{break-inside:avoid}
+  .vault-ring,.cover-grain,.breathe-ring,.cover-vignette{animation:none!important;display:none}
+  .section{padding:36px 0}
+  #read-progress,#chapter-pill,.no-print{display:none!important}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+</style>
+</head>
+<body>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="ico-layers" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></symbol>
+  <symbol id="ico-heart" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></symbol>
+  <symbol id="ico-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></symbol>
+</svg>
+
+<div id="read-progress"></div>
+<div id="chapter-pill"></div>
+
+<!-- ===== COVER ===== -->
+<section class="cover">
+  <div class="cover-grain"></div>
+  <div class="cover-vignette"></div>
+  <div class="vault-ring"></div>
+  <div class="vault-ring"></div>
+  <div class="vault-ring"></div>
+  <div class="cover-content">
+    <div class="cover-badge">Lay It Down Series. Part 5 of 7</div>
+    <div class="cover-art">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 190 180" aria-label="Mushrooms connected by underground root network">
+        <defs>
+          <linearGradient id="g-green" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2E8B57"/><stop offset="100%" stop-color="#34A065"/></linearGradient>
+          <linearGradient id="g-soil" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#1E3828"/><stop offset="100%" stop-color="#0A1810"/></linearGradient>
+          <radialGradient id="g-glow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#2E8B57" stop-opacity="0.2"/><stop offset="100%" stop-color="#0A1810" stop-opacity="0"/></radialGradient>
+        </defs>
+        <rect x="10" y="105" width="170" height="70" rx="4" fill="url(#g-soil)" opacity="0.6"/>
+        <line x1="10" y1="105" x2="180" y2="105" stroke="#2E8B57" stroke-width="0.8" opacity="0.3" stroke-dasharray="3 3"/>
+        <path d="M30,130 C50,125 60,140 95,135" stroke="#D4A030" stroke-width="2" fill="none" opacity="0.5"/>
+        <path d="M95,135 C120,130 140,145 165,130" stroke="#D4A030" stroke-width="2" fill="none" opacity="0.5"/>
+        <path d="M95,135 C90,150 80,155 60,160" stroke="#D4A030" stroke-width="1.5" fill="none" opacity="0.35"/>
+        <path d="M95,135 C100,150 120,158 140,155" stroke="#D4A030" stroke-width="1.5" fill="none" opacity="0.35"/>
+        <ellipse cx="95" cy="135" rx="12" ry="8" fill="url(#g-glow)"/>
+        <circle cx="95" cy="135" r="5" fill="#D4A030" opacity="0.4"/>
+        <ellipse cx="35" cy="100" rx="14" ry="6" fill="url(#g-green)" opacity="0.85"/>
+        <rect x="33" y="100" width="4" height="12" rx="2" fill="#2E8B57" opacity="0.7"/>
+        <ellipse cx="70" cy="96" rx="11" ry="5" fill="#34A065" opacity="0.75"/>
+        <rect x="68" y="96" width="4" height="14" rx="2" fill="#2E8B57" opacity="0.65"/>
+        <ellipse cx="95" cy="92" rx="16" ry="7" fill="url(#g-green)" opacity="0.9"/>
+        <rect x="93" y="92" width="4" height="16" rx="2" fill="#2E8B57" opacity="0.8"/>
+        <ellipse cx="125" cy="95" rx="12" ry="5.5" fill="#34A065" opacity="0.8"/>
+        <rect x="123" y="95" width="4" height="13" rx="2" fill="#2E8B57" opacity="0.7"/>
+        <ellipse cx="158" cy="98" rx="13" ry="5.5" fill="url(#g-green)" opacity="0.75"/>
+        <rect x="156" y="98" width="4" height="11" rx="2" fill="#2E8B57" opacity="0.65"/>
+        <circle cx="60" cy="130" r="2" fill="#D4A030" opacity="0.6"/>
+        <circle cx="130" cy="132" r="2" fill="#D4A030" opacity="0.5"/>
+      </svg>
+    </div>
+    <h1>Lay It Down<em>Greed</em></h1>
+    <p class="cover-sub">You keep cutting mushrooms. They keep growing back. Because greed is not the mushrooms. It is the <em>root system</em> underneath.</p>
+    <p class="cover-author">KingdomBuilders AI</p>
+    <div class="cover-verse">"Watch out! Be on your guard against all kinds of greed;<br>life does not consist in an abundance of possessions."<br> Luke 12:15 (NIV)</div>
+  </div>
+</section>
+
+<!-- ===== BEFORE WE BEGIN ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Before We Begin</div><h2 class="ch-title">The Organism Underground</h2><p class="ch-sub">You have been fighting mushrooms. The organism is beneath your feet.</p></div></div>
+<div class="ribbon"><p>"Keep your lives free from the love of money and be content with what you have, because God has said, 'Never will I leave you; never will I forsake you.'". Hebrews 13:5 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>In the Blue Mountains of eastern Oregon, beneath thousands of acres of old growth forest, lives the largest organism on Earth. It is not a whale. It is not a redwood. It is a <dfn class="def" data-def="Armillaria ostoyae, the honey fungus. The largest known specimen covers 2,385 acres (965 hectares) in Oregon's Malheur National Forest. It is estimated to be between 2,400 and 8,650 years old. What you see above ground are only the fruiting bodies. The organism itself is the network of rhizomorphs underground.">honey fungus</dfn> called Armillaria ostoyae, and it covers 2,385 acres. It weighs an estimated 6,000 metric tons. It is at least 2,400 years old.</p>
+
+  <p>What you see above ground are mushrooms. Small, honey colored clusters that pop up at the base of trees in autumn. A forester could spend all day cutting them. By the next morning, new ones would appear. Not because the mushrooms are resilient. Because the mushrooms are not the organism.</p>
+
+  <p>The organism is the network of <dfn class="def" data-def="Black, shoestring-like structures that Armillaria grows underground, sometimes for meters, to reach new food sources. They look like bootlaces and can persist in soil for years, waiting to contact a new root system. Removing what you see above ground does nothing to stop them.">rhizomorphs</dfn> underground. Black, shoestring like structures that spread through the soil for meters in every direction, infiltrating tree root systems, stealing nutrients, and killing the host from inside. The mushrooms are just the fruiting bodies. Temporary announcements from a permanent system.</p>
+
+  <p>Greed works the same way.</p>
+
+  <p>The desire for the bigger house. The obsession with the promotion. The inability to stop checking your portfolio. The refusal to give anything away. You have been treating these as separate problems. Cutting one mushroom at a time. But they are all connected underground to a single root system: <strong>the belief that you are not enough without more.</strong></p>
+
+  <div class="mission reveal">
+    <div class="mission-label">The Mission</div>
+    <p>Map the <em>rhizomorph network</em> of greed in your life. Identify the single root system that connects all your separate desires. Learn to starve it at the source instead of cutting mushrooms that will always grow back.</p>
+  </div>
+
+  <div class="insight reveal">
+    <p>"Greed is not a collection of separate desires. It is <em>one organism</em> with many fruiting bodies. You cannot fight it mushroom by mushroom. You have to find the root mass."</p>
+  </div>
+
+  <div class="stack reveal">
+    <div class="stack-label">The Armillaria Pattern</div>
+    <div class="stack-flow">
+      <span class="stack-node sn-greed">Root Mass</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-dark">Rhizomorphs</span>
+      <span class="stack-arr">&rarr;</span>
+      <span class="stack-node sn-brass">Fruiting Bodies</span>
+    </div>
+  </div>
+
+  <p>The root mass is the core belief: "I am not enough without more." The rhizomorphs are the channels that carry that belief into every domain of your life. The fruiting bodies are the visible desires you have been trying to manage one by one.</p>
+
+  <div class="viz reveal" style="margin-top:24px">
+    <div class="viz-top">
+      <div class="viz-icon"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M16 4 L20 12 L18 18 L22 22 L18 26 M16 4 L12 12 L14 18 L10 22 L14 26"/></svg></div>
+      <div class="viz-meta">
+        <div class="viz-label">The Network You Cannot See</div>
+        <h4>What grows above ground vs what grows below</h4>
+      </div>
+    </div>
+    <div class="viz-body">
+      <svg viewBox="0 0 560 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;background:linear-gradient(180deg,#FFF5E5 0%,#FFF5E5 45%,#3A2818 45%,#1A1008 100%);border-radius:10px">
+        <!-- Surface line -->
+        <line x1="0" y1="144" x2="560" y2="144" stroke="rgba(139,69,19,0.4)" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <text x="540" y="138" text-anchor="end" fill="#8A6020" font-family="Poppins,sans-serif" font-size="9" font-weight="700" letter-spacing="1.5">SURFACE</text>
+        <!-- ABOVE GROUND: Mushrooms (visible greed behaviors) -->
+        <g>
+          <!-- Mushroom 1: bigger house -->
+          <g transform="translate(60,90)">
+            <ellipse cx="0" cy="0" rx="22" ry="10" fill="#D4A055" stroke="#8B4513" stroke-width="1"/>
+            <rect x="-4" y="0" width="8" height="40" fill="#E8C078" stroke="#8B4513" stroke-width="0.8"/>
+            <text x="0" y="60" text-anchor="middle" fill="#4A2818" font-family="Poppins,sans-serif" font-size="8" font-weight="700">BIGGER HOUSE</text>
+          </g>
+          <!-- Mushroom 2: promotion -->
+          <g transform="translate(160,75)">
+            <ellipse cx="0" cy="0" rx="20" ry="9" fill="#D4A055" stroke="#8B4513" stroke-width="1"/>
+            <rect x="-3.5" y="0" width="7" height="55" fill="#E8C078" stroke="#8B4513" stroke-width="0.8"/>
+            <text x="0" y="75" text-anchor="middle" fill="#4A2818" font-family="Poppins,sans-serif" font-size="8" font-weight="700">PROMOTION</text>
+          </g>
+          <!-- Mushroom 3: portfolio -->
+          <g transform="translate(260,85)">
+            <ellipse cx="0" cy="0" rx="22" ry="10" fill="#D4A055" stroke="#8B4513" stroke-width="1"/>
+            <rect x="-4" y="0" width="8" height="45" fill="#E8C078" stroke="#8B4513" stroke-width="0.8"/>
+            <text x="0" y="65" text-anchor="middle" fill="#4A2818" font-family="Poppins,sans-serif" font-size="8" font-weight="700">PORTFOLIO</text>
+          </g>
+          <!-- Mushroom 4: status -->
+          <g transform="translate(360,80)">
+            <ellipse cx="0" cy="0" rx="18" ry="8" fill="#D4A055" stroke="#8B4513" stroke-width="1"/>
+            <rect x="-3" y="0" width="6" height="50" fill="#E8C078" stroke="#8B4513" stroke-width="0.8"/>
+            <text x="0" y="70" text-anchor="middle" fill="#4A2818" font-family="Poppins,sans-serif" font-size="8" font-weight="700">STATUS</text>
+          </g>
+          <!-- Mushroom 5: hoarding -->
+          <g transform="translate(460,95)">
+            <ellipse cx="0" cy="0" rx="22" ry="10" fill="#D4A055" stroke="#8B4513" stroke-width="1"/>
+            <rect x="-4" y="0" width="8" height="35" fill="#E8C078" stroke="#8B4513" stroke-width="0.8"/>
+            <text x="0" y="55" text-anchor="middle" fill="#4A2818" font-family="Poppins,sans-serif" font-size="8" font-weight="700">HOARDING</text>
+          </g>
+        </g>
+        <!-- BELOW GROUND: Rhizomorph network -->
+        <g stroke="#D4A843" stroke-width="1.5" fill="none" opacity="0.75">
+          <!-- Connecting all mushroom bases via central root mass -->
+          <path d="M60 144 Q90 180,150 200 Q210 220,280 220 Q350 220,410 200 Q470 180,500 144" stroke-width="2.5"/>
+          <path d="M60 144 Q90 200,150 220 Q220 240,280 240 Q340 240,410 220 Q470 200,500 144" stroke-width="2"/>
+          <!-- Branches reaching out -->
+          <path d="M280 220 L240 270 L210 290" stroke-dasharray="3,2"/>
+          <path d="M280 220 L320 270 L350 290" stroke-dasharray="3,2"/>
+          <path d="M280 220 L280 280 L260 300" stroke-dasharray="3,2"/>
+          <path d="M280 220 L300 280 L320 300" stroke-dasharray="3,2"/>
+          <!-- Lateral threads -->
+          <path d="M160 144 L130 175 L100 195"/>
+          <path d="M260 144 L235 175 L210 190"/>
+          <path d="M360 144 L390 175 L420 195"/>
+          <path d="M460 144 L430 180 L405 210"/>
+        </g>
+        <!-- Central root mass -->
+        <g transform="translate(280,225)">
+          <ellipse cx="0" cy="0" rx="48" ry="20" fill="rgba(212,168,67,0.18)" stroke="#D4A843" stroke-width="1.5"/>
+          <ellipse cx="0" cy="0" rx="32" ry="14" fill="rgba(212,168,67,0.32)" stroke="#E8C96A" stroke-width="1.2"/>
+          <ellipse cx="0" cy="0" rx="18" ry="8" fill="#E8C96A"/>
+          <text x="0" y="3" text-anchor="middle" fill="#1A1008" font-family="Poppins,sans-serif" font-size="9" font-weight="800" letter-spacing="0.5">ROOT MASS</text>
+        </g>
+        <text x="280" y="262" text-anchor="middle" fill="#E8C96A" font-family="Lora,serif" font-style="italic" font-size="10">"I am not enough without more."</text>
+        <!-- Labels -->
+        <text x="40" y="40" fill="#8A6020" font-family="Poppins,sans-serif" font-size="9" font-weight="700" letter-spacing="2.5">ABOVE GROUND</text>
+        <text x="40" y="55" fill="#8A6020" font-family="Lora,serif" font-style="italic" font-size="9">What you cut at, one at a time</text>
+        <text x="40" y="288" fill="rgba(232,201,106,0.7)" font-family="Poppins,sans-serif" font-size="9" font-weight="700" letter-spacing="2.5">BELOW GROUND</text>
+        <text x="40" y="303" fill="rgba(232,201,106,0.5)" font-family="Lora,serif" font-style="italic" font-size="9">What actually grows the mushrooms</text>
+      </svg>
+      <p style="text-align:center;font-style:italic;font-size:0.88rem;color:var(--text-light);margin-top:14px;line-height:1.5">Five different mushrooms. One organism. <em style="color:var(--gold);font-style:normal;font-weight:600">The mushrooms are independent only if you have never been underground.</em></p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 1 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter One</div><h2 class="ch-title">The Root Mass</h2><p class="ch-sub">Every mushroom traces back to the same underground center.</p></div></div>
+<div class="ribbon"><p>"Do not worry about your life, what you will eat or drink; or about your body, what you will wear. Is not life more than food, and the body more than clothes?". Matthew 6:25 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>Armillaria does not spread randomly. It grows from a central mass, a dense cluster of fungal tissue that serves as the headquarters for the entire network. This mass can be as small as a grapefruit or as large as a car. From it, rhizomorphs extend outward in every direction, probing for new hosts.</p>
+
+  <p>When a rhizomorph contacts a tree root, it does not attack from the outside. It infiltrates. It grows beneath the bark, between the wood and the cambium layer, feeding on the living tissue while the tree continues to function normally. For years, the tree looks fine. It produces leaves. It grows. But beneath the bark, the fungus is consuming it from inside. By the time the mushrooms appear on the surface, the damage is profound.</p>
+
+  <p>Your root mass formed early. Perhaps it was scarcity in childhood. Perhaps it was a parent who measured love in achievements. Perhaps it was the moment you realized that the people with more seemed to suffer less. Whatever planted it, the root mass has been sending rhizomorphs through your life ever since, and the trees it has infiltrated look healthy on the surface.</p>
+
+  <p>Most adults can name the year their root mass formed if they sit with the question long enough. A friend remembers a single afternoon when she was nine. Her mother had asked her to put back a small thing at the grocery store because the budget was tight that week, and the cashier looked at them differently. She decided in that moment that she would never look at anyone like that, and that the only way to avoid being looked at like that was to have more. <em>She has been operating from that decision for 38 years.</em> She is wealthy now. The decision is still running. The cashier is gone. The rhizomorphs are not.</p>
+
+  <p>What makes the root mass dangerous is not its origin. It is its persistence. The original threat was solved decades ago in most cases. The mother who measured love in achievements is dead. The neighborhood that looked down on your family has been priced out. The exam you barely passed has been forgotten by everyone except the part of you that still walks through life trying to never fail it again. <strong>The root mass does not know the threat is over.</strong> It just keeps producing mushrooms.</p>
+
+  <div class="viz reveal">
+    <div class="viz-top">
+      <div class="viz-icon"><svg><use href="#ico-layers"/></svg></div>
+      <div class="viz-meta">
+        <div class="viz-label">Mechanism</div>
+        <h4>How Armillaria infiltrates</h4>
+      </div>
+    </div>
+    <div class="viz-body">
+      <p><strong>Step 1:</strong> Rhizomorph contacts a healthy root. No visible damage. No warning signs.</p>
+      <p><strong>Step 2:</strong> The fungus grows beneath the bark, feeding on the cambium. The tree still appears healthy. Leaves are green. Growth continues.</p>
+      <p><strong>Step 3:</strong> The fungus produces <em>enzymes that dissolve cell walls</em>. The structural integrity of the tree erodes invisibly.</p>
+      <p><strong>Step 4:</strong> Mushrooms appear at the base. The tree is already dying. The mushrooms are an announcement, not a cause.</p>
+      <p>Greed follows the same stages. The desire contacts a healthy part of your life. You do not notice. It grows inside that domain, feeding on your attention and energy. By the time the behavior becomes visible (the compulsive spending, the inability to give, the obsessive comparison), the root system has been eating you alive for years.</p>
+    </div>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Root Mass Excavation</div>
+    <h4>What planted the root?</h4>
+    <p class="q-start">When is the earliest memory you have of feeling like you did not have enough? Not a specific thing. The feeling itself.</p>
+    <div class="think-line"></div>
+    <p class="q-start">What did you decide in that moment about how the world works?</p>
+    <div class="think-line"></div>
+    <p class="q-start">Is that decision still running your behavior today?</p>
+    <div class="think-line"></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 2 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Two</div><h2 class="ch-title">The Rhizomorph Map</h2><p class="ch-sub">Tracing the underground connections between desires that seem unrelated.</p></div></div>
+<div class="ribbon"><p>"But godliness with contentment is great gain. For we brought nothing into the world, and we can take nothing out of it.". 1 Timothy 6:6, 7 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>The most dangerous thing about Armillaria is not its size. It is the invisibility of its connections. Two trees standing 50 meters apart, in different soil conditions, at different elevations, can both be infected by the same organism. A forester treating them as separate problems would never find the cause. Because the cause is underground.</p>
+
+  <p>Your desire for a bigger house and your inability to tithe are not separate problems. Your need for the newest phone and your anxiety about retirement are not separate problems. Your compulsive comparison shopping and your difficulty being generous with your children's inheritance are not separate problems. They are fruiting bodies of the same rhizomorph network.</p>
+
+  <div class="ba-pair reveal">
+    <div class="ba-card ba-before">
+      <div class="ba-head"><span class="ba-dot"></span> Surface View</div>
+      <div class="ba-body">
+        <ul>
+          <li>I just like nice things</li>
+          <li>I am being responsible with retirement</li>
+          <li>The promotion will help my family</li>
+          <li>I donate when I can afford to</li>
+          <li>I deserve this after working hard</li>
+        </ul>
+      </div>
+    </div>
+    <div class="ba-card ba-after">
+      <div class="ba-head"><span class="ba-dot"></span> Root System View</div>
+      <div class="ba-body">
+        <ul>
+          <li>Nice things prove I am not falling behind</li>
+          <li>No number will ever feel safe enough</li>
+          <li>My worth is measured by my title</li>
+          <li>Giving triggers the scarcity signal</li>
+          <li>"Deserve" is how the fungus justifies feeding</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <p>Mycologists use a technique called <dfn class="def" data-def="A method for tracing fungal networks by identifying genetically identical samples across large areas. If two mushrooms 50 meters apart share identical DNA, they are fruiting bodies of the same organism. You can use the same principle to trace desires that share the same root belief.">somatic incompatibility testing</dfn> to determine whether distant mushrooms belong to the same organism. They take tissue samples and grow them in culture. If the samples fuse, they are the same individual. If they form a rejection barrier, they are different organisms.</p>
+
+  <p>You can perform the same test on your desires. Take two things you want. The promotion and the vacation home. Trace each one backward. Why do you want it? What does it give you? What feeling does it produce? If both desires terminate at the same belief, at the same fear, at the same definition of "enough," they are fruiting bodies of the same organism. They are the same greed wearing different masks.</p>
+
+  <div class="gq reveal">
+    <p>If every desire traces back to the same root fear, then you do not have many problems. You have one problem with many symptoms.</p>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Somatic Incompatibility Test</div>
+    <h4>Are your desires the same organism?</h4>
+    <p class="q-start">Write down three things you currently want badly. Material, professional, social. Anything.</p>
+    <div class="think-line"></div>
+    <p class="q-start">For each one, ask: "What do I believe this will make me?" Write the feeling, not the thing.</p>
+    <div class="think-line"></div>
+    <p class="q-start">Do all three answers converge on the same feeling? If yes, you have found your root mass.</p>
+    <div class="think-line"></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 3 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Three</div><h2 class="ch-title">Why Cutting Mushrooms Fails</h2><p class="ch-sub">Willpower is a forester with a machete. The fungus does not notice.</p></div></div>
+<div class="ribbon"><p>"Do not store up for yourselves treasures on earth, where moths and vermin destroy, and where thieves break in and steal.". Matthew 6:19 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>Every year, homeowners and foresters spend millions trying to control Armillaria by removing mushrooms. It does not work. Not because the effort is insufficient. Because the strategy is wrong. Removing fruiting bodies from a fungus is like removing smoke from a fire. The source is untouched. The symptom returns the next season.</p>
+
+  <p>This is exactly what most approaches to greed do. Budget harder. Cancel the subscription. Return the purchase. Say no to the impulse. These are all mushroom removal strategies. They address the visible behavior while the rhizomorph network beneath continues to grow, probe, and infiltrate.</p>
+
+  <p>Here is what actually happens when you cut a mushroom. The organism detects the loss of its fruiting body. It does not weaken. It redirects resources. New rhizomorphs extend to compensate. The next fruiting appears somewhere else, often in a domain you were not watching. You stopped the compulsive shopping. Now you cannot stop checking your investment app. You stopped the investment obsession. Now you cannot stop working overtime. Same organism. Different mushroom.</p>
+
+  <div class="insight reveal">
+    <p>"The reason discipline alone cannot cure greed is that greed is not a behavior problem. It is a <em>network problem</em>. You are fighting a distributed organism with a point solution. The organism will always route around your defenses."</p>
+  </div>
+
+  <p>Mycologists have discovered that Armillaria responds to damage by increasing rhizomorph production. Cutting mushrooms literally makes the underground network grow faster. The organism interprets the loss as a signal that it needs more infrastructure, not less.</p>
+
+  <p>Guilt works the same way for greed. When you feel guilty about a greedy impulse and force yourself to stop, the root mass interprets the deprivation as confirmation that scarcity is real. The fear that drove the desire in the first place intensifies. You have not weakened greed. You have fertilized it.</p>
+
+  <div class="dd reveal">
+    <h4>The Compensation Pattern</h4>
+    <div class="sub">Why self denial backfires</div>
+    <p>You deny yourself the purchase. The root mass registers: "See? There is not enough." The rhizomorphs accelerate. Within weeks, a new desire surfaces, often larger than the one you denied. You feel worse, not better. You conclude you lack discipline. In reality, the organism is simply adapting.</p>
+  </div>
+
+  <div class="breathe reveal">
+    <div class="breathe-ring"></div>
+    <div class="breathe-ring"></div>
+    <div class="breathe-ring"></div>
+    <div class="breathe-content">
+      <div class="breathe-label">Pause</div>
+      <h4>The question is not "how do I stop wanting."</h4>
+      <p>The question is: "What is the root mass feeding on, and how do I starve it at the source?"</p>
+    </div>
+  </div>
+
+  <p>Watch the compensation pattern in your own life and you will see it everywhere once you know to look. The man who quits drinking gains forty pounds in a year. The woman who quits social media takes up compulsive online shopping. The pastor who refuses to chase money develops a need for theological correctness so intense that it destroys his marriage. <em>The organism moves.</em> It does not weaken. It relocates.</p>
+
+  <p>This is why the standard church teaching on greed has produced two generations of guilt without producing a single life that is genuinely free from the organism. The teaching attacks behavior. The organism is a network. <strong>Behavior modification, applied to a network, only redistributes the load.</strong> The mushrooms that used to grow at one tree base now grow at the base of a different tree. The forest still hosts the same fungus.</p>
+
+  <p>This pattern explains something that has always puzzled observers of religious communities. Why are some of the most disciplined people in the world, monks, ministers, devoted believers, often the most prone to one specific kind of secret excess? Why does the pastor who has refused to chase money chase admiration with the same intensity? Why does the missionary who renounced possessions accumulate spiritual authority the way a financier accumulates assets? The answer is the same in every case. <em>They cut the mushroom. The rhizomorphs grew somewhere else.</em></p>
+</div>
+
+<!-- ===== CHAPTER 4 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Four</div><h2 class="ch-title">Starving the Root Mass</h2><p class="ch-sub">The only strategy that actually works.</p></div></div>
+<div class="ribbon"><p>"Give, and it will be given to you. A good measure, pressed down, shaken together and running over, will be poured into your lap.". Luke 6:38 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>There is only one proven method for controlling Armillaria in a forest. You do not cut mushrooms. You do not poison individual trees. You change the soil. Specifically, you introduce competing organisms, mycorrhizal fungi that form beneficial relationships with tree roots and physically block Armillaria from infiltrating.</p>
+
+  <p>The strategy is not to attack the pathogen. It is to replace the pathogen's food source with a healthier relationship. The beneficial fungi occupy the root surface first. When Armillaria's rhizomorphs arrive, there is no entry point. The tree is already in a relationship with a symbiont that gives rather than takes.</p>
+
+  <p>For greed, the competing organism is generosity. Not the guilt driven kind. Not the obligatory tithe that you resent while giving. The kind that occupies the same psychological root space that greed feeds on. <dfn class="def" data-def="Mycorrhizal fungi form symbiotic relationships with plant roots, exchanging nutrients for carbon. Unlike parasitic fungi like Armillaria, they strengthen the host instead of consuming it. The relationship is mutual: both organisms benefit. This is the biological model for generosity.">Mycorrhizal</dfn> generosity. Generosity that forms a mutual relationship with your sense of self, that feeds you while you feed others.</p>
+
+  <div class="viz reveal">
+    <div class="viz-top">
+      <div class="viz-icon"><svg><use href="#ico-heart"/></svg></div>
+      <div class="viz-meta">
+        <div class="viz-label">The Displacement Protocol</div>
+        <h4>Replace the parasite with a symbiont</h4>
+      </div>
+    </div>
+    <div class="viz-body">
+      <p><strong>Step 1: Identify the root mass belief.</strong> What feeling does greed promise you? Security? Status? Control? Name it precisely.</p>
+      <p><strong>Step 2: Find a generous act that delivers the same feeling through giving rather than taking.</strong> If greed promises security, find a way to create security for someone else. If it promises status, find a way to elevate someone else's standing.</p>
+      <p><strong>Step 3: Perform the generous act before the greedy impulse arrives.</strong> Mycorrhizal fungi work because they colonize the root first. Generosity works when it occupies the psychological space before greed sends its rhizomorphs.</p>
+      <p><strong>Step 4: Repeat until the new relationship is established.</strong> Armillaria cannot displace an established mycorrhizal network. Greed cannot displace an established generosity practice that delivers the feeling the root mass craves.</p>
+    </div>
+  </div>
+
+  <p>This is not about giving until it hurts. Pain based giving is another mushroom removal strategy. It is about giving in a way that feeds you, that strengthens your root system the way mycorrhizal fungi strengthen a tree. The tree does not sacrifice for the fungus. The relationship is mutual. Both organisms are better off because of the connection.</p>
+
+  <div class="prayer reveal">
+    <div class="prayer-label">Prayer</div>
+    <p>Lord, I have been cutting mushrooms my whole life. I have been treating symptoms while the root mass grew. Show me the belief underground that feeds every greedy impulse. Give me the courage to name it. And replace it, not with guilt, but with a <strong>generosity so deep it occupies every space greed used to fill.</strong> Let me be the tree that hosts the symbiont instead of the parasite. Amen.</p>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Displacement Design</div>
+    <h4>Design your mycorrhizal practice</h4>
+    <p class="q-start">What feeling does your root mass promise? (Security, respect, control, safety?)</p>
+    <div class="think-line"></div>
+    <p class="q-start">Name one generous act that produces the same feeling through giving.</p>
+    <div class="think-line"></div>
+    <p class="q-start">When will you perform it this week, before the next greedy impulse arrives?</p>
+    <div class="think-line"></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 5 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Five</div><h2 class="ch-title">The Enough Boundary</h2><p class="ch-sub">Armillaria has no boundary. That is why it covers 2,385 acres.</p></div></div>
+<div class="ribbon"><p>"Whoever loves money never has enough; whoever loves wealth is never satisfied with their income. This too is meaningless.". Ecclesiastes 5:10 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>Armillaria ostoyae has been growing in Oregon for at least 2,400 years. In that time, it has never stopped expanding. Not because it needs 2,385 acres of nutrients to survive. A fraction would suffice. It expands because it has no internal mechanism that says "enough." There is no gene for satisfaction. There is no signal that tells the rhizomorphs to stop probing. The organism grows until something external stops it: a change in soil chemistry, a rock formation, a competing fungus.</p>
+
+  <p>Greed has no internal off switch either. No amount of money, status, or possessions will ever trigger the feeling of "enough" from inside the root system. Because the root mass is not feeding on money. It is feeding on fear. And fear has no satiation point.</p>
+
+  <p>This means the boundary must come from outside the system. You must draw it yourself, deliberately, before the organism reaches it naturally. Because it never will.</p>
+
+  <div class="dd reveal">
+    <h4>The Enough Declaration</h4>
+    <div class="sub">Drawing the line the organism cannot</div>
+    <p>Define, in writing, what "enough" looks like in every domain greed touches. Income. Savings. Possessions. Status. Write the number. Write the title. Write the square footage. Make it specific and final. Not "comfortable." Not "secure." A number. A limit. A line in the soil that the rhizomorphs are not permitted to cross.</p>
+  </div>
+
+  <p>The Enough Declaration is not a budget. A budget is a plan for how to spend what you have. An Enough Declaration is a boundary that defines what you will never pursue. It is the rock formation in the soil that stops Armillaria. It works not because you feel satisfied, but because you decided in advance that the expansion stops here, regardless of how the root mass feels about it.</p>
+
+  <div class="gq reveal">
+    <p>If you cannot name the number, you will never reach it. The organism will keep expanding because nothing told it to stop.</p>
+  </div>
+
+  <p>The Enough Declaration sits between two failures most people fall into. The first is asceticism, the romantic claim that you do not need money or status at all, that the truly spiritual person renounces ambition entirely. This is mostly a lie. The people who tell it usually have inherited wealth or are subsidized by someone else's labor. Asceticism is the rhizomorphs going dormant, not dying. The moment the external pressure relaxes, they grow back.</p>
+
+  <p>The second failure is permissive abundance, the modern doctrine that there is no upper limit, that you should always reach for more because the universe abundantly provides. This is the rhizomorphs running unchecked through every domain, dressed up as gratitude. There is no resistance to the organism, only encouragement.</p>
+
+  <p>The Enough Declaration is neither. It is a deliberate, numbered, public boundary. <strong>Not because the boundary is moral, but because it is structural.</strong> The organism cannot stop on its own. Something outside the organism must say where the network ends. That something is you, writing it down, in advance, before the rhizomorphs reach the line.</p>
+
+  <div class="viz reveal">
+    <div class="viz-top">
+      <div class="viz-icon"><svg viewBox="0 0 32 32" fill="currentColor"><rect x="4" y="14" width="24" height="4" rx="1"/><circle cx="10" cy="16" r="3" fill="#fff"/><circle cx="22" cy="16" r="3" fill="#fff"/></svg></div>
+      <div class="viz-meta">
+        <div class="viz-label">Templates</div>
+        <h4>Four Domains, Four Numbers</h4>
+      </div>
+    </div>
+    <div class="viz-body">
+      <p><strong>Income.</strong> Write the annual figure beyond which you will refuse to chase more. Not your hope. Your ceiling. The moment you reach it, you will redirect the next increment to giving, rest, or others' compensation. Example: "$X annual is enough. Beyond X, the next 30 percent of any raise goes to giving."</p>
+      <p><strong>Possessions.</strong> Write the count or the square footage. Cars in the driveway. Homes owned. Wardrobe pieces. The number above which the organism is in charge, not you. Example: "Two cars. One primary home. Wardrobe replacement only, not addition."</p>
+      <p><strong>Status.</strong> Write the title or rank beyond which you will refuse to keep climbing if the climb requires hours away from people you love. Example: "Director level is enough. Beyond Director, only if the role does not add a single working hour."</p>
+      <p><strong>Time.</strong> Write the hours per week you will refuse to exceed in work, regardless of the financial reward. Example: "50 hours is the ceiling. Beyond 50, no project, no client, no opportunity."</p>
+      <p>The numbers are personal. The principle is universal. <strong>Without a number, the organism wins by default.</strong> Every quarter, the rhizomorphs probe the boundary. Without a declared edge, they always pass it.</p>
+    </div>
+  </div>
+
+  <div class="think reveal">
+    <div class="think-label">Enough Declaration</div>
+    <h4>Draw the boundary</h4>
+    <p class="q-start">Income: What annual amount would be truly sufficient?</p>
+    <div class="think-line"></div>
+    <p class="q-start">Possessions: What do you actually need vs. what do the rhizomorphs demand?</p>
+    <div class="think-line"></div>
+    <p class="q-start">Status: What position, if you never advanced beyond it, would still let you live a full life?</p>
+    <div class="think-line"></div>
+    <p class="q-start">Time: How many hours per week is the ceiling, no matter the reward?</p>
+    <div class="think-line"></div>
+    <p class="closing">Write these down. Show them to someone you trust. These are the rock formations that will contain the organism. The organism cannot stop itself. You must do it.</p>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 6 ===== -->
+<div class="ch-head"><div class="page"><div class="ch-num">Chapter Six</div><h2 class="ch-title">The Legacy Soil</h2><p class="ch-sub">What grows in the ground after the parasite dies.</p></div></div>
+<div class="ribbon"><p>"I have learned the secret of being content in any and every situation, whether well fed or hungry, whether living in plenty or in want.". Philippians 4:12 (NIV)</p></div>
+
+<div class="page prose section reveal">
+  <p>When foresters finally eliminate Armillaria from a section of forest, something remarkable happens. The trees that were being slowly consumed begin to recover. Their root systems, no longer drained by the parasite, redirect energy into growth. Canopy fills in. Seedlings establish. The forest, freed from the invisible tax of the fungus, produces more biomass in a single season than it had in the previous decade.</p>
+
+  <p>The same thing happens when you starve the root mass of greed. Energy that was being consumed by the endless pursuit of more suddenly becomes available for everything else. Relationships deepen because you are present instead of calculating. Creative work improves because you are engaged instead of distracted. Rest becomes possible because you are not monitoring a number that was never going to be high enough.</p>
+
+  <p>The question after greed is not "What do I do now?" It is "What has been waiting to grow in this soil all along?"</p>
+
+  <p>People who have done this work report something they did not expect. The energy they reclaim is not abstract. It is specific. A man who put down the obsession with his portfolio reports that he plays catch with his son in the backyard for the first time in three years. <em>Not because he scheduled it. Because the part of his mind that was calculating returns is now available to notice the kid in the yard.</em> A woman who declared her Enough Boundary at the Director level instead of pursuing VP reports that she finally has the bandwidth to take piano lessons, a thing she had wanted since she was eleven and had never made room for in 35 years of climbing.</p>
+
+  <p>These are not the heroic outputs of liberation from greed. They are the small, ordinary, almost embarrassingly modest things that grow when the parasite stops feeding. The reason they feel like miracles when they appear is that the soil has been infected for so long that ordinary growth feels impossible. <strong>Once the rhizomorphs withdraw, the ordinary becomes available again, and the ordinary turns out to be enough.</strong></p>
+
+  <p>One more note about the legacy soil. There is a playbook in this library called The Mycelium Network. It uses fungal networks to teach the opposite lesson, that cooperation, generosity, and shared memory are the strongest organism in any forest. If you find yourself confused about whether mycelium is good or bad, the answer is: it depends entirely on which species. Armillaria (the parasite) and mycorrhizae (the symbionts) are both fungal networks. They use the same biology. They produce opposite outcomes. <em>The forest that hosts the right network thrives. The forest that hosts the wrong one dies invisibly.</em> Your inner life is no different. The question is not whether your network exists. It does. The question is which one you have been cultivating, and whether the network you have is feeding you or consuming you.</p>
+
+  <div class="insight reveal">
+    <p>"Contentment is not the absence of desire. It is the presence of a <em>healthy root system</em> that feeds you from within instead of consuming you from below."</p>
+  </div>
+
+  <p>Paul writes from prison that he has learned the secret of being content in every situation. This is not resignation. It is the declaration of a man whose root system has been completely replaced. The parasite is gone. What remains is a mycorrhizal network of faith, community, purpose, and service that feeds him more abundantly than any amount of accumulation ever could.</p>
+
+  <p>That is the destination. Not poverty. Not asceticism. Not the grim discipline of refusing every desire. A root system so healthy, so deeply connected to what actually nourishes you, that the parasite of greed cannot find an entry point.</p>
+
+  <div class="prayer reveal">
+    <div class="prayer-label">Prayer</div>
+    <p>Father, I lay down the root mass today. Not just the mushrooms. Not just the visible behaviors. <strong>The organism itself.</strong> The belief that I am not enough without more. The fear that drove the rhizomorphs into every domain of my life. Replace it with a root system that draws from You. Let contentment grow in the soil where greed used to feed. And let the trees of my life finally produce what they were always meant to produce, free from the parasite at last. Amen.</p>
+  </div>
+
+  <div class="prompt reveal">
+    <div class="prompt-head">Continue with AI. Prompt Card</div>
+    <div class="prompt-body">
+      <p><strong>Copy this prompt into any AI assistant to continue the work:</strong></p>
+      <p>"I just read Lay It Down: Greed by Kingdom Builders AI. It uses the Armillaria (honey fungus) model: greed is not separate desires but one underground root system. I want to map my personal rhizomorph network. Ask me about my three strongest desires right now and help me trace each one back to the root mass belief. Then help me design a Displacement Protocol (generous acts that deliver the same feeling as greed through giving), write my Enough Declaration across income, possessions, and status, and identify what has been waiting to grow in the soil greed has been occupying. Be direct. Challenge me like a mycologist diagnosing an infection, not a pastor delivering a sermon."</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FINALE ===== -->
+<section class="finale reveal">
+  <h2>Lay It <span>Down.</span></h2>
+  <p>"Watch out! Be on your guard against all kinds of greed; life does not consist in an abundance of possessions."</p>
+  <p> Luke 12:15 (NIV)</p>
+</section>
+
+<!-- ===== SERIES PROGRESS ===== -->
+<div class="series-progress">
+  <div class="series-label">Lay It Down. The Seven Deadly Sins</div>
+  <div class="series-dots">
+    <span class="series-dot done" title="Pride"></span>
+    <span class="series-dot done" title="Envy"></span>
+    <span class="series-dot done" title="Wrath"></span>
+    <span class="series-dot done" title="Sloth"></span>
+    <span class="series-dot active" title="Greed"></span>
+    <span class="series-dot" title="Gluttony"></span>
+    <span class="series-dot" title="Lust"></span>
+  </div>
+  <div class="series-dot-label">Part 5 of 7. Greed</div>
+</div>
+
+<footer>
+  <p>"Watch out! Be on your guard against all kinds of greed.". Luke 12:15</p>
+  <div class="brand">KingdomBuilders AI</div>
+</footer>
+
+<script>
+(function(){
+  const bar=document.getElementById('read-progress');
+  const pill=document.getElementById('chapter-pill');
+  const chEls=[{el:document.querySelector('.cover'),label:'Cover'},...Array.from(document.querySelectorAll('.ch-head')).map((el,i)=>({el,label:el.querySelector('.ch-num')?.textContent?.trim()||('Ch '+(i+1))}))].filter(c=>c.el);
+  function onScroll(){
+    const h=document.documentElement;
+    const pct=h.scrollTop/(h.scrollHeight-h.clientHeight)*100;
+    bar.style.width=pct+'%';
+    let cur='';
+    for(const c of chEls){if(c.el.getBoundingClientRect().top<200)cur=c.label}
+    if(cur){pill.textContent=cur;pill.classList.add('show')}else{pill.classList.remove('show')}
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  const revealEls=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    const obs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:0.12});
+    revealEls.forEach(el=>obs.observe(el));
+  }else{revealEls.forEach(el=>el.classList.add('visible'))}
+})();
+</script>
+</body>
+</html>
