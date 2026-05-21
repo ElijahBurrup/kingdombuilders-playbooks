@@ -3,9 +3,12 @@
 const { test, expect } = require("@playwright/test");
 
 const PROD = "https://kingdombuilders.ai/playbooks";
+// Real subscriber account. Replace or extend with additional accounts as
+// passwords are confirmed. djburrup@gmail.com / luckydjb is stale on prod
+// and was removed 2026-05-21 after this test surfaced "Invalid email or
+// password" on every login.
 const ACCOUNTS = [
   { label: "Subscriber A", email: "elijahburrup323@gmail.com", password: "Eli624462!" },
-  { label: "Subscriber B", email: "djburrup@gmail.com", password: "luckydjb" },
 ];
 
 for (const acct of ACCOUNTS) {
@@ -16,13 +19,13 @@ for (const acct of ACCOUNTS) {
     // 2. Capture what we see (screenshot for diagnosis on failure)
     await page.screenshot({ path: `test-results/login-${acct.label.replace(/\W+/g, "-")}-1-auth.png`, fullPage: true });
 
-    // 3. Find email + password fields
-    const emailInput = page.locator('input[type="email"], input[name="email"]').first();
-    const passwordInput = page.locator('input[type="password"], input[name="password"]').first();
-    const submitButton = page
-      .getByRole("button", { name: /sign in|log in/i })
-      .or(page.locator('button[type="submit"]'))
-      .first();
+    // 3. Find login form scope. The auth page has tabs that ALSO say "Sign In"
+    //    so we must scope to the active login panel's form to avoid clicking
+    //    a tab instead of the submit button.
+    const loginForm = page.locator('form[action$="/auth/login"]').first();
+    const emailInput = loginForm.locator('input[name="email"]');
+    const passwordInput = loginForm.locator('input[name="password"]');
+    const submitButton = loginForm.locator('button[type="submit"]');
 
     await expect(emailInput, "email input is on the page").toBeVisible({ timeout: 10000 });
     await expect(passwordInput, "password input is on the page").toBeVisible();
