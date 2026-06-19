@@ -237,6 +237,7 @@ LANDING_ROUTES: dict[str, str] = {
     "/dadtalksthescoreboardlie": "dad-talks-the-scoreboard-lie.html",
     "/dadtalksthefirstpunch": "dad-talks-the-first-punch.html",
     "/thearrival": "the-arrival.html",
+    "/thebow": "the-bow.html",
     "/thebodylie": "the-body-lie.html",
     "/themyceliumnetwork": "the-mycelium-network.html",
     "/thetermitecathedral": "the-termite-cathedral.html",

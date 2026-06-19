@@ -71,6 +71,7 @@ SLUG_TO_FILE: dict[str, str] = {
     "the-vampire-squids-light": "The_Vampire_Squids_Light.html",
     "the-three-tables": "The_Three_Tables.html",
     "the-kintsugi-bowl": "The_Kintsugi_Protocol.html",
+    "the-bow": "The_Bow.html",
     "the-unfinished-song": "The_Unfinished_Song.html",
     "the-roche-limit": "The_Roche_Limit.html",
     "before-the-garden-returns": "Before_The_Garden_Returns.html",

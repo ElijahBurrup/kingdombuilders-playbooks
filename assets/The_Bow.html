@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Bow</title>
+<style>
+:root{
+  --ice:#0e2433;
+  --ice-deep:#091a26;
+  --frost:#f4f8fb;
+  --frost-warm:#eef4f8;
+  --glacier:#5c9cc6;
+  --glacier-pale:#bcdcef;
+  --gold:#cda644;
+  --gold-deep:#7a5e16;
+  --text:#1d2b36;
+  --text-soft:#3c4a55;
+  --text-light:#e8f1f7;
+  --text-dim:#9fb6c6;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:Georgia,'Times New Roman',serif;
+  color:var(--text);
+  background:var(--frost);
+  line-height:1.75;
+  font-size:19px;
+  overflow-x:hidden;
+}
+
+/* progress + pill */
+#bar{position:fixed;top:0;left:0;height:4px;width:0;background:linear-gradient(90deg,var(--glacier),var(--gold));z-index:200;transition:width .1s}
+#pill{position:fixed;top:14px;right:14px;z-index:200;background:rgba(14,36,51,.86);color:var(--text-light);font-family:Arial,sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:7px 13px;border-radius:20px;opacity:0;transition:opacity .4s;backdrop-filter:blur(4px)}
+#pill.show{opacity:1}
+
+/* cover */
+.cover{
+  position:relative;min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;
+  background:radial-gradient(circle at 50% 20%,#16344a 0%,var(--ice) 45%,var(--ice-deep) 100%);
+  color:var(--text-light);overflow:hidden;padding:40px 24px;
+}
+.snow{position:absolute;top:-10px;width:6px;height:6px;background:#fff;border-radius:50%;opacity:.7;animation:fall linear infinite}
+@keyframes fall{to{transform:translateY(105vh)}}
+.cover-mark{font-family:Arial,sans-serif;font-size:12px;letter-spacing:.4em;text-transform:uppercase;color:var(--glacier-pale);margin-bottom:34px;z-index:2}
+.cover h1{font-size:clamp(64px,16vw,150px);font-weight:normal;letter-spacing:.02em;line-height:.95;z-index:2;text-shadow:0 4px 30px rgba(0,0,0,.4)}
+.cover .tag{font-style:italic;font-size:clamp(20px,4.5vw,30px);color:var(--gold);margin-top:26px;z-index:2}
+.cover .cue{position:absolute;bottom:34px;font-family:Arial,sans-serif;font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--text-dim);z-index:2;animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+
+/* layout */
+.wrap{max-width:720px;margin:0 auto;padding:0 26px}
+section{padding:74px 0}
+
+/* cold open */
+.coldopen{background:var(--ice);color:var(--text-light);padding:90px 0}
+.coldopen .label{font-family:Arial,sans-serif;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);text-align:center;margin-bottom:30px}
+.coldopen p{margin:0 0 24px;font-size:20px}
+.coldopen .turn{font-style:italic;font-size:25px;color:var(--glacier-pale);text-align:center;margin-top:40px;line-height:1.5}
+
+/* claim */
+.claim{background:var(--ice-deep);color:var(--text-light);text-align:center;padding:70px 0}
+.claim p{font-size:21px}
+.claim b{color:var(--gold);font-weight:normal}
+
+/* chapters */
+.ch-head{text-align:center;margin-bottom:50px}
+.ch-num{font-family:Arial,sans-serif;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--glacier)}
+.ch-title{font-size:clamp(38px,8vw,58px);font-weight:normal;line-height:1.05;margin:14px 0 16px}
+.ch-sub{font-style:italic;font-size:21px;color:var(--text-soft)}
+.ch p{margin:0 0 26px}
+.ch p .em{font-style:italic;color:var(--gold-deep)}
+
+/* bow visual */
+.bowbox{margin:46px auto;max-width:340px;text-align:center}
+.bowbox svg{width:100%;height:auto}
+.bowbox .cap{font-family:Arial,sans-serif;font-size:13px;letter-spacing:.05em;color:var(--text-soft);margin-top:14px}
+
+/* frame break */
+.fb{background:var(--ice);color:var(--text-light);border-left:5px solid var(--gold);padding:46px 40px;margin:60px 0;position:relative;border-radius:2px}
+.fb::before{content:'\201C';position:absolute;top:0;left:18px;font-size:90px;color:var(--gold);opacity:.32;line-height:1}
+.fb p{font-style:italic;font-size:26px;line-height:1.45;margin:0;position:relative}
+
+/* scene tint */
+.scene{background:var(--frost-warm);border-radius:8px;padding:34px 32px;margin:40px 0;border:1px solid #e0e9f0}
+
+/* the detector */
+.detector{background:var(--ice);color:var(--text-light);padding:84px 0}
+.detector .ch-title{color:var(--text-light)}
+.detector .ch-sub{color:var(--glacier-pale)}
+.det-intro{text-align:center;font-size:19px;color:var(--glacier-pale);margin-bottom:14px}
+.det-tally{text-align:center;font-family:Arial,sans-serif;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:36px;min-height:18px}
+.area{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:22px 22px 20px;margin:16px 0;transition:border-color .3s,background .3s}
+.area.trap{border-color:#d9626a;background:rgba(217,98,106,.12)}
+.area-name{font-family:Arial,sans-serif;font-size:17px;font-weight:bold;letter-spacing:.02em;margin-bottom:16px;color:#fff}
+.q{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 0;flex-wrap:wrap}
+.q-text{font-size:16px;color:var(--glacier-pale);flex:1;min-width:170px}
+.btns{display:flex;gap:8px}
+.btns button{font-family:Arial,sans-serif;font-size:13px;letter-spacing:.05em;padding:7px 18px;border-radius:18px;border:1px solid rgba(255,255,255,.3);background:transparent;color:var(--text-light);cursor:pointer;transition:all .2s}
+.btns button:hover{border-color:var(--gold)}
+.btns button.on-yes{background:var(--glacier);border-color:var(--glacier);color:#fff}
+.btns button.on-no{background:#56646f;border-color:#56646f;color:#fff}
+.verdict{margin-top:14px;font-family:Arial,sans-serif;font-size:14px;letter-spacing:.03em;padding:9px 14px;border-radius:7px;background:rgba(255,255,255,.06);color:var(--text-dim)}
+.verdict.green{background:rgba(110,178,120,.16);color:#bfe6c6}
+.verdict.blue{background:rgba(92,156,198,.18);color:var(--glacier-pale)}
+.verdict.gold{background:rgba(205,166,68,.18);color:#f0d68a}
+.verdict.red{background:rgba(217,98,106,.2);color:#f3b5b9;font-weight:bold}
+
+/* domains */
+.domains{padding:74px 0}
+.dom{background:var(--frost-warm);border:1px solid #e0e9f0;border-left:4px solid var(--glacier);border-radius:8px;padding:26px 28px;margin:20px 0}
+.dom h3{font-size:24px;font-weight:normal;margin-bottom:12px;color:var(--ice)}
+.dom p{font-size:18px;margin:0}
+.dom .line{display:block;margin:7px 0}
+.dom .k{font-family:Arial,sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-deep);margin-right:8px}
+
+/* finale */
+.finale{background:radial-gradient(circle at 50% 30%,#16344a,var(--ice) 55%,var(--ice-deep));color:var(--text-light);text-align:center;padding:100px 0}
+.finale p{font-size:21px;margin:0 0 26px}
+.finale .big{font-style:italic;font-size:30px;color:var(--gold);margin-top:40px;line-height:1.4}
+
+/* footer */
+footer{background:var(--ice-deep);color:var(--text-dim);text-align:center;padding:54px 26px;font-size:16px}
+footer .verse{font-style:italic;color:var(--glacier-pale);max-width:520px;margin:0 auto 18px;line-height:1.6}
+footer .ref{font-family:Arial,sans-serif;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-deep)}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .9s ease,transform .9s ease}
+.reveal.visible{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<div id="bar"></div>
+<div id="pill"></div>
+
+<!-- COVER -->
+<header class="cover" id="cover">
+  <div class="cover-mark">Kingdom Builders</div>
+  <h1>The Bow</h1>
+  <div class="tag">All the power is in the draw.</div>
+  <div class="cue">scroll</div>
+</header>
+
+<!-- COLD OPEN -->
+<section class="coldopen" data-ch="The Race">
+  <div class="wrap">
+    <div class="label reveal">The Race</div>
+    <p class="reveal">In 1911, two teams set out across the bottom of the world, racing to be first to reach the South Pole. Same ice. Same cold. Same goal. And almost opposite ways of traveling.</p>
+    <p class="reveal">One team, led by Roald Amundsen, marched close to the same distance every single day. Around fifteen to twenty miles. On clear, easy days when they could have gone much farther, they stopped and rested. On brutal, frozen days when they wanted to hide in the tent, they got up and marched anyway. Steady. Boring. The same, day after day.</p>
+    <p class="reveal">The other team, led by Robert Scott, did what feels natural. They pushed hard when the weather was good and went as far as their bodies could stand. When storms came, they stopped and waited them out.</p>
+    <p class="reveal">Amundsen reached the Pole first, and brought every man home alive.</p>
+    <p class="reveal">Scott reached it second. On the way back, his worn out team was caught by the cold and died in their tent. One of the saddest details in all of history: they froze just eleven miles from a depot full of food and fuel that would have saved them.</p>
+    <p class="turn reveal">This is not really a story about the South Pole.<br>It is a story about how you are spending your life.</p>
+  </div>
+</section>
+
+<!-- CLAIM -->
+<section class="claim">
+  <div class="wrap">
+    <p class="reveal">By the end of this you will see why the slow, boring, steady work is the hidden engine behind every big win. You will learn the one <b>mistake that ends the game for good</b>. And you will find <b>the trap</b> that quietly eats more lives than laziness ever will. Most people are standing in it right now and calling it hard work.</p>
+  </div>
+</section>
+
+<!-- CH 1 -->
+<section class="ch" data-ch="The Bow">
+  <div class="wrap">
+    <div class="ch-head reveal">
+      <div class="ch-num">One</div>
+      <h2 class="ch-title">The Bow</h2>
+      <p class="ch-sub">All the power is in the draw.</p>
+    </div>
+    <p class="reveal">Pick up a bow and arrow. Where does the power come from?</p>
+    <p class="reveal">Not from the release. Letting go is the easy part. Anyone can let go.</p>
+    <p class="reveal">The power comes from the <span class="em">draw</span>. The slow, steady, difficult pull. Every bit of force in that arrow was loaded in by the pulling. The release just sets it free.</p>
+    <div class="bowbox reveal">
+      <svg viewBox="0 0 300 200" fill="none">
+        <path d="M250 20 C 150 60, 150 140, 250 180" stroke="#cda644" stroke-width="5" stroke-linecap="round"/>
+        <line x1="250" y1="20" x2="90" y2="100" stroke="#bcdcef" stroke-width="2"/>
+        <line x1="250" y1="180" x2="90" y2="100" stroke="#bcdcef" stroke-width="2"/>
+        <line x1="90" y1="100" x2="265" y2="100" stroke="#f4f8fb" stroke-width="3"/>
+        <polygon points="265,100 252,93 252,107" fill="#cda644"/>
+        <circle cx="90" cy="100" r="5" fill="#cda644"/>
+        <text x="62" y="105" fill="#5c9cc6" font-family="Arial" font-size="13" text-anchor="end">pull</text>
+      </svg>
+      <div class="cap">The work is the pull. The win is just the letting go.</div>
+    </div>
+    <p class="reveal">Your life works the same way. The steady, unglamorous work you do every day, the training, the saving, the practicing, the showing up, that is the draw. The big moment everyone claps for, the win, the breakthrough, the payday, that is just the release.</p>
+    <p class="reveal">Here is what almost everyone gets wrong. They fall in love with the release and skip the draw. They want the moment of glory without the long, quiet pull that loads it. Then they wonder why their shot has no power.</p>
+    <div class="fb reveal"><p>The arrow only carries what the draw put into it.</p></div>
+  </div>
+</section>
+
+<!-- CH 2 -->
+<section class="ch" data-ch="Two Kinds">
+  <div class="wrap">
+    <div class="ch-head reveal">
+      <div class="ch-num">Two</div>
+      <h2 class="ch-title">Two Kinds of Things</h2>
+      <p class="ch-sub">Know which one you are looking at.</p>
+    </div>
+    <p class="reveal">Almost everything you spend your life on is one of two kinds.</p>
+    <div class="scene reveal">
+      <p style="margin-bottom:18px"><span class="em">The slow stack.</span> It pays you back a little at a time, and the rewards pile up like a snowball rolling downhill. Getting fit. Learning a skill. Building trust with someone. Putting money away. None of it looks like much on any single day. All of it is huge after a few years.</p>
+      <p style="margin:0"><span class="em">The big swing.</span> It ignores you for a long time, then pays off all at once. Starting a business. Taking a rare chance. Making a bold move when a door finally opens. You can do everything right and see nothing for ages, and then one day the whole thing pays.</p>
+    </div>
+    <p class="reveal">Both can win. But they ask for opposite things. The slow stack rewards showing up the same way every day. The big swing rewards waiting patiently, then going hard at the right moment.</p>
+    <p class="reveal">Bring the wrong energy to the wrong one and you lose. Sprint at a slow stack and you burn out. Sit around waiting on a big swing and the moment passes you by.</p>
+  </div>
+</section>
+
+<!-- CH 3 -->
+<section class="ch" data-ch="Don't Get Knocked Out">
+  <div class="wrap">
+    <div class="ch-head reveal">
+      <div class="ch-num">Three</div>
+      <h2 class="ch-title">Don't Get Knocked Out</h2>
+      <p class="ch-sub">Zero is forever.</p>
+    </div>
+    <p class="reveal">Before you worry about winning, learn the rule that beats all the others. <span class="em">Never make the mistake you do not come back from.</span></p>
+    <p class="reveal">You can fail a hundred times and still win, as long as you are still standing. But some mistakes do not let you stand back up. The climber who takes one risk too many. The savings wiped out on one bad bet. The trust broken in one careless night. The body or the mind pushed until it breaks. Those are not setbacks. Those are the end of the game.</p>
+    <p class="reveal">Remember the bow. Pull it too far and it snaps. Then you do not have a weak bow. You have no bow at all.</p>
+    <p class="reveal">So your steady daily work has a job even bigger than winning. Its first job is to keep you in the game long enough for your moment to arrive. Amundsen did not march his steady miles to go fast. He did it so he would still be alive and strong when the Pole came. Staying in the game is not the boring part of the plan. It is the whole plan.</p>
+    <div class="fb reveal"><p>You cannot win a game you have been knocked out of.</p></div>
+  </div>
+</section>
+
+<!-- CH 4 + DETECTOR -->
+<section class="detector" data-ch="The Trap">
+  <div class="wrap">
+    <div class="ch-head reveal">
+      <div class="ch-num">Four</div>
+      <h2 class="ch-title">The Trap in the Middle</h2>
+      <p class="ch-sub">It feels like trying. That is what makes it a trap.</p>
+    </div>
+    <p class="reveal" style="color:var(--text-light);margin-bottom:26px">There is a worst place to stand, and most people live there without ever noticing. It is the spot where you are working too hard to call it rest, but not betting enough to ever really win. You are tired all the time, and nothing is piling up. You cannot point to one thing slowly getting bigger. You cannot point to one real swing you have taken. You are just running. Sweating. Going in a circle.</p>
+    <p class="reveal" style="color:var(--glacier-pale);margin-bottom:26px">And here is the cruel part. It feels responsible. It feels like effort. It feels like the right thing. That is exactly why it traps so many people. Laziness at least feels like rest. The middle feels like work but pays like nothing.</p>
+    <p class="reveal" style="color:var(--text-light);margin-bottom:8px">Two simple questions find it. Is anything actually stacking up here? Have I really made a big bet here? If both answers are no, and the thing is still eating your time, money, and energy, you are standing in the trap.</p>
+    <p class="reveal" style="text-align:center;color:var(--gold);font-style:italic;margin:30px 0 40px">Let us find yours.</p>
+
+    <div class="det-intro reveal">Answer honestly for each part of your life. Watch which ones light up red.</div>
+    <div class="det-tally" id="tally"></div>
+    <div id="areas"></div>
+
+    <div class="fb reveal" style="margin-top:54px"><p>The trap does not look like failure. It looks like being busy.</p></div>
+  </div>
+</section>
+
+<!-- CH 5 -->
+<section class="ch" data-ch="Pick It Up or Let It Go">
+  <div class="wrap">
+    <div class="ch-head reveal">
+      <div class="ch-num">Five</div>
+      <h2 class="ch-title">Pick It Up or Let It Go</h2>
+      <p class="ch-sub">Just stop bleeding in the middle.</p>
+    </div>
+    <p class="reveal">Once you find a trap, you have two honest choices.</p>
+    <p class="reveal"><span class="em">Pick it up</span> into a real swing. Go all in for a set amount of time and find out if it can actually pay. Or <span class="em">let it go</span>. Shrink it down to almost nothing so it stops draining you, and pour that time into something that stacks.</p>
+    <p class="reveal">What you must not do is keep standing there, paying the price of a big bet and getting the reward of nothing.</p>
+    <p class="reveal">Here is how the same idea looks across different parts of life.</p>
+  </div>
+  <div class="wrap domains" style="padding-top:20px">
+    <div class="dom reveal">
+      <h3>Getting in shape</h3>
+      <p>
+        <span class="line"><span class="k">draw</span>steady training you never get hurt doing.</span>
+        <span class="line"><span class="k">swing</span>the race, or the hard push when you are truly ready.</span>
+        <span class="line"><span class="k">trap</span>going hard and random every day, always sore, never resting and never really peaking.</span>
+      </p>
+    </div>
+    <div class="dom reveal">
+      <h3>Money</h3>
+      <p>
+        <span class="line"><span class="k">draw</span>saving a little automatically and never betting money you cannot afford to lose.</span>
+        <span class="line"><span class="k">swing</span>a rare, careful bet when you genuinely know something.</span>
+        <span class="line"><span class="k">trap</span>constantly trading and fiddling, taking real risk for tiny gains.</span>
+      </p>
+    </div>
+    <div class="dom reveal">
+      <h3>Work</h3>
+      <p>
+        <span class="line"><span class="k">draw</span>building real skill and a name people trust.</span>
+        <span class="line"><span class="k">swing</span>the bold move when a rare door finally opens.</span>
+        <span class="line"><span class="k">trap</span>hopping for small raises, or sitting comfortable in a job that grows nothing.</span>
+      </p>
+    </div>
+    <div class="dom reveal">
+      <h3>Relationships</h3>
+      <p>
+        <span class="line"><span class="k">draw</span>showing up in the small ordinary ways, every day.</span>
+        <span class="line"><span class="k">swing</span>the hard conversation, or being there fully in a crisis.</span>
+        <span class="line"><span class="k">trap</span>grand gestures with no daily follow through.</span>
+      </p>
+    </div>
+    <div class="dom reveal">
+      <h3>Health</h3>
+      <p>
+        <span class="line"><span class="k">draw</span>sleep and decent food you never fully abandon.</span>
+        <span class="line"><span class="k">swing</span>an occasional focused push.</span>
+        <span class="line"><span class="k">trap</span>the crash and rebound cycle, all or nothing, over and over.</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- FINALE -->
+<section class="finale" data-ch="Twenty Miles">
+  <div class="wrap">
+    <p class="reveal">Think back to the ice.</p>
+    <p class="reveal">The steady team came home. Not because they were stronger or luckier. Because they pulled the bow every single day, in good weather and bad, and never pulled it so far that it snapped. They stayed in the game. And when the Pole finally came, the shot was already loaded.</p>
+    <p class="reveal">You do not need a bigger moment. You are not behind because your one big break has not arrived.</p>
+    <p class="reveal">You need a longer draw. Keep stacking the small things. Refuse the mistakes you cannot come back from. And walk out of the trap in the middle.</p>
+    <p class="big reveal">Draw the bow. Hold it steady. And when your clean shot comes, you will not have to hope you are ready.<br>You will already be.</p>
+  </div>
+</section>
+
+<footer>
+  <p class="verse">Let us not grow weary of doing good, for in due season we will reap, if we do not give up.</p>
+  <p class="ref">Galatians 6:9</p>
+</footer>
+
+<script>
+/* progress bar */
+var bar=document.getElementById('bar'),pill=document.getElementById('pill');
+window.addEventListener('scroll',function(){
+  var h=document.documentElement.scrollHeight-window.innerHeight;
+  var p=h>0?(window.scrollY/h)*100:0;
+  bar.style.width=p+'%';
+  pill.classList.toggle('show',window.scrollY>window.innerHeight*0.7);
+});
+
+/* chapter pill */
+var pillSecs=document.querySelectorAll('[data-ch]');
+var pillObs=new IntersectionObserver(function(es){
+  es.forEach(function(e){ if(e.isIntersecting) pill.textContent=e.target.getAttribute('data-ch'); });
+},{rootMargin:'-45% 0px -45% 0px'});
+pillSecs.forEach(function(s){pillObs.observe(s);});
+
+/* reveal */
+var revObs=new IntersectionObserver(function(es){
+  es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); revObs.unobserve(e.target);} });
+},{threshold:0.12});
+document.querySelectorAll('.reveal').forEach(function(el){revObs.observe(el);});
+
+/* snow */
+var cover=document.getElementById('cover');
+for(var i=0;i<34;i++){
+  var s=document.createElement('div');
+  s.className='snow';
+  var size=2+(i%4);
+  s.style.left=((i*2.9)%100)+'%';
+  s.style.width=size+'px';s.style.height=size+'px';
+  s.style.animationDuration=(6+(i%7))+'s';
+  s.style.animationDelay=(-(i%8))+'s';
+  s.style.opacity=(0.3+((i%5)/8));
+  cover.appendChild(s);
+}
+
+/* the middle detector */
+var AREAS=['Money','Work or school','Your body','A key relationship','Learning a skill','A side project'];
+var state={};
+var areasEl=document.getElementById('areas'),tallyEl=document.getElementById('tally');
+
+AREAS.forEach(function(name,idx){
+  state[idx]={stack:null,bet:null};
+  var card=document.createElement('div');
+  card.className='area reveal';
+  card.id='area'+idx;
+  card.innerHTML=
+    '<div class="area-name">'+name+'</div>'+
+    row(idx,'stack','Is anything stacking up here?')+
+    row(idx,'bet','Have you made a real bet here?')+
+    '<div class="verdict" id="v'+idx+'">Answer both to see where you stand.</div>';
+  areasEl.appendChild(card);
+  revObs.observe(card);
+});
+
+function row(idx,key,text){
+  return '<div class="q"><span class="q-text">'+text+'</span><span class="btns">'+
+    '<button onclick="ans('+idx+',\''+key+'\',true,this)">Yes</button>'+
+    '<button onclick="ans('+idx+',\''+key+'\',false,this)">No</button></span></div>';
+}
+
+function ans(idx,key,val,btn){
+  state[idx][key]=val;
+  var parent=btn.parentNode;
+  parent.querySelectorAll('button').forEach(function(b){b.className='';});
+  btn.className=val?'on-yes':'on-no';
+  render(idx);
+}
+
+function render(idx){
+  var s=state[idx],v=document.getElementById('v'+idx),card=document.getElementById('area'+idx);
+  card.classList.remove('trap');
+  if(s.stack===null||s.bet===null){ v.className='verdict'; v.textContent='Answer both to see where you stand.'; tally(); return; }
+  if(s.stack&&s.bet){ v.className='verdict green'; v.textContent='Strong. It is stacking and you have a real bet.'; }
+  else if(s.stack&&!s.bet){ v.className='verdict blue'; v.textContent='A slow stack. Keep drawing.'; }
+  else if(!s.stack&&s.bet){ v.className='verdict gold'; v.textContent='A real swing. Now protect your survival.'; }
+  else { v.className='verdict red'; v.textContent='THE TRAP. Pick it up into a real bet, or let it go.'; card.classList.add('trap'); }
+  tally();
+}
+
+function tally(){
+  var t=0,answered=0;
+  for(var k in state){
+    if(state[k].stack!==null&&state[k].bet!==null){ answered++; if(!state[k].stack&&!state[k].bet) t++; }
+  }
+  if(answered===0){ tallyEl.textContent=''; return; }
+  tallyEl.textContent = t===0 ? 'No traps yet. Keep going.' : (t===1?'1 trap found':t+' traps found');
+}
+</script>
+
+</body>
+</html>

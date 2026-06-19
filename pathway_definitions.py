@@ -308,6 +308,9 @@ NEAREST_PATHWAY = {
     "the-ghost-frame": "strategist-toolkit",     # predictive brain / mental models
     "the-ant-network": "strategist-toolkit",     # verification trust
 
+    # Resilience Stack adjacent
+    "the-bow": "resilience-stack",               # consistency, survival, the long draw
+
     # Note: the-salmon-journey, the-compass-rose, the-lighthouse-keepers-log
     # are in seed_playbooks.py but have no asset file (planned/placeholder).
     # They will not appear in the archive grid until their assets are built.

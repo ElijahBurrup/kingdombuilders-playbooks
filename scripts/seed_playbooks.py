@@ -212,6 +212,7 @@ PLAYBOOKS_DATA = [
     {"slug": "the-roche-limit", "title": "The Roche Limit", "route": "/therochelimit", "category": "relationships", "landing_file": "the-roche-limit.html", "asset_file": "The_Roche_Limit.html", "cover_emoji": "\U0001fa90"},
     {"slug": "the-termite-cathedral", "title": "The Termite Cathedral", "route": "/thetermitecathedral", "category": "technology", "landing_file": "the-termite-cathedral.html", "asset_file": "The_Termite_Cathedral.html", "cover_emoji": "\U0001f3db️"},
     {"slug": "the-three-tables", "title": "The Three Tables", "route": "/thethreetables", "category": "faith", "landing_file": "the-three-tables.html", "asset_file": "The_Three_Tables.html", "cover_emoji": "\U0001f37d️"},
+    {"slug": "the-bow", "title": "The Bow", "route": "/thebow", "category": "resilience", "landing_file": "the-bow.html", "asset_file": "The_Bow.html", "cover_emoji": "\U0001f3f9", "pricing_type": "free", "price_cents": 0},
     {"slug": "the-unfinished-song", "title": "The Unfinished Song", "route": "/theunfinishedsong", "category": "health", "landing_file": "the-unfinished-song.html", "asset_file": "The_Unfinished_Song.html", "cover_emoji": "\U0001f3b5"},
 ]
 
