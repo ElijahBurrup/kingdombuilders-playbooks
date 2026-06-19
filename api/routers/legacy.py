@@ -168,6 +168,7 @@ FREE_SLUGS = {
     "dad-talks-the-dopamine-drought",
     "the-mantis-shrimps-eye",
     "the-hermit-crabs-shell",
+    "the-bow",
 }
 
 ADMIN_CODE = settings.ADMIN_UNLOCK_CODE
