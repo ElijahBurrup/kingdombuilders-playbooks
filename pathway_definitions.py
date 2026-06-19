@@ -111,7 +111,7 @@ PATHWAYS = [
         "name": "The Resilience Stack",
         "tagline": "Harder To Break, Slower To Burn",
         "audience": "If you are facing something hard right now and need real tools",
-        "promise": "Become harder to break without becoming brittle. Seven playbooks on structural protection and antifragile growth.",
+        "promise": "Become harder to break without becoming brittle. Eight playbooks on structural protection and antifragile growth.",
         "accent": "copper",
         "estimated_minutes": 210,
         "playbook_sequence": [
@@ -122,6 +122,7 @@ PATHWAYS = [
             "the-pangolins-armor",
             "the-geckos-grip",
             "the-bears-winter",
+            "the-bow",
         ],
         "scripture": '"We are troubled on every side, yet not distressed; we are perplexed, but not in despair." 2 Corinthians 4:8',
     },
